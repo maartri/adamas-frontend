@@ -1,0 +1,105 @@
+<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
+    <div nz-col nzSpan="5">
+        <div class="mrg-btm" nz-row>
+            <label for="">Program</label>
+            <nz-select [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Select a Program"
+                [(ngModel)]="program" (ngModelChange)="programChanges($event)">
+                <nz-option *ngFor="let prog of programs" [nzLabel]="prog" [nzValue]="prog"></nz-option>
+            </nz-select>
+        </div>
+        <div class="mrg-btm" nz-row>
+            <label for="">Date</label>
+            <nz-month-picker [(ngModel)]="date" nzPlaceHolder="Select month" (ngModelChange)="dateChanges($event)">
+            </nz-month-picker>
+        </div>
+        <div nz-row>
+            <p class="notice">
+                <strong>Note</strong>: This statement includes an amount for government contribution and basic daily
+                fee that may not have been paid at the date of issue. Please refer to your invoice for any
+                outstanding amounts.
+            </p>
+        </div>
+        <div nz-row class="mrg-btm">
+            <nz-descriptions nzBordered [nzSize]="'small'" [nzColon]="false"
+                [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }">
+                <nz-descriptions-item nzTitle="Opening Balance">{{ openB | currency: 'USD' || '--' }}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Closing Balance">{{ closeB | currency: 'USD' || '--' }}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Contingency Balance">{{ continB | currency: 'USD' || '--' }}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Total Available Balance">{{ closeB + continB | currency: 'USD' || '--'}}
+                </nz-descriptions-item>
+            </nz-descriptions>
+        </div>
+        <div nz-row>
+            <div nz-row>
+                <label for="">Recipient</label>
+                <p>{{ user?.title }} {{ user?.firstName }} {{ user?.surnameOrg }}</p>
+            </div>
+            <div nz-row>
+                <label for="">Customer</label>
+                <p>{{ user?.accountNo || '-'}}</p>
+            </div>
+            <div nz-row>
+                <label for="">Billing Client</label>
+                <p>{{ user?.accountNo || '-'}}</p>
+            </div>
+            <div nz-row>
+                <label for="">Statement Period</label>
+                <p>{{ date | monthPeriodFilter }}</p>
+            </div>
+        </div>
+    </div>
+    <div nz-col nzSpan="18" nzOffset="1">
+        <div style="display: inline-block; width: 100%;">
+            <a class="print mrg-btm" target="_blank" [href]="URL" nz-button nzType="primary" [nzSize]="'default'"><i
+                    nz-icon nzType="printer"></i>Print</a>
+        </div>
+        <nz-table #basicTable [nzData]="table" nzSize="small" [nzBordered]="false">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let tab of table">
+                    <tr>
+                        <td class="left" colspan="5">
+                            <p class="package-header">{{ tab?.name }}</p>
+                        </td>
+                    </tr>
+                    <tr class="table-content" *ngFor="let samp of tab?.list">
+                        <td class="left">{{samp?.billText | uppercase }}</td>
+                        <td class="align-left">{{samp?.date}}</td>
+                        <td class="align-right">{{samp?.billQuant | number : '1.2-2' }}</td>
+                        <td class="align-right">{{samp?.unitBillRate | currency: 'USD' }}</td>
+                        <td class="align-right">{{samp?.serviceCharge | currency: 'USD' }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="total align-right">Sub Total</td>
+                        <td class="total align-right">{{ tab?.total | currency: 'USD' }}</td>
+                    </tr>
+                </ng-container>
+                <!-- <tr *ngFor="let data of basicTable.data">
+                    <td>{{data.name}}</td>
+                    <td>{{data.age}}</td>
+                    <td>{{data.address}}</td>
+                    <td>
+                        <a>Action 一 {{data.name}}</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a>Delete</a>
+                    </td>
+                </tr> -->
+            </tbody>
+        </nz-table>
+    </div>
+
+</div>

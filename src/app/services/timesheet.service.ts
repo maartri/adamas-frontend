@@ -1,0 +1,1056 @@
+import { Injectable, Input } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+import { GlobalService } from './global.service';
+
+const timesheet: string = "api/timesheet";
+
+declare var Dto: any;
+@Injectable()
+export class TimeSheetService {
+
+    constructor(
+        public http: HttpClient,
+        public auth: AuthService,
+        public globalS: GlobalService
+    ) { }
+
+    getusersettings(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/user/settings/${name}`);
+    }
+
+    getquotelist(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/quote/list`, data);
+    }
+
+    getquotedetails(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/quote/details/${id}`);
+    }
+
+    updatepackagesupplement(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/packagesupplement`, data);
+    }
+
+    getactiveservices(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/active-services`, data);
+    }
+
+    updatetactiveservices(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/active-services`, data);
+    }
+
+    getPDFReport(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/pdfreport`, data);
+    }
+
+    getreportpdfpath(data: any) {
+        const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        const formData = new HttpParams({
+            fromObject: {
+                SqlStmt: `${data.SqlStmt}`,
+                reportPath: `${data.reportPath}`,
+                reportName: `${data.reportName}`,
+                parameters: `${data.parameters}`
+            }
+        });
+        return this.http.post('http://45.77.37.207:4141/steph/Timesheet.asmx/get_pdf_Report', formData, { headers: headers || headers, responseType: 'text' });
+    }
+
+    getAllocateDefaults(uname: string): Observable<any> {
+        return this.auth.get(`${timesheet}/unallocate-defaults/${uname}`);
+    }
+
+    getcomputetimesheet(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/compute-timesheet`, data);
+    }
+
+    posttimesheet(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/timesheet`, data);
+    }
+
+    postsamplereport(data: any) {
+        return this.auth.post(`${timesheet}/sample-report`, data);
+    }
+
+    pdfreport(data: any) {
+        return this.auth.post(`${timesheet}/pdfreport`, data);
+    }
+    getleavebalances(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/leave-balances/${personID}`);
+    }
+
+    // getdocumentblob(data: any): Observable<any>{
+    //     return this.http.post(`${timesheet}/copy-mta-document`, data , { responseType: 'blob', reportProgress: true });
+    // }
+
+    putleaveapproved(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/leave-approved`, data);
+    }
+
+    putleaveentry(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/putOnLeave`, data);
+    }
+
+    postleaveentry(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/putOnLeave`, data);
+    }
+
+    posttermination(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/terminate`, data);
+    }
+
+    getservicetype(type: string): Observable<any> {
+        return this.auth.get(`${timesheet}/servicetype/${type}`)
+    }
+
+    removeShiftOverlap(data: any, interval: number): Observable<any> {
+        return this.auth.put(`${timesheet}/remove-shiftoverlap/${interval}`, data);
+    }
+
+    selectedApprove(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/selected-approve`, data);
+    }
+
+    unapproveAll(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/unapproved/all`, data);
+    }
+
+    approveAll(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/approve/all`, data);
+    }
+
+    deleteunapprovedall(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/delete-unapproved/all`, data);
+    }
+
+    getjobstatus(recordArr: Array<number>): Observable<any> {
+        return this.auth.post(`${timesheet}/jobstatus-timesheet`, recordArr);
+    }
+
+    /**
+     *  Get USERNAME by using AccountNo
+     */
+    getuname(accountNo: string) {
+        return this.auth.get(`${timesheet}/get-username/${accountNo}`)
+    }
+
+    /**
+     * Update Alerts and Issues - Profile Page
+     */
+
+    updatealertsissues(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/update/alerts`, data)
+    }
+
+    /**
+     *  Post Case Staff 
+     */
+    postcasestaff(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/case-staff`, data)
+    }
+    /**
+     *  Update Case Staff 
+     */
+    updatecasestaff(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/case-staff`, data)
+    }
+
+    /**
+     *  Delete Case Staff 
+     */
+
+    deletecasestaff(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/case-staff/${recordNo}`)
+    }
+
+    /**
+     * Get Case Staff
+     */
+
+    getcasestaff(recordNo: number): Observable<any> {
+        return this.auth.get(`${timesheet}/case-staff/${recordNo}`)
+    }
+
+    /**
+     * Intake Details > Funding > Fees
+     */
+    getintakefees(recordNo: number): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/funding/fees/${recordNo}`)
+    }
+
+    /**
+     * Intake Details > Funding  > Credits
+     */
+    getintakecredits(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/funding/credits`, data)
+    }
+
+    /**
+     * Intake Details > Funding  > Documents
+     */
+    getintakedocuments(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/funding/documents`, data)
+    }
+
+    /**
+     * Intake Details > Funding > Program Details
+     */
+
+    getprogramdetails(recordNo: number) {
+        return this.auth.get(`${timesheet}/intake/funding/program-details/${recordNo}`);
+    }
+
+    postprogramdetails(data: any) {
+        return this.auth.post(`${timesheet}/intake/funding/program-details/post`, data);
+    }
+
+    updateprogramdetails(data: any) {
+        return this.auth.put(`${timesheet}/intake/funding/program-details/update`, data);
+    }
+
+    /**
+     * Nudge Time
+     */
+
+    updatenudgetime(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/nudgetime`, data)
+    }
+
+    /**
+     * Cut Roster
+     */
+
+    postcutroster(roster: Array<any>): Observable<any> {
+        return this.auth.post(`${timesheet}/cut-roster`, roster)
+    }
+
+    /**
+     * Copy Roster
+     */
+
+    postcopyroster(roster: Array<any>): Observable<any> {
+        return this.auth.post(`${timesheet}/copy-roster`, roster)
+    }
+
+
+    /**
+     *  Day And Time
+     */
+    postdaytime(time: any): Observable<any> {
+        return this.auth.post(`${timesheet}/change-day-time`, time)
+    }
+
+
+    /**
+     * Audit History
+     */
+
+    getaudithistory(recordNo: number): Observable<any> {
+        return this.auth.get(`${timesheet}/audit-history/${recordNo}`)
+    }
+
+
+    /**
+     * Data Set
+     */
+
+    getdataset(recordNo: number): Observable<any> {
+        return this.auth.get(`${timesheet}/dataset/${recordNo}`)
+    }
+
+
+    /**
+     * Extra Information
+     */
+
+    getextrainformation(recordNo: number): Observable<any> {
+        return this.auth.get(`${timesheet}/extra-info/${recordNo}`)
+    }
+
+    /**
+     * Tasks
+     */
+
+    gettasks(recordNo: number): Observable<any> {
+        return this.auth.get(`${timesheet}/tasks/${recordNo}`)
+    }
+
+    /**
+     * Service Notes
+     */
+
+    getservicenotes(recordNo: string): Observable<any> {
+        return this.auth.get(`${timesheet}/service-notes/${recordNo}`)
+    }
+
+
+    /**
+     *  Staff Details
+     */
+
+    getstaffdetails(accountName: string): Observable<any> {
+        return this.auth.get(`${timesheet}/staff-details/${accountName}`)
+    }
+
+
+    /**
+     * Allocate Resource
+     */
+
+    updateResource(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/resource`, data)
+    }
+
+
+
+    /**
+     * Caselaod
+     */
+
+    updatecaseload(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/caseload`, data)
+    }
+
+    /** */
+
+    /**
+     * Pay
+     */
+
+    updateposition(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/pay/position`, data)
+    }
+
+    updatecommencement(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/pay/commencement`, data)
+    }
+
+    updatepayroll(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/pay/payroll`, data)
+    }
+
+    updateworkhours(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/pay/workhours`, data)
+    }
+    /** */
+
+    /**
+     * Insurance & Pension
+     */
+
+    getpension(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/pension/${personID}`)
+    }
+
+    postpension(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/pension`, data)
+    }
+
+    updatepension(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/pension`, data)
+    }
+
+    deletespension(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/pension/${recordNo}`)
+    }
+    /** */
+
+    /**
+     * Services
+     */
+
+    getservicedata(recordNo: number): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/service-data/${recordNo}`)
+    }
+
+    deleteintakeservicecompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/services/competency/${recordNo}`)
+    }
+
+    /** */
+
+    /**
+     * Staff
+     */
+
+    postintakestaff(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/staff`, data)
+    }
+
+    updateintakestaff(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/staff`, data)
+    }
+
+    deleteintakestaff(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/staff/${recordNo}`)
+    }
+
+    /** */
+
+    /**
+     *  Competency
+     */
+
+    postintakecompetency(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/competency`, data)
+    }
+
+    updateintakecompetency(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/competency`, data)
+    }
+
+    deleteintakecompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/competency/${recordNo}`)
+    }
+
+    de
+    /** */
+
+    /**
+     * Goals
+     */
+
+    postgoals(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/goals`, data)
+    }
+
+    updategoals(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/goals`, data)
+    }
+
+    deletegoals(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/goals/${recordNo}`)
+    }
+
+    /** */
+
+    /**
+     * Branches
+     */
+
+    postbranches(data: any) {
+        return this.auth.post(`${timesheet}/intake/branches`, data)
+    }
+
+    updatebranches(data: any) {
+        return this.auth.put(`${timesheet}/intake/branches`, data)
+    }
+
+    deletebranches(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/branches/${recordNo}`)
+    }
+
+    /** */
+
+    /**
+     * Preference
+     */
+
+    postrecipientpreference(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/recipient-preference`, data)
+    }
+
+    updateusrecipientpreference(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/recipient-preference`, data)
+    }
+
+    deleterecipientpreference(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/recipient-preference/${recordNo}`)
+    }
+
+    /**
+     * User Group
+     */
+
+    postusergroup(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/user-group`, data)
+    }
+
+    updateusergroup(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/user-group`, data)
+    }
+
+    deleteusergroup(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/user-group/${recordNo}`)
+    }
+
+    /**
+     * Consents
+     */
+
+    getconsents(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/consents/${id}`)
+    }
+
+    postconsents(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/consents`, data)
+    }
+
+    updateconsents(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/consents`, data)
+    }
+
+    deleteconsents(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/consents/${recordNo}`)
+    }
+
+    /** */
+
+    /**
+     * Insurance
+     */
+
+    getinsurance(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/insurance/${personID}`)
+    }
+
+    updateinsurance(data: any, personID: string): Observable<any> {
+        return this.auth.put(`${timesheet}/insurance/${personID}`, data)
+    }
+
+    /** */
+
+    /**
+     * Reminders Recipient
+     */
+
+    postremindersrecipient(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/recipient/reminders`, data)
+    }
+
+    updateremindersrecipient(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/recipient/reminders`, data)
+    }
+
+    deleteremindersrecipient(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/recipient/reminders/${recordNo}`)
+    }
+
+    /** */
+
+    /**
+     *  Reminders Staff
+     */
+
+
+    getreminders(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/staff/reminders/${name}`)
+    }
+
+    postreminders(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/staff/reminders`, data)
+    }
+
+    deletereminders(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/staff/reminders/${recordNo}`)
+    }
+
+    updatereminders(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/staff/reminders`, data)
+    }
+
+    /** */
+
+    /** Groupings & Preferences */
+
+    getuserdefined1(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/staff/userdefined-1/${personID}`)
+    }
+
+    postuserdefined1(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/staff/userdefined-1`, data)
+    }
+
+    deleteshareduserdefined(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/staff/userdefined-shared/${recordNo}`)
+    }
+
+    updateshareduserdefined(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/staff/userdefined-shared`, data);
+    }
+
+    getuserdefined2(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/staff/userdefined-2/${personID}`)
+    }
+
+    postuserdefined2(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/staff/userdefined-2`, data)
+    }
+
+
+    /** */
+
+    /**
+     * 
+     * Staff Positions 
+     */
+
+    getstaffpositions(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/staff/positions/${personID}`)
+    }
+
+    poststaffpositions(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/staff/positions`, data)
+    }
+
+    updatestaffpositions(data: any, recordNo: number): Observable<any> {
+        return this.auth.put(`${timesheet}/staff/positions/${recordNo}`, data)
+    }
+
+    deletestaffpositions(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/staff/positions/${recordNo}`)
+    }
+
+    /** */
+
+    /**
+     * Primary Address
+     */
+
+    updateprimaryaddress(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/primaryaddress`, data)
+    }
+
+    /** */
+
+    /**
+     * Primary Phone
+     */
+
+    updateprimaryphone(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/primaryphone`, data)
+    }
+
+    /**
+     *  OP Note Populate List
+     */
+
+    getcategoryop(): Observable<any> {
+        return this.auth.get(`${timesheet}/category-opnote`)
+    }
+
+    getprogramop(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/program-opnote/${personID}`)
+    }
+
+    getdisciplineop(): Observable<any> {
+        return this.auth.get(`${timesheet}/discipline-opnote`)
+    }
+
+    getcaredomainop(): Observable<any> {
+        return this.auth.get(`${timesheet}/caredomain-opnote`)
+    }
+
+    getmanagerop(): Observable<any> {
+        return this.auth.get(`${timesheet}/manager-opnote`)
+    }
+
+    /** */
+
+    getreport(): Observable<any> {
+        return this.auth.get('api/report/report')
+    }
+
+    getnotes(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/notes/${name}`)
+    }
+
+    getloans(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/loan/${name}`)
+    }
+
+    getrecipientdetails(name: string = null): Observable<any> {
+        return name == null ? this.auth.get(`${timesheet}/recipients/details`)
+            : this.auth.get(`${timesheet}/recipients/details/${name}`)
+    }
+
+    getopnotes(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/opnotes/${name}`)
+    }
+
+    postopnote(data: any, personID: string): Observable<any> {
+        return this.auth.post(`${timesheet}/staff/opnotes/${personID}`, data)
+    }
+
+    updateopnote(data: any, recordNo: number): Observable<any> {
+        return this.auth.put(`${timesheet}/staff/opnotes/${recordNo}`, data)
+    }
+
+    deleteopnote(id: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/staff/opnotes/${id}`)
+    }
+
+    gethrnotes(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/hrnotes/${name}`)
+    }
+
+    deletehrnotes(id: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/staff/hrnotes/${id}`)
+    }
+
+    posthrnotes(data: any, id: string): Observable<any> {
+        return this.auth.post(`${timesheet}/staff/hrnotes/${id}`, data)
+    }
+
+    updatehrnotes(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/staff/hrnotes/${id}`, data)
+    }
+
+    getrosters(sdate: string, edate: string, servicetype: string): Observable<any> {
+        return this.auth.get(`api/report/rosters?sdate=${sdate}&edate=${edate}&servicetype=${servicetype}`)
+    }
+
+    getcompetenciesall(): Observable<any> {
+        return this.auth.get(`${timesheet}/competencies-list/all`)
+    }
+
+    getcontactskinrecipient(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/recipient/contacts/kin/${id}`)
+    }
+
+    postcontactskinrecipientdetails(data: any, name: string): Observable<any> {
+        return this.auth.post(`${timesheet}/recipient/contacts/kin/details/${name}`, data)
+    }
+
+    getcontactskinrecipientdetails(id: number): Observable<any> {
+        return this.auth.get(`${timesheet}/recipient/contacts/kin/details/${id}`)
+    }
+
+    updatecontactskinrecipientdetails(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/recipient/contacts/kin/details/${id}`, data)
+    }
+
+    getcontactskinstaff(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/staff/contacts/kin/${name}`)
+    }
+
+    getcontactskinstaffdetails(id: number): Observable<any> {
+        return this.auth.get(`${timesheet}/staff/contacts/kin/details/${id}`)
+    }
+
+    postcontactskinstaffdetails(data: any, name: string): Observable<any> {
+        return this.auth.post(`${timesheet}/staff/contacts/kin/details/${name}`, data)
+    }
+
+    updatecontactskinstaffdetails(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/staff/contacts/kin/details/${id}`, data)
+    }
+
+    deletecontactskin(id: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/contacts/kin/${id}`)
+    }
+
+    getshiftbooked(input: Dto.InputShiftBooked): Observable<any> {
+        return this.auth.get(`${timesheet}/shift/booked`, input)
+    }
+
+    getshiftspecific(input: Dto.InputShiftSpecific): Observable<any> {
+        return this.auth.get(`${timesheet}/shift/specific`, input)
+    }
+
+    gettimesheets(ts: Dto.GetTimesheet): Observable<any> {
+        return this.auth.get(`${timesheet}`, ts);
+    }
+
+    getfilteredstaff(input: Dto.InputFilter): Observable<any> {
+        return this.auth.get(`${timesheet}/staff/filtered`, input)
+    }
+
+    getfiltteredrecipient(input: Dto.InputFilter): Observable<any> {
+        return this.auth.get(`${timesheet}/recipient/filtered`, input)
+    }
+
+    getrecipients(rec: Dto.GetRecipient): Observable<any> {
+        return this.auth.get(`${timesheet}/recipients`, rec)
+    }
+
+    getstaff(staff: Dto.GetStaff): Observable<any> {
+        return this.auth.get(`${timesheet}/staffs`, staff)
+    }
+
+    getdaymanager(dto: Dto.DayManager): Observable<any> {
+        return this.auth.get(`${timesheet}/dmanager`, dto)
+    }
+
+    getlistcategories(): Observable<any> {
+        return this.auth.get(`${timesheet}/categories`)
+    }
+
+    getlistservices(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/services/${id}`)
+    }
+
+    getactivitytype(): Observable<any> {
+        return this.auth.get(`${timesheet}/activity`)
+    }
+
+    getpaytype(): Observable<any> {
+        return this.auth.get(`${timesheet}/paytype`)
+    }
+
+    getitemloans(): Observable<any> {
+        return this.auth.get(`${timesheet}/loan/items`)
+    }
+
+    getoutputtype(): Observable<any> {
+        return this.auth.get(`${timesheet}/output`)
+    }
+
+    getprogramtype(): Observable<any> {
+        return this.auth.get(`${timesheet}/program`)
+    }
+
+    getcompetencies(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/competencies/${name}`)
+    }
+
+    postcompetencies(data: any, id: string): Observable<any> {
+        return this.auth.post(`${timesheet}/competencies/${id}`, data)
+    }
+
+    deletecompetency(id: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/staff/competency/${id}`)
+    }
+
+    updatecompetency(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/competency/update/${id}`, data)
+    }
+
+    getincidentdetails(name: string, id: number): Observable<any> {
+        return this.auth.get(`${timesheet}/incidents/${name}/${id}`)
+    }
+
+    getincidents(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/incidents/${name}`)
+    }
+
+    getincidentlocation(): Observable<any> {
+        return this.auth.get(`${timesheet}/incident/location`)
+    }
+
+    getdocuments(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/documents/${name}`)
+    }
+
+    getleaveapplication(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/leaveapplication/${name}`)
+    }
+
+    updateleaveapplication(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/leaveapplication/${name}`, data)
+    }
+
+    getcoordinatoremail(email: Dto.CoordinatorEmail): Observable<any> {
+        return this.auth.get(`${timesheet}/coordinator/email`, email)
+    }
+
+    gettraining(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/training/${name}`)
+    }
+
+    addrecordincident(incident: Dto.RecordIncident): Observable<any> {
+        return this.auth.post(`${timesheet}/recordincident`, incident)
+    }
+
+    addclientnote(note: Dto.AddClientNote): Observable<any> {
+        return this.auth.post(`${timesheet}/client/note`, note)
+    }
+
+    updateoutputtype(input: Dto.RosterInput): Observable<any> {
+        return this.auth.put(`${timesheet}/outputtype`, input)
+    }
+
+    updaterosternote(note: Dto.UpdateNote): Observable<any> {
+        return this.auth.put(`${timesheet}/roster/note`, note)
+    }
+
+    updateprogram(input: Dto.RosterInput): Observable<any> {
+        return this.auth.put(`${timesheet}/program`, input)
+    }
+
+    updateactivity(input: Dto.RosterInput): Observable<any> {
+        return this.auth.put(`${timesheet}/activity`, input)
+    }
+
+    updatepaytype(input: Dto.RosterInput): Observable<any> {
+        return this.auth.put(`${timesheet}/paytype`, input)
+    }
+
+    updatebillamount(input: Dto.RosterInput): Observable<any> {
+        return this.auth.put(`${timesheet}/billamount`, input)
+    }
+
+    updatebillquantity(input: Dto.RosterInput): Observable<any> {
+        return this.auth.put(`${timesheet}/billquantity`, input)
+    }
+
+    updatepayquantity(input: Dto.RosterInput): Observable<any> {
+        return this.auth.put(`${timesheet}/payquantity`, input)
+    }
+
+    updatesetunitcost(input: Dto.RosterInput): Observable<any> {
+        return this.auth.put(`${timesheet}/setunitcost`, input)
+    }
+
+    updateapproveroster(id: number): Observable<any> {
+        return this.auth.post(`${timesheet}/approved/roster`, id)
+    }
+
+    updateclaimvariation(cv: Dto.ClaimVariation): Observable<any> {
+        return this.auth.post(`${timesheet}/claimvariation`, cv)
+    }
+
+    updateunapproveroster(id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/unapprove/roster`, id)
+    }
+
+    updateallocatestaff(id: number, accountName: Dto.InputAllocateStaff): Observable<any> {
+        return this.auth.put(`${timesheet}/allocatestaff/${id}`, accountName)
+    }
+
+    updatepassword(user: Dto.ApplicationUser): Observable<any> {
+        return this.auth.put(`${timesheet}/password/update`, user);
+    }
+
+    updatepasswordadmin(user: Dto.ApplicationUser): Observable<any> {
+        return this.auth.put(`${timesheet}/password/admin/update`, user);
+    }
+
+    deleterosterlist(params: Array<number>): Observable<any> {
+        return this.auth.post(`${timesheet}/roster/list`, params)
+    }
+
+    deleteshift(recordArr: Array<number>): Observable<any> {
+        return this.auth.post(`${timesheet}/delete/shifts`, recordArr)
+    }
+
+    deleteleaveapplication(recordNo: number): Observable<any> {
+        return this.auth.post(`${timesheet}/leaveapplication`, recordNo)
+    }
+
+    /**
+     * Intake Tab
+     */
+
+    getbranches(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/branches/${id}`)
+    }
+
+    getfunding(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/funding/${id}`)
+    }
+
+    getgoals(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/goals/${id}`)
+    }
+
+    getplans(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/plans/${id}`)
+    }
+
+    getcareplans(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/careplans/${id}`)
+    }
+
+    getintakeservices(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/services/${id}`)
+    }
+
+    postintakeservices(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/services`, data)
+    }
+
+    updateintakeservices(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/services`, data)
+    }
+
+    getplacements(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/placements/${id}`)
+    }
+
+    getexcludedstaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/excludedstaff/${id}`)
+    }
+
+    getincludedstaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/includedstaff/${id}`)
+    }
+
+    gethealthalerts(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/healthalerts/${id}`)
+    }
+
+    updatehealthalerts(alert: string, personID: string): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/healthalerts/${personID}`, JSON.stringify(alert))
+    }
+
+    getrosteralerts(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/rosteralerts/${id}`)
+    }
+
+    updaterosteralerts(notes: string, personID: string): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/rosteralerts/${personID}`, JSON.stringify(notes))
+    }
+
+    getgenderpreferences(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/genderpreferences/${id}`)
+    }
+
+    getspecificcompetencies(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/specific/competencies/${id}`)
+    }
+
+    getgrouptypes(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/group/types/${id}`)
+    }
+
+    getgrouppreferences(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/group/preferences/${id}`)
+    }
+
+    /**
+     * END - Intake Tab
+     */
+
+    /**
+     * Note Tab - Staff
+     */
+
+    getnotesmiscellaneous(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/notes/miscellaneous/${id}`)
+    }
+
+    getnotesloans(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/notes/loans/${id}`)
+    }
+
+    /**
+     * End Note Tab
+     */
+
+    /** 
+     * Pay Tab - Staff 
+     */
+
+    getpaydetails(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/pay/${id}`);
+    }
+    /**      
+     * End - Pay Tab
+     */
+    updatemiscellaneous(note: Dto.MiscellaneousNote): Observable<any> {
+        return this.auth.put(`${timesheet}/notes/miscellaneous`, note)
+    }
+
+    updatetimeandattendance(attendance: Dto.AttendanceStaff): Observable<any> {
+        return this.auth.put(`${timesheet}/attendance/staff`, attendance)
+    }
+
+    getattendancestaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/attendance/staff/${id}`)
+    }
+
+
+}

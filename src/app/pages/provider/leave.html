@@ -1,0 +1,37 @@
+<form nz-form nz-col nzSpan="10" [formGroup]="leaveForm" (ngSubmit)="submitForm()">
+
+    <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Date Range</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Date range is invalid!">
+            <nz-range-picker [nzFormat]="dateFormat" formControlName="dates" (ngModelChange)="validateDate()">
+            </nz-range-picker>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Leave Types</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Leave Type is required!">
+            <nz-select formControlName="leaveTypes" nzAllowClear nzPlaceHolder="">
+                <nz-option *ngFor="let leave of leaveTypes" [nzValue]="leave" [nzLabel]="leave"></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Notes</nz-form-label>
+        <nz-form-control [nzSpan]="14" nzErrorTip="Note is required!">
+            <textarea formControlName="notes" rows="4" nz-input></textarea>
+        </nz-form-control>
+    </nz-form-item>
+
+
+
+    <nz-form-item nz-row class="register-area">
+        <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button nzType="primary" *ngIf="!loading">Apply Leave</button>
+            <button nz-button nzType="primary" *ngIf="loading" nzLoading><i nz-icon
+                    nzType="poweroff"></i>Loading</button>
+        </nz-form-control>
+    </nz-form-item>
+
+</form>

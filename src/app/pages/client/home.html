@@ -1,0 +1,67 @@
+<nz-layout>
+    <nz-sider 
+        nzCollapsible
+        [(nzCollapsed)]="isCollapsed"
+        [nzBreakpoint]="'lg'"
+        [nzCollapsedWidth]="0"
+        [nzZeroTrigger]="zeroTrigger">
+        <div class="logo"></div>
+        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+            <li nz-menu-item routerLink="/client/profile" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="user"></i>
+                <span>Profile</span>
+            </li>
+            <li nz-menu-item routerLink="/client/notes" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="read"></i>
+                <span>Notes</span>
+            </li>
+            <li nz-menu-item routerLink="/client/package" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="gift"></i>
+                <span>Package</span>
+            </li>
+            <li nz-menu-item routerLink="/client/booking" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="book"></i>
+                <span>Booking</span>
+            </li>
+            <li nz-menu-item routerLink="/client/calendar" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="calendar"></i>
+                <span>Calendar</span>
+            </li>
+            <li nz-menu-item routerLink="/client/history" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="history"></i>
+                <span>History</span>
+            </li>
+            <li nz-menu-item routerLink="/client/preferences" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="like"></i>
+                <span>Preferences</span>
+            </li>
+            <li nz-menu-item routerLink="/client/timesheet" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="security-scan"></i>
+                <span>Manage Services</span>
+            </li>
+            <li nz-menu-item routerLink="/client/document" routerLinkActive="ant-menu-item-selected">
+                <i nz-icon nzType="file"></i>
+                <span>Document</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-layout>
+        <nz-header>
+            <app-header-nav></app-header-nav>
+        </nz-header>
+        <nz-content>
+            <nz-breadcrumb>
+                <nz-breadcrumb-item>User</nz-breadcrumb-item>
+                <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
+            </nz-breadcrumb>
+            <div class="inner-content">
+                <router-outlet></router-outlet>
+            </div>
+        </nz-content>
+        <!-- <nz-footer>Put footer here</nz-footer> -->
+    </nz-layout>
+</nz-layout>
+
+<ng-template #zeroTrigger>
+    <i nz-icon nzType="menu-fold" nzTheme="outline"></i>
+</ng-template>

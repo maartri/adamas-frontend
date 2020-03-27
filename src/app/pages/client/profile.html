@@ -1,0 +1,21 @@
+<div>
+    <app-profile-page [(ngModel)]="user" name="fieldName" ngDefaultControl></app-profile-page>
+
+    <div class="side-button" nz-button nz-popover [nzPopoverContent]="contentTemplate" nzPopoverPlacement="bottomRight"
+        (click)="visible=true">
+        <i nz-icon nzType="notification" nzTheme="outline"></i>
+    </div>
+</div>
+
+<ng-template #contentTemplate>
+    <div>
+        <span>Show all notifications!</span>
+    </div>
+</ng-template>
+
+<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" nzTitle="Basic Drawer" [nzWidth]="360"
+    (nzOnClose)="visible=false">
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+</nz-drawer>

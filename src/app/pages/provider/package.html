@@ -1,0 +1,84 @@
+<div>
+    <div nz-row>
+        <nz-descriptions nzTitle="">
+            <nz-descriptions-item nzTitle="Pay Period"><b>{{payPeriod?.payperiod}}</b></nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Date Duration"><b>{{ payPeriod?.sDate }} — {{ payPeriod?.eDate }}</b>
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Total Time"><b>{{ totalTime | number : '1.2-2' }} ({{ totalHoursMinutes }})</b></nz-descriptions-item>
+        </nz-descriptions>
+    </div>
+    <div nz-row style="margin-top:1rem">
+        <nz-table #fixedTable nzSize="small" [nzLoading]="loading" [nzData]="listOfData" [nzScroll]="{ x: '1800px', y: '350px' }" (nzPageIndexChange)="nzPageIndexChange($event)">
+            <thead>
+                <tr>
+                    <th nzWidth="50px" nzLeft="0px">#</th>
+                    <th nzWidth="100px" nzLeft="35px">Shift No</th>
+                    <th nzWidth="100px" nzLeft="100px">Date</th>
+                    <th nzWidth="100px">Start Time</th>
+                    <th nzWidth="100px">End Time</th>
+                    <th nzWidth="100px">Duration</th>
+                    <th nzWidth="100px">Claimed Start</th>
+                    <th nzWidth="100px">Claimed End</th>
+                    <th nzWidth="200px">Recipient OR Location</th>
+                    <th nzWidth="300px">Activity</th>
+                    <th nzWidth="300px">Notes</th>
+                    <th nzWidth="150px" nzRight="0px">
+                        <button class="submit" nz-button nzType="primary" [nzSize]="'small'" nz-popconfirm
+                                nzPopconfirmTitle="This would submit all shifts?" nzOkText="Yes" nzCancelText="Cancel"
+                                (nzOnConfirm)="submitAllBtnClick(true)" nz-tooltip nzTooltipTitle="Submit All"><i nz-icon nzType="check" nzTheme="outline" ></i> </button>
+
+                        <button nz-button nzType="danger" [nzSize]="'small'" nz-popconfirm
+                            nzPopconfirmTitle="This would unsubmit all shifts?" nzOkText="Yes" nzCancelText="Cancel"
+                            (nzOnConfirm)="submitAllBtnClick(false)" nz-tooltip nzTooltipTitle="Unsubmit All"><i nz-icon nzType="close" nzTheme="outline"></i> </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of fixedTable.data;let i = index">
+                    <td nzLeft="0px">{{ i + indexPage + 1 }}</td>
+                    <td nzLeft="35px">{{ data.shiftbookNo }}</td>
+                    <td nzLeft="100px">{{ data.activityDate | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ data.start | date: 'HH:mm' }}</td>
+                    <td>{{ data.end | date: 'HH:mm' }}</td>
+                    <td>{{ data.duration }}</td>
+                    <td>{{ data.claimStart | date: 'HH:mm' }}</td>
+                    <td>{{ data.claimEnd | date: 'HH:mm' }}</td>
+                    <td>{{ data.recipient }}</td>
+                    <td>{{ data.activity }}</td>
+                    <td>{{ data.note }}</td>
+                    <td nzRight="0px">
+                        <div class="btns">
+                            
+                            <ng-container *ngIf="data.rosterType == 9">
+                                <div class="tclaim">
+                                    <span><b>Travel Claim</b></span>
+                                    <div>
+                                        <span class="badge badge-1"><i nz-icon nzType="car" nzTheme="outline"></i> {{ data.km }} KM</span>
+                                        <p>{{data.startKM }} → {{data.endKM}}</p>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            
+                            <ng-container *ngIf="data.rosterType == 5">
+                                <span class="badge travel-time">Travel Time</span>
+                            </ng-container>
+
+                            <ng-container *ngIf="!(data.rosterType == 5 || data.rosterType == 9)">
+                                <button *ngIf="!data.submitted" class="submit" nz-button nzType="primary" [nzSize]="'small'" nz-popconfirm
+                                    nzPopconfirmTitle="Are you sure to submit this shift?" nzOkText="Yes" nzCancelText="Cancel"
+                                    (nzOnConfirm)="submitBtnClick(i)">Submit</button>
+                                
+                                <button *ngIf="data.submitted" nz-button nzType="danger" [nzSize]="'small'" nz-popconfirm
+                                    nzPopconfirmTitle="Are you sure to unsubmit this shift?" nzOkText="Yes" nzCancelText="Cancel"
+                                    (nzOnConfirm)="submitBtnClick(i)">Unsubmit</button>
+                            </ng-container>
+                                
+                            <!-- <button nz-button class="options" nzType="primary" [nzSize]="'small'"><i nz-icon nzType="setting" nzTheme="outline"></i></button> -->
+                            <app-action [data]="data" [settings]="settings"></app-action>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>

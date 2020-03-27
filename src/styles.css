@@ -1,0 +1,100 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~ng-zorro-antd/style/index.min.css"; /* Import basic styles */
+@import "~ng-zorro-antd/button/style/index.min.css"; /* Import styles of the component */
+
+/* Angular Calendar */
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
+
+/* Bootstrap CSS Only*/
+/* @import "../node_modules/bootstrap-css-only/css/bootstrap.min.css"; */
+
+td, th{
+    font-size:13px;
+}
+
+.mrg-btm{
+    margin-bottom:1rem;
+}
+
+.space-top{
+    margin-top:1rem;
+}
+
+div > label{
+    margin-bottom:4px;
+    display:block;
+}
+
+.form-wrap label{
+    font-weight: 500;
+}
+
+div.item{
+    margin-bottom:7px;
+    font-size: 13px;
+}
+
+div.item div{
+    font-size:15px;
+    color:#0d76c2;
+}
+div.button-actions button{
+    margin-right: 10px;
+}
+
+div.form-group label{
+    font-size: 13px;
+    font-weight: 500;
+}
+
+div.form-group{
+    margin-bottom:10px;
+}
+
+nz-select, nz-date-picker {
+    min-width: 100px;
+}
+.clearfix::after { 
+   content: " ";
+   display: block; 
+   height: 0; 
+   clear: both;
+}
+
+.error{
+    color:#ff1515;
+}
+.good{
+    color:#56db79;
+}
+
+.items li.ant-menu-submenu .ant-menu-submenu-title{    
+    line-height: 30px;
+    font-size: 12px;
+}
+.items li.ant-menu-submenu .ant-menu-submenu-title i{
+    top:14px;
+}
+nz-header{
+    height: 50px !important;
+}
+nz-breadcrumb{
+    margin: 5px 0 !important;
+}
+.botton{
+    border:none;
+    cursor:pointer;
+    outline:none;
+    transition: background-color 0.5s ease;
+    padding: 3px 7px;
+    border-radius: 3px;
+}
+button.success{
+    background: #87d068;
+    color: #fff !important;
+    
+}
+
+button.success:hover{
+    background:#68a94d;
+}

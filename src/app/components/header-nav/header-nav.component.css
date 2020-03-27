@@ -1,0 +1,36 @@
+   .nz-avatar-menu{
+        display: inline-block;
+        margin-right: 1rem;
+    }
+    nz-avatar{
+        cursor:pointer;
+        background-color:#87d068;
+    }
+    .dropdown{
+        position: absolute;
+        right: 7px;
+        width: 8rem;
+        background: #fff;
+        border: 1px solid #6161611a;
+        z-index: 10;
+    }
+    .dropdown ul{
+        list-style:none;
+        padding:0;
+        margin:0;
+    }
+    .dropdown ul li{
+        line-height:2.5rem;
+        cursor:pointer;
+        text-align:center;
+    }
+    .dropdown ul li i{
+        margin-right:10px;
+    }
+    .dropdown ul li:hover{
+        background: #f9f9f9;
+    }
+    .menu-button{
+        text-align:right;
+        line-height: 50px;
+    }

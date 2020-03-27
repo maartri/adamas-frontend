@@ -1,0 +1,29 @@
+<div class="background">
+  <div class="container">
+    <label for="">
+      <h2>Welcome to TRACCS PORTAL</h2>
+      <h5>Use your ID to sign in</h5>
+    </label>
+    <form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="login()">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your username!">
+          <nz-input-group nzPrefixIcon="user">
+            <input type="text" nz-input formControlName="userName" placeholder="Username" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your Password!">
+          <nz-input-group nzPrefixIcon="lock">
+            <input type="password" nz-input formControlName="password" placeholder="Password" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button [nzLoading]="loading" nz-button class="login-form-button" [nzType]="'primary'">Log in</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div style="position:relative">
+    <div class="menu-button">
+        <div class="nz-avatar-menu" click-outside (clickOutside)="onClickOutside($event)">
+            <nz-avatar (click)="isVisible = true" nzIcon="user"></nz-avatar>
+            <div *ngIf="isVisible" class="dropdown">
+                <ul>
+                    <li>Edit Password</li>
+                    <li (click)="logout()"><i nz-icon nzType="logout" nzTheme="outline"></i>Logout</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

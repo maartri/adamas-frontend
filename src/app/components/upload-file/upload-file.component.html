@@ -1,0 +1,66 @@
+<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
+    <div nz-col nzSpan="8">
+        <nz-upload nzType="drag" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes"
+            [nzCustomRequest]="customReq" [nzAction]="urlPath" (nzChange)="handleChange($event)" nzListType="picture"
+            [(nzFileList)]="fileList2">
+
+            <p class="ant-upload-drag-icon">
+                <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+            <p class="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+            </p>
+        </nz-upload>
+    </div>
+    <div nz-col nzSpan="16">
+        <h3>My Files</h3>
+        <nz-spin *ngIf="loadDocument" nzSimple></nz-spin>
+        <ul *ngIf="!loadDocument">
+            <li *ngFor="let file of loadedFiles;let i = index">
+                <div>
+                    <div class="logo-group">
+                        <i class="error" *ngIf="file.extension == ''" nz-icon nzType="file-unknown"
+                            nzTheme="outline"></i>
+                        <i class="good" *ngIf="file.extension !== '' && file.extension == '.pdf'" nz-icon
+                            nzType="file-pdf" nzTheme="outline"></i>
+                        <i class="good"
+                            *ngIf="file.extension !== '' && (file.extension == '.jpg' || file.extension == '.png') "
+                            nz-icon nzType="file-image" nzTheme="outline"></i>
+                        <i class="good"
+                            *ngIf="file.extension !== '' && (file.extension == '.xlsx' || file.extension == '.xls') "
+                            nz-icon nzType="file-excel" nzTheme="outline"></i>
+                        <i class="good"
+                            *ngIf="file.extension !== '' && (file.extension == '.ppt' || file.extension == '.pptx')"
+                            nz-icon nzType="file-ppt" nzTheme="outline"></i>
+                        <i class="good"
+                            *ngIf="file.extension !== '' && (file.extension == '.doc' || file.extension == '.docx') "
+                            nz-icon nzType="file-word" nzTheme="outline"></i>
+                        <i class="good" *ngIf="file.extension !== '' && file.extension == '.txt'" nz-icon
+                            nzType="file-text" nzTheme="outline"></i>
+                    </div>
+                    <div class="file-info">
+                        <h5 [nzTooltipTitle]="file.title" nzTooltipPlacement="topLeft" nz-tooltip>
+                            {{ (file.title.length > 50)? (file.title | slice:0:50)+'..':(file.title) }}</h5>
+                        <span *ngIf="file.fileSize !== 0">{{ file.fileSize | fileSizeFilter }}</span>
+                        <span class="error" *ngIf="file.fileSize == 0">FILE NOT FOUND!</span>
+                    </div>
+                    <div class="file-operations">
+                        <i nz-icon nzType="eye" nzTheme="outline"></i>
+                        <i nz-icon nz-popconfirm nzPopconfirmTitle="Are you sure download this file?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="downloadDocument(i)" nzType="cloud-download"
+                            nzTheme="outline"></i>
+                        <i nz-popconfirm nzPopconfirmTitle="Are you sure to delete this file?"
+                            (nzOnConfirm)="deleteDocument(i)" [nzIcon]="iconTpl" nz-icon nzType="delete"
+                            nzTheme="outline"></i>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <nz-empty *ngIf="!loadDocument && loadedFiles?.length == 0"></nz-empty>
+    </div>
+</div>
+
+<ng-template #iconTpl>
+    <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+</ng-template>

@@ -1,0 +1,337 @@
+<div class="avatar-container">
+    <nz-avatar [nzSize]="64" nzIcon="user"></nz-avatar>
+</div>
+<div class="space-top" style="margin:3rem 0">
+    <div class="form-group">
+        <label for="" class="info">Profile Information</label>
+        <div class="edit-btn">
+            <div class="right-btns">
+                <button *ngIf="showMailManagerBtn" (click)="emailManager()" nz-button nzType="default"><i nz-icon nzType="mail" nzTheme="outline"></i> EMAIL Manager</button>
+                <button nz-button nzType="primary" nzValue="small" (click)="editProfileOpen()"><i nz-icon nzType="edit"
+                        nzTheme="outline"></i> Edit Profile</button>
+            </div>
+        </div>
+        <div class="space-top">
+            <nz-descriptions [nzSize]="'small'" [nzColumn]="{ xxl: 4, xl: 4, lg: 4, md: 4, sm: 2, xs: 1 }"
+                [nzColon]="false" nzTitle="" nzLayout="vertical">
+                <nz-descriptions-item nzTitle="Title"><b>{{ user?.title || '-' }}</b></nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Lastname">
+                    <b *ngIf="innerValue?.view === view.recipient">{{ user?.surnameOrg || '-' }}</b>
+                    <b *ngIf="innerValue?.view === view.staff">{{ user?.lastName || '-' }}</b>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Firstname"><b>{{ user?.firstName || '-' }}</b></nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Middlename"><b>{{ user?.middleNames || '-' }}</b></nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Gender"><b>{{ user?.gender || '-' }}</b></nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Birthdate">
+                    <b *ngIf="innerValue?.view === view.recipient">{{ user?.dateOfBirth | date }}</b>
+                    <b *ngIf="innerValue?.view === view.staff">{{ user?.dob | date }}</b>
+                </nz-descriptions-item>
+                <nz-descriptions-item *ngIf="innerValue?.view === view.recipient" nzTitle="Case Manager"><b>{{ user?.recipient_Coordinator || '-' }}</b>
+                </nz-descriptions-item>
+            </nz-descriptions>
+        </div>
+    </div>
+</div>
+<div class="space-top">
+    <div class="form-group">
+        <label for="" class="info">Address Information</label>
+        <div class="edit-btn">
+            <div class="right-btns">
+                <button nz-button nzType="default" nzValue="small" (click)="addAddressOpen()" class="right"><i nz-icon nzType="plus"
+                        nzTheme="outline"></i> Add Address</button>
+            </div>
+        </div>
+        <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzShowPagination]="false">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Suburb</th>
+                    <th>Postcode</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td>{{ data.description }}</td>
+                    <td>{{ data.address1 }}</td>
+                    <td>{{ data.suburb }}</td>
+                    <td>{{ data.postCode }}</td>
+                    <td>
+                        <a (click)="editAddressOpen(data)">Edit</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
+                            (nzOnCancel)="cancel(1)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+
+    <div class="form-group space-top">
+        <label for="" class="info">Contact Information</label>
+        <div class="edit-btn">
+            <div class="right-btns">
+                <button nz-button nzType="default" nzValue="small" (click)="addContactOpen()" class="right"><i nz-icon nzType="plus"
+                        nzTheme="outline"></i> Add Contact</button>
+            </div>
+        </div>
+        <nz-table #contactTable [nzData]="user?.contacts" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzShowPagination]="false">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Detail</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of contactTable.data">
+                    <td>{{ data.type }}</td>
+                    <td>{{ data.detail }}</td>
+                    <td>
+                        <a (click)="editContactOpen(data)">Edit</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
+                            (nzOnCancel)="cancel(2)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+
+<nz-modal [(nzVisible)]="emailManagerOpen" nzTitle="Email Manager" [nzFooter]="modalFooter" (nzOnCancel)="emailManagerOpen = false">
+   <div>
+       <div *ngIf="emailManagerNoEmailShowNotif">
+            <div nz-row nzGutter="16" [formGroup]="emailCoordinatorGroup">
+                <div nz-col nzSpan="24" class="form-group">
+                    <nz-form-item>
+                        <nz-form-label>Subject</nz-form-label>
+                        <nz-form-control nzErrorTip="Subject is required!">
+                            <input nz-input type="text" formControlName="subject">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="24" class="form-group">
+                    <nz-form-item>
+                        <nz-form-label>Body</nz-form-label>
+                        <nz-form-control nzErrorTip="Body is required!">
+                            <textarea rows="4" nz-input type="text" formControlName="content"></textarea>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+       </div>
+        <nz-tag *ngIf="!emailManagerNoEmailShowNotif" [nzColor]="'magenta'">Your manager has no valid email!</nz-tag>
+   </div>
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="emailManagerOpen = false">Cancel</button>
+        <button nz-button nzType="primary" (click)="sendMail()">Send</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="editModalOpen" [nzTitle]="window == 1 ? 'Edit Address': 'Edit Contact'"
+    [nzFooter]="editModalFooter" (nzOnCancel)="handleCancel()">
+    <div>
+
+        <div nz-row nzGutter="16" *ngIf="window == 1" [formGroup]="addressForm">
+            <div nz-col nzSpan="12" class="form-group">
+                <label for="">Description</label>
+                <nz-select formControlName="description" nzAllowClear nzPlaceHolder=""
+                    [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let address of addressArray" [nzValue]="address" [nzLabel]="address">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="12" class="form-group">
+                <label for="">Postcode & Suburb</label>
+                <suburb formControlName="pcodesuburb"></suburb>
+            </div>
+            <div nz-col nzSpan="24" class="form-group">
+                <label for="">Address</label>
+                <input nz-input type="text" formControlName="address">
+            </div>
+        </div>
+
+        <div *ngIf="window == 2" [formGroup]="contactForm">
+            <div class="form-group">
+                <label for="">Contact Type</label>
+                <nz-select formControlName="type" nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let contact of contactsArray" [nzValue]="contact" [nzLabel]="contact">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div class="form-group">
+                <label for="">Details</label>
+                <input nz-input type="text" formControlName="details">
+            </div>
+        </div>
+
+    </div>
+
+    <ng-template #editModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Close</button>
+        <button nz-button nzType="primary" (click)="edit()" [nzLoading]="loading">Save</button>
+    </ng-template>
+</nz-modal>
+
+
+<nz-drawer [nzVisible]="editProfileDrawer" [nzMaskClosable]="false" [nzWidth]="640" (nzOnClose)="closeDrawer()"
+    [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }">
+    <p class="title" style=" margin-bottom: 24px;">User Profile</p>
+
+    <div [formGroup]="userForm">
+        <div class="form-row" nz-row nzGutter="16">
+            <div nz-col nzSpan="4" class="form-group">
+                <label for="">Title</label>
+                <nz-select class="title" formControlName="title" nzAllowClear nzPlaceHolder=""
+                    [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let title of titles" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+        </div>
+
+        <div class="form-row" nz-row nzGutter="16">
+            <div nz-col nzSpan="5" class="form-group">
+                <label for="">Gender</label>
+                <nz-select class="title" formControlName="gender" nzAllowClear nzPlaceHolder=""
+                    [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let gender of genderArr" [nzValue]="gender" [nzLabel]="gender">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="15" class="form-group">
+                <label for="">Birthdate</label>
+                <div nz-row nzGutter="16">
+                    <div nz-col nzSpan="9">
+                        <nz-select class="title" formControlName="month" nzAllowClear nzPlaceHolder=""
+                            [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let month of months" [nzValue]="month" [nzLabel]="month">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                    <div nz-col nzSpan="7">
+                        <nz-select class="title" formControlName="day" nzAllowClear nzPlaceHolder=""
+                            [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let day of days" [nzValue]="day" [nzLabel]="day">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                    <div nz-col nzSpan="7">
+                        <nz-select class="title" formControlName="year" nzAllowClear nzPlaceHolder=""
+                            [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let year of years" [nzValue]="year" [nzLabel]="year">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row" nz-row nzGutter="16">
+            <div nz-col nzSpan="8" class="form-group">
+                <label for="">Lastname</label>
+                <input type="text" formControlName="surnameOrg" nz-input autocomplete="palong">
+            </div>
+            <div nz-col nzSpan="8" class="form-group">
+                <label for="">Firstname</label>
+                <input type="text" formControlName="firstName" nz-input autocomplete="palong">
+            </div>
+            <div nz-col nzSpan="8" class="form-group">
+                <label for="">Middlename</label>
+                <input type="text" formControlName="middleNames" nz-input autocomplete="palong">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <button type="button" (click)="closeDrawer()" class="ant-btn"
+            style="margin-right: 8px;"><span>Cancel</span></button>
+        <button type="button" nz-button (click)="editProfile()" [nzLoading]="loading"
+            class="ant-btn ant-btn-primary"><span>Save</span></button>
+    </div>
+</nz-drawer>
+
+<nz-drawer [nzVisible]="addAddressDrawer" [nzMaskClosable]="false" [nzWidth]="640" (nzOnClose)="closeDrawer()"
+    [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }">
+    <p class="title" style=" margin-bottom: 24px;">Add Address Information</p>
+
+    <form nz-row nzGutter="16" nz-form [nzLayout]="'vertical'" [formGroup]="addressForm">
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label>Description</nz-form-label>
+                <nz-form-control nzErrorTip="Description is required!">
+                    <nz-select formControlName="description" nzAllowClear nzPlaceHolder=""
+                        [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let address of addressArray" [nzValue]="address" [nzLabel]="address">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label>Suburb</nz-form-label>
+                <nz-form-control nzErrorTip="Suburb is required!">
+                    <suburb formControlName="pcodesuburb"></suburb>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+            <nz-form-item>
+                <nz-form-label>Address</nz-form-label>
+                <nz-form-control nzErrorTip="Address is required!">
+                    <input nz-input type="text" formControlName="address">
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+    </form>
+
+    <div class="footer">
+        <button type="button" (click)="closeDrawer()" class="ant-btn"
+            style="margin-right: 8px;"><span>Cancel</span></button>
+        <button type="button" nz-button [nzLoading]="loading" (click)="addAddress()"
+            class="ant-btn ant-btn-primary"><span>Save</span></button>
+    </div>
+</nz-drawer>
+
+<nz-drawer [nzVisible]="addContactDrawer" [nzMaskClosable]="false" [nzWidth]="420" (nzOnClose)="closeDrawer()"
+    [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }">
+    <p class="title" style=" margin-bottom: 24px;">Add Contact Information</p>
+
+    <form nz-row nzGutter="16" nz-form [nzLayout]="'vertical'" [formGroup]="contactForm">
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label>Contact Type</nz-form-label>
+                <nz-form-control nzErrorTip="Contact Type is required!">
+                    <nz-select formControlName="type" nzAllowClear nzPlaceHolder=""
+                        [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let contact of contactsArray" [nzValue]="contact" [nzLabel]="contact">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+            <nz-form-item>
+                <nz-form-label>Details</nz-form-label>
+                <nz-form-control nzErrorTip="Contact Details is required!">
+                    <input nz-input type="text" formControlName="details">
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+    </form>
+
+    <div class="footer">
+        <button type="button" (click)="closeDrawer()" class="ant-btn"
+            style="margin-right: 8px;"><span>Cancel</span></button>
+        <button type="button" nz-button (click)="addContact()" [nzLoading]="loading"
+            class="ant-btn ant-btn-primary"><span>Save</span></button>
+    </div>
+</nz-drawer>

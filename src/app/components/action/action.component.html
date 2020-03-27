@@ -1,0 +1,110 @@
+<button nz-button class="options" nzType="primary" [nzSize]="'small'"
+    nz-popover
+      nzPopoverTitle="Control Options"
+      [(nzVisible)]="visible"
+      nzPopoverTrigger="click"
+      nzPopoverPlacement="leftBottom"
+      [nzPopoverContent]="contentTemplate">
+    <i nz-icon nzType="setting"
+        nzTheme="outline"></i></button>
+
+<ng-template #contentTemplate>
+    <ul>
+        <li *ngIf="status == 0" (click)="clickEvent(1)">Start Job</li>
+        <li *ngIf="status == 1" (click)="clickEvent(2)">End Job</li>
+        <li *ngIf="!data?.approved" (click)="clickEvent(3)">Claim Variation</li>
+        <li *ngIf="settings?.allowTravelEntry == 'True'" (click)="clickEvent(4)" >Travel Claim</li>
+        <li *ngIf="settings?.allowRosterNoteEntry == 'True'" (click)="clickEvent(5)">Roster Note</li>
+        <li *ngIf="settings?.allowIncidentEntry == 'True'" (click)="clickEvent(6)">Record Incident</li>
+        <li *ngIf="settings?.allowOPNote == 'True'" (click)="clickEvent(7)">OP Note</li>
+        <li *ngIf="settings?.allowCaseNote == 'True'" (click)="clickEvent(8)">Case Note</li>
+    </ul>
+</ng-template>
+
+
+<!-- FOR NOTES -->
+<nz-modal [(nzVisible)]="notesIsOpen" [nzTitle]="whatNote == 1 ? 'Edit OP Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()">
+    <div>
+        <div nz-row [formGroup]="optionForm">
+            <div nz-col nzSpan="12" class="form-group">
+                <label for="">Job ID</label>
+                <span>sd</span>
+            </div>
+            <div nz-col nzSpan="12" class="form-group">
+                <label for="">Recipient/Location</label>
+                <span>sd</span>
+            </div>
+            <div nz-col nzSpan="24" class="form-group">
+                <label for="">Details</label>
+                <textarea nz-input rows="4" formControlName="notes"></textarea>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="saveNote(whatNote)" [nzLoading]="isConfirmLoading">Save</button>
+    </div>
+</nz-modal>
+
+<!-- FOR CLAIM VARIATION -->
+<nz-modal [(nzVisible)]="claimVariationOpen" nzTitle="Claim Variation" (nzOnCancel)="handleCancel()">
+    <div>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>
+    </div>
+</nz-modal>
+
+<!-- FOR TRAVEL CLAIM -->
+ <nz-modal [(nzVisible)]="travelClaimOpen" nzTitle="Travel Claim" (nzOnCancel)="handleCancel()">
+    <div>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>
+    </div>
+</nz-modal>
+
+
+<!-- FOR ROSTER NOTES -->
+<nz-modal [(nzVisible)]="rosterNoteOpen" nzTitle="Roster Note" (nzOnCancel)="handleCancel()">
+    <div>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>
+    </div>
+</nz-modal>
+
+
+
+<!-- FOR RECORD INCIDENT -->
+<nz-modal [(nzVisible)]="recordIncidentOpen" nzTitle="Record Incident" (nzOnCancel)="handleCancel()">
+    <div>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+        <p>Modal Content</p>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>
+    </div>
+</nz-modal>

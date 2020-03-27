@@ -1,0 +1,51 @@
+ nz-select {
+    margin-right: 8px;
+    width: 200px;
+}
+.ant-form-item{
+    margin:0;
+}
+.avatar-container{
+    text-align:center;   
+}
+.form-group label.info{
+    font-weight: 500;
+    font-size: 1rem;
+    color: #ffffff;
+    background: #46535f;
+    padding: 5px;
+    border-radius: 3px;
+    margin:0;
+}
+nz-table{
+    margin-top:15px;
+}
+a:hover{
+    text-decoration: underline;
+}
+.edit-btn{
+    height:3rem;
+}
+.right-btns{
+    float: right;
+    margin: 10px;
+}
+.right-btns > *{
+    margin-left:10px;
+}
+nz-select{
+    width:100%;
+}
+.footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    border-top: 1px solid rgb(232, 232, 232);
+    padding: 10px 16px;
+    text-align: right;
+    left: 0px;
+    background: #fff;
+}
+.form-row > div.form-group{
+    margin-bottom:3rem;
+}

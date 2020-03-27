@@ -1,0 +1,51 @@
+<div>
+    <div nz-row>
+        <nz-form-item>
+            <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
+                <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="dateRange"
+                    (ngModelChange)="dateStream.next($event)">
+                </nz-range-picker>
+            </nz-form-control>
+        </nz-form-item>
+    </div>
+    <div nz-row>
+        <nz-table #virtualTable nzVirtualScroll [nzVirtualItemSize]="5" [nzData]="timesheets" [nzLoading]="loading"
+            [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzShowPagination]="false" nzSize="small" 
+            [nzScroll]="{ x: '1730px', y: '450px' }">
+            <thead>
+                <tr>
+                    <th nzWidth="100px" nzLeft="0px">Shift/Booking #</th>
+                    <th nzWidth="90px" nzLeft="100px">Date</th>
+                    <th nzWidth="80px">Start Time</th>
+                    <th nzWidth="80px">End Time</th>
+                    <th nzWidth="70px">Duration</th>
+                    <th nzWidth="130px">Recipient or Location</th>
+                    <th nzWidth="130px">Activity</th>
+                    <th nzWidth="100px">Pay Type</th>
+                    <th nzWidth="100px">Pay Quantity</th>
+                    <th nzWidth="100px">App</th>
+                    <th nzWidth="150px" nzRight="0px">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-template nz-virtual-scroll let-data let-index="index">
+                    <tr>
+                        <td nzLeft="0px" [class.unapprove]="!data.approved" [class.approve]="data.approved"><nz-badge [nzColor]="isApproved(data.approved)"></nz-badge>{{ data.shiftbookNo }}</td>
+                        <td nzLeft="100px">{{ data.activityDate | date: 'dd/MM/yyyy' }}</td>
+                        <td nzWidth="80px">{{ data.activity_Time.start_time | date: 'HH:mm' }}</td>
+                        <td nzWidth="80px">{{ data.activity_Time.end_Time | date: 'HH:mm' }}</td>
+                        <td nzWidth="70px">{{ data.activity_Time.calculated_Duration }}</td>
+                        <td nzWidth="130px">{{ data.recipientLocation }}</td>
+                        <td nzWidth="130px">{{ data.activity.name }}</td>
+                        <td>{{ data.payType.paytype }}</td>
+                        <td>{{ data.pay.quantity | number: '1.2-2' }}</td>
+                        <td>{{ data.address }}</td>
+                        <td nzRight="0px">
+                            <a>{{ data.note }}</a>
+                        </td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </nz-table>
+    </div>
+</div>

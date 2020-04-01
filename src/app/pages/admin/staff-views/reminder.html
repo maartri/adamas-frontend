@@ -1,3 +1,31 @@
-<div>
-    lll
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Reminder</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Alert</th>
+                    <th>Reminder Date</th>
+                    <th>Expiry Date</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.alert  }}</td>
+                    <td>{{ data.reminderDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.dueDate | date: 'dd/MM/y'  }}</td>
+                    <td>{{ data.notes || '-' }}</td>
+                    <td>
+                        <a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
 </div>

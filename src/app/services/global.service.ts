@@ -12,6 +12,8 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 const helper = new JwtHelperService();
 
+import { FormGroup} from '@angular/forms';
+
 export const roles = {
     provider: 'SERVICE PROVIDER',
     client: 'PORTAL CLIENT',
@@ -332,6 +334,13 @@ export class GlobalService {
         return urlSplit[urlSplit.length - 1] === currRoute;
     }
 
+    acceptOnlyNumeric(data: KeyboardEvent) {
+        if (data.key.length == 1 && /^[a-z.,]$/i.test(data.key)) {
+            return false;
+        }
+        return true;
+    }
+
     rt2filter(data: string): string {
         let strFilter = "";
 
@@ -399,6 +408,17 @@ export class GlobalService {
             quants: (diffTime / minutesInAnHour).toFixed(2),
             blockNo: starttime / 5
         }
+    }
+
+    IsFormValid(inputForm: FormGroup): boolean {
+        for (const i in inputForm.controls) {
+            inputForm.controls[i].markAsDirty();
+            inputForm.controls[i].updateValueAndValidity();
+        }
+
+        if (!inputForm.valid)
+            return false;
+        return true;
     }
 
     filterFontLiterals(data: any): string {

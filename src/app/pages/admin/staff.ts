@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { GlobalService, StaffService, ShareService ,leaveTypes } from '@services/index';
+import { GlobalService, StaffService, ShareService, leaveTypes } from '@services/index';
+
 @Component({
     styles: [`
         nz-tabset >>> div > div.ant-tabs-nav-container{
@@ -24,28 +25,48 @@ import { GlobalService, StaffService, ShareService ,leaveTypes } from '@services
 
 export class StaffAdmin implements OnInit, OnDestroy {
     user: any
+    nzSelectedIndex: number = 0;
 
-    change(event: any) {
-
-        const user = {
-            code: "ABBAS A",
-            id: "S0100006438",
-            view: 'staff',
-            sysmgr: true
+    isFirstLoad: boolean = false;
+    change(data: any) {
+        
+        let user = {};
+        if (data == 'ABBAS A') {
+            user = {
+                code: "ABBAS A",
+                id: "S0100006438",
+                view: 'staff',
+                sysmgr: true
+            }
+        } else {
+            user = {
+                code: "ADAMS D S",
+                id: "SM100005229",
+                view: "staff",
+                sysmgr: true
+            } 
         }
+        
 
+        if (!this.isFirstLoad) {
+            this.view(0);
+            this.isFirstLoad = true;
+        }
         this.sharedS.emitChange(user);
     }
+
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
         private sharedS: ShareService
     ) {
-
+        this.sharedS.emitRouteChangeSource$.subscribe(data => {
+            console.log(data);
+        });
     }
 
     ngOnInit(): void {
-
+        this.isFirstLoad = false;
     }
 
     ngOnDestroy(): void {
@@ -53,11 +74,12 @@ export class StaffAdmin implements OnInit, OnDestroy {
     }
 
     view(index: number) {
+        this.nzSelectedIndex = index;
         if (index == 0) {
             this.router.navigate(['/admin/staff/personal'])
         }
         if (index == 1) {
-            this.router.navigate(['/admin/staff/contacts'])
+            this.router.navigate(['/admin/staff/contacts']);            
         }
         if (index == 2) {
             this.router.navigate(['/admin/staff/pay'])
@@ -95,5 +117,17 @@ export class StaffAdmin implements OnInit, OnDestroy {
         if (index == 13) {
             this.router.navigate(['/admin/staff/groupings-preferences'])
         }
+        // this.nzSelectedIndex = this.nzSelectedIndex - 1;
+    }
+
+    nzSelectChange(event: any) {
+        // console.log(event);
+    }
+
+    haha() {
+        this.nzSelectedIndex = this.nzSelectedIndex + 1;
+        setTimeout(() => {
+            this.nzSelectedIndex = this.nzSelectedIndex - 1;
+        }, 1000);
     }
 }

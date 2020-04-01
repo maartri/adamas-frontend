@@ -1,3 +1,33 @@
-<div>
-    hhhh
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Incident</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Assigned To</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.status  }}</td>
+                    <td>{{ data.date | date: 'd/MM/y'  }}</td>
+                    <td>{{ data.type }}</td>
+                    <td>{{ data.description }}</td>
+                    <td>{{ data.assigned }}</td>
+                    <td>
+                        <a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
 </div>

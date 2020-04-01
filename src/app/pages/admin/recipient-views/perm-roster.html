@@ -1,0 +1,29 @@
+<div nz-row>
+    <div nz-col>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                <th class="left">Start Time</th>
+                <th>Duration</th>
+                <th>Activity</th>
+                <th>Staff/Location</th>
+                <th>Program</th>
+                <th>Dataset Type</th>
+                <th>Service Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.startTime  }}</td>
+                    <td>{{ data.duration }}</td>
+                    <td>{{ data.activity }}</td>
+                    <td>{{ data.staffLocation }}</td>
+                    <td>{{ data.program }}</td>
+                    <td>{{ data.dataSet }}</td>
+                    <td>{{ data.serviceCost }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>

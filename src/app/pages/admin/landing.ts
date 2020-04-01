@@ -5,7 +5,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core'
       .landing-container{
         display: grid;
         grid-template-columns: minmax(min-content, 1fr) minmax(min-content, 1fr) minmax(min-content, 1fr);
-        grid-gap: 2rem;
+        grid-gap: 1rem;
         width: 50%;
         margin: 0 auto;
       }

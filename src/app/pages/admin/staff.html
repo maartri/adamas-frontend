@@ -5,27 +5,27 @@
             <option value="ABBAS A">ABBAS A</option>
             <option value="ADAMS D S">ADAMS D S</option>
         </select>
+
+        <button (click)="haha()">asd</button>
     </div>
 
-
-    <nz-tabset *ngIf="user" [nzTabPosition]="'top'" (nzSelectedIndexChange)="view($event)" [nzType]="'card'">
-        <nz-tab nzTitle="Personal"> </nz-tab>
-        <nz-tab nzTitle="Contacts"> </nz-tab>
-        <nz-tab nzTitle="Pay"> </nz-tab>
-        <nz-tab nzTitle="Leave App"> </nz-tab>
-        <nz-tab nzTitle="Reminders"> </nz-tab>
-        <nz-tab nzTitle="OP Note"> </nz-tab>
-        <nz-tab nzTitle="HR Note"> </nz-tab>
-        <nz-tab nzTitle="Competencies"> </nz-tab>
-        <nz-tab nzTitle="Training"> </nz-tab>
-        <nz-tab nzTitle="Incident"> </nz-tab>
-        <nz-tab nzTitle="Document"> </nz-tab>
-        <nz-tab nzTitle="Time & Attendance"> </nz-tab>
-        <nz-tab nzTitle="Position"> </nz-tab>
-        <nz-tab nzTitle="Groupings & Preferences"> </nz-tab>
+    <!-- (nzSelectedIndexChange)="view($event)" -->
+    <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzSelectedIndex]="nzSelectedIndex" (nzSelectChange)="nzSelectChange($event)" [nzType]="'card'">
+        <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
+        <nz-tab nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
+        <nz-tab nzTitle="Pay" (nzClick)="view(2)"></nz-tab>
+        <nz-tab nzTitle="Leave App" (nzClick)="view(3)"> </nz-tab>
+        <nz-tab nzTitle="Reminders" (nzClick)="view(4)"> </nz-tab>
+        <nz-tab nzTitle="OP Notes" (nzClick)="view(5)"> </nz-tab>
+        <nz-tab nzTitle="HR Notes" (nzClick)="view(6)"> </nz-tab>
+        <nz-tab nzTitle="Competencies" (nzClick)="view(7)"> </nz-tab>
+        <nz-tab nzTitle="Training" (nzClick)="view(8)"> </nz-tab>
+        <nz-tab nzTitle="Incident" (nzClick)="view(9)"> </nz-tab>
+        <nz-tab nzTitle="Document" (nzClick)="view(10)"> </nz-tab>
+        <nz-tab nzTitle="Time & Attendance" (nzClick)="view(11)"> </nz-tab>
+        <nz-tab nzTitle="Position" (nzClick)="view(12)"> </nz-tab>
+        <nz-tab nzTitle="Groupings & Preferences" (nzClick)="view(13)"> </nz-tab>
     </nz-tabset>
-
-
-
+    
     <router-outlet></router-outlet>
 </div>

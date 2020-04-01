@@ -56,7 +56,26 @@ import {
   StaffPositionAdmin,
   StaffReminderAdmin,
   StaffTrainingAdmin
-} from './pages/admin/staff-views/index'
+} from './pages/admin/staff-views/index';
+
+import {
+  RecipientCasenoteAdmin,
+  RecipientContactsAdmin,
+  RecipientHistoryAdmin,
+  RecipientIncidentAdmin,
+  RecipientIntakeAdmin,
+  RecipientOpnoteAdmin,
+  RecipientPensionAdmin,
+  RecipientPermrosterAdmin,
+  RecipientPersonalAdmin,
+  RecipientQuotesAdmin,
+  RecipientRemindersAdmin
+} from './pages/admin/recipient-views/index'
+
+import {
+  RouteGuard,
+  CanDeactivateGuard
+} from '@services/index'
 
 const routes: Routes = [
   {
@@ -162,8 +181,7 @@ const routes: Routes = [
       {
         path: 'staff',
         component: StaffAdmin,
-        children: [ 
-        
+        children: [
           {
             path: 'personal',
             component: StaffPersonalAdmin
@@ -210,7 +228,8 @@ const routes: Routes = [
           },
           {
             path: 'time-attendance',
-            component: StaffAttendanceAdmin
+            component: StaffAttendanceAdmin,
+            canDeactivate: [CanDeactivateGuard]
           },
           {
             path: 'position',
@@ -220,6 +239,56 @@ const routes: Routes = [
             path: 'groupings-preferences',
             component: StaffGroupingsAdmin
           },
+        ]
+      },
+      {
+        path: 'recipient',
+        component: RecipientsAdmin,
+        children: [
+          {
+            path: 'personal',
+            component: RecipientPersonalAdmin
+          },
+          {
+            path: 'contacts',
+            component: RecipientContactsAdmin
+          },
+          {
+            path: 'intake',
+            component: RecipientIntakeAdmin
+          },
+          {
+            path: 'reminders',
+            component: RecipientRemindersAdmin
+          },
+          {
+            path: 'opnote',
+            component: RecipientOpnoteAdmin
+          },
+          {
+            path: 'casenote',
+            component: RecipientCasenoteAdmin
+          },
+          {
+            path: 'incidents',
+            component: RecipientIncidentAdmin
+          },
+          {
+            path: 'perm-roster',
+            component: RecipientPermrosterAdmin
+          },
+          {
+            path: 'history',
+            component: RecipientHistoryAdmin
+          },
+          {
+            path: 'insurance-pension',
+            component: RecipientPensionAdmin
+          },
+          {
+            path: 'quotes',
+            component: RecipientQuotesAdmin
+          }
         ]
       }
     ]
@@ -275,7 +344,7 @@ export const PAGE_COMPONENTS = [
   // Components
   ProfilePage,
 
-  // StaffViews
+  // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,
   StaffContactAdmin,
@@ -289,7 +358,18 @@ export const PAGE_COMPONENTS = [
   StaffPersonalAdmin,
   StaffPositionAdmin,
   StaffReminderAdmin,
-  StaffTrainingAdmin
+  StaffTrainingAdmin,
 
-
+  // Recipient Views
+  RecipientCasenoteAdmin,
+  RecipientContactsAdmin,
+  RecipientHistoryAdmin,
+  RecipientIncidentAdmin,
+  RecipientIntakeAdmin,
+  RecipientOpnoteAdmin,
+  RecipientPensionAdmin,
+  RecipientPermrosterAdmin,
+  RecipientPersonalAdmin,
+  RecipientQuotesAdmin,
+  RecipientRemindersAdmin
 ]

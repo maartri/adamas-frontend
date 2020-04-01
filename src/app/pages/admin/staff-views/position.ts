@@ -49,14 +49,14 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'position')) {
-                this.search();
+                this.search(data);
             }
         });
     }
 
     ngOnInit(): void {
-        this.user = this.sharedS.getPicked()
-        this.search();
+        this.user = this.sharedS.getPicked();
+        this.search(this.user);
         this.buildForm();
     }
 
@@ -68,7 +68,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
     buildForm() {
         this.inputForm = this.formBuilder.group({
             personID: [''],
-            position: [''],
+            position: ['', [Validators.required]],
             startDate: null,
             endDate: null,
             dates: [[], [Validators.required]],
@@ -83,8 +83,8 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
         return `${pro} Position`;
     }
 
-    search() {
-        this.timeS.getstaffpositions(this.user.id)
+    search(user: any = this.sharedS.getPicked()) {
+        this.timeS.getstaffpositions(user.id)
             .subscribe(data => {
                 this.tableData = data;
             })
@@ -98,27 +98,12 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
         this.modalOpen = true;
     }
 
-    showEditModal() {
-        this.editOrAdd = 2;
-        this.modalOpen = true;
-    }
-
     trackByFn(index, item) {
         return item.id;
     }
 
-    processBtn() {
-        if (this.editOrAdd == 1) {
-            this.save();
-        }
-
-        if (this.editOrAdd == 2) {
-            this.edit();
-        }
-    }
-
     save() {
-        console.log(this.inputForm.value)
+
         for (const i in this.inputForm.controls) {
             this.inputForm.controls[i].markAsDirty();
             this.inputForm.controls[i].updateValueAndValidity();
@@ -127,7 +112,8 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
         if (!this.inputForm.valid)
             return;
 
-        const { position, dates, positionID, notes } = this.inputForm.value;
+        const { position, dates, positionID, notes, recordNumber } = this.inputForm.value;
+
         const inputForm = {
             personID: this.user.id,
             position: position,
@@ -135,36 +121,37 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
             endDate: dates[1],
             positionID: positionID,
             notes: notes,
-            recordNumber:''
-        }        
-        this.isLoading = true;
-
-        this.timeS.poststaffpositions(inputForm).pipe(
-            takeUntil(this.unsubscribe)).subscribe(data => {
-                if (data) {
-                    this.handleCancel();
-                    this.success();
-                    this.globalS.sToast('Success', 'Data Deleted');
-                }                
-            })
-    }
-
-    edit() {
-        for (const i in this.inputForm.controls) {
-            this.inputForm.controls[i].markAsDirty();
-            this.inputForm.controls[i].updateValueAndValidity();
+            recordNumber: recordNumber
         }
 
-        if (!this.inputForm.valid)
-            return;
+        this.isLoading = true;
 
-        // const { list, notes, id } = this.inputForm.value;
-        // const index = this.whatView;
-        // this.isLoading = true;
-    }
+        if(this.editOrAdd == 1){
+            this.timeS.poststaffpositions(inputForm).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                    if (data) {
+                        this.handleCancel();
+                        this.success();
+                        this.globalS.sToast('Success', 'Data Deleted');
+                    }
+                })
+        }
+
+        if (this.editOrAdd == 2) {
+            this.timeS.updatestaffpositions(inputForm, inputForm.recordNumber).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                    if (data) {
+                        this.handleCancel();
+                        this.success();
+                        this.globalS.sToast('Success', 'Data Updated');
+                    }                    
+                })
+        }
+    }   
 
     handleCancel() {
         this.inputForm.reset();
+        this.isLoading = false;
         this.modalOpen = false;
     }
 
@@ -183,5 +170,23 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
                     this.globalS.sToast('Success', 'Data Deleted');
                 }
             });
+    }
+
+    showEditModal(index: number) {
+        console.log(this.tableData[index]);
+
+        const { position, startDate, endDate, positionID, notes, personID, recordNumber  } = this.tableData[index];
+
+        this.inputForm.patchValue({
+            position: position,
+            positionID: positionID,
+            notes: notes,
+            dates: [startDate, endDate],
+            recordNumber,
+            personID
+        });
+
+        this.editOrAdd = 2;
+        this.modalOpen = true;
     }
 }

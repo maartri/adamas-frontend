@@ -1,4 +1,5 @@
 export * from './auth.service'
+export * from './auth.candeactivateguard'
 export * from './login.service'
 export * from './global.service'
 export * from './client.service'

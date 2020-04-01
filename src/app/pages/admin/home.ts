@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     styles: [`
@@ -110,7 +111,9 @@ export class HomeAdmin implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('recipient') elRef: ElementRef;
 
     isCollapsed = false;
-    constructor() {
+    constructor(
+        private router: Router
+    ) {
 
     }
 
@@ -124,6 +127,10 @@ export class HomeAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit(): void{
        
+    }
+
+    toHome() {
+        this.router.navigate(['/admin/landing']);
     }
 
     change(event: any) {

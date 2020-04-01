@@ -65,10 +65,6 @@ const enum ImageActivity {
             position: absolute;
             bottom: 10px;
             right: 10px;
-            visibility: hidden;
-        }
-        .book-wrapper:hover button{
-            visibility: visible;
         }
         .book-image{
             background: url(assets/medical-icons.png);            

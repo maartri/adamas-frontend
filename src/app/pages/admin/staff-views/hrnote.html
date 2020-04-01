@@ -1,3 +1,63 @@
-<div>
-    fff
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add HR Note</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left" style="width: 40rem" >Detail</th>
+                    <th>Category</th>
+                    <th>Detail Date</th>
+                    <th>Creator</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.detail  }}</td>
+                    <td>{{ data.category }}</td>
+                    <td>{{ data.detailDate | date: 'dd/MM/y'  }}</td>
+                    <td>{{ data.creator || '-' }}</td>
+                    <td>
+                        <a (click)="showEditModal(i)">View</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
 </div>
+
+<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addORView ? 'Add HR Note' : 'Details'" (nzOnCancel)="handleCancel()">
+    <div [formGroup]="inputForm">
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label  [nzNoColon]="true">Description</nz-form-label>
+                <nz-form-control nzErrorTip="Category is required!">
+                    <nz-select formControlName="category" nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let d of categories" [nzValue]="d" [nzLabel]="d">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-row [nzGutter]="12">
+            <div nz-col nzSpan="12" class="form-group">
+                <label for="">Reminder Date</label>
+                <nz-date-picker formControlName="alarmDate" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+            <div nz-col nzSpan="12">
+                <label class="chk" nz-checkbox formControlName="isPrivate">Private</label>
+            </div>
+        </div>
+        <div nz-row>
+           <div class="form-group">
+                <label for="">Notes</label>
+                <textarea rows="4" nz-input formControlName="notes"></textarea>
+           </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="save()" [nzLoading]="isLoading">Save</button>
+    </div>
+</nz-modal>

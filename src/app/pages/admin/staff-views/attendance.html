@@ -1,3 +1,50 @@
-<div>
-    aaa
+<div nz-row>
+    <div nz-col nzOffset="3">
+        <div nz-row>
+            <button class="botton success" (click)="save()" [disabled]="!inputForm?.dirty">Save Changes</button>
+        </div>
+        <div nz-row [formGroup]="inputForm">
+            <div nz-col nzSpan="18">
+                <nz-divider nzText="General Settings" nzOrientation="left"></nz-divider>
+                <div nz-row [nzGutter]="16" class="divider-subs">
+                    <div nz-col nzSpan="12">
+                        <label nz-checkbox formControlName="excludeShiftAlerts">Exclude From Time And Attendance Log
+                            Display</label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <label for="">Pin Number</label>
+                        <input nz-input formControlName="pin" (keypress)="onKeyPress($event)" />
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <label for="">Auto Logout Time</label>
+                        <input nz-input formControlName="autoLogout" (keypress)="onKeyPress($event)" />
+                    </div>
+                </div>
+                <nz-divider nzText="Messages & Alerts" nzOrientation="left"></nz-divider>
+                <div class="divider-subs">
+                    <div>
+                        <label nz-checkbox formControlName="excludeShiftAlerts">Exclude From Generating Late, Early, Short, Long
+                            Shift Alerts</label>
+                    </div>
+                    <div>
+                        <ul>
+                            <li>
+                                <label nz-checkbox formControlName="inAppMessage">In App Message</label>
+                            </li>
+                            <li>
+                                <label nz-checkbox formControlName="smsMessage">Email SMS Message</label>
+                            </li>
+                            <li>
+                                <label nz-checkbox formControlName="emailMessage">Email Message</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <label nz-checkbox formControlName="rosterPublish">Send Message On Master Roster Creation</label>
+                        <label nz-checkbox formControlName="shiftChange">Send Message On Shift Changes</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
 </div>

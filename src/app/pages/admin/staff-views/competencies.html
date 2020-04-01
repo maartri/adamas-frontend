@@ -1,3 +1,92 @@
-<div>
-    bb
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Competency</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Competency</th>
+                    <th>Expiry Date</th>
+                    <th>Reminder Date</th>
+                    <th>Mandatory</th>
+                    <th>Cert/Reg.No</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                <td class="left">{{ data.competency  }}</td>
+                <td>{{ data.expiryDate | date: 'd/MM/y' }}</td>
+                <td>{{ data.reminderDate | date: 'd/MM/y'  }}</td>
+                <td>
+                    <label nz-checkbox nzDisabled [ngModel]="data.mandatory" nzDisabled ></label>
+                </td>
+                <td>{{ data.certReg }}</td>
+                <td>{{ data.notes }}</td>
+                    <td>
+                        <a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete competency?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
 </div>
+
+<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="'Add Competency'" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+
+        <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+            <nz-step class="mini" nzTitle="Competencies" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Additional Details" nzDescription=""></nz-step>
+        </nz-steps>
+
+        <nz-divider class="full-height" nzType="vertical"></nz-divider>
+
+        <div class="steps-content" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="competency" nzShowSearch nzAllowClear nzPlaceHolder="Select a competency" >
+                    <nz-option *ngFor="let d of competencies" [nzLabel]="d" [nzValue]="d"></nz-option>
+                </nz-select>
+            </div>
+            <div *ngIf="current == 1">
+                <div nz-row nzGutter="16" class="mrg-btm-2">
+                    <div nz-col nzSpan="12">
+                        <nz-date-picker [nzPlaceHolder]="'Expiry Date'" formControlName="expiryDate" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <nz-date-picker [nzPlaceHolder]="'Reminder Date'" formControlName="reminderDate" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                </div>
+                <div nz-row nzGutter="16" class="mrg-btm-2">
+                    <div nz-col nzSpan="12">
+                        <input nz-input placeholder="Basic usage" placeholder="Cert/Reg #" formControlName="certReg" />
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <label nz-checkbox formControlName="mandatory">Mandatory</label>
+                    </div>
+                </div>
+                <div nz-row nzGutter="16" class="mrg-btm-2">
+                    <textarea style="margin: 0 10px;" rows="4" nz-input placeholder="notes" formControlName="notes"></textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div *nzModalFooter>
+        <ng-container>
+            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                <span>Previous</span>
+            </button>
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 1"  [disabled]="!inputForm.get('competency').value">
+                <span>Next</span>
+            </button>
+            <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" *ngIf="current === 1">
+                <span>Done</span>
+            </button>
+        </ng-container>
+    </div>
+</nz-modal>

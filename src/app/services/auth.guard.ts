@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { Router, CanActivate, CanActivateChild } from '@angular/router'
-
 import { GlobalService } from './global.service';
 
 @Injectable()

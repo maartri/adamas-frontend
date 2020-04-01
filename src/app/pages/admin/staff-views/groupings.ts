@@ -63,14 +63,14 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'groupings-preferences')) {
-                this.search();
+                this.search(data);
             }
         });
     }
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked()
-        this.search();
+        this.search(this.user);
         this.buildForm();
     }
 
@@ -93,13 +93,13 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
         return `${pro} ${str}`;
     }
 
-    search() {
+    search(user: any) {
         //if (!this.user) return;
         this.loading = true;
 
         forkJoin([
-            this.timeS.getuserdefined1(this.user.id),
-            this.timeS.getuserdefined2(this.user.id),
+            this.timeS.getuserdefined1(user.id),
+            this.timeS.getuserdefined2(user.id),
             this.listS.getlistuserdefined1(),
             this.listS.getlistuserdefined2()
         ]).subscribe(data => {
@@ -164,7 +164,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
     }
 
     success() {
-        this.search();
+        this.search(this.sharedS.getPicked());
         this.isLoading = false;
     }
 

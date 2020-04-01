@@ -1,3 +1,24 @@
 <div>
-    recipient
+    <select [(ngModel)]="user" (ngModelChange)="change($event)">
+        <option value=""></option>
+        <option value="ABBERTON B">ABBERTON B</option>
+        <option value="*****AAAZ T">*****AAAZ T</option>
+        <option value="3CDC STEPH">3CDC STEPH</option>
+    </select>
+
+    <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzType]="'card'">
+        <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
+        <nz-tab nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
+        <nz-tab nzTitle="Intake Details" (nzClick)="view(2)"></nz-tab>
+        <nz-tab nzTitle="Reminders" (nzClick)="view(3)"> </nz-tab>
+        <nz-tab nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>
+        <nz-tab nzTitle="Case Notes" (nzClick)="view(5)"> </nz-tab>
+        <nz-tab nzTitle="Incidents" (nzClick)="view(6)"> </nz-tab>
+        <nz-tab nzTitle="Permanent Roster" (nzClick)="view(7)"> </nz-tab>
+        <nz-tab nzTitle="History" (nzClick)="view(8)"> </nz-tab>
+        <nz-tab nzTitle="Insu & Pension" (nzClick)="view(9)"> </nz-tab>
+        <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
+    </nz-tabset>   
+    
+    <router-outlet></router-outlet>
 </div>

@@ -1,3 +1,43 @@
-<div>
-    yyy
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Leave</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Leave Type</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Notes</th>
+                    <th>Reminder Date</th>
+                    <th>Approved</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.leaveType  }}</td>
+                    <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.notes  }}</td>
+                    <td>{{ data.reminderDate }}</td>
+                    <td>
+                        <!-- <input type="checkbox" [ngModel]="op.approved" disabled> -->
+                        <!-- <div style="display:inline-block;">
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox value="option1" name="options" [(ngModel)]="op.approved"
+                                    (click)="checkBoxChange($event,i)" />
+                            </clr-checkbox-wrapper>
+                        </div> -->
+                    </td>
+                    <td>
+                        <a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
 </div>

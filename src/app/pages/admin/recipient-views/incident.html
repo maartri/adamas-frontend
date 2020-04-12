@@ -1,7 +1,7 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add Incident</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
                 <tr>
@@ -10,7 +10,7 @@
                     <th>Type</th>
                     <th>Sub Category</th>
                     <th>Description</th>
-                    <th>Action</th>
+                    <th class="action">Action</th>
                 </tr>
             </thead>
             <tbody>

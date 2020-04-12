@@ -1,3 +1,197 @@
-<div>
-    7
+<div nz-row> 
+    <div nz-row>
+        <div nz-col nzOffset="1">
+            <button class="botton success" (click)="save()" [disabled]="!inputForm?.dirty">Save Changes</button>
+        </div>
+    </div>
+    <div nz-row >
+        <div nz-col nzSpan="24">
+            <nz-divider nzText="Health Insurance, DVA and Ambulance Status" nzOrientation="left"></nz-divider>
+            <div nz-row [nzGutter]="16" class="divider-subs">
+                <div nz-col nzOffset="2" [formGroup]="inputForm">
+                    <div nz-col nzSpan="6" class="form-group">
+                        <label for="">Medicare Number</label>
+                        <input nz-input formControlName ="medicareNumber" />
+                    </div>
+                    <div nz-col nzSpan="6" class="form-group">
+                        <label for="">Expiry Date</label>
+                        <nz-date-picker formControlName="medicareExpiry" [nzFormat]="dateFormat"></nz-date-picker>                        
+                    </div>
+                    <div nz-col nzSpan="6" v>
+                        <label for="">Medical Recipient ID</label>
+                        <input nz-input formControlName ="medicareRecipientID" />
+                    </div>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzOffset="2" [formGroup]="inputForm">
+                    <div nz-col nzSpan="9" class="form-group">
+                        <label for="">Pension Status</label>
+                        <nz-select nzAllowClear formControlName="pensionStatus" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of clist" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                    <div nz-col nzSpan="9" class="form-group">
+                        <label for="">DVA Card Status</label>
+                        <nz-select nzAllowClear formControlName="haccDvaCardHolderStatus">
+                            <nz-option *ngFor="let list of dlist" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzOffset="2" [formGroup]="inputForm">
+                    <div nz-col nzSpan="6" class="form-group">
+                        <label for="">Concession Number</label>
+                        <input nz-input formControlName ="concessionNumber" />
+                    </div>
+                    <div nz-col nzSpan="6" class="form-group">
+                        <label for="">DVA Number</label>
+                        <input nz-input formControlName ="dvaNumber" />
+                    </div>
+                    <div nz-col nzSpan="6" v>
+                        <label for="">Type</label>
+                        <input nz-input formControlName ="ambulanceType" />
+                    </div>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzOffset="2" [formGroup]="inputForm">
+                    <div nz-col nzSpan="6" class="form-group">
+                        <label for="">Ambulance Sub</label>
+                        <label nz-checkbox formControlName="ambulance"></label>
+                    </div>
+                    <div nz-col nzSpan="6" class="form-group">
+                        <label for="">Unable To Determine</label>
+                        <label nz-checkbox formControlName="pensionVoracity"></label>
+                    </div>
+                    <div nz-col nzSpan="6" v>
+                        <label for="">Veterans Benefits</label>
+                        <label nz-checkbox formControlName="dvaBenefits" ></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div nz-row>
+        <div nz-col nzSpan="20" [formGroup]="inputForm"w>
+            <nz-divider nzText="Funeral Information" nzOrientation="left"></nz-divider>
+            <div nz-row [nzGutter]="16" class="divider-subs">
+                <div nz-col nzSpan="12" nzOffset="2">
+                    <div nz-col nzSpan="12" class="form-group">
+                        <label for="">Date Of Death</label>
+                        <nz-date-picker formControlName="dateofDeath" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                    <div nz-col nzSpan="12" class="form-group">
+                        <label for="">Will Be Available</label>
+                        <label nz-checkbox formControlName="willAvailable"></label>
+                    </div>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzSpan="12" nzOffset="2">
+                    <div nz-row class="form-group">
+                        <label for="">Venue</label>
+                        <input nz-input formControlName ="whereWillHeld"/>
+                    </div>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="16">
+               <div nz-col nzSpan="12" nzOffset="2">
+                    <div class="form-group">
+                        <label for="">Funeral Arrangements</label>
+                        <textarea rows="4" nz-input formControlName="funeralArrangements"></textarea>
+                    </div>
+               </div>
+            </div>
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="20">
+            <nz-divider nzText="Pension Information" nzOrientation="left"></nz-divider>
+            <div nz-row>
+               <div nz-col nzOffset="1">
+                    <button class="botton success" (click)="showAddModal()">Add Pension</button>
+               </div>
+            </div>
+            <div nz-row [nzGutter]="16" class="divider-subs">
+                <div nz-col nzOffset="2">
+                    <nz-table #basicTable [nzData]="alist"  [nzSize]="'small'" [nzFrontPagination]="false">
+                        <thead>
+                            <tr>
+                                <th>Pension</th>
+                                <th>Number</th>
+                                <th>Other</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of basicTable.data;let i =index">
+                                <td>{{data.name}}</td>
+                                <td>{{data.address1}}</td>
+                                <td>{{data.address2}}</td>
+                                <td>
+                                    <a (click)="edit(i)">Edit</a>
+                                    <nz-divider nzType="vertical"></nz-divider>
+                                    <a  nz-popconfirm nzPopconfirmTitle="Are you sure delete this?"
+                                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(i)">Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<nz-modal [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit ? 'Add Pension' : 'Edit Pension'"
+    (nzOnCancel)="handleCancel()">
+    <div [formGroup]="pensionForm">
+        <div nz-row>
+            <nz-form-item *ngIf="addOREdit == 1">
+                <nz-form-label [nzNoColon]="true">Pension</nz-form-label>
+                <nz-form-control nzErrorTip="This is required!">
+                    <nz-select formControlName="name"  nzAllowClear nzPlaceHolder=""
+                        [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let d of blist" [nzValue]="d" [nzLabel]="d"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <div *ngIf="addOREdit == 2" nz-col nzSpan="24" class="form-group">
+                <div nz-row class="form-group" nzOffset="2">
+                    <label for="">Pension</label>
+                    <input nz-input formControlName="name" disabled  style="width:100%"/>
+                </div>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="12">
+            <div nz-col nzSpan="12" class="form-group">
+                <div nz-row class="form-group" nzOffset="2">
+                    <label for="">Number</label>
+                    <input nz-input formControlName="address1" />
+                </div>
+            </div>
+            <div nz-col nzSpan="12" class="form-group">
+                <div nz-row class="form-group" nzOffset="2">
+                    <label for="">Other</label>
+                    <input nz-input formControlName="address2" />
+                </div>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="12">
+            <div nz-col nzSpan="24">
+                <div class="form-group">
+                    <label for="">Funeral Arrangements</label>
+                    <textarea rows="4" formControlName="notes" nz-input></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="savePension()" [nzLoading]="isLoading">Save</button>
+    </div>
+</nz-modal>

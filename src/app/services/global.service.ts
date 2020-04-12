@@ -14,6 +14,9 @@ const helper = new JwtHelperService();
 
 import { FormGroup} from '@angular/forms';
 
+import format from 'date-fns/format';
+import isValid from 'date-fns/isValid'
+
 export const roles = {
     provider: 'SERVICE PROVIDER',
     client: 'PORTAL CLIENT',
@@ -68,7 +71,7 @@ export const titles = ["", "Mr", "Ms", "Mrs", "Dr"]
 export const types = ['', 'BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
 export const gender = ['', 'MALE', 'FEMALE', 'NOT STATED']
 export const months = moment.months()
-export const recurringInt = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+export const recurringInt = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
 export const recurringStr = ['Day/s', 'Week/s', 'Month/s', 'Year/s']
 export const days = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
 
@@ -243,6 +246,10 @@ export class GlobalService {
         return -1;
     }
 
+    IsRTF2TextRequired(escaped: string) {
+        return (((escaped.match(/\\/g) || []).length > 5 && (escaped.match(/{/g) || []).length > 0 && (escaped.match(/}/g) || []).length > 0));  
+    }
+
     searchOf(data: string, arrString: Array<string>, def: string): string {
         var ifFound = {
             state: false,
@@ -339,6 +346,23 @@ export class GlobalService {
             return false;
         }
         return true;
+    }
+
+    getDateOnly(date: string) {
+        const newDate = format(Date.parse(date),'dd/MM/yyyy');
+        return newDate;
+    }
+
+    VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(date: string | Date): Date | null {
+        if (!date) return null;
+        var cleanDate = new Date(date);
+
+        if (isValid(cleanDate)) {
+            // FIXING the Date anomaly by giving the time static values
+            return new Date(cleanDate.getFullYear(), cleanDate.getMonth(), cleanDate.getDate(), 12, 0, 0, 0);
+        }
+        // returns current date
+        return null;
     }
 
     rt2filter(data: string): string {

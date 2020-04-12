@@ -17,29 +17,32 @@ import {
   ClickOutsideDirective
 } from "../directives/index";
 
-
-
 import { CalendarComponent } from './calendar/calendar.component';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
-
-
 import { HeaderNavComponent } from './header-nav/header-nav.component';
 import { ActionComponent } from './action/action.component';
+import { SearchListComponent } from './search-list/search-list.component';
+import { ContactsDetailsComponent } from './contacts-details/contacts-details.component';
+import { SearchTimesheetComponent } from './search-timesheet/search-timesheet.component';
 
 @NgModule({
   declarations: [
     UploadFileComponent,
+
+    //Directives,
+    ClickOutsideDirective,
+
     RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, ProfileComponent,
     ProfileComponent,
     SuburbComponent,
     CalendarComponent,
-    HeaderNavComponent,
-    
-    //Directives,
-    ClickOutsideDirective,    
-    ActionComponent
+    HeaderNavComponent,    
+    ActionComponent,
+    SearchListComponent,
+    ContactsDetailsComponent,
+    SearchTimesheetComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +62,10 @@ import { ActionComponent } from './action/action.component';
     ProfileComponent,
     HeaderNavComponent,
     CalendarComponent,
-    ActionComponent
+    ActionComponent,
+    SearchListComponent,
+    ContactsDetailsComponent,
+    SearchTimesheetComponent
   ],
   providers: [
     

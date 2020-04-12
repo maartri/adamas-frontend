@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -17,7 +17,8 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
         }
         
     `],
-    templateUrl: './history.html'
+    templateUrl: './history.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class RecipientHistoryAdmin implements OnInit, OnDestroy {
@@ -29,6 +30,8 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
     checked: boolean = false;
     isDisabled: boolean = false;
 
+    loading: boolean = false;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -36,6 +39,7 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
         private listS: ListService,
         private router: Router,
         private globalS: GlobalService,
+        private cd: ChangeDetectorRef
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
@@ -52,7 +56,7 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
         });
     }
 
-    ngOnInit(): void {
+    ngOnInit(): void {        
         this.user = this.sharedS.getPicked();
         this.search(this.user);
     }
@@ -63,8 +67,11 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any) {
+        this.loading = true;
         this.clientS.gethistory(user.code).subscribe(data => {
             this.tableData = data.list;
+            this.loading = false;
+            this.cd.markForCheck();
         });
     }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -12,9 +12,31 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     styles: [`
          nz-table{
             margin-top:20px;
-        }        
+        }
+        nz-select{
+            width:100%;
+        }
+         label.chk{
+            position: absolute;
+            top: 1.5rem;
+        }
+        .overflow-list{
+            overflow: auto;
+            height: 8rem;
+            border: 1px solid #e3e3e3;
+        }
+        ul{
+            list-style:none;
+        }
+        li{
+            margin:5px 0;
+        }
+        .chkboxes{
+            padding:4px;
+        }
     `],
-    templateUrl: './casenote.html'
+    templateUrl: './casenote.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -22,10 +44,23 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     inputForm: FormGroup;
+    caseFormGroup: FormGroup;
     tableData: Array<any>;
+    dateFormat: string = 'dd/MM/yyyy';
 
     checked: boolean = false;
     isDisabled: boolean = false;
+    loading: boolean = false;
+
+    modalOpen: boolean = false;
+
+    alist: Array<any> = [];
+    blist: Array<any> = [];
+    clist: Array<any> = [];
+    mlist: Array<any> = [];
+
+    recipientStrArr: Array<any> = [];
+
 
     constructor(
         private timeS: TimeSheetService,
@@ -34,7 +69,8 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        private cd: ChangeDetectorRef
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
@@ -46,9 +82,11 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'casenote')) {
+                this.user = data
                 this.search(data);
             }
         });
+        
     }
 
     ngOnInit(): void {
@@ -62,26 +100,29 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    search(user: any) {
-        this.clientS.getcasenotes(user.code).subscribe(data => {
-            this.tableData = data.list;
-        })
+    search(user: any = this.user) {        
+        this.getNotes(this.user);
+        this.getSelect();
     }
+    
+    getNotes(user: any) {
+        this.loading = true;
+        this.clientS.getcasenotes(user.code).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            let list: Array<any> = data.list || [];
 
-    patchData(data: any) {
-        this.inputForm.patchValue({
-            autoLogout: data.autoLogout,
-            emailMessage: data.emailMessage,
-            excludeShiftAlerts: data.excludeShiftAlerts,
-            inAppMessage: data.inAppMessage,
-            logDisplay: data.logDisplay,
-            pin: data.pin,
-            rosterPublish: data.rosterPublish,
-            shiftChange: data.shiftChange,
-            smsMessage: data.smsMessage
+            if (list.length > 0) {
+                list.forEach(x => {
+                    if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
+                        x.detail = x.detailOriginal
+                    }
+                });
+                this.tableData = list;
+            }
+            
+            this.loading = false;
+            this.cd.markForCheck();
         });
     }
-
 
     buildForm() {
         this.inputForm = this.formBuilder.group({
@@ -95,33 +136,30 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             shiftChange: false,
             smsMessage: false
         });
+
+        this.caseFormGroup = this.formBuilder.group({
+            notes: '',
+            publishToApp: false,
+            restrictions: '',
+            restrictionsStr: 'public',
+            alarmDate: null,
+            whocode: '',
+            program: '*VARIOUS',
+            discipline: '*VARIOUS',
+            careDomain: '*VARIOUS',
+            category: '',
+            recordNumber: null
+        });
+        
+        this.caseFormGroup.get('restrictionsStr').valueChanges.subscribe(data => {
+            if (data == 'restrict') {
+                this.getSelect();
+            }
+        });
     }
 
     onKeyPress(data: KeyboardEvent) {
         return this.globalS.acceptOnlyNumeric(data);
-    }
-
-    save() {
-        const group = this.inputForm;
-
-        this.timeS.updatetimeandattendance({
-            AutoLogout: group.get('autoLogout').value,
-            EmailMessage: group.get('emailMessage').value,
-            ExcludeShiftAlerts: group.get('excludeShiftAlerts').value,
-            InAppMessage: group.get('inAppMessage').value,
-            LogDisplay: group.get('logDisplay').value,
-            Pin: group.get('pin').value,
-            RosterPublish: group.get('rosterPublish').value,
-            ShiftChange: group.get('shiftChange').value,
-            SmsMessage: group.get('smsMessage').value,
-            Id: this.user.id
-        }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-                this.globalS.sToast('Success', 'Change successful');
-                this.inputForm.markAsPristine();
-                return;
-            }
-        });
     }
 
     trackByFn(index, item) {
@@ -146,7 +184,75 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         return true;
     }
 
+    getSelect() {
+        this.timeS.getmanagerop().subscribe(data => {
+            this.mlist = data;
+            this.cd.markForCheck();
+        });
+
+        this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            data.push('*VARIOUS');
+            this.blist = data;
+        });
+        this.timeS.getcaredomainop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            data.push('*VARIOUS');
+            this.clist = data;
+        });
+        this.timeS.getprogramop(this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            data.push('*VARIOUS');
+            this.alist = data;
+        });
+    }
+
     showAddModal() {
+        this.buildForm();
+        this.modalOpen = true;       
+    }
+
+    save() {
+
+        if (!this.globalS.IsFormValid(this.caseFormGroup))
+            return; 
         
+        const cleanDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(
+            this.caseFormGroup.get('alarmDate').value);
+        
+        this.caseFormGroup.controls["alarmDate"].setValue(cleanDate);
+        this.caseFormGroup.controls["whocode"].setValue(this.user.code);
+        this.caseFormGroup.controls["restrictions"].setValue(this.listStringify());
+        
+        this.loading = true;
+        this.clientS.postcasenotes(this.caseFormGroup.value, this.user.id)
+            .subscribe(data => {
+                this.globalS.sToast('Success', 'Note inserted');
+                this.loading = false;
+                this.handleCancel();
+                this.getNotes(this.user);
+            });
+          
+    }
+
+    listStringify(): string{
+        let tempStr = '';
+        this.recipientStrArr.forEach((data,index,array) =>{
+            array.length-1 != index ?
+                tempStr+= data.trim() + '|' :
+                    tempStr += data.trim() ;                
+        });
+        return tempStr;
+    }
+
+    handleCancel() {
+        this.modalOpen = false;
+        this.caseFormGroup.reset();
+    }
+
+    log(event: any) {
+        this.recipientStrArr = event;
+    }
+
+
+    checkChange(event: any, index: number) {
+        console.log(index);
     }
 }

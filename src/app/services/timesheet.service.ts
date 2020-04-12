@@ -516,6 +516,10 @@ export class TimeSheetService {
      * Reminders Recipient
      */
 
+    getremindersrecipient(id: string): Observable<any>{
+        return this.auth.get(`${timesheet}/recipient/reminders/${id}`);
+    }
+
     postremindersrecipient(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/recipient/reminders`, data)
     }

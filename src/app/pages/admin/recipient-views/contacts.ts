@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -9,17 +9,8 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
-    styles: [`
-        ul{
-            list-style:none;
-        }
-
-        div.divider-subs div{
-            margin-top:2rem;
-        }
-        
-    `],
-    templateUrl: './contacts.html'
+    templateUrl: './contacts.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -49,100 +40,18 @@ export class RecipientContactsAdmin implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'time-attendance')) {
-                this.search(data);
+            if (this.globalS.isCurrentRoute(this.router, 'contacts')) {
+                this.user = data;
             }
         });
     }
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
-        this.buildForm();
     }
 
     ngOnDestroy(): void {
-
-    }
-
-    search(user: any) {
-        if (!user) this.router.navigate(['/admin/staff/personal']);
-        this.timeS.getattendancestaff(user.id).subscribe(data => {
-            this.patchData(data);
-        })
-    }
-
-    patchData(data: any) {
-        this.inputForm.patchValue({
-            autoLogout: data.autoLogout,
-            emailMessage: data.emailMessage,
-            excludeShiftAlerts: data.excludeShiftAlerts,
-            inAppMessage: data.inAppMessage,
-            logDisplay: data.logDisplay,
-            pin: data.pin,
-            rosterPublish: data.rosterPublish,
-            shiftChange: data.shiftChange,
-            smsMessage: data.smsMessage
-        });
-    }
-
-
-    buildForm() {
-        this.inputForm = this.formBuilder.group({
-            autoLogout: [''],
-            emailMessage: false,
-            excludeShiftAlerts: false,
-            inAppMessage: false,
-            logDisplay: false,
-            pin: [''],
-            rosterPublish: false,
-            shiftChange: false,
-            smsMessage: false
-        });
-    }
-
-    onKeyPress(data: KeyboardEvent) {
-        return this.globalS.acceptOnlyNumeric(data);
-    }
-
-    save() {
-        const group = this.inputForm;
-
-        this.timeS.updatetimeandattendance({
-            AutoLogout: group.get('autoLogout').value,
-            EmailMessage: group.get('emailMessage').value,
-            ExcludeShiftAlerts: group.get('excludeShiftAlerts').value,
-            InAppMessage: group.get('inAppMessage').value,
-            LogDisplay: group.get('logDisplay').value,
-            Pin: group.get('pin').value,
-            RosterPublish: group.get('rosterPublish').value,
-            ShiftChange: group.get('shiftChange').value,
-            SmsMessage: group.get('smsMessage').value,
-            Id: this.user.id
-        }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-                this.globalS.sToast('Success', 'Change successful');
-                this.inputForm.markAsPristine();
-                return;
-            }
-        });
-    }
-
-    canDeactivate() {
-        if (this.inputForm && this.inputForm.dirty) {
-            this.modalService.confirm({
-                nzTitle: 'Save changes before exiting?',
-                nzContent: '',
-                nzOkText: 'Yes',
-                nzOnOk: () => {
-                    this.save();
-                },
-                nzCancelText: 'No',
-                nzOnCancel: () => {
-
-                }
-            });
-        }
-        return true;
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 }

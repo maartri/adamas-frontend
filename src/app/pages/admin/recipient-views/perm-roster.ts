@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -17,7 +17,8 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
         }
         
     `],
-    templateUrl: './perm-roster.html'
+    templateUrl: './perm-roster.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -29,6 +30,7 @@ export class RecipientPermrosterAdmin implements OnInit, OnDestroy {
 
     checked: boolean = false;
     isDisabled: boolean = false;
+    loading: boolean = false;
 
     constructor(
         private timeS: TimeSheetService,
@@ -36,7 +38,8 @@ export class RecipientPermrosterAdmin implements OnInit, OnDestroy {
         private clientS: ClientService,
         private router: Router,
         private globalS: GlobalService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private cd: ChangeDetectorRef
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
@@ -48,6 +51,7 @@ export class RecipientPermrosterAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'perm-roster')) {
+                this.user = data;
                 this.search(data);
             }
         });
@@ -63,10 +67,13 @@ export class RecipientPermrosterAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    search(user: any) {
+    search(user: any = this.user) {
+        this.loading = true;
         this.clientS.getpermroster(user.code).subscribe(data => {
             this.tableData = data.list;
-        })
+            this.loading = false;
+            this.cd.markForCheck();
+        });
     }
 
     trackByFn(index, item) {

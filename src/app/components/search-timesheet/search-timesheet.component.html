@@ -1,0 +1,6 @@
+<nz-select nzShowSearch nzAllowClear [nzLoading]="loading" [nzPlaceHolder]="viewResult()" [nzMaxTagCount]="1000"
+    [(ngModel)]="searchModel" (ngModelChange)="change($event)">
+    <nz-option *ngFor="let l of lists" [nzLabel]="l" [nzValue]="l"></nz-option>
+</nz-select>
+
+<button nz-button nzType="primary" nzShape="circle" nz-tooltip [nzTooltipTitle]="view == 0 ? 'Switch to Recipient' : 'Switch to Staff'" (click)="switch()"><i nz-icon nzType="swap"></i></button>

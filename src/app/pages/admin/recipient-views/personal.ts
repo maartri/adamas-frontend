@@ -50,6 +50,7 @@ export class RecipientPersonalAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'personal')) {
+                this.user = data;
                 this.search(data);
             }
         });
@@ -61,7 +62,8 @@ export class RecipientPersonalAdmin implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 
     search(user: any) {

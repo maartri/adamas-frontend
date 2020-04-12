@@ -1,3 +1,98 @@
-<div>
-    timesheet
+<div nz-row>
+    
+    <div nz-row>
+        <div nz-col nzSpan="8">
+            <app-search-timesheet [view]="0" (selected)="picked($event)"></app-search-timesheet>
+        </div>
+        <div nz-col nzSpan="16">
+            <ul>
+                <li>
+                    <div (click)="confirm(1)" nz-tooltip nzTooltipTitle="Add Timesheets"><i nz-icon nzType="plus" nzTheme="outline"></i></div>
+                </li>
+                <li>
+                    <div (click)="confirm(2)" nz-tooltip nzTooltipTitle="Delete Highlighted Status"><i nz-icon nzType="minus" nzTheme="outline"></i></div>
+                </li>
+                <li>
+                    <div (click)="confirm(3)" nz-tooltip nzTooltipTitle="Delete All Unapproved"><i nz-icon nzType="delete" nzTheme="outline"></i></div>
+                </li>
+                <li>
+                    <div (click)="confirm(4)" nz-tooltip nzTooltipTitle="Remove Shift Overlap"><i nz-icon nzType="close-circle" nzTheme="outline"></i></div>
+                </li>
+                <li>
+                    <div (click)="confirm(5)" nz-tooltip nzTooltipTitle="Approve All"><i nz-icon nzType="like" nzTheme="outline"></i></div>
+                </li>
+                <li>
+                    <div (click)="confirm(6)" nz-tooltip nzTooltipTitle="Unapprove All"><i nz-icon nzType="dislike" nzTheme="outline"></i></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <nz-table #fixedTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"  [nzScroll]="{ x: '2000px', y: '300px' }"
+                [nzFrontPagination]="false" [nzData]="timesheets">
+                <thead>
+                    <tr>
+                        <th nzWidth="80px" nzLeft="0px">Shift #</th>
+                        <th nzWidth="100px" nzLeft="80px">Date</th>
+                        <th nzWidth="80px" nzLeft="170px">Start Time</th>
+                        <th nzWidth="80px" nzLeft="250px">End Time</th>
+                        <th nzWidth="80px">Duration</th>
+                        <th nzWidth="160px">Recipient or Location</th>
+                        <th nzWidth="160px">Program</th>
+                        <th nzWidth="220px">Activity</th>
+                        <th nzWidth="90px">Pay Type</th>
+                        <th nzWidth="100px" [nzAlign]="'right'">Pay Quantity</th>
+                        <th nzWidth="100px" [nzAlign]="'right'">Pay Rate</th>
+                        <th nzWidth="100px" [nzAlign]="'right'">Bill Quantity</th>
+                        <th nzWidth="100px" [nzAlign]="'right'">Bill Rate</th>
+                        <th nzWidth="100px">Bill To</th>
+                        <th nzWidth="60px" nzRight="270px">Approve</th> 
+                        <th nzWidth="200px" nzRight="70px">Notes</th>
+                        <th nzWidth="70px" nzRight="0px"><label nz-checkbox [(ngModel)]="selectAll" (ngModelChange)="selectAllChange($event)">All</label></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of fixedTable.data;let i = index;trackBy: trackByFn" [class.selected]="data.selected">
+                        <td nzLeft="0px">{{ data.shiftbookNo}}</td>
+                        <td nzLeft="80px">{{ data.date | date: 'dd/MM/yyyy' }}</td>
+                        <td nzLeft="170px">{{ data.startTime | date: 'HH:mm' }}</td>
+                        <td nzLeft="250px">{{ data.endTime | date: 'HH:mm' }}</td>
+                        <td nzWidth="80px">{{ data.duration }}</td>
+                        <td nzWidth="160px">{{ data.recipient }}</td>
+                        <td nzWidth="160px">{{ data.program }}</td>
+                        <td nzWidth="220px">{{ data.activity }}</td>
+                        <td nzWidth="90px">{{ data.paytype }}</td>
+                        <td nzWidth="100px" [nzAlign]="'right'"> {{ data.payquant | number : '1.2-2' }}</td>
+                        <td nzWidth="100px" [nzAlign]="'right'">{{ data.payrate }}</td>
+                        <td nzWidth="100px" [nzAlign]="'right'">{{ data.billquant | number : '1.2-2' }}</td>
+                        <td nzWidth="100px" [nzAlign]="'right'">{{ data.billrate }}</td>
+                        <td nzWidth="100px">{{ data.billto }}</td>
+                        <td nzWidth="60px" nzRight="270px">
+                            <label nz-checkbox [(ngModel)]="data.approved" (ngModelChange)="checkBoxChange($event,data)"></label>
+                        </td>
+                        <td nzWidth="200px" nzRight="70px" >{{ data.notes }}</td>
+                        <td nzRight="0px" [nzAlign]="'left'">
+                            <label nz-checkbox [(ngModel)]="data.selected" (ngModelChange)="selectedTimesheet($event,data)"></label>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+
+    <div *ngIf="selected && timesheets?.length > 0" nz-row style="margin-top:10px">
+        <nz-descriptions nzBordered [nzSize]="'small'">
+            <nz-descriptions-item nzTitle="Total Time">{{ payTotal?.WorkedHours }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Hours & Minutes">{{ payTotal?.HoursAndMinutes }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Total Paid as Hours">{{ payTotal?.PaidAsHours }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Total Paid as Services">{{ payTotal?.PaidAsServices }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Recipient Attributable Hours">{{ payTotal?.WorkedAttributableHours }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Total KM Allowance">{{ payTotal?.KMAllowancesQty }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Total Other Allowance">{{ payTotal?.AllowanceQty }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Calculated Pay">{{ payTotal?.BilledAmount }}</nz-descriptions-item>
+        </nz-descriptions>
+    </div>
+
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -12,9 +12,31 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     styles: [`
         nz-table{
             margin-top:20px;
-        }        
+        }
+         nz-select{
+            width:100%;
+        }
+         label.chk{
+            position: absolute;
+            top: 1.5rem;
+        }
+        .overflow-list{
+            overflow: auto;
+            height: 8rem;
+            border: 1px solid #e3e3e3;
+        }
+        ul{
+            list-style:none;
+        }
+        li{
+            margin:5px 0;
+        }
+        .chkboxes{
+            padding:4px;
+        }
     `],
-    templateUrl: './opnote.html'
+    templateUrl: './opnote.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -22,10 +44,39 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     inputForm: FormGroup;
+    caseFormGroup: FormGroup;
     tableData: Array<any>;
 
     checked: boolean = false;
     isDisabled: boolean = false;
+    loading: boolean = false;
+
+    modalOpen: boolean = false;
+    addOrEdit: number;
+    dateFormat: string = 'dd/MM/yyyy';
+
+
+    alist: Array<any> = [];
+    blist: Array<any> = [];
+    clist: Array<any> = [];
+    dlist: Array<any> = [];
+    mlist: Array<any> = [];
+
+    recipientStrArr: Array<any> = [];
+
+    private default = {
+        notes: '',
+        publishToApp: false,
+        restrictions: '',
+        restrictionsStr: 'public',
+        alarmDate: null,
+        whocode: '',
+        program: '*VARIOUS',
+        discipline: '*VARIOUS',
+        careDomain: '*VARIOUS',
+        category: null,
+        recordNumber: null
+    }
 
     constructor(
         private timeS: TimeSheetService,
@@ -34,7 +85,8 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        private cd: ChangeDetectorRef
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
@@ -46,6 +98,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'opnote')) {
+                this.user = data;
                 this.search(data);
             }
         });
@@ -62,10 +115,28 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    search(user: any) {
+    search(user: any = this.user) {
+        this.getNotes(this.user);
+        this.getSelect();
+    }
+
+    getNotes(user:any) {
+        this.loading = true;
         this.clientS.getopnotes(user.id).subscribe(data => {
-            this.tableData = data.list;
-        })
+            let list: Array<any> = data.list || [];
+            
+            if (list.length > 0) {
+                list.forEach(x => {
+                    if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
+                        x.detail = x.detailOriginal
+                    }
+                });
+                this.tableData = list;
+            }
+            
+            this.loading = false;
+            this.cd.markForCheck();
+        });
     }
 
     patchData(data: any) {
@@ -84,6 +155,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
 
 
     buildForm() {
+
         this.inputForm = this.formBuilder.group({
             autoLogout: [''],
             emailMessage: false,
@@ -95,6 +167,50 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
             shiftChange: false,
             smsMessage: false
         });
+
+        this.caseFormGroup = this.formBuilder.group({
+            notes: '',
+            publishToApp: false,
+            restrictions: '',
+            restrictionsStr: 'public',
+            alarmDate: null,
+            whocode: '',
+            program: '*VARIOUS',
+            discipline: '*VARIOUS',
+            careDomain: '*VARIOUS',
+            category: ['', [Validators.required]],
+            recordNumber: null
+        });
+
+        this.caseFormGroup.get('restrictionsStr').valueChanges.subscribe(data => {
+            if (data == 'restrict') {
+                this.getSelect();
+            } 
+        });
+    }
+
+    getSelect() {
+        this.timeS.getmanagerop().subscribe(data => {
+            this.mlist = data;
+            this.cd.markForCheck();
+        });
+
+        this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            data.push('*VARIOUS');
+            this.blist = data;
+        });
+        this.timeS.getcaredomainop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            data.push('*VARIOUS');
+            this.clist = data;
+        });
+        this.timeS.getprogramop(this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            data.push('*VARIOUS');
+            this.alist = data;
+        });
+
+        this.timeS.getcategoryop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            this.dlist = data;
+        })
     }
 
     onKeyPress(data: KeyboardEvent) {
@@ -105,27 +221,50 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         return item.id;
     }
 
-    save() {
-        const group = this.inputForm;
+    save() {        
+        if (!this.globalS.IsFormValid(this.caseFormGroup))
+            return;
+        
+        const { alarmDate, restrictionsStr, whocode, restrictions } = this.caseFormGroup.value;
+        const cleanDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(alarmDate);
 
-        this.timeS.updatetimeandattendance({
-            AutoLogout: group.get('autoLogout').value,
-            EmailMessage: group.get('emailMessage').value,
-            ExcludeShiftAlerts: group.get('excludeShiftAlerts').value,
-            InAppMessage: group.get('inAppMessage').value,
-            LogDisplay: group.get('logDisplay').value,
-            Pin: group.get('pin').value,
-            RosterPublish: group.get('rosterPublish').value,
-            ShiftChange: group.get('shiftChange').value,
-            SmsMessage: group.get('smsMessage').value,
-            Id: this.user.id
-        }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-                this.globalS.sToast('Success', 'Change successful');
-                this.inputForm.markAsPristine();
-                return;
-            }
+        let privateFlag = restrictionsStr == 'workgroup' ? true : false;
+        let restricts = restrictionsStr != 'restrict';
+
+        this.caseFormGroup.controls["restrictionsStr"].setValue(privateFlag);
+
+        this.caseFormGroup.controls["alarmDate"].setValue(cleanDate);
+        this.caseFormGroup.controls["whocode"].setValue(this.user.code);
+        this.caseFormGroup.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
+
+        this.loading = true;
+        if (this.addOrEdit == 1) {            
+            this.clientS.postopnotes(this.caseFormGroup.value, this.user.id)
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Note inserted');
+                    this.handleCancel();
+                    this.getNotes(this.user);
+                });
+        }
+       
+        if (this.addOrEdit == 2) {
+            this.clientS.updateopnotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Note updated');
+                    this.handleCancel();
+                    this.getNotes(this.user);                    
+                });
+        }
+    }
+
+    listStringify(): string {
+        let tempStr = '';
+        this.recipientStrArr.forEach((data, index, array) => {
+            array.length - 1 != index ?
+                tempStr += data.trim() + '|' :
+                tempStr += data.trim();
         });
+        return tempStr;
     }
 
     canDeactivate() {
@@ -147,14 +286,60 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
     }
 
     showAddModal() {
-
+        this.addOrEdit = 1;
+        this.modalOpen = true;
     }
 
     showEditModal(index: number) {
+        this.addOrEdit = 2;
 
+        console.log(this.tableData[index]);
+        const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
+
+        this.caseFormGroup.patchValue({
+            notes: detail,
+            publishToApp: publishToApp,
+            restrictions: '',
+            restrictionsStr: this.determineRadioButtonValue(privateFlag, restrictions),
+            alarmDate: alarmDate,
+            program: program,
+            discipline: discipline,
+            careDomain: careDomain,
+            category: extraDetail2,
+            recordNumber: recordNumber
+        });
+        this.modalOpen = true;
     }
 
-    delete(data: any) {
+    determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
+        if (!privateFlag && this.globalS.isEmpty(restrictions)) {
+            return 'public';
+        }
 
+        if (!privateFlag && !this.globalS.isEmpty(restrictions)) {
+            return 'restrict'
+        }
+
+        return 'workgroup';
+    }
+
+    delete(index: any) {
+        const { recordNumber } = this.tableData[index];
+
+        this.clientS.deleteopnotes(recordNumber).subscribe(data => {
+            this.globalS.sToast('Success', 'Note deleted');
+            this.handleCancel();
+            this.getNotes(this.user);
+        });
+    }
+
+    log(event: any) {
+        this.recipientStrArr = event;
+    }
+
+    handleCancel() {
+        this.modalOpen = false;
+        this.loading = false;
+        this.caseFormGroup.reset(this.default);
     }
 }

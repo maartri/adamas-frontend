@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -13,7 +13,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             margin-top:20px;
         }
     `],
-    templateUrl: './document.html'
+    templateUrl: './document.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -23,6 +24,8 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     inputForm: FormGroup;
     tableData: Array<any>;
 
+    loading: boolean = false;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -30,8 +33,11 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        private cd: ChangeDetectorRef
     ) {
+        cd.reattach();
+
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -65,8 +71,13 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any) {
+        this.cd.reattach();
+
+        this.loading = true;
         this.timeS.getdocuments(user.code).subscribe(data => {
             this.tableData = data;
+            this.loading = false;
+            this.cd.detectChanges();
         });
 
     }

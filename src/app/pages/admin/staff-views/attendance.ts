@@ -62,7 +62,8 @@ export class StaffAttendanceAdmin implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 
     search(user: any) {

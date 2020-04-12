@@ -388,8 +388,8 @@ declare module Dto {
         address1: string,
         address2: string,
         email: string,
-        date1: string,
-        date2: string,
+        date1: Date,
+        date2: Date,
         state: string,
         notes: string,
         recurring: boolean

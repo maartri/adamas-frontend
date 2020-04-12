@@ -1,0 +1,12 @@
+nz-select{
+    width: 25%;
+    min-width: 18rem;
+}
+
+nz-select >>> div.ant-select-selection{
+    border-radius: 15px;
+}
+
+nz-select >>> input[type="text"]{
+    text-transform: "uppercase";
+}

@@ -42,6 +42,9 @@
       ],
       "@directives/*": [
         "./src/app/directives/*"
+      ],
+      "@intakes/*": [
+        "./src/app/pages/admin/recipient-views/intake-views/*"
       ]
     }
   },

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -6,6 +6,8 @@ import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
+
+import format from 'date-fns/format';
 
 @Component({
     styles: [`
@@ -20,15 +22,17 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             top: 1.5rem;
         }
     `],
-    templateUrl: './hrnote.html'
+    templateUrl: './hrnote.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-
+    
 export class StaffHRAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     inputForm: FormGroup;
     tableData: Array<any>;
+    loading: boolean = false;
 
     modalOpen: boolean = false;
     addORView: number = 1;
@@ -36,6 +40,16 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
 
     dateFormat: string = 'dd/MM/yyyy';
     isLoading: boolean = false;
+
+    private default = {
+        notes: '',
+        isPrivate: false,
+        alarmDate: null,
+        whocode: '',
+        recordNumber: null,
+        category: null
+    }
+
     
     constructor(
         private timeS: TimeSheetService,
@@ -44,8 +58,11 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        private cd: ChangeDetectorRef
     ) {
+        cd.detach();
+
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -59,7 +76,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
                 this.user = data;
                 this.search(this.user);
             }
-        });
+        });      
     }
 
     ngOnInit(): void {
@@ -81,16 +98,20 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
             whocode: '',
             recordNumber: null,
             category: ['', [Validators.required]]
-        });
+        });      
     }
 
     populate(): void{
-        this.listS.getlisthr().subscribe(data => this.categories = data)
+        this.listS.getlisthr().pipe(takeUntil(this.unsubscribe)).subscribe(data => this.categories = data)
     }
 
     search(user: any = this.user) {
-        this.timeS.gethrnotes(user.code).subscribe(data => {
+        this.loading = true;
+        this.cd.reattach();
+        this.timeS.gethrnotes(user.code).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             this.tableData = data;
+            this.loading = false;
+            this.cd.detectChanges()
         });
 
         this.populate();
@@ -126,8 +147,11 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
         if (!this.globalS.IsFormValid(this.inputForm))
             return;        
     
+        const cleanDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(
+            this.inputForm.get('alarmDate').value);
+        
+        this.inputForm.controls["alarmDate"].setValue(cleanDate);
         this.inputForm.controls["whocode"].setValue(this.user.code);
-
         this.timeS.posthrnotes(this.inputForm.value, this.user.id).pipe(
             takeUntil(this.unsubscribe)).subscribe(data => {
                 if (data) {
@@ -141,14 +165,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
 
     handleCancel() {
         this.modalOpen = false;
-        this.inputForm.reset({
-            notes: '',
-            isPrivate: false,
-            alarmDate: null,
-            whocode: '',
-            recordNumber: null,
-            category: null
-        });
+        this.inputForm.reset(this.default);
         this.isLoading = false;
     }
 }

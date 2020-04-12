@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -15,7 +15,8 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
             width:100%;
         }
     `],
-    templateUrl: './position.html'
+    templateUrl: './position.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -37,8 +38,10 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
         private listS: ListService,
         private router: Router,
         private globalS: GlobalService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private cd: ChangeDetectorRef
     ) {
+        cd.detach();
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -84,9 +87,14 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any = this.sharedS.getPicked()) {
+        this.cd.reattach();
+
+        this.isLoading = true;
         this.timeS.getstaffpositions(user.id)
             .subscribe(data => {
                 this.tableData = data;
+                this.isLoading = false;
+                this.cd.detectChanges();
             })
 
         this.listS.getlistpositions()

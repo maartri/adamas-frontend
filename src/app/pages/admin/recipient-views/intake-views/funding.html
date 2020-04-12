@@ -1,0 +1,59 @@
+<div nz-row>
+    <div nz-col nzSpan="20">
+        <button class="botton success" (click)="showAddModal()">Add Funding</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
+            [nzFrontPagination]="false" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">#</th>
+                    <th>Source</th>
+                    <th>Program</th>
+                    <th>Status</th>
+                    <th>Case Manager</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ i+1  }}</td>
+                    <td>{{ data.source }}</td>
+                    <td>{{ data.program }}</td>
+                    <td>{{ data.status }}</td>
+                    <td>{{ data.cm }}</td>
+                    <td>{{ data.details }}</td>                   
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+
+<!-- <nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOREdit == 1 ? 'Add Branch' : 'Edit Branch'"
+    (nzOnCancel)="handleCancel()">
+    <div [formGroup]="inputForm">
+        <div nz-row>
+            <nz-form-item *ngIf="addOREdit == 1">
+                <nz-form-label [nzNoColon]="true">Branch</nz-form-label>
+                <nz-form-control nzErrorTip="Branch is required!">
+                    <nz-select formControlName="branch" nzAllowClear [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let d of alist" [nzValue]="d" [nzLabel]="d">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <div class="form-group" *ngIf="addOREdit == 2">
+                <label for="">Branch</label>
+                <input nz-input formControlName="branch" disabled />
+            </div>
+        </div>
+        <div nz-row>
+            <div class="form-group">
+                <label for="">Notes</label>
+                <textarea rows="4" nz-input formControlName="notes"></textarea>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="save()" [nzLoading]="loading">Save</button>
+    </div>
+</nz-modal> -->

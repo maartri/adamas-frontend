@@ -1,10 +1,13 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { GlobalService, StaffService, ShareService, leaveTypes } from '@services/index';
 
 @Component({
     styles: [`
+        nz-tabset{
+            margin-top:1rem;
+        }
         nz-tabset >>> div > div.ant-tabs-nav-container{
             height: 25px !important;
             font-size: 13px !important;
@@ -15,50 +18,80 @@ import { GlobalService, StaffService, ShareService, leaveTypes } from '@services
             height: 25px;
         }
         nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
-            background: #45627e;
+            background: #717e94;
             color: #fff;
         }
     `],
-    templateUrl: './staff.html'
+    templateUrl: './staff.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
 export class StaffAdmin implements OnInit, OnDestroy {
-    user: any
+    user: any = null;
     nzSelectedIndex: number = 0;
 
     isFirstLoad: boolean = false;
-    change(data: any) {
-        
-        let user = {};
-        if (data == 'ABBAS A') {
-            user = {
-                code: "ABBAS A",
-                id: "S0100006438",
-                view: 'staff',
-                sysmgr: true
-            }
-        } else {
-            user = {
-                code: "ADAMS D S",
-                id: "SM100005229",
-                view: "staff",
-                sysmgr: true
-            } 
-        }
-        
+    sample: any;
+
+    listChange(event: any) {
 
         if (!this.isFirstLoad) {
             this.view(0);
             this.isFirstLoad = true;
         }
-        this.sharedS.emitChange(user);
+        // this.user = {
+        //     agencyDefinedGroup: "ARUNDEL",
+        //     code: "2CDC STEPH",
+        //     id: "T0100005506",
+        //     sysmgr: true,
+        //     view: "recipient"
+        // }
+
+        this.user = {
+            code: event.accountNo,
+            id: event.uniqueID,
+            view: event.view,
+            agencyDefinedGroup: event.agencyDefinedGroup,
+            sysmgr: event.sysmgr
+        }
+
+        this.sharedS.emitChange(this.user);
+        this.cd.detectChanges();
     }
+    
+    // change(data: any) {
+        
+    //     let user = {};
+    //     if (data == 'ABBAS A') {
+    //         user = {
+    //             code: "ABBAS A",
+    //             id: "S0100006438",
+    //             view: 'staff',
+    //             sysmgr: true
+    //         }
+    //     } else {
+    //         user = {
+    //             code: "ADAMS D S",
+    //             id: "SM100005229",
+    //             view: "staff",
+    //             sysmgr: true
+    //         } 
+    //     }
+        
+
+    //     if (!this.isFirstLoad) {
+    //         this.view(0);
+    //         this.isFirstLoad = true;
+    //     }
+    //     this.sharedS.emitChange(user);
+    // }
 
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
-        private sharedS: ShareService
+        private sharedS: ShareService,
+        private cd: ChangeDetectorRef
     ) {
         this.sharedS.emitRouteChangeSource$.subscribe(data => {
             console.log(data);
@@ -118,16 +151,5 @@ export class StaffAdmin implements OnInit, OnDestroy {
             this.router.navigate(['/admin/staff/groupings-preferences'])
         }
         // this.nzSelectedIndex = this.nzSelectedIndex - 1;
-    }
-
-    nzSelectChange(event: any) {
-        // console.log(event);
-    }
-
-    haha() {
-        this.nzSelectedIndex = this.nzSelectedIndex + 1;
-        setTimeout(() => {
-            this.nzSelectedIndex = this.nzSelectedIndex - 1;
-        }, 1000);
     }
 }

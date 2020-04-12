@@ -30,7 +30,7 @@ export class AuthService implements ErrorHandler{
 
         return this.http.post(url, data, { reportProgress: true })        
                         .pipe(
-                            catchError(this.handleError)
+                            catchError(err => this.handleError(err))
                         )
     }
 
@@ -38,23 +38,23 @@ export class AuthService implements ErrorHandler{
         var _params = this.GlobalS.serialize(params);
         return this.http.get(url, { params: _params })
                     .pipe(
-                        catchError(this.handleError)
+                        catchError(err => this.handleError(err))
                     )
     }
 
     put(url: string, data: any): Observable<any>{
         return this.http.put(url, data, { headers })
-                        // .pipe(
-                        //     catchError(this.handleError)
-                        // )
+                        .pipe(
+                            catchError(err => this.handleError(err))
+                        )
     }
 
     delete(url:string, params: any = null): Observable<any>{
         var _params = this.GlobalS.serialize(params);
         return this.http.delete(url, { params: _params })
-                    // .pipe(
-                    //     catchError(this.handleError)
-                    // )
+                    .pipe(
+                        catchError(err => this.handleError(err))
+                    )
     }
 
     handleError(error: Error | HttpErrorResponse) {       

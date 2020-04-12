@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, ClientService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -15,7 +15,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         }
         
     `],
-    templateUrl: './incident.html'
+    templateUrl: './incident.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -27,6 +28,7 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
 
     checked: boolean = false;
     isDisabled: boolean = false;
+    loading: boolean = false;
 
     constructor(
         private timeS: TimeSheetService,
@@ -35,8 +37,10 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        private cd: ChangeDetectorRef
     ) {
+        cd.detach();
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -63,9 +67,13 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    search(user: any) {       
+    search(user: any) {
+        this.cd.reattach();
+        this.loading = true;
         this.clientS.getincidents(user.id).subscribe(data => {
             this.tableData = data.list;
+            this.loading = false;
+            this.cd.detectChanges();
         })
     }
 
@@ -121,11 +129,9 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
             SmsMessage: group.get('smsMessage').value,
             Id: this.user.id
         }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-                this.globalS.sToast('Success', 'Change successful');
-                this.inputForm.markAsPristine();
-                return;
-            }
+            this.globalS.sToast('Success', 'Change successful');
+            this.inputForm.markAsPristine();            
+            return;            
         });
     }
 

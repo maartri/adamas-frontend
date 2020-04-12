@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -16,7 +16,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             width: 15rem;
         }
     `],
-    templateUrl: './competencies.html'
+    templateUrl: './competencies.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -25,6 +26,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     user: any;
     inputForm: FormGroup;
     tableData: Array<any>;
+    loading: boolean = false;
 
     modalOpen: boolean = false;
 
@@ -42,8 +44,11 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        private cd: ChangeDetectorRef
     ) {
+        cd.detach();
+
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -83,8 +88,12 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any = this.sharedS.getPicked()) {
+        this.cd.reattach();
+        this.loading = true;
         this.timeS.getcompetencies(user.code).subscribe(data => {
             this.tableData = data;
+            this.loading = false;
+            this.cd.detectChanges();
         });
     }
 

@@ -14,7 +14,7 @@ import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 
 export class StaffPersonalAdmin implements OnInit, OnDestroy {
     private subscription$: Subscription
-
+    user: any;
     constructor(
         private sharedS: ShareService,
         private globalS: GlobalService,

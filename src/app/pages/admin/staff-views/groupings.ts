@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -21,7 +21,8 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
             text-decoration:underline;
         }
     `],
-    templateUrl: './groupings.html'
+    templateUrl: './groupings.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -51,8 +52,11 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
         private listS: ListService,
         private router: Router,
         private globalS: GlobalService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private cd: ChangeDetectorRef
     ) {
+        cd.detach();
+
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -94,6 +98,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any) {
+        this.cd.reattach();
         //if (!this.user) return;
         this.loading = true;
 
@@ -110,6 +115,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
 
             this.userdefined1List = data[2];
             this.userdefined2List = data[3];
+            this.cd.detectChanges();
         });
     }
 

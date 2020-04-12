@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -15,6 +15,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         }
         
     `],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './quotes.html'
 })
 
@@ -40,12 +41,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        private cd: ChangeDetectorRef
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
-                    this.router.navigate(['/admin/recipient/personal'])
+                    this.router.navigate(['/admin/recipient/personal']);
                 }
             }
         });
@@ -64,7 +66,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 
     search(user: any) {
@@ -77,6 +80,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy {
         }).subscribe(data => {
             this.tableData = data;
             this.loading = false;
+            this.cd.markForCheck();
         })
     }
 

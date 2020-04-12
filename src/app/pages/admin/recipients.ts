@@ -1,10 +1,13 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { GlobalService, StaffService, ShareService, leaveTypes } from '@services/index';
 
 @Component({
     styles: [`
+        nz-tabset{
+            margin-top:1rem;
+        }
         nz-tabset >>> div > div.ant-tabs-nav-container{
             height: 25px !important;
             font-size: 13px !important;
@@ -15,18 +18,67 @@ import { GlobalService, StaffService, ShareService, leaveTypes } from '@services
             height: 25px;
         }
         nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
-            background: #45627e;
+            background: #717e94;
             color: #fff;
         }
+        ul{
+            list-style:none;
+            float:right;
+            margin:0;
+        }
+        li{
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 12px;
+            padding: 5px;
+            cursor:pointer;
+        }
+        li:hover{
+            color:#177dff;
+        }
+        li div{
+            text-align: center;
+            font-size: 17px;
+        }
     `],
-    templateUrl: './recipients.html'
+    templateUrl: './recipients.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
-export class RecipientsAdmin implements OnInit, OnDestroy {
+export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     user: any
     nzSelectedIndex: number = 0;
     isFirstLoad: boolean = false;
+
+    sample: any;
+
+    listChange(event: any) {
+
+        if (!this.isFirstLoad) {
+            this.view(0);
+            this.isFirstLoad = true;
+        }
+        
+        this.user = {
+            agencyDefinedGroup: "ARUNDEL",
+            code: "2CDC STEPH",
+            id: "T0100005506",
+            sysmgr: true,
+            view: "recipient"
+        }
+
+        // this.user = {
+        //     code: event.accountNo,
+        //     id: event.uniqueID,
+        //     view: event.view,
+        //     agencyDefinedGroup: event.agencyDefinedGroup,
+        //     sysmgr: event.sysmgr
+        // }
+
+        this.sharedS.emitChange(this.user);
+        this.cd.detectChanges();
+    }
 
     change(data: any) {
         let user = {};
@@ -69,17 +121,22 @@ export class RecipientsAdmin implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
-        private sharedS: ShareService
+        private sharedS: ShareService,
+        private cd: ChangeDetectorRef
     ) {
 
     }
 
     ngOnInit(): void {
-
+        
     }
 
     ngOnDestroy(): void {
 
+    }
+
+    ngAfterViewInit() {
+        
     }
 
     view(index: number) {

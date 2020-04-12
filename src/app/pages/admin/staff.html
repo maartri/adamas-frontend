@@ -1,31 +1,40 @@
-<div>
-    <div>
+<div nz-row>
+
+    <div nz-col nzSpan="6" style="margin-top: 10px;">
+        <app-search-list [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+    </div>
+
+
+    <!-- <div>
         <select [(ngModel)]="user" (ngModelChange)="change($event)">
             <option value=""></option>
             <option value="ABBAS A">ABBAS A</option>
             <option value="ADAMS D S">ADAMS D S</option>
         </select>
-
-        <button (click)="haha()">asd</button>
-    </div>
+    </div> -->
 
     <!-- (nzSelectedIndexChange)="view($event)" -->
-    <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzSelectedIndex]="nzSelectedIndex" (nzSelectChange)="nzSelectChange($event)" [nzType]="'card'">
-        <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
-        <nz-tab nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
-        <nz-tab nzTitle="Pay" (nzClick)="view(2)"></nz-tab>
-        <nz-tab nzTitle="Leave App" (nzClick)="view(3)"> </nz-tab>
-        <nz-tab nzTitle="Reminders" (nzClick)="view(4)"> </nz-tab>
-        <nz-tab nzTitle="OP Notes" (nzClick)="view(5)"> </nz-tab>
-        <nz-tab nzTitle="HR Notes" (nzClick)="view(6)"> </nz-tab>
-        <nz-tab nzTitle="Competencies" (nzClick)="view(7)"> </nz-tab>
-        <nz-tab nzTitle="Training" (nzClick)="view(8)"> </nz-tab>
-        <nz-tab nzTitle="Incident" (nzClick)="view(9)"> </nz-tab>
-        <nz-tab nzTitle="Document" (nzClick)="view(10)"> </nz-tab>
-        <nz-tab nzTitle="Time & Attendance" (nzClick)="view(11)"> </nz-tab>
-        <nz-tab nzTitle="Position" (nzClick)="view(12)"> </nz-tab>
-        <nz-tab nzTitle="Groupings & Preferences" (nzClick)="view(13)"> </nz-tab>
-    </nz-tabset>
-    
-    <router-outlet></router-outlet>
+    <div nz-col nzSpan="24">
+        <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzSelectedIndex]="nzSelectedIndex" [nzType]="'card'">
+            <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
+            <nz-tab nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
+            <nz-tab nzTitle="Pay" (nzClick)="view(2)"></nz-tab>
+            <nz-tab nzTitle="Leave App" (nzClick)="view(3)"> </nz-tab>
+            <nz-tab nzTitle="Reminders" (nzClick)="view(4)"> </nz-tab>
+            <nz-tab nzTitle="OP Notes" (nzClick)="view(5)"> </nz-tab>
+            <nz-tab nzTitle="HR Notes" (nzClick)="view(6)"> </nz-tab>
+            <nz-tab nzTitle="Competencies" (nzClick)="view(7)"> </nz-tab>
+            <nz-tab nzTitle="Training" (nzClick)="view(8)"> </nz-tab>
+            <nz-tab nzTitle="Incident" (nzClick)="view(9)"> </nz-tab>
+            <nz-tab nzTitle="Document" (nzClick)="view(10)"> </nz-tab>
+            <nz-tab nzTitle="Time & Attendance" (nzClick)="view(11)"> </nz-tab>
+            <nz-tab nzTitle="Position" (nzClick)="view(12)"> </nz-tab>
+            <nz-tab nzTitle="Groupings & Preferences" (nzClick)="view(13)"> </nz-tab>
+        </nz-tabset>
+    </div>
+
+    <div nz-col nzSpan="24">
+        <router-outlet></router-outlet>
+    </div>
+
 </div>

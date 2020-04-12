@@ -77,6 +77,18 @@ import {
   CanDeactivateGuard
 } from '@services/index'
 
+import {
+  IntakeAlerts,
+  IntakeBranches,
+  IntakeConsents,
+  IntakeFunding,
+  IntakeGoals,
+  IntakeGroups,
+  IntakePlans,
+  IntakeServices,
+  IntakeStaff
+} from '@intakes/index';
+
 const routes: Routes = [
   {
     path: '',
@@ -179,6 +191,22 @@ const routes: Routes = [
         component: LandingAdmin
       },
       {
+        path: 'daymanager',
+        component: DayManagerAdmin
+      },
+      {
+        path: 'timesheet',
+        component: TimesheetAdmin
+      },
+      {
+        path: 'reports',
+        component: ReportsAdmin
+      },
+      {
+        path: 'rosters',
+        component: RostersAdmin
+      },
+      {
         path: 'staff',
         component: StaffAdmin,
         children: [
@@ -255,7 +283,50 @@ const routes: Routes = [
           },
           {
             path: 'intake',
-            component: RecipientIntakeAdmin
+            component: RecipientIntakeAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'branches',
+                pathMatch: 'full'
+              },
+              {
+                path: 'alerts',
+                component: IntakeAlerts
+              },
+              {
+                path: 'branches',
+                component: IntakeBranches
+              },
+              {
+                path: 'consents',
+                component: IntakeConsents
+              },
+              {
+                path: 'funding',
+                component: IntakeFunding
+              },
+              {
+                path: 'goals',
+                component: IntakeGoals
+              },
+              {
+                path: 'groups',
+                component: IntakeGroups
+              },
+              {
+                path: 'plans',
+                component: IntakePlans
+              },
+              {
+                path: 'services',
+                component: IntakeServices
+              },
+              {
+                path: 'staff',
+                component: IntakeStaff
+              }
+            ]
           },
           {
             path: 'reminders',
@@ -371,5 +442,16 @@ export const PAGE_COMPONENTS = [
   RecipientPermrosterAdmin,
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
-  RecipientRemindersAdmin
+  RecipientRemindersAdmin,
+
+  // Intake Views
+  IntakeAlerts,
+  IntakeBranches,
+  IntakeConsents,
+  IntakeFunding,
+  IntakeGoals,
+  IntakeGroups,
+  IntakePlans,
+  IntakeServices,
+  IntakeStaff
 ]

@@ -1,7 +1,7 @@
 <div nz-row nzGutter="16">
     <div nz-col nzSpan="12">
         <button class="botton success" (click)="showAddModal(1)">Add Group</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined1">
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined1">
             <thead>
                 <tr>
                     <th>Group</th>
@@ -29,7 +29,7 @@
 
     <div nz-col nzSpan="12">
         <button class="botton success" (click)="showAddModal(2)">Add Preferences</button>
-        <nz-table #tb2 [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined2">
+        <nz-table #tb2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined2">
             <thead>
                 <tr>
                     <th>Preference</th>
@@ -58,7 +58,7 @@
 </div>
 
 
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()" >
     <div nz-row [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>

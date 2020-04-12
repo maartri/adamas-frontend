@@ -1,7 +1,7 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add Reminder</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzLoading]="isLoading" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
                 <tr>
@@ -22,10 +22,89 @@
                         <a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(i)">Delete</a>
                     </td>
                 </tr>
             </tbody>
         </nz-table>
     </div>
 </div>
+
+<nz-modal [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit ? 'Add Reminder' : 'Edit Reminder'"
+    (nzOnCancel)="handleCancel()">
+    <div [formGroup]="inputForm">
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label [nzNoColon]="true">Preferences</nz-form-label>
+                <nz-form-control nzErrorTip="Preferences is required!">
+                    <nz-select formControlName="staffAlert" nzAllowClear nzPlaceHolder=""
+                        [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let d of lists" [nzValue]="d" [nzLabel]="d"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-row [nzGutter]="12">
+            <div nz-col nzSpan="12" class="form-group">
+                <label for="">Reminder Date</label>
+                <nz-date-picker formControlName="reminderDate" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+            <div nz-col nzSpan="12" class="form-group">
+                <label for="">Due Date</label>
+                <nz-date-picker formControlName="dueDate" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="12">
+            <div nz-col nzSpan="5" class="form-group">
+                <label for="">Recurring</label>
+                <label style="margin: 10px;" nz-checkbox formControlName="recurring"></label>
+            </div>
+            <div nz-col nzOffset = "3" nzSpan="8" class="form-group">
+                <nz-form-item>
+                    <nz-form-label [nzNoColon]="true">Recurring Every</nz-form-label>
+                    <nz-form-control nzErrorTip="Preferences is required!">
+                        <nz-select formControlName="recurrInt" nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let d of dayInt" [nzValue]="d" [nzLabel]="d"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nzSpan="8" class="form-group">
+                <nz-form-item>
+                    <nz-form-label [nzNoColon]="true"></nz-form-label>
+                    <nz-form-control nzErrorTip="Preferences is required!">
+                        <nz-select formControlName="recurrStr" nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let d of dayStr" [nzValue]="d" [nzLabel]="d"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="12">
+            <div nz-col nzSpan="8" class="form-group">
+                <label for="">List Order</label>
+                <input nz-input formControlName="listOrder" />
+            </div>
+            <div nz-col nzSpan="16" class="form-group">
+                <nz-form-item>
+                    <nz-form-label [nzNoColon]="true">Follow-up Email</nz-form-label>
+                    <nz-form-control nzErrorTip="Enter a valid email address!">
+                        <nz-input-group>
+                            <input type="text" nz-input formControlName="followUpEmail" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div class="form-group">
+                <label for="">Notes</label>
+                <textarea rows="4" nz-input formControlName="notes"></textarea>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="save()" [nzLoading]="isLoading">Save</button>
+    </div>
+</nz-modal>

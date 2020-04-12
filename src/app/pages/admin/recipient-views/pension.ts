@@ -12,19 +12,38 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     styles: [`
         nz-table{
             margin-top:20px;
-        }        
+        }
+        nz-select{
+            width:100%;
+        }
+        div.divider-subs div{
+            margin-top:1rem;
+        }
     `],
     templateUrl: './pension.html'
 })
 
 
 export class RecipientPensionAdmin implements OnInit, OnDestroy {
+    
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     inputForm: FormGroup;
+    pensionForm: FormGroup;
 
     checked: boolean = false;
     isDisabled: boolean = false;
+
+    alist: Array<any> = [];
+    blist: Array<any> = [];
+    clist: Array<any> = [];
+    dlist: Array<any> = [];
+
+    dateFormat: string = 'dd/MM/yyyy';
+
+    modalOpen: boolean = false;
+    addOREdit: number;
+    isLoading: boolean = false;
 
     constructor(
         private timeS: TimeSheetService,
@@ -45,6 +64,7 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'insurance-pension')) {
+                this.user = data;
                 this.search(data);
             }
         });
@@ -57,10 +77,12 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 
-    search(user: any) {
+    search(user: any = this.user) {
+        
         this.timeS.getinsurance(user.id).subscribe(data => {
             this.inputForm.patchValue({
                 medicareNumber: data.medicareNumber,
@@ -79,35 +101,69 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
                 whereWillHeld: data.whereWillHeld,
                 funeralArrangements: data.funeralArrangements
             });
-        })
-    }
-
-    patchData(data: any) {
-        this.inputForm.patchValue({
-            autoLogout: data.autoLogout,
-            emailMessage: data.emailMessage,
-            excludeShiftAlerts: data.excludeShiftAlerts,
-            inAppMessage: data.inAppMessage,
-            logDisplay: data.logDisplay,
-            pin: data.pin,
-            rosterPublish: data.rosterPublish,
-            shiftChange: data.shiftChange,
-            smsMessage: data.smsMessage
         });
+
+        
+        this.listS.getpension(this.user.id).subscribe(data => this.blist = data);
+
+        this.listS.getpensionall().subscribe(data => this.clist = data);
+        this.listS.getcardstatus().subscribe(data => this.dlist = data)
+
+        this.getpension();
     }
 
+    getpension() {
+        this.timeS.getpension(this.user.id).subscribe(data => this.alist = data);
+    }
+
+    showAddModal() {
+        this.addOREdit = 1;
+        this.modalOpen = true;
+    }
+
+    edit(index: number) {
+        const { recordNumber, personID, name, address1, address2, notes } = this.alist[index]
+        
+        this.pensionForm.patchValue({
+            recordNumber,
+            personID,
+            name,
+            address1,
+            address2,
+            notes
+        });
+
+        this.addOREdit = 2;
+        this.modalOpen = true;
+    }
 
     buildForm() {
         this.inputForm = this.formBuilder.group({
-            autoLogout: [''],
-            emailMessage: false,
-            excludeShiftAlerts: false,
-            inAppMessage: false,
-            logDisplay: false,
-            pin: [''],
-            rosterPublish: false,
-            shiftChange: false,
-            smsMessage: false
+            personID: '',
+            medicareNumber: '',
+            medicareExpiry: null,
+            medicareRecipientID: '',
+            pensionStatus: '',
+            concessionNumber: '',
+            dvaNumber: '',
+            ambulanceType: '',
+            haccDvaCardHolderStatus: '',
+            dvaBenefits: false,
+            pensionVoracity: false,
+            ambulance: false,
+            dateofDeath: null,
+            willAvailable: '',
+            whereWillHeld: '',
+            funeralArrangements: ''
+        });
+
+        this.pensionForm = this.formBuilder.group({
+            recordNumber: null,
+            personID: null,
+            name: null,
+            address1: null,
+            address2: null,
+            notes: null
         });
     }
 
@@ -115,27 +171,65 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
         return this.globalS.acceptOnlyNumeric(data);
     }
 
-    save() {
-        const group = this.inputForm;
+    delete(index: number) {
+        const { recordNumber } = this.alist[index];
 
-        this.timeS.updatetimeandattendance({
-            AutoLogout: group.get('autoLogout').value,
-            EmailMessage: group.get('emailMessage').value,
-            ExcludeShiftAlerts: group.get('excludeShiftAlerts').value,
-            InAppMessage: group.get('inAppMessage').value,
-            LogDisplay: group.get('logDisplay').value,
-            Pin: group.get('pin').value,
-            RosterPublish: group.get('rosterPublish').value,
-            ShiftChange: group.get('shiftChange').value,
-            SmsMessage: group.get('smsMessage').value,
-            Id: this.user.id
-        }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-                this.globalS.sToast('Success', 'Change successful');
-                this.inputForm.markAsPristine();
-                return;
-            }
+        this.timeS.deletespension(recordNumber)
+            .subscribe(data => {
+                this.globalS.sToast('Success', 'Data Deleted');
+                this.handleCancel();
+                this.getpension();
+            });
+    }
+
+    save() {
+        const input = this.inputForm.value;
+
+        const medicareExpiry = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(input.medicareExpiry);
+        const dateofDeath = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(input.dateofDeath);
+
+        this.inputForm.patchValue({
+            medicareExpiry,
+            dateofDeath
         });
+
+        this.timeS.updateinsurance(this.inputForm.value, this.user.id)
+            .subscribe(data => {
+                this.globalS.sToast('Success', 'Data Updated');
+                this.inputForm.markAsPristine();
+            });
+    }
+
+    savePension() {
+        if (!this.globalS.IsFormValid(this.pensionForm))
+            return;
+        
+        this.isLoading = true;
+        
+        if (this.addOREdit == 1) {
+            this.pensionForm.controls["personID"].setValue(this.user.id)
+            this.timeS.postpension(this.pensionForm.value)
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.getpension();
+                    this.handleCancel();
+                });
+        }
+
+        if (this.addOREdit == 2) {
+            this.timeS.updatepension(this.pensionForm.value)
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.getpension();
+                    this.handleCancel();
+                });
+        }
+    }
+
+    handleCancel() {
+        this.pensionForm.reset();
+        this.modalOpen = false;
+        this.isLoading = false;
     }
 
     canDeactivate() {

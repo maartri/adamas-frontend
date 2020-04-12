@@ -1,29 +1,124 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add OP Note</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
                 <tr>
-                    <th class="left" style="width:40rem">Details</th>
+                    <th class="left" style="width: 75%">Details</th>
                     <th>Detail Date</th>
                     <th>Creator </th>
-                    <th>Action</th>
+                    <th class="action">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ data.detail  }}</td>
+                    <td class="left">
+                        <div class="word-break">
+                            {{ data.detail  }}
+                        </div>
+                    </td>
                     <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
                     <td>{{ data.creator || '-' | uppercase  }}</td>
                     <td>
                         <a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
-                            (nzOnConfirm)="delete(data)">Delete</a>
+                            (nzOnConfirm)="delete(i)">Delete</a>
                     </td>
                 </tr>
             </tbody>
         </nz-table>
     </div>
 </div>
+
+
+<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add OP Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()" nzWidth="800"
+    [nzStyle]="{ top: '20px' }">
+    <div nz-row [formGroup]="caseFormGroup" nzGutter="16">
+        <div nz-col nzSpan="7" [formGroup]="caseFormGroup">
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Category</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="category" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of dlist" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Program</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of alist" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Discipline</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="discipline" nzPlaceHolder=""
+                            [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of blist" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Care Domain</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="careDomain" nzPlaceHolder=""
+                            [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of clist" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-col nzSpan="14">
+            <div nz-row nzGutter="32" [formGroup]="caseFormGroup">
+                <div nz-col nzSpan="12" class="form-group">
+                    <label for="">Reminder Date</label>
+                    <nz-date-picker formControlName="alarmDate" [nzFormat]="dateFormat"></nz-date-picker>
+                </div>
+                <div nz-col nzSpan="12" class="form-group">
+                    <label formControlName="publishToApp" class="chk" nz-checkbox>Publish To Mobile App</label>
+                </div>
+            </div>
+            <div nz-row>
+                <div class="form-group" [formGroup]="caseFormGroup">
+                    <nz-radio-group formControlName="restrictionsStr">
+                        <label nz-radio nzValue="public">Public</label>
+                        <label nz-radio nzValue="workgroup">Workgroup Only</label>
+                        <label nz-radio nzValue="restrict">Restrict To</label>
+                    </nz-radio-group>
+                </div>
+            </div>
+            <div nz-row class="overflow-list" *ngIf="caseFormGroup.get('restrictionsStr').value == 'restrict'">
+                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+                    <div nz-row *ngFor="let list of mlist; let i = index">
+                        <div class="chkboxes" nz-col nzOffset="2" nzSpan="22"><label nz-checkbox
+                                [nzValue]="list">{{ list }}</label></div>
+                    </div>
+                </nz-checkbox-wrapper>
+            </div>
+            <div nz-row [formGroup]="caseFormGroup">
+                <nz-form-item>
+                    <nz-form-label>Notes</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <textarea rows="4" nz-input formControlName="notes"></textarea>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="save()" [nzLoading]="loading">Save</button>
+    </div>
+</nz-modal>

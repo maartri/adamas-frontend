@@ -1,3 +1,51 @@
-<div>
-    5
+<div nz-row nzGutter="16">
+    <div nz-col nzSpan="2">
+        <p routerLink="branches" routerLinkActive="active-tab">
+            <i nz-icon nzType="shop" nzTheme="outline"></i>
+            Branches
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="funding" routerLinkActive="active-tab">
+            <i nz-icon nzType="dollar" nzTheme="outline"></i>
+            Funding
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="goals" routerLinkActive="active-tab">
+            <i nz-icon nzType="flag" nzTheme="outline"></i>
+            Goals
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="plans" routerLinkActive="active-tab">
+            <i nz-icon nzType="audit" nzTheme="outline"></i>
+            Plans
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="services" routerLinkActive="active-tab">
+            <i nz-icon nzType="solution" nzTheme="outline"></i>
+            Services
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="staff" routerLinkActive="active-tab">
+            <i nz-icon nzType="user-add" nzTheme="outline"></i>
+            Staff
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="alerts" routerLinkActive="active-tab">
+            <i nz-icon nzType="alert" nzTheme="outline"></i>
+            Alerts
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="consents" routerLinkActive="active-tab">
+            <i nz-icon nzType="eye" nzTheme="outline"></i>
+            Consents
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="groups" routerLinkActive="active-tab">
+            <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>
+            Groups
+        </p>
+    </div>
+    <div nz-col nzSpan="20" nzOffset="1">
+        <router-outlet></router-outlet>
+    </div>
 </div>

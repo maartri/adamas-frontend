@@ -1,12 +1,13 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { UploadFileComponent } from './upload-file/upload-file.component'
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 
-import { RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe } from '@pipes/pipes';
+import { RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, DayManagerPopulate } from '@pipes/pipes';
 import { ProfileComponent } from './profile/profile.component'
 
 import {
@@ -26,6 +27,10 @@ import { ActionComponent } from './action/action.component';
 import { SearchListComponent } from './search-list/search-list.component';
 import { ContactsDetailsComponent } from './contacts-details/contacts-details.component';
 import { SearchTimesheetComponent } from './search-timesheet/search-timesheet.component';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
+import { DmCalendarComponent } from './dm-calendar/dm-calendar.component';
+import { RecipientPopupComponent } from './recipient-popup/recipient-popup.component';
+
 
 @NgModule({
   declarations: [
@@ -34,7 +39,7 @@ import { SearchTimesheetComponent } from './search-timesheet/search-timesheet.co
     //Directives,
     ClickOutsideDirective,
 
-    RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, ProfileComponent,
+    RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, DayManagerPopulate,
     ProfileComponent,
     SuburbComponent,
     CalendarComponent,
@@ -42,15 +47,20 @@ import { SearchTimesheetComponent } from './search-timesheet/search-timesheet.co
     ActionComponent,
     SearchListComponent,
     ContactsDetailsComponent,
-    SearchTimesheetComponent
+    SearchTimesheetComponent,
+    BreadcrumbsComponent,
+    DmCalendarComponent,
+    RecipientPopupComponent
   ],
   imports: [
     CommonModule,
+    RouterModule,
     FormsModule,
     ReactiveFormsModule,
     NgZorroAntdModule,
     NzUploadModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
+    
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
@@ -65,7 +75,11 @@ import { SearchTimesheetComponent } from './search-timesheet/search-timesheet.co
     ActionComponent,
     SearchListComponent,
     ContactsDetailsComponent,
-    SearchTimesheetComponent
+    SearchTimesheetComponent,
+    BreadcrumbsComponent,
+    DmCalendarComponent,
+    DayManagerPopulate,
+    RecipientPopupComponent
   ],
   providers: [
     

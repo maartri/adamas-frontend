@@ -1,3 +1,20 @@
-<div>
-    daymanager
+<div nz-row>
+    <div nz-row class="dm-input">
+        <div nz-col nzSpan="5">
+            <label for="date"> Date</label>
+            <nz-date-picker [(ngModel)]="date"></nz-date-picker>
+        </div>
+        <div nz-col nzSpan="5">
+            <label for="dayview">Day View</label>
+            <nz-select [(ngModel)]="dayView">
+                <nz-option *ngFor="let no of dayViewArr" [nzValue]="no" [nzLabel]="no"></nz-option>
+            </nz-select>
+        </div>
+    </div>
+    <div>
+        <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [copyPaste]="toBePasted?.length > 0"
+            (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)"
+            (data)="data($event)" (paste)="pasted($event)"></dm-calendar>
+    </div>
+
 </div>

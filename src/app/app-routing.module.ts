@@ -89,6 +89,8 @@ import {
   IntakeStaff
 } from '@intakes/index';
 
+import { ExtraComponent } from './pages/extra/extra';
+
 const routes: Routes = [
   {
     path: '',
@@ -364,6 +366,10 @@ const routes: Routes = [
       }
     ]
   },
+  {
+    path: 'extra',
+    component: ExtraComponent
+  }
   // {
   //   path: '**',
   //   redirectTo: ''
@@ -453,5 +459,7 @@ export const PAGE_COMPONENTS = [
   IntakeGroups,
   IntakePlans,
   IntakeServices,
-  IntakeStaff
+  IntakeStaff,
+
+  ExtraComponent
 ]

@@ -5,7 +5,7 @@
             <app-search-timesheet [view]="0" (selected)="picked($event)"></app-search-timesheet>
         </div>
         <div nz-col nzSpan="16">
-            <ul>
+            <ul *ngIf="selected">
                 <li>
                     <div (click)="confirm(1)" nz-tooltip nzTooltipTitle="Add Timesheets"><i nz-icon nzType="plus" nzTheme="outline"></i></div>
                 </li>
@@ -28,16 +28,55 @@
         </div>
     </div>
 
+    <div *ngIf="false" nz-row>
+        <nz-table #fixedTable [nzData]="resultMapData" [nzSize]="'small'"  [nzScroll]="{ x: '2000px', y: '300px' }">
+            <thead>
+                <tr>
+                    <th nzWidth="200px" nzLeft="0px">Shift #</th>
+                    <th nzWidth="100px" nzLeft="200px">Date</th>
+                    <th nzWidth="80px" nzLeft="300px">Start Time</th>
+                    <th nzWidth="80px" nzLeft="380px">End Time</th>
+                    <th nzWidth="80px">Duration</th>
+                    <th nzWidth="160px">Recipient or Location</th>
+                    <th nzWidth="160px">Program</th>
+                    <th nzWidth="220px">Activity</th>
+                    <th nzWidth="90px">Pay Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of fixedTable.data">
+                    <ng-container *ngFor="let item of mapOfExpandedData[data.key]">
+                        <tr>
+                            <!-- [nzShowExpand]="!!item.children" [(nzExpand)]="item.expand"
+                            (nzExpandChange)="collapse(mapOfExpandedData[data.key], item, $event)" -->
+                            <td nzWidth="200px" nzLeft="0px" [nzIndentSize]="item.level * 10">
+                                {{ item.name || item.activity }}
+                            </td>
+                            <td  nzWidth="100px" nzLeft="200px">{{ item.activity }}</td>
+                            <td  nzWidth="80px" nzLeft="300px">{{ item.activity }}</td>
+                            <td  nzWidth="80px" nzLeft="380px">{{ item.activity }}</td>
+                            <td  nzWidth="80px">{{ item.activity }}</td>
+                            <td  nzWidth="160px">{{ item.activity }}</td>
+                            <td  nzWidth="160px">{{ item.activity }}</td>
+                            <td  nzWidth="220px">{{ item.activity }}</td>
+                            <td  nzWidth="90px">{{ item.activity }}</td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </nz-table>
+    </div>
+
     <div nz-row>
         <div nz-col nzSpan="24">
-            <nz-table #fixedTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"  [nzScroll]="{ x: '2000px', y: '300px' }"
-                [nzFrontPagination]="false" [nzData]="timesheets">
+            <nz-table #sss [nzShowPagination]="true" [nzLoading]="loading" [nzSize]="'small'"  [nzScroll]="{ x: '2000px', y: '300px' }"
+                [nzFrontPagination]="true" [nzData]="timesheets">
                 <thead>
                     <tr>
-                        <th nzWidth="80px" nzLeft="0px">Shift #</th>
-                        <th nzWidth="100px" nzLeft="80px">Date</th>
-                        <th nzWidth="80px" nzLeft="170px">Start Time</th>
-                        <th nzWidth="80px" nzLeft="250px">End Time</th>
+                        <th nzWidth="70px" nzLeft="0px">Shift #</th>
+                        <th nzWidth="95px" nzLeft="70px">Date</th>
+                        <th nzWidth="70px" nzLeft="165px">Start Time</th>
+                        <th nzWidth="70px" nzLeft="240px">End Time</th>
                         <th nzWidth="80px">Duration</th>
                         <th nzWidth="160px">Recipient or Location</th>
                         <th nzWidth="160px">Program</th>
@@ -48,17 +87,17 @@
                         <th nzWidth="100px" [nzAlign]="'right'">Bill Quantity</th>
                         <th nzWidth="100px" [nzAlign]="'right'">Bill Rate</th>
                         <th nzWidth="100px">Bill To</th>
-                        <th nzWidth="60px" nzRight="270px">Approve</th> 
-                        <th nzWidth="200px" nzRight="70px">Notes</th>
+                        <th nzWidth="70px" nzRight="220px">Approve</th> 
+                        <th nzWidth="150px" nzRight="70px">Notes</th>
                         <th nzWidth="70px" nzRight="0px"><label nz-checkbox [(ngModel)]="selectAll" (ngModelChange)="selectAllChange($event)">All</label></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of fixedTable.data;let i = index;trackBy: trackByFn" [class.selected]="data.selected">
+                    <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn" [class.selected]="data.selected">
                         <td nzLeft="0px">{{ data.shiftbookNo}}</td>
-                        <td nzLeft="80px">{{ data.date | date: 'dd/MM/yyyy' }}</td>
-                        <td nzLeft="170px">{{ data.startTime | date: 'HH:mm' }}</td>
-                        <td nzLeft="250px">{{ data.endTime | date: 'HH:mm' }}</td>
+                        <td nzLeft="70px">{{ data.date | date: 'dd/MM/yyyy' }}</td>
+                        <td nzLeft="165px">{{ data.startTime | date: 'HH:mm' }}</td>
+                        <td nzLeft="240px">{{ data.endTime | date: 'HH:mm' }}</td>
                         <td nzWidth="80px">{{ data.duration }}</td>
                         <td nzWidth="160px">{{ data.recipient }}</td>
                         <td nzWidth="160px">{{ data.program }}</td>
@@ -69,10 +108,10 @@
                         <td nzWidth="100px" [nzAlign]="'right'">{{ data.billquant | number : '1.2-2' }}</td>
                         <td nzWidth="100px" [nzAlign]="'right'">{{ data.billrate }}</td>
                         <td nzWidth="100px">{{ data.billto }}</td>
-                        <td nzWidth="60px" nzRight="270px">
+                        <td nzWidth="70px" nzRight="220px">
                             <label nz-checkbox [(ngModel)]="data.approved" (ngModelChange)="checkBoxChange($event,data)"></label>
                         </td>
-                        <td nzWidth="200px" nzRight="70px" >{{ data.notes }}</td>
+                        <td nzWidth="150px" nzRight="70px" >{{ data.notes }}</td>
                         <td nzRight="0px" [nzAlign]="'left'">
                             <label nz-checkbox [(ngModel)]="data.selected" (ngModelChange)="selectedTimesheet($event,data)"></label>
                         </td>
@@ -96,3 +135,226 @@
     </div>
 
 </div>
+
+
+<nz-modal [(nzVisible)]="overlapVisible" nzTitle="Automatic Overlap Removal" (nzOnCancel)="handleCancel()" (nzOnOk)="removeOverlap()">
+    <div nz-row>
+        <div nz-row>
+            This action will force any overlapping shifts to a later start time to remove the overlap. All entries must be either
+            approved or unapproved. You cannot use this function if some entries are approved and others are not.
+        </div>
+        <div nz-row>
+            If you want to force a timegap between overlapping shifts - select 5 minutes from the drop down or if a gap is not
+            needed accept the default of 0
+        </div>
+        <div nz-row>
+
+        </div>
+    </div>
+</nz-modal>
+
+<!-- Add Timesheet -->
+
+<nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Add Timesheet"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+    <div class="flexy" style="min-height:21rem">
+
+            <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">
+                <nz-step nzTitle="Service Type & Date"></nz-step>
+                <nz-step nzTitle="Recipient Details"></nz-step>
+                <nz-step nzTitle="Pay Details"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Time"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Pay"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)"nzTitle="Bills"></nz-step>
+            </nz-steps>
+    
+            <nz-divider class="full-height" nzType="vertical"></nz-divider>
+ 
+            <div class="steps-content">
+                <div *ngIf="current == 0" [formGroup]="timesheetForm">
+                    <div nz-row>
+                        <div class="form-group">
+                            <label for="">Date</label>
+                            <nz-date-picker formControlName="date"></nz-date-picker>
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <label for="">Service Type</label>
+                            <nz-select formControlName="serviceType" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                                <nz-option *ngFor="let list of modalTimesheetValues" [nzValue]="list.name" [nzLabel]="list.name"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                    <div nz-row *ngIf="multipleRecipientShow">
+                        <label for="">Multiple Recipients</label>
+                        <nz-switch nzSize="small" formControlName="isMultipleRecipient"></nz-switch>
+                    </div>
+                    <div nz-row *ngIf="isTravelTimeChargeable">
+                        <label for="">Is Travel Time Chargeable</label>
+                        <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch>
+                    </div>
+                    <div nz-row *ngIf="isSleepOver">
+                        <label for="">Select the End Time on the following day for the sleepover</label>
+                        <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker>
+                        <!-- <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch> -->
+                    </div>
+                </div>
+                <div *ngIf="current == 1" [formGroup]="timesheetForm">
+                    <div class="form-group" *ngIf="showRecipient() ">
+                        <label for="">Recipient</label>
+                        <app-recipient-popup formControlName="recipientCode"></app-recipient-popup>
+                    </div>
+                    <div class="form-group" *ngIf="showRecipient() ">
+                        <label for="">Debtor</label>
+                        <app-recipient-popup formControlName="debtor"></app-recipient-popup>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Program</label>
+                        <nz-select nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of programsList" [nzValue]="list.ProgName" [nzLabel]="list.ProgName"></nz-option>
+                        </nz-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Service/Activity/Item</label>
+                        <nz-select nzAllowClear [nzDisabled]="!(timesheetForm.get('program').dirty)" formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list.activity" [nzLabel]="list.activity"></nz-option>
+                        </nz-select>                        
+                        <div>
+                            <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="current == 2" [formGroup]="timesheetForm">
+                    <div class="form-group">
+                        <label for="">Pay Type</label>
+                        <nz-select formControlName="payType"
+                            [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of payTypeList" [nzValue]="list.Title" [nzLabel]="list.Title">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">Analysis Code</label>
+                        <nz-select formControlName="analysisCode"
+                            [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of analysisCodeList" [nzValue]="list" [nzLabel]="list">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+
+                <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 3" style="width: 30rem;">
+                    <ng-container>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Start Time</label>
+                                <nz-time-picker [(ngModel)]="defaultStartTime" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">End Time</label>
+                                <nz-time-picker [(ngModel)]="defaultEndTime" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Duration</label>
+                                <p class="time-duration">{{ durationObject?.durationStr }}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div nz-row nzSpan="24" nzGutter="8" [formGroup]="timesheetForm" *ngIf="current == 4" style="width: 30rem;">
+                    <ng-container formGroupName="pay">
+                        <div nz-row>
+                            <div nz-col nzSpan="10">
+                                <div class="form-group">
+                                    <label for="">Unit</label>
+                                    <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
+                                        </nz-option> 
+                                    </nz-select>
+                                </div>
+                            </div>
+                        </div>
+                       <div nz-row>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Rate</label>
+                                    <nz-input-number formControlName="rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        [nzParser]="parserDollar"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Quantity</label>
+                                    <nz-input-number formControlName="quantity" [nzMin]="0"  [nzStep]="1"></nz-input-number>
+                                </div>
+                            </div>
+                       </div>
+                    </ng-container>
+                </div>
+
+                <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 5" [formGroup]="timesheetForm" style="width: 30rem;">
+                    <ng-container formGroupName="bill">
+                        <div nz-row>
+                            <div nz-col nzSpan="8">
+                                <div class="form-group">
+                                    <label for="">Unit</label>
+                                    <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
+                                        </nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                        </div>
+                       <div nz-row>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Rate</label>
+                                    <nz-input-number formControlName="rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        [nzParser]="parserDollar"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Quantity</label>
+                                    <nz-input-number formControlName="quantity" [nzMin]="0" [nzStep]="1"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Tax %</label>
+                                    <nz-input-number formControlName="tax" [nzMin]="1" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
+                                        [nzParser]="parserPercent"></nz-input-number>
+                                </div>
+                            </div>
+                       </div>
+                    </ng-container>
+                </div>
+
+            </div>
+   
+    </div>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+            <span>Previous</span>
+        </button>
+        <button nz-button nzType="default" (click)="next()" *ngIf="nextCondition" [disabled]="nextDisabled">
+            <span>Next</span>
+        </button>
+        <button nz-button nzType="primary" (click)="done()" *ngIf="current >= 5">
+            <span>Done</span>
+        </button>
+        <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>
+        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button> -->
+    </ng-template>
+
+</nz-modal>
+
+<!-- Add Timesheet -->

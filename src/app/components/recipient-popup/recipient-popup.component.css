@@ -1,0 +1,20 @@
+nz-select{
+    width: 15rem;
+}
+i{
+    margin-left:10px;
+    border-radius:50%;
+    margin-left: 10px;
+    border-radius: 50%;
+    padding: 4px;
+    cursor:pointer;
+}
+i:hover{
+    background: #d9e6ff;
+}
+tr{
+    cursor:pointer;
+}
+.selected > td{
+    background: #e6f7ff;
+}

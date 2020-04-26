@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 import { GlobalService, StaffService, ShareService, leaveTypes } from '@services/index';
 
@@ -35,11 +36,17 @@ export class StaffAdmin implements OnInit, OnDestroy {
     sample: any;
 
     listChange(event: any) {
+        if (event == null) {
+            this.user = null;
+            this.isFirstLoad = false;
+            return;
+        };
 
         if (!this.isFirstLoad) {
             this.view(0);
             this.isFirstLoad = true;
         }
+
         // this.user = {
         //     agencyDefinedGroup: "ARUNDEL",
         //     code: "2CDC STEPH",
@@ -93,6 +100,17 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private sharedS: ShareService,
         private cd: ChangeDetectorRef
     ) {
+        
+        this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+        ).subscribe((event: NavigationEnd ) => {
+            if (event.url == '/admin/staff') {
+                console.log('staff')
+                this.sample = { refresh: true };
+                this.cd.detectChanges();
+            }          
+        });
+
         this.sharedS.emitRouteChangeSource$.subscribe(data => {
             console.log(data);
         });

@@ -59,12 +59,19 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'competencies')) {
-                this.search(data);
+                this.cd.reattach();      
+                
+                this.user = data;
+                this.search(this.user);
+
+                this.cd.detectChanges();
             }
         });
     }
 
     ngOnInit(): void {
+        this.cd.reattach();
+
         this.user = this.sharedS.getPicked();
         this.search(this.user);
         this.buildForm();
@@ -87,8 +94,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         });
     }
 
-    search(user: any = this.sharedS.getPicked()) {
-        this.cd.reattach();
+    search(user: any = this.user) {
         this.loading = true;
         this.timeS.getcompetencies(user.code).subscribe(data => {
             this.tableData = data;

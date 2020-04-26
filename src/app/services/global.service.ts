@@ -16,6 +16,8 @@ import { FormGroup} from '@angular/forms';
 
 import format from 'date-fns/format';
 import isValid from 'date-fns/isValid'
+import getHours from 'date-fns/getHours'
+import getMinutes from 'date-fns/getMinutes'
 
 export const roles = {
     provider: 'SERVICE PROVIDER',
@@ -342,7 +344,7 @@ export class GlobalService {
     }
 
     acceptOnlyNumeric(data: KeyboardEvent) {
-        if (data.key.length == 1 && /^[a-z.,]$/i.test(data.key)) {
+        if (data.key.length == 1 && /^[a-z]$/i.test(data.key)) {
             return false;
         }
         return true;
@@ -433,6 +435,32 @@ export class GlobalService {
             blockNo: starttime / 5
         }
     }
+
+    computeTimeDATE_FNS(_start: any, _end: any): Dto.DateTimeVariables {
+        
+        const minutesInAnHour = 60;
+        const invalid = 'Invalid Time'
+
+        if (getHours(_start) > getHours(_end)) return { durationStr: invalid }
+        if (getHours(_start) === getHours(_end) && getMinutes(_start) >= getMinutes(_end)) return { durationStr: invalid }
+
+        var starttime = getHours(_start) * minutesInAnHour + getMinutes(_start);
+        var endtime = getHours(_end) * minutesInAnHour + getMinutes(_end);
+
+        var diffTime = endtime - starttime;
+        const diffHour = Math.floor(diffTime / minutesInAnHour);
+        const diffMinutes = diffTime % minutesInAnHour;
+
+        return {
+            durationStr: diffHour + ' hr ' + diffMinutes + ' min',
+            duration: (diffTime / minutesInAnHour) * 12,
+            durationInHours: (diffTime / minutesInAnHour),
+            quants: (diffTime / minutesInAnHour).toFixed(2),
+            blockNo: starttime / 5
+        }
+    }
+
+    
 
     IsFormValid(inputForm: FormGroup): boolean {
         for (const i in inputForm.controls) {

@@ -1,11 +1,34 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, forwardRef, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
-import { mergeMap, takeUntil, concatMap, switchMap } from 'rxjs/operators';
+import { mergeMap, takeUntil, concatMap, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
-import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
+import { forkJoin, Subscription, Observable, Subject, EMPTY, of } from 'rxjs';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import * as _ from 'lodash';
+
+import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
+import { NzStepsModule, NzStepComponent } from 'ng-zorro-antd/steps';
+import format from 'date-fns/format';
+
+interface AddTimesheetModalInterface {
+    index: number,
+    name: string
+}
+
+export interface TreeNodeInterface {
+  key: number;
+  name?: string;
+  shiftbookNo?: any;
+  activity?: any;
+  level?: number;
+  expand?: boolean;
+  address?: string;
+  children?: TreeNodeInterface[];
+  parent?: TreeNodeInterface;
+}
+
 
 interface CalculatedPay{
     KMAllowancesQty: number,
@@ -46,8 +69,18 @@ interface CalculatedPay{
             font-size: 17px;
             width:4rem;
         }
-        .selected{
-            background:#f2ff87 !important;
+        .selected td{
+            background: #d5ffca;
+        }
+        nz-step >>> .ant-steps-item-container .ant-steps-item-content{
+            width: auto !important;
+        }
+        nz-select{
+            width: 11.4rem;
+        }
+        .time-duration{
+            font-weight: 500; 
+            margin-top: 8px;
         }
     `],
     templateUrl: './timesheet.html',
@@ -57,26 +90,381 @@ interface CalculatedPay{
 export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     private unsubscribe: Subject<void> = new Subject();
+    private picked$: Subscription;
+
     loading: boolean = false;
+
     timesheets: Array<any> = [];
+    timesheetsGroup: Array<any> = [];   
+
+    index: number = 0;
+    resultMapData: Array<any> = [];
+
+    currentDate: string;
+    unitsArr: Array<string> = ['HOUR', 'SERVICE'];
+
+    activity_value: number;
+    durationObject: any;
+
+    parserPercent = (value: string) => value.replace(' %', '');
+    parserDollar = (value: string) => value.replace('$ ', '');
+    formatterDollar = (value: number) => `${value ? `$ ${value}` : ''}`;
+    formatterPercent = (value: number) => `${value ? `% ${value}` : ''}`;
+
+    timesheetForm: FormGroup;
+    modalTimesheetValues: Array<AddTimesheetModalInterface> = [
+        {
+            index: 1,
+            name: 'ADMINISTRATION'
+        },
+        {
+            index: 2,
+            name: 'ALLOWANCE CHARGEABLE'
+        },
+        {
+            index: 3,
+            name: 'ALLOWANCE NON-CHARGEABLE'
+        },
+        {
+            index: 4,
+            name: 'CASE MANAGEMENT'
+        },
+        {
+            index: 5,
+            name: 'ITEM'
+        },
+        {
+            index: 6,
+            name: 'SLEEPOVER'
+        },
+        {
+            index: 7,
+            name: 'TRAVEL TIME'
+        },
+        {
+            index: 8,
+            name: 'SERVICE'
+        },
+    ];
+
+    today = new Date();
+
+    defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
+    defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
+
 
     payTotal: CalculatedPay;
     selected: any = null;
 
     selectAll: boolean = false;
+    overlapVisible: boolean = false;
+    addTimesheetVisible: boolean = false;
+    multipleRecipientShow: boolean = false;
+    isTravelTimeChargeable: boolean = false;
+    isSleepOver: boolean = false;
+
+    rosterGroup: string;
+    Object = Object;
+    mapOfExpandedData: { [key: string]: TreeNodeInterface[] } = {};
+
+    collapse(array: TreeNodeInterface[], data: TreeNodeInterface, $event: boolean): void {
+        console.log(data)
+        if ($event === false) {
+            if (data.children) {
+                data.children.forEach(d => {
+                    const target = array.find(a => a.key === d.key)!;
+                    target.expand = false;
+                    this.collapse(array, target, false);
+                });
+            } else {
+                return;
+            }
+        }
+    }
+
+    convertTreeToList(root: TreeNodeInterface): TreeNodeInterface[] {
+        const stack: TreeNodeInterface[] = [];
+        const array: TreeNodeInterface[] = [];
+        const hashMap = {};
+
+        stack.push({ ...root, level: 0, expand: true });
+        // console.log(stack);
+        while (stack.length !== 0) {
+            const node = stack.pop()!;
+            this.visitNode(node, hashMap, array);
+            if (node.children) {
+                for (let i = node.children.length - 1; i >= 0; i--) {
+                    stack.push({ ...node.children[i], level: node.level! + 1, expand: true, parent: node });
+                }
+            }
+        }
+        // console.log(array);
+        return array;
+    }
+
+    visitNode(node: TreeNodeInterface, hashMap: { [key: string]: boolean }, array: TreeNodeInterface[]): void {
+        if (!hashMap[node.key]) {
+            hashMap[node.key] = true;
+            array.push(node);
+        }
+    }
 
     constructor(
         private timeS: TimeSheetService,
         private globalS: GlobalService,
         private modalService: NzModalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private formBuilder: FormBuilder,
+        private listS: ListService
     ) {
         cd.detach();
+
+        this.currentDate = format(new Date(), 'MM-dd-yyyy');
     }
 
     ngOnInit(): void{
-
+        // console.log(this.listOfMapData);
+        this.buildForm();
     }
+
+    buildForm() {
+        this.timesheetForm = this.formBuilder.group({
+            date: '',
+            serviceType: '',
+            program: '',
+            serviceActivity: '',
+            payType: '',
+            analysisCode: '',
+            recipientCode: '',
+            debtor: '',
+            isMultipleRecipient: false,
+            isTravelTimeChargeable: false,
+            sleepOverTime: '',
+            time: this.formBuilder.group({
+                startTime: '',
+                endTime: '',
+            }),
+            pay: this.formBuilder.group({
+                unit: '',
+                rate: '',
+                quantity: '',
+                position: ''
+            }),
+            bill: this.formBuilder.group({
+                unit: '',
+                rate: '',
+                quantity: '',
+                tax: ''
+            }),
+        })
+        this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+        this.fixStartTimeDefault();
+
+        this.timesheetForm.get('time.startTime').valueChanges.pipe(
+            takeUntil(this.unsubscribe)
+        ).subscribe(d => {
+            this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+
+        });
+
+        this.timesheetForm.get('time.endTime').valueChanges.pipe(
+            takeUntil(this.unsubscribe)
+        ).subscribe(d => {
+            this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+        });
+
+
+        this.timesheetForm.get('recipientCode').valueChanges.pipe(
+            takeUntil(this.unsubscribe),
+            switchMap(x => {
+                this.timesheetForm.patchValue({
+                    debtor: x
+                });
+                return this.GETPROGRAMS(x)
+            })
+        ).subscribe(d => {
+            this.programsList = d;
+        });
+
+        this.timesheetForm.get('serviceType').valueChanges.pipe(
+            takeUntil(this.unsubscribe),
+            switchMap(x => {
+                this.clearLowerLevelInputs();
+
+                this.multipleRecipientShow = this.isServiceTypeMultipleRecipient(x);
+                this.isTravelTimeChargeable = this.isTravelTimeChargeableProcess(x);
+                this.isSleepOver = this.isSleepOverProcess(x);
+
+                if (!x) return EMPTY;
+                return forkJoin(
+                    this.GETANALYSISCODE(),
+                    this.GETPAYTYPE(x),
+                    this.GETPROGRAMS(x)
+                )
+            })
+        ).subscribe(d => {
+            this.analysisCodeList = d[0];
+            this.payTypeList = d[1];
+            this.programsList = d[2]
+        });
+
+        this.timesheetForm.get('program').valueChanges.pipe(
+            distinctUntilChanged(),
+            switchMap(x => {
+                this.serviceActivityList = [];
+                this.timesheetForm.patchValue({
+                    serviceActivity: null
+                });
+                return this.GETSERVICEACTIVITY(x)
+            })
+        ).subscribe(d => {
+
+            this.serviceActivityList = d;
+        });
+
+        this.timesheetForm.get('serviceActivity').valueChanges.pipe(
+            distinctUntilChanged(),
+            switchMap(x => {
+                if (!x) {
+                    this.rosterGroup = '';
+                    return EMPTY;
+                };
+                return this.GETROSTERGROUP(x)
+            })
+        ).subscribe(d => {
+            if (d.length > 1) return false;
+            this.rosterGroup = (d[0].RosterGroup).toUpperCase();
+            this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
+        });        
+    }
+
+    GET_ACTIVITY_VALUE(roster: string) {
+        // ADMINISTRATION
+        // ADMISSION
+        // ALLOWANCE
+        // CENTREBASED
+        // GROUPACTIVITY
+        // ITEM
+        // ONEONONE
+        // RECPTABSENCE
+        // SALARY
+        // SLEEPOVER
+        // TRANSPORT
+        // TRAVELTIME
+
+        this.activity_value = 0;
+
+        if (roster === 'ADMINISTRATION') {
+            this.activity_value = 6;
+        }
+
+        if (roster === 'ADMISSION') {
+            this.activity_value = 7;
+        }
+
+        if (roster === 'ALLOWANCE') {
+            this.activity_value = 9;
+        }
+        
+        if (roster === 'CENTREBASED') {
+            this.activity_value = 11;
+        }
+
+        if (roster === 'GROUPACTIVITY') {
+            this.activity_value = 12;
+        }
+
+        if (roster === 'ITEM') {
+            this.activity_value = 14;
+        }
+
+        if (roster === 'ONEONONE') {
+            this.activity_value = 2;
+        }
+
+        if (roster === 'RECPTABSENCE') {
+            this.activity_value = 6;
+        }
+
+        if (roster === 'SALARY') {
+            this.activity_value = 0;
+        }
+
+        if (roster === 'SLEEPOVER') {
+            this.activity_value = 8;
+        }
+
+        if (roster === 'TRANSPORT') {
+            this.activity_value = 10;
+        }
+
+        if (roster === 'TRAVELTIME') {
+            this.activity_value = 10;
+        }
+    }
+
+    isEndSteps() {
+        if (this.rosterGroup === 'ALLOWANCE') {
+            return this.current >= 3;
+        }
+        else {
+            return this.current >= 3;
+        }
+    }
+    
+    clearLowerLevelInputs() {
+        this.timesheetForm.patchValue({
+            recipientCode: null,
+            debtor: null,
+            program: null,
+            serviceActivity: null,
+            analysisCode: null,
+            time: {
+                startTime: null,
+                endTime: null,
+            },
+            pay: {
+                unit: null,
+                rate: null,
+                quantity: null,
+                position: null
+            },
+            bill: {
+                unit: null,
+                rate: null,
+                quantity: null,
+                tax: null
+            },
+        });
+    }
+
+    empty: any = [];
+    temp: any;
+    recurse(hehe: any, indexObj: any = null) {
+        this.temp = "";
+        for (var property in hehe) {            
+            if (Object.prototype.toString.call(hehe[property]) == '[object Object]') {
+                if (indexObj) {
+                    let child = indexObj.child.push({
+                        name: property,
+                        child: hehe[property]
+                    });
+                    this.recurse(hehe[property], child)
+                }
+
+                if (indexObj == null) {
+                    let child = this.empty.push({
+                        name: property,
+                        child: hehe[property]
+                    })
+                    this.recurse(hehe[property], child);
+                }
+            }
+            if (Object.prototype.toString.call(hehe[property]) == '[object Array]') {
+                return hehe[property]
+            }
+        }
+    }   
 
     ngOnDestroy(): void{
         this.unsubscribe.next();
@@ -96,6 +484,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         if (!data.data) {
             this.timesheets = [];
+            this.selected = null;
             return;
         }
 
@@ -104,13 +493,18 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         const whatType = this.whatType(data.option);
         this.loading = true;
 
-        this.timeS.gettimesheets({
+        if (this.picked$) {
+            this.picked$.unsubscribe();
+        }
+
+        this.picked$ = this.timeS.gettimesheets({
             AccountNo: data.data,
             personType: whatType
         }).pipe(takeUntil(this.unsubscribe))
             .subscribe(data => {
 
                 this.loading = false;
+
                 this.timesheets = data.map(x => {
                     return {
                         shiftbookNo: x.shiftbookNo,
@@ -141,7 +535,22 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                     }
                 });
-
+                
+                // this.timesheetsGroup = this.nest(this.timesheets, ['activity']);
+                // // console.log(JSON.stringify(this.timesheetsGroup));
+                    
+                // this.index = 0;
+                
+                // //this.resultMapData = this.recurseObjOuterLoop(this.timesheetsGroup);
+                // this.resultMapData = this.listOfMapData
+                // console.log(this.resultMapData)
+                
+                // this.resultMapData.forEach(item => {
+                //     this.mapOfExpandedData[item.key] = this.convertTreeToList(item);
+                //     console.log(this.convertTreeToList(item));
+                // });
+                
+                // console.log(this.mapOfExpandedData)
             });
         
         
@@ -179,8 +588,65 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
+    recurseSubDirectories(data: any) {
+        var arr: Array<TreeNodeInterface> = [];        
+        this.index++;
+
+        if (Object.prototype.toString.call(data) === '[object Array]') {
+            arr.push({
+                key: this.index,
+                name: Object.keys(data)[0],
+                children: data
+            });
+        }
+
+        if (Object.prototype.toString.call(data) === '[object Object]') {
+            for (var key in data) {
+                arr.push({
+                    key: this.index,
+                    name: key,
+                    children: this.recurseSubDirectories(data[key])
+                });
+            }
+        }
+
+        return arr;
+    }
+
+    recurseObjOuterLoop(data: any) {
+        var out = [];        
+        for (var key in data) {
+            if (Object.prototype.toString.call(data[key]) === '[object Object]') {
+                out.push({ key: this.index, name: key, children: { ...(this.recurseSubDirectories(data[key])) } });
+                this.recurseObjOuterLoop(data[key]);
+            }
+
+            if (Object.prototype.toString.call(data[key]) === '[object Array]') {
+                out.push({ key: this.index++, name: key, children: { ...data[key] } });
+            }
+        }
+        return out;
+    }
+
+    nest = (seq: any[], keys: Array<string | ((obj: any) => string)>) => {
+        if (!keys.length) {
+            return seq;
+        }
+        const [first, ...rest] = keys;
+        return _.mapValues(_.groupBy(seq, first), (value) => this.nest(value, rest));
+    };
+
+    clickme(){
+        console.log('hehe')
+    }
+
     confirm(index: number) {
         if (!this.selected && this.timesheets.length > 0) return;
+
+        if (index == 1) {
+            this.addTimesheetVisible = true;
+            this.resetAddTimesheetModal();
+        }
 
         if (index == 2) {
             this.modalService.confirm({
@@ -196,6 +662,19 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 nzContent: '<b></b>',
                 nzOnOk: () => this.process(index)
             });
+        }
+
+        if (index == 4) {
+            this.overlapVisible = true;
+            // this.modalService.confirm({
+            //     nzTitle: '<b>Automatic Overlap Removal</b>',
+            //     nzContent: `
+            //         <div>This action will force any overlapping shifts to a later start time to remove the overlap. All entries must be either approved or unapproved. You cannot use this function if some entries are approved and others are not.</div>
+            //         <div>If you want to force a timegap between overlapping shifts - select 5 minutes from the drop down or if a gap is not needed accept the default of 0</div>
+            //         <butto (click)="clickme()">Click</butto>
+            //     `,
+            //     nzOnOk: () => this.process(index)
+            // });
         }
 
         if (index == 5) {
@@ -215,15 +694,44 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    handleCancel() {
+        this.overlapVisible = false;
+        this.addTimesheetVisible = false;
+    }
+
+    removeOverlap() {
+        
+    }
+
     selectAllChange(event: any) {
-        console.log(event);
+        this.cd.detach();
+        this.timesheets.forEach(x => x.selected = event);
+        this.cd.reattach();
+        this.cd.detectChanges();
     }
 
 
     selectedTimesheet(event: any, data: any) {
-        data.selected = !(data.selected);
+        console.log(event);
+        data.selected = event;
+        // this.timesheets = [...this.timesheets, data]
+        // this.timesheets = this.timesheets.filter(x => x.shiftbookNo == data.shiftbookNo);
 
-        console.log(this.timesheets)
+        this.cd.detectChanges();
+    }
+
+    ifRosterGroupHasTimePayBills(rosterGroup: string) {
+        return (
+            rosterGroup === 'ADMINISTRATION' ||
+            rosterGroup === 'ADMISSION' ||
+            rosterGroup === 'CENTREBASED' ||
+            rosterGroup === 'GROUPACTIVITY' ||
+            rosterGroup === 'ITEM' ||
+            rosterGroup === 'ONEONONE' ||
+            rosterGroup === 'SLEEPOVER' ||
+            rosterGroup === 'TRANSPORT' ||
+            rosterGroup === 'TRAVELTIME'
+        );
     }
 
     checkBoxChange(event: boolean, timesheet: any){
@@ -279,9 +787,242 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    isServiceTypeMultipleRecipient(type: string): boolean {
+        return type === 'SERVICE';
+    }
+
+    isTravelTimeChargeableProcess(type: string): boolean {
+        return type === 'TRAVEL TIME';
+    }
+
+    isSleepOverProcess(type: string): boolean {
+        return type == 'SLEEPOVER';
+    }
+
 
     whatType(data: number): string {
         return data == 0 ? 'Staff' : 'Recipient';
+    }    
+    duration: any;
+
+    ngModelChangeStart(event): void{
+        this.timesheetForm.patchValue({
+            time: {
+                startTime: event
+            }
+        })
     }
+
+    ngModelChangeEnd(event): void {
+        this.timesheetForm.patchValue({
+            time: {
+                endTime: event
+            }
+        })
+    }
+
+    GETPROGRAMS(type: string): Observable<any> {
+        let sql;
+        if (!type) return EMPTY;
+        const { isMultipleRecipient } = this.timesheetForm.value;
+        if (type === 'ADMINISTRATION' || type === 'ALLOWANCE NON-CHARGEABLE' || type === 'ITEM' || (type == 'SERVICE' && !isMultipleRecipient)) {
+            sql = `SELECT Distinct [Name] AS ProgName FROM HumanResourceTypes WHERE [group] = 'PROGRAMS' AND (EndDate Is Null OR EndDate >=  '${this.currentDate}') ORDER BY [ProgName]`;
+        } else {
+            sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
+                INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
+                WHERE Recipients.AccountNo = '${type}' AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]`
+        }
+        if (!sql) return EMPTY;
+        return this.listS.getlist(sql);
+    }
+
+    GETSERVICEACTIVITY(program: any): Observable<any> {
+
+        const { serviceType } = this.timesheetForm.value;
+        if (!program) return EMPTY;
+
+        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE'){
+            return this.listS.getserviceactivityall({
+                program
+            });
+        }
+        else {
+            // let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
+            //     WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
+            
+            let sql = `SELECT DISTINCT [Service Type] AS activity FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+                WHERE SO.ServiceProgram = '${ program}' AND EXISTS (SELECT Title FROM ItemTypes ITM WHERE Title = SO.[Service Type] AND 
+                ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}')) ORDER BY [Service Type]`;
+            
+            return this.listS.getlist(sql);
+        }
+    }
+
+    GETANALYSISCODE(): Observable<any>{
+        return this.listS.getserviceregion();
+    }
+
+    GETROSTERGROUP(activity: string): Observable<any>{
+        if (!activity) return EMPTY;
+        return this.listS.getlist(`SELECT RosterGroup, Title FROM ItemTypes WHERE Title= '${activity}'`);
+    }
+
+    GETPAYTYPE(type: string): Observable<any> {
+        // `SELECT TOP 1 RosterGroup, Title FROM  ItemTypes WHERE Title = '${type}'`
+        let sql;
+        if (!type) return EMPTY;
+        if (type === 'ALLOWANCE CHARGEABLE' || type === 'ALLOWANCE NON-CHARGEABLE') {
+            sql = `SELECT Recnum, Title FROM ItemTypes WHERE RosterGroup = 'ALLOWANCE ' 
+                AND Status = 'NONATTRIBUTABLE' AND ProcessClassification = 'INPUT' AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
+        } else {
+            sql = `SELECT Recnum, LTRIM(RIGHT(Title, LEN(Title) - 0)) AS Title
+            FROM ItemTypes WHERE RosterGroup = 'SALARY'   AND Status = 'NONATTRIBUTABLE'   AND ProcessClassification = 'INPUT' AND Title BETWEEN '' 
+            AND 'zzzzzzzzzz'AND (EndDate Is Null OR EndDate >= '${ this.currentDate }') ORDER BY TITLE`
+        }
+        return this.listS.getlist(sql);
+    }
+
+
+    // Add Timesheet
+
+    current = 0;
+    nextDisabled: boolean = false;
+    programsList: Array<any> = [];
+    serviceActivityList: Array<any> = [];
+    payTypeList: Array<any> = [];
+    analysisCodeList: Array<any> = []
+    
+    showRecipient(): boolean  {
+        const { serviceType, isMultipleRecipient } = this.timesheetForm.value;            
+        return ((serviceType !== 'ADMINISTRATION' && serviceType !== 'ALLOWANCE NON-CHARGEABLE' && serviceType !== 'ITEM') && !isMultipleRecipient);
+    }
+
+    canProceed() {
+        const { date, serviceType } = this.timesheetForm.value;
+
+        if (this.current == 0) {
+            if (!date || !serviceType) {
+                this.nextDisabled = true;
+            } else {
+                this.nextDisabled = false;
+            }
+            return true;
+        }
+
+        if (this.current == 1) {
+            return true;
+        }
+
+        if (this.current == 2) {
+            return true;
+        }
+
+        if (this.current == 3) {
+            return true;
+        }
+    }
+
+    resetAddTimesheetModal() {
+        this.current = 0;
+        this.rosterGroup = '';
+        
+        this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
+        this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
+
+        this.timesheetForm.reset();
+    }
+
+    pre(): void {
+        this.current -= 1;
+    }
+
+    next(): void {
+        this.current += 1;
+    }
+
+    get nextCondition() {
+        if (this.current == 2 && !this.ifRosterGroupHasTimePayBills(this.rosterGroup)) {
+            return false; 
+        }
+        return this.current < 5;
+    }
+
+    done(): void {
+        this.fixStartTimeDefault();
+        
+        const tsheet = this.timesheetForm.value;
+        let clientCode = this.FIX_CLIENTCODE_INPUT(tsheet);
+
+        var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime, tsheet.time.endTime));
+        
+        let inputs = {
+            anal: tsheet.analysisCode || "",
+            billQty: tsheet.bill.quantity || 0,
+            billTo: clientCode,
+            billUnit: tsheet.bill.unit || 0,
+            blockNo: durationObject.blockNo,
+            carerCode: this.selected.data,
+            clientCode: clientCode,
+            costQty: tsheet.pay.quantity || 0,
+            costUnit: tsheet.pay.unit || 0,
+            date: format(tsheet.date,'yyyy/M/d'),
+            dateEntered: null,
+            dateLastMod: null,
+            dayno: format(tsheet.date, 'd'),
+            duration: durationObject.duration,
+            groupActivity: false,
+            haccType: null || "",
+            monthNo: format(tsheet.date, 'M'),
+            program: tsheet.program,
+            serviceDescription: tsheet.payType || "",
+            serviceSetting: null || "",
+            serviceType: tsheet.serviceActivity || "",
+            staffPosition: null || "",
+            startTime: format(tsheet.time.startTime,'HH:mm'),
+            status: "1",
+            taxPercent: tsheet.bill.tax || 0,
+            transferred: 0,
+            type: this.activity_value,
+            uniqueID: null || "",
+            unitBillRate: tsheet.bill.rate || 0,
+            unitPayRate: tsheet.pay.rate || 0,
+            yearNo: format(tsheet.date, 'yyyy')
+        };
+
+        console.log(inputs);
+        console.log(this.timesheetForm.value);
+
+        this.timeS.posttimesheet(inputs).subscribe(data => {
+            this.globalS.sToast('Success', 'Timesheet has been added');            
+        });
+
+    }
+
+    FIX_CLIENTCODE_INPUT(tgroup: any): string{
+        if (tgroup.serviceType == 'ADMINISTRATION') {
+            return "!INTERNAL"
+        }
+
+        if (tgroup.serviceType == 'SERVICE') {
+            if (tgroup.isMultipleRecipient) {
+                return "!MULTIPLE"
+            } else {
+                return tgroup.recipientCode;
+            }            
+        }
+    }
+
+    fixStartTimeDefault() {
+        const { time } = this.timesheetForm.value;
+        if (!time.starTime) {
+            this.ngModelChangeStart(this.defaultStartTime)
+        }
+
+        if (!time.endTime) {
+            this.ngModelChangeEnd(this.defaultEndTime)
+        }
+    }
+
+     // Add Timesheet
 
 }

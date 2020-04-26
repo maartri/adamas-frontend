@@ -1,0 +1,48 @@
+<nz-select nzShowSearch nzAllowClear nzPlaceHolder="Search Recipient..." [(ngModel)]="selectedValue" (ngModelChange)="ngModelChange($event)" (nzOnSearch)="nzOnSearch($event)">
+    <nz-option *ngIf="!isDataLoaded" [nzLabel]="selectedValue"></nz-option>
+    <nz-option *ngFor="let list of selectList" [nzLabel]="list.accountNo" [nzValue]="list.accountNo"></nz-option>
+</nz-select>
+<i nz-icon (click)="openModal()" nzType="more" nzTheme="outline"></i>
+
+<nz-modal [nzWidth]="900" [(nzVisible)]="isVisible" nzTitle="Recipient List" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+    <div nz-row >
+        <nz-table #basicTable [nzSize]="'small'" 
+        [nzVirtualForTrackBy]="trackByIndex"
+        [nzScroll]="{ x: '1200px', y: '240px' }"
+        [nzData]="recipientSearchList"
+        [nzPageSize]="20"
+        [nzLoading]="loading"
+        (nzPageIndexChange)="nzPageIndexChange($event)">
+            <thead>
+                <tr>
+                    <th nzWidth="100px" nzLeft="0px">Account Name</th>
+                    <th nzWidth="120px" nzLeft="100px">Name</th>
+                    <th nzWidth="90px" >Gender</th>
+                    <th nzWidth="120px">Address</th>
+                    <th nzWidth="100px">Contact</th>
+                    <th nzWidth="80px">Type</th>
+                    <th nzWidth="80px">Branch</th>
+                    <th nzWidth="80px">Suburb</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index" [class.selected]="i == index" (click)="selected(i)">
+                    <td nzWidth="140px" nzLeft="0px">{{data.accountNo}}</td>
+                    <td nzWidth="120px" nzLeft="100px">{{data.name}}</td>
+                    <td nzWidth="50px" >{{data.gender}}</td>
+                    <td nzWidth="120px">{{data.address}}</td>
+                    <td nzWidth="100px">{{data.contact}}</td>
+                    <td nzWidth="80px">{{data.type}}</td>
+                    <td nzWidth="80px">{{data.branch}}</td>
+                    <td nzWidth="80px">{{data.suburb}}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="handleOk()">Select</button>
+    </ng-template>
+
+</nz-modal>

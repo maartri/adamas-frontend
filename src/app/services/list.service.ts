@@ -10,7 +10,11 @@ export class ListService {
     constructor(
         public http: HttpClient,
         public auth: AuthService
-    ){ }
+    ) { }
+    
+    getserviceactivityall(data: any) {
+        return this.auth.get(`${list}/activities/all/`, data);
+    }
 
     getchargetype(data: any): Observable<any>{
         return this.auth.get(`${list}/quote/chargeType`, data);

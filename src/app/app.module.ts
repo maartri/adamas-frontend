@@ -16,6 +16,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { ToastrModule } from 'ngx-toastr';
 
 import { JwtModule } from '@auth0/angular-jwt';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import {
   AuthService,
@@ -51,6 +52,7 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 import { ComponentModule } from '@components/component.module'
+import { AgGridModule } from 'ag-grid-angular';
 
 registerLocaleData(en);
 
@@ -94,7 +96,8 @@ export function tokenGetter() {
       }
     }),
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
-    
+    AgGridModule.withComponents([]),
+    InfiniteScrollModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

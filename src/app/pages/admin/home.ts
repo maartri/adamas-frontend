@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core'
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+
+import { filter, tap, last } from 'rxjs/operators';
 
 @Component({
     styles: [`
@@ -111,16 +113,24 @@ export class HomeAdmin implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('recipient') elRef: ElementRef;
 
     isCollapsed = false;
+    breadcrumbs: Array<any> = [];
+
     constructor(
-        private router: Router
+        private router: Router,
+        private activatedRoute: ActivatedRoute
     ) {
 
     }
 
     ngOnInit(): void {
-
+        // this.router.events.pipe(
+        //     filter(event => event instanceof NavigationEnd)
+        // ).subscribe(event => {
+        //     this.createBreadCrumb(this.activatedRoute.root);
+        // });
+        // this.createBreadCrumb(this.activatedRoute.root);
     }
-
+    
     ngOnDestroy(): void {
 
     }
@@ -138,6 +148,5 @@ export class HomeAdmin implements OnInit, OnDestroy, AfterViewInit {
             var x = document.getElementById('cdk-overlay-2');
             console.log(x);
         }
-        //document.getElementById('cdk-overlay-2').style.top = '100px !important';
     }
 }

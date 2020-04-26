@@ -1,6 +1,29 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import * as moment from "moment";
-import * as format from 'date-fns/format';
+import format  from 'date-fns/format';
+
+@Pipe({ name: 'dmz' })
+export class DayManagerPopulate implements PipeTransform {
+    transform(value: any, dayPop: any) {
+        let total: number = 0;
+        let filtered: Array<any> = [];
+
+        filtered = value.filter(x => x.date == format(new Date(dayPop), 'yyyy/MM/dd'));
+        filtered.forEach(x => {
+            if (x.ShiftType && (x.ShiftType).toUpperCase() !== 'UNAVAILABLE') {
+                total = (total + x.Duration * 5);
+            }
+        });
+        total = total / 60;
+
+        if (filtered.length == 0)
+            filtered.push({ isNone: true });
+        else
+            filtered.push({ isLast: true, total: total });
+
+        return filtered;
+    }
+}
 
 @Pipe({ name: 'removefirstlast' })
 export class RemoveFirstLast implements PipeTransform {

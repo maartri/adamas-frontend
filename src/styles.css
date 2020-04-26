@@ -4,9 +4,13 @@
 
 /* Angular Calendar */
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
-
 /* Bootstrap CSS Only*/
 /* @import "../node_modules/bootstrap-css-only/css/bootstrap.min.css"; */
+
+@import "../node_modules/ag-grid-community/dist/styles/ag-grid.css";
+@import "../node_modules/ag-grid-community/dist/styles/ag-theme-balham.css";
+
+/* @import "../../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin"; */
 
 td, th{
     font-size:13px;
@@ -154,3 +158,4 @@ nz-table{
 th.action{
     width: 7.5rem !important;
 }
+

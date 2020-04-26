@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, delay } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
@@ -73,6 +73,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'hr-note')) {
+                this.cd.reattach();
                 this.user = data;
                 this.search(this.user);
             }
@@ -106,9 +107,10 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any = this.user) {
-        this.loading = true;
         this.cd.reattach();
-        this.timeS.gethrnotes(user.code).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        
+        this.loading = true;
+        this.timeS.gethrnotes(user.code).pipe(delay(200),takeUntil(this.unsubscribe)).subscribe(data => {
             this.tableData = data;
             this.loading = false;
             this.cd.detectChanges()

@@ -169,10 +169,11 @@
             <app-header-nav></app-header-nav>
         </nz-header>
         <nz-content>
-            <nz-breadcrumb>
+            <app-breadcrumbs></app-breadcrumbs>
+            <!-- <nz-breadcrumb>
                 <nz-breadcrumb-item (click)="toHome()">Home</nz-breadcrumb-item>
-                <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
-            </nz-breadcrumb>
+                <nz-breadcrumb-item *ngFor="let crumb of breadcrumbs" [routerLink]="[crumb.url]">{{  crumb.label }}</nz-breadcrumb-item>
+            </nz-breadcrumb> -->
             <div class="inner-content">
                 <router-outlet></router-outlet>
             </div>

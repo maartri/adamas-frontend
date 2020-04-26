@@ -1,0 +1,4 @@
+nz-breadcrumb-item a:hover{
+    cursor:pointer;
+    text-decoration: underline;
+}

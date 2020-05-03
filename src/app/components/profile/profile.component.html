@@ -1,108 +1,557 @@
 <div class="avatar-container">
     <nz-avatar [nzSize]="64" nzIcon="user"></nz-avatar>
 </div>
-<div class="space-top" style="margin:3rem 0">
-    <div class="form-group">
-        <label for="" class="info">Profile Information</label>
-        <div class="edit-btn">
-            <div class="right-btns">
-                <button *ngIf="showMailManagerBtn" (click)="emailManager()" nz-button nzType="default"><i nz-icon nzType="mail" nzTheme="outline"></i> EMAIL Manager</button>
-                <button nz-button nzType="primary" nzValue="small" (click)="editProfileOpen()"><i nz-icon nzType="edit"
-                        nzTheme="outline"></i> Edit Profile</button>
+
+<ng-container *ngIf="!isAdmin">
+    <div class="space-top" style="margin:3rem 0">
+        <div class="form-group">
+            <label for="" class="info">Profile Information</label>
+            <div class="edit-btn">
+                <div class="right-btns">
+                    <button *ngIf="showMailManagerBtn" (click)="emailManager()" nz-button nzType="default"><i nz-icon
+                            nzType="mail" nzTheme="outline"></i> EMAIL Manager</button>
+                    <button nz-button nzType="primary" nzValue="small" (click)="editProfileOpen()"><i nz-icon nzType="edit"
+                            nzTheme="outline"></i> Edit Profile</button>
+                </div>
             </div>
-        </div>
-        <div class="space-top">
-            <nz-descriptions [nzSize]="'small'" [nzColumn]="{ xxl: 4, xl: 4, lg: 4, md: 4, sm: 2, xs: 1 }"
-                [nzColon]="false" nzTitle="" nzLayout="vertical">
-                <nz-descriptions-item nzTitle="Title"><b>{{ user?.title || '-' }}</b></nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Lastname">
-                    <b *ngIf="innerValue?.view === view.recipient">{{ user?.surnameOrg || '-' }}</b>
-                    <b *ngIf="innerValue?.view === view.staff">{{ user?.lastName || '-' }}</b>
-                </nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Firstname"><b>{{ user?.firstName || '-' }}</b></nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Middlename"><b>{{ user?.middleNames || '-' }}</b></nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Gender"><b>{{ user?.gender || '-' }}</b></nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Birthdate">
-                    <b *ngIf="innerValue?.view === view.recipient">{{ user?.dateOfBirth | date }}</b>
-                    <b *ngIf="innerValue?.view === view.staff">{{ user?.dob | date }}</b>
-                </nz-descriptions-item>
-                <nz-descriptions-item *ngIf="innerValue?.view === view.recipient" nzTitle="Case Manager"><b>{{ user?.recipient_Coordinator || '-' }}</b>
-                </nz-descriptions-item>
-            </nz-descriptions>
+            <div class="space-top">
+                <nz-descriptions [nzSize]="'small'" [nzColumn]="{ xxl: 4, xl: 4, lg: 4, md: 4, sm: 2, xs: 1 }"
+                    [nzColon]="false" nzTitle="" nzLayout="vertical">
+                    <nz-descriptions-item nzTitle="Title"><b>{{ user?.title || '-' }}</b></nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Lastname">
+                        <b *ngIf="innerValue?.view === view.recipient">{{ user?.surnameOrg || '-' }}</b>
+                        <b *ngIf="innerValue?.view === view.staff">{{ user?.lastName || '-' }}</b>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Firstname"><b>{{ user?.firstName || '-' }}</b></nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Middlename"><b>{{ user?.middleNames || '-' }}</b></nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Gender"><b>{{ user?.gender || '-' }}</b></nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Birthdate">
+                        <b *ngIf="innerValue?.view === view.recipient">{{ user?.dateOfBirth | date }}</b>
+                        <b *ngIf="innerValue?.view === view.staff">{{ user?.dob | date }}</b>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item *ngIf="innerValue?.view === view.recipient" nzTitle="Case Manager">
+                        <b>{{ user?.recipient_Coordinator || '-' }}</b>
+                    </nz-descriptions-item>
+                </nz-descriptions>
+            </div>
         </div>
     </div>
-</div>
-<div class="space-top">
-    <div class="form-group">
-        <label for="" class="info">Address Information</label>
-        <div class="edit-btn">
-            <div class="right-btns">
-                <button nz-button nzType="default" nzValue="small" (click)="addAddressOpen()" class="right"><i nz-icon nzType="plus"
-                        nzTheme="outline"></i> Add Address</button>
+    <div class="space-top">
+        <div class="form-group">
+            <label for="" class="info">Address Information</label>
+            <div class="edit-btn">
+                <div class="right-btns">
+                    <button nz-button nzType="default" nzValue="small" (click)="addAddressOpen()" class="right"><i nz-icon
+                            nzType="plus" nzTheme="outline"></i> Add Address</button>
+                </div>
             </div>
+            <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
+                [nzShowPagination]="false">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Address</th>
+                        <th>Suburb</th>
+                        <th>Postcode</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of basicTable.data">
+                        <td>{{ data.description }}</td>
+                        <td>{{ data.address1 }}</td>
+                        <td>{{ data.suburb }}</td>
+                        <td>{{ data.postCode }}</td>
+                        <td>
+                            <a (click)="editAddressOpen(data)">Edit</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
+                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
+                                (nzOnCancel)="cancel(1)">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
         </div>
-        <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzShowPagination]="false">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Address</th>
-                    <th>Suburb</th>
-                    <th>Postcode</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of basicTable.data">
-                    <td>{{ data.description }}</td>
-                    <td>{{ data.address1 }}</td>
-                    <td>{{ data.suburb }}</td>
-                    <td>{{ data.postCode }}</td>
-                    <td>
-                        <a (click)="editAddressOpen(data)">Edit</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
-                            (nzOnCancel)="cancel(1)">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
+    
+        <div class="form-group space-top">
+            <label for="" class="info">Contact Information</label>
+            <div class="edit-btn">
+                <div class="right-btns">
+                    <button nz-button nzType="default" nzValue="small" (click)="addContactOpen()" class="right"><i nz-icon
+                            nzType="plus" nzTheme="outline"></i> Add Contact</button>
+                </div>
+            </div>
+            <nz-table #contactTable [nzData]="user?.contacts" [nzSize]="'small'" [nzFrontPagination]="false"
+                [nzShowPagination]="false">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Detail</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of contactTable.data">
+                        <td>{{ data.type }}</td>
+                        <td>{{ data.detail }}</td>
+                        <td>
+                            <a (click)="editContactOpen(data)">Edit</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
+                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
+                                (nzOnCancel)="cancel(2)">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+</ng-container>
+
+
+<ng-container *ngIf="isAdmin">
+    <div nz-row style="margin-top:2rem" nzGutter="16">
+
+        <ng-container *ngIf="this.innerValue?.view == 'staff' ">
+            <div nz-col nzSpan="12">
+                <div nz-row class="divider">
+                    <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
+                    <nz-descriptions nzLayout="vertical" [nzColon]="false">
+                        <nz-descriptions-item nzTitle="Record ID">{{ user?.uniqueID }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Title">{{ user?.title }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Preferred">{{ user?.preferredName }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Firstname">{{ user?.firstName }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Middlename">{{ user?.middleNames }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Lastname">{{ user?.lastName }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Gender">{{ user?.gender }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Birthdate">{{ user?.dob | date: 'dd / MM / yyyy' || '-' }}
+                        </nz-descriptions-item>
+                    </nz-descriptions>
+                </div>
+            
+                <div nz-row class="divider">
+            
+                    <i nz-icon nzType="edit" nzTheme="outline"
+                        (click)="profileStaffPreferredModal = true;patchTheseValuesInForm();"></i>
+                    <div nz-col nzSpan="11">
+                        <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=1>
+                            <nz-descriptions-item nzTitle="Preferred Availability/Notes">
+                                <textarea rows="4" style="height: 174px; width: 13rem;" nz-input [ngModel]="user?.contactIssues"
+                                    readonly></textarea>
+                            </nz-descriptions-item>
+                        </nz-descriptions>
+                    </div>
+                    <div nz-col nzSpan="13">
+                        <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=1>
+                            <nz-descriptions-item nzTitle="Cald Status">{{ user?.caldStatus || '-' }}</nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="Indigenous Status">{{ user?.cstda_Indiginous || '-' }}
+                            </nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="Primary Disability">{{ user?.cstda_DisabilityGroup || '-' }}
+                            </nz-descriptions-item>
+                        </nz-descriptions>
+                    </div>
+                </div>
+            </div>
+            
+            <div nz-col nzSpan="12">
+                <div nz-row class="divider">
+                    <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffOptionsModal=true;patchTheseValuesInForm()"></i>
+                    <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=2 *ngIf="user">
+                        <nz-descriptions-item nzTitle="Type">{{ user?.category || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Staff #">{{ user?.stf_Code || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Branch/Department">{{ user?.stf_Department || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Job Category">{{ user?.staffGroup || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Admin Category">{{ user?.subCategory || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Team/Area">{{ user?.staffTeam || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Coordinator/Manager">{{ user?.pan_Manager || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Service Region">{{ user?.serviceRegion || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Grid #">{{ user?.ubdMap || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Driver's License">{{ user?.dLicence || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="MV Reg">{{ user?.vRegistration || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Rating">
+                            <nz-rate [ngModel]="user?.rating" [nzCount]="7" nzDisabled></nz-rate>
+                        </nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="N Registration #">{{ user?.nRegistration || '-' }}</nz-descriptions-item>
+                    </nz-descriptions>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="this.innerValue?.view == 'recipient' ">
+            <div nz-col nzSpan="12">
+                <div nz-row class="divider">
+                    <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
+                    <nz-descriptions nzLayout="vertical" [nzColon]="false">
+                        <nz-descriptions-item nzTitle="Record ID">{{ user?.uniqueID }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Title">{{ user?.title }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Preferred">{{ user?.preferredName }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Firstname">{{ user?.firstName }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Middlename">{{ user?.middleNames || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Lastname">{{ user?.surnameOrg || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Gender">{{ user?.gender }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Birthdate">{{ user?.dateOfBirth | date: 'dd / MM / yyyy' || '-' }}
+                        </nz-descriptions-item>
+                    </nz-descriptions>
+                </div>
+            
+                <div nz-row class="divider">
+            
+                    <i nz-icon nzType="edit" nzTheme="outline"
+                        (click)="profileStaffPreferredModal = true;patchTheseValuesInForm();"></i>
+                    <div nz-col nzSpan="11">
+                        <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=1>
+                            <nz-descriptions-item nzTitle="Preferred Availability/Notes">
+                                <textarea rows="4" style="height: 174px; width: 13rem;" nz-input [ngModel]="user?.contactIssues"
+                                    readonly></textarea>
+                            </nz-descriptions-item>
+                        </nz-descriptions>
+                    </div>
+                    <div nz-col nzSpan="13">
+                     
+                        
+                    </div>
+                </div>
+            </div>
+            <div nz-col nzSpan="12">
+                <div nz-row class="divider">
+                    <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffOptionsModal=true;patchTheseValuesInForm()"></i>
+                    <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=2 *ngIf="user">
+                        <nz-descriptions-item nzTitle="File #1">{{ user?.agencyIdReportingCode || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="File #2">{{ user?.urNumber || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Admitting Branch">{{ user?.branch || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Service Region/Main Category">{{ user?.agencyDefinedGroup || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Sub Category">{{ user?.ubdMap || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Primary Case Manager">{{ user?.recipient_Coordinator || '-' }}</nz-descriptions-item>                       
+                    </nz-descriptions>
+                </div>
+            </div>
+        </ng-container>
+
     </div>
 
-    <div class="form-group space-top">
-        <label for="" class="info">Contact Information</label>
-        <div class="edit-btn">
-            <div class="right-btns">
-                <button nz-button nzType="default" nzValue="small" (click)="addContactOpen()" class="right"><i nz-icon nzType="plus"
-                        nzTheme="outline"></i> Add Contact</button>
+    <div nz-row>
+        <div class="space-top">
+            <div class="form-group">
+                <label for="" class="info">Address Information</label>
+                <div class="edit-btn">
+                    <div class="right-btns">
+                        <button nz-button nzType="default" nzValue="small" (click)="addAddressOpen()" class="right"><i nz-icon
+                                nzType="plus" nzTheme="outline"></i> Add Address</button>
+                    </div>
+                </div>
+                <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
+                    [nzShowPagination]="false">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Address</th>
+                            <th>Suburb</th>
+                            <th>Postcode</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of basicTable.data">
+                            <td>{{ data.description }}</td>
+                            <td>{{ data.address1 }}</td>
+                            <td>{{ data.suburb }}</td>
+                            <td>{{ data.postCode }}</td>
+                            <td>
+                                <a (click)="editAddressOpen(data)">Edit</a>
+                                <nz-divider nzType="vertical"></nz-divider>
+                                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
+                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
+                                    (nzOnCancel)="cancel(1)">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        
+            <div class="form-group space-top">
+                <label for="" class="info">Contact Information</label>
+                <div class="edit-btn">
+                    <div class="right-btns">
+                        <button nz-button nzType="default" nzValue="small" (click)="addContactOpen()" class="right"><i nz-icon
+                                nzType="plus" nzTheme="outline"></i> Add Contact</button>
+                    </div>
+                </div>
+                <nz-table #contactTable [nzData]="user?.contacts" [nzSize]="'small'" [nzFrontPagination]="false"
+                    [nzShowPagination]="false">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Detail</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of contactTable.data">
+                            <td>{{ data.type }}</td>
+                            <td>{{ data.detail }}</td>
+                            <td>
+                                <a (click)="editContactOpen(data)">Edit</a>
+                                <nz-divider nzType="vertical"></nz-divider>
+                                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
+                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
+                                    (nzOnCancel)="cancel(2)">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
             </div>
         </div>
-        <nz-table #contactTable [nzData]="user?.contacts" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzShowPagination]="false">
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Detail</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of contactTable.data">
-                    <td>{{ data.type }}</td>
-                    <td>{{ data.detail }}</td>
-                    <td>
-                        <a (click)="editContactOpen(data)">Edit</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
-                            (nzOnCancel)="cancel(2)">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
     </div>
-</div>
+</ng-container>
+
+
+
+
+
+
+
+
+
+
+ <nz-modal [(nzVisible)]="profileStaffModal" [nzStyle]="{ top: '20px' }" nzTitle="Update Profile" (nzOnCancel)="handleCancel()">
+
+    <div nz-row nzGutter="16" [formGroup]="userForm">
+        <div nz-row>
+            <div nz-col nzSpan="8">
+                <div class="form-group">
+                    <label for="">Preferred Name</label>
+                    <input nz-input type="text" formControlName="preferredName">
+                </div>
+            </div>
+        </div>
+        <div nz-row nzGutter="16">
+
+            <div nz-col  class="form-group" nzSpan="8">
+                <label for="">Lastname</label>
+                <input nz-input type="text" formControlName="surnameOrg">
+            </div>
+
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Firstname</label>
+                <input nz-input type="text" formControlName="firstName">
+            </div>
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Middlename</label>
+                <input nz-input type="text" formControlName="middleNames">
+            </div>
+
+        </div>
+        <div nz-row nzGutter="16">
+          
+                <div nz-col class="form-group" nzSpan="8">
+                    <label for="">Title</label>
+                    <nz-select nzAllowClear nzPlaceHolder="" formControlName="title">
+                        <nz-option *ngFor="let title of titles" [nzValue]="title" [nzLabel]="title">
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div nz-col class="form-group" nzSpan="8">
+                    <label for="">Gender</label>
+                    <nz-select formControlName="gender" nzAllowClear nzPlaceHolder="">
+                        <nz-option *ngFor="let gender of genderArr" [nzValue]="gender" [nzLabel]="gender">
+                        </nz-option>
+                    </nz-select>
+                </div>
+        
+        </div>
+        <div nz-row nzGutter="16">
+            <div nz-col nzSpan="24" class="form-group">
+                <label for="">Birthdate</label>
+                <div nz-col nzSpan="6">
+                    <nz-select nzAllowClear nzPlaceHolder="" formControlName="year">
+                        <nz-option *ngFor="let year of years" [nzValue]="year" [nzLabel]="year">
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="7">
+                    <nz-select nzAllowClear nzPlaceHolder="" formControlName="month">
+                        <nz-option *ngFor="let month of months" [nzValue]="month" [nzLabel]="month">
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="4">
+                    <nz-select nzAllowClear nzPlaceHolder="" formControlName="day">
+                        <nz-option *ngFor="let day of days" [nzValue]="day" [nzLabel]="day">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" [nzLoading]="loading"  (click)="saveProfile()">Save</button>
+    </div>
+
+</nz-modal>
+
+<nz-modal [(nzVisible)]="profileStaffPreferredModal" [nzStyle]="{ top: '20px' }" nzTitle="Update Profile Options"
+    (nzOnCancel)="handleCancel()">
+
+    <div nz-row nzGutter="16" [formGroup]="userForm">
+
+        <div nz-row nzGutter="16">
+            <div nz-col class="form-group" nzSpan="24">
+                <label for="">Cald Status</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="caldStatus">
+                    <nz-option *ngFor="let list of caldStatuses" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div>
+
+            <div nz-col class="form-group" nzSpan="24">
+                <label for="">Indigenous Status</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="indigStatus">
+                    <nz-option *ngFor="let list of dropDowns?.indigenousArr" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col class="form-group" nzSpan="24">
+                <label for="">Primary Disability</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="primaryDisability">
+                    <nz-option *ngFor="let title of dropDowns?.disabilitiesArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col class="form-group" nzSpan="24">
+                <label for="">Preferred Availability / Notes</label>
+                <textarea rows="4" nz-input type="text" formControlName="note"></textarea>
+            </div>
+           
+        </div>
+        
+
+    </div>
+
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" [nzLoading]="loading" (click)="saveNotes()">Save</button>
+    </div>
+
+</nz-modal>
+
+
+<nz-modal [(nzVisible)]="profileStaffOptionsModal" [nzStyle]="{ top: '20px' }" nzTitle="Update Profile Options" [nzWidth]="960"
+    (nzOnCancel)="handleCancel()">
+
+    <div nz-row nzGutter="16" [formGroup]="userForm">
+        <div nz-row nzGutter="16">
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Type</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="type">
+                    <nz-option *ngFor="let list of typesArr" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div>
+            
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Branch</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="stf_Department">
+                    <nz-option *ngFor="let list of dropDowns?.branchesArr" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Job Category</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="jobCategory">
+                    <nz-option *ngFor="let title of dropDowns?.jobCategoryArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+        </div>
+        <div nz-row nzGutter="16">
+
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Admin Category</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="adminCategory">
+                    <nz-option *ngFor="let title of dropDowns?.adminCategoryArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Team/Area</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="team">
+                    <nz-option *ngFor="let title of dropDowns?.teamArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Coordinator/Manager</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="casemanager">
+                    <nz-option *ngFor="let title of dropDowns?.managerArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+        </div>
+        <div nz-row nzGutter="16">
+
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Service Region</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="serviceRegion">
+                    <nz-option *ngFor="let title of dropDowns?.serviceRegionArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+
+        </div>
+        <div nz-row nzGutter="16">           
+            <div nz-col class="form-group" nzSpan="6">
+                <label for="">Grid No</label>
+                <input nz-input type="text" formControlName="gridNo">
+            </div>
+
+            <div nz-col class="form-group" nzSpan="6">
+                <label for="">Drivers License</label>
+                <input nz-input type="text" formControlName="dLicense">
+            </div>
+
+            <div nz-col class="form-group" nzSpan="6">
+                <label for="">Has Caseload</label>
+                <label nz-checkbox formControlName="isCaseLoad"></label>
+            </div>
+
+            <div nz-col class="form-group" nzSpan="6">
+                <label for="">Is Rosterable</label>
+                <label nz-checkbox formControlName="isRosterable"></label>
+            </div>
+        </div>
+
+        <div nz-row nzGutter="16">
+            <div nz-col class="form-group" nzSpan="6">
+                <label for="">MV Registration</label>
+                <input nz-input type="text" formControlName="mvReg">
+            </div>
+            <div nz-col class="form-group" nzSpan="6">
+                <label for="">N Registration</label>
+                <input nz-input type="text" formControlName="nReg">
+            </div>
+            <div nz-col class="form-group" nzSpan="6">
+                <label for="">Email Timesheet</label>
+                <label nz-checkbox formControlName="isEmail"></label>
+            </div>
+            <div nz-col class="form-group" nzSpan="6">
+                <label for="">Star Rating</label>
+                <nz-rate formControlName="rating" [nzCount]="7"></nz-rate>
+            </div>
+        </div>
+
+    </div>
+
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" [nzLoading]="loading" (click)="saveProfile()">Save</button>
+    </div>
+
+</nz-modal>
+
+
 
 <nz-modal [(nzVisible)]="emailManagerOpen" nzTitle="Email Manager" [nzFooter]="modalFooter" (nzOnCancel)="emailManagerOpen = false">
    <div>

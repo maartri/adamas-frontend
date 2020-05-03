@@ -36,11 +36,13 @@ export class StaffAdmin implements OnInit, OnDestroy {
     sample: any;
 
     listChange(event: any) {
+
         if (event == null) {
             this.user = null;
             this.isFirstLoad = false;
+            this.sharedS.emitChange(this.user);
             return;
-        };
+        }
 
         if (!this.isFirstLoad) {
             this.view(0);

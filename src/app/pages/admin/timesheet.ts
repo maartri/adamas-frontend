@@ -106,10 +106,15 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     activity_value: number;
     durationObject: any;
 
+    // 0 = staff; 1 = recipient
+    view: number = 0;
+
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
     formatterDollar = (value: number) => `${value ? `$ ${value}` : ''}`;
     formatterPercent = (value: number) => `${value ? `% ${value}` : ''}`;
+
+    overlapValue: any;
 
     timesheetForm: FormGroup;
     modalTimesheetValues: Array<AddTimesheetModalInterface> = [
@@ -481,7 +486,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     picked(data: any) {
-
+        console.log(data);
         if (!data.data) {
             this.timesheets = [];
             this.selected = null;
@@ -586,6 +591,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             this.payTotal = _temp;
         });
+        this.selectAll = false;
     }
 
     recurseSubDirectories(data: any) {
@@ -737,6 +743,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     checkBoxChange(event: boolean, timesheet: any){
         this.timeS.selectedApprove({
             AccountNo: timesheet.shiftbookNo,
+            PersonType: this.GET_VIEW(),
             Status: event
         }).subscribe(data => {
             if(data){
@@ -744,6 +751,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.globalS.sToast('Success','Selected item');
             }
         })
+    }
+
+    GET_VIEW(): string {
+        return this.selected.option == 1 ? 'Recipient' : 'Staff'
     }
 
     process(index: number) {
@@ -756,22 +767,36 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.globalS.wToast('No Highlighted Item','Warning');
                 return;
             }
-            console.log(shiftArray);
-            // this.timeS.deleteshift(shiftArray)
-            //     .subscribe(data => {
-            //         this.globalS.sToast('Success','Selected items are deleted');
-            //         this.picked(this.selected);                
-            //     });
+            
+            this.timeS.deleteshift(shiftArray)
+                .subscribe(data => {
+                    this.globalS.sToast('Success','Selected items are deleted');
+                    this.picked(this.selected);                
+                });
         }
 
         if (index == 3) {
-            console.log('delete unapproved')
+            
+            // const shiftArray = this.timesheets.filter(x => x.app).map(x => x.shiftbookNo)
+
+            let input = {
+                AccountNo: this.selected.data,
+                PersonType: this.GET_VIEW(),
+                Status: 1
+            }
+
+            console.log(input);
+            this.timeS.deleteunapprovedall(input).subscribe(data => {
+                this.globalS.sToast('Success', data.message);
+                this.picked(this.selected);              
+            });
         }
 
         if (index == 5) {
             this.timeS.approveAll({
-                accountNo: this.selected.data
-            }).subscribe(data => {               
+                accountNo: this.selected.data,
+                PersonType: this.GET_VIEW()
+            }).subscribe(data => {
                 this.globalS.sToast('Success', 'All items are approved');
                 this.picked(this.selected);                
             });
@@ -779,7 +804,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         if (index == 6) {
             this.timeS.unapproveAll({
-                accountNo: this.selected.data
+                accountNo: this.selected.data,
+                PersonType: this.GET_VIEW()
             }).subscribe(data => {
                 this.globalS.sToast('Success', 'All items are unapproved');
                 this.picked(this.selected);
@@ -847,12 +873,12 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             });
         }
         else {
-            // let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
-            //     WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
+            let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
+                WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
             
-            let sql = `SELECT DISTINCT [Service Type] AS activity FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
-                WHERE SO.ServiceProgram = '${ program}' AND EXISTS (SELECT Title FROM ItemTypes ITM WHERE Title = SO.[Service Type] AND 
-                ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}')) ORDER BY [Service Type]`;
+            // let sql = `SELECT DISTINCT [Service Type] AS activity FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            //     WHERE SO.ServiceProgram = '${ program}' AND EXISTS (SELECT Title FROM ItemTypes ITM WHERE Title = SO.[Service Type] AND 
+            //     ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}')) ORDER BY [Service Type]`;
             
             return this.listS.getlist(sql);
         }

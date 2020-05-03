@@ -159,3 +159,10 @@ th.action{
     width: 7.5rem !important;
 }
 
+.boxy{
+    border: 1px solid #ededed;
+    padding: 5px;
+    text-align: justify;
+    font-size: 13px;
+    margin-bottom: 10px;
+}

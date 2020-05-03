@@ -1,1 +1,83 @@
-<p>contacts-details works!</p>
+<div ng-row nzGutter="16">
+
+    <div nz-col nzSpan="5">
+        <ul>
+            <li *ngFor="let list of kinsArray">
+                <div (click)="showDetails(list)">
+                    <h4>{{ list.contactName }}</h4>
+                    <span>{{list.contactType}}</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div nz-col nzSpan="18">
+        <div nz-col nzSpan="12">
+            <form nz-form [nzNoColon]="true" [formGroup]="kindetailsGroup" >
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">Type</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                        <input id="note" type="text" nz-input  />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">Name</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                        <input id="note" type="text" nz-input />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">Address 1</nz-form-label>
+                    <nz-form-control [nzSpan]="19" nzErrorTip="Please input your username!">
+                        <input id="note" type="text" nz-input />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">Address 2</nz-form-label>
+                    <nz-form-control [nzSpan]="19" nzErrorTip="Please input your username!">
+                        <input id="note" type="text" nz-input />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">Suburb</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                        <input id="note" type="text" nz-input />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">Suburb</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                        <app-phonefax></app-phonefax>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">Email</nz-form-label>
+                    <nz-form-control [nzSpan]="19" nzErrorTip="Please input your username!">
+                        <input id="note" type="text" nz-input />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">List Order</nz-form-label>
+                    <nz-form-control [nzSpan]="5" nzErrorTip="Please input your username!">
+                        <input id="note" type="text" nz-input />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="5" nzFor="note">Notes</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                        <textarea rows="4" nz-input></textarea>
+                    </nz-form-control>
+                </nz-form-item>
+             
+            </form>
+        </div>
+    </div>
+</div>

@@ -31,6 +31,8 @@ export class RecipientPersonalAdmin implements OnInit, OnDestroy {
     checked: boolean = false;
     isDisabled: boolean = false;
 
+    transformedUser: any;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -40,6 +42,7 @@ export class RecipientPersonalAdmin implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private modalService: NzModalService
     ) {
+        
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -51,23 +54,30 @@ export class RecipientPersonalAdmin implements OnInit, OnDestroy {
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'personal')) {
                 this.user = data;
-                this.search(data);
+                this.transform(data);
             }
         });
     }
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        
+        this.transform(this.user);        
     }
+    
 
     ngOnDestroy(): void {
         this.unsubscribe.next();
         this.unsubscribe.complete();
     }
 
-    search(user: any) {
+    transform(user: any) {
         
+        if (!user) return;
+        
+        this.transformedUser = {
+            name: user.code,
+            view: user.view
+        }
     }
 
     

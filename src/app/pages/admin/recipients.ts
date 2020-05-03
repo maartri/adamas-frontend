@@ -55,18 +55,25 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     listChange(event: any) {
 
+        if (event == null) {
+            this.user = null;
+            this.isFirstLoad = false;
+            this.sharedS.emitChange(this.user);
+            return;
+        }
+
         if (!this.isFirstLoad) {
             this.view(0);
             this.isFirstLoad = true;
         }
         
-        this.user = {
-            agencyDefinedGroup: "ARUNDEL",
-            code: "2CDC STEPH",
-            id: "T0100005506",
-            sysmgr: true,
-            view: "recipient"
-        }
+        // this.user = {
+        //     agencyDefinedGroup: "ARUNDEL",
+        //     code: "2CDC STEPH",
+        //     id: "T0100005506",
+        //     sysmgr: true,
+        //     view: "recipient"
+        // }
 
         // this.user = {
         //     code: event.accountNo,
@@ -75,6 +82,14 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         //     agencyDefinedGroup: event.agencyDefinedGroup,
         //     sysmgr: event.sysmgr
         // }
+
+        this.user = {
+            code: event.accountNo,
+            id: event.uniqueID,
+            view: event.view,
+            agencyDefinedGroup: event.agencyDefinedGroup,
+            sysmgr: event.sysmgr
+        }
 
         this.sharedS.emitChange(this.user);
         this.cd.detectChanges();

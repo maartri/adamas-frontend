@@ -658,7 +658,9 @@ declare module Dto {
 
     export interface ProfileInterface {
         name: string,
-        view: string
+        view: string,
+        id?: string,
+        sysmgr?: string        
     }
 
     // export interface NewStaffUser {

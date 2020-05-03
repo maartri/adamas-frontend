@@ -139,16 +139,19 @@
 
 <nz-modal [(nzVisible)]="overlapVisible" nzTitle="Automatic Overlap Removal" (nzOnCancel)="handleCancel()" (nzOnOk)="removeOverlap()">
     <div nz-row>
-        <div nz-row>
+        <div nz-row class="boxy">
             This action will force any overlapping shifts to a later start time to remove the overlap. All entries must be either
             approved or unapproved. You cannot use this function if some entries are approved and others are not.
         </div>
-        <div nz-row>
+        <div nz-row class="boxy">
             If you want to force a timegap between overlapping shifts - select 5 minutes from the drop down or if a gap is not
             needed accept the default of 0
         </div>
-        <div nz-row>
-
+        <div nz-row style="text-align: center">
+            <nz-select [(ngModel)]="overlapValue" nzAllowClear>
+                <nz-option nzValue="0" nzLabel="0 minute"></nz-option>
+                <nz-option nzValue="5" nzLabel="5 minute"></nz-option>
+            </nz-select>
         </div>
     </div>
 </nz-modal>

@@ -49,3 +49,24 @@ nz-select{
 .form-row > div.form-group{
     margin-bottom:3rem;
 }
+
+nz-descriptions >>> div table tbody tr:nth-child(odd) td span{
+    font-weight: 500;
+}
+
+.divider{
+    padding: 2rem 1rem 1rem 1rem;
+    border: 1px solid beige;
+    margin-bottom:1rem;
+}
+.divider i{
+    position: absolute;
+    right: 17px;
+    top: 10px;
+    font-size: 1.1rem;
+    cursor:pointer;
+    color:#979797;
+}
+.divider i:hover{
+    color:#383838;
+}

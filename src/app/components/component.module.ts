@@ -15,7 +15,8 @@ import {
 } from '@components/index';
 
 import {
-  ClickOutsideDirective
+  ClickOutsideDirective,
+  NumberDirective
 } from "../directives/index";
 
 import { CalendarComponent } from './calendar/calendar.component';
@@ -30,14 +31,14 @@ import { SearchTimesheetComponent } from './search-timesheet/search-timesheet.co
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { DmCalendarComponent } from './dm-calendar/dm-calendar.component';
 import { RecipientPopupComponent } from './recipient-popup/recipient-popup.component';
-
+import { PhonefaxComponent } from './phonefax/phonefax.component';
 
 @NgModule({
   declarations: [
     UploadFileComponent,
 
     //Directives,
-    ClickOutsideDirective,
+    ClickOutsideDirective, NumberDirective,
 
     RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, DayManagerPopulate,
     ProfileComponent,
@@ -50,7 +51,8 @@ import { RecipientPopupComponent } from './recipient-popup/recipient-popup.compo
     SearchTimesheetComponent,
     BreadcrumbsComponent,
     DmCalendarComponent,
-    RecipientPopupComponent
+    RecipientPopupComponent,
+    PhonefaxComponent
   ],
   imports: [
     CommonModule,

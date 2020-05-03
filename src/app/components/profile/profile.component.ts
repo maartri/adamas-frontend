@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, ViewChild, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ViewChild, OnDestroy, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 
@@ -28,15 +28,21 @@ const PROFILEPAGE_VALUE_ACCESSOR: any = {
   styleUrls: ['./profile.component.css'],
   providers: [
     PROFILEPAGE_VALUE_ACCESSOR
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor {
-
+  @Input() isAdmin: boolean = false;
+  
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
   innerValue: Dto.ProfileInterface;
+
+  profileStaffModal: boolean = false;
+  profileStaffOptionsModal: boolean = false;
+  profileStaffPreferredModal: boolean = false;
 
   editModalOpen: boolean = false;
   user: any;
@@ -68,12 +74,15 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   titles: Array<string> = titles;
   genderArr: Array<string> = gender;
+  typesArr: Array<string> = types;
+  caldStatuses: Array<string> = caldStatuses
 
   showMailManagerBtn: boolean = false;
   emailManagerOpen: boolean = false;
   emailManagerNoEmailShowNotif: boolean = false;
 
   caseManagerDetails: any;
+  dropDowns: Dto.DropDowns;
 
   constructor(
     private globalS: GlobalService,
@@ -82,7 +91,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     private timeS: TimeSheetService,
     private listS: ListService,
     private formBuilder: FormBuilder,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private cd: ChangeDetectorRef
   ) {
 
   }
@@ -97,6 +107,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     
     this.buildForms();
     this.POPULATE_DATE_DROPDOWNS();
+    this.POPULATE_OTHER_DROPDOWNS();
   }
 
   ngOnDestroy() {
@@ -104,6 +115,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   buildForms(): void {
+
     this.contactForm = this.formBuilder.group({
       id: [''],
       type: ['', [Validators.required]],
@@ -183,6 +195,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         subCategory: user.ubdMap,
         serviceRegion: user.agencyDefinedGroup
       });
+
       // this.contactIssueGroup.patchValue({
       //     value: user.contactIssues
       // })
@@ -233,6 +246,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         isCaseLoad: user.caseManager
       });
 
+      this.cd.markForCheck();
+      this.cd.detectChanges();
 
       // this.notesGroup.patchValue({
       //     notes: user.contactIssues,
@@ -258,11 +273,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.emailManagerOpen = true;
     this.caseManagerDetails = this.casemanagers.find(x => { return x.description == this.user.recipient_Coordinator });
     
-    this.emailManagerNoEmailShowNotif = this.globalS.isEmpty(this.caseManagerDetails) ? false : true;
- 
+    this.emailManagerNoEmailShowNotif = this.globalS.isEmpty(this.caseManagerDetails) ? false : true; 
   }
 
   pathForm(token: Dto.ProfileInterface) {
+
     if (this.globalS.isEmpty(token))
       return;
 
@@ -270,6 +285,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       this.clientS.getprofile(token.name).pipe(
         mergeMap(data => {
           this.user = data;
+          
           this.patchTheseValuesInForm(data)
           return this.getUserData(data.uniqueID);
         })).subscribe(data => {
@@ -279,6 +295,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           this.user.addresses = this.addressBuilder(data[0]);
           this.user.contacts = this.contactBuilder(data[1]);
           this.user.casestaff = data[2];
+
+          this.cd.markForCheck();
+          this.cd.detectChanges();
 
           // this.globalS.userProfile = this.user;
 
@@ -298,6 +317,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       this.staffS.getprofile(token.name).pipe(
         mergeMap(data => {
           this.user = data;
+          
+          this.user.rating = data.rating ? data.rating.split('*').length - 1 : 0;
           this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);
         })).subscribe(data => {
@@ -305,6 +326,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
           this.user.addresses = this.addressBuilder(data[0]);
           this.user.contacts = this.contactBuilder(data[1]);
+
+          this.cd.markForCheck();
+          this.cd.detectChanges();
 
           // this.globalS.userProfile = this.user;
 
@@ -375,9 +399,12 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   handleCancel(): void {
-    console.log('hehe');
+    
     this.addressForm.reset();
     this.editModalOpen = false;
+    this.profileStaffModal = false;
+    this.profileStaffOptionsModal = false;
+    this.profileStaffPreferredModal = false;
   }
 
   formatDate(data: any): string {
@@ -405,6 +432,95 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     temp.push(pf);
     return temp;
+  }
+
+  convertRatingToString(rating: number): string {
+    if (!rating) rating = 0;
+    var ratingStr = "";
+    for (var a = 0; a < rating; a++){
+      ratingStr += '*';
+    }
+    return ratingStr;
+  }
+
+  saveNotes() {
+    const notes = this.userForm.value;
+    // console.log(notes);
+    let staff: Dto.Staffs = {
+      accountNo: this.user.accountNo,
+      uniqueID: this.user.uniqueID,
+      caldStatus: notes.caldStatus,
+      cstda_Indiginous: notes.indigStatus,
+      cstda_DisabilityGroup: notes.primaryDisability,
+      contactIssues: notes.note
+    }
+
+    this.subscriptionArray.push(this.staffS.updatedisabilitystatus(staff));
+    this.processSubscriptions();
+  }
+
+  saveProfile() {
+
+    if (this.userForm.dirty) {
+      let data = this.userForm.value;
+      let birthdate = this.formatDate(this.userForm);
+
+      if (this.innerValue.view == 'staff') {
+        let user: Dto.Staffs = {
+          accountNo: this.innerValue.name,
+          firstName: data.firstName,
+          middleNames: data.middleNames,
+          lastName: data.surnameOrg,
+          gender: data.gender,
+          title: data.title,
+          dob: birthdate,
+
+          rating: this.convertRatingToString(data.rating),
+          pan_Manager: data.casemanager,
+          category: data.type,
+          stf_Department: data.stf_Department,
+          staffGroup: data.jobCategory,
+          subCategory: data.adminCategory,
+          staffTeam: data.team,
+          serviceRegion: data.serviceRegion,
+          ubdMap: data.gridNo,
+          dLicence: data.dLicense,
+          vRegistration: data.mvReg,
+          nRegistration: data.nReg,
+          caseManager: data.isCaseLoad,
+          isRosterable: data.isRosterable,
+          emailTimesheet: data.isEmail,
+
+          preferredName: data.preferredName
+        }
+        
+        this.subscriptionArray.push(this.staffS.updateusername(user));
+      }
+
+      if (this.innerValue.view == 'recipient') {
+        let user: Dto.Recipients = {
+          accountNo: this.innerValue.name,
+          firstName: data.firstName,
+          middleNames: data.middleNames,
+          surnameOrg: data.surnameOrg,
+          gender: data.gender,
+          title: data.title,
+          dateOfBirth: birthdate,
+
+          recipient_Coordinator: data.casemanager,
+          agencyIdReportingCode: data.file1,
+          urNumber: data.file2,
+          branch: data.branch,
+          agencyDefinedGroup: data.serviceRegion,
+          ubdMap: data.subCategory
+
+        }
+
+        this.subscriptionArray.push(this.clientS.updateusername(user));
+      }
+
+      this.processSubscriptions();
+    }
   }
 
   formatAddress(addressForm: FormGroup): Array<Dto.NamesAndAddresses> {
@@ -674,6 +790,31 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   //From ControlValueAccessor interface
   registerOnTouched(fn: any) {
     this.onTouchedCallback = fn;
+  }
+
+  POPULATE_OTHER_DROPDOWNS() {
+    forkJoin([
+      this.listS.getlistbranches(),
+      this.listS.getliststaffgroup(),
+      this.listS.getliststaffadmin(),
+      this.listS.getliststaffteam(),
+      this.listS.getlistcasemanagers(),
+      this.listS.getserviceregion(),
+      this.listS.getlistdisabilities(),
+      this.listS.getlistindigstatus()
+    ]).subscribe(data=> {
+      this.dropDowns = {
+        branchesArr: data[0],
+        jobCategoryArr: data[1],
+        adminCategoryArr: data[2],
+        teamArr: data[3],
+        managerArr: data[4],
+        serviceRegionArr: data[5],
+        disabilitiesArr: data[6],
+        indigenousArr: data[7]
+      }
+    });
+
   }
 
   POPULATE_DATE_DROPDOWNS() {

@@ -115,7 +115,7 @@ export class SearchTimesheetComponent implements OnInit {
 
   switch() {
     const sel = {
-      option: this.view == 0 ? 0 : 1,
+      option: this.view,
       data: ''
     };
 

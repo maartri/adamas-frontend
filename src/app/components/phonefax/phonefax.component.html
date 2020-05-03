@@ -1,0 +1,9 @@
+<div class="pfx-container" [class.error]="error">
+    <span>+61</span>
+    <span>
+        <span *ngIf="!isDefaultFormat()">(0<input type="text" nz-input class="prefix-no" style="height: 28px;" numeric maxlength="1" size="1" [(ngModel)]="areaCode" (keypress)="changeEvent($event,0)" (ngModelChange)="inputChange$.next()" autocomplete="palong" onclick="this.select()" ></span>
+        <span *ngIf="isDefaultFormat()">(04</span>
+        )</span>
+    <input type="text" nz-input numeric #sample [(ngModel)]="firstFourNo" (keypress)="changeEvent($event,1)" (ngModelChange)="inputChange$.next($event)" autocomplete="palong" maxlength="4" size="5" onclick="this.select()"> -
+    <input type="text" nz-input numeric #hello [(ngModel)]="lastFourNo" (keypress)="changeEvent($event,2)" (ngModelChange)="inputChange$.next()" autocomplete="palong" maxlength="4" size="5" onclick="this.select()">
+</div>

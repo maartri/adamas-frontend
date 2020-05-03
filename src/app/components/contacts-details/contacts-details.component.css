@@ -1,0 +1,22 @@
+ul{
+    list-style:none;
+}
+
+h4{
+    margin:0;
+}
+ul li div{
+    padding:5px;
+    border-bottom: 1px solid #ededed;
+    max-width:12rem;
+    cursor:pointer;
+}
+ul li div:hover{
+    background: #fbfbfb;
+}
+ul li div span{
+    font-size:10px;
+}
+nz-form-label{
+    margin-top: 5px;
+}

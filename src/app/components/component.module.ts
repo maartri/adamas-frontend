@@ -61,8 +61,7 @@ import { PhonefaxComponent } from './phonefax/phonefax.component';
     ReactiveFormsModule,
     NgZorroAntdModule,
     NzUploadModule,
-    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
-    
+    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory })
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

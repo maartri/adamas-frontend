@@ -1,8 +1,14 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Component({
     styles: [`
-      
+        ul{
+            list-style:none;
+        }
+        li{
+            padding:5px;
+        }
     `],
     templateUrl: './reports.html'
 })
@@ -10,7 +16,9 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 
 export class ReportsAdmin implements OnInit, OnDestroy {
 
-    constructor() {
+    constructor(
+        private http: HttpClient
+    ) {
 
     }
 
@@ -20,5 +28,19 @@ export class ReportsAdmin implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
 
+    }
+
+    go() {
+        var tab: any = window.open('http://localhost:5000/api/clientreport/invoice');
+
+        // tab.location = 'http://localhost:5000/api/clientreport/invoice';
+        // tab.focus();
+
+        // this.http.get('https://localhost:5000/api/sample/data').subscribe(data => {
+        //     tab.location = 'https://localhost:5000/api/sample/invoice';
+        //     tab.focus();
+        // }, err => {
+        //     tab.close();
+        // })
     }
 }

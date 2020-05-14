@@ -1,12 +1,17 @@
-import { Component, OnInit, forwardRef, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
+import { Component, OnInit, forwardRef, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, AfterViewInit, OnDestroy } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+
+const noop = () => {
+};
 
 @Component({
-  host: {
-    '(document:click)': 'onClick($event)'
-  },
+  // host: {
+  //   '(document:click)': 'onClick($event)'
+  // },
   selector: 'app-phonefax',
   templateUrl: './phonefax.component.html',
   styleUrls: ['./phonefax.component.css'],
@@ -18,14 +23,15 @@ import { Subject } from 'rxjs';
     }
   ]
 })
-export class PhonefaxComponent implements OnChanges, OnInit, AfterViewInit ,ControlValueAccessor {
+  
+export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccessor {
   @ViewChild('sample', { static: false }) _firstFourNo: ElementRef;
   @ViewChild('hello', { static: false }) _lastFourNo: ElementRef;
 
-  @Input() type: string = '';
+  @Input() isMobile: boolean = false;
 
-  onChange: (a: any) => void;
-  onTouch: () => void;
+  private onTouchedCallback: () => void = noop;
+  private onChangeCallback: (_: any) => void = noop;
 
   inputChange$ = new Subject();
 
@@ -43,44 +49,63 @@ export class PhonefaxComponent implements OnChanges, OnInit, AfterViewInit ,Cont
     
   }
 
-  ngAfterViewInit() {
-    this.inputChange$.subscribe(e => {
-      var appendNumber = `+63${this.isMobileType() || ''}${this.firstFourNo || ''}${this.lastFourNo || ''}`
-      this.innerValue = appendNumber;      
+  ngOnInit() {
+    this.inputChange$.pipe(debounceTime(300)).subscribe(e => {
+      var contactNo = `+63${this.isMobileType() || ''}${this.firstFourNo || ''}${this.lastFourNo || ''}`
+      this.writeValue(contactNo);
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    for (let property in changes) {
-      if (property == 'type' && !changes[property].firstChange && changes[property].currentValue != null) {
-        this.clearAll();
+  writeValue(value: any) {
+    if (value) {
+      this.innerValue = this.validateNumber(value);
+      if (this.innerValue) {
+        this.error = false;
+        this.select(this.innerValue);        
+        return;
       }
+      this.error = true;
+      this.select('');
+      return;
     }
+    this.clearAll();
   }
 
+  select(value: any) {
+    this.onChangeCallback(value);
+  }
+
+  registerOnChange(fn): void {
+    this.onChangeCallback = fn;
+  }
+
+  registerOnTouched(fn): void {
+    this.onTouchedCallback = fn;
+  }
+
+  ngOnDestroy(): void{
+
+  } 
+
   isMobileType() {
-    return this.type == 'MOBILE' ? '04' : `0${this.areaCode}`
+    return this.isMobile ? '04' : `0${this.areaCode}`
   }
 
   clearAll() {
     this.areaCode = '';
     this.firstFourNo = '';
     this.lastFourNo = '';
-    var appendNumber = `${this.areaCode || ''}${this.firstFourNo || ''}${this.lastFourNo || ''}`
-    this.onChange(appendNumber);
+
+    this.innerValue = '';
+    this.select('');
   }
 
-  onClick(event) {
-    if (!this.elem.nativeElement.contains(event.target)) {
-      this.error = this.verifyError();
-      
-      this.onChange = this.innerValue;
-      console.log(this.innerValue)
-      // if (this.error) {
-      //   this.onChange('0')
-      // }
-    }
-  }
+  // onClick(event) {
+  //   if (!this.elem.nativeElement.contains(event.target)) {
+  //     this.error = this.verifyError();      
+  //     this.onChange = this.innerValue;
+  //   }
+  // }
 
   verifyError(): boolean {
     if (this.areaCode && this.firstFourNo && this.lastFourNo)
@@ -101,7 +126,8 @@ export class PhonefaxComponent implements OnChanges, OnInit, AfterViewInit ,Cont
     if (whatInput == 0) {
       setTimeout(() => {
         this._firstFourNo.nativeElement.focus();
-        this._firstFourNo.nativeElement.value = ''
+        this._firstFourNo.nativeElement.value = '';
+        this.error = true;
       });
     }
 
@@ -109,34 +135,25 @@ export class PhonefaxComponent implements OnChanges, OnInit, AfterViewInit ,Cont
       if ((e.target.value).length == 3) {
         setTimeout(() => {
           this._lastFourNo.nativeElement.focus();
-          this._lastFourNo.nativeElement.value = ''
-        })
+          this._lastFourNo.nativeElement.value = '';
+          this.error = true;
+        });
       }
-
     }
-  }
-
-  ngOnInit() {
 
   }
 
-  writeValue(value: any) {
-    if (value !== this.value) {
-      this.innerValue = value;
+  validateNumber(data: string) {
+    // 13 is the length of phone/tel #
+    if (data.includes('+63') && data.length == 13 && !isNaN(+data.slice(1, 14))) {
+      this.areaCode = data.slice(4, 5);
+      this.firstFourNo = data.slice(5, 9);
+      this.lastFourNo = data.slice(9, 14);
+      return data;
     }
+    return null;
   }
 
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
 
-  registerOnTouched(fn: any): void {
-    this.onTouch = fn;
-  }
-
-  isDefaultFormat(): boolean {
-    let type = (this.type).toUpperCase();
-    return type === 'MOBILE';
-  }
 
 }

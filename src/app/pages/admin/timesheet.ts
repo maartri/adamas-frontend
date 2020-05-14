@@ -10,7 +10,10 @@ import * as _ from 'lodash';
 
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { NzStepsModule, NzStepComponent } from 'ng-zorro-antd/steps';
+
 import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO'
+import addMinutes from 'date-fns/addMinutes'
 
 interface AddTimesheetModalInterface {
     index: number,
@@ -486,7 +489,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     picked(data: any) {
-        console.log(data);
+
         if (!data.data) {
             this.timesheets = [];
             this.selected = null;
@@ -514,9 +517,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                     return {
                         shiftbookNo: x.shiftbookNo,
                         date: x.activityDate,
-                        startTime: x.activity_Time.start_time,
-                        endTime: x.activity_Time.end_Time,
+                        startTime: this.fixDateTime(x.activityDate, x.activity_Time.start_time),
+                        endTime: this.fixDateTime(x.activityDate, x.activity_Time.end_Time),
                         duration: x.activity_Time.calculated_Duration,
+                        durationNumber: x.activity_Time.duration,
                         recipient: x.recipientLocation,
                         program: x.program.title,
                         activity: x.activity.name,
@@ -592,6 +596,23 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.payTotal = _temp;
         });
         this.selectAll = false;
+    }
+
+    fixDateTime(date: string, timedate: string) {
+        var currentDate = parseISO(date);
+        var currentTime = parseISO(timedate);
+
+        var newDate = format(
+            new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                currentDate.getDate(),
+                currentTime.getHours(),
+                currentTime.getMinutes(),
+                currentTime.getSeconds()
+            ), "yyyy-MM-dd'T'hh:mm:ss");
+        
+        return newDate;
     }
 
     recurseSubDirectories(data: any) {
@@ -672,6 +693,9 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         if (index == 4) {
             this.overlapVisible = true;
+            //this.OVERLAP_PROCESS(this.timesheets);
+           
+
             // this.modalService.confirm({
             //     nzTitle: '<b>Automatic Overlap Removal</b>',
             //     nzContent: `
@@ -702,11 +726,12 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     handleCancel() {
         this.overlapVisible = false;
+        this.overlapValue = null;
         this.addTimesheetVisible = false;
     }
 
     removeOverlap() {
-        
+        this.OVERLAP_PROCESS(this.timesheets, this.overlapValue);
     }
 
     selectAllChange(event: any) {
@@ -738,6 +763,50 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             rosterGroup === 'TRANSPORT' ||
             rosterGroup === 'TRAVELTIME'
         );
+    }
+
+    OVERLAP_PROCESS(rosters: Array<any>, overlapCounter: number) {
+
+        let _unique = null;
+        let endTime: Date;
+
+        var cloneRosters = _.cloneDeep(rosters);
+
+        cloneRosters.forEach(roster => {
+            if (roster && roster.date != _unique) {
+                _unique = roster.date;
+                endTime = parseISO(roster.endTime);
+            } else {
+                if (overlapCounter == 0) {
+                    roster.startTime = format(endTime, "yyyy-MM-dd'T'hh:mm:ss");
+                    roster.endTime = format(addMinutes(parseISO(roster.startTime), roster.durationNumber * 5), "yyyy-MM-dd'T'hh:mm:ss");
+                    endTime = parseISO(roster.endTime);
+                }
+                
+                if (overlapCounter == 5){
+                    roster.startTime = format(addMinutes(endTime, 5), "yyyy-MM-dd'T'hh:mm:ss");
+                    roster.endTime = format(addMinutes(parseISO(roster.startTime), roster.durationNumber * 5), "yyyy-MM-dd'T'hh:mm:ss");
+                    endTime = parseISO(roster.endTime);
+                }
+            }
+        });
+
+        var inputs = cloneRosters.map(x => {
+            return {
+                RecordNo: x.shiftbookNo,
+                startTime: format(parseISO(x.startTime), "hh:mm")
+            }
+        })
+
+        var ss = {
+            OverLaps: inputs
+        }
+
+        this.timeS.updatetimeoverlap(ss).subscribe(data => {
+            this.globalS.sToast('Success', 'Time Overlap Processed');
+            this.picked(this.selected);
+            this.handleCancel();
+        });
     }
 
     checkBoxChange(event: boolean, timesheet: any){

@@ -5,7 +5,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap } from 'rxjs/operators';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, EMPTY } from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RemoveFirstLast } from '@pipes/pipes';
@@ -316,8 +316,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     if (token.view == view.staff) {
       this.staffS.getprofile(token.name).pipe(
         mergeMap(data => {
-          this.user = data;
+          if (!data) return EMPTY;
           
+          this.user = data;          
           this.user.rating = data.rating ? data.rating.split('*').length - 1 : 0;
           this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);

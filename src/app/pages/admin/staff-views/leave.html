@@ -41,3 +41,77 @@
         </nz-table>
     </div>
 </div>
+
+
+<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="'Leave Application'" (nzOnCancel)="handleCancel()" [nzStyle]="{ top: '20px' }">
+    <div nz-row [formGroup]="leaveGroup">
+        <div nz-row>
+            <nz-form-item >
+                <nz-form-label [nzNoColon]="true">Date Range</nz-form-label>
+                <nz-form-control nzErrorTip="Required Field">
+                    <nz-range-picker [nzFormat]="dateFormat" formControlName="dates">
+                    </nz-range-picker>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-row>
+            <ul>
+                <li>
+                    <label nz-checkbox formControlName="makeUnavailable">Make Unavailable for balance of day</label>
+                </li>
+                <li>
+                    <label nz-checkbox formControlName="unallocAdmin">Unallocate Admin Activities</label>
+                </li>
+                <li>
+                    <label nz-checkbox formControlName="unallocUnapproved">Unallocate any unapproved entries</label>
+                </li>
+                <li>
+                    <label nz-checkbox formControlName="unallocMaster">Unallocate Master Roster</label>
+                </li>
+            </ul>
+        </div>
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label [nzNoColon]="true">Short Leave Explanation</nz-form-label>
+                <nz-form-control nzErrorTip="Required Field">
+                    <textarea rows="4" nz-input formControlName="explanation"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-row nzGutter=16>
+            <div nz-col nzSpan="12">
+                <div class="form-group">
+                    <label for="">Reason For Unavailability</label>
+                    <nz-select formControlName="activityCode" nzAllowClear>
+                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-col nzSpan="12">
+                <div class="form-group">
+                    <label for="">Pay Code</label>
+                    <nz-select formControlName="payCode" nzAllowClear >
+                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+        </div>
+        <div nz-row>
+           <div class="form-group">
+                <label nz-checkbox formControlName="programShow">Accept Program of Original Service As Program For Leave</label>
+           </div>
+        </div>
+        <div nz-row *ngIf="leaveGroup.get('programShow').value">
+            <div class="form-group">
+                <label for="">Change Program For Leave To the Following Program</label>
+                <nz-select formControlName="program" nzAllowClear>
+                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                </nz-select>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary"  [nzLoading]="isLoading">Save</button>
+    </div>
+</nz-modal>

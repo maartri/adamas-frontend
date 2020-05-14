@@ -1,4 +1,4 @@
-import { Component, forwardRef, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, forwardRef, ElementRef, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { switchMap, distinctUntilChanged, debounceTime } from 'rxjs/operators';
@@ -12,18 +12,18 @@ const noop = () => {
 @Component({
     selector: 'suburb',
     templateUrl: './suburb.html',
-    styles: [`
-        
+    styles: [`        
         nz-select {
             margin-right: 8px;
-            width: 200px;
+            width: 100%;
         }
     `],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         multi: true,
         useExisting: forwardRef(() => SuburbComponent),
-    }]
+    }],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor {
@@ -31,6 +31,8 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     //by the Control Value Accessor
     private onTouchedCallback: () => void = noop;
     private onChangeCallback: (_: any) => void = noop;
+
+    @Input() placeholder: string = '';
 
 
     private searchStream = new Subject<string>();
@@ -45,11 +47,14 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
 
     constructor(
         private clientS: ClientService,
-        private globalS: GlobalService
+        private globalS: GlobalService,
+        private cd: ChangeDetectorRef
     ) {
         this.searchResult$ = this.searchStream.pipe(
             debounceTime(500),
             switchMap(data => {
+                if (!data) return EMPTY;
+                
                 this.isLoading = true;
                 let pcode = /(\d+)/g.test(data) ? data.match(/(\d+)/g)[0] : "";
                 let suburb = /(\D+)/g.test(data) ? data.match(/(\D+)/g)[0] : "";
@@ -57,7 +62,6 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
                 let finalSuburb = suburb && suburb.split(',').length > 0 ? suburb.split(',')[0] : suburb;
                 this.lists = [];
 
-                // if (this.globalS.isEmpty(pcode) || this.globalS.isEmpty(finalSuburb)) return EMPTY;
                 return this.clientS.getsuburb({
                     Postcode: pcode,
                     SuburbName: finalSuburb,
@@ -66,15 +70,20 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
         );
 
         this._subscription$ = this.searchResult$.pipe(debounceTime(1000)).subscribe(data => {
+
             this.lists = data;
 
-            if (this.lists.length > 0) {
-                this.innerValue = `${this.lists[0].postcode} ${this.lists[0].suburb}, ${this.lists[0].state}`;
-                this.select(this.innerValue);
+            if (this.lists.length > 0 && this.innerValue) {
+                this.innerValue = `${this.lists[0].postcode} ${this.lists[0].suburb}, ${this.lists[0].state}`;                
             }
+
+            this.select(this.innerValue);
 
             this.isLoading = false;
             this.loadComponent = false;
+
+            this.cd.markForCheck();
+            this.cd.detectChanges();
         });
     }
 
@@ -83,6 +92,8 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     }
 
     ngOnDestroy() {
+        this.searchStream.next();
+        this.searchStream.complete();
 
     }
 
@@ -96,17 +107,22 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
 
     //From ControlValueAccessor interface
     writeValue(value: any) {
-        if (!value) {
+        let _value = value && value.trim();
+
+
+        if (this.globalS.isEmpty(_value)) {
             this.lists = [];
             this.innerValue = null;
-            return;
-        }
-        if (value != null) {
+            this.select(null);            
+        } else {
+            this.lists.push(this.innerValue);
+
             this.innerValue = value;
-            this.loadComponent = true;
+            this.loadComponent = true;          
             this.searchStream.next(value);
-            // this.tab = 1;
         }
+        this.cd.markForCheck();
+        this.cd.detectChanges();
     }
 
     //From ControlValueAccessor interface

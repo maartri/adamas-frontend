@@ -17,6 +17,10 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    updatetimeoverlap(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/time-overlap`, data);
+    }
+
     getusersettings(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/user/settings/${name}`);
     }

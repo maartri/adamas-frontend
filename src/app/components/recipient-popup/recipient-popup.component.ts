@@ -108,7 +108,6 @@ export class RecipientPopupComponent implements OnInit, OnDestroy,ControlValueAc
   }
 
   writeValue(value: any): void {
-    console.log(value);
     if(value){
       this.isDataLoaded = false;
       this.selectedValue = value;

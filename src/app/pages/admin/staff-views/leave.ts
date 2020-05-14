@@ -12,6 +12,16 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         nz-table{
             margin-top:20px;
         }
+        nz-select{
+            width:100%;
+        }
+        ul{
+            list-style:none;
+            padding:0;
+        }
+        li{
+            padding:5px 0;
+        }
     `],
     templateUrl: './leave.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,6 +36,11 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     tableData: Array<any>;
 
     loading: boolean = false;
+    modalOpen: boolean = false;
+    dateFormat: string = 'MMM dd yyyy';
+    isLoading: boolean;
+
+    leaveGroup: FormGroup;
 
     constructor(
         private timeS: TimeSheetService,
@@ -67,9 +82,24 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     }
 
     buildForm() {
-        this.inputForm = this.formBuilder.group({
+        this.leaveGroup = this.formBuilder.group({
+            user: '',
+            staffcode: '',
 
-        });
+            dates: [[], [Validators.required]],
+
+            makeUnavailable: true,
+            unallocAdmin: false,
+            unallocUnapproved: true,
+            unallocMaster: false,
+
+            explanation: '',
+            activityCode: '',
+            payCode: '',
+            program: '',
+
+            programShow: false
+        })
     }
 
     search(user: any = this.user) {
@@ -87,7 +117,16 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     }
 
     showAddModal() {
+        this.modalOpen = true;
+        
+    }
 
+    handleCancel() {
+        this.modalOpen = false;
+    }
+
+    reset() {
+        
     }
 
     showEditModal(index: any) {

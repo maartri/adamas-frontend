@@ -1,3 +1,55 @@
 <div>
-    reports
+    
+    <button nz-button nzType="default" nzDanger (click)="go()"><i nz-icon nzType="delete" nzTheme="outline"></i>Generate Report</button>
+
+    <div nz-row>
+        <nz-tabset>
+            <nz-tab nzTitle="Recipient Listings">
+                <div nz-row>
+                    <div nz-col nzSpan="8">
+                        <h3>Standard Listings</h3>
+                        <ul>
+                            <li>REFERRAL LIST</li>
+                            <li>WAITING LIST</li>
+                            <li>ACTIVE RECIPIENT LIST</li>
+                            <li>INACTIVE RECIPIENT LIST</li>
+                        </ul>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <h3>Agency Listings</h3>
+                        <ul>
+                            <li>Active Client CSV Export</li>
+                            <li>CSV Report for IHCC Clients Only</li>
+                            <li>Full Customer Address List</li>
+                            <li>HACC Data Entry Audit</li>
+                            <li>Transit Template</li>
+
+                        </ul>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <h3>User Listings</h3>
+                        <ul>
+                            <li>Unapproved Services Coordinators</li>
+                            <li>Unapproved Services Report</li>                            
+                        </ul>
+                    </div>
+                </div>
+            </nz-tab>
+            <nz-tab nzTitle="Recipient Registers">
+                Content of Tab Pane 2
+            </nz-tab>
+            <nz-tab nzTitle="Staff Listings">
+                Content of Tab Pane 3
+            </nz-tab>
+            <nz-tab nzTitle="HR Reports">
+                Content of Tab Pane 3
+            </nz-tab>
+            <nz-tab nzTitle="Financial / Output Reports">
+                Content of Tab Pane 3
+            </nz-tab>
+            <nz-tab nzTitle="System Reports">
+                Content of Tab Pane 3
+            </nz-tab>
+        </nz-tabset>
+    </div>
 </div>

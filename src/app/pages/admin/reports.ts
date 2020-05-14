@@ -19,7 +19,6 @@ export class ReportsAdmin implements OnInit, OnDestroy {
     constructor(
         private http: HttpClient
     ) {
-
     }
 
     ngOnInit(): void {
@@ -31,7 +30,7 @@ export class ReportsAdmin implements OnInit, OnDestroy {
     }
 
     go() {
-        var tab: any = window.open('http://localhost:5000/api/clientreport/invoice');
+        var tab: any = window.open('/api/clientreport/invoice');
 
         // tab.location = 'http://localhost:5000/api/clientreport/invoice';
         // tab.focus();

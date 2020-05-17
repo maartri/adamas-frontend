@@ -283,16 +283,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
     });
   }
 
-  go() {
-    var tab: any = window.open('about:blank');
-    this.http.get('https://localhost:44366/api/sample/data').subscribe(data => {
-      tab.location = 'https://localhost:44366/api/sample/invoice';
-      tab.focus();
-    }, err => {
-        tab.close();
-    })
-  }
-
   delete() {
     this.timeS.deletecontactskin(this.kindetailsGroup.value.recordNumber).subscribe(data => {
       

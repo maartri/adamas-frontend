@@ -132,6 +132,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
       FileName: filename,
       DocPath: originalLocation
     }).subscribe(blob => {
+      // console.log(blob);
       let data = window.URL.createObjectURL(blob);
       let link = document.createElement('a');
       link.href = data;
@@ -139,7 +140,6 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
       link.click();
 
       setTimeout(() => {
-        // For Firefox it is necessary to delay revoking the ObjectURL
         window.URL.revokeObjectURL(data);
       }, 100);
     });

@@ -101,6 +101,7 @@ export function tokenGetter() {
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
+    { provide: Window, useValue: window },
     AuthService,
     LoginService,
     GlobalService,

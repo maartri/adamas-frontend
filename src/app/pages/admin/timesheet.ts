@@ -111,6 +111,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     // 0 = staff; 1 = recipient
     view: number = 0;
+    viewType: any;
 
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
@@ -498,7 +499,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.selected = data;
 
-        const whatType = this.whatType(data.option);
+        this.viewType = this.whatType(data.option);
         this.loading = true;
 
         if (this.picked$) {
@@ -507,7 +508,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.picked$ = this.timeS.gettimesheets({
             AccountNo: data.data,
-            personType: whatType
+            personType: this.viewType
         }).pipe(takeUntil(this.unsubscribe))
             .subscribe(data => {
 
@@ -565,7 +566,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         
         this.timeS.getcomputetimesheet({
             AccountName: data.data,
-            IsCarerCode: whatType == 'Staff' ? true : false
+            IsCarerCode: this.viewType == 'Staff' ? true : false
         }).subscribe(compute => {
             var hourMinStr;
 
@@ -936,9 +937,13 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         const { serviceType } = this.timesheetForm.value;
         if (!program) return EMPTY;
 
-        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE'){
+        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE') {
+            const { recipientCode } = this.timesheetForm.value;
+
             return this.listS.getserviceactivityall({
-                program
+                program,
+                recipient: recipientCode,
+                viewType: this.viewType
             });
         }
         else {

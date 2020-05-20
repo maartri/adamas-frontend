@@ -22,6 +22,7 @@ export class HeaderNavComponent implements OnInit {
 
     this.loginS.logout(token.uniqueID)
       .subscribe(data => data)
+    
     this.globalS.logout();
   }
 

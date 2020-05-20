@@ -4,7 +4,7 @@ nz-select{
 }
 
 nz-select >>> div.ant-select-selection{
-    border-radius: 15px;
+    /* border-radius: 15px; */
 }
 
 nz-select >>> input[type="text"]{

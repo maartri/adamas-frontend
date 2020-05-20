@@ -1,6 +1,6 @@
-<div class="avatar-container">
+<!-- <div class="avatar-container">
     <nz-avatar [nzSize]="64" nzIcon="user"></nz-avatar>
-</div>
+</div> -->
 
 <ng-container *ngIf="!isAdmin">
     <div class="space-top" style="margin:3rem 0">
@@ -113,45 +113,86 @@
 <ng-container *ngIf="isAdmin">
     <div nz-row style="margin-top:2rem" nzGutter="16">
 
-        <ng-container *ngIf="this.innerValue?.view == 'staff' ">
+        <ng-container *ngIf="this.innerValue?.view == 'staff'">
             <div nz-col nzSpan="12">
                 <div nz-row class="divider">
                     <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
-                    <nz-descriptions nzLayout="vertical" [nzColon]="false">
-                        <nz-descriptions-item nzTitle="Record ID">{{ user?.uniqueID }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Title">{{ user?.title }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Preferred">{{ user?.preferredName }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Firstname">{{ user?.firstName }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Middlename">{{ user?.middleNames }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Lastname">{{ user?.lastName }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Gender">{{ user?.gender }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Birthdate">{{ user?.dob | date: 'dd / MM / yyyy' || '-' }}
-                        </nz-descriptions-item>
-                    </nz-descriptions>
-                </div>
-            
-                <div nz-row class="divider">
-            
-                    <i nz-icon nzType="edit" nzTheme="outline"
-                        (click)="profileStaffPreferredModal = true;patchTheseValuesInForm();"></i>
-                    <div nz-col nzSpan="11">
-                        <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=1>
-                            <nz-descriptions-item nzTitle="Preferred Availability/Notes">
-                                <textarea rows="4" style="height: 174px; width: 13rem;" nz-input [ngModel]="user?.contactIssues"
-                                    readonly></textarea>
-                            </nz-descriptions-item>
-                        </nz-descriptions>
+                    <div nz-row>
+                        <div class="avatar-container">
+                            <nz-avatar [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
+                        </div>
+                        <div class="form-group">
+                            <h3>{{ user?.uniqueID || '-' }}</h3>
+                            <h2 class="highlight">{{ user?.title }} {{ user?.firstName }} {{ user?.middleNames }} {{ user?.lastName }}</h2>
+                        </div>
                     </div>
-                    <div nz-col nzSpan="13">
-                        <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=1>
-                            <nz-descriptions-item nzTitle="Cald Status">{{ user?.caldStatus || '-' }}</nz-descriptions-item>
-                            <nz-descriptions-item nzTitle="Indigenous Status">{{ user?.cstda_Indiginous || '-' }}
-                            </nz-descriptions-item>
-                            <nz-descriptions-item nzTitle="Primary Disability">{{ user?.cstda_DisabilityGroup || '-' }}
-                            </nz-descriptions-item>
-                        </nz-descriptions>
+                    <div nz-row nzGutter="16">
+                        <div nz-col nzSpan="12">
+                            <div class="form-group">
+                                <label class="highlight"><i nz-icon nzType="eye" nzTheme="outline"></i> Preferred</label>
+                                <span>{{ user?.preferredName || '-' }}</span>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="12">
+                            <div class="form-group">
+                                <label class="highlight"><i nz-icon nzType="woman" nzTheme="outline"></i> Gender</label>
+                                <span>{{ user?.gender }}</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div nz-row nzGutter="16">                        
+                        <div nz-col nzSpan="12">
+                            <div class="form-group">
+                                <label class="highlight"><i nz-icon nzType="calendar" nzTheme="outline"></i> Birthdate</label>
+                                <span>{{ user?.dob | date: 'dd / MM / yyyy' || '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <div>
+                                <label class="highlight"><i class="material-icons"> location_on </i>Address </label>
+                                <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
+                                    class="good add"></i>
+                            </div>                           
+                            <ul>
+                                <li *ngFor="let data of user?.addresses">
+                                    <div class="options">
+                                        <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral" (click)="editAddressOpen(data)"></i>
+                                        <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top" nzTheme="outline"  nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
+                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
+                                    (nzOnCancel)="cancel(1)"></i>                                        
+                                    </div>
+                                    <div>{{ data.postCode }} {{ data.address1 }}, {{ data.suburb}}</div>
+                                    <b>{{ data.description }}</b>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <div>
+                                <label class="highlight"><i class="material-icons"> phone </i>Contacts</label>
+                                <i nz-icon nzType="plus" nzTooltipTitle="Add Contact" (click)="addContactOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
+                                    class="good add"></i>
+                            </div>
+                            <ul>
+                                <li *ngFor="let data of user?.contacts">
+                                    <div class="options">
+                                        <i nz-icon nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral"></i>
+                                        <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                                            nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
+                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
+                                    (nzOnCancel)="cancel(2)"></i>
+                                    </div>
+                                    <div>{{ data.detail }}</div>
+                                    <b>{{ data.type }}</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>                
             </div>
             
             <div nz-col nzSpan="12">
@@ -175,28 +216,9 @@
                         <nz-descriptions-item nzTitle="N Registration #">{{ user?.nRegistration || '-' }}</nz-descriptions-item>
                     </nz-descriptions>
                 </div>
-            </div>
-        </ng-container>
 
-        <ng-container *ngIf="this.innerValue?.view == 'recipient' ">
-            <div nz-col nzSpan="12">
                 <div nz-row class="divider">
-                    <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
-                    <nz-descriptions nzLayout="vertical" [nzColon]="false">
-                        <nz-descriptions-item nzTitle="Record ID">{{ user?.uniqueID }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Title">{{ user?.title }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Preferred">{{ user?.preferredName }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Firstname">{{ user?.firstName }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Middlename">{{ user?.middleNames || '-' }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Lastname">{{ user?.surnameOrg || '-' }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Gender">{{ user?.gender }}</nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Birthdate">{{ user?.dateOfBirth | date: 'dd / MM / yyyy' || '-' }}
-                        </nz-descriptions-item>
-                    </nz-descriptions>
-                </div>
-            
-                <div nz-row class="divider">
-            
+                
                     <i nz-icon nzType="edit" nzTheme="outline"
                         (click)="profileStaffPreferredModal = true;patchTheseValuesInForm();"></i>
                     <div nz-col nzSpan="11">
@@ -208,14 +230,107 @@
                         </nz-descriptions>
                     </div>
                     <div nz-col nzSpan="13">
-                     
-                        
+                        <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=1>
+                            <nz-descriptions-item nzTitle="Cald Status">{{ user?.caldStatus || '-' }}</nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="Indigenous Status">{{ user?.cstda_Indiginous || '-' }}
+                            </nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="Primary Disability">{{ user?.cstda_DisabilityGroup || '-' }}
+                            </nz-descriptions-item>
+                        </nz-descriptions>
                     </div>
                 </div>
+                
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="this.innerValue?.view == 'recipient' ">
+            <div nz-col nzSpan="12">
+                <div nz-row class="divider">
+                    <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
+  
+                    <div nz-row>
+                        <div class="avatar-container">
+                            <nz-avatar [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
+                        </div>
+                        <div class="form-group">
+                            <h3>{{ user?.uniqueID }}</h3>
+                            <h2 class="highlight">{{ user?.title }} {{ user?.firstName }} {{ user?.middleNames }} {{ user?.surnameOrg }}</h2>
+                        </div>
+                    </div>
+
+                    <div nz-row nzGutter="16">
+                        <div nz-col nzSpan="12">
+                            <div class="form-group">
+                                <label class="highlight"><i nz-icon nzType="eye" nzTheme="outline"></i> Preferred</label>
+                                <span>{{ user?.preferredName || '-' }}</span>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="12">
+                            <div class="form-group">
+                                <label class="highlight"><i nz-icon nzType="woman" nzTheme="outline"></i> Gender</label>
+                                <span>{{ user?.gender }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-row nzGutter="16">                        
+                        <div nz-col nzSpan="12">
+                            <div class="form-group">
+                                <label class="highlight"><i nz-icon nzType="calendar" nzTheme="outline"></i> Birthdate</label>
+                                <span>{{ user?.dateOfBirth | date: 'dd / MM / yyyy' || '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div nz-row>
+                        <div class="form-group">
+                            <div>
+                                <label class="highlight"><i class="material-icons"> location_on </i>Address</label>
+                                <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top"
+                                    nzTheme="outline" class="good add"></i>
+                            </div>
+                            <ul>
+                                <li *ngFor="let data of user?.addresses">
+                                    <div class="options">
+                                        <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
+                                            class="neutral" (click)="editAddressOpen(data)"></i>
+                                        <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                                            nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)" (nzOnCancel)="cancel(1)"></i>
+                                    </div>
+                                    <div>{{ data.postCode }} {{ data.address1 }}, {{ data.suburb}}</div>
+                                    <b>{{ data.description }}</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <div>
+                                <label class="highlight"><i class="material-icons"> phone </i>Contacts</label>
+                                <i nz-icon nzType="plus" nzTooltipTitle="Add Contact" (click)="addContactOpen()" nz-tooltip nzTooltipPlacement="top"
+                                    nzTheme="outline" class="good add"></i>
+                            </div>
+                            <ul>
+                                <li *ngFor="let data of user?.contacts">
+                                    <div class="options">
+                                        <i nz-icon nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip nzTooltipPlacement="top"
+                                            nzTheme="outline" class="neutral"></i>
+                                        <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                                            nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)" (nzOnCancel)="cancel(2)"></i>
+                                    </div>
+                                    <div>{{ data.detail }}</div>
+                                    <b>{{ data.type }}</b>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>               
             </div>
             <div nz-col nzSpan="12">
                 <div nz-row class="divider">
-                    <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffOptionsModal=true;patchTheseValuesInForm()"></i>
+                    <i nz-icon nzType="edit" nzTheme="outline" (click)="profileRecipientOptionsModal=true;patchTheseValuesInForm()"></i>
                     <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=2 *ngIf="user">
                         <nz-descriptions-item nzTitle="File #1">{{ user?.agencyIdReportingCode || '-' }}</nz-descriptions-item>
                         <nz-descriptions-item nzTitle="File #2">{{ user?.urNumber || '-' }}</nz-descriptions-item>
@@ -225,12 +340,32 @@
                         <nz-descriptions-item nzTitle="Primary Case Manager">{{ user?.recipient_Coordinator || '-' }}</nz-descriptions-item>                       
                     </nz-descriptions>
                 </div>
+
+                <div nz-row class="divider">
+                    <button class="botton success" (click)="saveTab()">Save</button>
+                    <nz-tabset (nzSelectedIndexChange)="tabChange($event)" [nzSelectedIndex]="tabIndex">
+                        <nz-tab nzTitle="Contact Issues" [formGroup]="contactIssueGroup">
+                            <textarea rows="4" nz-input type="text" formControlName="value"></textarea>
+                        </nz-tab>
+                        <nz-tab nzTitle="Roster Alerts" [formGroup]="contactIssueGroup">
+                            <textarea rows="4" nz-input type="text" formControlName="value"></textarea>
+                        </nz-tab>
+                        <nz-tab nzTitle="Runsheet Alerts" [formGroup]="contactIssueGroup">
+                            <textarea rows="4" nz-input type="text" formControlName="value"></textarea>
+                        </nz-tab>
+                    </nz-tabset>
+                </div>
+
+                <div nz-row class="divider">
+                    <button class="botton success">Add Case Staff</button>
+                </div>
+
             </div>
         </ng-container>
 
     </div>
 
-    <div nz-row>
+    <div nz-row *ngIf="!isAdmin">
         <div class="space-top">
             <div class="form-group">
                 <label for="" class="info">Address Information</label>
@@ -432,6 +567,62 @@
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
         <button nz-button nzType="primary" [nzLoading]="loading" (click)="saveNotes()">Save</button>
+    </div>
+
+</nz-modal>
+
+<nz-modal [(nzVisible)]="profileRecipientOptionsModal" [nzStyle]="{ top: '20px' }" nzTitle="Update Profile Options"
+    [nzWidth]="960" (nzOnCancel)="handleCancel()">
+
+    <div nz-row nzGutter="16" [formGroup]="userForm">
+
+        <div nz-row nzGutter="16">
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">File #1</label>
+                <input nz-input type="text" formControlName="file1">
+            </div>
+
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">File #2</label>
+                <input nz-input type="text" formControlName="file2">
+            </div>
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Sub Category</label>
+                <input nz-input type="text" formControlName="subCategory">
+            </div>
+        </div>
+
+        <div nz-row nzGutter="16">
+
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Admitting Branch</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="branch">
+                    <nz-option *ngFor="let title of dropDowns?.branchesArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Service Region/Main Category</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="serviceRegion">
+                    <nz-option *ngFor="let title of dropDowns?.serviceRegionArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+
+            <div nz-col class="form-group" nzSpan="8">
+                <label for="">Primary Case Manager</label>
+                <nz-select nzAllowClear nzPlaceHolder="" formControlName="casemanager">
+                    <nz-option *ngFor="let title of dropDowns?.managerArr" [nzValue]="title" [nzLabel]="title">
+                    </nz-option>
+                </nz-select>
+            </div>
+        </div>
+    </div>
+
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" [nzLoading]="loading" (click)="saveProfile()">Save</button>
     </div>
 
 </nz-modal>

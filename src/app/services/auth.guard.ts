@@ -1,6 +1,13 @@
-import { Injectable } from '@angular/core'
-import { Router, CanActivate, CanActivateChild } from '@angular/router'
-import { GlobalService } from './global.service';
+import { Injectable } from '@angular/core';
+import { GlobalService } from '@services/global.service';
+
+import {
+    CanActivate,
+    Router,
+    CanActivateChild,
+    ActivatedRouteSnapshot,
+    RouterStateSnapshot
+} from '@angular/router';
 
 @Injectable()
 export class RouteGuard implements CanActivate, CanActivateChild{
@@ -12,19 +19,39 @@ export class RouteGuard implements CanActivate, CanActivateChild{
 
     }
  
-    canActivate(): boolean{        
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean{  
+        
         if(!this.globalS.isExpired()){
             return true;
         }
+
         this.router.navigate(['']);
+
+        this.detectStaffDirectAccess(state.url);
+
+        return false;
+    }
+    
+    detectStaffDirectAccess(url: string) {
+        const urlLen = url.split('?');
+
+        if (urlLen.length > 1 && new URLSearchParams(urlLen[1]).has('securityByPass') &&
+            new URLSearchParams(urlLen[1]).get('securityByPass')) {            
+            this.globalS.redirectURL = url;
+        }
+
         return false;
     }
 
-    canActivateChild():boolean {     
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):boolean {     
         if(!this.globalS.isExpired()){
             return true;
         }
+
         this.router.navigate(['']);
+
+        this.detectStaffDirectAccess(state.url);
+
         return false;
     }
 }

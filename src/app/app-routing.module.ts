@@ -32,7 +32,9 @@ import {
   AttendanceAdmin,
   DayManagerAdmin,
   HomeAdmin,
+  HomeV2Admin,
   LandingAdmin,
+  SideMainMenu,
   RecipientsAdmin,
   ReportsAdmin,
   RostersAdmin,
@@ -181,17 +183,23 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    component: HomeAdmin,
+    component: HomeV2Admin,
+    canActivate: [RouteGuard],
+    canActivateChild: [RouteGuard],
     children: [
       {
         path: '',
-        redirectTo: 'landing',
+        redirectTo: 'daymanager',
         pathMatch: 'full'
       },
       {
         path: 'landing',
-        component: LandingAdmin
+        component: SideMainMenu
       },
+      // {
+      //   path: 'landing',
+      //   component: LandingAdmin
+      // },
       {
         path: 'daymanager',
         component: DayManagerAdmin
@@ -207,6 +215,10 @@ const routes: Routes = [
       {
         path: 'rosters',
         component: RostersAdmin
+      },
+      {
+        path: 'staff/**',
+        component: StaffAdmin,
       },
       {
         path: 'staff',
@@ -369,6 +381,10 @@ const routes: Routes = [
   {
     path: 'extra',
     component: ExtraComponent
+  },
+  {
+    path: 'traccsadmin',
+    component: StaffAdmin
   }
   // {
   //   path: '**',
@@ -410,6 +426,8 @@ export const PAGE_COMPONENTS = [
   AttendanceAdmin,
   DayManagerAdmin,
   HomeAdmin,
+  HomeV2Admin,
+  SideMainMenu,
   LandingAdmin,
   RecipientsAdmin,
   ReportsAdmin,

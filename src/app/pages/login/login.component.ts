@@ -4,6 +4,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { LoginService, GlobalService } from '@services/index';
 
+import {
+  Router
+} from '@angular/router';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -26,7 +30,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private loginS: LoginService,
-    private globalS: GlobalService
+    private globalS: GlobalService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -48,6 +53,12 @@ export class LoginComponent implements OnInit {
     this.loginS.login(user)
       .subscribe(data => {
         this.globalS.token = data.access_token;
+
+        if (this.globalS.redirectURL) {
+          this.globalS.ISTAFF_BYPASS = 'true';
+          this.router.navigateByUrl(this.globalS.redirectURL);
+          return;
+        }
         setTimeout(() => {
           this.globalS.viewRender(this.globalS.token);
         }, 500);

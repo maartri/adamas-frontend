@@ -35,8 +35,8 @@
     <div [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>
-                <nz-form-label [nzNoColon]="true">Preferences</nz-form-label>
-                <nz-form-control nzErrorTip="Preferences is required!">
+                <nz-form-label [nzNoColon]="true">Reminder</nz-form-label>
+                <nz-form-control nzErrorTip="Reminder is required!">
                     <nz-select formControlName="staffAlert" nzAllowClear nzPlaceHolder=""
                         [nzDropdownMatchSelectWidth]="false">
                         <nz-option *ngFor="let d of lists" [nzValue]="d" [nzLabel]="d"></nz-option>

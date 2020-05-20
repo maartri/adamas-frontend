@@ -44,6 +44,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   profileStaffOptionsModal: boolean = false;
   profileStaffPreferredModal: boolean = false;
 
+  tabIndex: number = 0;
+
+  profileRecipientOptionsModal: boolean = false;
+
   editModalOpen: boolean = false;
   user: any;
 
@@ -66,6 +70,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   addressForm: FormGroup;
   userForm: FormGroup;
   emailCoordinatorGroup: FormGroup;
+  contactIssueGroup: FormGroup;
 
   loading: boolean = false;
   editProfileDrawer: boolean = false;
@@ -115,6 +120,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   buildForms(): void {
+
+    this.contactIssueGroup = this.formBuilder.group({
+      value: ''
+    });
 
     this.contactForm = this.formBuilder.group({
       id: [''],
@@ -195,6 +204,12 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         subCategory: user.ubdMap,
         serviceRegion: user.agencyDefinedGroup
       });
+
+      console.log(user.contactIssues)
+
+      this.contactIssueGroup.patchValue({
+        value: user.contactIssues
+      })
 
       // this.contactIssueGroup.patchValue({
       //     value: user.contactIssues
@@ -399,6 +414,28 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   }
 
+  tabChange(index: number) {
+    
+    if (index == 0) {
+      this.contactIssueGroup.patchValue({
+        value: this.user.contactIssues
+      })
+    }
+
+    if (index == 1) {
+      console.log(this.user)
+      this.contactIssueGroup.patchValue({
+        value: this.user.notes
+      })
+    }
+
+    if (index == 2) {
+      this.contactIssueGroup.patchValue({
+        value: this.user.specialConsiderations
+      })
+    }
+  }
+
   handleCancel(): void {
     
     this.addressForm.reset();
@@ -406,6 +443,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.profileStaffModal = false;
     this.profileStaffOptionsModal = false;
     this.profileStaffPreferredModal = false;
+    this.profileRecipientOptionsModal = false;
   }
 
   formatDate(data: any): string {
@@ -886,4 +924,45 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       });
     
   }
+
+  saveTab() {
+    const { sqlId } = this.user;
+
+    if (this.tabIndex == 0) {
+
+      this.timeS.updatealertsissues({
+        sqlId: sqlId,
+        issueType: 'ci',
+        notes: this.contactIssueGroup.value.value
+      }).subscribe(data => {
+        this.globalS.sToast('Success', 'Contact Issues Updated');
+      });
+      this.contactIssueGroup.markAsPristine();
+
+    }
+
+    if (this.tabIndex == 1) {
+      this.timeS.updatealertsissues({
+        sqlId: sqlId,
+        issueType: 'roa',
+        notes: this.contactIssueGroup.value.value
+      }).subscribe(data => {
+        this.globalS.sToast('Success', 'Roster Alert Updated');        
+      })
+      this.contactIssueGroup.markAsPristine();
+    }
+
+    if (this.tabIndex == 2) {
+      this.timeS.updatealertsissues({
+        sqlId: sqlId,
+        issueType: 'rua',
+        notes: this.contactIssueGroup.value.value
+      }).subscribe(data => {
+        this.globalS.sToast('Success', 'Runoff Alert Updated');
+      });
+      this.contactIssueGroup.markAsPristine();
+    }
+
+  }
+
 }

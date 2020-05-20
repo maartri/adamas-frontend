@@ -85,10 +85,15 @@ td a:hover{
 }
 
 .error{
-    color:#ff1515;
+    color:#ff1515 !important;
+    
 }
 .good{
-    color:#56db79;
+    color:#56db79 !important;
+}
+
+.neutral{ 
+    color:#7FC4FD !important;
 }
 
 .items li.ant-menu-submenu .ant-menu-submenu-title{    

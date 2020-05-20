@@ -130,6 +130,22 @@ export class GlobalService {
             this.router.navigate(['portal']);
     }
 
+    get redirectURL(): string {
+        return localStorage.getItem('redirectURL');
+    }
+
+    set redirectURL(data: string) {
+        localStorage.setItem('redirectURL', data);
+    }
+
+    get ISTAFF_BYPASS(): string {
+        return localStorage.getItem('isStaffByPass');
+    }
+
+    set ISTAFF_BYPASS(data: string) {
+        localStorage.setItem('isStaffByPass', data);
+    }
+
     get member(): string {
         return localStorage.getItem('member');
     }

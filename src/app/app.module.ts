@@ -37,7 +37,8 @@ import {
   JobService,
   CacheService,
   ScriptService,
-  ShareService
+  ShareService,
+  SettingsService
 } from './services/index';
 
 import { IconsProviderModule } from './icons-provider.module';
@@ -121,6 +122,7 @@ export function tokenGetter() {
     CacheService,
     ScriptService,
     ShareService,
+    SettingsService,
     CurrencyPipe, DatePipe, DecimalPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

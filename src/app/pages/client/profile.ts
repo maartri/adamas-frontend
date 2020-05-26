@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
-import { GlobalService, } from '@services/index';
+import { GlobalService, SettingsService } from '@services/index';
 declare var Dto: any;
 
 @Component({
@@ -32,13 +32,16 @@ export class ProfileClient implements OnInit, OnDestroy {
     user: Dto.ProfileInterface;
 
     visible: boolean = false;
+    _settings: SettingsService
     constructor(
-        private globalS: GlobalService
+        private globalS: GlobalService,
+        private settings: SettingsService
     ) {
 
     }
 
     ngOnInit() {
+        this._settings = this.settings;
         const token = this.globalS.decode();
         this.user = {
             name: token.code,

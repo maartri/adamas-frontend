@@ -19,7 +19,7 @@
                 <i nz-icon nzType="gift"></i>
                 <span>Package</span>
             </li>
-            <li nz-menu-item routerLink="/client/booking" routerLinkActive="ant-menu-item-selected">
+            <li *ngIf="_settings?.ALLOWBOOKING()" nz-menu-item routerLink="/client/booking" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="book"></i>
                 <span>Booking</span>
             </li>

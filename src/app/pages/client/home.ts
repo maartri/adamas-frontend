@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { GlobalService } from '@services/index';
+import { GlobalService, SettingsService } from '@services/index';
 
 @Component({
     selector: '',
@@ -81,14 +81,20 @@ import { GlobalService } from '@services/index';
     ]
 })
 
-export class HomeClient {
+export class HomeClient implements OnInit {
     isCollapsed = false;
     isVisible: boolean = false;
 
+    _settings: SettingsService;
     constructor(
-        private globalS: GlobalService
+        private globalS: GlobalService,
+        private settingS: SettingsService
     ) {
         
+    }
+
+    ngOnInit(): void{
+        this._settings = this.settingS;
     }
     
     logout() {

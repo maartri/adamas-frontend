@@ -130,6 +130,14 @@ export class GlobalService {
             this.router.navigate(['portal']);
     }
 
+    get settings(): string {
+        return JSON.parse(localStorage.getItem('settings'));
+    }
+
+    set settings(data: string) {
+        localStorage.setItem('settings', JSON.stringify(data));
+    }
+
     get redirectURL(): string {
         return localStorage.getItem('redirectURL');
     }

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, forwardRef, ViewChild, OnDestroy, Inject, Cha
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 
-import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
 import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap } from 'rxjs/operators';
 import { forkJoin, Observable, EMPTY } from 'rxjs';
@@ -20,7 +20,6 @@ const PROFILEPAGE_VALUE_ACCESSOR: any = {
   multi: true,
   useExisting: forwardRef(() => ProfileComponent),
 };
-
 
 @Component({
   selector: 'app-profile-page',
@@ -89,6 +88,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   caseManagerDetails: any;
   dropDowns: Dto.DropDowns;
 
+  _settings: SettingsService;
   constructor(
     private globalS: GlobalService,
     private clientS: ClientService,
@@ -97,6 +97,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     private listS: ListService,
     private formBuilder: FormBuilder,
     private message: NzMessageService,
+    private settings: SettingsService,
     private cd: ChangeDetectorRef
   ) {
 
@@ -104,6 +105,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   ngOnInit() {
     const { role } = this.globalS.decode();
+    this._settings = this.settings;
 
     if (role == roles.client) {
       this.showMailManagerBtn = true;
@@ -301,7 +303,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         mergeMap(data => {
           this.user = data;
           
-          this.patchTheseValuesInForm(data)
+          this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);
         })).subscribe(data => {
 

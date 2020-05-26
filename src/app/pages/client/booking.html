@@ -37,7 +37,7 @@
                                 (ngModelChange)="change($event,'permanent')">Permanent</label>
                         </div>
                     </div>
-                    <div class="mrg-btm chkboxes" [nzSpan]="12" nz-col [nzXs]="24" [nzMd]="9">
+                    <div class="mrg-btm chkboxes" [nzSpan]="12" nz-col [nzXs]="24" [nzMd]="9" *ngIf="_settings?.CANCHOOSEPROVIDER()">
                         <div>
                             <label nz-checkbox [(ngModel)]="aprovider" (ngModelChange)="change($event,'aprov')">Any
                                 Provider</label>
@@ -72,7 +72,19 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="current == 2">
+            <div *ngIf="cprovider && current == 2">
+                <nz-radio-group [(ngModel)]="selectedStaff" nzName="radiogroup" style="width:100%">
+                    <ul>                        
+                        <li *ngFor="let staff of results;let i=index">
+                            <nz-avatar [nzShape]="'square'" [nzSize]="'large'" [nzIcon]="'user'"></nz-avatar>
+                            <h3>{{staff.accountNo}}</h3>
+                            <h5>{{ staff.firstName}} <span>{{ staff.age }}</span></h5>
+                            <label nz-radio [nzValue]="staff"></label>
+                        </li>
+                    </ul>
+                </nz-radio-group>
+            </div>
+            <div *ngIf="(!cprovider && current == 2) || (cprovider && current == 3)">
                 <div>
                     <label for="">Notes</label>
                     <textarea [(ngModel)]="notes" rows="4" nz-input></textarea>
@@ -86,11 +98,14 @@
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
                 <span>Previous</span>
             </button>
+
+            <!-- *ngIf="current == 0 || ( current == 1 && selectedService )" -->
             <button nz-button nzType="default" (click)="next()"
-                *ngIf="current == 0 || ( current == 1 && selectedService )">
+                *ngIf="canGoNext">
                 <span>Next</span>
             </button>
-            <button nz-button nzType="primary" *ngIf="current === 2" (click)="confirm()">
+
+            <button nz-button *ngIf="canBeDone && _settings?.ALLOWBOOKING()" nzType="primary" (click)="confirm()">
                 <span>Done</span>
             </button>
         </div>
@@ -170,6 +185,6 @@
 
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="bookingModalOpen = false">Cancel</button>
-        <button nz-button nzType="primary" (click)="book()">Book</button>
+        <button nz-button nzType="primary" [nzLoading]="loadBooking" (click)="book()">Book</button>
     </div>
 </nz-modal>

@@ -33,6 +33,13 @@
         </nz-tabset>
     </div>
 
+    <nz-empty *ngIf="user == null" style="margin-top:8rem" nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+        [nzNotFoundContent]="contentTpl">
+        <ng-template #contentTpl>
+            <p>Select Staff</p>
+        </ng-template>
+    </nz-empty>
+
     <div nz-col nzSpan="24">
         <router-outlet></router-outlet>
     </div>

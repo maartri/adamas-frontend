@@ -187,6 +187,14 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
         }); 
     }
 
+    updateWorkHours(){
+        this.timeS.updateworkhours(this.payGroup.value).pipe(
+            takeUntil(this.unsubscribe))
+            .subscribe(data => {
+                this.globalS.sToast('Success', 'Data Updated');
+            });
+    }
+
     
 
 }

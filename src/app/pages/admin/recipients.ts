@@ -47,7 +47,7 @@ import { GlobalService, StaffService, ShareService, leaveTypes } from '@services
 
 
 export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
-    user: any
+    user: any = null;
     nzSelectedIndex: number = 0;
     isFirstLoad: boolean = false;
 

@@ -1,8 +1,13 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
-import { ClientService, GlobalService, StaffService, TimeSheetService } from '@services/index';
+import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService } from '@services/index';
 
 import * as moment from 'moment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import format from 'date-fns/format';
+
+
+import { forkJoin, Subject, Observable, EMPTY } from 'rxjs';
+import { takeUntil, debounceTime, distinctUntilChanged, switchMap, mergeMap } from 'rxjs/operators';
 
 const enum ImagePosition {
     LaundryService = '-81px -275px',
@@ -90,6 +95,27 @@ const enum ImageActivity {
         .total{
             color: #00e47b;
         }
+        ul{
+            list-style:none;
+        }
+        li{
+            border-bottom: 1px solid #f1f1f1;
+            padding:0.5rem 0;
+            position:relative;
+        }
+        li label{
+            position: absolute;
+            right: 0rem;
+            top: 1.5rem;
+        }
+        nz-avatar{
+            float: left;
+            margin: 6px;
+            margin-right: 1rem;
+        }
+        h3{
+            color: #862e6bf2;
+        }
     `],
     templateUrl: './booking.html'
 })
@@ -122,24 +148,37 @@ export class BookingClient implements OnInit, OnDestroy {
     services: Array<any>;
     loadServices: boolean = false;
 
-    selectedService: any;
+    selectedService: any = null;
+    selectedStaff: any = null;
 
     loading: boolean = false;
     bookingModalOpen: boolean = false;
 
-    notes: string = ''
+    notes: string = '';
+    _settings: SettingsService;
+    results: Array<any> = [];
+
+    bookType: boolean = false;
+    weekly: string = 'Weekly';
+
+    loadBooking: boolean = false;
+
+    private unsubscribe = new Subject()
 
     constructor(
         private clientS: ClientService,
         private globalS: GlobalService,
+        private settings: SettingsService,
         private notification: NzNotificationService
     ) {
 
     }
 
     ngOnInit() {
-        console.log(this.globalS.decode().code);
-        console.log(this.globalS.userProfile);
+        // console.log(this.globalS.decode().code);
+        // console.log(this.globalS.userProfile);
+
+        this._settings = this.settings;
         this.user = this.inputUser || this.globalS.decode().code;
         this.token = this.globalS.decode();
     }
@@ -153,6 +192,9 @@ export class BookingClient implements OnInit, OnDestroy {
     }
 
     pre(): void {
+        if (this.cprovider && this.current == 2) {
+            this.selectedStaff = null;
+        }
         this.current -= 1;
     }
 
@@ -169,6 +211,47 @@ export class BookingClient implements OnInit, OnDestroy {
             console.log(this.current);
         }
 
+        if (this.cprovider && this.current == 1) {
+            this.clientS.getqualifiedstaff({
+                RecipientCode: 'ABBERTON B',
+                User: 'abott',
+                BookDate: '2020/05/26',
+                StartTime: '09:00',
+                EndTime: '11:00',
+                EndLimit: '17:00',
+                Gender: '',
+                Competencys: '',
+                CompetenciesCount: 0
+            }).subscribe((data: any) => {
+
+                let original = data.map(x => {
+                    var gender = -1;
+
+                    if (x.gender && (x.gender[0]).toUpperCase() == 'F') {
+                        gender = 0;
+                    }
+
+                    if (x.gender && (x.gender[0]).toUpperCase() == 'M') {
+                        gender = 1;
+                    }
+
+                    return {
+                        firstName: x.firstName,
+                        age: x.age,
+                        rating: x.rating,
+                        km: x.km,
+                        gender: gender,
+                        accountNo: x.accountNo
+                    };
+                });
+
+                this.results = original;
+                console.log(this.results);
+            });
+        }
+        if (this.cprovider && this.current == 2){
+            console.log(this.selectedStaff)
+        } 
         this.current += 1;
     }
 
@@ -196,6 +279,20 @@ export class BookingClient implements OnInit, OnDestroy {
             this.loadServices = false;
             this.loading = false;
         })
+    }
+
+    get canGoNext(): boolean {
+        if (this.current == 0) return true;
+        if (this.current == 1 && this.selectedService ) return true;           
+
+        if (!this.cprovider && this.current > 2) return true;
+        if (this.cprovider && this.current > 1 && this.current == 2 && this.selectedStaff) return true;
+
+        return false;
+    }
+
+    get canBeDone(): boolean {
+        return (!this.cprovider && this.current == 2) || (this.cprovider && this.current == 3);
     }
 
     change(data: any, source: string) {
@@ -240,7 +337,7 @@ export class BookingClient implements OnInit, OnDestroy {
 
     add(data: any) {
         if (Object.is(data, this.selectedService)) {
-            this.selectedService = "";
+            this.selectedService = null;
             return false;
         }
         this.selectedService = data;
@@ -256,31 +353,44 @@ export class BookingClient implements OnInit, OnDestroy {
     }
 
     book() {
-        // let booking: Dto.AddBooking = {
-        //     BookType: this.bookType,
-        //     StaffCode: !(this.aprovider) ? this.selectedStaff.accountNo : "",
-        //     Service: this.selectedService,
-        //     StartDate: moment(this.date).format('YYYY/MM/DD'),
-        //     StartTime: this.startTime,
-        //     ClientCode: this.user,
-        //     Duration: this.endTime,
-        //     Username: this.token['nameid'],
-        //     AnyProvider: this.aprovider,
-        //     BookingType: this.once ? 'Normal' : this.permanent ? this.weekly : '',
-        //     Notes: this.notes
-        // }
-        this.resetStepper();
+        let booking: Dto.AddBooking = {
+            BookType: this.bookType,
+            StaffCode: !(this.aprovider) ? this.selectedStaff.accountNo : "",
+            Service: this.selectedService,
+            StartDate: moment(this.date).format('YYYY/MM/DD'),
+            StartTime: format(this.startTime,'HH:mm'),
+            ClientCode: this.user,
+            Duration: format(this.endTime, 'HH:mm'),
+            Username: this.token['nameid'],
+            AnyProvider: this.aprovider,
+            BookingType: this.once ? 'Normal' : this.permanent ? this.weekly : '',
+            Notes: this.notes
+        }
+       
+        this.loadBooking = true;
+        this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            let resultRows = parseInt(data);
+            if (resultRows == 1) {
+                this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
+            } else if (resultRows > 1)
+                this.globalS.eToast('Error', 'You already have a booking in that timeslot');
 
-        this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
-        this.bookingModalOpen = false;
+            this.resetStepper();
+            this.bookingModalOpen = false;
+        }, (err) => {
+            this.globalS.eToast('Error', 'Booking Unsuccessful')
+        });
+
     }
 
     resetStepper() {
         this.current = 0;
         this.notes = "";
-        this.selectedService = "";
+        this.selectedService = null;
         this.startTime = new Date(1990, 1, 1, 9, 0, 0);
         this.endTime = new Date(1990, 1, 1, 10, 0, 0);
         this.date = new Date();
+        this.loadBooking = false;
+        this.selectedStaff = '';
     }
 }

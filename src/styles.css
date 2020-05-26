@@ -12,6 +12,13 @@
 
 /* @import "../../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin"; */
 
+hr{
+    height: 1px;
+    background-color: #ededed;
+    border: none;
+    margin: 1rem;
+}
+
 .uppercase{
     text-transform: uppercase;
 }

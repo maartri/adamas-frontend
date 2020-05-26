@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { LoginService, GlobalService } from '@services/index';
+import { SettingsService } from '@services/settings.service';
 
 import {
   Router
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private loginS: LoginService,
     private globalS: GlobalService,
+    private settingS: SettingsService,
     private router: Router
   ) { }
 
@@ -52,17 +54,24 @@ export class LoginComponent implements OnInit {
 
     this.loginS.login(user)
       .subscribe(data => {
-        this.globalS.token = data.access_token;
 
+        this.globalS.token = data.access_token;       
+        this.settingS.getSettings(user.Username);
+        
         if (this.globalS.redirectURL) {
           this.globalS.ISTAFF_BYPASS = 'true';
           this.router.navigateByUrl(this.globalS.redirectURL);
           return;
         }
+
+        
+
         setTimeout(() => {
           this.globalS.viewRender(this.globalS.token);
-        }, 500);
+        }, 200);
+
         this.reset();
+
       }, (error: HttpErrorResponse) => {
         this.unauthorized = true;
         if (error.status == 401) this.unauthorizedStr = 'Invalid user name or password';

@@ -131,7 +131,7 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit(): void {
-        this.ISTAFF_BYPASS = this.globalS.ISTAFF_BYPASS == 'true' ? true : false;
+        this.ISTAFF_BYPASS = this.globalS.ISTAFF_BYPASS == 'true' && this.globalS.ISTAFF_BYPASS != null ? true : false;
         console.log(this.globalS.ISTAFF_BYPASS);
         // this.router.events.pipe(
         //     filter(event => event instanceof NavigationEnd)

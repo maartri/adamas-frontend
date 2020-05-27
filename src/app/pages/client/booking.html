@@ -73,12 +73,16 @@
                 </div>
             </div>
             <div *ngIf="cprovider && current == 2">
+                <div class="example" *ngIf="loading">
+                    <nz-spin nzSimple></nz-spin>
+                </div>
                 <nz-radio-group [(ngModel)]="selectedStaff" nzName="radiogroup" style="width:100%">
                     <ul>                        
                         <li *ngFor="let staff of results;let i=index">
                             <nz-avatar [nzShape]="'square'" [nzSize]="'large'" [nzIcon]="'user'"></nz-avatar>
                             <h3>{{staff.accountNo}}</h3>
-                            <h5>{{ staff.firstName}} <span>{{ staff.age }}</span></h5>
+                            <h5>{{ staff.firstName}} <span *ngIf="staff.age && _settings?.CANSEEPROVIDERAGE()"> * {{ staff.age }} yrs old</span></h5>
+                            <nz-rate *ngIf="staff.rating && _settings?.CANESEEPROVIDERREVIEWS()" [nzCount]="7" [ngModel]="computeRating(staff.rating)" nzDisabled></nz-rate>
                             <label nz-radio [nzValue]="staff"></label>
                         </li>
                     </ul>

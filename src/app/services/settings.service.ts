@@ -73,6 +73,13 @@ export class SettingsService {
         return this.VERIFY_OUTPUT(settings.canSeeProviderAge);
     }
 
+    //canSeeProviderReviews
+    CANESEEPROVIDERREVIEWS(): boolean {
+        let settings: any = this.globalS.settings;
+        if (!settings) return false;
+
+        return this.VERIFY_OUTPUT(settings.canSeeProviderReviews);
+    }
 
     
     

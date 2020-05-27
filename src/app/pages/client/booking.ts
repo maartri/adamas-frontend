@@ -108,13 +108,16 @@ const enum ImageActivity {
             right: 0rem;
             top: 1.5rem;
         }
+        li nz-rate{
+            margin-left: 3.7rem;
+        }
         nz-avatar{
             float: left;
             margin: 6px;
             margin-right: 1rem;
         }
         h3{
-            color: #862e6bf2;
+            color: #5288ff;
         }
     `],
     templateUrl: './booking.html'
@@ -212,6 +215,7 @@ export class BookingClient implements OnInit, OnDestroy {
         }
 
         if (this.cprovider && this.current == 1) {
+            this.loading = true;
             this.clientS.getqualifiedstaff({
                 RecipientCode: 'ABBERTON B',
                 User: 'abott',
@@ -223,7 +227,7 @@ export class BookingClient implements OnInit, OnDestroy {
                 Competencys: '',
                 CompetenciesCount: 0
             }).subscribe((data: any) => {
-
+                this.loading = false;
                 let original = data.map(x => {
                     var gender = -1;
 
@@ -293,6 +297,14 @@ export class BookingClient implements OnInit, OnDestroy {
 
     get canBeDone(): boolean {
         return (!this.cprovider && this.current == 2) || (this.cprovider && this.current == 3);
+    }
+
+    computeRating(rating: string): number{
+        if (!rating || rating == null || rating == '') return 0;
+        var ratingNo = rating.split('*').length - 1;
+
+        if (ratingNo > 7) return 7;
+        return ratingNo;
     }
 
     change(data: any, source: string) {

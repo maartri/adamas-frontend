@@ -109,6 +109,18 @@ nz-avatar{
     position: absolute;
     top: -2rem;
 }
+ul li{
+    color:#fff;
+}
+ul.main-list{
+    background:#007DBA;
+}
+nz-sider{
+    background:#004165;
+}
+.ant-menu-item-selected{
+    color:#85B9D5;
+}
     `],
     templateUrl: './homev2.html'
 })

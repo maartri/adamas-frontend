@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -8,7 +9,7 @@ import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { AppRoutingModule, PAGE_COMPONENTS } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { registerLocaleData, CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { registerLocaleData, CommonModule, CurrencyPipe, DatePipe, DecimalPipe, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import en from '@angular/common/locales/en';
 
 import { LoginComponent } from './pages/login/login.component';
@@ -102,6 +103,10 @@ export function tokenGetter() {
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    },
     { provide: Window, useValue: window },
     AuthService,
     LoginService,

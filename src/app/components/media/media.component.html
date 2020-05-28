@@ -1,0 +1,29 @@
+<ul>
+    <li *ngFor="let media of mediaList;let i = index">
+        <article>
+            <time>{{ media.startDate }}</time>
+            <div class="article">
+                <h4>{{ media.mediaDisplay }}</h4>
+                <div>
+                    <ng-container *ngIf="(media.type).split('/')[1] == 'jpeg' || (media.type).split('/')[1] == 'png'">
+                        <div>
+                            <img src="{{ media.url || '' }}" class="img-media"
+                                onerror="this.src='assets/logo/noimage.jpg'" />
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="(media.type).split('/')[1] == 'mp4' || (media.type).split('/')[1] == 'mp3'">
+                        <div class="video-container">
+                            <video controls (click)="toggleVideo()" #videoPlayer>
+                                <source [src]="media.url || ''" />
+                                Browser not supported
+                            </video>
+                        </div>
+                    </ng-container>
+                </div>
+                <div>
+                    {{ media.mediaText }}
+                </div>
+            </div>
+        </article>
+    </li>
+</ul>

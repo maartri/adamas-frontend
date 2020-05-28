@@ -107,7 +107,6 @@ export class StaffAdmin implements OnInit, OnDestroy {
             filter(event => event instanceof NavigationEnd)
         ).subscribe((event: NavigationEnd ) => {
             if (event.url == '/admin/staff') {
-                console.log('staff')
                 this.sample = { refresh: true };
                 this.cd.detectChanges();
             }          

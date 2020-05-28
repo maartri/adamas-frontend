@@ -30,9 +30,13 @@ declare var Dto: any;
 
 export class ProfileClient implements OnInit, OnDestroy {
     user: Dto.ProfileInterface;
+    token: any;
 
     visible: boolean = false;
-    _settings: SettingsService
+    _settings: SettingsService;
+
+    personID: any;
+
     constructor(
         private globalS: GlobalService,
         private settings: SettingsService
@@ -42,14 +46,20 @@ export class ProfileClient implements OnInit, OnDestroy {
 
     ngOnInit() {
         this._settings = this.settings;
-        const token = this.globalS.decode();
+        this.token = this.globalS.decode();
+        this.personID = this.token.code;
         this.user = {
-            name: token.code,
+            name: this.token.code,
             view: 'recipient'
         }
+        
     }
 
     ngOnDestroy() {
 
+    }
+
+    showNotices() {
+        this.visible = true;
     }
 }

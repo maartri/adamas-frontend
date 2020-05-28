@@ -32,6 +32,7 @@ import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { DmCalendarComponent } from './dm-calendar/dm-calendar.component';
 import { RecipientPopupComponent } from './recipient-popup/recipient-popup.component';
 import { PhonefaxComponent } from './phonefax/phonefax.component';
+import { MediaComponent } from './media/media.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { PhonefaxComponent } from './phonefax/phonefax.component';
     BreadcrumbsComponent,
     DmCalendarComponent,
     RecipientPopupComponent,
-    PhonefaxComponent
+    PhonefaxComponent,
+    MediaComponent
   ],
   imports: [
     CommonModule,
@@ -80,7 +82,8 @@ import { PhonefaxComponent } from './phonefax/phonefax.component';
     BreadcrumbsComponent,
     DmCalendarComponent,
     DayManagerPopulate,
-    RecipientPopupComponent
+    RecipientPopupComponent,
+    MediaComponent
   ],
   providers: [
     

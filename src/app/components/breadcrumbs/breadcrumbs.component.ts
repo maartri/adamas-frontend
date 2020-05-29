@@ -14,6 +14,8 @@ export class BreadcrumbsComponent implements OnInit {
   role: string;
   breadcrumbs: Array<any> = [];
 
+  isAdmin: boolean = false;
+
   constructor(
     private router: Router,
     private globalS: GlobalService,
@@ -27,6 +29,9 @@ export class BreadcrumbsComponent implements OnInit {
 
   ngOnInit(): void {
     const { role } = this.globalS.decode();
+    if (role == roles.admin) {
+      this.isAdmin = true;
+    }
     this.role = role;
   }
 

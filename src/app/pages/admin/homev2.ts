@@ -7,7 +7,7 @@ import { GlobalService } from '@services/index';
 @Component({
     styles: [`
 .logo {
-    height: 32px;
+    height: 18px;
     background: rgba(255, 255, 255, 0.2);
     margin: 16px;
 }
@@ -17,7 +17,6 @@ i.fas , i.far{
 }
 
 nz-header {
-    background: #fff;
     padding: 0;
 }
 
@@ -80,6 +79,12 @@ nz-avatar{
 .menu-button{
     text-align:right;
 }
+nz-content{
+    background: #1890ff;
+}
+nz-layout{
+    background: #1890ff;
+}
 
 .main-list > li >>> div{
     font-size:12px;
@@ -111,6 +116,7 @@ nz-avatar{
 }
 ul li{
     color:#fff;
+    margin:0;
 }
 ul.main-list{
     background:#007DBA;
@@ -144,7 +150,7 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this.ISTAFF_BYPASS = this.globalS.ISTAFF_BYPASS == 'true' && this.globalS.ISTAFF_BYPASS != null ? true : false;
-        console.log(this.globalS.ISTAFF_BYPASS);
+        
         // this.router.events.pipe(
         //     filter(event => event instanceof NavigationEnd)
         // ).subscribe(event => {

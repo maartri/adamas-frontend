@@ -34,3 +34,10 @@
         text-align:right;
         line-height: 50px;
     }
+    nz-header{
+        background: red;
+    }
+
+    .admin{
+        background:#004165;
+    }

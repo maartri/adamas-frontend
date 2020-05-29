@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GlobalService, LoginService } from '@services/index';
+import { GlobalService, LoginService, roles } from '@services/index';
 @Component({
   selector: 'app-header-nav',
   templateUrl: './header-nav.component.html',
@@ -8,6 +8,7 @@ import { GlobalService, LoginService } from '@services/index';
 export class HeaderNavComponent implements OnInit {
 
   isVisible: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(
     private globalS: GlobalService,
@@ -15,6 +16,12 @@ export class HeaderNavComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const token = this.globalS.decode();
+    console.log(token);
+    if (token.role == roles.admin) {
+      this.isAdmin = true;
+    }
+
   }
 
   logout() {

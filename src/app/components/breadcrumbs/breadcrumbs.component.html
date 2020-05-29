@@ -1,5 +1,5 @@
 <nz-breadcrumb>
-    <nz-breadcrumb-item (click)="toHome()"><a>Home</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item *ngFor="let crumb of breadcrumbs" (click)="show(crumb)"><a>{{  crumb.label }}</a>
+    <nz-breadcrumb-item (click)="toHome()"><a [class.admin]="isAdmin">Home</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item *ngFor="let crumb of breadcrumbs" (click)="show(crumb)"><a [class.admin]="isAdmin">{{  crumb.label }}</a>
     </nz-breadcrumb-item>
 </nz-breadcrumb>

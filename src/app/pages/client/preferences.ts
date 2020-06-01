@@ -9,38 +9,7 @@ import format from 'date-fns/format';
 @Component({
     selector: 'preferences-client',
     styles: [`
-        .dot {
-            height: 10px;
-            width: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            float: left;
-            margin: 6px 7px 0 0;
-        }
-
-        .pending{
-            background: #737373;
-        }
-
-        .accepted{
-            background: #0079b8;
-        }
-
-        .completed{
-            background: #2f8400;
-        }
-
-        .approved{
-            background: #9b56bb;
-        }
-
-        .query{
-            background: #fdcf08;
-        }
-
-        .billed{
-            background: #004a70;
-        }
+     
     `],
     templateUrl: './preferences.html'
 })

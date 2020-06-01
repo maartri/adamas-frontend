@@ -56,7 +56,10 @@ export class MediaComponent implements OnInit {
             type: x.type,
             url: `/media/${x.media}`
           }
-        })
+        });
+
+        console.log(this.mediaList)
+              
       });
   }
 

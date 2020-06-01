@@ -1,13 +1,281 @@
 <div>
-    <div nz-row>
-        <nz-form-item>
-            <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
-                <nz-range-picker [nzFormat]="dateFormat">
-                </nz-range-picker>
-            </nz-form-control>
-        </nz-form-item>
-    </div>
-    <div nz-row>
+    <nz-tabset (nzSelectedIndexChange)="nzSelectedIndexChange($event)">
+        <nz-tab [nzTitle]="pending">
+            <ng-template #pending> <span class="dot pending"></span> Pending</ng-template>
+            <div *ngIf="!loading">
+                
+                <nz-table #virtualTable nzVirtualScroll [nzSize]="'middle'" [nzVirtualItemSize]="20" [nzData]="timesheets"
+                    [nzLoading]="loading" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                    [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: '350px' }">
+                    <thead>
+                        <tr>
+                            <th nzWidth="100px" nzLeft="0px">Shift No</th>
+                            <th nzWidth="110px" nzLeft="100px">Date</th>
+                            <th nzWidth="90px">Start Time</th>
+                            <th nzWidth="60px">Duration</th>
+                            <th nzWidth="110px">Provider</th>
+                            <th nzWidth="200px">Program</th>
+                            <th nzWidth="100px">Activity</th>
+                            <th nzWidth="100px">Bill Quantity</th>
+                            <th nzWidth="100px">Bill Rate</th>
+                            <th nzWidth="100px">Bill To</th>
+                            <th nzWidth="200px" nzRight="50px">Notes</th>
+                            <th nzWidth="50px" nzRight="0px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-template nz-virtual-scroll let-data let-index="index">
+                            <tr>
+                                <td nzLeft="0px">{{ data.shiftbookNo }}</td>
+                                <td nzLeft="110px">{{ data.activityDate | date: 'dd/MM/yyyy' }}</td>
+                                <td nzWidth="90px">{{ data.activity_Time.start_time | date: 'HH:mm' }}</td>
+                                <td nzWidth="60px">{{ data.activity_Time.calculated_Duration }}</td>
+                                <td nzWidth="110px">{{ data.carer_Code }}</td>
+                                <td nzWidth="200px">{{ data.program.title }}</td>
+                                <td nzWidth="100px">{{ data.activity.name }}</td>
+                                <td nzWidth="100px">{{ data.bill.quantity | number: '1.2-2' }}</td>
+                                <td nzWidth="100px">{{ data.bill.bill_Rate | currency: 'USD' }}</td>
+                                <td nzWidth="100px">{{ data.billedTo.accountNo }}</td>
+                                <td nzWidth="200px" nzRight="50px">{{ data.note }}</td>
+                                <td nzWidth="50px" nzRight="0px"><button class="cancel-btn" (click)="setShift(timesheets,index)">Cancel</button></td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </nz-table>                
+            </div>
+        </nz-tab>
+        <nz-tab [nzTitle]="accepted">
+            <ng-template #accepted> <span class="dot accepted"></span> Accepted</ng-template>
+            <div *ngIf="!loading">
+                
+                <nz-table #virtualTable nzVirtualScroll [nzSize]="'middle'" [nzVirtualItemSize]="20" [nzData]="timesheets"
+                    [nzLoading]="loading" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                    [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: '350px' }">
+                    <thead>
+                        <tr>
+                            <th nzWidth="100px" nzLeft="0px">Shift/Booking #</th>
+                            <th nzWidth="120px" nzLeft="100px">Date</th>
+                            <th nzWidth="90px">Start Time</th>
+                            <th nzWidth="60px">Duration</th>
+                            <th nzWidth="110px">Provider</th>
+                            <th nzWidth="280px">Program</th>
+                            <th nzWidth="100px">Activity</th>
+                            <th nzWidth="100px">Bill Quantity</th>
+                            <th nzWidth="100px">Bill Rate</th>
+                            <th nzWidth="100px">Bill To</th>
+                            <th nzWidth="200px" nzRight="0px">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-template nz-virtual-scroll let-data let-index="index">
+                            <tr>
+                                <td nzLeft="0px">{{ data.shiftbookNo }}</td>
+                                <td nzLeft="100px">{{ data.activityDate | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ data.activity_Time.start_time | date: 'HH:mm' }}</td>
+                                <td>{{ data.activity_Time.calculated_Duration }}</td>
+                                <td>{{ data.carer_Code }}</td>
+                                <td>{{ data.program.title }}</td>
+                                <td>{{ data.activity.name }}</td>
+                                <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
+                                <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
+                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
+                                <td>{{ data.address }}</td>
+                                <td>{{ data.billedTo.accountNo }}</td>
+                                <td nzRight="0px">{{ data.note }}</td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </nz-table>
+            </div>
+        </nz-tab>
+        <nz-tab [nzTitle]="completed">
+            <ng-template #completed> <span class="dot completed"></span> Completed</ng-template>
+            <div *ngIf="!loading">
+                
 
-    </div>
+                <nz-table #virtualTable nzVirtualScroll [nzSize]="'middle'" [nzVirtualItemSize]="20" [nzData]="timesheets"
+                    [nzLoading]="loading" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                    [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: '350px' }">
+                    <thead>
+                        <tr>
+                            <th nzWidth="100px" nzLeft="0px">Shift/Booking #</th>
+                            <th nzWidth="120px" nzLeft="100px">Date</th>
+                            <th nzWidth="90px">Start Time</th>
+                            <th nzWidth="60px">Duration</th>
+                            <th nzWidth="110px">Provider</th>
+                            <th nzWidth="280px">Program</th>
+                            <th nzWidth="100px">Activity</th>
+                            <th nzWidth="100px">Bill Quantity</th>
+                            <th nzWidth="100px">Bill Rate</th>
+                            <th nzWidth="100px">Bill To</th>
+                            <th nzWidth="200px" nzRight="0px">Notes</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-template nz-virtual-scroll let-data let-index="index">
+                            <tr>
+                                <td nzLeft="0px">{{ data.shiftbookNo }}</td>
+                                <td nzLeft="100px">{{ data.activityDate | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ data.activity_Time.start_time | date: 'HH:mm' }}</td>
+                                <td>{{ data.activity_Time.calculated_Duration }}</td>
+                                <td>{{ data.carer_Code }}</td>
+                                <td>{{ data.program.title }}</td>
+                                <td>{{ data.activity.name }}</td>
+                                <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
+                                <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
+                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
+                                <td>{{ data.address }}</td>
+                                <td>{{ data.billedTo.accountNo }}</td>
+                                <td nzRight="0px">{{ data.note }}</td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </nz-table>
+            </div>
+        </nz-tab>
+        <nz-tab [nzTitle]="approved">
+            <ng-template #approved> <span class="dot approved"></span> Approved</ng-template>
+            <div *ngIf="!loading">
+                
+
+                <nz-table #virtualTable nzVirtualScroll [nzSize]="'middle'" [nzVirtualItemSize]="20" [nzData]="timesheets"
+                    [nzLoading]="loading" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                    [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: '350px' }">
+                    <thead>
+                        <tr>
+                            <th nzWidth="100px" nzLeft="0px">Shift/Booking No</th>
+                            <th nzWidth="120px" nzLeft="100px">Date</th>
+                            <th nzWidth="90px">Start Time</th>
+                            <th nzWidth="60px">Duration</th>
+                            <th nzWidth="110px">Provider</th>
+                            <th nzWidth="280px">Program</th>
+                            <th nzWidth="100px">Activity</th>
+                            <th nzWidth="100px">Bill Quantity</th>
+                            <th nzWidth="100px">Bill Rate</th>
+                            <th nzWidth="100px">Bill To</th>
+                            <th nzWidth="200px" nzRight="0px">Notes</th>
+                            <th>Reason</th>
+                            <th>Approval</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-template nz-virtual-scroll let-data let-index="index">
+                            <tr>
+                                <td nzLeft="0px">{{ data.shiftbookNo }}</td>
+                                <td nzLeft="100px">{{ data.activityDate | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ data.activity_Time.start_time | date: 'HH:mm' }}</td>
+                                <td>{{ data.activity_Time.calculated_Duration }}</td>
+                                <td>{{ data.carer_Code }}</td>
+                                <td>{{ data.program.title }}</td>
+                                <td>{{ data.activity.name }}</td>
+                                <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
+                                <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
+                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
+                                <td>{{ data.address }}</td>
+                                <td>{{ data.billedTo.accountNo }}</td>
+                                <td nzRight="0px">{{ data.note }}</td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </nz-table>
+            </div>
+        </nz-tab>
+        <nz-tab [nzTitle]="query">
+            <ng-template #query> <span class="dot query"></span> Query</ng-template>
+            <div *ngIf="!loading">
+                
+                <nz-table #virtualTable nzVirtualScroll [nzSize]="'middle'" [nzVirtualItemSize]="20" [nzData]="timesheets"
+                    [nzLoading]="loading" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                    [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: '350px' }">
+                    <thead>
+                        <tr>
+                            <th nzWidth="100px" nzLeft="0px">Shift/Booking No</th>
+                            <th nzWidth="120px" nzLeft="100px">Date</th>
+                            <th nzWidth="90px">Start Time</th>
+                            <th nzWidth="60px">Duration</th>
+                            <th nzWidth="110px">Provider</th>
+                            <th nzWidth="280px">Program</th>
+                            <th nzWidth="100px">Activity</th>
+                            <th nzWidth="100px">Bill Quantity</th>
+                            <th nzWidth="100px">Bill Rate</th>
+                            <th nzWidth="100px">Bill To</th>
+                            <th nzWidth="200px" nzRight="0px">Notes</th>
+                            <th>Reason</th>
+                            <th>Approval</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-template nz-virtual-scroll let-data let-index="index">
+                            <tr>
+                                <td nzLeft="0px">{{ data.shiftbookNo }}</td>
+                                <td nzLeft="100px">{{ data.activityDate | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ data.activity_Time.start_time | date: 'HH:mm' }}</td>
+                                <td>{{ data.activity_Time.calculated_Duration }}</td>
+                                <td>{{ data.carer_Code }}</td>
+                                <td>{{ data.program.title }}</td>
+                                <td>{{ data.activity.name }}</td>
+                                <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
+                                <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
+                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
+                                <td>{{ data.address }}</td>
+                                <td>{{ data.billedTo.accountNo }}</td>
+                                <td nzRight="0px">{{ data.note }}</td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </nz-table>
+
+            </div>
+        </nz-tab>
+        <nz-tab [nzTitle]="billed">
+            <ng-template #billed> <span class="dot billed"></span> Billed</ng-template>
+            <div *ngIf="!loading">
+                
+                
+                <nz-table #virtualTable nzVirtualScroll [nzSize]="'middle'" [nzVirtualItemSize]="20" [nzData]="timesheets"
+                    [nzLoading]="loading" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                    [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: '350px' }">
+                    <thead>
+                        <tr>
+                            <th nzWidth="100px" nzLeft="0px">Shift/Booking No</th>
+                            <th nzWidth="120px" nzLeft="100px">Date</th>
+                            <th nzWidth="90px">Start Time</th>
+                            <th nzWidth="60px">Duration</th>
+                            <th nzWidth="110px">Provider</th>
+                            <th nzWidth="280px">Program</th>
+                            <th nzWidth="100px">Activity</th>
+                            <th nzWidth="100px">Bill Quantity</th>
+                            <th nzWidth="100px">Bill Rate</th>
+                            <th nzWidth="100px">Bill To</th>
+                            <th nzWidth="200px" nzRight="0px">Notes</th>
+                            <th>Reason</th>
+                            <th>Approval</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-template nz-virtual-scroll let-data let-index="index">
+                            <tr>
+                                <td nzLeft="0px">{{ data.shiftbookNo }}</td>
+                                <td nzLeft="100px">{{ data.activityDate | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ data.activity_Time.start_time | date: 'HH:mm' }}</td>
+                                <td>{{ data.activity_Time.calculated_Duration }}</td>
+                                <td>{{ data.carer_Code }}</td>
+                                <td>{{ data.program.title }}</td>
+                                <td>{{ data.activity.name }}</td>
+                                <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
+                                <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
+                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
+                                <td>{{ data.address }}</td>
+                                <td>{{ data.billedTo.accountNo }}</td>
+                                <td nzRight="0px">{{ data.note }}</td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </nz-table>
+
+            </div>
+        </nz-tab>
+    </nz-tabset>
+    <nz-spin *ngIf="loading" nzSimple></nz-spin>
 </div>

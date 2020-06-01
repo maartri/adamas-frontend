@@ -7,8 +7,7 @@
                 <div>
                     <ng-container *ngIf="(media.type).split('/')[1] == 'jpeg' || (media.type).split('/')[1] == 'png'">
                         <div>
-                            <img src="{{ media.url || '' }}" class="img-media"
-                                onerror="this.src='assets/logo/noimage.jpg'" />
+                            <img src="{{ media.url }}" class="img-media" onerror="this.src='assets/logo/noimage.jpg'" />
                         </div>
                     </ng-container>
                     <ng-container *ngIf="(media.type).split('/')[1] == 'mp4' || (media.type).split('/')[1] == 'mp3'">

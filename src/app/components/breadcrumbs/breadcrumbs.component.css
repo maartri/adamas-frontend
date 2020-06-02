@@ -3,6 +3,9 @@ nz-breadcrumb-item a:hover{
     text-decoration: underline;
 }
 a.admin{
-    color:#fff;
+    color: #fff;
 }
 
+nz-breadcrumb-item >>> span.ant-breadcrumb-separator{
+    color:#fff;
+}

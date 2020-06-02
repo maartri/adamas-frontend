@@ -1,7 +1,7 @@
 <ul>
     <li *ngFor="let media of mediaList;let i = index">
         <article>
-            <time>{{ media.startDate }}</time>
+            <time>{{ media.startDate | date:'MMM d yyyy h:mm' }}</time>
             <div class="article">
                 <h4>{{ media.mediaDisplay }}</h4>
                 <div>

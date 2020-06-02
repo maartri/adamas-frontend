@@ -7,10 +7,13 @@ import { GlobalService } from '@services/index';
 @Component({
     styles: [`
 .logo {
-    height: 18px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 16px;
+    height: 2rem;
+    background: url(../../../assets/logo/image2.png) no-repeat;
+    background-size: 64%;
+    margin: 9px 38px;
+    width: 10rem;
 }
+
 
 i.fas , i.far{
     margin-right: 13px;
@@ -21,7 +24,8 @@ nz-header {
 }
 
 nz-content {
-    margin: 0 16px;
+    background: #85B9D5;
+    margin: 6px;
 }
 
 nz-breadcrumb {
@@ -36,10 +40,6 @@ nz-breadcrumb {
 
 nz-footer {
     text-align: center;
-}
-
-nz-layout{
-    height:100vh;
 }
 
 
@@ -79,11 +79,10 @@ nz-avatar{
 .menu-button{
     text-align:right;
 }
-nz-content{
-    background: #1890ff;
-}
+
 nz-layout{
-    background: #1890ff;
+    background: #85B9D5;
+    height:100vh;
 }
 
 .main-list > li >>> div{
@@ -118,14 +117,23 @@ ul li{
     color:#fff;
     margin:0;
 }
+
+//#007DBA
 ul.main-list{
-    background:#007DBA;
+    background:#004165 !important;
 }
 nz-sider{
     background:#004165;
 }
-.ant-menu-item-selected{
-    color:#85B9D5;
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected, .ant-menu.ant-menu-dark .ant-menu-item-selected{
+    background-color: #85B9D5;
+    color: #004165;
+}
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected, .ant-menu.ant-menu-dark .ant-menu-item-selected i{
+    color: #004165;
+}
+.ant-menu-dark, .ant-menu-dark .ant-menu-sub{
+    background:#004165;
 }
     `],
     templateUrl: './homev2.html'

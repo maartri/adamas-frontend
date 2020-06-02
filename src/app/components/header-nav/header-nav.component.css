@@ -41,3 +41,7 @@
     .admin{
         background:#004165;
     }
+    app-breadcrumbs{
+        float:left;
+        margin:0.6rem;
+    }

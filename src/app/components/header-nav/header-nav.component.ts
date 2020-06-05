@@ -18,9 +18,9 @@ export class HeaderNavComponent implements OnInit {
   ngOnInit(): void {
     const token = this.globalS.decode();
     console.log(token);
-    if (token.role == roles.admin) {
+    //if (token.role == roles.admin) {
       this.isAdmin = true;
-    }
+    //}
 
   }
 

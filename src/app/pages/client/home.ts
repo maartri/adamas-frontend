@@ -77,6 +77,44 @@ import { GlobalService, SettingsService } from '@services/index';
     .menu-button{
         text-align:right;
     }
+
+
+
+
+
+    
+    .inner-content {
+        padding: 24px;
+        background: #fff;
+        min-height: 360px;
+    }
+
+    nz-content {
+        background: #85B9D5;
+        margin: 6px;
+    }
+
+    nz-layout{
+        background: #85B9D5;
+        height:100vh;
+    }
+
+    ul.main-list{
+        background:#004165 !important;
+    }
+    nz-sider{
+        background:#004165;
+    }
+    .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected, .ant-menu.ant-menu-dark .ant-menu-item-selected{
+        background-color: #85B9D5;
+        color: #004165;
+    }
+    .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected, .ant-menu.ant-menu-dark .ant-menu-item-selected i{
+        color: #004165;
+    }
+    .ant-menu-dark, .ant-menu-dark .ant-menu-sub{
+        background:#004165;
+    }
         `
     ]
 })

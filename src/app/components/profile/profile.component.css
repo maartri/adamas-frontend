@@ -5,10 +5,7 @@
 .ant-form-item{
     margin:0;
 }
-.avatar-container{
-    float: left;
-    margin-right: 1rem;   
-}
+
 .form-group label.info{
     font-weight: 500;
     font-size: 1rem;
@@ -63,8 +60,10 @@ nz-descriptions >>> div table tbody tr:nth-child(odd) td span{
 
 .divider{
     padding: 1rem;
-    border-bottom: 1px solid beige;
     margin-bottom:1rem;
+}
+.sec-highlight{    
+    background: #f7f7f7;
 }
 .divider > i{
     position: absolute;
@@ -116,4 +115,63 @@ ul li b{
     background: #56db79;
     padding: 2px;
     cursor:pointer;
+}
+
+/* image  */
+img{
+    display: block;
+    max-width:64px;
+    max-height:64px;
+    width: auto;
+    height: auto;
+}
+.prof-alert{
+    position: absolute;
+    color: #fff;
+    bottom: 0;
+    top: 0;
+    padding-top:16px;
+    right: 0;
+    left: 0;
+    font-size:10px;
+    background: #00416599;
+    opacity:1;
+    transform: translateY(130%);
+    transition-timing-function: ease-in;
+    transition: 0.2s;
+    cursor:pointer;
+    text-align: center;
+}
+.prof-alert i {
+    display:block;
+    font-size:18px;
+}
+
+.avatar-container{
+    position: relative;
+    overflow: hidden;
+    float: left;
+    margin-right: 1rem;
+    width: 64px;
+    height: 64px;
+    background: grey;
+    border-radius:3px;
+}
+
+.avatar-container nz-avatar{
+    width: 4rem;
+    -webkit-box-shadow: 0 2px 9px -1px #777;
+    -moz-box-shadow: 0 2px 9px -1px #777;
+    box-shadow: 0 2px 9px -1px #777;
+}
+.avatar-container a{
+    cursor:inherit;
+}
+
+.avatar-container.alert-show .prof-alert{
+    transition: 0.1s;
+    transition-timing-function: ease-out;
+    
+    transform: translateY(0);
+    opacity: 1;
 }

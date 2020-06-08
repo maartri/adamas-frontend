@@ -37,7 +37,9 @@
                                 <td nzWidth="100px">{{ data.bill.bill_Rate | currency: 'USD' }}</td>
                                 <td nzWidth="100px">{{ data.billedTo.accountNo }}</td>
                                 <td nzWidth="200px" nzRight="50px">{{ data.note }}</td>
-                                <td nzWidth="50px" nzRight="0px"><button class="cancel-btn" (click)="setShift(timesheets,index)">Cancel</button></td>
+                                <td nzWidth="50px" nzRight="0px">
+                                    <button class="cancel-btn" (click)="setShift(timesheets,index)">Cancel</button>
+                                </td>
                             </tr>
                         </ng-template>
                     </tbody>
@@ -78,8 +80,6 @@
                                 <td>{{ data.activity.name }}</td>
                                 <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
                                 <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
-                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
-                                <td>{{ data.address }}</td>
                                 <td>{{ data.billedTo.accountNo }}</td>
                                 <td nzRight="0px">{{ data.note }}</td>
                             </tr>
@@ -124,10 +124,11 @@
                                 <td>{{ data.activity.name }}</td>
                                 <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
                                 <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
-                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
-                                <td>{{ data.address }}</td>
                                 <td>{{ data.billedTo.accountNo }}</td>
                                 <td nzRight="0px">{{ data.note }}</td>
+                                <td>
+                                    <button class="cancel-btn" (click)="setShift(timesheets,index)">Cancel</button>
+                                </td>
                             </tr>
                         </ng-template>
                     </tbody>
@@ -155,7 +156,6 @@
                             <th nzWidth="100px">Bill Rate</th>
                             <th nzWidth="100px">Bill To</th>
                             <th nzWidth="200px" nzRight="0px">Notes</th>
-                            <th>Reason</th>
                             <th>Approval</th>
                         </tr>
                     </thead>
@@ -171,10 +171,11 @@
                                 <td>{{ data.activity.name }}</td>
                                 <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
                                 <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
-                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
-                                <td>{{ data.address }}</td>
                                 <td>{{ data.billedTo.accountNo }}</td>
                                 <td nzRight="0px">{{ data.note }}</td>
+                                <td>
+                                    <button class="cancel-btn" (click)="setShift(timesheets,index)">Cancel</button>
+                                </td>
                             </tr>
                         </ng-template>
                     </tbody>
@@ -201,7 +202,6 @@
                             <th nzWidth="100px">Bill Rate</th>
                             <th nzWidth="100px">Bill To</th>
                             <th nzWidth="200px" nzRight="0px">Notes</th>
-                            <th>Reason</th>
                             <th>Approval</th>
                         </tr>
                     </thead>
@@ -217,10 +217,11 @@
                                 <td>{{ data.activity.name }}</td>
                                 <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
                                 <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
-                                <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
-                                <td>{{ data.address }}</td>
                                 <td>{{ data.billedTo.accountNo }}</td>
-                                <td nzRight="0px">{{ data.note }}</td>
+                                <td>{{ data.note }}</td>
+                                <td nzRight="0px">
+                                    <button class="cancel-btn" (click)="setShift(timesheets,index)">Cancel</button>
+                                </td>
                             </tr>
                         </ng-template>
                     </tbody>
@@ -249,7 +250,6 @@
                             <th nzWidth="100px">Bill Rate</th>
                             <th nzWidth="100px">Bill To</th>
                             <th nzWidth="200px" nzRight="0px">Notes</th>
-                            <th>Reason</th>
                             <th>Approval</th>
                         </tr>
                     </thead>

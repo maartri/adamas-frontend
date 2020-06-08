@@ -10,7 +10,7 @@ import { GlobalService } from '@services/index';
     height: 2rem;
     background: url(../../../assets/logo/image2.png) no-repeat;
     background-size: 64%;
-    margin: 9px 38px;
+    margin: 9px 17px;
     width: 10rem;
 }
 

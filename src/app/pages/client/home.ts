@@ -8,16 +8,13 @@ import { GlobalService, SettingsService } from '@services/index';
     styles: [
         `
     .logo {
-        height: 32px;
-        background: rgba(255, 255, 255, 0.2);
-        margin: 16px;
+        height: 2rem;
+        background: url(../../../assets/logo/image2.png) no-repeat;
+        background-size: 64%;
+        margin: 7px 24px;
+        width: 10rem;
     }
-
-    nz-header {
-        background: #fff;
-        padding: 0;
-    }
-
+    
     nz-content {
         margin: 0 16px;
     }
@@ -114,6 +111,9 @@ import { GlobalService, SettingsService } from '@services/index';
     }
     .ant-menu-dark, .ant-menu-dark .ant-menu-sub{
         background:#004165;
+    }
+    nz-header {
+        padding: 0;
     }
         `
     ]

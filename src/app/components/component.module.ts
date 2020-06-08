@@ -33,6 +33,7 @@ import { DmCalendarComponent } from './dm-calendar/dm-calendar.component';
 import { RecipientPopupComponent } from './recipient-popup/recipient-popup.component';
 import { PhonefaxComponent } from './phonefax/phonefax.component';
 import { MediaComponent } from './media/media.component';
+import { ImageCropperComponent } from './image-cropper/image-cropper.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { MediaComponent } from './media/media.component';
     DmCalendarComponent,
     RecipientPopupComponent,
     PhonefaxComponent,
-    MediaComponent
+    MediaComponent,
+    ImageCropperComponent
   ],
   imports: [
     CommonModule,
@@ -83,7 +85,8 @@ import { MediaComponent } from './media/media.component';
     DmCalendarComponent,
     DayManagerPopulate,
     RecipientPopupComponent,
-    MediaComponent
+    MediaComponent,
+    ImageCropperComponent
   ],
   providers: [
     

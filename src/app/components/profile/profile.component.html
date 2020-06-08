@@ -115,8 +115,13 @@
                 <div nz-row class="divider">
                     <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
                     <div nz-row>
-                        <div class="avatar-container">
-                            <nz-avatar [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
+                        <div class="avatar-container" [class.alert-show]="showUpload" (mouseover)="showUpload=true" (mouseleave)="showUpload=false">
+                            <img *ngIf="!showAvatar" [src]="imgSrc" alt="" (error)="errorUrl($event)">
+                            <nz-avatar *ngIf="showAvatar" [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
+                            <div class="prof-alert" (click)="changeProfilePicture()">
+                                <i class="material-icons"> photo_camera </i>
+                                Upload
+                            </div>
                         </div>
                         <div class="form-group">
                             <h3>{{ user?.uniqueID || '-' }}</h3>
@@ -194,7 +199,7 @@
             </div>
             
             <div nz-col nzSpan="12">
-                <div nz-row class="divider">
+                <div nz-row class="divider sec-highlight">
                     <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffOptionsModal=true;patchTheseValuesInForm()"></i>
                     <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=2 *ngIf="user">
                         <nz-descriptions-item nzTitle="Type">{{ user?.category || '-' }}</nz-descriptions-item>
@@ -215,7 +220,7 @@
                     </nz-descriptions>
                 </div>
 
-                <div nz-row class="divider">
+                <div nz-row class="divider sec-highlight">
                 
                     <i nz-icon nzType="edit" nzTheme="outline"
                         (click)="profileStaffPreferredModal = true;patchTheseValuesInForm();"></i>
@@ -327,7 +332,7 @@
                 </div>               
             </div>
             <div nz-col nzSpan="12">
-                <div nz-row class="divider">
+                <div nz-row class="divider sec-highlight">
                     <i nz-icon nzType="edit" nzTheme="outline" (click)="profileRecipientOptionsModal=true;patchTheseValuesInForm()"></i>
                     <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=2 *ngIf="user">
                         <nz-descriptions-item nzTitle="File #1">{{ user?.agencyIdReportingCode || '-' }}</nz-descriptions-item>
@@ -339,7 +344,7 @@
                     </nz-descriptions>
                 </div>
 
-                <div nz-row class="divider">
+                <div nz-row class="divider sec-highlight">
                     <button class="botton success" (click)="saveTab()">Save</button>
                     <nz-tabset (nzSelectedIndexChange)="tabChange($event)" [nzSelectedIndex]="tabIndex">
                         <nz-tab nzTitle="Contact Issues" [formGroup]="contactIssueGroup">
@@ -973,3 +978,12 @@
             class="ant-btn ant-btn-primary"><span>Save</span></button>
     </div>
 </nz-drawer>
+
+
+<nz-modal [(nzVisible)]="changeProfilePictureModal" nzTitle="Update Profile Picture" (nzOnCancel)="handleCancel()">
+    <div>
+        <app-image-cropper [src]="src"></app-image-cropper>
+        <input type="file" id="file" (change)="uploadChange($event)">
+        <div><label for="file" class="upload-pic">Upload photo</label></div>
+    </div>
+</nz-modal>

@@ -37,6 +37,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
+  showUpload: boolean = false;
   innerValue: Dto.ProfileInterface;
 
   profileStaffModal: boolean = false;
@@ -75,6 +76,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   editProfileDrawer: boolean = false;
   addAddressDrawer: boolean = false;
   addContactDrawer: boolean = false;
+  changeProfilePictureModal: boolean = false;
 
   titles: Array<string> = titles;
   genderArr: Array<string> = gender;
@@ -340,6 +342,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);
         })).subscribe(data => {
+          this.src = this.imgSrc;
           // this.backgroundImage = this.refreshDynamicPicture(this.user)
 
           this.user.addresses = this.addressBuilder(data[0]);
@@ -446,6 +449,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.profileStaffOptionsModal = false;
     this.profileStaffPreferredModal = false;
     this.profileRecipientOptionsModal = false;
+    this.changeProfilePictureModal = false;
   }
 
   formatDate(data: any): string {
@@ -965,6 +969,38 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       this.contactIssueGroup.markAsPristine();
     }
 
+  }
+
+  // imgSrc: string = 'http://localhost:5000/media/profile.png';
+  imgSrc: string = 'media/profile.png';
+  showAvatar: boolean = false;
+
+  changeProfilePicture() {
+    this.changeProfilePictureModal = true;
+  }
+
+  errorUrl(event: any) {
+    this.imgSrc = '';
+    this.showAvatar = true;
+  }
+
+  src: any;
+  uploadChange(e: Event | any) {
+    e.preventDefault();
+    var fileLen = e.target.files.length;
+    var file = e.target.files;
+
+    if (fileLen == 0) {
+      this.globalS.wToast('Warning', 'Select a picture');
+      return;
+    }
+
+    if (fileLen > 1) {
+      this.globalS.wToast('Warning', 'File limit exceeded');
+      return;
+    }
+
+    this.src = file[0];
   }
 
 }

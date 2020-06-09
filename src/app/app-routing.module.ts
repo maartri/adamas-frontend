@@ -132,7 +132,7 @@ const routes: Routes = [
         component: PreferencesClient
       },
       {
-        path: 'timesheet',
+        path: 'manage-services',
         component: ShiftClient
       },
       {

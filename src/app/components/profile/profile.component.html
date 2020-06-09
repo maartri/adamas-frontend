@@ -80,7 +80,7 @@
                             nzType="plus" nzTheme="outline"></i> Add Address</button>
                 </div>
             </div>
-            <ul>
+            <ul style="width: 50%;">
                 <li *ngFor="let data of user?.addresses">
                     <div class="options">
                         <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
@@ -153,7 +153,7 @@
                     </tr>
                 </tbody>
             </nz-table> -->
-            <ul>
+            <ul style="width: 50%;">
                 <li *ngFor="let data of user?.contacts">
                     <div class="options">
                         <i nz-icon nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip

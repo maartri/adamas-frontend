@@ -59,8 +59,8 @@
         <nz-table #basicTable [nzData]="table" nzSize="small" [nzBordered]="false">
             <thead>
                 <tr>
-                    <th>Description</th>
                     <th>Date</th>
+                    <th>Description</th>                    
                     <th>Quantity</th>
                     <th>Unit Price</th>
                     <th>Amount</th>
@@ -74,8 +74,8 @@
                         </td>
                     </tr>
                     <tr class="table-content" *ngFor="let samp of tab?.list">
-                        <td class="left">{{samp?.billText | uppercase }}</td>
                         <td class="align-left">{{samp?.date}}</td>
+                        <td class="left">{{samp?.billText | uppercase }}</td>                        
                         <td class="align-right">{{samp?.billQuant | number : '1.2-2' }}</td>
                         <td class="align-right">{{samp?.unitBillRate | currency: 'USD' }}</td>
                         <td class="align-right">{{samp?.serviceCharge | currency: 'USD' }}</td>

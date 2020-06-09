@@ -16,6 +16,10 @@ export class StaffService {
         private auth: AuthService
     ) { }
 
+    getimages(data: any): Observable<any> {
+        return this.auth.getImage(`${staff}/images`, data);
+    }
+
     postincidentapplication(data: any): Observable<any> {
         return this.auth.post(`${staff}/incident-application`, data);
     }

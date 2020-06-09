@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, forwardRef, ViewChild, OnDestroy, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
 import * as _ from 'lodash';
-import { mergeMap, takeUntil, concatMap, switchMap } from 'rxjs/operators';
+import { mergeMap, takeUntil, concatMap, switchMap, map } from 'rxjs/operators';
 import { forkJoin, Observable, EMPTY } from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -91,6 +92,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   dropDowns: Dto.DropDowns;
 
   _settings: SettingsService;
+
+  imgSrc: any;
+  showAvatar: boolean;
+
   constructor(
     private globalS: GlobalService,
     private clientS: ClientService,
@@ -100,7 +105,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     private formBuilder: FormBuilder,
     private message: NzMessageService,
     private settings: SettingsService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private ds: DomSanitizer
   ) {
 
   }
@@ -329,19 +335,22 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
 
           // this.tempContactArray = this.contactForm.get('contacts').value;
-        });
+        });     
     }
 
     if (token.view == view.staff) {
       this.staffS.getprofile(token.name).pipe(
-        mergeMap(data => {
+        concatMap(data => {
           if (!data) return EMPTY;
-          
-          this.user = data;          
+
+          console.log(data)
+          this.user = data;
           this.user.rating = data.rating ? data.rating.split('*').length - 1 : 0;
           this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);
-        })).subscribe(data => {
+        }),
+        concatMap(data => {
+
           this.src = this.imgSrc;
           // this.backgroundImage = this.refreshDynamicPicture(this.user)
 
@@ -360,7 +369,25 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.addressForm.setControl('addresses', this.formBuilder.array(this.addressBuilder(data[0]) || []));
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
           // this.tempContactArray = this.contactForm.get('contacts').value;
-        });
+          return this.staffS.getimages({ directory: this.user.filePhoto })
+        })
+      ).subscribe(blob => {
+
+        if (blob.isValid) {
+          this.showAvatar = false;
+          let dataURL = 'data:image/png;base64,' + blob.image;
+
+          this.imgSrc = this.ds.bypassSecurityTrustUrl(dataURL);
+          this.src = dataURL;
+        } else {
+          this.showAvatar = true;
+          this.src = null;
+        }
+
+        this.cd.markForCheck();
+        this.cd.detectChanges();
+      });
+
     }
 
   }
@@ -970,10 +997,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
 
   }
-
-  // imgSrc: string = 'http://localhost:5000/media/profile.png';
-  imgSrc: string = 'media/profile.png';
-  showAvatar: boolean = false;
 
   changeProfilePicture() {
     this.changeProfilePictureModal = true;

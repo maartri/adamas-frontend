@@ -9,11 +9,8 @@
 .form-group label.info{
     font-weight: 500;
     font-size: 1rem;
-    color: #ffffff;
-    background: #46535f;
+    color: #46535f;
     padding: 5px;
-    border-radius: 3px;
-    margin:0;
 }
 h2{
     margin-bottom:2rem;
@@ -28,7 +25,10 @@ a:hover{
     text-decoration: underline;
 }
 .edit-btn{
-    height:3rem;
+    position: absolute;
+    right: 0rem;
+    top: -1rem;
+    z-index: 1;
 }
 .right-btns{
     float: right;
@@ -83,6 +83,9 @@ nz-descriptions >>> div table tbody tr:nth-child(odd) td span{
     margin-right: 1rem;
     font-size: 14px;
     color: #215097;
+}
+.form-group{
+    position:relative;
 }
 .form-group span{
     margin-left: 2rem;
@@ -154,7 +157,7 @@ img{
     margin-right: 1rem;
     width: 64px;
     height: 64px;
-    background: grey;
+    background: #f3f3f3;
     border-radius:3px;
 }
 

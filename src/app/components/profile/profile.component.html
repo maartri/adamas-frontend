@@ -1,7 +1,7 @@
 <ng-container *ngIf="!isAdmin">
     <div class="space-top" style="margin:3rem 0">
         <div class="form-group">
-            <label for="" class="info">Profile Information</label>
+            <!-- <label for="" class="info">Profile Information</label> -->
             <div class="edit-btn">
                 <div class="right-btns">
                     <button *ngIf="showMailManagerBtn" (click)="emailManager()" nz-button nzType="default"><i nz-icon
@@ -11,7 +11,45 @@
                 </div>
             </div>
             <div class="space-top">
-                <nz-descriptions [nzSize]="'small'" [nzColumn]="{ xxl: 4, xl: 4, lg: 4, md: 4, sm: 2, xs: 1 }"
+                <div nz-row>
+                    <div class="avatar-container" [class.alert-show]="showUpload" (mouseover)="showUpload=true"
+                        (mouseleave)="showUpload=false">
+                    
+                        <nz-avatar [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
+                    
+                        <div class="prof-alert" (click)="changeProfilePicture()">
+                            <i class="material-icons"> photo_camera </i>
+                            Upload
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h3>{{ user?.uniqueID || '-' }}</h3>
+                        <h2 class="highlight">{{ user?.title }} {{ user?.firstName }} {{ user?.middleNames }} {{ user?.lastName || user?.surnameOrg  }}<span
+                                *ngIf="user?.preferredName" style="color:#8c928e">({{ user?.preferredName }})</span></h2>
+                    </div>
+                </div>
+                <div nz-row nzGutter="16">
+                    <div nz-col nzSpan="4">
+                        <div class="form-group">
+                            <label class="highlight"><i nz-icon nzType="calendar" nzTheme="outline"></i> Birthdate</label>
+                            <span *ngIf="innerValue?.view === view.recipient">{{ user?.dateOfBirth | date: 'dd / MM / yyyy' || '-' }}</span>
+                            <span *ngIf="innerValue?.view === view.staff">{{ user?.dob | date: 'dd / MM / yyyy' || '-' }}</span>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <div class="form-group">
+                            <label class="highlight"><i nz-icon nzType="woman" nzTheme="outline"></i> Gender</label>
+                            <span>{{ user?.gender }}</span>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <div class="form-group">
+                            <label class="highlight"><i nz-icon nzType="alert" nzTheme="outline"></i> Case Manager</label>
+                            <span>{{ user?.recipient_Coordinator || '-' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- <nz-descriptions [nzSize]="'small'" [nzColumn]="{ xxl: 4, xl: 4, lg: 4, md: 4, sm: 2, xs: 1 }"
                     [nzColon]="false" nzTitle="" nzLayout="vertical">
                     <nz-descriptions-item nzTitle="Title"><b>{{ user?.title || '-' }}</b></nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Lastname">
@@ -28,21 +66,34 @@
                     <nz-descriptions-item *ngIf="innerValue?.view === view.recipient" nzTitle="Case Manager">
                         <b>{{ user?.recipient_Coordinator || '-' }}</b>
                     </nz-descriptions-item>
-                </nz-descriptions>
+                </nz-descriptions> -->
             </div>
         </div>
     </div>
 
     <div class="space-top">
         <div class="form-group">
-            <label for="" class="info">Address Information</label>
+            <label for="" class="info"><i class="material-icons"> location_on </i> Address Information</label>
             <div class="edit-btn">
                 <div class="right-btns">
                     <button nz-button nzType="default" nzValue="small" (click)="addAddressOpen()" class="right"><i nz-icon
                             nzType="plus" nzTheme="outline"></i> Add Address</button>
                 </div>
             </div>
-            <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
+            <ul>
+                <li *ngFor="let data of user?.addresses">
+                    <div class="options">
+                        <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
+                            class="neutral" (click)="editAddressOpen(data)"></i>
+                        <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                            nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)" (nzOnCancel)="cancel(1)"></i>
+                    </div>
+                    <div>{{ data.postCode }} {{ data.address1 }}, {{ data.suburb}}</div>
+                    <b>{{ data.description }}</b>
+                </li>
+            </ul>
+            <!-- <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
                 [nzShowPagination]="false">
                 <thead>
                     <tr>
@@ -68,18 +119,18 @@
                         </td>
                     </tr>
                 </tbody>
-            </nz-table>
+            </nz-table> -->
         </div>
     
         <div class="form-group space-top">
-            <label for="" class="info">Contact Information</label>
+            <label for="" class="info"><i class="material-icons"> phone </i> Contact Information</label>
             <div class="edit-btn">
                 <div class="right-btns">
                     <button nz-button nzType="default" nzValue="small" (click)="addContactOpen()" class="right"><i nz-icon
                             nzType="plus" nzTheme="outline"></i> Add Contact</button>
                 </div>
             </div>
-            <nz-table #contactTable [nzData]="user?.contacts" [nzSize]="'small'" [nzFrontPagination]="false"
+            <!-- <nz-table #contactTable [nzData]="user?.contacts" [nzSize]="'small'" [nzFrontPagination]="false"
                 [nzShowPagination]="false">
                 <thead>
                     <tr>
@@ -101,7 +152,20 @@
                         </td>
                     </tr>
                 </tbody>
-            </nz-table>
+            </nz-table> -->
+            <ul>
+                <li *ngFor="let data of user?.contacts">
+                    <div class="options">
+                        <i nz-icon nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip
+                            nzTooltipPlacement="top" nzTheme="outline" class="neutral"></i>
+                        <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                            nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)" (nzOnCancel)="cancel(2)"></i>
+                    </div>
+                    <div>{{ data.detail }}</div>
+                    <b>{{ data.type }}</b>
+                </li>
+            </ul>
         </div>
     </div>
 </ng-container>
@@ -116,8 +180,9 @@
                     <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
                     <div nz-row>
                         <div class="avatar-container" [class.alert-show]="showUpload" (mouseover)="showUpload=true" (mouseleave)="showUpload=false">
-                            <img *ngIf="!showAvatar" [src]="imgSrc" alt="" (error)="errorUrl($event)">
-                            <nz-avatar *ngIf="showAvatar" [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
+                            <img *ngIf="showAvatar == false" [src]="imgSrc" alt="" (error)="errorUrl($event)">
+                            <nz-avatar *ngIf="showAvatar == true" [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
+
                             <div class="prof-alert" (click)="changeProfilePicture()">
                                 <i class="material-icons"> photo_camera </i>
                                 Upload
@@ -978,7 +1043,6 @@
             class="ant-btn ant-btn-primary"><span>Save</span></button>
     </div>
 </nz-drawer>
-
 
 <nz-modal [(nzVisible)]="changeProfilePictureModal" nzTitle="Update Profile Picture" (nzOnCancel)="handleCancel()">
     <div>

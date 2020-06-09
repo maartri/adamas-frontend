@@ -1,1 +1,7 @@
-<p>image-cropper works!</p>
+<div class="img-wrapper">
+    <!-- <img [src]="imageDestination" class="img-preview"> -->
+    <div class="img-container">
+        <img #image [src]="src" (error)="errorUrl($event)" crossorigin>
+    </div>
+    <!-- <intake-no-data [loading]="loading"></intake-no-data> -->
+</div>

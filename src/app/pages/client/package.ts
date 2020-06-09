@@ -192,6 +192,8 @@ export class PackageClient implements OnInit, OnDestroy {
     }
 
     dateChanges(date: any) {
+        console.log(date);
+        
         this.loading = true;
         this.dateStream.next(date);
     }

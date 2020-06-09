@@ -19,6 +19,14 @@ export class AuthService implements ErrorHandler{
         
     }
 
+    getImage(url: string, params: any = null): Observable<any> {
+        var _params = this.GlobalS.serialize(params);
+        return this.http.get(url, { params: _params })
+            .pipe(
+                catchError(err => this.handleError(err))
+            )
+    }
+
     post(url: string, data: any, _headers: HttpHeaders = null): Observable<any>{
         return this.http.post(url, data, { headers: _headers || headers })
                         .pipe(

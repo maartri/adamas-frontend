@@ -34,6 +34,9 @@ import lastDayOfMonth from 'date-fns/lastDayOfMonth';
     nz-empty{
         margin-top:2rem;
     }
+    tr td{
+        border-bottom: 1px solid #a5a5a5;
+    }
     `]
 })
 

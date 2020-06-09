@@ -308,13 +308,13 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if (token.view == view.recipient) {
       this.clientS.getprofile(token.name).pipe(
-        mergeMap(data => {
+        concatMap(data => {
           this.user = data;
-          
+          console.log(this.user)
           this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);
-        })).subscribe(data => {
-
+        }),
+        concatMap(data => {
           // this.backgroundImage = this.refreshDynamicPicture(this.user);
 
           this.user.addresses = this.addressBuilder(data[0]);
@@ -335,15 +335,30 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
 
           // this.tempContactArray = this.contactForm.get('contacts').value;
-        });     
+          return this.staffS.getimages({ directory: this.user.filePhoto })
+        })
+      ).subscribe(blob => {
+        if (blob.isValid) {
+          this.showAvatar = false;
+          let dataURL = 'data:image/png;base64,' + blob.image;
+
+          this.imgSrc = this.ds.bypassSecurityTrustUrl(dataURL);
+          this.src = dataURL;
+        } else {
+          this.showAvatar = true;
+          this.src = null;
+        }
+
+        this.cd.markForCheck();
+        this.cd.detectChanges();
+      });     
     }
 
     if (token.view == view.staff) {
       this.staffS.getprofile(token.name).pipe(
         concatMap(data => {
           if (!data) return EMPTY;
-
-          console.log(data)
+          
           this.user = data;
           this.user.rating = data.rating ? data.rating.split('*').length - 1 : 0;
           this.patchTheseValuesInForm(data);

@@ -2,8 +2,17 @@
     <div class="tabs-vertical">
 
         <nz-tabset>
+
             <nz-tab nzTitle="OP Notes" (nzClick)="view.next(1)">
                 <div nz-col nzSpan="24">
+
+                    <nz-form-item>
+                        <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
+                            <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="OPDateRange"
+                                (ngModelChange)="OPdateChangeEvent.next($event)"></nz-range-picker>
+                        </nz-form-control>
+                    </nz-form-item>
+
                     <nz-table #filterTable [nzData]="tableData" nzSize="small" [nzFrontPagination]="false">
                         <thead (nzSortChange)="sort($event)" nzSingleSort>
                             <tr>
@@ -22,8 +31,11 @@
                     </nz-table>
                 </div>
             </nz-tab>
+
+
             <nz-tab nzTitle="Shift Notes" (nzClick)="view.next(2)">
                 <div nz-col nzSpan="24">
+
                     <nz-form-item>
                         <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
                             <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="dateRange"

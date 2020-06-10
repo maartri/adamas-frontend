@@ -45,6 +45,7 @@ export class NotesClient implements OnInit {
     dateFormat: string = 'MMM dd yyyy';
 
     dateChangeEvent = new Subject<any>();
+    OPdateChangeEvent = new Subject<any>();
 
     view = new Subject<number>();
     dateStream = new Subject<any>();
@@ -61,7 +62,9 @@ export class NotesClient implements OnInit {
     sDate: any;
     eDate: any;
 
-    dateRange: Array<any> = []
+    dateRange: Array<any> = [];
+
+    OPDateRange: Array<any> = []
 
     constructor(
         private globalS: GlobalService,
@@ -80,13 +83,29 @@ export class NotesClient implements OnInit {
             this.tableData = date;
         });
 
+        this.OPdateChangeEvent.pipe(
+            switchMap((x: Array<any>) => {
+                if (x.length < 2) {
+                    return EMPTY;
+                }
+                return this.getOPNotesWithDates(x, this.token.uniqueID);
+            })
+        ).subscribe(data => {
+            this.loading = false;
+
+            if (data)
+                this.tableData = data.list;
+        });
+
         this.view.subscribe(view => {
             this.viewNo = view;
             this.tableData = [];
 
-            if (this.viewNo == 1)
-                this.getOPNotes(this.token.uniqueID);
-
+            if (this.viewNo == 1) {
+                // this.getOPNotes(this.token.uniqueID);
+                this.OPdateChangeEvent.next(this.OPDateRange);
+            }
+                
             if (this.viewNo == 2)
                 this.dateChangeEvent.next(this.dateRange);
         });
@@ -107,12 +126,15 @@ export class NotesClient implements OnInit {
     ngOnInit() {
         var token = this.globalS.decode();
         this.accountNo = token.code;
-        this.token = token;
-
-        this.view.next(1);
+        this.token = token;        
 
         this.dateRange[0] = startOfMonth(new Date());
         this.dateRange[1] = lastDayOfMonth(new Date());
+
+        this.OPDateRange[0] = startOfMonth(new Date());
+        this.OPDateRange[1] = lastDayOfMonth(new Date());
+
+        this.view.next(1);
     }
 
     isEven(index: number) {
@@ -121,11 +143,21 @@ export class NotesClient implements OnInit {
 
     getOPNotes(uniqueId: string) {
         this.loading = true;
+
         this.clientS.getopnotes(uniqueId).subscribe(data => {
             if (data)
                 this.tableData = data.list;
 
             this.loading = false;
+        });
+    }
+
+    getOPNotesWithDates(dates: Array<any> = null, uniqueId: any) {
+        this.loading = true;
+        return this.clientS.getopnoteswithdate({
+            client: uniqueId,
+            startDate: moment(dates[0]).format('YYYY/MM/DD'),
+            endDate: moment(dates[1]).format('YYYY/MM/DD')
         });
     }
 

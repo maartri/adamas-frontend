@@ -53,7 +53,7 @@
     </div>
     <div nz-col nzSpan="18" nzOffset="1">
         <div style="display: inline-block; width: 100%;">
-            <a class="print mrg-btm" target="_blank" [href]="URL" nz-button nzType="primary" [nzSize]="'default'"><i
+            <a *ngIf="URL != '' " class="print mrg-btm" target="_blank" [href]="URL" nz-button nzType="primary" [nzSize]="'default'"><i
                     nz-icon nzType="printer"></i>Print</a>
         </div>
         <nz-table #basicTable [nzData]="table" nzSize="small" [nzBordered]="false">

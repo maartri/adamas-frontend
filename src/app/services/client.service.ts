@@ -160,6 +160,10 @@ export class ClientService {
         return this.auth.get(`${client}/opnotes/${id}`)
     }
 
+    getopnoteswithdate(data: any): Observable<any> {
+        return this.auth.get(`${client}/opnotes-dates`, data);
+    }
+
     updateopnotes(data: any, recordNo: string): Observable<any> {
         return this.auth.put(`${client}/opnotes/${recordNo}`, data)
     }

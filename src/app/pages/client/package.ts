@@ -6,6 +6,7 @@ import { APP_BASE_HREF, Location, PlatformLocation } from '@angular/common';
 import { Subscription, Subject, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { switchMap, distinctUntilChanged, debounceTime, mergeMap, map, tap } from 'rxjs/operators';
+
 @Component({
     selector: 'package-client',
     styles: [`
@@ -80,7 +81,7 @@ export class PackageClient implements OnInit, OnDestroy {
         private monthPeriodFilter: MonthPeriodFilter,
         private platformLocation: PlatformLocation
     ) {
-        this.URL = `${(this.platformLocation as any).location.origin}/StaticFiles/package.html`;
+        
 
         //this.URL = `http://localhost:5000/StaticFiles/package.html`
 
@@ -93,6 +94,7 @@ export class PackageClient implements OnInit, OnDestroy {
                     PCode: this.program,
                     Date: moment(this.date).format('YYYY/MM/DD')
                 }
+                this.URL = '';
                 this.dataPackage = data;
                 return this.getPackages(data);
             }));
@@ -106,6 +108,7 @@ export class PackageClient implements OnInit, OnDestroy {
                     PCode: this.program,
                     Date: moment(this.date).format('YYYY/MM/DD')
                 }
+                this.URL = '';
                 this.dataPackage = data;
                 return this.getPackages(data);
             }))
@@ -125,6 +128,8 @@ export class PackageClient implements OnInit, OnDestroy {
                 this.loading = false;
                 this.computeBalances(data);
                 this.table = data.list;
+
+                this.URL = `${(this.platformLocation as any).location.origin}/StaticFiles/package.html`;
             }));
 
         this.subscriptions$.push(this.programResult$.pipe(
@@ -141,6 +146,8 @@ export class PackageClient implements OnInit, OnDestroy {
                 this.loading = false;
                 this.computeBalances(data);
                 this.table = data.list;
+
+                this.URL = `${(this.platformLocation as any).location.origin}/StaticFiles/package.html`;
             }));
     }
 
@@ -183,6 +190,7 @@ export class PackageClient implements OnInit, OnDestroy {
             contingency: this.continB,
             totalBalance: this.closeB + this.continB
         }
+
         this.globalS.packageStatement = JSON.stringify(packageObject);
     }
 
@@ -191,9 +199,7 @@ export class PackageClient implements OnInit, OnDestroy {
         this.programStream.next(program);
     }
 
-    dateChanges(date: any) {
-        console.log(date);
-        
+    dateChanges(date: any) {        
         this.loading = true;
         this.dateStream.next(date);
     }

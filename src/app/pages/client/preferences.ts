@@ -9,7 +9,23 @@ import format from 'date-fns/format';
 @Component({
     selector: 'preferences-client',
     styles: [`
-     
+        ul {
+            list-style:none;
+            margin:0;
+            padding:0;
+        }
+        li{
+            padding:5px 8px;
+        }
+        ul li:nth-child(even){
+            background: #f9f9f9;
+        }
+        h4{
+            color: #004165;
+        }
+        button{
+            margin-top:1rem;
+        }
     `],
     templateUrl: './preferences.html'
 })
@@ -29,120 +45,67 @@ export class PreferencesClient implements OnInit, OnDestroy {
     user: any;
 
     date = format(new Date(), 'yyyy/MM/dd');
+    lists: Array<any> = [];
 
     constructor(
-        private timeS: TimeSheetService,
-        private staffS: StaffService,
         private clientS: ClientService,
         private globalS: GlobalService
     ) {
-        this.tabStream.pipe(
-            takeUntil(this.unsubscribe)
-        ).subscribe(data => {
-
-            this.tabIndex = data;
-
-            this.timesheets = []
-            this.loading = true;
-            switch (data) {
-                case 0:
-                    this.getShiftPending().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                        this.timesheets = data;
-                        this.loading = false;
-                    });
-                    break;
-                case 1:
-                    this.getShiftAccepted().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                        this.timesheets = data;
-                        this.loading = false;
-                    });
-                    break;
-                case 2:
-                    this.getShiftCompleted().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                        this.timesheets = data;
-                        this.loading = false;
-                    });
-                    break;
-                case 3:
-                    this.getShiftApproved().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                        this.timesheets = data
-                        this.loading = false;
-                    });
-                    break;
-                case 4:
-                    this.getShiftQuery().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                        this.timesheets = data;
-                        this.loading = false;
-                    });
-                    break;
-                case 5:
-                    this.getShiftBilled().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                        this.timesheets = data
-                        this.loading = false;
-                    });
-                    break;
-            }
-        });
+        
     }
 
     ngOnInit() {
         this.user = this.id || this.globalS.decode()['code'];
+
+        this.clientS.getcompetencies(this.user)
+            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                this.lists = data;
+                console.log(this.lists)
+        })
+
+        this.listpreferences();
     }
 
     ngOnDestroy() {
 
     }
 
-    nzSelectedIndexChange(index: number) {
-        console.log(index);
+    ifShow(data: any): boolean {
+        var len = data.competenciesList.filter(x => x.selected == true);
+        if (len.length > 0)
+            return true;
+        return false;
     }
 
-    getShiftPending(): Observable<any> {
-        return this.timeS.getshiftbooked({
-            RecipientCode: this.user,
-            ShiftDate: this.date,
-            Pending: true
-        });
+    listpreferences() {
+        this.clientS.getpreferences(this.globalS.decode().uniqueID).pipe(takeUntil(this.unsubscribe))
+            .subscribe(data => {
+                console.log(data);
+            })
     }
 
-    getShiftAccepted(): Observable<any> {
-        return this.timeS.getshiftbooked({
-            RecipientCode: this.user,
-            ShiftDate: this.date,
-            Pending: false
+    getSelectedPreference() {
+        var tempArr: Array<string> = [];
+
+        this.lists.forEach(x => {
+            x.competenciesList.forEach(b => {
+                console.log(b)
+                if (b.selected) {
+                    tempArr.push(b.description);
+                }
+            });
         });
+        return tempArr;
     }
 
-    getShiftCompleted(): Observable<any> {
-        return this.timeS.getshiftspecific({
-            RecipientCode: this.user,
-            ShiftDate: this.date,
-            Approved: 0
-        });
+    postpreference() {
+        this.clientS.postpreferences(this.globalS.decode().uniqueID, this.getSelectedPreference())
+            .subscribe(data => {
+                if (data) {
+                    this.globalS.sToast('Sucess', 'Your preferences has been changed');
+                }
+            })
     }
 
-    getShiftApproved(): Observable<any> {
-        return this.timeS.getshiftspecific({
-            RecipientCode: this.user,
-            ShiftDate: this.date,
-            Approved: 2
-        });
-    }
-
-    getShiftQuery(): Observable<any> {
-        return this.timeS.getshiftspecific({
-            RecipientCode: this.user,
-            ShiftDate: this.date,
-            Approved: 1
-        });
-    }
-
-    getShiftBilled(): Observable<any> {
-        return this.timeS.getshiftspecific({
-            RecipientCode: this.user,
-            ShiftDate: this.date,
-            Approved: 3
-        });
-    }
 
 }

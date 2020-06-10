@@ -69,7 +69,8 @@ const enum ImageActivity {
         .book-wrapper button{
             position: absolute;
             bottom: 10px;
-            right: 10px;
+            right: 50%;
+            left: 50%;
         }
         .book-image{
             background: url(assets/medical-icons.png);            

@@ -73,7 +73,7 @@ export class PackageClient implements OnInit, OnDestroy {
     selectedValue = null;
     table: Array<any>;
 
-    URL: string;
+    URL: string = '';
 
     constructor(
         private clientS: ClientService,
@@ -124,7 +124,9 @@ export class PackageClient implements OnInit, OnDestroy {
                         }))
             }))
             .subscribe(data => {
+
                 this.saveFundingInLocalStorage(data);
+
                 this.loading = false;
                 this.computeBalances(data);
                 this.table = data.list;
@@ -142,7 +144,9 @@ export class PackageClient implements OnInit, OnDestroy {
                     }))
             }))
             .subscribe(data => {
+
                 this.saveFundingInLocalStorage(data);
+
                 this.loading = false;
                 this.computeBalances(data);
                 this.table = data.list;

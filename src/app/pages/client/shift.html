@@ -38,7 +38,7 @@
                                 <td nzWidth="100px">{{ data.billedTo.accountNo }}</td>
                                 <td nzWidth="200px" nzRight="50px">{{ data.note }}</td>
                                 <td nzWidth="50px" nzRight="0px">
-                                    <button class="cancel-btn" (click)="setShift(timesheets,index)">Cancel</button>
+                                    <button nz-button nzType="primary" class="cancel-btn" (click)="setShift(timesheets,index)" nzDanger="true">Cancel</button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -279,3 +279,38 @@
     </nz-tabset>
     <nz-spin *ngIf="loading" nzSimple></nz-spin>
 </div>
+
+
+
+<nz-modal [(nzVisible)]="cancelBookingModal" nzTitle="Booking Cancellation" (nzOnCancel)="handleCancel()" >
+      <div>
+          <div class="form-group cancel-wrapper-data">
+                <h2 class="unalloc">UNALLOCATED BOOKING</h2>
+                <div nz-row>
+                    <div nz-col nzSpan="12" class="form-group">
+                        <label for="" class="nth">Date: </label>
+                        <span class="nth">{{ currentShift?.date_Value }}</span>
+                    </div>
+                    <div nz-col nzSpan="12" class="form-group">
+                        <label for="" class="nth">Service Type: </label>
+                        <span class="nth">{{ currentShift?.activity.name }}</span>
+                    </div>
+                </div>
+                <div nz-row>
+                    <div nz-col nzSpan="12"  class="form-group">
+                        <label for="" class="nth">Time: </label>
+                        <span class="nth">{{ currentShift?.activity_Time.time_Value }}</span>
+                    </div>
+                    <div nz-col nzSpan="12" class="form-group">
+                        <label for="" class="nth">Duration: </label>
+                        <span class="nth">{{ currentShift?.activity_Time.calculated_Duration }}</span>
+                    </div>
+                </div>
+            </div>
+      </div>
+
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Exit</button>
+        <button nz-button nzType="primary" (click)="cancelBooking()" [nzLoading]="isConfirmLoading">Cancel Booking</button>
+    </div>
+    </nz-modal>

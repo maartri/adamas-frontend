@@ -66,8 +66,8 @@
                                 <h3 style="color:#63db54">{{ svc.serviceBillRate | currency: 'USD' }}</h3>
                             </div>
                             <p>{{ svc.serviceProgram | uppercase }}</p>
-                            <button nz-button nzType="primary" [nzSize]="'small'" nzShape="round"
-                                (click)="add(svc)">Pick</button>
+                            <button nz-button nzType="primary" [nzSize]="'small'"
+                                (click)="add(svc)"><i nz-icon nzType="bulb" nzTheme="outline"></i> Pick</button>
                         </div>
                     </div>
                 </div>

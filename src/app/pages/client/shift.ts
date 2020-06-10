@@ -5,7 +5,8 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil, mergeMap, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import format from 'date-fns/format';
-
+import * as moment from 'moment';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'shift-client',
@@ -42,6 +43,19 @@ import format from 'date-fns/format';
         .billed{
             background: #004a70;
         }
+
+        button.cancel-btn{
+            float:right;
+        }
+        h2.unalloc{
+            margin-bottom: 2rem;
+            color: red;
+        }
+
+        .form-group span{
+            font-size: 14px;
+            font-weight: 500;
+        }
     `],
     templateUrl: './shift.html'
 })
@@ -63,6 +77,12 @@ export class ShiftClient implements OnInit, OnDestroy {
 
     date = format(new Date(), 'yyyy/MM/dd');
 
+    bookingCancellationType: string = "WithNotice";
+
+    cancelBookingModal: boolean = false;
+    currentShift: any;
+    settings: any;
+    isConfirmLoading: boolean = false;
     constructor(
         private timeS: TimeSheetService,
         private staffS: StaffService,
@@ -104,10 +124,24 @@ export class ShiftClient implements OnInit, OnDestroy {
     ngOnInit() {
         this.user = this.id || this.globalS.decode()['code'];
         this.tabStream.next(0);
+
+        this.timeS.getuname(this.user)
+            .pipe(
+                takeUntil(this.unsubscribe),
+                mergeMap(res => {
+                    return this.staffS.getsettings(res.uname)
+                })
+            ).subscribe(settings => {
+                this.settings = settings;
+            });
     }
 
     ngOnDestroy() {
 
+    }
+
+    handleCancel() {
+        this.cancelBookingModal = false;
     }
 
     nzSelectedIndexChange(index: number) {
@@ -162,21 +196,61 @@ export class ShiftClient implements OnInit, OnDestroy {
         });
     }
 
-    setShift(data: any, i: number) {
-        console.log(data);
-        console.log(i);
-        //this.currentShift = data;
-
+    setShift(data: any, index: number) {
+        this.currentShift = data[index];
+        console.log(this.currentShift);
+        console.log(index);
         if (this.tabIndex === 0) {
             //this.cancelBookingAlertOpen = true;
+            this.cancelBookingModal = true;
         } else {
 
         }
     }
 
-
-
     trackByIndex(_: number, data: any): number {
         return data.index;
+    }
+
+    cancelBooking() {
+        this.isConfirmLoading = true;
+
+        var { date_Value, shiftbookNo, } = this.currentShift;
+        var rosterDate = moment(date_Value).format('YYYY/MM/DD');
+        var currentDate = moment(new Date()).format('YYYY/MM/DD');
+        var bookTime: string = moment(this.currentShift.activity_Time.start_time).format("HH:MM");
+
+        var dayDiff = Date.parse(rosterDate) - Date.parse(currentDate);
+        dayDiff = dayDiff / (1000 * 60 * 60 * 24);
+
+        if (dayDiff <= this.settings.minimumCancellationLeadTime) {
+            this.globalS.eToast("Error", `Booking can not be cancelled ${this.settings.minimumCancellationLeadTime} day(s) prior from today's`);
+            return;
+        }
+
+        let booking = {
+            RecordNo: shiftbookNo,
+            ServiceType: this.bookingCancellationType,
+            RosterDate: rosterDate,
+            RosterTime: bookTime,
+            Username: this.id,
+            TraccsUser: this.globalS.decode().user
+        }
+
+        // this.tabStream.next(this.tabActive);
+        // this.cancelBookingAlertOpen = false;
+
+        this.clientS.postcancelbooking(booking)
+            .subscribe(data => {
+                if (data) {
+                    this.globalS.sToast('Success', 'Booking Cancelled');
+                    this.tabStream.next(this.tabIndex);
+                }
+                this.cancelBookingModal = false;
+            }, (err: HttpErrorResponse) => {
+                this.globalS.eToast('Error', 'An error occurred')
+            }, () => {
+                this.isConfirmLoading = false;
+            });
     }
 }

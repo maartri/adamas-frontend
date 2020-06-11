@@ -14,10 +14,10 @@ import format from 'date-fns/format';
             margin:0;
             padding:0;
         }
-        li{
+        ul.main-list > li{
             padding:5px 8px;
         }
-        ul li:nth-child(even){
+        ul.main-list > li:nth-child(even){
             background: #f9f9f9;
         }
         h4{
@@ -60,7 +60,6 @@ export class PreferencesClient implements OnInit, OnDestroy {
         this.clientS.getcompetencies(this.user)
             .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
                 this.lists = data;
-                console.log(this.lists)
         })
 
         this.listpreferences();

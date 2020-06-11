@@ -17,6 +17,7 @@ export class SettingsService {
     getSettings(name: any) {
         this.timeS.getusersettings(name).subscribe(data => {
             this.globalS.settings = data;
+            console.log(data);
         });
     }
     
@@ -88,6 +89,13 @@ export class SettingsService {
         if (!settings) return false;
 
         return this.VERIFY_OUTPUT(settings.allowsMarketing);
+    }
+
+    BOOKINGLEADTIME(): number{
+        let settings: any = this.globalS.settings;
+        if (!settings) return 0;
+
+        return settings.bookingLeadTime ? parseInt(settings.bookingLeadTime) + 1 : 1;
     }
 
     

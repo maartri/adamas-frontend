@@ -8,6 +8,7 @@ import format from 'date-fns/format';
 
 import { forkJoin, Subject, Observable, EMPTY } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged, switchMap, mergeMap } from 'rxjs/operators';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 const enum ImagePosition {
     LaundryService = '-81px -275px',
@@ -120,6 +121,11 @@ const enum ImageActivity {
         h3{
             color: #5288ff;
         }
+        .leadtime{
+            font-size: 10px;
+            color: #14b144;
+            margin-top: 5px;
+        }
     `],
     templateUrl: './booking.html'
 })
@@ -183,6 +189,8 @@ export class BookingClient implements OnInit, OnDestroy {
         // console.log(this.globalS.userProfile);
 
         this._settings = this.settings;
+        console.log(this._settings);
+
         this.user = this.inputUser || this.globalS.decode().code;
         this.token = this.globalS.decode();
     }
@@ -379,8 +387,9 @@ export class BookingClient implements OnInit, OnDestroy {
             BookingType: this.once ? 'Normal' : this.permanent ? this.weekly : '',
             Notes: this.notes
         }
-       
+        // console.log(booking);
         this.loadBooking = true;
+
         this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let resultRows = parseInt(data);
             if (resultRows == 1) {
@@ -405,5 +414,12 @@ export class BookingClient implements OnInit, OnDestroy {
         this.date = new Date();
         this.loadBooking = false;
         this.selectedStaff = '';
+        this.weekly = 'Weekly'
     }
+
+    disabledDate = (current: Date): boolean => {
+        // Can not select days before today and today
+        return differenceInCalendarDays(current, new Date()) < this._settings?.BOOKINGLEADTIME();
+
+    };
 }

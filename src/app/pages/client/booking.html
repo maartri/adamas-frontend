@@ -23,7 +23,8 @@
                 <div class="mrg-btm form-wrap" nzRow>
                     <div nz-col [nzMd]="24">
                         <label for="">Date</label>
-                        <nz-date-picker [(ngModel)]="date" [nzFormat]="'yyyy/MM/dd'"></nz-date-picker>
+                        <nz-date-picker [(ngModel)]="date" [nzFormat]="'yyyy/MM/dd'" [nzDisabledDate]="disabledDate"></nz-date-picker>
+                        <div class="leadtime">Booking Lead Time: {{ _settings?.BOOKINGLEADTIME() - 1 }}</div>
                     </div>
                 </div>
                 <div nzRow>
@@ -36,8 +37,15 @@
                             <label nz-checkbox [(ngModel)]="permanent"
                                 (ngModelChange)="change($event,'permanent')">Permanent</label>
                         </div>
+
+                        <nz-select style="margin-top:1rem;width: 10rem;" nzShowSearch nzAllowClear nzPlaceHolder="Time Interval" [(ngModel)]="weekly" *ngIf="permanent">
+                            <nz-option nzLabel="Weekly" nzValue="Weekly"></nz-option>
+                            <nz-option nzLabel="Fortnightly" nzValue="Fortnightly"></nz-option>
+                            <nz-option nzLabel="4 Weekly" nzValue="FourWeekly"></nz-option>
+                        </nz-select>
                     </div>
-                    <div class="mrg-btm chkboxes" [nzSpan]="12" nz-col [nzXs]="24" [nzMd]="9" *ngIf="_settings?.CANCHOOSEPROVIDER()">
+
+                    <div class="mrg-btm chkboxes" [nzSpan]="12" nz-col [nzXs]="24" [nzMd]="9" *ngIf="_settings?.CANCHOOSEPROVIDER()" >
                         <div>
                             <label nz-checkbox [(ngModel)]="aprovider" (ngModelChange)="change($event,'aprov')">Any
                                 Provider</label>

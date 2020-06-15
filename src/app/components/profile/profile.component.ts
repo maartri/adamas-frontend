@@ -94,6 +94,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   _settings: SettingsService;
 
   imgSrc: any;
+  defaultURL: any;
+
   showAvatar: boolean;
 
   constructor(
@@ -106,6 +108,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     private message: NzMessageService,
     private settings: SettingsService,
     private cd: ChangeDetectorRef,
+    private uploadS: UploadService,
     private ds: DomSanitizer
   ) {
 
@@ -390,10 +393,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
         if (blob.isValid) {
           this.showAvatar = false;
-          let dataURL = 'data:image/png;base64,' + blob.image;
+          this.defaultURL = 'data:image/png;base64,' + blob.image;
 
-          this.imgSrc = this.ds.bypassSecurityTrustUrl(dataURL);
-          this.src = dataURL;
+          this.imgSrc = this.ds.bypassSecurityTrustUrl(this.defaultURL);
+          this.src = this.defaultURL;
+
         } else {
           this.showAvatar = true;
           this.src = null;
@@ -492,6 +496,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.profileStaffPreferredModal = false;
     this.profileRecipientOptionsModal = false;
     this.changeProfilePictureModal = false;
+    this.src = '';
   }
 
   formatDate(data: any): string {
@@ -1015,6 +1020,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   changeProfilePicture() {
     this.changeProfilePictureModal = true;
+    this.src = this.defaultURL;
   }
 
   errorUrl(event: any) {
@@ -1039,6 +1045,26 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     this.src = file[0];
+  }
+
+  private imgBlobData: any;
+  imgBLOB(file: any) {
+    this.imgBlobData = file;
+  }
+
+  uploadPicture() {
+    console.log(this.imgBlobData);
+
+    this.uploadS.uploadProfilePicture(this.imgBlobData)
+      .subscribe(event => {
+        if (event) {
+          this.globalS.sToast('Success', 'Profile picture updated')
+          //this.refreshProfilePic();
+          //this.profilePictureOpen = false;
+          return;
+        }
+        this.globalS.sToast('Error', 'Process not successful')
+      })
   }
 
 }

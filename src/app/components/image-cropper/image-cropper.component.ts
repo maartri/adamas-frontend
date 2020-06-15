@@ -1,81 +1,93 @@
-import { Component, OnInit, ViewChild, Input, ElementRef, Output, EventEmitter, OnChanges, SimpleChanges, NgZone, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ElementRef, Output, EventEmitter, OnChanges, SimpleChanges, NgZone, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import Cropper from "cropperjs";
 
 
 @Component({
   selector: 'app-image-cropper',
   templateUrl: './image-cropper.component.html',
-  styleUrls: ['./image-cropper.component.css']
+  styleUrls: ['./image-cropper.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageCropperComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild("image", { static: false }) public image: ElementRef;
 
-  @Input() src: any;
+  @Input("src")  public imageSource: string;
+  
   @Output() imgBLOB = new EventEmitter<FormData>();
   public imageDestination: string = "";
 
   private cropper: Cropper;
   private canvas: HTMLCanvasElement;
 
+  load: boolean;
+
   constructor(
-    public ngZone: NgZone
+    public ngZone: NgZone,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
+    //this.initCropper();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
-      if (property == 'src' && 
-        !changes[property].isFirstChange() && changes[property].currentValue != null) {
+      if (property == 'imageSource' && changes[property].currentValue != null) {          
           this.replace(changes[property].currentValue) 
       }
     }
   }
 
   ngAfterViewInit() {
-    this.ngZone.runOutsideAngular(() => {
-      this.initCropper();
-    });
+    if (this.image.nativeElement) {
+      this.ngZone.runOutsideAngular(() => {
+        this.initCropper();
+      });
+    }
   }
 
   initCropper() {
     this.cropper = new Cropper(this.image.nativeElement,
       {
         zoomable: false,
-        scalable: false,
+        scalable: true,
+        autoCrop: false,
+        background: false,
         autoCropArea: 1,
         minContainerWidth: 340,
         minContainerHeight: 240,
         aspectRatio: 1,
         viewMode: 2,
-        cropBoxMovable: true,
+        cropBoxMovable: false,
         cropBoxResizable: false,
-        ready: () => {
-          this.cropImage();
+        ready: () => {     
+          this.cropImage();        
         },
         cropstart: () => {
           this.cropImage();
         },
-        // crop: () => {
-        //   this.cropImage();
-        // },
-        cropend: (e) => {
+        crop: () => {
           this.cropImage();
+        },
+        cropend: (e) => {
+          //this.cropImage();
         }
       });
+    
+    //this.cropper.disable();
   }
 
   cropImage() {
 
     var cnvs = this.cropper.getCroppedCanvas({
       imageSmoothingQuality: "low",
-      width: 360,
-      height: 360,
+      imageSmoothingEnabled: false,
+      fillColor: '#fff' 
+      // width: 360,
+      // height: 360,
     });
 
-    this.canvas = this.getRoundedCanvas(cnvs);
-    this.imageDestination = this.canvas.toDataURL("image/png", 0.7);
+    this.canvas = cnvs;    
 
     this.canvas.toBlob((blob) => {
       var formData = new FormData();
@@ -85,6 +97,8 @@ export class ImageCropperComponent implements OnInit, OnChanges, AfterViewInit {
 
       this.imgBLOB.emit(formData);
     });
+
+    //this.imageDestination = this.canvas.toDataURL("image/png", 0.7);
 
   }
 
@@ -105,10 +119,9 @@ export class ImageCropperComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   replace(file: File) {
-    console.log(file);
-    if (FileReader && file) {
-      
-      this.cropper.destroy();
+    this.load = true;    
+
+    if (!(typeof file == 'string') && FileReader && file) {
 
       var fr = new FileReader();
 
@@ -117,11 +130,20 @@ export class ImageCropperComponent implements OnInit, OnChanges, AfterViewInit {
         this.cropper.replace(this.image.nativeElement.src);
       }
 
-      fr.readAsArrayBuffer(file);
-    }     
+      fr.readAsDataURL(file);
+    }
+    
+    
+    setTimeout(() => {
+      this.load = false;
+      this.cd.markForCheck();
+      this.cd.detectChanges();
+
+    }, 500);
   }
   
   errorUrl(event: any) {
+    console.log('error')
     // this.cropper.replace(`assets/logo/profile.png`);
   }
 

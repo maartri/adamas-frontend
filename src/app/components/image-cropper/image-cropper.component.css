@@ -1,12 +1,15 @@
 .img-wrapper{
     min-width: 15rem;
     margin: 0 auto;
+    background: #efefefa6;
+    border: 2px dashed #cce1ff;
+    margin-bottom: 1rem;
 }
 
 .img-container {
     width: 320px;
     height: 240px;
-    margin:0 auto;
+    margin:0 auto;    
 }
 
 .img-preview {

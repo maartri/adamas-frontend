@@ -1,7 +1,10 @@
-<div class="img-wrapper">
+<div class="img-wrapper" [hidden]="load">
     <!-- <img [src]="imageDestination" class="img-preview"> -->
     <div class="img-container">
-        <img #image [src]="src" (error)="errorUrl($event)" crossorigin>
+        <img #image [src]="imageSource" (error)="errorUrl($event)" crossorigin>
     </div>
     <!-- <intake-no-data [loading]="loading"></intake-no-data> -->
+</div>
+<div *ngIf="load">
+    <nz-spin nzSimple></nz-spin>
 </div>

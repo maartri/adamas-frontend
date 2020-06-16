@@ -218,8 +218,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         serviceRegion: user.agencyDefinedGroup
       });
 
-      console.log(user.contactIssues)
-
       this.contactIssueGroup.patchValue({
         value: user.contactIssues
       })
@@ -313,7 +311,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       this.clientS.getprofile(token.name).pipe(
         concatMap(data => {
           this.user = data;
-          console.log(this.user)
+          
           this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);
         }),
@@ -343,10 +341,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       ).subscribe(blob => {
         if (blob.isValid) {
           this.showAvatar = false;
-          let dataURL = 'data:image/png;base64,' + blob.image;
+          this.defaultURL = 'data:image/png;base64,' + blob.image;
 
-          this.imgSrc = this.ds.bypassSecurityTrustUrl(dataURL);
-          this.src = dataURL;
+          this.imgSrc = this.ds.bypassSecurityTrustUrl(this.defaultURL);
+          this.src = this.defaultURL;
         } else {
           this.showAvatar = true;
           this.src = null;
@@ -368,8 +366,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           return this.getUserData(data.uniqueID);
         }),
         concatMap(data => {
-
-          this.src = this.imgSrc;
+          
+          //this.src = this.imgSrc;
           // this.backgroundImage = this.refreshDynamicPicture(this.user)
 
           this.user.addresses = this.addressBuilder(data[0]);
@@ -496,6 +494,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.profileStaffPreferredModal = false;
     this.profileRecipientOptionsModal = false;
     this.changeProfilePictureModal = false;
+    this.loadPhoto = false;
     this.src = '';
   }
 
@@ -870,6 +869,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     if (value != null && !_.isEqual(value, this.innerValue)) {
       this.innerValue = value;
       this.pathForm(this.innerValue);
+      console.log(value);
       // this.tab = 1;
     }
   }
@@ -1052,19 +1052,20 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.imgBlobData = file;
   }
 
+  loadPhoto: boolean = false;
   uploadPicture() {
-    console.log(this.imgBlobData);
 
-    this.uploadS.uploadProfilePicture(this.imgBlobData)
-      .subscribe(event => {
-        if (event) {
-          this.globalS.sToast('Success', 'Profile picture updated')
-          //this.refreshProfilePic();
-          //this.profilePictureOpen = false;
-          return;
-        }
-        this.globalS.sToast('Error', 'Process not successful')
-      })
+    this.loadPhoto = true;
+    this.uploadS.uploadProfilePicture(this.imgBlobData.formData)
+      .subscribe(blob => {
+        this.defaultURL = 'data:image/png;base64,' + blob.image;
+
+        this.imgSrc = this.ds.bypassSecurityTrustUrl(this.defaultURL);
+        this.globalS.sToast('Success', 'Profile picture updated');
+        this.showAvatar = false;
+
+        this.handleCancel();
+      });
   }
 
 }

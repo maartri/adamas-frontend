@@ -76,7 +76,9 @@ export class RecipientPersonalAdmin implements OnInit, OnDestroy {
         
         this.transformedUser = {
             name: user.code,
-            view: user.view
+            view: user.view,
+            id: user.id,
+            sysmgr: user.sysmgr
         }
     }
 

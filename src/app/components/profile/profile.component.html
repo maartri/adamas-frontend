@@ -317,12 +317,14 @@
                     <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
   
                     <div nz-row>
-                        <div class="avatar-container">
-                            <nz-avatar [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
-                        </div>
-                        <div class="form-group">
-                            <h3>{{ user?.uniqueID }}</h3>
-                            <h2 class="highlight">{{ user?.title }} {{ user?.firstName }} {{ user?.middleNames }} {{ user?.surnameOrg }}</h2>
+                        <div class="avatar-container" [class.alert-show]="showUpload" (mouseover)="showUpload=true" (mouseleave)="showUpload=false">
+                            <img *ngIf="showAvatar == false" [src]="imgSrc" alt="" (error)="errorUrl($event)">
+                            <nz-avatar *ngIf="showAvatar == true" [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
+
+                            <div class="prof-alert" (click)="changeProfilePicture()">
+                                <i class="material-icons"> photo_camera </i>
+                                Upload
+                            </div>
                         </div>
                     </div>
 
@@ -1046,13 +1048,13 @@
 
 <nz-modal [(nzVisible)]="changeProfilePictureModal" nzTitle="Update Profile Picture" (nzOnCancel)="handleCancel()">
     <div *ngIf="changeProfilePictureModal">
-        <app-image-cropper [src]="src" (imgBLOB)="imgBLOB($event)"></app-image-cropper>
+        <app-image-cropper [src]="src" [role]="innerValue.view" [id]="innerValue.id" (imgBLOB)="imgBLOB($event)"></app-image-cropper>
         <input type="file" id="file" (change)="uploadChange($event)">
         <div><label for="file" class="upload-pic">Browse Directory</label></div>
     </div>
 
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" (click)="uploadPicture()">Upload</button>
+        <button nz-button nzType="primary" (click)="uploadPicture()" [nzLoading]="loadPhoto">Upload</button>
     </div>
 </nz-modal>

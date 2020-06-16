@@ -12,8 +12,10 @@ export class ImageCropperComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild("image", { static: false }) public image: ElementRef;
 
   @Input("src")  public imageSource: string;
+  @Input()  public role: string;
+  @Input()  public id: string;
   
-  @Output() imgBLOB = new EventEmitter<FormData>();
+  @Output() imgBLOB = new EventEmitter<any>();
   public imageDestination: string = "";
 
   private cropper: Cropper;
@@ -91,11 +93,13 @@ export class ImageCropperComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.canvas.toBlob((blob) => {
       var formData = new FormData();
-      formData.append('files', blob, 'profile.png');
-      // formData.append('uniqueID', this.user);
-      // formData.append('role', this.role);
+      formData.append('files', blob, `${+new Date}-${this.id}-profile.png`);
+      formData.append('uniqueID', this.id);
+      formData.append('role', this.role);
 
-      this.imgBLOB.emit(formData);
+      this.imgBLOB.emit({
+        formData
+      });
     });
 
     //this.imageDestination = this.canvas.toDataURL("image/png", 0.7);
@@ -122,6 +126,7 @@ export class ImageCropperComponent implements OnInit, OnChanges, AfterViewInit {
     this.load = true;    
 
     if (!(typeof file == 'string') && FileReader && file) {
+      this.cropper.destroy();
 
       var fr = new FileReader();
 

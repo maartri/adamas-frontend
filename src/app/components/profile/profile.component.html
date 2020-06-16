@@ -317,10 +317,11 @@
                     <i nz-icon nzType="edit" nzTheme="outline" (click)="profileStaffModal = true;patchTheseValuesInForm()"></i>
   
                     <div nz-row>
-                        <div class="avatar-container" [class.alert-show]="showUpload" (mouseover)="showUpload=true" (mouseleave)="showUpload=false">
+                        <div class="avatar-container" [class.alert-show]="showUpload" (mouseover)="showUpload=true"
+                            (mouseleave)="showUpload=false">
                             <img *ngIf="showAvatar == false" [src]="imgSrc" alt="" (error)="errorUrl($event)">
                             <nz-avatar *ngIf="showAvatar == true" [nzShape]="'square'" [nzSize]="64" nzIcon="user"></nz-avatar>
-
+                        
                             <div class="prof-alert" (click)="changeProfilePicture()">
                                 <i class="material-icons"> photo_camera </i>
                                 Upload

@@ -131,12 +131,37 @@ nz-breadcrumb{
     border-color: #d9d9d9;
     cursor:not-allowed;
 }
+
 button.success{
     background: #87d068;
     color: #fff;    
 }
 button.success:not(:disabled):hover{
     background:#68a94d;
+}
+
+button.sea{
+    background: #85b9d5;
+    color: #fff;    
+}
+button.sea:not(:disabled):hover{
+    background:#6ba2c0;
+}
+
+button.warn{
+    background: #ede04b;
+    color: #fff;    
+}
+button.warn:not(:disabled):hover{
+    background:#d6ca38;
+}
+
+button.other{
+    background: #b74c4c;
+    color: #fff;    
+}
+button.other:not(:disabled):hover{
+    background:#e15a5a;
 }
 
 .flexy{
@@ -181,4 +206,10 @@ th.action{
     text-align: justify;
     font-size: 13px;
     margin-bottom: 10px;
+}
+
+.steps-content{
+    display: block;
+    width: 100%;
+    flex: 2;
 }

@@ -40,6 +40,12 @@ import { GlobalService, StaffService, ShareService, leaveTypes } from '@services
             text-align: center;
             font-size: 17px;
         }
+        .recipient-controls button{
+            margin-right:1rem;
+        }
+        nz-select{
+            width:100%;
+        }
     `],
     templateUrl: './recipients.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -52,6 +58,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     isFirstLoad: boolean = false;
 
     sample: any;
+
+    newReferralModal: boolean = false;
+    saveModal: boolean = false;
+    quoteModal: boolean = false;
+    newOtherModal: boolean = false;
+
+    isLoading: boolean = false;
+    current: number = 0;
+
+    selectedValue: any;
 
     listChange(event: any) {
 
@@ -152,7 +168,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit() {
         
-    }
+    }    
 
     view(index: number) {
         this.nzSelectedIndex = index;
@@ -190,5 +206,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         if (index == 10) {
             this.router.navigate(['/admin/recipient/quotes'])
         }
+    }
+
+    handleCancel() {
+        this.newReferralModal = false;
+        this.saveModal = false;
+        this.quoteModal = false;
+        this.newOtherModal = false;
+    }
+
+    handleOk() {
+        
     }
 }

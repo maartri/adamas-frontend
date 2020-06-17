@@ -156,7 +156,7 @@ export class PackageClient implements OnInit, OnDestroy {
     generateURL() {
         var location = ((this.platformLocation as any).location);
         if (location && location.pathname) {
-            this.URL = `${(this.platformLocation as any).location.origin}/${location.pathname}/StaticFiles/package.html`;
+            this.URL = `${(this.platformLocation as any).location.origin}${location.pathname}StaticFiles/package.html`;
         } else {
             this.URL = `${(this.platformLocation as any).location.origin}/StaticFiles/package.html`;
         }

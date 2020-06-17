@@ -132,6 +132,9 @@ export class PackageClient implements OnInit, OnDestroy {
                 this.table = data.list;
 
                 this.URL = `${(this.platformLocation as any).location.origin}/StaticFiles/package.html`;
+                console.log((platformLocation as any).location);
+                console.log((platformLocation as any).location.href);
+                console.log((platformLocation as any).location.origin);
             }));
 
         this.subscriptions$.push(this.programResult$.pipe(
@@ -152,6 +155,9 @@ export class PackageClient implements OnInit, OnDestroy {
                 this.table = data.list;
 
                 this.URL = `${(this.platformLocation as any).location.origin}/StaticFiles/package.html`;
+                console.log((platformLocation as any).location);
+                console.log((platformLocation as any).location.href);
+                console.log((platformLocation as any).location.origin);
             }));
     }
 

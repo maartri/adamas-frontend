@@ -12,6 +12,9 @@
 
 /* @import "../../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin"; */
 
+html{
+    height:100%;
+}
 hr{
     height: 1px;
     background-color: #ededed;

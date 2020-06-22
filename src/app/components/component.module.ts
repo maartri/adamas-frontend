@@ -34,6 +34,9 @@ import { RecipientPopupComponent } from './recipient-popup/recipient-popup.compo
 import { PhonefaxComponent } from './phonefax/phonefax.component';
 import { MediaComponent } from './media/media.component';
 import { ImageCropperComponent } from './image-cropper/image-cropper.component';
+import { AddReferralComponent } from './add-referral/add-referral.component';
+import { ReferInComponent } from './refer-in/refer-in.component';
+import { IntervalDesignComponent } from './interval-design/interval-design.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +59,10 @@ import { ImageCropperComponent } from './image-cropper/image-cropper.component';
     RecipientPopupComponent,
     PhonefaxComponent,
     MediaComponent,
-    ImageCropperComponent
+    ImageCropperComponent,
+    AddReferralComponent,
+    ReferInComponent,
+    IntervalDesignComponent
   ],
   imports: [
     CommonModule,
@@ -86,7 +92,9 @@ import { ImageCropperComponent } from './image-cropper/image-cropper.component';
     DayManagerPopulate,
     RecipientPopupComponent,
     MediaComponent,
-    ImageCropperComponent
+    ImageCropperComponent,
+    AddReferralComponent,
+    IntervalDesignComponent
   ],
   providers: [
     

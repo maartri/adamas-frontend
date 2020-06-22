@@ -1,0 +1,44 @@
+.account-name{
+    font-size: 13px;
+    font-weight: 500;
+    color: #2fc22c;
+}
+.error{
+    color:#ff5959 !important;
+}
+.message{
+    font-size: 9px;
+    color: #2fc22c;
+}
+[nz-radio]{
+    display: block;
+    height: 32px;
+    line-height: 32px;
+}
+.ref-form{
+    padding: 1rem 2rem;
+    border-bottom: 1px solid beige;
+    display: inline-block;
+    width: 100%;
+}
+.ref-form div > label{
+    color: #5d5d5d;
+}
+nz-radio-group{
+    margin-left:1rem;
+}
+nz-select{
+    width:100%;
+}
+.close{
+    position: absolute;
+    right: 3rem;
+    top: 0rem;
+}
+.close i{
+    color:#9d9d9d;
+    cursor:pointer;
+}
+.close i:hover{
+    color:#151515;
+}

@@ -126,6 +126,11 @@ const enum ImageActivity {
             color: #14b144;
             margin-top: 5px;
         }
+        .arrow-right{
+            font-size: 2.5rem;
+            color: #1890ff;
+            margin-top: 5rem;
+        }
     `],
     templateUrl: './booking.html'
 })
@@ -169,7 +174,7 @@ export class BookingClient implements OnInit, OnDestroy {
     results: Array<any> = [];
 
     bookType: boolean = false;
-    weekly: string = 'Weekly';
+    weekly: string = '';
 
     loadBooking: boolean = false;
 
@@ -282,16 +287,16 @@ export class BookingClient implements OnInit, OnDestroy {
                 CompetenciesCount: 0
             }
         }
-
+                
         this.clientS.getapprovedservices({
             RecipientCode: this.user,
             BookDate: moment(this.date).format('YYYY/MM/DD'),
-            StartTime: this.startTime
+            StartTime: format(this.startTime,'HH:mm')
         }).subscribe(data => {
             this.services = data.list
             this.loadServices = false;
             this.loading = false;
-        })
+        });
     }
 
     get canGoNext(): boolean {
@@ -337,6 +342,7 @@ export class BookingClient implements OnInit, OnDestroy {
         if (source == 'permanent') {
             if (data) {
                 this.once = false;
+                this.weekly = '';
                 //this.weekly = 'Weekly'
             }
             else {
@@ -414,7 +420,7 @@ export class BookingClient implements OnInit, OnDestroy {
         this.date = new Date();
         this.loadBooking = false;
         this.selectedStaff = '';
-        this.weekly = 'Weekly'
+        this.weekly = '';
     }
 
     disabledDate = (current: Date): boolean => {

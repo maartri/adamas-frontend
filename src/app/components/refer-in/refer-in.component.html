@@ -1,0 +1,49 @@
+<nz-modal [(nzVisible)]="open" [nzWidth]="800" nzTitle="Add New Referral" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <div nz-row>
+
+        <div class="flexy">
+        
+            <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+                <nz-step class="mini" nzTitle="Profile Information" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Contact Details" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Address Details" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step>
+            </nz-steps>
+        
+            <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        
+            <div class="steps-content" >
+                <div nz-row *ngIf="current == 0" >
+                    
+                </div>
+
+                <div nz-row *ngIf="current == 1">
+                  
+                </div>
+
+                <div nz-row *ngIf="current == 2">
+                    
+                </div>
+
+                <div nz-row *ngIf="current == 3">
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div *nzModalFooter>
+        <ng-container>
+            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                <span>Previous</span>
+            </button>
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!canGoNext">
+                <span>Next</span>
+            </button>
+            <button nz-button nzType="primary" *ngIf="current === 3" [disabled]="!canBeDone">
+                <span>Done</span>
+            </button>
+        </ng-container>
+    </div>
+</nz-modal>

@@ -6,53 +6,68 @@
         <nz-step nzTitle="Notes"></nz-step>
     </nz-steps>
 
-
     <div nzRow>
         <div class="steps-content">
-            <div *ngIf="current == 0">
-                <div nzRow>
-                    <div class="mrg-btm form-wrap" nz-col [nzSpan]="10" [nzXs]="24" [nzMd]="8">
-                        <label for="">Start Time</label>
-                        <nz-time-picker [(ngModel)]="startTime" nzFormat="HH:mm"></nz-time-picker>
-                    </div>
-                    <div class="mrg-btm form-wrap" nz-col [nzSpan]="10" [nzXs]="24" [nzMd]="8">
-                        <label for="">End Time</label>
-                        <nz-time-picker [(ngModel)]="endTime" nzFormat="HH:mm"></nz-time-picker>
-                    </div>
-                </div>
-                <div class="mrg-btm form-wrap" nzRow>
-                    <div nz-col [nzMd]="24">
-                        <label for="">Date</label>
-                        <nz-date-picker [(ngModel)]="date" [nzFormat]="'yyyy/MM/dd'" [nzDisabledDate]="disabledDate"></nz-date-picker>
-                        <div class="leadtime">Booking Lead Time: {{ _settings?.BOOKINGLEADTIME() - 1 }}</div>
-                    </div>
-                </div>
-                <div nzRow>
-                    <div class="mrg-btm chkboxes" nz-col [nzSpan]="12" [nzXs]="24" [nzMd]="9">
-                        <div>
-                            <label nz-checkbox [(ngModel)]="once" (ngModelChange)="change($event,'once')">Once
-                                Only</label>
+            <div *ngIf="current == 0" style="height:100%">
+                <div nz-row nzGutter="16" style="height:100%">
+                    <div nz-col nzSpan="6" style="height:100%" >
+                        <div nzRow>
+                            <div class="mrg-btm form-wrap" nz-col [nzSpan]="12" [nzXs]="12" [nzMd]="12">
+                                <label for="">Start Time</label>
+                                <nz-time-picker [(ngModel)]="startTime" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                            <div class="mrg-btm form-wrap" nz-col [nzSpan]="12" [nzXs]="12" [nzMd]="12">
+                                <label for="">End Time</label>
+                                <nz-time-picker [(ngModel)]="endTime" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
                         </div>
-                        <div>
-                            <label nz-checkbox [(ngModel)]="permanent"
-                                (ngModelChange)="change($event,'permanent')">Permanent</label>
+                        <div class="mrg-btm form-wrap" nzRow>
+                            <div nz-col [nzMd]="24">
+                                <label for="">Date</label>
+                                <nz-date-picker [(ngModel)]="date" [nzFormat]="'yyyy/MM/dd'" [nzDisabledDate]="disabledDate"></nz-date-picker>
+                                <div class="leadtime">Booking Lead Time: {{ _settings?.BOOKINGLEADTIME() - 1 }}</div>
+                            </div>
                         </div>
-
-                        <nz-select style="margin-top:1rem;width: 10rem;" nzShowSearch nzAllowClear nzPlaceHolder="Time Interval" [(ngModel)]="weekly" *ngIf="permanent">
-                            <nz-option nzLabel="Weekly" nzValue="Weekly"></nz-option>
-                            <nz-option nzLabel="Fortnightly" nzValue="Fortnightly"></nz-option>
-                            <nz-option nzLabel="4 Weekly" nzValue="FourWeekly"></nz-option>
-                        </nz-select>
+                        <div nzRow>
+                            <div class="mrg-btm chkboxes" nz-col [nzSpan]="12" [nzXs]="24" [nzMd]="12">
+                                <div>
+                                    <label nz-checkbox [(ngModel)]="once" (ngModelChange)="change($event,'once')">Once
+                                        Only</label>
+                                </div>
+                                <div>
+                                    <label nz-checkbox [(ngModel)]="permanent" (ngModelChange)="change($event,'permanent')">Permanent</label>
+                                </div>                                
+                            </div>
+                        
+                            <div class="mrg-btm chkboxes" [nzSpan]="12" nz-col [nzXs]="24" [nzMd]="12" *ngIf="_settings?.CANCHOOSEPROVIDER()">
+                                <div>
+                                    <label nz-checkbox [(ngModel)]="aprovider" (ngModelChange)="change($event,'aprov')">Any
+                                        Provider</label>
+                                </div>
+                                <div>
+                                    <label nz-checkbox [(ngModel)]="cprovider" (ngModelChange)="change($event,'cprov')">Pick
+                                        Provider</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="mrg-btm chkboxes" [nzSpan]="12" nz-col [nzXs]="24" [nzMd]="9" *ngIf="_settings?.CANCHOOSEPROVIDER()" >
-                        <div>
-                            <label nz-checkbox [(ngModel)]="aprovider" (ngModelChange)="change($event,'aprov')">Any
-                                Provider</label>
-                        </div>
-                        <div>
-                            <label nz-checkbox [(ngModel)]="cprovider" (ngModelChange)="change($event,'cprov')">Pick
-                                Provider</label>
+                    <div nz-col nzSpan="1" style="height:100%">
+                        <i nz-icon nzType="right" *ngIf="permanent" class="arrow-right" nzTheme="outline"></i>
+                    </div>
+                    <div nz-col nzSpan="17">
+                        <div nz-row *ngIf="permanent">
+                            <div nz-row class="mrg-btm form-wrap">
+                                <label for="">Interval Period</label>
+                                <nz-select style="width: 10rem;" nzShowSearch nzAllowClear nzPlaceHolder="Time Interval"
+                                    [(ngModel)]="weekly">
+                                    <nz-option nzLabel="Weekly" nzValue="Weekly"></nz-option>
+                                    <nz-option nzLabel="Fortnightly" nzValue="Fortnightly"></nz-option>
+                                    <nz-option nzLabel="4 Weekly" nzValue="FourWeekly"></nz-option>
+                                </nz-select>
+                            </div>
+                            <div nz-row>
+                                <app-interval-design [interval]="weekly"></app-interval-design>
+                            </div>
                         </div>
                     </div>
                 </div>

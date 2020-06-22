@@ -45,17 +45,17 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
 
     loadComponent: boolean;
 
+
     constructor(
         private clientS: ClientService,
         private globalS: GlobalService,
         private cd: ChangeDetectorRef
     ) {
         this.searchResult$ = this.searchStream.pipe(
-            debounceTime(500),
+            debounceTime(200),
             switchMap(data => {
                 if (!data) return EMPTY;
-                
-                this.isLoading = true;
+
                 let pcode = /(\d+)/g.test(data) ? data.match(/(\d+)/g)[0] : "";
                 let suburb = /(\D+)/g.test(data) ? data.match(/(\D+)/g)[0] : "";
 
@@ -69,7 +69,7 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
             })
         );
 
-        this._subscription$ = this.searchResult$.pipe(debounceTime(1000)).subscribe(data => {
+        this._subscription$ = this.searchResult$.pipe(debounceTime(500)).subscribe(data => {
 
             this.lists = data;
 
@@ -137,6 +137,7 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
 
     search(value: string) {
         if (!this.globalS.isEmpty(value)) {
+            this.isLoading = true;
             this.searchStream.next(value);
         }
     }

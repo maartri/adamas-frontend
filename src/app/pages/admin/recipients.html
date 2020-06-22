@@ -1,6 +1,6 @@
 <div nz-row>
     <div nz-col nzSpan="24" class="recipient-controls">
-        <button class="botton success" (click)="newReferralModal = true"><i nz-icon nzType="plus" nzTheme="outline"></i> New Referral</button>
+        <button class="botton success" (click)="newReferralModal = !newReferralModal"><i nz-icon nzType="plus" nzTheme="outline"></i> New Referral</button>
         <button class="botton sea" (click)="newOtherModal = true"><i nz-icon nzType="check-circle" nzTheme="outline"></i> New Other</button>
         <button class="botton warn" (click)="quoteModal = true"><i nz-icon nzType="form" nzTheme="outline"></i> Quote</button>
         <button class="botton other" (click)="saveModal = true"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Save</button>
@@ -65,83 +65,11 @@
 </div>
 
 
-<nz-modal [(nzVisible)]="newReferralModal" [nzWidth]="700" nzTitle="Add New Referral" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-    <div nz-row>
 
-        <div class="flexy">
-        
-            <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
-                <nz-step class="mini" nzTitle="Profile Information" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Contact Details" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Address Details" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step>
-            </nz-steps>
-        
-            <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
-            <div class="steps-content" >
-                <div nz-row *ngIf="current == 0" >
-                    <div nz-row nzGutter="32">
-                     
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <nz-select nzAllowClear nzPlaceHolder="Title" [(ngModel)]="selectedValue">
-                                    <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                                    <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                                    <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
-                                </nz-select>
-                            </div>
-                        </div>
-                     
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <nz-select nzAllowClear nzPlaceHolder="Gender" [(ngModel)]="selectedValue">
-                                    <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                                    <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                                    <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
-                                </nz-select>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div nz-row>
-                        <div class="form-group">
-                            <nz-date-picker nzPlaceHolder="Birthdate"></nz-date-picker>
-                        </div>
-                    </div>
-                    <div nz-row >
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <input nz-input placeholder="Surname"  />
-                            </div>
-                        </div>
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <input nz-input placeholder="Firstname" />
-                            </div>
-                        </div>
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <input nz-input placeholder="Middlename" />
-                            </div>
-                        </div>
-                    </div>
+<app-add-referral [open]="newReferralModal" [type]="'referral'" (openRefer)="openReferModal($event)"></app-add-referral>
 
-                </div>               
-            </div>
-        </div>
-
-    </div>
-
-    <div *nzModalFooter>
-        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" [nzLoading]="isLoading">Save</button>
-    </div>
-</nz-modal>
-
-
-
-
+<app-refer-in [open]="openReferInModal"></app-refer-in>
+<!-- 
 
 <nz-modal [(nzVisible)]="newOtherModal" nzTitle="Add new referral" (nzOnCancel)="handleCancel()"
     (nzOnOk)="handleOk()">
@@ -177,4 +105,4 @@
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
         <button nz-button nzType="primary" [nzLoading]="isLoading">Save</button>
     </div>
-</nz-modal>
+</nz-modal>  -->

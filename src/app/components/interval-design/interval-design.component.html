@@ -1,0 +1,78 @@
+<div class="id-container">
+    <div nz-row nzGutter="16">
+
+        <ng-container [formGroup]="quoteDetailsGroup">
+            <div nz-col nzSpan="6" formArrayName="timeSlots" *ngFor="let slot of quoteDetailsGroup.get('timeSlots')['controls']; let i = index;">
+                <div class="id-table" [formGroupName]="i">
+                    <div formGroupName="monday">
+                        <div>Mo</div>
+                        <div>
+                            <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+                        </div>
+                        <div>
+                            <nz-input-number formControlName="quantity" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        </div>
+                    </div>
+                    <div formGroupName="tuesday">
+                        <div>Tue</div>
+                        <div>
+                            <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+                        </div>
+                        <div>
+                            <nz-input-number formControlName="quantity" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        </div>
+                    </div>
+                    <div formGroupName="wednesday">
+                        <div>Wed</div>
+                        <div>
+                            <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+                        </div>
+                        <div>
+                            <nz-input-number formControlName="quantity" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        </div>
+                    </div>
+                    <div formGroupName="thursday">
+                        <div>Thu</div>
+                        <div>
+                            <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+                        </div>
+                        <div>
+                            <nz-input-number formControlName="quantity" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        </div>
+                    </div>
+                    <div formGroupName="friday">
+                        <div>Fri</div>
+                        <div>
+                            <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+                        </div>
+                        <div>
+                            <nz-input-number formControlName="quantity" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        </div>
+                    </div>
+                    <div formGroupName="saturday">
+                        <div>Sat</div>
+                        <div>
+                            <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+                        </div>
+                        <div>
+                            <nz-input-number formControlName="quantity" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        </div>
+                    </div>
+                    <div formGroupName="sunday">
+                        <div>Sun</div>
+                        <div>
+                            <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+                        </div>
+                        <div>
+                            <nz-input-number formControlName="quantity" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+
+        
+
+    </div>
+</div>

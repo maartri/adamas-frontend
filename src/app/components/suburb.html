@@ -1,8 +1,10 @@
 <nz-select nzAllowClear nzShowSearch *ngIf="!loadComponent" nzServerSearch nzPlaceHolder="" [(ngModel)]="innerValue"
     [nzShowArrow]="false" [nzFilterOption]="true" (nzOnSearch)="search($event)" [nzDropdownMatchSelectWidth]="false" [nzPlaceHolder]="placeholder"
-    [nzLoading]="isLoading" (ngModelChange)="select($event)">
+     (ngModelChange)="select($event)">
 
-    <nz-option *ngFor="let list of lists;index as i" [nzValue]="format(list)" [nzLabel]="format(list)"></nz-option>
+    
+    <nz-option *ngFor="let list of lists" [nzValue]="format(list)" [nzLabel]="format(list)"></nz-option>
+
     
     <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
         <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...

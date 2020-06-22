@@ -168,7 +168,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit() {
         
-    }    
+    }
 
     view(index: number) {
         this.nzSelectedIndex = index;
@@ -217,5 +217,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     handleOk() {
         
+    }
+
+    openReferInModal: any;
+    profileData: any;
+    
+    openReferModal(user: any) {
+        console.log(user);
+
+        this.sharedS.emitOnSearchListNext(user.code);        
+        this.profileData = user;
+        this.openReferInModal = {};
     }
 }

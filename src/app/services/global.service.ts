@@ -69,7 +69,7 @@ export const period = ['DAY', 'WEEKLY', 'FNIGHTLY', 'MONTH', 'QUARTER', 'HALF YE
 export const status = ['WAIT LIST', 'ON HOLD', 'ACTIVE', 'INACTIVE']
 export const achievementIndex = ['(1) NOT ACHIEVED', '(2) PARTIALLY ACHIEVED', '(3) MOSTLY ACHIEVED', '(4) FULLY ACHIEVED', '(5) ONGOING', '(6) FUNDING NOT APPROVED']
 export const caldStatuses = ['CALD BACKGROUND', 'NOT CALD BACKGROUND']
-export const titles = ["", "Mr", "Ms", "Mrs", "Dr"]
+export const titles = ["Mr", "Ms", "Mrs", "Dr"]
 export const types = ['', 'BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
 export const gender = ['', 'MALE', 'FEMALE', 'NOT STATED']
 export const months = moment.months()
@@ -368,10 +368,17 @@ export class GlobalService {
     }
 
     acceptOnlyNumeric(data: KeyboardEvent) {
-        if (data.key.length == 1 && /^[a-z]$/i.test(data.key)) {
+        if (!(data.key.length == 1 && /^[0-9 ]+$/.test(data.key))) {
             return false;
         }
         return true;
+    }
+
+    acceptOnlyLetters(data: KeyboardEvent) {
+        if ((/^[a-zA-Z\s]*$/.test(data.key))) {
+            return true;
+        }
+        return false;
     }
 
     getDateOnly(date: string) {

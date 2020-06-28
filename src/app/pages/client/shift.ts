@@ -45,7 +45,9 @@ import { HttpErrorResponse } from '@angular/common/http';
         }
 
         button.cancel-btn{
-            float:right;
+            float: right;
+            margin-bottom: 10px;
+            width: 5rem;
         }
         h2.unalloc{
             margin-bottom: 2rem;

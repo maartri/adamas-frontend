@@ -38,7 +38,7 @@
                                 <td nzWidth="100px">{{ data.billedTo.accountNo }}</td>
                                 <td nzWidth="200px" nzRight="50px">{{ data.note }}</td>
                                 <td nzWidth="50px" nzRight="0px">
-                                    <button nz-button nzType="primary" class="cancel-btn" (click)="setShift(timesheets,index)" nzDanger="true">Cancel</button>
+                                    <button nz-button nzType="danger" class="cancel-btn" (click)="setShift(timesheets,index)" nzDanger="true">Cancel</button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -127,8 +127,8 @@
                                 <td>{{ data.billedTo.accountNo }}</td>
                                 <td nzWidth="200px" nzRight="50px">{{ data.note }}</td>
                                 <td nzWidth="50px" nzRight="0px">
-                                    <button nz-button class="cancel-btn" (click)="setShift(timesheets,index)">Approve</button>
-                                    <button nz-button class="cancel-btn" (click)="setShift(timesheets,index)">Cancel</button>
+                                    <button nz-button nzType="primary" class="cancel-btn" (click)="setShift(timesheets,index)">Approve</button>
+                                    <button nz-button class="cancel-btn" (click)="setShift(timesheets,index)">Query</button>
                                 </td>
                             </tr>
                         </ng-template>

@@ -215,7 +215,7 @@ export class ShiftClient implements OnInit, OnDestroy {
     }
 
     cancelBooking() {
-        this.isConfirmLoading = true;
+        
 
         var { date_Value, shiftbookNo, } = this.currentShift;
         var rosterDate = moment(date_Value).format('YYYY/MM/DD');
@@ -225,10 +225,13 @@ export class ShiftClient implements OnInit, OnDestroy {
         var dayDiff = Date.parse(rosterDate) - Date.parse(currentDate);
         dayDiff = dayDiff / (1000 * 60 * 60 * 24);
 
+        console.log(dayDiff);
         if (dayDiff <= this.settings.minimumCancellationLeadTime) {
             this.globalS.eToast("Error", `Booking can not be cancelled ${this.settings.minimumCancellationLeadTime} day(s) prior from today's`);
             return;
         }
+       
+        this.isConfirmLoading = true;
 
         let booking = {
             RecordNo: shiftbookNo,

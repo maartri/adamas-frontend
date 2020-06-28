@@ -823,6 +823,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         })
     }
 
+    GETBILLINGRATE(){
+        
+    }
+
     GET_VIEW(): string {
         return this.selected.option == 1 ? 'Recipient' : 'Staff'
     }

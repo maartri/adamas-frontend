@@ -119,6 +119,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     formatterPercent = (value: number) => `${value ? `% ${value}` : ''}`;
 
     overlapValue: any;
+    dateFormat: string = 'dd/MM/yyyy'
 
     timesheetForm: FormGroup;
     modalTimesheetValues: Array<AddTimesheetModalInterface> = [

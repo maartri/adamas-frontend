@@ -50,7 +50,7 @@ export class AuthService implements ErrorHandler{
                     )
     }
 
-    put(url: string, data: any): Observable<any>{
+    put(url: string, data: any = null): Observable<any>{
         return this.http.put(url, data, { headers })
                         .pipe(
                             catchError(err => this.handleError(err))

@@ -225,7 +225,6 @@ export class ShiftClient implements OnInit, OnDestroy {
         var dayDiff = Date.parse(rosterDate) - Date.parse(currentDate);
         dayDiff = dayDiff / (1000 * 60 * 60 * 24);
 
-        console.log(dayDiff);
         if (dayDiff <= this.settings.minimumCancellationLeadTime) {
             this.globalS.eToast("Error", `Booking can not be cancelled ${this.settings.minimumCancellationLeadTime} day(s) prior from today's`);
             return;
@@ -245,17 +244,43 @@ export class ShiftClient implements OnInit, OnDestroy {
         // this.tabStream.next(this.tabActive);
         // this.cancelBookingAlertOpen = false;
 
-        this.clientS.postcancelbooking(booking)
-            .subscribe(data => {
-                if (data) {
-                    this.globalS.sToast('Success', 'Booking Cancelled');
+        // this.clientS.postcancelbooking(booking)
+        //     .subscribe(data => {
+        //         if (data) {
+        //             this.globalS.sToast('Success', 'Booking Cancelled');
+        //             this.tabStream.next(this.tabIndex);
+        //         }
+        //         this.cancelBookingModal = false;
+        //     }, (err: HttpErrorResponse) => {
+        //         this.globalS.eToast('Error', 'An error occurred')
+        //     }, () => {
+        //         this.isConfirmLoading = false;
+        //     });
+    }
+
+    approveShift(index: any){
+        if(this.timesheets[index] && this.timesheets[index].shiftbookNo){
+            const bookingNo = this.timesheets[index].shiftbookNo;
+
+            this.timeS.updateshiftquery(bookingNo).subscribe(data => {
+                if(data){
+                    this.globalS.sToast('Success', 'Booking transferred to shift');
                     this.tabStream.next(this.tabIndex);
                 }
-                this.cancelBookingModal = false;
-            }, (err: HttpErrorResponse) => {
-                this.globalS.eToast('Error', 'An error occurred')
-            }, () => {
-                this.isConfirmLoading = false;
             });
+        }        
+    }
+
+    queryShift(index: any){
+        if(this.timesheets[index] && this.timesheets[index].shiftbookNo){
+            const bookingNo = this.timesheets[index].shiftbookNo;
+
+            this.timeS.updateshiftquery(bookingNo).subscribe(data => {
+                if(data){
+                    this.globalS.sToast('Success', 'Booking transferred to query');
+                    this.tabStream.next(this.tabIndex);
+                }
+            });
+        }
     }
 }

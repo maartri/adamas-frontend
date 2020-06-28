@@ -12,7 +12,10 @@
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/reports"><i nz-icon class="material-icons"> poll </i> Reports</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/budget"><i nz-icon class="material-icons"> show_chart </i> Analyze & Budget</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected"><i nz-icon class="material-icons"> search </i> At A Glance</li>
-            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected"><i nz-icon class="material-icons"> settings_applications </i> Settings</li>
+
+            <li nz-submenu nzTitle="Configuration" nzIcon="mail">
+                <i nz-icon class="material-icons"> settings_applications </i> Settings
+            </li>
 
         </ul>
     </nz-sider>

@@ -17,6 +17,14 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    updateshiftquery(recordNo: number){
+        return this.auth.put(`${timesheet}/shift/query/${recordNo}`);
+    }
+
+    updateshiftapproved(recordNo: number){
+        return this.auth.put(`${timesheet}/shift/approve/${recordNo}`);
+    }
+
     updatetimeoverlap(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/time-overlap`, data);
     }

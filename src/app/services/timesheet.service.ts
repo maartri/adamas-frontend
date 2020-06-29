@@ -17,6 +17,10 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    getbillingrate(data: any){
+        return this.auth.get(`${timesheet}/billingrate`, data);
+    }
+
     updateshiftquery(recordNo: number){
         return this.auth.put(`${timesheet}/shift/query/${recordNo}`);
     }

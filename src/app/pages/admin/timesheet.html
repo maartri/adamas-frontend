@@ -175,16 +175,16 @@
             <div class="steps-content">
                 <div *ngIf="current == 0" [formGroup]="timesheetForm">
                     <div nz-row nzGutter="8">
-                        <div nz-col nzSpan="8">
+                        <div nz-col nzSpan="6">
                             <div class="form-group">
                                 <label for="">Start Time</label>
-                                <nz-time-picker [(ngModel)]="defaultStartTime" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
+                                <nz-time-picker [(ngModel)]="defaultStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
                             </div>
                         </div>
-                        <div nz-col nzSpan="8">
+                        <div nz-col nzSpan="6">
                             <div class="form-group">
                                 <label for="">End Time</label>
-                                <nz-time-picker [(ngModel)]="defaultEndTime" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
+                                <nz-time-picker [(ngModel)]="defaultEndTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="8">

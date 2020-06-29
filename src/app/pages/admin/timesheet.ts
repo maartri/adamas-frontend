@@ -1029,8 +1029,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.current = 0;
         this.rosterGroup = '';
         
-        this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
-        this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
+        this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
+        this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 10, 0, 0);
 
         this.timesheetForm.reset();
     }
@@ -1041,6 +1041,16 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     next(): void {
         this.current += 1;
+
+        if(this.current == 4){
+            const { recipientCode, program, serviceActivity } = this.timesheetForm.value;
+            // console.log(this.timesheetForm.value);
+            this.timeS.getbillingrate({
+                RecipientCode: recipientCode,
+                ActivityCode: serviceActivity,
+                Program: program
+            }).subscribe(data => console.log(data))
+        }
     }
 
     get nextCondition() {

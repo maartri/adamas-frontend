@@ -104,6 +104,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     resultMapData: Array<any> = [];
 
     currentDate: string;
+    payPeriodEndDate: Date;
     unitsArr: Array<string> = ['HOUR', 'SERVICE'];
 
     activity_value: number;
@@ -115,7 +116,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
-    formatterDollar = (value: number) => `${value ? `$ ${value}` : ''}`;
+    formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
     formatterPercent = (value: number) => `${value ? `% ${value}` : ''}`;
 
     overlapValue: any;
@@ -162,7 +163,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
     defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
 
-
     payTotal: CalculatedPay;
     selected: any = null;
 
@@ -172,6 +172,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     multipleRecipientShow: boolean = false;
     isTravelTimeChargeable: boolean = false;
     isSleepOver: boolean = false;
+    payUnits: any;
 
     rosterGroup: string;
     Object = Object;
@@ -225,6 +226,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         private modalService: NzModalService,
         private cd: ChangeDetectorRef,
         private formBuilder: FormBuilder,
+        private staffS:StaffService,
         private listS: ListService
     ) {
         cd.detach();
@@ -235,11 +237,12 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit(): void{
         // console.log(this.listOfMapData);
         this.buildForm();
+        
     }
 
     buildForm() {
         this.timesheetForm = this.formBuilder.group({
-            date: '',
+            date: this.payPeriodEndDate,
             serviceType: '',
             program: '',
             serviceActivity: '',
@@ -255,18 +258,19 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 endTime: '',
             }),
             pay: this.formBuilder.group({
-                unit: '',
-                rate: '',
-                quantity: '',
+                unit: 'HOUR',
+                rate: '0',
+                quantity: '1',
                 position: ''
             }),
             bill: this.formBuilder.group({
-                unit: '',
-                rate: '',
-                quantity: '',
-                tax: ''
+                unit: 'HOUR',
+                rate: '0',
+                quantity: '1',
+                tax: '1'
             }),
         })
+
         this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         this.fixStartTimeDefault();
 
@@ -275,6 +279,24 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         ).subscribe(d => {
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
 
+        });
+
+        this.timesheetForm.get('payType').valueChanges.pipe(
+            takeUntil(this.unsubscribe),
+            switchMap(d => {
+                if(!d) return EMPTY;
+                return this.timeS.getpayunits(d);
+            })
+        ).subscribe(d => {
+            
+            this.timesheetForm.patchValue({
+                pay: {
+                    unit: d.unit,
+                    rate: d.amount,
+                    quantity: (this.durationObject.duration) ? 
+                        (((this.durationObject.duration * 5) / 60)).toFixed(2) : 0
+                }
+            });
         });
 
         this.timesheetForm.get('time.endTime').valueChanges.pipe(
@@ -290,6 +312,24 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.timesheetForm.patchValue({
                     debtor: x
                 });
+                return this.GETPROGRAMS(x)
+            })
+        ).subscribe((d: Array<any>) => {
+            this.programsList = d;
+
+            if(d && d.length == 1){
+                this.timesheetForm.patchValue({
+                    program: d[0].ProgName
+                });
+            }
+            
+        });
+
+        this.timesheetForm.get('debtor').valueChanges.pipe(
+            takeUntil(this.unsubscribe),
+            switchMap(x => {
+                if(this.selected.option == 0) return EMPTY;
+                
                 return this.GETPROGRAMS(x)
             })
         ).subscribe(d => {
@@ -327,9 +367,15 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 });
                 return this.GETSERVICEACTIVITY(x)
             })
-        ).subscribe(d => {
+        ).subscribe((d: Array<any>) => {
 
             this.serviceActivityList = d;
+
+            if(d && d.length == 1){
+                this.timesheetForm.patchValue({
+                    serviceActivity: d[0].activity
+                });
+            }
         });
 
         this.timesheetForm.get('serviceActivity').valueChanges.pipe(
@@ -423,6 +469,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
     
     clearLowerLevelInputs() {
+
         this.timesheetForm.patchValue({
             recipientCode: null,
             debtor: null,
@@ -430,20 +477,20 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             serviceActivity: null,
             analysisCode: null,
             time: {
-                startTime: null,
-                endTime: null,
+                startTime: '',
+                endTime: '',
             },
             pay: {
-                unit: null,
-                rate: null,
-                quantity: null,
-                position: null
+                unit: 'HOUR',
+                rate: '0',
+                quantity: '1',
+                position: ''
             },
             bill: {
-                unit: null,
-                rate: null,
-                quantity: null,
-                tax: null
+                unit: 'HOUR',
+                rate: '0',
+                quantity: '1',
+                tax: '0'
             },
         });
     }
@@ -482,6 +529,11 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(): void{
+        this.staffS.getpayperiod().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            this.payPeriodEndDate = parseISO(data.end_Date);
+            console.log(this.payPeriodEndDate)
+        });
+
         this.cd.reattach();
         this.cd.detectChanges();
     }
@@ -499,6 +551,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }
 
         this.selected = data;
+        console.log(this.selected);
 
         this.viewType = this.whatType(data.option);
         this.loading = true;
@@ -819,7 +872,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }).subscribe(data => {
             if(data){
                 timesheet.approved = event;
-                this.globalS.sToast('Success','Selected item');
+                // this.globalS.sToast('Success','Selected item');
             }
         })
     }
@@ -908,6 +961,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     ngModelChangeStart(event): void{
         this.timesheetForm.patchValue({
+            payType: '',
             time: {
                 startTime: event
             }
@@ -916,6 +970,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     ngModelChangeEnd(event): void {
         this.timesheetForm.patchValue({
+            payType: '',
             time: {
                 endTime: event
             }
@@ -943,11 +998,11 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (!program) return EMPTY;
 
         if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE') {
-            const { recipientCode } = this.timesheetForm.value;
+            const { recipientCode, debtor } = this.timesheetForm.value;
 
             return this.listS.getserviceactivityall({
                 program,
-                recipient: recipientCode,
+                recipient: this.selected.option == 0 ? recipientCode : debtor,
                 viewType: this.viewType
             });
         }
@@ -1029,11 +1084,41 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     resetAddTimesheetModal() {
         this.current = 0;
         this.rosterGroup = '';
+
+        this.timesheetForm.reset({
+            date: this.payPeriodEndDate,
+            serviceType: '',
+            program: '',
+            serviceActivity: '',
+            payType: '',
+            analysisCode: '',
+            recipientCode: '',
+            debtor: '',
+            isMultipleRecipient: false,
+            isTravelTimeChargeable: false,
+            sleepOverTime: '',
+            time: this.formBuilder.group({
+                startTime: '',
+                endTime: '',
+            }),
+            pay: this.formBuilder.group({
+                unit: 'HOUR',
+                rate: '0',
+                quantity: '1',
+                position: ''
+            }),
+            bill: this.formBuilder.group({
+                unit: 'HOUR',
+                rate: 0,
+                quantity: '1',
+                tax: '1'
+            }),
+        });
         
         this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
         this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 10, 0, 0);
-
-        this.timesheetForm.reset();
+       
+        
     }
 
     pre(): void {
@@ -1043,14 +1128,22 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     next(): void {
         this.current += 1;
 
+        if(this.current == 1 && this.selected.option == 1){
+            this.timesheetForm.patchValue({
+                debtor: this.selected.data
+            });
+        }
+
         if(this.current == 4){
             const { recipientCode, program, serviceActivity } = this.timesheetForm.value;
             // console.log(this.timesheetForm.value);
-            this.timeS.getbillingrate({
-                RecipientCode: recipientCode,
-                ActivityCode: serviceActivity,
-                Program: program
-            }).subscribe(data => console.log(data))
+            // this.timeS.getbillingrate({
+            //     RecipientCode: recipientCode,
+            //     ActivityCode: serviceActivity,
+            //     Program: program
+            // }).subscribe(data => {
+            //     console.log(data);
+            // })
         }
     }
 
@@ -1079,7 +1172,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             clientCode: clientCode,
             costQty: tsheet.pay.quantity || 0,
             costUnit: tsheet.pay.unit || 0,
-            date: format(tsheet.date,'yyyy/M/d'),
+            date: format(tsheet.date,'yyyy/MM/dd'),
             dateEntered: null,
             dateLastMod: null,
             dayno: format(tsheet.date, 'd'),
@@ -1103,7 +1196,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             yearNo: format(tsheet.date, 'yyyy')
         };
 
-        console.log(inputs);
         console.log(this.timesheetForm.value);
 
         this.timeS.posttimesheet(inputs).subscribe(data => {

@@ -17,15 +17,19 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
-    getbillingrate(data: any){
+    getpayunits(payType: string): Observable<any>{
+        return this.auth.get(`${timesheet}/pay-units/${payType}`);
+    }
+
+    getbillingrate(data: any): Observable<any>{
         return this.auth.get(`${timesheet}/billingrate`, data);
     }
 
-    updateshiftquery(recordNo: number){
+    updateshiftquery(recordNo: number): Observable<any>{
         return this.auth.put(`${timesheet}/shift/query/${recordNo}`);
     }
 
-    updateshiftapproved(recordNo: number){
+    updateshiftapproved(recordNo: number): Observable<any>{
         return this.auth.put(`${timesheet}/shift/approve/${recordNo}`);
     }
 

@@ -55,6 +55,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 import { ComponentModule } from '@components/component.module'
 import { AgGridModule } from 'ag-grid-angular';
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 registerLocaleData(en);
 
@@ -99,7 +100,8 @@ export function tokenGetter() {
     }),
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     AgGridModule.withComponents([]),
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    FullCalendarModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

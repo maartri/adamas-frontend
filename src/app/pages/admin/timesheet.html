@@ -223,7 +223,7 @@
                     </div>
                 </div>
                 <div *ngIf="current == 1" [formGroup]="timesheetForm">
-                    <div class="form-group" *ngIf="showRecipient() ">
+                    <div class="form-group" *ngIf="showRecipient() && selected?.option === 0">
                         <label for="">Recipient</label>
                         <app-recipient-popup formControlName="recipientCode"></app-recipient-popup>
                     </div>
@@ -239,7 +239,7 @@
                     </div>
                     <div class="form-group">
                         <label for="">Service/Activity/Item</label>
-                        <nz-select nzAllowClear [nzDisabled]="!(timesheetForm.get('program').dirty)" formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                        <nz-select nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                             <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list.activity" [nzLabel]="list.activity"></nz-option>
                         </nz-select>                        
                         <div>
@@ -247,7 +247,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div *ngIf="current == 2" [formGroup]="timesheetForm">
                     <div class="form-group">
                         <label for="">Pay Type</label>
@@ -259,7 +259,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="">Analysis Code</label>
+                        <label for="">Category</label>
                         <nz-select formControlName="analysisCode"
                             [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                             <nz-option *ngFor="let list of analysisCodeList" [nzValue]="list" [nzLabel]="list">
@@ -298,8 +298,7 @@
                                 <div class="form-group">
                                     <label for="">Unit</label>
                                     <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
-                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
-                                        </nz-option> 
+                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list"></nz-option> 
                                     </nz-select>
                                 </div>
                             </div>
@@ -308,7 +307,7 @@
                             <div nz-col nzSpan="7">
                                 <div class="form-group">
                                     <label for="">Rate</label>
-                                    <nz-input-number formControlName="rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                    <nz-input-number formControlName="rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
                                         [nzParser]="parserDollar"></nz-input-number>
                                 </div>
                             </div>
@@ -352,7 +351,7 @@
                             <div nz-col nzSpan="7">
                                 <div class="form-group">
                                     <label for="">Tax %</label>
-                                    <nz-input-number formControlName="tax" [nzMin]="1" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
+                                    <nz-input-number formControlName="tax" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
                                         [nzParser]="parserPercent"></nz-input-number>
                                 </div>
                             </div>
@@ -371,7 +370,7 @@
         <button nz-button nzType="default" (click)="next()" *ngIf="nextCondition" [disabled]="nextDisabled">
             <span>Next</span>
         </button>
-        <button nz-button nzType="primary" (click)="done()" *ngIf="current >= 5">
+        <button nz-button nzType="primary" (click)="done()" [disabled]="true" *ngIf="current >= 4">
             <span>Done</span>
         </button>
         <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>

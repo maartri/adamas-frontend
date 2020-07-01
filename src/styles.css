@@ -12,6 +12,10 @@
 
 /* @import "../../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin"; */
 
+/* @import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+@import '~@fullcalendar/timegrid/main.css'; */
+
 html{
     height:100%;
 }

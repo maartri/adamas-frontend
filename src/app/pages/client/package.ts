@@ -183,9 +183,11 @@ export class PackageClient implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscriptions$.forEach(x => {
             x.unsubscribe();
-        })
+        });
+
         this.programStream.next();
         this.dateStream.next();
+
         this.programStream.complete();
         this.dateStream.complete();
     }

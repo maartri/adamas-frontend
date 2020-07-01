@@ -1,3 +1,86 @@
-<div>
-    rosters
+<div nz-row>
+
+    <div nz-row>
+        <app-search-timesheet [view]="1" (selected)="picked($event)"></app-search-timesheet>
+    </div>
+
+    <div nz-row>
+        <div class="calendar-title">
+               
+            <div>
+                <button (click)="prev()"><i class="material-icons left"> keyboard_arrow_left </i></button>
+            </div>
+            <div class="date-title">
+                {{ date | date: 'MMMM yyyy'}}
+            </div>
+            <div>
+                <button (click)="next()"><i class="material-icons right"> keyboard_arrow_right </i></button>
+            </div>
+   
+            <!-- <button (click)="prev()">prev</button>
+            <button (click)="next()">next</button> -->
+        </div>
+    </div>
+
+    <div nz-row>
+        <div class="calendar" *ngIf="options">
+
+            <!-- <full-calendar
+
+                #calendar
+
+                (eventMouseEnter)="eventMouseEnter($event)"
+                
+                (eventMouseLeave)="eventMouseLeave($event)"
+
+                (eventClick)="handleDateClick($event)"
+
+                (eventDragStart)="eventDragStart($event)"
+
+                (eventDrop)="eventDrop($event)"
+
+                (eventRender)="eventRender($event)"
+
+                defaultView="timeGrid"
+
+                [plugins]="calendarPlugins"
+
+                [fixedWeekCount]="false"
+
+                [weekends]="true"
+
+                [editable]="false"
+                
+                [eventStartEditable]="false"
+
+                [eventResizableFromStart]="false"
+                
+                [eventResourceEditable]="false"
+
+                [duration] ="{
+                    months: 1   
+                }"
+
+                [scrollToTime]="options.scrollTime"
+
+                [allDaySlot]="false"
+
+                [eventColor]="'#177dff'"                    
+
+                [columnHeaderFormat]="{
+                    day: '2-digit', omitCommas: true
+                }"                       
+
+                [height]="'parent'"
+
+                [header]="{
+                    left: '',
+                    center: '',
+                    right: ''
+                }"
+                [events]="options.events">
+            </full-calendar> -->
+
+        </div>
+    </div>
 </div>

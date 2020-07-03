@@ -1,0 +1,45 @@
+nz-select{
+    width: 15rem;
+}
+i{
+    margin-left:10px;
+    border-radius:50%;
+    margin-left: 10px;
+    border-radius: 50%;
+    padding: 4px;
+    cursor:pointer;
+}
+i:hover{
+    background: #d9e6ff;
+}
+tr{
+    cursor:pointer;
+}
+.selected > td{
+    background: #e6f7ff;
+}
+.tab-container{
+    height:22rem;
+    overflow: auto;
+}
+nz-avatar{
+    float: left;
+    margin: 6px;
+    margin-right: 1rem;
+}
+ul{
+    list-style: none;
+}
+li label{
+    position: absolute;
+    right: 0rem;
+    top: 1.5rem;
+}
+li nz-rate{
+    margin-left: 3.7rem;
+}
+li{
+    border-bottom: 1px solid #f1f1f1;
+    padding:0.5rem 0;
+    position:relative;
+}

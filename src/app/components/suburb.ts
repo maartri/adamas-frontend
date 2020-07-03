@@ -1,12 +1,13 @@
-import { Component, forwardRef, ElementRef, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { Component, forwardRef, ElementRef, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, SkipSelf, Optional } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { switchMap, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Subject, Subscription, Observable, EMPTY } from 'rxjs';
 import { take } from 'rxjs/operators'
 import { ClientService, GlobalService } from '@services/index';
 
-const noop = () => {
+const noop = () => 
+{
 };
 
 @Component({
@@ -49,8 +50,12 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     constructor(
         private clientS: ClientService,
         private globalS: GlobalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        // @SkipSelf() @Optional() private control: NgControl
     ) {
+
+        // this.control.valueAccessor = this;
+
         this.searchResult$ = this.searchStream.pipe(
             debounceTime(200),
             switchMap(data => {
@@ -107,13 +112,13 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
 
     //From ControlValueAccessor interface
     writeValue(value: any) {
-        let _value = value && value.trim();
 
+        let _value = value ? value.trim() : '';
 
         if (this.globalS.isEmpty(_value)) {
             this.lists = [];
-            this.innerValue = null;
-            this.select(null);            
+            this.innerValue = '';
+            this.select('');            
         } else {
             this.lists.push(this.innerValue);
 
@@ -121,6 +126,7 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
             this.loadComponent = true;          
             this.searchStream.next(value);
         }
+
         this.cd.markForCheck();
         this.cd.detectChanges();
     }
@@ -145,4 +151,20 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     format(value: any): string {
         return `${value.postcode} ${value.suburb}, ${value.state}`
     }
+
+    // ControlValueAccessor methods and others
+
+    //    public get invalid(): boolean {
+    //         return this.control ? this.control.invalid : false;
+    //     }
+
+    //     public get showError(): boolean {
+    //         if (!this.control) {
+    //         return false;
+    //         }
+
+    //         const { dirty, touched } = this.control;
+
+    //         return this.invalid ? (dirty || touched) : false;
+    //     }
 }

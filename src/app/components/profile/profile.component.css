@@ -103,6 +103,12 @@ ul li b{
 .highlight{
     font-weight:600;
 }
+.highlight i{
+    float: left;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+    color: #004165;
+}
 .options{
     float:right;
 }

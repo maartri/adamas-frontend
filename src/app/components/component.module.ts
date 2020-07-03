@@ -37,6 +37,7 @@ import { ImageCropperComponent } from './image-cropper/image-cropper.component';
 import { AddReferralComponent } from './add-referral/add-referral.component';
 import { ReferInComponent } from './refer-in/refer-in.component';
 import { IntervalDesignComponent } from './interval-design/interval-design.component';
+import { StaffPopupComponent } from './staff-popup/staff-popup.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { IntervalDesignComponent } from './interval-design/interval-design.compo
     ImageCropperComponent,
     AddReferralComponent,
     ReferInComponent,
-    IntervalDesignComponent
+    IntervalDesignComponent,
+    StaffPopupComponent
   ],
   imports: [
     CommonModule,
@@ -94,7 +96,8 @@ import { IntervalDesignComponent } from './interval-design/interval-design.compo
     MediaComponent,
     ImageCropperComponent,
     AddReferralComponent,
-    IntervalDesignComponent
+    IntervalDesignComponent,
+    StaffPopupComponent
   ],
   providers: [
     

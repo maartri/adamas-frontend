@@ -1,0 +1,49 @@
+<nz-select nzShowSearch nzAllowClear nzPlaceHolder="" [(ngModel)]="selectedValue" (ngModelChange)="ngModelChange($event)" (nzOnSearch)="nzOnSearch($event)">
+    <nz-option *ngIf="!isDataLoaded" [nzLabel]="selectedValue"></nz-option>
+    <nz-option *ngFor="let list of selectList" [nzLabel]="list.accountNo" [nzValue]="list.accountNo"></nz-option>
+</nz-select>
+<i nz-icon (click)="openModal()" nzType="more" nzTheme="outline"></i>
+
+<nz-modal [nzStyle]="{ top: '20px' }" [nzWidth]="1200" [(nzVisible)]="isVisible" nzTitle="Staff List" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+    <div nz-row nzGutter="16">
+
+        <div nz-col nzSpan="15">
+            <nz-tabset *ngIf="isVisible">
+                <nz-tab nzTitle="Staff  List">
+                    <div class="tab-container">
+                        <nz-radio-group [(ngModel)]="selectedStaff" nzName="radiogroup" style="width:100%">
+                            <ul>                        
+                                <li *ngFor="let staff of selectList;let i=index">
+                                    <nz-avatar [nzShape]="'square'" [nzSize]="'large'" [nzIcon]="'user'"></nz-avatar>
+                                    <h3>{{staff.accountNo}}</h3>
+                                    <h5>{{ staff.firstName}} <span> * {{ staff.age }} yrs old</span></h5>
+                                    <nz-rate [ngModel]="computeRating(staff.rating)" nzDisabled></nz-rate>
+                                    <label nz-radio [nzValue]="staff"></label>
+                                </li>
+                            </ul>
+                        </nz-radio-group>
+                    </div>
+                </nz-tab>
+                <nz-tab nzTitle="Competencies">
+                  Content of Tab Pane 2
+                </nz-tab>
+                <nz-tab nzTitle="Approved/Excluded Staff">
+                  Content of Tab Pane 3
+                </nz-tab>
+                <nz-tab nzTitle="Filters">
+                    Content of Tab Pane 3
+                  </nz-tab>
+              </nz-tabset>
+        </div>
+
+        <div nz-col nzSpan="9">
+            #
+        </div>
+    </div>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="handleOk()">Select</button>
+    </ng-template>
+
+</nz-modal>

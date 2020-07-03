@@ -190,7 +190,7 @@ export class BookingClient implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        // console.log(this.globalS.decode().code);
+        console.log(this.globalS.decode());
         // console.log(this.globalS.userProfile);
 
         this._settings = this.settings;
@@ -230,10 +230,11 @@ export class BookingClient implements OnInit, OnDestroy {
 
         if (this.cprovider && this.current == 1) {
             this.loading = true;
+            
             this.clientS.getqualifiedstaff({
-                RecipientCode: 'ABBERTON B',
-                User: 'abott',
-                BookDate: '2020/05/26',
+                RecipientCode: this.token.code,
+                User: this.token.user,
+                BookDate: format(this.date,'yyyy/MM/dd'),
                 StartTime: '09:00',
                 EndTime: '11:00',
                 EndLimit: '17:00',
@@ -264,7 +265,6 @@ export class BookingClient implements OnInit, OnDestroy {
                 });
 
                 this.results = original;
-                console.log(this.results);
             });
         }
         if (this.cprovider && this.current == 2){

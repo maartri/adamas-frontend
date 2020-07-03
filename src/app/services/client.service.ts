@@ -14,6 +14,10 @@ export class ClientService {
         private auth: AuthService
     ) { }
 
+    getagencydefinedgroup(accountNo: string): Observable<any>{
+        return this.auth.get(`${client}/agencydefinedgroup/${accountNo}`);
+    }
+
     postprofile(data: any): Observable<any> {
         return this.auth.post(`${client}/profile`, data);
     }

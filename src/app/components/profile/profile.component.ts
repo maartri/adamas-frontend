@@ -33,6 +33,7 @@ const PROFILEPAGE_VALUE_ACCESSOR: any = {
 })
 
 export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor {
+
   @Input() isAdmin: boolean = false;
   
   private onTouchedCallback: () => void = noop;
@@ -149,7 +150,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       id: [''],
       description: [null, [Validators.required]],
       address: [null, [Validators.required]],
-      pcodesuburb: [null, [Validators.required]],
+      pcodesuburb: [null],
       personId: ['']
     });
 
@@ -764,7 +765,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   addAddressOpen() {
     this.addAddressDrawer = true;
-    this.addressForm.reset();
+    this.addressForm.reset({
+      description: null,
+      address: null,
+      pcodesuburb: null,
+    });
     this.POPULATE_ADDRESS();
   }
 
@@ -802,8 +807,15 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       this.addressForm.controls[i].updateValueAndValidity();
     }
 
-    if (!this.addressForm.valid)
+    if(this.globalS.isEmpty(this.addressForm.value.pcodesuburb)){
+      this.addressForm.controls.pcodesuburb.setErrors({'incorrect': true});
+    }
+
+    if (!this.addressForm.valid && this.globalS.isEmpty(this.addressForm.value.pcodesuburb)){
+      this.globalS.wToast('Warning','All items are required');      
       return;
+    }
+      
 
     this.addressForm.patchValue({
       personId: this.user.uniqueID,
@@ -1067,5 +1079,4 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         this.handleCancel();
       });
   }
-
 }

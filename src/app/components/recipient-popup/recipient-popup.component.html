@@ -1,4 +1,4 @@
-<nz-select nzShowSearch nzAllowClear nzPlaceHolder="Search Recipient..." [(ngModel)]="selectedValue" (ngModelChange)="ngModelChange($event)" (nzOnSearch)="nzOnSearch($event)">
+<nz-select nzShowSearch nzAllowClear nzPlaceHolder="" [(ngModel)]="selectedValue" (ngModelChange)="ngModelChange($event)" (nzOnSearch)="nzOnSearch($event)">
     <nz-option *ngIf="!isDataLoaded" [nzLabel]="selectedValue"></nz-option>
     <nz-option *ngFor="let list of selectList" [nzLabel]="list.accountNo" [nzValue]="list.accountNo"></nz-option>
 </nz-select>

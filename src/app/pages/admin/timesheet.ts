@@ -162,8 +162,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     today = new Date();
 
-    defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
-    defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
+    defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
+    defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
 
     payTotal: CalculatedPay;
     selected: any = null;
@@ -248,27 +248,28 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             program: ['', Validators.required],
             serviceActivity: ['', Validators.required],
             payType: ['', Validators.required],
-            analysisCode: ['', Validators.required],
-            recipientCode: '',
-            staffCode: '',
-            debtor: '',
+            analysisCode: [''],
+            recipientCode:  [''],
+            haccType: '',
+            staffCode:  [''],
+            debtor:  [''],
             isMultipleRecipient: false,
             isTravelTimeChargeable: false,
             sleepOverTime: '',
             time: this.formBuilder.group({
-                startTime: '',
-                endTime: '',
+                startTime:  [''],
+                endTime:  [''],
             }),
             pay: this.formBuilder.group({
-                unit: 'HOUR',
-                rate: '0',
-                quantity: '1',
+                unit:  ['HOUR'],
+                rate:  ['0'],
+                quantity:  ['1'],
                 position: ''
             }),
             bill: this.formBuilder.group({
-                unit: 'HOUR',
-                rate: '0',
-                quantity: '1',
+                unit: ['HOUR'],
+                rate: ['0'],
+                quantity: ['1'],
                 tax: '1'
             }),
         })
@@ -280,7 +281,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             takeUntil(this.unsubscribe)
         ).subscribe(d => {
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
-
         });
 
         this.timesheetForm.get('payType').valueChanges.pipe(
@@ -290,7 +290,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 return this.timeS.getpayunits(d);
             })
         ).subscribe(d => {
-            console.log(this.timesheetForm.value)
             this.timesheetForm.patchValue({
                 pay: {
                     unit: d.unit,
@@ -399,6 +398,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (d.length > 1) return false;
             this.rosterGroup = (d[0].RosterGroup).toUpperCase();
             this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
+
+            this.timesheetForm.patchValue({
+                haccType: this.rosterGroup
+            })
         });        
     }
 
@@ -974,7 +977,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     ngModelChangeStart(event): void{
         this.timesheetForm.patchValue({
-            payType: '',
             time: {
                 startTime: event
             }
@@ -983,7 +985,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     ngModelChangeEnd(event): void {
         this.timesheetForm.patchValue({
-            payType: '',
             time: {
                 endTime: event
             }
@@ -1128,10 +1129,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             }),
         });
         
-        this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
-        this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 10, 0, 0);
-       
-        
+        this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
+        this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);        
     }
 
     pre(): void {
@@ -1149,15 +1148,32 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         if(this.current == 4){
             const { recipientCode, program, serviceActivity } = this.timesheetForm.value;
-            // console.log(this.timesheetForm.value);
-            // this.timeS.getbillingrate({
-            //     RecipientCode: recipientCode,
-            //     ActivityCode: serviceActivity,
-            //     Program: program
-            // }).subscribe(data => {
-            //     console.log(data);
-            // })
+
+            if(!this.globalS.isEmpty(recipientCode) &&
+                    !this.globalS.isEmpty(serviceActivity) &&
+                        !this.globalS.isEmpty(program)){
+                this.timeS.getbillingrate({
+                    RecipientCode: recipientCode,
+                    ActivityCode: serviceActivity,
+                    Program: program
+                }).subscribe(data => {
+                    this.timesheetForm.patchValue({
+                        bill: {
+                            unit: data.unit,
+                            rate: this.DEFAULT_NUMERIC(data.rate),
+                            tax: this.DEFAULT_NUMERIC(data.tax)
+                        }
+                    });
+                });
+            }            
         }
+    }
+
+    DEFAULT_NUMERIC(data: any): number{
+        if(!this.globalS.isEmpty(data) && !isNaN(data)){
+            return data;
+        }
+        return 0;
     }
 
     get nextCondition() {
@@ -1172,14 +1188,13 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     done(): void {
-        // this.fixStartTimeDefault();
+        this.fixStartTimeDefault();
         
         const tsheet = this.timesheetForm.value;
-        console.log(tsheet);
         let clientCode = this.FIX_CLIENTCODE_INPUT(tsheet);
 
         var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime, tsheet.time.endTime));
-        
+
         let inputs = {
             anal: tsheet.analysisCode || "",
             billQty: tsheet.bill.quantity || 0,
@@ -1191,12 +1206,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             costQty: tsheet.pay.quantity || 0,
             costUnit: tsheet.pay.unit || 0,
             date: format(tsheet.date,'yyyy/MM/dd'),
-            dateEntered: null,
-            dateLastMod: null,
             dayno: format(tsheet.date, 'd'),
             duration: durationObject.duration,
             groupActivity: false,
-            haccType: null || "",
+            haccType: tsheet.haccType || "",
             monthNo: format(tsheet.date, 'M'),
             program: tsheet.program,
             serviceDescription: tsheet.payType || "",
@@ -1208,19 +1221,20 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             taxPercent: tsheet.bill.tax || 0,
             transferred: 0,
             type: this.activity_value,
-            uniqueID: null || "",
             unitBillRate: tsheet.bill.rate || 0,
             unitPayRate: tsheet.pay.rate || 0,
             yearNo: format(tsheet.date, 'yyyy')
         };
 
-        console.log(this.timesheetForm.value);
-        console.log(inputs);
+        if(!this.timesheetForm.valid){
+            this.globalS.eToast('Error', 'All fields are required');
+            return;
+        }
 
-        // this.timeS.posttimesheet(inputs).subscribe(data => {
-        //     this.globalS.sToast('Success', 'Timesheet has been added');            
-        // });
-
+        this.timeS.posttimesheet(inputs).subscribe(data => {
+            this.globalS.sToast('Success', 'Timesheet has been added');
+            this.addTimesheetVisible = false;
+        });
     }
 
     FIX_CLIENTCODE_INPUT(tgroup: any): string{
@@ -1239,7 +1253,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     fixStartTimeDefault() {
         const { time } = this.timesheetForm.value;
-        if (!time.starTime) {
+        if (!time.startTime) {
             this.ngModelChangeStart(this.defaultStartTime)
         }
 

@@ -17,6 +17,10 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    getclosedate(name: string): Observable<any>{
+        return this.auth.get(`${timesheet}/closedate/${name}`);
+    }
+
     getpayunits(payType: string): Observable<any>{
         return this.auth.get(`${timesheet}/pay-units/${payType}`);
     }

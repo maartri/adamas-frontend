@@ -14,6 +14,7 @@ import { NzStepsModule, NzStepComponent } from 'ng-zorro-antd/steps';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
 import addMinutes from 'date-fns/addMinutes'
+import isSameDay from 'date-fns/isSameDay'
 
 interface AddTimesheetModalInterface {
     index: number,
@@ -84,6 +85,13 @@ interface CalculatedPay{
         .time-duration{
             font-weight: 500; 
             margin-top: 8px;
+        }
+        .calculations{
+            width: 50%;
+            float: right;
+        }
+        nz-descriptions >>> .ant-descriptions-view tr td.ant-descriptions-item-label{
+            padding: 4px 16px;
         }
     `],
     templateUrl: './timesheet.html',
@@ -880,17 +888,38 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    checkBoxChange(event: boolean, timesheet: any){
-        this.timeS.selectedApprove({
-            AccountNo: timesheet.shiftbookNo,
-            PersonType: this.GET_VIEW(),
-            Status: event
-        }).subscribe(data => {
-            if(data){
-                timesheet.approved = event;
-                // this.globalS.sToast('Success','Selected item');
-            }
-        })
+    checkBoxChange(event: any, timesheet: any){
+   
+        const tdate = parseISO(timesheet.date);
+
+        this.timeS.getclosedate(timesheet.program)
+            .pipe(
+                switchMap(x => {
+                    if(x.closeDate == null){
+                        return this.timeS.selectedApprove({
+                            AccountNo: timesheet.shiftbookNo,
+                            PersonType: this.GET_VIEW(),
+                            Status: event
+                        });
+                    }
+                    
+                    const closeDate = parseISO(x.closeDate);
+
+                    if(closeDate.toString() !== 'Invalid Date' && tdate.toString() !== 'Invalid Date' && (isSameDay(tdate, closeDate) || tdate > closeDate)){                    
+                        return this.timeS.selectedApprove({
+                            AccountNo: timesheet.shiftbookNo,
+                            PersonType: this.GET_VIEW(),
+                            Status: event
+                        });                        
+                    } else {
+                        timesheet.approved = !event;
+                        this.globalS.eToast('Error', `You cannot approve/unapprove entries for this program on that date - as the program is closed for action prior to ${ format(closeDate,'dd/MM/yyyy') }`)
+                        return EMPTY;
+                    }                    
+                })
+            ).subscribe(data => {
+                console.log('success')
+            });
     }
 
     GETBILLINGRATE(){

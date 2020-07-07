@@ -109,7 +109,7 @@
                         <td nzWidth="100px" [nzAlign]="'right'">{{ data.billrate }}</td>
                         <td nzWidth="100px">{{ data.billto }}</td>
                         <td nzWidth="70px" nzRight="220px">
-                            <label nz-checkbox [(ngModel)]="data.approved" (ngModelChange)="checkBoxChange($event,data)"></label>
+                            <label nz-checkbox [(ngModel)]="data.approved"  (ngModelChange)="checkBoxChange($event,data)"></label>
                         </td>
                         <td nzWidth="150px" nzRight="70px" >{{ data.notes }}</td>
                         <td nzRight="0px" [nzAlign]="'left'">
@@ -121,16 +121,16 @@
         </div>
     </div>
 
-    <div *ngIf="selected && timesheets?.length > 0" nz-row style="margin-top:10px">
-        <nz-descriptions nzBordered [nzSize]="'small'">
+    <div *ngIf="selected && timesheets?.length > 0" nz-row class="calculations">
+        <nz-descriptions nzBordered [nzSize]="'small'" nzBordered nzLayout="vertical">
             <nz-descriptions-item nzTitle="Total Time">{{ payTotal?.WorkedHours }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Hours & Minutes">{{ payTotal?.HoursAndMinutes }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Total Paid as Hours">{{ payTotal?.PaidAsHours }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Total Paid as Services">{{ payTotal?.PaidAsServices }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Recipient Attributable Hours">{{ payTotal?.WorkedAttributableHours }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Total KM Allowance">{{ payTotal?.KMAllowancesQty }}</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="Total Other Allowance">{{ payTotal?.AllowanceQty }}</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="Calculated Pay">{{ payTotal?.BilledAmount }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Total Other Allowance" [nzSpan]="1">{{ payTotal?.AllowanceQty }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Calculated Pay" [nzSpan]="2">{{ payTotal?.BilledAmount }}</nz-descriptions-item>
         </nz-descriptions>
     </div>
 

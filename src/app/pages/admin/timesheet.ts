@@ -93,6 +93,9 @@ interface CalculatedPay{
         nz-descriptions >>> .ant-descriptions-view tr td.ant-descriptions-item-label{
             padding: 4px 16px;
         }
+        nz-descriptions >>> div table tbody tr:last-child td:last-child {
+            background: #e1ffdc;
+        }
     `],
     templateUrl: './timesheet.html',
 })
@@ -641,40 +644,46 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 // console.log(this.mapOfExpandedData)
             });
         
+        this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));
         
-        this.timeS.getcomputetimesheet({
+        this.selectAll = false;
+    }
+
+    getComputedPay(data: any = this.selected): Observable<any>{
+        return this.timeS.getcomputetimesheet({
             AccountName: data.data,
             IsCarerCode: this.viewType == 'Staff' ? true : false
-        }).subscribe(compute => {
-            var hourMinStr;
-
-            if (compute.workedHours && compute.workedHours > 0) {
-                const hours = Math.floor(compute.workedHours * 60 / 60);
-                const minutes = ('0' + compute.workedHours * 60 % 60).slice(-2);
-
-                hourMinStr = `${hours}:${minutes}`
-            }
-
-            var _temp = {
-                KMAllowancesQty: compute.kmAllowancesQty || 0,
-                AllowanceQty: compute.allowanceQty || 0,
-                WorkedHours: compute.workedHours || 0,
-                PaidAsHours: compute.paidAsHours || 0,
-                PaidAsServices: compute.paidAsServices || 0,
-                WorkedAttributableHours: compute.workedAttributableHours || 0,
-                PaidQty: compute.paidQty || 0,
-                PaidAmount: compute.paidAmount || 0,
-                ProvidedHours: compute.providedHours || 0,
-                BilledAsHours: compute.billedAsHours || 0,
-                BilledAsServices: compute.billedAsServices || 0,
-                BilledQty: compute.billedQty || 0,
-                BilledAmount: compute.billedAmount || 0,
-                HoursAndMinutes: hourMinStr
-            };
-
-            this.payTotal = _temp;
         });
-        this.selectAll = false;
+    }
+
+    computeHoursAndPay(compute: any): void{
+        var hourMinStr;
+
+        if (compute.workedHours && compute.workedHours > 0) {
+            const hours = Math.floor(compute.workedHours * 60 / 60);
+            const minutes = ('0' + compute.workedHours * 60 % 60).slice(-2);
+
+            hourMinStr = `${hours}:${minutes}`
+        }
+
+        var _temp = {
+            KMAllowancesQty: compute.kmAllowancesQty || 0,
+            AllowanceQty: compute.allowanceQty || 0,
+            WorkedHours: compute.workedHours || 0,
+            PaidAsHours: compute.paidAsHours || 0,
+            PaidAsServices: compute.paidAsServices || 0,
+            WorkedAttributableHours: compute.workedAttributableHours || 0,
+            PaidQty: compute.paidQty || 0,
+            PaidAmount: compute.paidAmount || 0,
+            ProvidedHours: compute.providedHours || 0,
+            BilledAsHours: compute.billedAsHours || 0,
+            BilledAsServices: compute.billedAsServices || 0,
+            BilledQty: compute.billedQty || 0,
+            BilledAmount: compute.billedAmount || 0,
+            HoursAndMinutes: hourMinStr
+        };
+
+        this.payTotal = _temp;
     }
 
     fixDateTime(date: string, timedate: string) {
@@ -916,10 +925,11 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                         this.globalS.eToast('Error', `You cannot approve/unapprove entries for this program on that date - as the program is closed for action prior to ${ format(closeDate,'dd/MM/yyyy') }`)
                         return EMPTY;
                     }                    
-                })
+                }),
+                switchMap( x => this.getComputedPay())
             ).subscribe(data => {
-                console.log('success')
-            });
+                this.computeHoursAndPay(data);
+            });           
     }
 
     GETBILLINGRATE(){

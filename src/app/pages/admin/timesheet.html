@@ -2,7 +2,7 @@
     
     <div nz-row>
         <div nz-col nzSpan="8">
-            <app-search-timesheet [view]="1" (selected)="picked($event)"></app-search-timesheet>
+            <app-search-timesheet [view]="0" (selected)="picked($event)"></app-search-timesheet>
         </div>
         <div nz-col nzSpan="16">
             <ul *ngIf="selected">
@@ -106,7 +106,7 @@
                         <td nzWidth="100px" [nzAlign]="'right'"> {{ data.payquant | number : '1.2-2' }}</td>
                         <td nzWidth="100px" [nzAlign]="'right'">{{ data.payrate }}</td>
                         <td nzWidth="100px" [nzAlign]="'right'">{{ data.billquant | number : '1.2-2' }}</td>
-                        <td nzWidth="100px" [nzAlign]="'right'">{{ data.billrate }}</td>
+                        <td nzWidth="100px" [nzAlign]="'right'">{{ data.billrate | currency: 'USD' }}</td>
                         <td nzWidth="100px">{{ data.billto }}</td>
                         <td nzWidth="70px" nzRight="220px">
                             <label nz-checkbox [(ngModel)]="data.approved"  (ngModelChange)="checkBoxChange($event,data)"></label>
@@ -130,7 +130,7 @@
             <nz-descriptions-item nzTitle="Recipient Attributable Hours">{{ payTotal?.WorkedAttributableHours }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Total KM Allowance">{{ payTotal?.KMAllowancesQty }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Total Other Allowance" [nzSpan]="1">{{ payTotal?.AllowanceQty }}</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="Calculated Pay" [nzSpan]="2">{{ payTotal?.BilledAmount }}</nz-descriptions-item>
+            <nz-descriptions-item class="total" nzTitle="Calculated Pay" [nzSpan]="2">{{ payTotal?.BilledAmount | currency: 'USD' }}</nz-descriptions-item>
         </nz-descriptions>
     </div>
 

@@ -25,13 +25,7 @@ import { Component } from '@angular/core';
     nz-breadcrumb {
         margin: 16px 0;
     }
-
-    .inner-content {
-        padding: 24px;
-        background: #fff;
-        min-height: 360px;
-    }
-
+    
     nz-footer {
         text-align: center;
     }

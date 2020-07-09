@@ -24,9 +24,9 @@ import { GlobalService, SettingsService } from '@services/index';
     }
 
     .inner-content {
-        padding: 24px;
+        padding: 12px;
         background: #fff;
-        min-height: 360px;
+        min-height: 360px;    
     }
 
     nz-footer {
@@ -73,17 +73,6 @@ import { GlobalService, SettingsService } from '@services/index';
     }
     .menu-button{
         text-align:right;
-    }
-
-
-
-
-
-    
-    .inner-content {
-        padding: 24px;
-        background: #fff;
-        min-height: 360px;
     }
 
     nz-content {

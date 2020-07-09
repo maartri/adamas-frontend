@@ -2,6 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -55,13 +60,19 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 import { ComponentModule } from '@components/component.module'
 import { AgGridModule } from 'ag-grid-angular';
-import { FullCalendarModule } from '@fullcalendar/angular';
 
 registerLocaleData(en);
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
+
+FullCalendarModule.registerPlugins([ // register FullCalendar plugins
+  dayGridPlugin,
+  interactionPlugin,
+  timeGridPlugin
+]);
+
 
 @NgModule({
   declarations: [

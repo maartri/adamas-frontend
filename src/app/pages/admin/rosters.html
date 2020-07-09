@@ -1,29 +1,35 @@
 <div nz-row>
 
     <div nz-row>
-        <app-search-timesheet [view]="1" (selected)="picked($event)"></app-search-timesheet>
+        <app-search-timesheet [view]="0" (selected)="picked($event)"></app-search-timesheet>
     </div>
 
     <div nz-row>
         <div class="calendar-title">
-               
-            <div>
+            <nz-button-group>
+                <button nz-button nzType="primary" (click)="prev()"><i nz-icon nzType="left"></i></button>
+                <button nz-button nzType="primary" (click)="next()"><i nz-icon nzType="right"></i></button>
+              </nz-button-group>
+            <!-- <div>
                 <button (click)="prev()"><i class="material-icons left"> keyboard_arrow_left </i></button>
-            </div>
+            </div> -->
             <div class="date-title">
                 {{ date | date: 'MMMM yyyy'}}
             </div>
-            <div>
+            <!-- <div>
                 <button (click)="next()"><i class="material-icons right"> keyboard_arrow_right </i></button>
             </div>
-   
+    -->
             <!-- <button (click)="prev()">prev</button>
             <button (click)="next()">next</button> -->
         </div>
     </div>
 
     <div nz-row>
-        <div class="calendar" *ngIf="options">
+       
+        <div class="calendar">
+
+            <!-- <full-calendar #calendar [options]="calendarOptions"></full-calendar> -->
 
             <!-- <full-calendar
 
@@ -81,6 +87,15 @@
                 [events]="options.events">
             </full-calendar> -->
 
+            <full-calendar
+                #calendar
+                [options]="calendarOptions"
+                [plugins]="calendarPlugins"
+                [columnHeaderFormat]="{
+                    day: 'numeric', omitCommas: true
+                }"
+                >
+            </full-calendar>
         </div>
     </div>
 </div>

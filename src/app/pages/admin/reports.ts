@@ -1,25 +1,65 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { FormBuilder, FormGroup, Validators, FormControl,FormArray, } from '@angular/forms';
 import { HttpClient, HttpHeaders, HttpParams,  } from '@angular/common/http';
 
 @Component({
+    host: {
+        '[style.display]': 'flex',
+        '[style.flex-direction]': 'column',
+        '[style.overflow]': 'hidden'
+      },
     styles: [`
-        ul{
-            list-style:none;
-        }
-        li{
-            padding:5px;
-        }
+    button {
+        width: 200pt !important;
+        text-align: left !important
+    }
     `],
     templateUrl: './reports.html'
 })
 
 
 export class ReportsAdmin implements OnInit, OnDestroy {
+    validateForm!: FormGroup;
+    isVisibleTop = false;
+    checked = true;
+    State = true;
+    Branches = true;
+    Area = true;
+    Managers = true;
+    Funder = true;
+    ProviderID = true;
+    listOfControl: Array<{ id: number; controlInstance: string }> = [];
+    manager: String[]; form: FormGroup;
+    BRData = [
+      { id: 1, name: 'Sydney' },
+      { id: 2, name: 'Perth' },
+      { id: 3, name: 'WA' },
+      { id: 4, name: 'SA' }
+    ];
+  
+    get BRFormArray() {
+      return this.form.controls.BR as FormArray;
+    }
 
     constructor(
+        private formBuilder: FormBuilder,
         private http: HttpClient
     ) {
+        this.form = this.formBuilder.group({
+            BR: new FormArray([])
+          });      
+          this.addCheckboxes();
     }
+    private addCheckboxes() {
+        this.BRData.forEach(() => this.BRFormArray.push(new FormControl(false)));
+      }
+    
+      submit() {
+        const BRName = this.form.value.BR
+          .map((checked, i) => checked ? this.BRData[i].id : null)
+          .filter(v => v !== null);
+        console.log(BRName);
+      }
 
     ngOnInit(): void {
 
@@ -27,7 +67,19 @@ export class ReportsAdmin implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
 
+    }showModal(){
+        
+        this.isVisibleTop = true;                
     }
+  handleOkTop() {
+    
+    this.isVisibleTop = false;
+    this.goJSReport();
+  }
+
+  handleCancelTop(): void {
+    this.isVisibleTop = false;
+  }
 
     go() {
         // var tab: any = window.open('/api/clientreport/invoice-download');
@@ -66,7 +118,36 @@ export class ReportsAdmin implements OnInit, OnDestroy {
 
     goJSReport(){
         const data =    {
-            "template": {  "_id": "Ytn4HC6Slzi8OyWI"  },
+            "template": {  "shortid":"nkCzm5R"  },    
+            "options": { "reports": { "save": true } }
+         }
+ 
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',            
+          }
+          
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+
+        this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' }).subscribe(blob => {
+            let data = window.URL.createObjectURL(blob);
+            let link = document.createElement('a');
+            link.href = data;
+
+            
+            link.download = 'filename.pdf';
+            link.click();
+            setTimeout(() => {
+                window.URL.revokeObjectURL(data);
+            }, 100);
+        }, err => {
+            console.log(err)
+        });
+        /* 
+        const data =    {
+            "template": {  "shortid":"rkJTnK2ce"  },
             "data" : {
                 "number": "123",
                 "seller": {
@@ -108,7 +189,8 @@ export class ReportsAdmin implements OnInit, OnDestroy {
                 window.URL.revokeObjectURL(data);
             }, 100);
         }, err => {
-            console.log('err')
+            console.log(err)
         });
-    }
+    */
+    }        
 }

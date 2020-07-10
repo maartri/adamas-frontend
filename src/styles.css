@@ -220,3 +220,13 @@ th.action{
     width: 100%;
     flex: 2;
 }
+.inner-content {   
+    
+    min-height: 100pt !important;   
+}
+
+.ant-btn-rpts {
+            width: 200pt !important;
+            text-align: left !important}
+
+.ant-menu-horizontal {height: 750pt !important}

@@ -1,56 +1,1021 @@
 <div>
     
-    <button nz-button nzType="default" nzDanger (click)="goJSReport()"><i nz-icon nzType="delete" nzTheme="outline"></i>Generate JSReport</button>
-    
-    <button nz-button nzType="default" nzDanger (click)="go()"><i nz-icon nzType="delete" nzTheme="outline"></i>Generate Report</button>
-    <div nz-row>
-        <nz-tabset>
-            <nz-tab nzTitle="Recipient Listings">
-                <div nz-row>
-                    <div nz-col nzSpan="8">
-                        <h3>Standard Listings</h3>
-                        <ul>
-                            <li>REFERRAL LIST</li>
-                            <li>WAITING LIST</li>
-                            <li>ACTIVE RECIPIENT LIST</li>
-                            <li>INACTIVE RECIPIENT LIST</li>
-                        </ul>
+     
+<div nz-layout>
+    <div>
+        <div nz-col nzSpan="24">
+            <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'" >            
+                <nz-tab nzTitle="Recipient Listings"   >                     
+                        <div nz row>
+                            <div nz-col [nzSpan]="24">
+                                <div nz-col [nzSpan]="8">
+                                    <ul nz-menu nzMode="horizontal">
+                                        <li nz-menu-item >
+                                            <i nz-icon nzType="user" ></i>
+                                            <strong>STANDARD LISTINGS</strong> 
+                                            <div>                                        
+                                                <button nz-button nzType="default"  nzJustify="start"  id="btn-r-refferallist" (click)="showModal()">
+                                                    <i nz-icon nzType="printer"  ></i>
+                                                    Reffral List
+                                                </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Active Recipient List
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                InActive Recipient List
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Carrer List
+                                            </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Only Billing Clients List
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Associate/Other List
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Refferals During Period
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Admissions During Period
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Discharges During Period
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Unfilled Bookings
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Recipient Roster
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Recipient Master Roster
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Absent Client Status Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Suspended Recipient Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Voucher Summary Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Transport Summary Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Package Usage Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Unserviced Recipient Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Recipient Time Length Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Active Package Report
+                                                </button> 
+                                                </div>                                                                                                                                                                        
+                                        </li>                  
+                                    </ul>
+                                </div>
+                                <div nz-col [nzSpan]="8">
+                                    <ul nz-menu nzMode="horizontal">
+                                        <li nz-menu-item >
+                                            <i nz-icon nzType="user"></i>
+                                            <strong>AGENCY LISTINGS</strong>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Approved Staff Listing
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Ashmore Client List
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Availabilities
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Availabilities
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Biller
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Bill Text
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Broadbeach client List
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Competencies
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Comprep
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Coolangatta Client List
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Dex Report
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Helensvale Client List
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Labrador Client List
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Last Received
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                LFRY
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Mermaid Client List
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Open Incidents
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Palm Beach Client List
+                                            </button> 
+                                            </div>                                            
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Roster
+                                            </button> 
+                                            </div>                                                                                                                                            
+                                        </li>                  
+                                    </ul>
+                                </div>
+                                <div nz-col [nzSpan]="8">
+                                    <ul nz-menu nzMode="horizontal">
+                                        <li nz-menu-item >
+                                            <i nz-icon nzType="user"></i>
+                                            <strong>USER LISTINGS</strong>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Approved Service Coordinator
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                                <i nz-icon nzType="printer"></i>
+                                                UnApproved Service Coordinator
+                                            </button> 
+                                            </div>                                                                                                                                    
+                                        </li>                  
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>                             
+                </nz-tab>
+                <nz-tab nzTitle="Recipient Registers"  >
+                    <div nz-row >
+                        <div nz-col [nzSpan]="24">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>RECIPIENT REGISTER</strong>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        Lag Time Register
+                                    </button> 
+                                    </div>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        Loan Register
+                                    </button> 
+                                    </div> 
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        Progress Notes Register
+                                    </button> 
+                                    </div>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        Recipient Service Notes Register
+                                    </button> 
+                                    </div>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        Service Plans Register
+                                    </button> 
+                                    </div>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        Recipient Care Plans Register
+                                    </button> 
+                                    </div>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        Recipient OP Notes Register
+                                    </button> 
+                                    </div>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        CDC Package Balance Register
+                                        </button> 
+                                    </div> 
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        CDC Leave Report
+                                        </button> 
+                                    </div>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        HAS Report
+                                        </button> 
+                                    </div>
+                                    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
+                                        <i nz-icon nzType="printer"></i>
+                                        Meal Order Report
+                                        </button> 
+                                    </div>                                                                                                                                  
+                                </li>                  
+                            </ul>
+                        </div>
                     </div>
-                    <div nz-col nzSpan="8">
-                        <h3>Agency Listings</h3>
-                        <ul>
-                            <li>Active Client CSV Export</li>
-                            <li>CSV Report for IHCC Clients Only</li>
-                            <li>Full Customer Address List</li>
-                            <li>HACC Data Entry Audit</li>
-                            <li>Transit Template</li>
+                </nz-tab>
+                <nz-tab nzTitle="Staff Listings"   >
+                    <div nz-row >
+                        <div nz-col [nzSpan]="8">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>STANDARD LISTINGS</strong> 
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Standard Listings
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Agency Listings
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            User Listings
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>                                                                        
+                                </li>                  
+                            </ul>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>AGENCY LISTINGS</strong>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>                                                                                                    
+                                </li>                  
+                            </ul>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>USER LISTINGS</strong>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>                                                                                                    
+                                </li>                  
+                            </ul>
+                        </div>
+                    </div>
 
-                        </ul>
+                </nz-tab>
+                <nz-tab nzTitle="HR Reports"   >
+                    <div nz-row >
+                        <div nz-col [nzSpan]="24">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>PROGRAM REPORTS </strong> 
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>                                                                        
+                                </li>                  
+                            </ul>
+                        </div>
                     </div>
-                    <div nz-col nzSpan="8">
-                        <h3>User Listings</h3>
-                        <ul>
-                            <li>Unapproved Services Coordinators</li>
-                            <li>Unapproved Services Report</li>                            
-                        </ul>
+                </nz-tab>
+                <nz-tab nzTitle="Financial/Output Reports"   >
+                    <div nz-row >
+                        <div nz-col [nzSpan]="8">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>PROGRAM REPORTS </strong> 
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Standard Listings
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Agency Listings
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            User Listings
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>                                                                        
+                                </li>                  
+                            </ul>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>STAFF REPORTS </strong>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>                                                                                                    
+                                </li>                  
+                            </ul>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>RECIPIENT REPORTS </strong>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>                                                                                                    
+                                </li>                  
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </nz-tab>
-            <nz-tab nzTitle="Recipient Registers">
-                Content of Tab Pane 2
-            </nz-tab>
-            <nz-tab nzTitle="Staff Listings">
-                Content of Tab Pane 3
-            </nz-tab>
-            <nz-tab nzTitle="HR Reports">
-                Content of Tab Pane 3
-            </nz-tab>
-            <nz-tab nzTitle="Financial / Output Reports">
-                Content of Tab Pane 3
-            </nz-tab>
-            <nz-tab nzTitle="System Reports">
-                Content of Tab Pane 3
-            </nz-tab>
-        </nz-tabset>
+                
+                </nz-tab>            
+                <nz-tab nzTitle="System Reports"   >
+                    <div nz-row >
+                        <div nz-col [nzSpan]="24">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>PROGRAM REPORTS </strong> 
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Listings 1
+                                            </button>
+                                    </div>                                                                        
+                                </li>                  
+                            </ul>
+                        </div>
+                    </div> 
+                </nz-tab>
+                
+            </nz-tabset>
+        </div>  
+        
     </div>
+    <div>
+        
+        
+        <nz-modal
+        nzWidth="768px"
+        [nzStyle]="{ top: '20px' }"
+        [(nzVisible)]="isVisibleTop"
+        nzTitle="Reporting Criteria"
+        (nzOnCancel)="handleCancelTop()"
+        (nzOnOk)="handleOkTop()"
+        >
+        <div>
+            <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+                <nz-tab  nzTitle="BRANCHES & REGIONS">
+                    <div nz-row>
+                        <div nz-col [nzSpan]="6" nz-form-item >
+                            <i nz-icon nzType="apartment" nzTheme="outline"></i>
+                            <strong>State</strong>
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="State">All</label> 
+                            </nz-form-control>
+                            <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >                                
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="State">WA</label> 
+                                </nz-form-control>
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="State">QLD</label> 
+                                </nz-form-control>                            
+                        </div>
+                        </div>
+                        <div nz-col [nzSpan]="6" nz-form-item >
+                            <i nz-icon nzType="branches" nzTheme="outline"></i>
+                            <strong>Branches</strong>
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="Branches">All</label> 
+                            </nz-form-control>
+                            <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >
+                                <nz-form-control >
+                                    <form [formGroup]="form" (ngSubmit)="submit()">
+                                        <label formArrayName="BR" *ngFor="let BR of BRFormArray.controls; let i = index">
+                                          <input type="checkbox" [formControlName]="i">
+                                          {{BRData[i].name}}<br/>
+                                        </label>
+                                        
+                                      </form>
+                                </nz-form-control>
+                                
+                            </div>
+                        </div>
+                        <div nz-col [nzSpan]="6" nz-form-item >
+                            <i nz-icon nzType="apartment" nzTheme="outline"></i>
+                            <strong>Area</strong>
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="Area">All</label> 
+                            </nz-form-control>
+                            <div nz-col [nzSpan]="22" class="tab-lst-chkbox" >
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Area">Richmond Valley</label> 
+                                </nz-form-control>
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Area">Grafton </label> 
+                                </nz-form-control>
+                            </div>
+                        </div>
+                        <div nz-col [nzSpan]="6" nz-form-item >
+                            <i nz-icon nzType="user" nzTheme="outline"></i>
+                            <strong>Managers</strong> 
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="Managers">All</label> 
+                           </nz-form-control>
+                           <div nz-col [nzSpan]="18" class="tab-lst-chkbox"  >
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Managers">Tim</label> 
+                                </nz-form-control>                               
+                            </div> 
+                            <div name="test" id="test">
+
+                            </div> 
+                        </div>
+                    </div>  
+                </nz-tab>
+                <nz-tab  nzTitle="FUNDER & PROGRAMS">
+                    <div nz-row>
+                        <div nz-col [nzSpan]="6" nz-form-item >                            
+                            <strong>Funders</strong>
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="Funder">All</label> 
+                            </nz-form-control>
+                            <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >                                
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Funder">CSTDA</label> 
+                                </nz-form-control>
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Funder">OTHER</label> 
+                                </nz-form-control>                            
+                        </div>
+                        </div>
+                        <div nz-col [nzSpan]="6" nz-form-item >
+                            
+                            <strong>Svc Provider ID</strong>
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="ProviderID">All</label> 
+                            </nz-form-control>
+                            <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="ProviderID">00989</label> 
+                                </nz-form-control>
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="ProviderID">00988</label> 
+                                </nz-form-control>
+                            </div>
+                        </div>
+                        <div nz-col [nzSpan]="6" nz-form-item >
+                            
+                            <strong>Outlet's ID</strong>
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="Area">All</label> 
+                            </nz-form-control>
+                            <div nz-col [nzSpan]="22" class="tab-lst-chkbox" >
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Area">1234 </label> 
+                                </nz-form-control>
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Area">543 </label> 
+                                </nz-form-control>
+                            </div>
+                        </div>
+                        <div nz-col [nzSpan]="6" nz-form-item >
+                            
+                            <strong>Agency Programs</strong> 
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="Managers">All</label> 
+                           </nz-form-control>
+                           <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Managers">CBI-78001</label> 
+                                </nz-form-control>
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="Managers">CBI-78002</label> 
+                                </nz-form-control>
+                            </div>  
+                        </div>
+                    </div>  
+                </nz-tab>
+                <nz-tab  nzTitle="OTHER DOMAINS">
+                    <div nz-row>
+                        <div nz-col [nzSpan]="4" nz-form-item >
+                            <nz-form-control >
+                                <label nz-checkbox [(ngModel)]="checked">PROGRAMS</label> 
+                            </nz-form-control>
+                        </div>
+                    </div>  
+                </nz-tab>
+                
+            </nz-tabset>                        
+        </div>
+        </nz-modal>
+    
+
+    </div>
+    
+</div>
+
+
 </div>

@@ -87,14 +87,16 @@ interface CalculatedPay{
             margin-top: 8px;
         }
         .calculations{
-            width: 50%;
-            float: right;
+            
         }
         nz-descriptions >>> .ant-descriptions-view tr td.ant-descriptions-item-label{
             padding: 4px 16px;
         }
         nz-descriptions >>> div table tbody tr:last-child td:last-child {
             background: #e1ffdc;
+        }
+        nz-descriptions >>> div table tbody tr td{
+            font-size:11px;
         }
     `],
     templateUrl: './timesheet.html',
@@ -128,7 +130,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
     formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
-    formatterPercent = (value: number) => `${value ? `% ${value}` : ''}`;
+    formatterPercent = (value: number) => `${value > -1 || !value ? `% ${value}` : ''}`;
 
     overlapValue: any;
     dateFormat: string = 'dd/MM/yyyy'
@@ -476,8 +478,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.activity_value = 10;
         }
 
-        if (roster === 'TRAVELTIME') {
-            this.activity_value = 10;
+        if (roster === 'TRAVEL TIME') {
+            this.activity_value = 5;
         }
     }
 
@@ -781,8 +783,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         if (index == 4) {
             this.overlapVisible = true;
-            //this.OVERLAP_PROCESS(this.timesheets);
-           
+            //this.OVERLAP_PROCESS(this.timesheets);           
 
             // this.modalService.confirm({
             //     nzTitle: '<b>Automatic Overlap Removal</b>',
@@ -1035,7 +1036,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (!type) return EMPTY;
         const { isMultipleRecipient } = this.timesheetForm.value;
         if (type === 'ADMINISTRATION' || type === 'ALLOWANCE NON-CHARGEABLE' || type === 'ITEM' || (type == 'SERVICE' && !isMultipleRecipient)) {
-            sql = `SELECT Distinct [Name] AS ProgName FROM HumanResourceTypes WHERE [group] = 'PROGRAMS' AND (EndDate Is Null OR EndDate >=  '${this.currentDate}') ORDER BY [ProgName]`;
+            sql = `SELECT Distinct [Name] AS ProgName FROM HumanResourceTypes WHERE [group] = 'PROGRAMS' AND ISNULL(UserYesNo3,0) = 0 AND (EndDate Is Null OR EndDate >=  '${this.currentDate}') ORDER BY [ProgName]`;
         } else {
             sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
                 INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
@@ -1270,10 +1271,12 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        this.timeS.posttimesheet(inputs).subscribe(data => {
-            this.globalS.sToast('Success', 'Timesheet has been added');
-            this.addTimesheetVisible = false;
-        });
+        console.log(inputs);
+
+        // this.timeS.posttimesheet(inputs).subscribe(data => {
+        //     this.globalS.sToast('Success', 'Timesheet has been added');
+        //     this.addTimesheetVisible = false;
+        // });
     }
 
     FIX_CLIENTCODE_INPUT(tgroup: any): string{
@@ -1281,12 +1284,11 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             return "!INTERNAL"
         }
 
-        if (tgroup.serviceType == 'SERVICE') {
+        if (tgroup.serviceType == 'SERVICE' || tgroup.serviceType == 'TRAVEL TIME') {
             if (tgroup.isMultipleRecipient) {
                 return "!MULTIPLE"
-            } else {
-                return tgroup.recipientCode;
-            }            
+            }
+            return tgroup.recipientCode;            
         }
     }
 

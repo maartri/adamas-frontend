@@ -858,158 +858,138 @@
         
         
         <nz-modal
-        nzWidth="768px"
-        [nzStyle]="{ top: '20px' }"
-        [(nzVisible)]="isVisibleTop"
-        nzTitle="Reporting Criteria"
-        (nzOnCancel)="handleCancelTop()"
-        (nzOnOk)="handleOkTop()"
-        >
-        <div>
-            <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
-                <nz-tab  nzTitle="BRANCHES & REGIONS">
-                    <div nz-row>
-                        <div nz-col [nzSpan]="6" nz-form-item >
-                            <i nz-icon nzType="apartment" nzTheme="outline"></i>
-                            <strong>State</strong>
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="State">All</label> 
-                            </nz-form-control>
-                            <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >                                
+            nzWidth="768px"
+            [nzStyle]="{ top: '20px' }"
+            [(nzVisible)]="isVisibleTop"
+            nzTitle="Reporting Criteria"
+            (nzOnCancel)="handleCancelTop()"
+            (nzOnOk)="handleOkTop()"
+            >
+            <div>
+                <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+                    <nz-tab  nzTitle="Branches & Regions">
+                        <div nz-row [formGroup]="inputForm">
+                            <div nz-row>                            
+                                <div nz-col nzSpan="24">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> State</label>
+                                        <nz-select formControlName="statesArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allState">
+                                            <nz-option *ngFor="let option of statesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>
+                                        <label class="checks" nz-checkbox formControlName="allState">All State</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div nz-row>
+                                <div nz-col nzSpan="24">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Branches</label>
+                                        <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
+                                            <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>
+                                        <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div nz-row >
+                                <div nz-col nzSpan="24">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="environment" nzTheme="outline"></i> Service Regions</label>
+                                        <nz-select formControlName="serviceRegionsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allServiceRegion">
+                                            <nz-option *ngFor="let option of serviceRegionsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>
+                                        <label class="checks" nz-checkbox formControlName="allServiceRegion">All Regions</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div nz-row>
+                                <div nz-col nzSpan="24">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="solution" nzTheme="outline"></i> Managers</label>
+                                        <nz-select formControlName="managersArr" nzMode="multiple" [nzDisabled]="inputForm.value.allManager">
+                                            <nz-option *ngFor="let option of managersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>
+                                        <label class="checks" nz-checkbox formControlName="allManager">All Managers</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </nz-tab>
+                    <nz-tab  nzTitle="Funder & Programs">
+                        <div nz-row>
+                            <div nz-col [nzSpan]="6" nz-form-item >                            
+                                <strong>Funders</strong>
                                 <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="State">WA</label> 
+                                    <label nz-checkbox [(ngModel)]="Funder">All</label> 
                                 </nz-form-control>
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="State">QLD</label> 
-                                </nz-form-control>                            
-                        </div>
-                        </div>
-                        <div nz-col [nzSpan]="6" nz-form-item >
-                            <i nz-icon nzType="branches" nzTheme="outline"></i>
-                            <strong>Branches</strong>
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="Branches">All</label> 
-                            </nz-form-control>
-                            <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >
-                                <nz-form-control >
-                                    <form [formGroup]="form" (ngSubmit)="submit()">
-                                        <label formArrayName="BR" *ngFor="let BR of BRFormArray.controls; let i = index">
-                                          <input type="checkbox" [formControlName]="i">
-                                          {{BRData[i].name}}<br/>
-                                        </label>
-                                        
-                                      </form>
-                                </nz-form-control>
+                                <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >                                
+                                    <nz-form-control >
+                                        <label nz-checkbox [(ngModel)]="Funder">CSTDA</label> 
+                                    </nz-form-control>
+                                    <nz-form-control >
+                                        <label nz-checkbox [(ngModel)]="Funder">OTHER</label> 
+                                    </nz-form-control>                            
+                            </div>
+                            </div>
+                            <div nz-col [nzSpan]="6" nz-form-item >
                                 
+                                <strong>Svc Provider ID</strong>
+                                <nz-form-control >
+                                    <label nz-checkbox [(ngModel)]="ProviderID">All</label> 
+                                </nz-form-control>
+                                <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >
+                                    <nz-form-control >
+                                        <label nz-checkbox [(ngModel)]="ProviderID">00989</label> 
+                                    </nz-form-control>
+                                    <nz-form-control >
+                                        <label nz-checkbox [(ngModel)]="ProviderID">00988</label> 
+                                    </nz-form-control>
+                                </div>
                             </div>
-                        </div>
-                        <div nz-col [nzSpan]="6" nz-form-item >
-                            <i nz-icon nzType="apartment" nzTheme="outline"></i>
-                            <strong>Area</strong>
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="Area">All</label> 
-                            </nz-form-control>
-                            <div nz-col [nzSpan]="22" class="tab-lst-chkbox" >
+                            <div nz-col [nzSpan]="6" nz-form-item >
+                                
+                                <strong>Outlet's ID</strong>
                                 <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Area">Richmond Valley</label> 
+                                    <label nz-checkbox [(ngModel)]="Area">All</label> 
                                 </nz-form-control>
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Area">Grafton </label> 
-                                </nz-form-control>
+                                <div nz-col [nzSpan]="22" class="tab-lst-chkbox" >
+                                    <nz-form-control >
+                                        <label nz-checkbox [(ngModel)]="Area">1234 </label> 
+                                    </nz-form-control>
+                                    <nz-form-control >
+                                        <label nz-checkbox [(ngModel)]="Area">543 </label> 
+                                    </nz-form-control>
+                                </div>
                             </div>
-                        </div>
-                        <div nz-col [nzSpan]="6" nz-form-item >
-                            <i nz-icon nzType="user" nzTheme="outline"></i>
-                            <strong>Managers</strong> 
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="Managers">All</label> 
-                           </nz-form-control>
-                           <div nz-col [nzSpan]="18" class="tab-lst-chkbox"  >
+                            <div nz-col [nzSpan]="6" nz-form-item >
+                                
+                                <strong>Agency Programs</strong> 
                                 <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Managers">Tim</label> 
-                                </nz-form-control>                               
-                            </div> 
-                            <div name="test" id="test">
-
-                            </div> 
-                        </div>
-                    </div>  
-                </nz-tab>
-                <nz-tab  nzTitle="FUNDER & PROGRAMS">
-                    <div nz-row>
-                        <div nz-col [nzSpan]="6" nz-form-item >                            
-                            <strong>Funders</strong>
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="Funder">All</label> 
-                            </nz-form-control>
-                            <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >                                
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Funder">CSTDA</label> 
-                                </nz-form-control>
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Funder">OTHER</label> 
-                                </nz-form-control>                            
-                        </div>
-                        </div>
-                        <div nz-col [nzSpan]="6" nz-form-item >
-                            
-                            <strong>Svc Provider ID</strong>
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="ProviderID">All</label> 
+                                    <label nz-checkbox [(ngModel)]="Managers">All</label> 
                             </nz-form-control>
                             <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >
+                                    <nz-form-control >
+                                        <label nz-checkbox [(ngModel)]="Managers">CBI-78001</label> 
+                                    </nz-form-control>
+                                    <nz-form-control >
+                                        <label nz-checkbox [(ngModel)]="Managers">CBI-78002</label> 
+                                    </nz-form-control>
+                                </div>  
+                            </div>
+                        </div>  
+                    </nz-tab>
+                    <nz-tab  nzTitle="Other Domains">
+                        <div nz-row>
+                            <div nz-col [nzSpan]="4" nz-form-item >
                                 <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="ProviderID">00989</label> 
-                                </nz-form-control>
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="ProviderID">00988</label> 
+                                    <label nz-checkbox [(ngModel)]="checked">PROGRAMS</label> 
                                 </nz-form-control>
                             </div>
-                        </div>
-                        <div nz-col [nzSpan]="6" nz-form-item >
-                            
-                            <strong>Outlet's ID</strong>
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="Area">All</label> 
-                            </nz-form-control>
-                            <div nz-col [nzSpan]="22" class="tab-lst-chkbox" >
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Area">1234 </label> 
-                                </nz-form-control>
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Area">543 </label> 
-                                </nz-form-control>
-                            </div>
-                        </div>
-                        <div nz-col [nzSpan]="6" nz-form-item >
-                            
-                            <strong>Agency Programs</strong> 
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="Managers">All</label> 
-                           </nz-form-control>
-                           <div nz-col [nzSpan]="18" class="tab-lst-chkbox" >
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Managers">CBI-78001</label> 
-                                </nz-form-control>
-                                <nz-form-control >
-                                    <label nz-checkbox [(ngModel)]="Managers">CBI-78002</label> 
-                                </nz-form-control>
-                            </div>  
-                        </div>
-                    </div>  
-                </nz-tab>
-                <nz-tab  nzTitle="OTHER DOMAINS">
-                    <div nz-row>
-                        <div nz-col [nzSpan]="4" nz-form-item >
-                            <nz-form-control >
-                                <label nz-checkbox [(ngModel)]="checked">PROGRAMS</label> 
-                            </nz-form-control>
-                        </div>
-                    </div>  
-                </nz-tab>
-                
-            </nz-tabset>                        
-        </div>
+                        </div>  
+                    </nz-tab>
+                    
+                </nz-tabset>                        
+            </div>
         </nz-modal>
     
 
@@ -1017,5 +997,12 @@
     
 </div>
 
-<span> THIS THE CHANGE MARK :-P</span>
+
 </div>
+
+
+<nz-drawer [nzWidth]="1000" [nzClosable]="false" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe>
+    </div>
+</nz-drawer>

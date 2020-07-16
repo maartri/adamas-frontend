@@ -57,11 +57,13 @@ const enum ImageActivity {
         }
         .book-wrapper h4{
             color:rgb(36, 36, 36);
+            margin:0;
         }
         .book-wrapper p{
             display: inline-block;
-            font-size: 11px;
-            color:#1e3936;
+            font-size: 10px;
+            color: #58a36f;
+            font-weight: 500;
         }
         .book-wrapper > div{
             display: inline-block;
@@ -70,8 +72,7 @@ const enum ImageActivity {
         .book-wrapper button{
             position: absolute;
             bottom: 10px;
-            right: 50%;
-            left: 50%;
+            left: 23px;
         }
         .book-image{
             background: url(assets/medical-icons.png);            
@@ -130,6 +131,13 @@ const enum ImageActivity {
             font-size: 2.5rem;
             color: #1890ff;
             margin-top: 5rem;
+        }
+        h3.rate{
+            color: #ff4242;
+            font-size: 14px;
+            position: absolute;
+            right: 0;
+            top: 0;
         }
     `],
     templateUrl: './booking.html'

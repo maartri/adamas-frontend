@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <div nzRow>
-                            <div class="mrg-btm chkboxes" nz-col [nzSpan]="12" [nzXs]="24" [nzMd]="12">
+                            <div class="mrg-btm chkboxes" nz-col [nzSpan]="12" [nzXs]="24" [nzMd]="12" style="visibility: hidden;">
                                 <div>
                                     <label nz-checkbox [(ngModel)]="once" (ngModelChange)="change($event,'once')">Once
                                         Only</label>
@@ -73,23 +73,26 @@
                 </div>
             </div>
             <div *ngIf="current == 1">
-                <div nz-row [nzGutter]="7" class="services-list">
+                <div nz-row [nzGutter]="32" class="services-list">
                     <div class="example" *ngIf="loading">
                         <nz-spin nzSimple></nz-spin>
                     </div>
-                    <div nz-col [nzSpan]="8" *ngFor="let svc of services">
+                    <div nz-col [nzSpan]="7" *ngFor="let svc of services">
                         <!-- <nz-card [nzTitle]="svc.serviceName | uppercase"
                             [nzBodyStyle]="{'height':'6rem', 'fontSize': '11px'}">
                             <p>{{ svc.serviceProgram | uppercase }}</p>
                         </nz-card> -->
                         <div class="book-wrapper" [class.pick]="isPicked(svc)">
-                            <div>
+                            <div style="position:relative">
                                 <div class="book-image" [style.background-position]="getPositionImg(svc)"></div>
-                                <h4>{{ svc.serviceName | uppercase }}</h4>
-                                <h3 style="color:#63db54">{{ svc.serviceBillRate | currency: 'USD' }}</h3>
+                                <div>
+                                    <h4>{{ svc.serviceType | uppercase }}</h4>
+                                    <h3 class="rate">{{ svc.serviceBillRate | currency: 'USD' }}</h3>
+                                    <p>{{ svc.serviceProgram | uppercase }}</p>
+                                </div>
                             </div>
-                            <p>{{ svc.serviceProgram | uppercase }}</p>
-                            <button nz-button nzType="primary" [nzSize]="'small'"
+                           
+                            <button nz-button nzType="primary" [nzSize]="'default'"
                                 (click)="add(svc)"><i nz-icon nzType="bulb" nzTheme="outline"></i> Pick</button>
                         </div>
                     </div>

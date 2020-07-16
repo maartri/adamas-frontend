@@ -7,42 +7,50 @@
         [nzZeroTrigger]="zeroTrigger">
         <div class="logo"></div>
         <ul nz-menu nzTheme="dark" nzMode="inline" class="main-list"[nzInlineCollapsed]="isCollapsed">
+
             <li nz-menu-item routerLink="/client/profile" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="user"></i>
                 <span>Profile</span>
             </li>
-            <li nz-menu-item routerLink="/client/notes" routerLinkActive="ant-menu-item-selected">
+
+            <!-- <li nz-menu-item routerLink="/client/notes" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="read"></i>
                 <span>Notes</span>
             </li>
+
             <li nz-menu-item routerLink="/client/package" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="gift"></i>
                 <span>Package</span>
-            </li>
+            </li> -->
+            
             <li *ngIf="_settings?.ALLOWBOOKING()" nz-menu-item routerLink="/client/booking" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="book"></i>
                 <span>Booking</span>
             </li>
+
             <li nz-menu-item routerLink="/client/calendar" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="calendar"></i>
                 <span>Calendar</span>
             </li>
-            <li nz-menu-item routerLink="/client/history" routerLinkActive="ant-menu-item-selected">
+            
+            <!-- <li nz-menu-item routerLink="/client/history" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="history"></i>
                 <span>History</span>
             </li>
             <li nz-menu-item routerLink="/client/preferences" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="like"></i>
                 <span>Preferences</span>
-            </li>
+            </li> -->
+
             <li nz-menu-item routerLink="/client/manage-services" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="security-scan"></i>
                 <span>Manage Services</span>
             </li>
-            <li nz-menu-item routerLink="/client/document" routerLinkActive="ant-menu-item-selected">
+
+            <!-- <li nz-menu-item routerLink="/client/document" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="file"></i>
                 <span>Document</span>
-            </li>
+            </li> -->
         </ul>
     </nz-sider>
     <nz-layout>

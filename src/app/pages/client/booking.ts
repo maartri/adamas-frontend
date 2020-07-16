@@ -58,6 +58,7 @@ const enum ImageActivity {
         .book-wrapper h4{
             color:rgb(36, 36, 36);
             margin:0;
+            width: 16rem;
         }
         .book-wrapper p{
             display: inline-block;

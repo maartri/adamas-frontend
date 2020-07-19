@@ -1234,7 +1234,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         let clientCode = this.FIX_CLIENTCODE_INPUT(tsheet);
 
         var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime, tsheet.time.endTime));
-
+        console.log(this.selected.option)
         let inputs = {
             anal: tsheet.analysisCode || "",
             billQty: tsheet.bill.quantity || 0,
@@ -1280,7 +1280,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     FIX_CLIENTCODE_INPUT(tgroup: any): string{
-        if (tgroup.serviceType == 'ADMINISTRATION') {
+        if (tgroup.serviceType == 'ADMINISTRATION' || tgroup.serviceType == 'ALLOWANCE NON-CHARGEABLE') {
             return "!INTERNAL"
         }
 
@@ -1290,6 +1290,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             }
             return tgroup.recipientCode;            
         }
+
+        return tgroup.recipientCode;
     }
 
     fixStartTimeDefault() {

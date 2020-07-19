@@ -1051,7 +1051,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         const { serviceType } = this.timesheetForm.value;
         if (!program) return EMPTY;
 
-        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE') {
+        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM') {
             const { recipientCode, debtor } = this.timesheetForm.value;
 
             return this.listS.getserviceactivityall({
@@ -1273,10 +1273,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         console.log(inputs);
 
-        // this.timeS.posttimesheet(inputs).subscribe(data => {
-        //     this.globalS.sToast('Success', 'Timesheet has been added');
-        //     this.addTimesheetVisible = false;
-        // });
+        this.timeS.posttimesheet(inputs).subscribe(data => {
+            this.globalS.sToast('Success', 'Timesheet has been added');
+            this.addTimesheetVisible = false;
+        });
     }
 
     FIX_CLIENTCODE_INPUT(tgroup: any): string{

@@ -296,6 +296,14 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         });
 
+        // this.timesheetForm.get('isMultipleRecipient').valueChanges.subscribe(data => {
+        //     if(data){
+        //         this.timesheetForm.patchValue({
+        //             recipientCode: '!MULTIPLE'
+        //         })
+        //     }
+        // });
+
         this.timesheetForm.get('payType').valueChanges.pipe(
             takeUntil(this.unsubscribe),
             switchMap(d => {
@@ -567,7 +575,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     picked(data: any) {
-
+        console.log(data);
         if (!data.data) {
             this.timesheets = [];
             this.selected = null;
@@ -1051,7 +1059,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         const { serviceType } = this.timesheetForm.value;
         if (!program) return EMPTY;
 
-        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM') {
+        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
             const { recipientCode, debtor } = this.timesheetForm.value;
 
             return this.listS.getserviceactivityall({
@@ -1280,7 +1288,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     FIX_CLIENTCODE_INPUT(tgroup: any): string{
-        if (tgroup.serviceType == 'ADMINISTRATION' || tgroup.serviceType == 'ALLOWANCE NON-CHARGEABLE') {
+        if (tgroup.serviceType == 'ADMINISTRATION' || tgroup.serviceType == 'ALLOWANCE NON-CHARGEABLE' || tgroup.serviceType == 'ITEM') {
             return "!INTERNAL"
         }
 

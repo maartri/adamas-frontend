@@ -663,6 +663,14 @@ declare module Dto {
         sysmgr?: string        
     }
 
+    export interface ReportCriteriaInterface {
+        states?: string,
+        banches?: string,
+        regions?: string,
+        managers?: string,
+        startdate?:string,
+        enddate?:string 
+    }
     // export interface NewStaffUser {
     //     type?: number,
     //     individualOrg?: string,

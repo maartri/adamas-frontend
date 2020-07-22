@@ -230,3 +230,8 @@ th.action{
             text-align: left !important}
 
 .ant-menu-horizontal {height: 750pt !important}
+.ant-progress {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    display: inline-block;
+  }

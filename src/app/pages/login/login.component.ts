@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
       Username: this.loginForm.get('userName').value,
       Password: this.loginForm.get('password').value
     }
-
+   
     this.loginS.login(user)
       .subscribe(data => {
 

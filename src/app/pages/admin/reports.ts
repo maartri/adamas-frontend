@@ -35,6 +35,14 @@ const inputFormDefault = {
     svcprovidersArr: [[]],
     allSvcProviders: [true],
 
+    staffgroupsArr: [[]],
+    allGroups: [true],
+
+    staffArr: [[]],
+    allStaff: [true],
+
+    
+
     
     
 
@@ -97,11 +105,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     serviceRegionsArr: Array<any> = [];
     managersArr: Array<any> = [];
     fundersArr: Array<any> = [];
-    fundingRegionsArr: Array<any> = [];
-    
+    fundingRegionsArr: Array<any> = [];    
     programsArr: Array<any> = [];
     outletsArr: Array<any> = [];
-    svcprovidersArr: Array<any> = []; 
+    svcprovidersArr: Array<any> = [];    
+    staffgroupsArr: Array<any> = []; 
+    staffArr: Array<any> = [];
     
     btnid:string;
     id:string ;
@@ -111,11 +120,15 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     s_CoordinatorSQL:string;
     s_ProgramSQL:string;
     s_CategorySQL:string;
-    s_DateSQL:string;
-    dateFormat: string = "yyyy-MM-dd" 
-
-    enddate:Date;         // = new Date(); //format(new Date(), 'yyyy-MM-dd');
-    startdate:Date;       // = new Date();// format(new Date(), 'yyyy-MM-dd');
+    s_DateSQL:string;    
+    s_StfGroupSQL:string;
+    s_StfSQL:string;
+    dateFormat: string = 'yyyy-MM-dd' 
+    enddate :Date;
+    startdate :Date;
+ //   enddate: string ;
+ //   startdate: string ;
+    //format(new Date(), 'yyyy-MM-dd');
     dropDownArray: any = {
         branches: Array,
         serviceRegions: Array,
@@ -139,8 +152,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         private fb: FormBuilder,
         private sanitizer: DomSanitizer
     ) {
-        
-     }
+       
+    }
     ngOnInit(): void {
         const children: Array<{ label: string; value: string }> = [];
 
@@ -205,7 +218,18 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 managersArr: []
             });
         });
-    }
+        this.inputForm.get('allGroups').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                staffgroupsArr: []
+            });
+        }); 
+        this.inputForm.get('allStaff').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                staffArr: []
+            });
+        });
+
+    }//ngOninit
 
  /*   hello(data: any){
         console.log(data)
@@ -237,10 +261,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         }).subscribe(x => this.branchesArr = x);
 
 
-        this.listS.getreportcriterialist({
-            listType: 'SERVICEREGIONS',
-            includeInactive: false
-        }).subscribe(x => this.serviceRegionsArr = x )
+        this.listS.getserviceregion().subscribe(x => this.serviceRegionsArr = x )
 
         this.listS.getreportcriterialist({
             listType: 'MANAGERS',
@@ -256,13 +277,19 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             listType: 'FUNDINGREGIONS',
             includeInactive: false
         }).subscribe(x => this.fundingRegionsArr = x)
+        
+        this.listS.getliststaffgroup().subscribe(x => this.staffgroupsArr = x)
+       
+
+
     }
 
     ngOnDestroy(): void {
         console.log('on destroy');
     }
     showModal(){                             
-         this.isVisibleTop = true;                      
+         this.isVisibleTop = true;
+                              
      }
      onChange(result: Date): void {
         console.log('onChange: ', result);}
@@ -299,15 +326,25 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     }       
         
     reportRender(idbtn){
-      
+      console.log(idbtn)
         var s_States = this.inputForm.value.statesArr;
         var s_Branches = this.inputForm.value.branchesArr;
         var s_Managers = this.inputForm.value.managersArr;
         var s_ServiceRegions = this.inputForm.value.serviceRegionsArr;
         var s_Programs = this.inputForm.value.programsArr;
-        var strdate = format(this.startdate,'MM-dd-yyyy'); 
-        var endate = format(this.enddate,'MM-dd-yyyy');
-        //alert(strdate)
+        var s_StfGroup = this.inputForm.value.staffgroupsArr; 
+            if (this.startdate != null )
+            {var strdate = format(this.startdate,'yyyy-MM-dd')}else{
+                strdate = "2020-07-01"
+            } 
+            if (this.enddate != null )
+            {var endate = format(this.enddate,'yyyy-MM-dd')}else{
+                endate = "2020-07-31"
+            }      
+         
+        
+     //   alert(strdate)//manager,branch,stfgroup
+     console.log(strdate)
         switch(idbtn){
             case 'btn-refferallist' :
                 this.Refeeral_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
@@ -366,9 +403,30 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             case 'btn-associatelist':
                 this.Associate_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
                 break;
-                case 'btn-unserviced':
-                    this.UnServicedRecipient(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
-                    break;
+            case 'btn-unserviced':
+                this.UnServicedRecipient(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                break;
+            case 'btn-Activestaff':
+                this.ActiveStaffListing(s_Managers,s_Branches,s_StfGroup);
+                break;
+            case 'btn-ActiveBrokerage':
+                this.ActiveBrokerage_Contractor(s_Managers,s_Branches,s_StfGroup);
+                break;
+            case 'btn-Activevolunteers':
+                this.ActiveVolunters(s_Managers,s_Branches,s_StfGroup);
+                break;
+            case 'btn-InactiveBrokerage':
+                this.InActiveBrokerage_Contractor(s_Managers,s_Branches,s_StfGroup);
+                break;
+            case 'btn-InactiveVolunteer':
+                this.InActiveVolunteers(s_Managers,s_Branches,s_StfGroup);
+                break;
+            case 'btn-Inactivestaff':
+                this.InActiveStaffListing(s_Managers,s_Branches,s_StfGroup);
+                break;
+            case 'btn-Userpermissions':
+                this.StaffPermissions(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                break;
             default: //
                 alert("Yet to do")
             
@@ -402,21 +460,21 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         
         if (branch != ""){ 
-            lblcriteria = "Branches:" + branch.join("','") + "; "        } 
+            lblcriteria = "Branches:" + branch.join(",") + "; "        } 
             else{lblcriteria = " All Branches "}
         
          if (manager != ""){
-            lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Managers,"}
         
         
         if (region != ""){ 
-            lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Regions,"}
         
        
         if (program != ""){ 
-            lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Programs."}
         
                                                             
@@ -426,8 +484,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
-    console.log(lblcriteria)
+   // console.log(fQuery)
+   // console.log(lblcriteria)
 
    
 
@@ -499,21 +557,21 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             else{lblcriteria =  " All Dated "}
 
         if (branch != ""){ 
-            lblcriteria =lblcriteria + " Branches:" + branch.join("','") + "; "        } 
+            lblcriteria =lblcriteria + " Branches:" + branch.join(",") + "; "        } 
             else{lblcriteria =lblcriteria + " All Branches "}
         
          if (manager != ""){
-            lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Managers,"}
         
         
         if (region != ""){ 
-            lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Regions,"}
         
        
         if (program != ""){ 
-            lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Programs."}
                                                             
      //   fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'REFERRAL') ORDER BY R.[Surname/Organisation], R.FirstName"
@@ -522,7 +580,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
     
-    console.log(fQuery)
+  //  console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -585,21 +643,21 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         } 
 
         if (branch != ""){ 
-            var lblcriteria = "Branches:" + branch.join("','") + "; "        } 
+            var lblcriteria = "Branches:" + branch.join(",") + "; "} 
              else{lblcriteria = " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + "ORDER BY [Client Code], Date, [Start Time] "
@@ -607,7 +665,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -682,17 +740,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria =lblcriteria + " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
@@ -700,7 +758,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+    //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -774,17 +832,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria =lblcriteria + " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + " GROUP BY Recipients.AccountNo ORDER BY Recipients.AccountNo"
@@ -792,7 +850,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -856,17 +914,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria = " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + "ORDER BY R.AccountNo "
@@ -874,7 +932,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -933,7 +991,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+    //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1005,17 +1063,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              lblcriteria = lblcriteria + " Branches:" + branch.join("','") + "; "        } 
              else{lblcriteria =lblcriteria + " All Branches "}
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
        fQuery = fQuery + "ORDER BY [Client Code], Date, [Start Time]"
@@ -1023,7 +1081,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1097,17 +1155,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria =lblcriteria + " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
        fQuery = fQuery + " ORDER BY DataDomains.User1, [Roster].[ServiceSetting], [Roster].[Client Code], [Roster].[Date]"
@@ -1115,7 +1173,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+    //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1189,17 +1247,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria =lblcriteria + " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + "ORDER BY Date"
@@ -1207,7 +1265,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+    //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1273,17 +1331,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria = " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + "  ORDER BY [Client Code], Date, [Start Time]"
@@ -1291,7 +1349,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+  //  console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1356,17 +1414,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria = " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
@@ -1374,7 +1432,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1440,17 +1498,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria = " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
        fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
@@ -1458,7 +1516,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+    //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1524,17 +1582,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria = " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
        fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
@@ -1542,7 +1600,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1607,17 +1665,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria = " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
@@ -1625,7 +1683,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1695,21 +1753,21 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
          
 
         if (branch != ""){ 
-            lblcriteria =lblcriteria + " Branches:" + branch.join("','") + "; "        } 
+            lblcriteria =lblcriteria + " Branches:" + branch.join(",") + "; "        } 
              else{lblcriteria =lblcriteria + " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + " ORDER BY Date"
@@ -1717,7 +1775,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+    //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1791,17 +1849,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria =lblcriteria + " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
 
              
@@ -1811,8 +1869,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
-    console.log(lblcriteria)               
+   // console.log(fQuery)
+   // console.log(lblcriteria)               
     this.drawerVisible = true;
 
     const data =    {
@@ -1885,17 +1943,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria =lblcriteria +  " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
        fQuery = fQuery + "   ORDER BY R.[Surname/Organisation], FirstName"
@@ -1903,7 +1961,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -1971,17 +2029,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             else{lblcriteria = " All Branches "}
         
          if (manager != ""){
-            lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Managers,"}
         
         
         if (region != ""){ 
-            lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Regions,"}
         
        
         if (program != ""){ 
-            lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+            lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Programs."}
         
                                                             
@@ -1991,8 +2049,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
-    console.log(lblcriteria)
+   // console.log(fQuery)
+   // console.log(lblcriteria)
 
    
 
@@ -2066,17 +2124,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              else{lblcriteria =lblcriteria + " All Branches "}
          
           if (manager != ""){
-             lblcriteria =lblcriteria + " Manager: " + manager.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Managers,"}
          
          
          if (region != ""){ 
-             lblcriteria =lblcriteria + " Regions: " + region.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Regions,"}
          
         
          if (program != ""){ 
-             lblcriteria =lblcriteria + " Programs " + program.join("','")+ "; "}
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
              else{lblcriteria = lblcriteria + "All Programs."}
                                                             
         fQuery = fQuery + " ORDER BY  T.[Date], RP.[Program]"
@@ -2084,7 +2142,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+   // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2122,7 +2180,564 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         console.log(err);
     });        
     }
+    ActiveStaffListing(manager,branch,stfgroup){
+        
+        
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is null)  "
+
+        if (branch != ""){
+            this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "[PAN_Manager] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        } 
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "[StaffGroup] in ('" + stfgroup.join("','")  +  "')";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        
+
+        if (branch != ""){ 
+         var lblcriteria = " Branches:" + branch.join(",") + "; "        } 
+             else{lblcriteria = "All Branches"}
+         
+          if (manager != ""){
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Managers,"}
+         
+         
+         if (stfgroup != ""){ 
+             lblcriteria =lblcriteria + " Staff Groups: " + stfgroup.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Staff Groups,"}
+         
+        
+             fQuery = fQuery + "Group by UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+                                                            
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+    /*   
+    console.log(s_BranchSQL)
+    console.log(s_CategorySQL)
+    console.log(s_CoordinatorSQL)*/
+    //console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"LQO71slAArEu36fo"  },    
+        "options": {
+            "reports": { "save": false },
+         
+            "sql":fQuery,
+            "Criteria":lblcriteria 
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
     
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+       
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+    InActiveStaffListing(manager,branch,stfgroup){
+        
+        
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is not null) "
+
+        if (branch != ""){
+            this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "[PAN_Manager] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        } 
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "[StaffGroup] in ('" + stfgroup.join("','")  +  "')";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        
+
+        if (branch != ""){ 
+         var lblcriteria = " Branches: " + branch.join(",") + "; "        } 
+             else{lblcriteria = " All Branches "}
+         
+          if (manager != ""){
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + " All Managers,"}
+         
+         
+         if (stfgroup != ""){ 
+             lblcriteria =lblcriteria + " Staff Groups: " + stfgroup.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Staff Groups,"}
+         
+        
+             
+             fQuery = fQuery + "Group by UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"                                                 
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+    /*   
+    console.log(s_BranchSQL)
+    console.log(s_CategorySQL)
+    console.log(s_CoordinatorSQL)*/
+    //console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"6NauxB95CSDc096v"  },    
+        "options": {
+            "reports": { "save": false },
+         
+            "sql":fQuery,
+            "Criteria":lblcriteria 
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+       
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+    ActiveBrokerage_Contractor(manager,branch,stfgroup){
+        
+        
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is null)  "
+
+        if (branch != ""){
+            this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "[PAN_Manager] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        } 
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "[StaffGroup] in ('" + stfgroup.join("','")  +  "')";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        
+
+        if (branch != ""){ 
+         var lblcriteria = " Branches:" + branch.join(",") + "; "        } 
+             else{lblcriteria = "All Branches"}
+         
+          if (manager != ""){
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Managers,"}
+         
+         
+         if (stfgroup != ""){ 
+             lblcriteria =lblcriteria + " Staff Groups: " + stfgroup.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Staff Groups,"}
+         
+        
+        
+             fQuery = fQuery + "Group by UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"                                              
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+    /*   
+    console.log(s_BranchSQL)
+    console.log(s_CategorySQL)
+    console.log(s_CoordinatorSQL)*/
+    //console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"3zUoVBKOkYhdU8Z5"  },    
+        "options": {
+            "reports": { "save": false },
+         
+            "sql":fQuery,
+            "Criteria":lblcriteria 
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+       
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+
+    InActiveBrokerage_Contractor(manager,branch,stfgroup){
+        
+        
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is not null)  "
+
+        if (branch != ""){
+            this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "[PAN_Manager] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        } 
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "[StaffGroup] in ('" + stfgroup.join("','")  +  "')";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        
+
+        if (branch != ""){ 
+         var lblcriteria = " Branches:" + branch.join(",") + "; "        } 
+             else{lblcriteria = "All Branches"}
+         
+          if (manager != ""){
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Managers,"}
+         
+         
+         if (stfgroup != ""){ 
+             lblcriteria =lblcriteria + " Staff Groups: " + stfgroup.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Staff Groups,"}
+         
+        
+        
+             fQuery = fQuery + "Group by UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"                                               
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+    /*   
+    console.log(s_BranchSQL)
+    console.log(s_CategorySQL)
+    console.log(s_CoordinatorSQL)*/
+   // console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"htp5rccUteYVbXt6"  },    
+        "options": {
+            "reports": { "save": false },
+         
+            "sql":fQuery,
+            "Criteria":lblcriteria 
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+       
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+    ActiveVolunters(manager,branch,stfgroup){
+        
+        
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is null)  "
+
+        if (branch != ""){
+            this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "[PAN_Manager] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        } 
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "[StaffGroup] in ('" + stfgroup.join("','")  +  "')";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        
+
+        if (branch != ""){ 
+         var lblcriteria = " Branches:" + branch.join(",") + "; "        } 
+             else{lblcriteria = "All Branches"}
+         
+          if (manager != ""){
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Managers,"}
+         
+         
+         if (stfgroup != ""){ 
+             lblcriteria =lblcriteria + " Staff Groups: " + stfgroup.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Staff Groups,"}
+         
+        
+             fQuery = fQuery + "Group by UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+                                                            
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+    /*   
+    console.log(s_BranchSQL)
+    console.log(s_CategorySQL)
+    console.log(s_CoordinatorSQL)*/
+    //console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"JlsnP7fNb9LOGeVw"  },    
+        "options": {
+            "reports": { "save": false },
+         
+            "sql":fQuery,
+            "Criteria":lblcriteria 
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+       
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+
+    InActiveVolunteers(manager,branch,stfgroup){
+        
+        
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is not null)  "
+
+        if (branch != ""){
+            this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "[PAN_Manager] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        } 
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "[StaffGroup] in ('" + stfgroup.join("','")  +  "')";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        
+
+        if (branch != ""){ 
+         var lblcriteria = " Branches:" + branch.join(",") + "; "        } 
+             else{lblcriteria = "All Branches"}
+         
+          if (manager != ""){
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Managers,"}
+         
+         
+         if (stfgroup != ""){ 
+             lblcriteria =lblcriteria + " Staff Groups: " + stfgroup.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Staff Groups,"}
+         
+        
+             fQuery = fQuery + "Group by UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+                                                            
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+    /*   
+    console.log(s_BranchSQL)
+    console.log(s_CategorySQL)
+    console.log(s_CoordinatorSQL)*/
+    //console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"lcl6jxcRDYzgs7kJ"  },    
+        "options": {
+            "reports": { "save": false },
+         
+            "sql":fQuery,
+            "Criteria":lblcriteria 
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+       
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+
+    StaffPermissions(branch,manager,region,program,state){
+        
+        
+        var fQuery = "SELECT [NAME], CASE WHEN [SYSTEM] = 999 THEN 'YES' ELSE 'NO' END AS [SYSTEM ADMINISTRATOR], CASE WHEN RECIPIENTS = 0 THEN 'NONE'      WHEN RECIPIENTS = 1 THEN 'LEVEL1'      WHEN RECIPIENTS = 101 THEN 'LEVEL2'      WHEN RECIPIENTS = 201 THEN 'LEVEL3'      WHEN RECIPIENTS = 901 THEN 'LEVEL4'      WHEN RECIPIENTS = 951 THEN 'LEVEL5'      WHEN RECIPIENTS = 999 THEN 'LEVEL6' END AS [RECIPIENTS ACCESS LEVEL], CASE WHEN ROSTER = 0 THEN 'NONE'      WHEN ROSTER = 1 THEN 'LEVEL1'      WHEN ROSTER = 101 THEN 'LEVEL2'      WHEN ROSTER = 121 THEN 'LEVEL3'      WHEN ROSTER = 201 THEN 'LEVEL4'      WHEN ROSTER = 251 THEN 'LEVEL5'      WHEN ROSTER = 501 THEN 'LEVEL6'      WHEN ROSTER = 999 THEN 'LEVEL7' END AS [ROSTER ACCESS LEVEL], CASE WHEN STAFF = 0 THEN 'NONE'      WHEN STAFF = 251 THEN 'LEVEL1'      WHEN STAFF = 301 THEN 'LEVEL2'      WHEN STAFF = 901 THEN 'LEVEL3'      WHEN STAFF = 999 THEN 'LEVEL4' END AS [STAFF ACCESS LEVEL], CASE WHEN DAYMANAGER = 0 THEN 'NONE'      WHEN DAYMANAGER = 1 THEN 'LEVEL1'      WHEN DAYMANAGER = 101 THEN 'LEVEL2'      WHEN DAYMANAGER = 121 THEN 'LEVEL3'      WHEN DAYMANAGER = 201 THEN 'LEVEL4'      WHEN DAYMANAGER = 251 THEN 'LEVEL5'      WHEN DAYMANAGER = 301 THEN 'LEVEL6'      WHEN DAYMANAGER = 999 THEN 'LEVEL7' END AS [DAYMANAGER ACCESS LEVEL], CASE WHEN [RECIPMGTVIEW] = 1 THEN 'YES' ELSE 'NO' END AS [RECIPIENT MANAGEMENT VIEW], CASE WHEN [ACCESSHRINFO] = 1 THEN 'YES' ELSE 'NO' END AS [ACCESS HR], CASE WHEN [CASENOTESREADONLY] = 1 THEN 'YES' ELSE 'NO' END AS [CASE NOTES VIEW ONLY], CASE WHEN [ADDNEWRECIPIENT] = 1 THEN 'YES' ELSE 'NO' END AS [ADD NEW RECIPIENTS], CASE WHEN [CHANGEMASTERROSTER] = 1 THEN 'YES' ELSE 'NO' END AS [CHANGE MASTER ROSTER], CASE WHEN [OWNROSTERONLY] = 1 THEN 'YES' ELSE 'NO' END AS [LOCK TO OWN ROSTER], CASE WHEN [APPROVEDAYMANAGER] = 1 THEN 'YES' ELSE 'NO' END AS [APPROVE IN DAYMANAGER], CASE WHEN [MANUALROSTERCOPY] = 999 THEN 'YES' ELSE 'NO' END AS [MANUAL COPY ROSTER], CASE WHEN [AUTOCOPYROSTER] = 999 THEN 'YES' ELSE 'NO' END AS [AUTO COPY ROSTER],CASE WHEN [TIMESHEET] = 999 THEN 'YES' ELSE 'NO' END AS [TIMESHEETS], CASE WHEN [SUGGESTEDTIMESHEETS] = 999 THEN 'YES' ELSE 'NO' END AS [SUGGESTED TIMESHEETS], CASE WHEN [TIMESHEETUPDATE] = 999 THEN 'YES' ELSE 'NO' END AS [PAY AND BILLING UPDATE], CASE WHEN [FINANCIAL] = 999 THEN 'YES' ELSE 'NO' END AS [FINANCIAL], CASE WHEN [STATISTICS] = 999 THEN 'YES' ELSE 'NO' END AS [LISTINGS], CASE WHEN [INVOICEENQUIRY] = 999 THEN 'YES' ELSE 'NO' END AS [INVOICE ENQUIRY], VIEWFILTERBRANCHES, VIEWFILTER AS VIEWFILTERPROGRAMS, VIEWFILTERCATEGORY, VIEWFILTERCOORD, VIEWFILTERREMINDERS, RECIPIENTRECORDVIEW, STAFFRECORDVIEW FROM USERINFO WHERE (EndDate Is Null OR EndDate >= '2020/01/01')  "
+        var lblcriteria;
+    /*    if (branch != ""){
+            this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL}
+            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+            
+        } 
+        if(region != ""){
+            this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL}
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+
+        
+        if (branch != ""){ 
+            lblcriteria = "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = " All Branches "}
+        
+         if (manager != ""){
+            lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Managers,"}
+        
+        
+        if (region != ""){ 
+            lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Regions,"}
+        
+       
+        if (program != ""){ 
+            lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Programs."}
+        
+             */                                               
+        fQuery = fQuery + "ORDER BY [NAME] "
+        
+    //console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"cHHdyk2ACQuXsxFw"  },    
+        "options": {
+            "reports": { "save": false },
+         
+            "sql":fQuery,
+            "Criteria":lblcriteria 
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+       
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+
+
+
     
 
 

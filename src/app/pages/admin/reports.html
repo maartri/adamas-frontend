@@ -274,73 +274,85 @@
                                     <i nz-icon nzType="user"></i>
                                     <strong>STANDARD LISTINGS</strong> 
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" id="btn-Activestaff" (click)="showModal()" >
                                             <i nz-icon nzType="printer"></i>
                                             Active Staff List
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" id="btn-ActiveBrokerage" (click)="showModal()">
                                             <i nz-icon nzType="printer"></i>
                                             Active Brokerage/Contractor List
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" id="btn-Inactivestaff" (click)="showModal()">
                                             <i nz-icon nzType="printer"></i>
-                                            In Active Staff List
+                                            InActive Staff List
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" id="btn-InactiveVolunteer" (click)="showModal()">
                                             <i nz-icon nzType="printer"></i>
                                             InActive Volunteer
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" id="btn-InactiveBrokerage" (click)="showModal()">
                                             <i nz-icon nzType="printer"></i>
                                             InActive Brokerage/Contractor 
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" id="btn-Activevolunteers" (click)="showModal()" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Active Volunteers 
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" id="btn-Userpermissions" (click)="showModal()" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff User Permissions 
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" (click)="showModal()" disabled >
                                             <i nz-icon nzType="printer"></i>
                                             Staff Unavailability
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" (click)="showModal()" disabled>
                                             <i nz-icon nzType="printer"></i>
                                             Staff Roster
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" (click)="showModal()" disabled>
                                             <i nz-icon nzType="printer"></i>
                                             Staff Master Roster
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" (click)="showModal()" disabled>
                                             <i nz-icon nzType="printer"></i>
                                             Staff Loan Register
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" (click)="showModal()" disabled>
                                             <i nz-icon nzType="printer"></i>
                                             Competency Renewal Report
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" (click)="showModal()" disabled>
                                             <i nz-icon nzType="printer"></i>
                                             Staff Not Worked Register
                                             </button>
                                     </div>
                                     <div>
-                                        <button nz-button nzType="default" >
+                                        <button nz-button nzType="default" (click)="showModal()" disabled>
                                             <i nz-icon nzType="printer"></i>
                                             Staff Leaves Register
                                             </button>
@@ -354,13 +366,13 @@
                                     <i nz-icon nzType="user"></i>
                                     <strong>AGENCY LISTINGS</strong>
                                     <div>
-                                        <button nz-button nzType="default" disabled>
+                                        <button nz-button nzType="default" (click)="showModal()" disabled >
                                             <i nz-icon nzType="printer"></i>
                                             Staff Competency Expiry
                                             </button>
                                     </div>                                    
                                     <div>
-                                        <button nz-button nzType="default" disabled>
+                                        <button nz-button nzType="default" (click)="showModal()" disabled>
                                             <i nz-icon nzType="printer"></i>
                                             Staff Hours
                                             </button>
@@ -375,7 +387,7 @@
                                     <i nz-icon nzType="user"></i>
                                     <strong>USER LISTINGS</strong>
                                     <div>
-                                        <button nz-button nzType="default" disabled >
+                                        <button nz-button nzType="default" (click)="showModal()" disabled >
                                             <i nz-icon nzType="printer"></i>
                                             Competencies
                                             </button>
@@ -740,8 +752,8 @@
                         <div nz-row>
                             <div nz-col nzSpan="24">
                                 <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
-                                <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" [nzFormat] = "dateFormat"></nz-date-picker>
-                                 <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date" [nzFormat] = "dateFormat"></nz-date-picker>                                 
+                                <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" ></nz-date-picker>
+                                 <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date"></nz-date-picker>                                 
                             </div>
                         </div>
                         <div nz-row [formGroup]="inputForm">
@@ -835,12 +847,30 @@
                         </div>
                               
                     </nz-tab>
-                    <nz-tab  nzTitle="Other Domains" > 
+                    <nz-tab  nzTitle="Staff" > 
                         <div nz-row >
 
                         </div>
                         <div nz-row [formGroup]="inputForm">    
-                                                                                                        
+                            <div nz-col nzSpan="6">
+                                <div class="form-group">
+                                    <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff Group </label>
+                                    <label class="checks" nz-checkbox formControlName="allGroups">All Groups </label>
+                                    <nz-select formControlName="staffgroupsArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allGroups">
+                                        <nz-option *ngFor="let option of staffgroupsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                    </nz-select>                                    
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="6">
+                                <div class="form-group">
+                                    <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff  </label>
+                                    <label class="checks" nz-checkbox formControlName="allStaff">All Staff </label>
+                                    <nz-select formControlName="staffArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaff">
+                                        <nz-option *ngFor="let option of staffArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                    </nz-select>                                    
+                                </div>
+                            </div>
+                                                                                                       
                         </div> 
                     </nz-tab>
                     

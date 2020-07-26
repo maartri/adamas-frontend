@@ -2,7 +2,15 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
-import { GlobalService, StaffService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, StaffService, ShareService, leaveTypes, ListService, TimeSheetService } from '@services/index';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
+
+interface Person {
+    key: string;
+    name: string;
+    age: number;
+    address: string;
+}
 
 @Component({
     styles: [`
@@ -25,6 +33,32 @@ import { GlobalService, StaffService, ShareService, leaveTypes } from '@services
         nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
             border-radius: 0;
         }
+        ul{
+            list-style:none;
+            float:right;
+            margin:0;
+        }
+        li{
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 12px;
+            padding: 5px;
+            cursor:pointer;
+        }
+        li div{
+            text-align: center;
+            font-size: 17px;
+        }
+        .terminate:hover{
+            color: #db2929;
+        }
+        .leave:hover{
+            color: #1488db;
+        }
+        .checks label{
+            display:block;
+            margin:10px;
+        }
     `],
     templateUrl: './staff.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -36,7 +70,14 @@ export class StaffAdmin implements OnInit, OnDestroy {
     nzSelectedIndex: number = 0;
 
     isFirstLoad: boolean = false;
+    isConfirmLoading: boolean = false;
     sample: any;
+
+    terminateModal: boolean = false;
+    putonLeaveModal: boolean = false;
+    
+    leaveBalanceList: Array<any>;
+    terminateGroup: FormGroup;
 
     listChange(event: any) {
 
@@ -71,40 +112,18 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.sharedS.emitChange(this.user);
         this.cd.detectChanges();
     }
-    
-    // change(data: any) {
-        
-    //     let user = {};
-    //     if (data == 'ABBAS A') {
-    //         user = {
-    //             code: "ABBAS A",
-    //             id: "S0100006438",
-    //             view: 'staff',
-    //             sysmgr: true
-    //         }
-    //     } else {
-    //         user = {
-    //             code: "ADAMS D S",
-    //             id: "SM100005229",
-    //             view: "staff",
-    //             sysmgr: true
-    //         } 
-    //     }
-        
-
-    //     if (!this.isFirstLoad) {
-    //         this.view(0);
-    //         this.isFirstLoad = true;
-    //     }
-    //     this.sharedS.emitChange(user);
-    // }
 
     constructor(
         private router: Router,
         private activeRoute: ActivatedRoute,
+        private timeS: TimeSheetService,
         private sharedS: ShareService,
-        private cd: ChangeDetectorRef
+        private globalS: GlobalService,
+        private listS: ListService,
+        private cd: ChangeDetectorRef,
+        private fb: FormBuilder
     ) {
+        
         
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
@@ -122,6 +141,16 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.isFirstLoad = false;
+        this.buildForm();        
+    }
+
+    buildForm(): void{
+        this.terminateGroup = this.fb.group({
+            terminateDate: ['', Validators.required],
+            unallocUnapproved: false,
+            unallocMaster: false,
+            deletePending: false
+        });
     }
 
     ngOnDestroy(): void {
@@ -172,6 +201,55 @@ export class StaffAdmin implements OnInit, OnDestroy {
         if (index == 13) {
             this.router.navigate(['/admin/staff/groupings-preferences'])
         }
-        // this.nzSelectedIndex = this.nzSelectedIndex - 1;
     }
+
+    terminateModalOpen(): void{
+        this.terminateModal = true;
+        this.listS.getleavebalances(this.user.id)
+            .subscribe(data => this.leaveBalanceList = data)
+    }
+
+    terminate(){
+        
+        for (const i in this.terminateGroup.controls) {
+            this.terminateGroup.controls[i].markAsDirty();
+            this.terminateGroup.controls[i].updateValueAndValidity();
+        }
+
+        if(!this.terminateGroup.valid)  return;
+        this.isConfirmLoading = true;
+        
+        const { code, id } = this.user;
+
+        this.timeS.posttermination({
+            TerminationDate: this.terminateGroup.value.terminateGroup,
+            AccountNo: code,
+            PersonID: id
+        }).subscribe(data => {
+            this.globalS.sToast('Success','Staff has been terminated!');
+            this.isConfirmLoading = false;
+        });
+    }
+
+    listOfData: Person[] = [
+        {
+          key: '1',
+          name: 'John Brown',
+          age: 32,
+          address: 'New York No. 1 Lake Park'
+        },
+        {
+          key: '2',
+          name: 'Jim Green',
+          age: 42,
+          address: 'London No. 1 Lake Park'
+        },
+        {
+          key: '3',
+          name: 'Joe Black',
+          age: 32,
+          address: 'Sidney No. 1 Lake Park'
+        }
+      ];
+
 }

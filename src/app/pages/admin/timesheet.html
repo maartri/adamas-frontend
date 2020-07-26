@@ -218,7 +218,9 @@
                     </div>
                     <div nz-row *ngIf="isSleepOver">
                         <label for="">Select the End Time on the following day for the sleepover</label>
-                        <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker>
+                        <nz-time-picker formControlName="sleepOverTime" [nzDefaultOpenValue]="defaultOpenValue" nzFormat="HH:mm"></nz-time-picker>
+
+                        <!-- <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker> -->
                         <!-- <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch> -->
                     </div>
                 </div>

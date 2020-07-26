@@ -296,13 +296,20 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         });
 
-        // this.timesheetForm.get('isMultipleRecipient').valueChanges.subscribe(data => {
-        //     if(data){
-        //         this.timesheetForm.patchValue({
-        //             recipientCode: '!MULTIPLE'
-        //         })
-        //     }
-        // });
+        this.timesheetForm.get('time.startTime').valueChanges.pipe(
+            takeUntil(this.unsubscribe)
+        ).subscribe(d => {
+            this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+        });
+
+        this.timesheetForm.get('isMultipleRecipient').valueChanges.pipe(
+            takeUntil(this.unsubscribe),
+            switchMap(d => {
+                const { serviceType } = this.timesheetForm.value;
+                return this.GETPROGRAMS(serviceType);
+            })).subscribe(data => {
+                console.log(data);
+            });
 
         this.timesheetForm.get('payType').valueChanges.pipe(
             takeUntil(this.unsubscribe),
@@ -1054,17 +1061,32 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         return this.listS.getlist(sql);
     }
 
+    GETRECIPIENT(view: number): string {
+        const { recipientCode, debtor, serviceType, isMultipleRecipient } = this.timesheetForm.value;
+        if(view == 0){
+            if(serviceType == 'SERVICE' && isMultipleRecipient) return '!MULTIPLE';
+            if(this.globalS.isEmpty(recipientCode)) return '!INTERNAL';
+            return recipientCode;
+        }
+
+        if(view == 1){
+            return debtor;
+        }
+    }
+
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
         const { serviceType } = this.timesheetForm.value;
+        console.log(this.selected.option)
         if (!program) return EMPTY;
-
+        console.log(this.timesheetForm.value)
         if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
             const { recipientCode, debtor } = this.timesheetForm.value;
 
             return this.listS.getserviceactivityall({
                 program,
-                recipient: this.selected.option == 0 ? recipientCode : debtor,
+                recipient: this.GETRECIPIENT(this.selected.option),
+                mainGroup: serviceType,
                 viewType: this.viewType
             });
         }
@@ -1115,7 +1137,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     
     showRecipient(): boolean  {
         const { serviceType, isMultipleRecipient } = this.timesheetForm.value;            
-        return ((serviceType !== 'ADMINISTRATION' && serviceType !== 'ALLOWANCE NON-CHARGEABLE' && serviceType !== 'ITEM') && !isMultipleRecipient);
+        return ((serviceType !== 'ADMINISTRATION' && serviceType !== 'ALLOWANCE NON-CHARGEABLE') && !isMultipleRecipient);
     }
 
     canProceed() {
@@ -1143,6 +1165,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    defaultOpenValue = new Date(0, 0, 0, 9, 0, 0);
+
     resetAddTimesheetModal() {
         this.current = 0;
         this.rosterGroup = '';
@@ -1158,7 +1182,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             debtor: '',
             isMultipleRecipient: false,
             isTravelTimeChargeable: false,
-            sleepOverTime: '',
+            sleepOverTime: new Date(0, 0, 0, 9, 0, 0),
             time: this.formBuilder.group({
                 startTime: '',
                 endTime: '',

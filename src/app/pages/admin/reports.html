@@ -1,795 +1,969 @@
-<div (click)="PrintID(this.id)">
+<div >
     
      
-<div nz-layout>
-    <div>
-        <div nz-col nzSpan="24">
-            <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'" >            
-                <nz-tab nzTitle="Recipient Listings"   >                     
-                        <div nz row>
+    <div nz-layout>
+        <div >
+            <div nz-col nzSpan="24">
+                <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'" >            
+                    <nz-tab nzTitle="Recipient Listings"   >                     
+                            <div nz row>
+                                <div nz-col [nzSpan]="24">
+                                    <div nz-col [nzSpan]="8">
+                                        <ul nz-menu nzMode="horizontal">
+                                            <li nz-menu-item >
+                                                <i nz-icon nzType="user" ></i>
+                                                <strong>STANDARD LISTINGS</strong> 
+                                                <div>                                        
+                                                    <button nz-button nzType="default"  nzJustify="start"  id="btn-refferallist" (click)="showModal(this.id)">
+                                                        <i nz-icon nzType="printer"  ></i>
+                                                        Refferal List
+                                                    </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-activerecipient" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Active Recipient List
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-inactiverecipient" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    InActive Recipient List
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-careerlist" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Carer List
+                                                </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-onlybillingclients" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Only Billing Clients List
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-associatelist" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Associate/Other List
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-refferalduringperiod" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Refferals During Period
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-adminduringperiod" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Admissions During Period
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-dischargeduringperiod" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Discharges During Period
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-unallocatedbookings" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Unfilled Bookings
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-recipientroster" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Recipient Roster
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-recipientMasterroster" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Recipient Master Roster
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-absentclient" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Absent Client Status Report
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-suspendedrecipient" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Suspended Recipient Report
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-vouchersummary" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Voucher Summary Report
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-transportsummary" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Transport Summary Report
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-packageusage" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Package Usage Report
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-unserviced" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Unserviced Recipient Report
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-timelength" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Recipient Time Length Report
+                                                    </button> 
+                                                    </div>
+                                                    <div>                                        
+                                                        <button nz-button nzType="default" id="btn-activepackagelist" (click)="showModal(this.id)" >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        Active Package Report
+                                                    </button> 
+                                                    </div>                                                                                                                                                                        
+                                            </li>                  
+                                        </ul>
+                                    </div>
+                                    <div nz-col [nzSpan]="8">
+                                        <ul nz-menu nzMode="horizontal" >
+                                            <li nz-menu-item  >
+                                                <i nz-icon nzType="user"></i>
+                                                <strong>AGENCY LISTINGS</strong>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled  >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Approved Staff Listing
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Ashmore Client List
+                                                </button> 
+                                                </div>
+                                                
+                                                
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Palm Beach Client List
+                                                </button> 
+                                                </div>                                            
+                                                                                                                                                                                         
+                                            </li>                  
+                                        </ul>
+                                    </div>
+                                    <div nz-col [nzSpan]="8">
+                                        <ul nz-menu nzMode="horizontal">
+                                            <li nz-menu-item >
+                                                <i nz-icon nzType="user"></i>
+                                                <strong>USER LISTINGS</strong>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Approved Service Coordinator
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    UnApproved Service Coordinator
+                                                </button> 
+                                                </div>                                                                                                                                    
+                                            </li>                  
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>                             
+                    </nz-tab>
+                    <nz-tab nzTitle="Recipient Registers"  >
+                        <div nz-row >
                             <div nz-col [nzSpan]="24">
-                                <div nz-col [nzSpan]="8">
-                                    <ul nz-menu nzMode="horizontal">
-                                        <li nz-menu-item >
-                                            <i nz-icon nzType="user" ></i>
-                                            <strong>STANDARD LISTINGS</strong> 
-                                            <div>                                        
-                                                <button nz-button nzType="default"  nzJustify="start"  id="btn-refferallist" (click)="showModal()">
-                                                    <i nz-icon nzType="printer"  ></i>
-                                                    Refferal List
-                                                </button> 
-                                            </div>
-                                            <div>                                        
-                                                <button nz-button nzType="default" id="btn-activerecipient" (click)="showModal()" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Active Recipient List
-                                            </button> 
-                                            </div>
-                                            <div>                                        
-                                                <button nz-button nzType="default" id="btn-inactiverecipient" (click)="showModal()" >
-                                                <i nz-icon nzType="printer"></i>
-                                                InActive Recipient List
-                                            </button> 
-                                            </div>
-                                            <div>                                        
-                                                <button nz-button nzType="default" id="btn-careerlist" (click)="showModal()" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Carer List
-                                            </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-onlybillingclients" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Only Billing Clients List
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-associatelist" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Associate/Other List
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-refferalduringperiod" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Refferals During Period
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-adminduringperiod" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Admissions During Period
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-dischargeduringperiod" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Discharges During Period
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-unallocatedbookings" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Unfilled Bookings
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-recipientroster" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Recipient Roster
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-recipientMasterroster" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Recipient Master Roster
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-absentclient" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Absent Client Status Report
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-suspendedrecipient" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Suspended Recipient Report
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-vouchersummary" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Voucher Summary Report
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-transportsummary" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Transport Summary Report
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-packageusage" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Package Usage Report
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-unserviced" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Unserviced Recipient Report
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-timelength" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Recipient Time Length Report
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-activepackagelist" (click)="showModal()" >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Active Package Report
-                                                </button> 
-                                                </div>                                                                                                                                                                        
-                                        </li>                  
-                                    </ul>
-                                </div>
-                                <div nz-col [nzSpan]="8">
-                                    <ul nz-menu nzMode="horizontal" >
-                                        <li nz-menu-item  >
-                                            <i nz-icon nzType="user"></i>
-                                            <strong>AGENCY LISTINGS</strong>
-                                            <div>                                        
-                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" disabled  >
-                                                <i nz-icon nzType="printer"></i>
-                                                Approved Staff Listing
-                                            </button> 
-                                            </div>
-                                            <div>                                        
-                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" disabled >
-                                                <i nz-icon nzType="printer"></i>
-                                                Ashmore Client List
-                                            </button> 
-                                            </div>
-                                            
-                                            
-                                            <div>                                        
-                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" disabled >
-                                                <i nz-icon nzType="printer"></i>
-                                                Palm Beach Client List
-                                            </button> 
-                                            </div>                                            
-                                                                                                                                                                                     
-                                        </li>                  
-                                    </ul>
-                                </div>
-                                <div nz-col [nzSpan]="8">
-                                    <ul nz-menu nzMode="horizontal">
-                                        <li nz-menu-item >
-                                            <i nz-icon nzType="user"></i>
-                                            <strong>USER LISTINGS</strong>
-                                            <div>                                        
-                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" disabled >
-                                                <i nz-icon nzType="printer"></i>
-                                                Approved Service Coordinator
-                                            </button> 
-                                            </div>
-                                            <div>                                        
-                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" disabled >
-                                                <i nz-icon nzType="printer"></i>
-                                                UnApproved Service Coordinator
-                                            </button> 
-                                            </div>                                                                                                                                    
-                                        </li>                  
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>                             
-                </nz-tab>
-                <nz-tab nzTitle="Recipient Registers"  >
-                    <div nz-row >
-                        <div nz-col [nzSpan]="24">
-                            <ul nz-menu nzMode="horizontal" disabled>
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>RECIPIENT REGISTER</strong>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        Lag Time Register
-                                    </button> 
-                                    </div>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        Loan Register
-                                    </button> 
-                                    </div> 
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        Progress Notes Register
-                                    </button> 
-                                    </div>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        Recipient Service Notes Register
-                                    </button> 
-                                    </div>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        Service Plans Register
-                                    </button> 
-                                    </div>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        Recipient Care Plans Register
-                                    </button> 
-                                    </div>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        Recipient OP Notes Register
-                                    </button> 
-                                    </div>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        CDC Package Balance Register
+                                <ul nz-menu nzMode="horizontal" disabled>
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>RECIPIENT REGISTER</strong>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Lag Time Register
                                         </button> 
-                                    </div> 
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        CDC Leave Report
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Loan Register
                                         </button> 
-                                    </div>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        HAS Report
+                                        </div> 
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Progress Notes Register
                                         </button> 
-                                    </div>
-                                    <div>                                        
-                                        <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal()" >
-                                        <i nz-icon nzType="printer"></i>
-                                        Meal Order Report
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Recipient Service Notes Register
                                         </button> 
-                                    </div>                                                                                                                                  
-                                </li>                  
-                            </ul>
-                        </div>
-                    </div>
-                </nz-tab>
-                <nz-tab nzTitle="Staff Listings"   >
-                    <div nz-row >
-                        <div nz-col [nzSpan]="8">
-                            <ul nz-menu nzMode="horizontal">
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>STANDARD LISTINGS</strong> 
-                                    <div>
-                                        <button nz-button nzType="default" id="btn-Activestaff" (click)="showModal()" >
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
-                                            Active Staff List
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" id="btn-ActiveBrokerage" (click)="showModal()">
+                                            Service Plans Register
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
-                                            Active Brokerage/Contractor List
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" id="btn-Inactivestaff" (click)="showModal()">
+                                            Recipient Care Plans Register
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
-                                            InActive Staff List
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" id="btn-InactiveVolunteer" (click)="showModal()">
+                                            Recipient OP Notes Register
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
-                                            InActive Volunteer
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" id="btn-InactiveBrokerage" (click)="showModal()">
+                                            CDC Package Balance Register
+                                            </button> 
+                                        </div> 
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
-                                            InActive Brokerage/Contractor 
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" id="btn-Activevolunteers" (click)="showModal()" >
+                                            CDC Leave Report
+                                            </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
-                                            Active Volunteers 
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" id="btn-Userpermissions" (click)="showModal()" >
+                                            HAS Report
+                                            </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
-                                            Staff User Permissions 
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Unavailability
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled>
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Roster
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled>
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Master Roster
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled>
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Loan Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled>
-                                            <i nz-icon nzType="printer"></i>
-                                            Competency Renewal Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled>
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Not Worked Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled>
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Leaves Register
-                                            </button>
-                                    </div>                                                                        
-                                </li>                  
-                            </ul>
-                        </div>
-                        <div nz-col [nzSpan]="8">
-                            <ul nz-menu nzMode="horizontal">
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>AGENCY LISTINGS</strong>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Competency Expiry
-                                            </button>
-                                    </div>                                    
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled>
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Hours
-                                            </button>
-                                    </div>
-                                                                                                                                      
-                                </li>                  
-                            </ul>
-                        </div>
-                        <div nz-col [nzSpan]="8">
-                            <ul nz-menu nzMode="horizontal">
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>USER LISTINGS</strong>
-                                    <div>
-                                        <button nz-button nzType="default" (click)="showModal()" disabled >
-                                            <i nz-icon nzType="printer"></i>
-                                            Competencies
-                                            </button>
-                                    </div>
-                                                                                                                                       
-                                </li>                  
-                            </ul>
-                        </div>
-                    </div>
-
-                </nz-tab>
-                <nz-tab nzTitle="HR Reports"   >
-                    <div nz-row >
-                        <div nz-col [nzSpan]="24">
-                            <ul nz-menu nzMode="horizontal">
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>HUMAN RESOURCE REPORTS </strong> 
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Competency Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                           Competency Renewal Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Training Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Incident Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Operational Notes Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            HR Notes Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Time & Attendence Comparison
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Availability Register
-                                            </button>
-                                    </div>
-                                                                                                            
-                                </li>                  
-                            </ul>
-                        </div>
-                    </div>
-                </nz-tab>
-                <nz-tab nzTitle="Financial/Output Reports"   >
-                    <div nz-row >
-                        <div nz-col [nzSpan]="8">
-                            <ul nz-menu nzMode="horizontal">
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>PROGRAM & Activity REPORTS </strong> 
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Program Activity Spread
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Program Staff Utilised
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Program Recipient Serviced
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Program Billing Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Program Recipient Budget(IND PKG)
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Program Budget Audit Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Program Summary Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Activity Recipient Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Activity Staff Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Activity Group Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Dataset Activity Analysis Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Unbilled Items Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Funding Audit Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Dataset Activity Summary Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Dataset RecipientUnit Cost Report
-                                            </button>
-                                    </div>                                                                        
-                                </li>                  
-                            </ul>
-                        </div>
-                        <div nz-col [nzSpan]="8">
-                            <ul nz-menu nzMode="horizontal">
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>STAFF REPORTS </strong>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Pays
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Program Pay Type
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Funder Payroll Type
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Date Program
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Allowances
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Program Utilisation
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Clients Serviced
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Admin Report
-                                            </button>
-                                    </div> 
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Activity Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Staff Daily Hours Report
-                                            </button>
-                                    </div> 
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Award Staff Pay Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Award Staff Program Pay Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Pay Type Program Report
-                                            </button>
-                                    </div>                                                                                                  
-                                </li>                  
-                            </ul>
-                        </div>
-                        <div nz-col [nzSpan]="8">
-                            <ul nz-menu nzMode="horizontal">
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>RECIPIENT REPORTS </strong>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Recipient Service Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Recipient Staff Usage Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Recipient Pay Type Report
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Recipient Program Utilisation 
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Recipient Unused Funding Report
-                                            </button>
-                                    </div>                                                                                                                                       
-                                </li>                  
-                            </ul>
-                        </div>
-                    </div>
-                
-                </nz-tab>            
-                <nz-tab nzTitle="System Reports"   >
-                    <div nz-row >
-                        <div nz-col [nzSpan]="24">
-                            <ul nz-menu nzMode="horizontal">
-                                <li nz-menu-item >
-                                    <i nz-icon nzType="user"></i>
-                                    <strong>SYSTEM REPORTS </strong> 
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            AUdit Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            MTA Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Program Activity Status Audit
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Roster Overlap Register
-                                            </button>
-                                    </div>
-                                    <div>
-                                        <button nz-button nzType="default" >
-                                            <i nz-icon nzType="printer"></i>
-                                            MTA Attendence Verification
-                                            </button>
-                                    </div>
-                                                                                                            
-                                </li>                  
-                            </ul>
-                        </div>
-                    </div> 
-                </nz-tab>
-                
-            </nz-tabset>
-        </div>  
-        
-    </div>
-    <div>
-        
-        
-        <nz-modal
-            nzWidth="768px"
-            [nzStyle]="{ top: '20px' }"
-            [(nzVisible)]="isVisibleTop"
-            nzTitle="Reporting Criteria"
-            (nzOnCancel)="handleCancelTop()"
-            (nzOnOk)="handleOkTop()"
-            >
-            <div>
-                <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
-                    <nz-tab  nzTitle="Date & Programs">
-                        <div nz-row>
-                            <div nz-col nzSpan="24">
-                                <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
-                                <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" ></nz-date-picker>
-                                 <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date"></nz-date-picker>                                 
+                                            Meal Order Report
+                                            </button> 
+                                        </div>                                                                                                                                  
+                                    </li>                  
+                                </ul>
                             </div>
                         </div>
-                        <div nz-row [formGroup]="inputForm">
-                            <div nz-row> 
+                    </nz-tab>
+                    <nz-tab nzTitle="Staff Listings"   >
+                        <div nz-row >
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>STANDARD LISTINGS</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-Activestaff" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Active Staff List
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-ActiveBrokerage" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                Active Brokerage/Contractor List
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-Inactivestaff" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                InActive Staff List
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-InactiveVolunteer" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                InActive Volunteer
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-InactiveBrokerage" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                InActive Brokerage/Contractor 
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-Activevolunteers" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Active Volunteers 
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-Userpermissions" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff User Permissions 
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Unavailability
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Roster
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Master Roster
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Loan Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
+                                                <i nz-icon nzType="printer"></i>
+                                                Competency Renewal Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Not Worked Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Leaves Register
+                                                </button>
+                                        </div>                                                                        
+                                    </li>                  
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>AGENCY LISTINGS</strong>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Competency Expiry
+                                                </button>
+                                        </div>                                    
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Hours
+                                                </button>
+                                        </div>
+                                                                                                                                          
+                                    </li>                  
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>USER LISTINGS</strong>
+                                        <div>
+                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled >
+                                                <i nz-icon nzType="printer"></i>
+                                                Competencies
+                                                </button>
+                                        </div>
+                                                                                                                                           
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div>
+    
+                    </nz-tab>
+                    <nz-tab nzTitle="HR Reports"   >
+                        <div nz-row >
+                            <div nz-col [nzSpan]="24">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>HUMAN RESOURCE REPORTS </strong> 
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Competency Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                               Competency Renewal Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Training Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Incident Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Operational Notes Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                HR Notes Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Time & Attendence Comparison
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Availability Register
+                                                </button>
+                                        </div>
+                                                                                                                
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Financial/Output Reports"   >
+                        <div nz-row >
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>PROGRAM & Activity REPORTS </strong> 
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Activity Spread
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Staff Utilised
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Recipient Serviced
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Billing Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Recipient Budget(IND PKG)
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Budget Audit Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Summary Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Activity Recipient Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Activity Staff Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Activity Group Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Dataset Activity Analysis Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Unbilled Items Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Funding Audit Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Dataset Activity Summary Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Dataset RecipientUnit Cost Report
+                                                </button>
+                                        </div>                                                                        
+                                    </li>                  
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>STAFF REPORTS </strong>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Pays
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Program Pay Type
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Funder Payroll Type
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Date Program
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Allowances
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Program Utilisation
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Clients Serviced
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Admin Report
+                                                </button>
+                                        </div> 
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Activity Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Daily Hours Report
+                                                </button>
+                                        </div> 
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Award Staff Pay Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Award Staff Program Pay Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Pay Type Program Report
+                                                </button>
+                                        </div>                                                                                                  
+                                    </li>                  
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>RECIPIENT REPORTS </strong>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Recipient Service Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Recipient Staff Usage Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Recipient Pay Type Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Recipient Program Utilisation 
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Recipient Unused Funding Report
+                                                </button>
+                                        </div>                                                                                                                                       
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div>
+                    
+                    </nz-tab>            
+                    <nz-tab nzTitle="System Reports"   >
+                        <div nz-row >
+                            <div nz-col [nzSpan]="24">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>SYSTEM REPORTS </strong> 
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                AUdit Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                MTA Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Activity Status Audit
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Roster Overlap Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" >
+                                                <i nz-icon nzType="printer"></i>
+                                                MTA Attendence Verification
+                                                </button>
+                                        </div>
+                                                                                                                
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div> 
+                    </nz-tab>
+                    
+                </nz-tabset>
+            </div>  
+            
+        </div>
+        <div>
+            
+            
+            <nz-modal
+                nzWidth="768px"
+                [nzStyle]="{ top: '20px' }"
+                [(nzVisible)]="isVisibleTop"
+                nzTitle="Reporting Criteria"
+                (nzOnCancel)="handleCancelTop()"
+                (nzOnOk)="handleOkTop()"
+                >
+                <div>
+                    <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+                        <nz-tab  nzTitle="Recipient's Criteria">
+                            <div nz-row>
+                                <div nz-col nzSpan="24">
+                                    <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
+                                    <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" ></nz-date-picker>
+                                     <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date"></nz-date-picker>                                 
+                                </div>
+                            </div>
+                            <div nz-row [formGroup]="inputForm">
+                                <div nz-row> 
+                                    
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="solution" nzTheme="outline"></i> Programs </label>
+                                            <label class="checks" nz-checkbox formControlName="allPrograms">All Programs</label>
+                                            <nz-select formControlName="programsArr" nzMode="multiple" [nzDisabled]="inputForm.value.allPrograms">
+                                                <nz-option *ngFor="let option of programsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
+                                            </nz-select>
+                                            
+                                        </div>
+                                    </div>                                                                                       
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>
+                                            <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
+                                            <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
+                                                <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>
+                                            
+                                        </div>
+                                    </div>                                                           
                                 
-                                <div nz-col nzSpan="6">
-                                    <div class="form-group">
-                                        <label><i nz-icon nzType="solution" nzTheme="outline"></i> Programs </label>
-                                        <label class="checks" nz-checkbox formControlName="allPrograms">All Programs</label>
-                                        <nz-select formControlName="programsArr" nzMode="multiple" [nzDisabled]="inputForm.value.allPrograms">
-                                            <nz-option *ngFor="let option of programsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
-                                        </nz-select>
-                                        
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="user" nzTheme="outline"></i> Managers </label>
+                                            <label class="checks" nz-checkbox formControlName="allManager">All Managers</label>
+                                            <nz-select formControlName="managersArr" nzMode="multiple" [nzDisabled]="inputForm.value.allManager">
+                                                <nz-option *ngFor="let option of managersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>                                        
+                                        </div>
                                     </div>
-                                </div>                                                                                       
-                                <div nz-col nzSpan="6">
-                                    <div class="form-group">
-                                        <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>
-                                        <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
-                                        <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
-                                            <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                        </nz-select>
-                                        
+                                    
+                                </div> 
+                                <div nz-row>
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Categories </label>
+                                            <label class="checks" nz-checkbox formControlName="allServiceRegion">All Categories</label>                                        
+                                            <nz-select formControlName="serviceRegionsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allServiceRegion">
+                                                <nz-option *ngFor="let option of serviceRegionsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>                                        
+                                        </div>
                                     </div>
-                                </div>                                                           
-                            
-                                <div nz-col nzSpan="6">
-                                    <div class="form-group">
-                                        <label><i nz-icon nzType="user" nzTheme="outline"></i> Managers </label>
-                                        <label class="checks" nz-checkbox formControlName="allManager">All Managers</label>
-                                        <nz-select formControlName="managersArr" nzMode="multiple" [nzDisabled]="inputForm.value.allManager">
-                                            <nz-option *ngFor="let option of managersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                        </nz-select>                                        
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Service Types</label>
+                                            <label class="checks" nz-checkbox formControlName="allSvctypes"  >All Services</label>                                        
+                                            <nz-select formControlName="svcTypeArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allSvctypes" >
+                                                <nz-option *ngFor="let option of svcTypeArr" [nzLabel]="option" [nzValue]="option"  ></nz-option>
+                                            </nz-select>                                        
+                                    </div>
+                                    </div>
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Vehicles</label>
+                                            <label class="checks" nz-checkbox formControlName="allVehicles">All Vehicles</label>                                        
+                                            <nz-select formControlName="vehiclesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allVehicles" >
+                                                <nz-option *ngFor="let option of vehiclesArr" [nzLabel]="option" [nzValue]="option" ></nz-option>
+                                            </nz-select>                                        
+                                        </div> 
                                     </div>
                                 </div>
+                            </div>  
+                        </nz-tab>
+                        <nz-tab  nzTitle="Register's Criteria" >
+                            <div nz-row [formGroup]="inputForm">                                                        
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="bank" nzTheme="outline"></i> Funders </label>
+                                            <label class="checks" nz-checkbox formControlName="allFunders">All Funders</label>
+                                            <nz-select formControlName="fundersArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allFunders">
+                                                <nz-option *ngFor="let option of fundersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>
+                                            
+                                        </div>
+                                    </div>                                
+                                        <div nz-col nzSpan="8">
+                                            <div class="form-group" >
+                                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i>Svc Providers</label>
+                                                <label class="checks" nz-checkbox formControlName="allSvcProviders">All Svc Providers</label>
+                                                <nz-select formControlName="svcprovidersArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allSvcProviders">
+                                                    <nz-option *ngFor="let option of svcprovidersArr" [nzLabel]="option" [nzValue]="option" ></nz-option>
+                                                </nz-select>                                                                   
+                                            </div>
+                                        </div>
+                                                                                                
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Outlets</label>
+                                            <label class="checks" nz-checkbox formControlName="allOutlets">All Outlets</label>
+                                            
+                                            <nz-select formControlName="outletsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allOutlets">
+                                                <nz-option *ngFor="let option of outletsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>
+                                            
+                                        </div>
+                                    </div>
+                                     
+                                    <div nz-row [formGroup]="inputForm">
+                                        <div nz-col nzSpan="8">
+                                            <div class="form-group">
+                                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> State </label>
+                                                <label class="checks" nz-checkbox formControlName="allState">All State</label>
+                                                <nz-select formControlName="statesArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allState">
+                                                    <nz-option *ngFor="let option of statesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                                </nz-select>
+                                                
+                                            </div>
+                                        </div> 
+                                    </div>                              
+                            </div>
+                                  
+                        </nz-tab>
+                        <nz-tab  nzTitle="Staff's Criteria" > 
+                            <div nz-row >
+    
+                            </div>
+                                <div nz-row [formGroup]="inputForm">
+                                    <div nz-row>
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>
+                                            <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
+                                            <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
+                                                <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>
+                                            
+                                        </div>
+                                    </div>    
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff Group </label>
+                                            <label class="checks" nz-checkbox formControlName="allGroups">All Groups </label>
+                                            <nz-select formControlName="staffgroupsArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allGroups">
+                                                <nz-option *ngFor="let option of staffgroupsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>                                    
+                                        </div>
+                                    </div>
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="user" nzTheme="outline"></i> Managers </label>
+                                            <label class="checks" nz-checkbox formControlName="allManager">All Managers</label>
+                                            <nz-select formControlName="managersArr" nzMode="multiple" [nzDisabled]="inputForm.value.allManager">
+                                                <nz-option *ngFor="let option of managersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>                                        
+                                        </div>
+                                    </div>
+                                </div>
+                        <!--   <div nz-row>    
                                 <div nz-col nzSpan="6">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff  </label>
+                                            <label class="checks" nz-checkbox formControlName="allStaff">All Staff </label>
+                                            <nz-select formControlName="staffArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaff">
+                                                <nz-option *ngFor="let option of staffArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>                                    
+                                        </div>
+                                    </div>
+                                </div>
+                        -->
+                                                                                                           
+                            </div> 
+                        </nz-tab>
+                        
+                        <nz-tab  nzTitle="Roster's Criteria" > 
+                            <div nz-row >
+    
+                            </div>
+                            <div nz-row [formGroup]="inputForm">    
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff Group </label>
+                                        <label class="checks" nz-checkbox formControlName="allGroups">All Groups </label>
+                                        <nz-select formControlName="staffgroupsArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allGroups">
+                                            <nz-option *ngFor="let option of staffgroupsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff  </label>
+                                        <label class="checks" nz-checkbox formControlName="allStaff">All Staff </label>
+                                        <nz-select formControlName="staffArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaff">
+                                            <nz-option *ngFor="let option of staffArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>
+                                                                                                           
+                            </div> 
+                        </nz-tab>
+                        <nz-tab  nzTitle="Others" > 
+                            <div nz-row >
+    
+                            </div>
+                            <div nz-row [formGroup]="inputForm">    
+                                
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff  </label>
+                                        <label class="checks" nz-checkbox formControlName="allStaff">All Staff </label>
+                                        <nz-select formControlName="staffArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaff">
+                                            <nz-option *ngFor="let option of staffArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8">
                                     <div class="form-group">
                                         <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Service Regions</label>
                                         <label class="checks" nz-checkbox formControlName="allServiceRegion">All Regions</label>                                        
@@ -797,100 +971,32 @@
                                             <nz-option *ngFor="let option of serviceRegionsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
                                         </nz-select>                                        
                                     </div>
-                                </div>
-                            </div>
-                        </div>  
-                    </nz-tab>
-                    <nz-tab  nzTitle="Funders & States" >
-                        <div nz-row [formGroup]="inputForm">                                                        
-                                <div nz-col nzSpan="6">
-                                    <div class="form-group">
-                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Funders </label>
-                                        <label class="checks" nz-checkbox formControlName="allFunders">All Funders</label>
-                                        <nz-select formControlName="fundersArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allFunders">
-                                            <nz-option *ngFor="let option of fundersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                        </nz-select>
-                                        
-                                    </div>
-                                </div>                                
-                                    <div nz-col nzSpan="6">
-                                        <div class="form-group" >
-                                            <label><i nz-icon nzType="apartment" nzTheme="outline"></i>Svc Providers</label>
-                                            <label class="checks" nz-checkbox formControlName="allSvcProviders">All Svc Providers</label>
-                                            <nz-select formControlName="svcprovidersArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allSvcProviders">
-                                                <nz-option *ngFor="let option of svcprovidersArr" [nzLabel]="option" [nzValue]="option" ></nz-option>
-                                            </nz-select>                                                                   
-                                        </div>
-                                    </div>
-                                                                                            
-                                <div nz-col nzSpan="6">
-                                    <div class="form-group">
-                                        <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Outlets</label>
-                                        <label class="checks" nz-checkbox formControlName="allOutlets">All Outlets</label>
-                                        
-                                        <nz-select formControlName="outletsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allOutlets">
-                                            <nz-option *ngFor="let option of outletsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                        </nz-select>
-                                        
-                                    </div>
-                                </div>
-                                <div nz-col nzSpan="6">
-                                    <div class="form-group">
-                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> State </label>
-                                        <label class="checks" nz-checkbox formControlName="allState">All State</label>
-                                        <nz-select formControlName="statesArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allState">
-                                            <nz-option *ngFor="let option of statesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                        </nz-select>
-                                        
-                                    </div>
-                                </div>                                
-                        </div>
-                              
-                    </nz-tab>
-                    <nz-tab  nzTitle="Staff" > 
-                        <div nz-row >
-
-                        </div>
-                        <div nz-row [formGroup]="inputForm">    
-                            <div nz-col nzSpan="6">
-                                <div class="form-group">
-                                    <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff Group </label>
-                                    <label class="checks" nz-checkbox formControlName="allGroups">All Groups </label>
-                                    <nz-select formControlName="staffgroupsArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allGroups">
-                                        <nz-option *ngFor="let option of staffgroupsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                    </nz-select>                                    
-                                </div>
-                            </div>
-                            <div nz-col nzSpan="6">
-                                <div class="form-group">
-                                    <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff  </label>
-                                    <label class="checks" nz-checkbox formControlName="allStaff">All Staff </label>
-                                    <nz-select formControlName="staffArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaff">
-                                        <nz-option *ngFor="let option of staffArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                    </nz-select>                                    
-                                </div>
-                            </div>
-                                                                                                       
-                        </div> 
-                    </nz-tab>
-                    
-                </nz-tabset>                        
-            </div>
-        </nz-modal>
+                                </div> 
+                                <div nz-col nzSpan="8">
+                                    
     
-
+                                </div>                                                                          
+                            </div> 
+                        </nz-tab>
+    
+                        
+                    </nz-tabset>                        
+                </div>
+            </nz-modal>
+        
+    
+        </div>
+        
     </div>
     
-</div>
-
-
-</div>
     
-<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
-    <div nz-row>
-        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
     </div>
-
+        
+    <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+        <div nz-row>
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        </div>
     
-
-</nz-drawer>
+        
+    
+    </nz-drawer>

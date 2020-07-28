@@ -39,9 +39,16 @@ const inputFormDefault = {
     allGroups: [true],
 
     staffArr: [[]],
-    allStaff: [true],
+    allStaff: [true],   
 
-    
+ //   vehiclesArr: [[]],
+ //   allVehicles: [true],
+
+    svcTypeArr: [[]],
+    allSvctypes: [true] ,
+   
+    vehiclesArr:[[]],
+    allVehicles:[true]  
 
     
     
@@ -65,19 +72,25 @@ const inputFormDefault = {
             width: 200pt !important;
             text-align: left !important
         }
+        label{
+            font-weight: bold; 
+        }
         
         .form-group label{
-            font-weight: 300;
+            font-weight: bold;
         }
         nz-select{
             width:100%;
+            x
         }
         label.checks{
             margin-top: 4px;
+            font-weight: 300 !important;
         }
         nz-date-picker{
             margin:5pt;
         }
+        
     `],
     templateUrl: './reports.html'
 })
@@ -110,8 +123,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     outletsArr: Array<any> = [];
     svcprovidersArr: Array<any> = [];    
     staffgroupsArr: Array<any> = []; 
-    staffArr: Array<any> = [];
-    
+    staffArr: Array<any> = []; 
+    vehiclesArr: Array<any> = [];   
+    svcTypeArr: Array<any> = [];
+
     btnid:string;
     id:string ;
     tryDoctype: any;
@@ -129,6 +144,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
  //   enddate: string ;
  //   startdate: string ;
     //format(new Date(), 'yyyy-MM-dd');
+
+    rpthttp = 'http://localhost:5488/api/report';
     dropDownArray: any = {
         branches: Array,
         serviceRegions: Array,
@@ -144,7 +161,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     listOfOption: Array<{ label: string; value: string }> = [];
     multipleValue = ['a10', 'c12'];
     
-
+    
     constructor(
         private formBuilder: FormBuilder,
         private listS: ListService,
@@ -161,6 +178,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             children.push({ label: i.toString(36) + i, value: i.toString(36) + i });
             
         }
+        
+
 
         this.listOfOption = children;       
         this.inputForm = this.fb.group(inputFormDefault);
@@ -169,6 +188,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.inputForm.get('allPrograms').valueChanges.subscribe(data => {
             this.inputForm.patchValue({
                 programsArr: []
+            });
+        });
+
+        this.inputForm.get('allVehicles').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                vehiclesArr: []
             });
         });
         
@@ -229,7 +254,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             });
         });
 
-    }//ngOninit
+        this.inputForm.get('allSvctypes').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                svcTypeArr: []
+            });
+        });
+
+    }//ngOninit     
 
  /*   hello(data: any){
         console.log(data)
@@ -247,8 +278,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             listType: 'SERVICE PROVIDERS',
             includeInactive: false
         }).subscribe(x => this.svcprovidersArr = x);
-
+        ////svcTypeArr    allSvctypes
         this.listS.getcstdaoutlets().subscribe(x => this.outletsArr = x);
+        this.listS.GetVehicles().subscribe(x => this.vehiclesArr = x);
+        this.listS.GetStaffServiceTypes().subscribe(x => this.svcTypeArr = x);
 
         this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
@@ -280,16 +313,47 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         
         this.listS.getliststaffgroup().subscribe(x => this.staffgroupsArr = x)
        
-
+        
 
     }
 
     ngOnDestroy(): void {
         console.log('on destroy');
     }
-    showModal(){                             
-         this.isVisibleTop = true;
-                              
+    showModal(e){
+            e = e || window.event;
+            e = e.target || e.srcElement; 
+            this.btnid = e.id
+         //   this.showModal();
+         
+    
+        /*     
+            this.inputForm.controls['allVehicles'].disable(); 
+            this.inputForm.controls['vehiclesArr'].disable();
+            this.inputForm.controls['allSvctypes'].disable(); 
+            this.inputForm.controls['svcTypeArr'].disable();
+            
+            
+            switch(this.btnid){
+                case 'btn-transportsummary' :
+                    this.inputForm.controls['allVehicles'].enable(); 
+                    this.inputForm.controls['vehiclesArr'].enable();
+                    alert("transportsummary")
+                    break;
+                case 'btn-unallocatedbookings' :                
+                this.inputForm.controls['allSvctypes'].enable(); 
+                this.inputForm.controls['svcTypeArr'].enable();
+                alert("bookongs")
+                     break;
+                default:
+                
+            }
+        */
+
+
+            
+            this.isVisibleTop = true;   
+            return this.btnid                
      }
      onChange(result: Date): void {
         console.log('onChange: ', result);}
@@ -298,8 +362,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         e = e || window.event;
         e = e.target || e.srcElement; 
         this.btnid = e.id
+     //   this.showModal();
+     
+
         return this.btnid    
-     //  this.showModal(e.id);
+     //  
         
     } 
 
@@ -508,8 +575,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     const requestOptions = {
         headers: new HttpHeaders(headerDict)
     };
-
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+  
+  //this.rpthttp
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -604,7 +672,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -689,7 +757,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -782,7 +850,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -874,7 +942,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -956,7 +1024,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -1015,7 +1083,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -1105,7 +1173,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -1197,7 +1265,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1289,7 +1357,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1373,7 +1441,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1456,7 +1524,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1540,7 +1608,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1624,7 +1692,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1707,7 +1775,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1799,7 +1867,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1893,7 +1961,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -1985,7 +2053,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -2074,7 +2142,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             console.log(blob);
             
@@ -2166,7 +2234,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -2244,7 +2312,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -2322,7 +2390,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -2400,7 +2468,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -2479,7 +2547,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -2557,7 +2625,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -2636,7 +2704,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         
@@ -2697,7 +2765,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              */                                               
         fQuery = fQuery + "ORDER BY [NAME] "
         
-    //console.log(fQuery)
+    console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2721,7 +2789,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         headers: new HttpHeaders(headerDict)
     };
     
-    this.http.post('http://localhost:5488/api/report', JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         console.log(blob);
         

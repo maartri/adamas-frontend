@@ -59,6 +59,12 @@ export class ListService {
     getcstdaoutlets(): Observable<any>{
         return this.auth.get(`${list}/cstdaoutlets`);
     }
+    GetVehicles(): Observable<any>{
+        return this.auth.get(`${list}/vehicles`);
+    }
+    GetStaffServiceTypes(): Observable<any>{ 
+        return this.auth.get(`${list}/staffservices`);
+    }
 
     getimlocation(): Observable<any>{
         return this.auth.get(`${list}/imlocation`);

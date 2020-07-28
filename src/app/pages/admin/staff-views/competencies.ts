@@ -15,7 +15,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             margin-top:20px;
         }
         nz-select{
-            width: 15rem;
+            width: 100%;
         }
     `],
     templateUrl: './competencies.html',

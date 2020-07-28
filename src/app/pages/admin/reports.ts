@@ -145,7 +145,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
  //   startdate: string ;
     //format(new Date(), 'yyyy-MM-dd');
 
-    rpthttp = 'http://localhost:5488/api/report';
+ //   rpthttp = 'http://45.77.37.207:5488/api/report';
+ rpthttp = 'http://localhost:5488/api/report';
     dropDownArray: any = {
         branches: Array,
         serviceRegions: Array,
@@ -2715,7 +2716,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
-        console.log(err);
+   //     console.log(err);
     });        
     }
 
@@ -2765,7 +2766,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              */                                               
         fQuery = fQuery + "ORDER BY [NAME] "
         
-    console.log(fQuery)
+  ///  console.log(fQuery)
 
     this.drawerVisible = true;
 

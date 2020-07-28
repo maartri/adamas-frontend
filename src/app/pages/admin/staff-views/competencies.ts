@@ -7,6 +7,8 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
+// import setHours from 'date-fns/set_hours';
+
 @Component({
     styles: [`
         nz-table{
@@ -36,6 +38,8 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     dateFormat: string = 'dd/MM/yyyy';
 
     postLoading: boolean = false;
+
+    isUpdate: boolean = false;
 
     constructor(
         private timeS: TimeSheetService,
@@ -75,6 +79,8 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();
         this.search(this.user);
         this.buildForm();
+
+        this.populateDropDowns(); 
     }
 
     ngOnDestroy(): void {
@@ -108,13 +114,34 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     }
 
     showAddModal() {
-        this.resetModal();
-        this.populateDropDowns();        
+        this.resetModal();      
         this.modalOpen = true;
     }
 
     showEditModal(index: any) {
+        this.isUpdate = true;
+        this.current = 0;
+        this.modalOpen = true;
 
+        const { 
+            recordNumber, 
+            expiryDate, 
+            certReg, 
+            competency, 
+            mandatory,
+            notes, 
+            reminderDate
+         } = this.tableData[index];
+
+        this.inputForm.patchValue({
+            recordNumber: recordNumber,
+            expiryDate: expiryDate,
+            reminderDate: reminderDate,
+            competency: competency,
+            certReg: certReg,
+            mandatory: mandatory,
+            notes: notes
+        });
     }
 
     handleCancel() {
@@ -148,26 +175,31 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
 
     pre(): void {
         this.current -= 1;
-        //this.changeContent();
     }
 
     next(): void {
         this.current += 1;
-        //this.changeContent();
     }
 
     save() {
         this.postLoading = true;
-        this.timeS.postcompetencies(this.inputForm.value, this.user.id)
-            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                if (data) {
-                    this.globalS.sToast('Success', 'Competency saved');
-                    this.search();
-                    this.handleCancel();
-                    this.resetModal();
-                    return;
-                }            
+        const input = this.inputForm.value;
+        console.log(input)
+        if(this.isUpdate){
+            this.timeS.updatecompetency(input, input.recordNumber).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                this.globalS.sToast('Success','Changes saved');
+                this.search();
             });
+            this.isUpdate = false;
+        } else {
+            this.timeS.postcompetencies(input, this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
+                this.globalS.sToast('Success', 'Competency saved');
+                this.search();
+            });
+        }
+        
+        this.handleCancel();
+        this.resetModal();
     }
 
 }

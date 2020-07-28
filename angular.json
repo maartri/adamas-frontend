@@ -39,7 +39,9 @@
                 "src/sass"
               ]
             },
-            "scripts": []
+            "scripts": [
+              "src/assets/right-click.js"
+            ]
           },
           "configurations": {
             "production": {

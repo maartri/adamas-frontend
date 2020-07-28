@@ -91,6 +91,8 @@
                 #calendar
                 [options]="calendarOptions"
                 [plugins]="calendarPlugins"
+                (eventRightClick)="eventRightClick($event)"
+                (eventRender)="eventRender($event)"
                 [columnHeaderFormat]="{
                     day: 'numeric', omitCommas: true
                 }"

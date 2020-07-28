@@ -53,6 +53,13 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         duration: {
             months: 1           
         },
+        eventDidMount: function(e){
+            e.el.addEventListener('contextmenu', function (ev) {
+                ev.preventDefault();
+                alert(JSON.stringify(e.event)); 
+                return false;
+            }, false);
+        },     
         headerToolbar: {
             left: '',
             center: '',
@@ -65,8 +72,9 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         select: function(info){
 
         },
-        eventClick: function(info) {
-            console.log(info)
+        eventClick: function(e) {
+            // console.log(e.event.id)
+            console.log(e);           
         },
         views: {
             timeGridMonth: {
@@ -78,9 +86,10 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
 
               slotDuration: '00:05:00',
               buttonText: '4 day',              
-            }            
+            }
         }        
     };
+
 
     calendarPlugins = [dayGridPlugin,timeGridPlugin,interactionPlugin]; // important!
 
@@ -110,6 +119,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         private staffS: StaffService,
         private globalS: GlobalService
     ) {
+
         this.dateStream.pipe(
             distinctUntilChanged(),          
             takeUntil(this.unsubscribe),)
@@ -145,10 +155,12 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit(): void {
         // console.log(this.calendarComponent.getApi());
         this.searchRoster(this.date);
+
+        console.log(document)
+        
     }
 
     picked(data: any){
-        console.log(data);
         this.userStream.next(data);
     }
 
@@ -159,6 +171,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     searchRoster(date: any): void{
         console.log(date);
         console.log(this.recipient)
+        this.calendarOptions.eventClick;
         // console.log(format(startOfMonth(date),'yyyy/MM/dd'));
         if(!this.recipient) return;
         console.log(moment(date).startOf('month').format('YYYY-MM-DD hh:mm'));
@@ -261,4 +274,8 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         console.log(event.event)
         console.log(event.oldEvent)
     } 
+
+    eventRightClick(data: any){
+        console.log(data);
+    }
 }

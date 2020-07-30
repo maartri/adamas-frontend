@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { GlobalService, StaffService, ShareService, leaveTypes } from '@services/index';
+import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
 
 @Component({
     styles: [`
@@ -28,23 +29,31 @@ import { GlobalService, StaffService, ShareService, leaveTypes } from '@services
         }
         li{
             display: inline-block;
-            margin-right: 10px;
-            font-size: 12px;
-            padding: 5px;
-            cursor:pointer;
-        }
-        li:hover{
-            color:#177dff;
+            margin-right: 6px;
+            padding: 5px 0;
+            font-size: 13px;
         }
         li div{
             text-align: center;
-            font-size: 17px;
         }
         .recipient-controls button{
             margin-right:1rem;
         }
         nz-select{
             width:100%;
+        }
+        .options button:disabled{
+            color:#a3a3a3;
+            cursor: no-drop;
+        }
+        .options button:hover:not([disabled]) {
+            color:#177dff;
+            cursor:pointer;
+        }
+        ul li button{
+            border: 0;
+            background: #ffffff00;
+            float: left;
         }
     `],
     templateUrl: './recipients.html',
@@ -68,6 +77,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     current: number = 0;
 
     selectedValue: any;
+
+    status: any
+    statusTab = new Subject<any>();
 
     listChange(event: any) {
 
@@ -228,5 +240,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.sharedS.emitOnSearchListNext(user.code);        
         this.profileData = user;
         this.openReferInModal = {};
+    }
+
+    clicky(){
+        console.log('sdd')
     }
 }

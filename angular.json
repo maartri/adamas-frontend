@@ -40,7 +40,7 @@
                 ]
               },
               "scripts": [
-                "src/assets/js/right-click.js"
+
               ]
             },
             "configurations": {

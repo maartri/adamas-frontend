@@ -79,6 +79,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     leaveBalanceList: Array<any>;
     terminateGroup: FormGroup;
 
+    staffrecordview: string;
+
     listChange(event: any) {
 
         if (event == null) {
@@ -123,7 +125,19 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private cd: ChangeDetectorRef,
         private fb: FormBuilder
     ) {
-        
+
+      
+    }
+
+    ngOnInit(): void {
+        const { user } = this.globalS.decode();
+
+        this.listS.getstaffrecordview(user).subscribe(data => {
+            this.staffrecordview = data.view;
+        })
+
+        this.buildForm();
+        this.isFirstLoad = false;   
         
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
@@ -139,14 +153,9 @@ export class StaffAdmin implements OnInit, OnDestroy {
         });
     }
 
-    ngOnInit(): void {
-        this.isFirstLoad = false;
-        this.buildForm();        
-    }
-
     buildForm(): void{
         this.terminateGroup = this.fb.group({
-            terminateDate: ['', Validators.required],
+            terminateDate: [new Date(), Validators.required],
             unallocUnapproved: false,
             unallocMaster: false,
             deletePending: false

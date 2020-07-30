@@ -25,20 +25,20 @@
     <div nz-col nzSpan="24">
         <nz-tabset *ngIf="user && staffrecordview" [nzTabPosition]="'top'" [nzSelectedIndex]="nzSelectedIndex" [nzType]="'card'">
             <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[1] == '1'" nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[2] == '1'" nzTitle="Pay" (nzClick)="view(2)"></nz-tab>
-            <nz-tab *ngIf="staffrecordview[4] == '1'" nzTitle="Leave App" (nzClick)="view(3)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[5] == '1'" nzTitle="Reminders" (nzClick)="view(4)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[6] == '1'" nzTitle="OP Notes" (nzClick)="view(5)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[7] == '1'" nzTitle="HR Notes" (nzClick)="view(6)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[1] != '1'" nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[2] != '1'"  nzTitle="Pay" (nzClick)="view(2)"></nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[4] != '1'" nzTitle="Leave App" (nzClick)="view(3)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[5] != '1'" nzTitle="Reminders" (nzClick)="view(4)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[6] != '1'" nzTitle="OP Notes" (nzClick)="view(5)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[7] != '1'" nzTitle="HR Notes" (nzClick)="view(6)"> </nz-tab>
 
-            <nz-tab *ngIf="staffrecordview[8] == '1'"nzTitle="Competencies" (nzClick)="view(7)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[9] == '1'" nzTitle="Training" (nzClick)="view(8)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[10] == '1'" nzTitle="Incident" (nzClick)="view(9)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[12] == '1'" nzTitle="Document" (nzClick)="view(10)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[14] == '1'" nzTitle="Time & Attendance" (nzClick)="view(11)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[18] == '1'"  nzTitle="Position" (nzClick)="view(12)"> </nz-tab>
-            <nz-tab *ngIf="staffrecordview[19] == '1'" nzTitle="Groupings & Preferences" (nzClick)="view(13)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[8] != '1'" nzTitle="Competencies" (nzClick)="view(7)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[9] != '1'" nzTitle="Training" (nzClick)="view(8)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[10] != '1'" nzTitle="Incident" (nzClick)="view(9)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[12] != '1'" nzTitle="Document" (nzClick)="view(10)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[14] != '1'" nzTitle="Time & Attendance" (nzClick)="view(11)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[18] != '1'"  nzTitle="Position" (nzClick)="view(12)"> </nz-tab>
+            <nz-tab [nzDisabled]="staffrecordview[19] != '1'" nzTitle="Groupings & Preferences" (nzClick)="view(13)"> </nz-tab>
         </nz-tabset>
     </div>
 

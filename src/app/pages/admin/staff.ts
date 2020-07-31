@@ -12,6 +12,11 @@ interface Person {
     address: string;
 }
 
+interface UserView{
+    staffRecordView: string,
+    staff: number
+}
+
 @Component({
     styles: [`
         nz-tabset{
@@ -79,7 +84,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     leaveBalanceList: Array<any>;
     terminateGroup: FormGroup;
 
-    staffrecordview: string;
+    userview: UserView;
 
     listChange(event: any) {
 
@@ -133,7 +138,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
         const { user } = this.globalS.decode();
 
         this.listS.getstaffrecordview(user).subscribe(data => {
-            this.staffrecordview = data.view;
+            this.userview = data;
+            this.cd.detectChanges();
         })
 
         this.buildForm();

@@ -122,7 +122,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if(user && role == 'ADMIN USER'){
       this.listS.getstaffrecordview(user).subscribe(data => {
-          this.staffrecordview = data.view;
+          this.staffrecordview = data.staffRecordView;
       });
     }
 

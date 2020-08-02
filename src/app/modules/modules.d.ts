@@ -446,7 +446,8 @@ declare module Dto {
         duration?: number,
         durationInHours?: number,
         quants?: string,
-        blockNo?: number
+        blockNo?: number,
+        error?: boolean
     }
 
     export interface RecipientPrograms {

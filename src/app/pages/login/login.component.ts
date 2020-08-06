@@ -8,6 +8,7 @@ import { SettingsService } from '@services/settings.service';
 import {
   Router
 } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -52,26 +53,25 @@ export class LoginComponent implements OnInit {
       Password: this.loginForm.get('password').value
     }
    
-    this.loginS.login(user)
-      .subscribe(data => {
-
-        this.globalS.token = data.access_token;       
-        this.settingS.getSettings(user.Username);
+    this.settingS.getSettingsObservable(user.Username).pipe(
+      switchMap(x => {
+        this.globalS.settings = x;
+        return this.loginS.login(user);
+      }) 
+    ).subscribe(data => {
+        this.globalS.token = data.access_token;        
         
         if (this.globalS.redirectURL) {
           this.globalS.ISTAFF_BYPASS = 'true';
           this.router.navigateByUrl(this.globalS.redirectURL);
           return;
-        }
-
-        
+        }       
 
         setTimeout(() => {
           this.globalS.viewRender(this.globalS.token);
         }, 200);
 
         this.reset();
-
       }, (error: HttpErrorResponse) => {
         this.unauthorized = true;
         if (error.status == 401) this.unauthorizedStr = 'Invalid user name or password';

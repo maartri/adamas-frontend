@@ -24,7 +24,8 @@ export class BreadcrumbsComponent implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(event => {
-      this.breadcrumbs = this.removeHomeRoutes(this.createBreadCrumb(this.activatedRoute.root));    });
+      this.breadcrumbs = this.removeHomeRoutes(this.createBreadCrumb(this.activatedRoute.root));
+    });
   }
 
   ngOnInit(): void {

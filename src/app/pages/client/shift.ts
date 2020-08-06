@@ -203,7 +203,6 @@ export class ShiftClient implements OnInit, OnDestroy {
         console.log(this.currentShift);
         console.log(index);
         if (this.tabIndex === 0) {
-            //this.cancelBookingAlertOpen = true;
             this.cancelBookingModal = true;
         } else {
 
@@ -242,20 +241,19 @@ export class ShiftClient implements OnInit, OnDestroy {
         }
 
         // this.tabStream.next(this.tabActive);
-        // this.cancelBookingAlertOpen = false;
 
-        // this.clientS.postcancelbooking(booking)
-        //     .subscribe(data => {
-        //         if (data) {
-        //             this.globalS.sToast('Success', 'Booking Cancelled');
-        //             this.tabStream.next(this.tabIndex);
-        //         }
-        //         this.cancelBookingModal = false;
-        //     }, (err: HttpErrorResponse) => {
-        //         this.globalS.eToast('Error', 'An error occurred')
-        //     }, () => {
-        //         this.isConfirmLoading = false;
-        //     });
+        this.clientS.postcancelbooking(booking)
+            .subscribe(data => {
+                if (data) {
+                    this.globalS.sToast('Success', 'Booking Cancelled');
+                    this.tabStream.next(this.tabIndex);
+                }
+                this.cancelBookingModal = false;
+            }, (err: HttpErrorResponse) => {
+                this.globalS.eToast('Error', 'An error occurred')
+            }, () => {
+                this.isConfirmLoading = false;
+            });
     }
 
     approveShift(index: any){

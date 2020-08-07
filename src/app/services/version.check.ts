@@ -13,7 +13,7 @@ export class VersionCheckService {
      * @param url
      * @param {number} frequency - in milliseconds, defaults to 30 minutes
      */
-    public initVersionCheck(url, frequency = 2000) {
+    public initVersionCheck(url, frequency = 10000) {
         setInterval(() => {
             this.checkVersion(url);
         }, frequency);
@@ -35,8 +35,7 @@ export class VersionCheckService {
                     console.log(this.currentHash + '   ' + hash);
                     if (hashChanged) {
                         console.log('hash has changed')
-                        // ENTER YOUR CODE TO DO SOMETHING UPON VERSION CHANGE
-                       window.location.reload();
+                        location.reload();
                     }
                     console.log('hash not changed')
                     // store the new hash so we wouldn't trigger versionChange again

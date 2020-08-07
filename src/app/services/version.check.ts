@@ -32,6 +32,7 @@ export class VersionCheckService {
                     const hash = response.hash;
                     const hashChanged = this.hasHashChanged(this.currentHash, hash);                    
                     // If new version, do something
+                    console.log(this.currentHash + '   ' + hash);
                     if (hashChanged) {
                         console.log('hash has changed')
                         // ENTER YOUR CODE TO DO SOMETHING UPON VERSION CHANGE

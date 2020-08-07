@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  versionCheckURL : 'https://www.mark3nidad.com/version.json'
+  versionCheckURL : 'http://www.mark3nidad.com/version.json'
 };
 
 /*

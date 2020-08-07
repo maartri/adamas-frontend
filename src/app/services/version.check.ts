@@ -34,11 +34,10 @@ export class VersionCheckService {
                     this.currentHash = JSON.parse(localStorage.getItem('hash'));
                     // If new version, do something
                     console.log(this.currentHash + '   ' + hash);
-                    if (hashChanged) {
-                        localStorage.setItem('hash', JSON.stringify(hash));
+                    if (hashChanged) {                        
                         location.reload();
                     }
-                    console.log('hash not changed')
+                    localStorage.setItem('hash', JSON.stringify(hash));
                     // store the new hash so we wouldn't trigger versionChange again
                     // only necessary in case you did not force refresh
                     this.currentHash = hash;

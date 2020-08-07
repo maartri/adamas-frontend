@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { GlobalService, SettingsService } from '@services/index';
+import { GlobalService } from '@services/global.service';
+import { SettingsService } from '@services/settings.service';
 
 import { Observable, Subject, EMPTY, of } from 'rxjs';
 import {

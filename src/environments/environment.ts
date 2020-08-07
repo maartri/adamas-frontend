@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  versionCheckURL : 'http://45.77.37.207:9000/version.json'
 };
 
 /*

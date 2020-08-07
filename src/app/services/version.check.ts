@@ -30,11 +30,12 @@ export class VersionCheckService {
             .subscribe(
                 (response: any) => {
                     const hash = response.hash;
-                    const hashChanged = this.hasHashChanged(this.currentHash, hash);                    
+                    const hashChanged = this.hasHashChanged(this.currentHash, hash);     
+                    this.currentHash = JSON.parse(localStorage.getItem('hash'));
                     // If new version, do something
                     console.log(this.currentHash + '   ' + hash);
                     if (hashChanged) {
-                        console.log('hash has changed')
+                        localStorage.setItem('hash', JSON.stringify(hash));
                         location.reload();
                     }
                     console.log('hash not changed')

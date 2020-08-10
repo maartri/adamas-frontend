@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  versionCheckURL : 'https://www.mark3nidad.com/version.json'
+  versionCheckURL : 'http://localhost/version.json'
 };
+// url http://localhost/ https://rdweb.sjccl.org.au/portal/ 

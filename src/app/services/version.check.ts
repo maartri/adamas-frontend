@@ -1,22 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Injectable()
 export class VersionCheckService {
     // this will be replaced by actual hash post-build.js
     private currentHash = '{{POST_BUILD_ENTERS_HASH_HERE}}';
-
-    constructor(private http: HttpClient) {}
+    private timer: any = null;
+    private url: string; 
+    constructor(
+        private http: HttpClient,
+        private modalService: NzModalService
+    ) {}
 
     /**
      * Checks in every set frequency the version of frontend application
      * @param url
      * @param {number} frequency - in milliseconds, defaults to 30 minutes
      */
-    public initVersionCheck(url, frequency = 10000) {
-        setInterval(() => {
-            this.checkVersion(url);
-        }, frequency);
+    public initVersionCheck(url) {
+        this.url = url;
+        this.startTimer(url);
     }
 
     /**
@@ -25,7 +29,6 @@ export class VersionCheckService {
      */
     private checkVersion(url) {
         // timestamp these requests to invalidate caches
-        console.log('checking version');
         this.http.get(url + '?t=' + new Date().getTime())
             .subscribe(
                 (response: any) => {
@@ -35,7 +38,8 @@ export class VersionCheckService {
                     // If new version, do something
                     console.log(this.currentHash + '   ' + hash);
                     if (hashChanged) {                        
-                        location.reload();
+                        // location.reload();
+                        this.info();
                     }
                     localStorage.setItem('hash', JSON.stringify(hash));
                     // store the new hash so we wouldn't trigger versionChange again
@@ -62,5 +66,30 @@ export class VersionCheckService {
         }
 
         return currentHash !== newHash;
+    }
+    
+    info(): void {
+        this.stopTimer();
+        this.modalService.info({
+          nzTitle: 'Reload Version',
+          nzContent: '<p>Reload the application to get the latest changes?</p>',
+          nzOnOk: () => {
+            location.reload();
+            this.startTimer(this.url);
+          }
+        });
+    }
+
+    startTimer(url: string){
+        this.stopTimer();
+        this.timer =  setInterval(() => {
+            this.checkVersion(url);
+        }, 10000);
+    }
+
+    stopTimer(){
+        if(this.timer){
+            clearInterval(this.timer)
+        }
     }
 }

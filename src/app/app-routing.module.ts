@@ -5,6 +5,8 @@ import { LoginComponent } from './pages/login/login.component';
 
 import {  ProfilePage } from '@components/index';
 
+// Docusign
+import {  DocusignComponent } from './pages/docusign/docusign';
 
 import {
   UnauthorizedComponent
@@ -404,6 +406,10 @@ const routes: Routes = [
   {
     path: 'traccsadmin',
     component: StaffAdmin
+  },
+  {
+    path: 'docusign',
+    component: DocusignComponent
   }
   // {
   //   path: '**',

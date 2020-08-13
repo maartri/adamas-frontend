@@ -11,6 +11,10 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+
+    getstaffrecordview(user: string): Observable<any>{
+        return this.auth.get(`${list}/staff-record-view/${user}`);
+    }
     
     getserviceactivityall(data: any) {
         return this.auth.get(`${list}/activities/all/`, data);

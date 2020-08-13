@@ -216,7 +216,7 @@
                         </div>
                     </div> -->
                     <hr>
-                    <div nz-row>
+                    <div nz-row *ngIf="staffrecordview && staffrecordview[16] == '1'">
                         <div class="form-group">
                             <div>
                                 <label class="highlight"><i class="material-icons"> location_on </i>Address </label>
@@ -241,7 +241,7 @@
 
                         </div>
                     </div>
-                    <div nz-row>
+                    <div nz-row *ngIf="staffrecordview && staffrecordview[17] == '1' ">
                         <div class="form-group">
                             <div>
                                 <label class="highlight"><i class="material-icons"> phone </i>Contacts</label>
@@ -295,7 +295,7 @@
                 
                     <i nz-icon nzType="edit" nzTheme="outline"
                         (click)="profileStaffPreferredModal = true;patchTheseValuesInForm();"></i>
-                    <div nz-col nzSpan="11">
+                    <div nz-col nzSpan="11" *ngIf="staffrecordview && staffrecordview[15] == '1'">
                         <nz-descriptions nzLayout="vertical" [nzColon]="false" [nzColumn]=1>
                             <nz-descriptions-item nzTitle="Preferred Availability/Notes">
                                 <textarea rows="4" style="height: 174px; width: 13rem;" nz-input [ngModel]="user?.contactIssues"

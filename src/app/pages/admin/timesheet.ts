@@ -98,6 +98,20 @@ interface CalculatedPay{
         nz-descriptions >>> div table tbody tr td{
             font-size:11px;
         }
+        .notes{
+            max-height: 3rem;
+            overflow: hidden;            
+        }
+        .atay {
+            font-size: 10px !important;
+            white-space: break-spaces !important;
+            height: 8rem !important;
+            overflow: auto !important;
+        }
+        nz-alert >>> .ant-alert.ant-alert-no-icon{
+            padding:4px 15px;
+        }
+        
     `],
     templateUrl: './timesheet.html',
 })
@@ -916,8 +930,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     checkBoxChange(event: any, timesheet: any){
    
         const tdate = parseISO(timesheet.date);
-
-        this.timeS.getclosedate(timesheet.program)
+        console.log(timesheet)
+        this.timeS.getclosedate({ program: timesheet.program })
             .pipe(
                 switchMap(x => {
                     if(x.closeDate == null){
@@ -1077,12 +1091,14 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
         const { serviceType } = this.timesheetForm.value;
+
         console.log(this.selected.option)
+
         if (!program) return EMPTY;
         console.log(this.timesheetForm.value)
-        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
-            const { recipientCode, debtor } = this.timesheetForm.value;
 
+        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
+            // const { recipientCode, debtor } = this.timesheetForm.value;
             return this.listS.getserviceactivityall({
                 program,
                 recipient: this.GETRECIPIENT(this.selected.option),
@@ -1131,7 +1147,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     current = 0;
     nextDisabled: boolean = false;
     programsList: Array<any> = [];
-    serviceActivityList: Array<any> = [];
+    serviceActivityList: Array<any>;
     payTypeList: Array<any> = [];
     analysisCodeList: Array<any> = []
     
@@ -1266,7 +1282,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         let clientCode = this.FIX_CLIENTCODE_INPUT(tsheet);
 
         var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime, tsheet.time.endTime));
-        console.log(this.selected.option)
+
         let inputs = {
             anal: tsheet.analysisCode || "",
             billQty: tsheet.bill.quantity || 0,

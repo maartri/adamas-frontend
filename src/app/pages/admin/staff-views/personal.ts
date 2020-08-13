@@ -24,6 +24,7 @@ export class StaffPersonalAdmin implements OnInit, OnDestroy {
     constructor(
         private sharedS: ShareService,
         private globalS: GlobalService,
+        private listS: ListService,
         private router: Router,
     ) {
         
@@ -44,7 +45,8 @@ export class StaffPersonalAdmin implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.user = this.sharedS.getPicked();
+        this.user = this.sharedS.getPicked(); 
+
         this.transform(this.user)
         // this.user = {
         //     name: 'ABBAS A',

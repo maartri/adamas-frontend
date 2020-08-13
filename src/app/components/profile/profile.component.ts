@@ -98,6 +98,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   defaultURL: any;
 
   showAvatar: boolean;
+  staffrecordview: string; 
 
   constructor(
     private globalS: GlobalService,
@@ -116,7 +117,15 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   ngOnInit() {
-    const { role } = this.globalS.decode();
+
+    const { role, user } = this.globalS.decode();
+
+    if(user && role == 'ADMIN USER'){
+      this.listS.getstaffrecordview(user).subscribe(data => {
+          this.staffrecordview = data.staffRecordView;
+      });
+    }
+
     this._settings = this.settings;
 
     if (role == roles.client) {

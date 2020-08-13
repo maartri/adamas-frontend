@@ -111,7 +111,11 @@
                         <td nzWidth="70px" nzRight="220px">
                             <label nz-checkbox [(ngModel)]="data.approved"  (ngModelChange)="checkBoxChange($event,data)"></label>
                         </td>
-                        <td nzWidth="150px" nzRight="70px" >{{ data.notes }}</td>
+                        <td nzWidth="150px" nzRight="70px" >
+                            <div nz-tooltip [nzTooltipTitle]="data.notes" nzTooltipPlacement="leftTop" [nzOverlayClassName]="'atay'" class="notes">
+                                {{ data.notes }}
+                            </div>
+                        </td>
                         <td nzRight="0px" [nzAlign]="'left'">
                             <label nz-checkbox [(ngModel)]="data.selected" (ngModelChange)="selectedTimesheet($event,data)"></label>
                         </td>
@@ -190,7 +194,8 @@
                         <div nz-col nzSpan="8">
                             <div class="form-group">
                                 <label for="">Duration</label>
-                                <p class="time-duration">{{ durationObject?.durationStr }}</p>
+                                <nz-alert *ngIf="durationObject?.error" nzType="error" [nzMessage]="durationObject?.durationStr"></nz-alert>
+                                <nz-alert *ngIf="!durationObject?.error" nzType="success" [nzMessage]="durationObject?.durationStr"></nz-alert>
                             </div>
                         </div>
                     </div>
@@ -245,6 +250,7 @@
                             <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list.activity" [nzLabel]="list.activity"></nz-option>
                         </nz-select>                        
                         <div>
+                            <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="timesheetForm.get('program').value && serviceActivityList?.length == 0" nzType="warning" nzMessage="No Activities found"></nz-alert>
                             <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
                         </div>
                     </div>

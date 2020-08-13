@@ -44,7 +44,8 @@ import {
   CacheService,
   ScriptService,
   ShareService,
-  SettingsService
+  SettingsService,
+  VersionCheckService
 } from './services/index';
 
 import { IconsProviderModule } from './icons-provider.module';
@@ -141,6 +142,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     ScriptService,
     ShareService,
     SettingsService,
+    VersionCheckService,
     CurrencyPipe, DatePipe, DecimalPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

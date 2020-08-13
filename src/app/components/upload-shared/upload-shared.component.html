@@ -1,0 +1,21 @@
+<button  nz-button nzType="default" (click)="isVisible=true"><i nz-icon nzType="upload" nzTheme="outline"></i> Import File</button>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Import File" (nzOnCancel)="handleCancel()" >
+   <div nz-row>
+         <nz-upload nzType="drag" [nzBeforeUpload]="beforeUpload" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes" [nzAction]="urlPath" [(nzFileList)]="fileList">
+
+            <p class="ant-upload-drag-icon">
+                <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+            <p class="ant-upload-hint">
+                ...
+            </p>
+        </nz-upload>
+   </div>
+
+   <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="handleUpload()" [nzLoading]="uploading">Import Files</button>
+  </div>
+</nz-modal>

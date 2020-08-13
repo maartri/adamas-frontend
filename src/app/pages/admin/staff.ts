@@ -12,6 +12,11 @@ interface Person {
     address: string;
 }
 
+interface UserView{
+    staffRecordView: string,
+    staff: number
+}
+
 @Component({
     styles: [`
         nz-tabset{
@@ -79,6 +84,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     leaveBalanceList: Array<any>;
     terminateGroup: FormGroup;
 
+    userview: UserView;
+
     listChange(event: any) {
 
         if (event == null) {
@@ -123,7 +130,20 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private cd: ChangeDetectorRef,
         private fb: FormBuilder
     ) {
-        
+
+      
+    }
+
+    ngOnInit(): void {
+        const { user } = this.globalS.decode();
+
+        this.listS.getstaffrecordview(user).subscribe(data => {
+            this.userview = data;
+            this.cd.detectChanges();
+        })
+
+        this.buildForm();
+        this.isFirstLoad = false;   
         
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
@@ -139,14 +159,9 @@ export class StaffAdmin implements OnInit, OnDestroy {
         });
     }
 
-    ngOnInit(): void {
-        this.isFirstLoad = false;
-        this.buildForm();        
-    }
-
     buildForm(): void{
         this.terminateGroup = this.fb.group({
-            terminateDate: ['', Validators.required],
+            terminateDate: [new Date(), Validators.required],
             unallocUnapproved: false,
             unallocMaster: false,
             deletePending: false
@@ -159,6 +174,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     view(index: number) {
         this.nzSelectedIndex = index;
+
         if (index == 0) {
             this.router.navigate(['/admin/staff/personal'])
         }
@@ -230,26 +246,5 @@ export class StaffAdmin implements OnInit, OnDestroy {
             this.isConfirmLoading = false;
         });
     }
-
-    listOfData: Person[] = [
-        {
-          key: '1',
-          name: 'John Brown',
-          age: 32,
-          address: 'New York No. 1 Lake Park'
-        },
-        {
-          key: '2',
-          name: 'Jim Green',
-          age: 42,
-          address: 'London No. 1 Lake Park'
-        },
-        {
-          key: '3',
-          name: 'Joe Black',
-          age: 32,
-          address: 'Sidney No. 1 Lake Park'
-        }
-      ];
-
+    
 }

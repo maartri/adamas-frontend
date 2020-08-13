@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRouteSnapshot, ActivatedRoute, NavigationEnd } from '@angular/router';
 
 import { GlobalService, SettingsService } from '@services/index';
+import { Observable, Subject, EMPTY } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: '',
@@ -113,11 +116,30 @@ export class HomeClient implements OnInit {
     isVisible: boolean = false;
 
     _settings: SettingsService;
+    changeRoute = new Subject<string>();
+    currRoute: string;
     constructor(
         private globalS: GlobalService,
-        private settingS: SettingsService
+        private settingS: SettingsService,
+        private router: Router,
+        private activatedRoute: ActivatedRoute
     ) {
         
+        var {user} = this.globalS.decode();
+
+        this.changeRoute.pipe(switchMap(index => {
+            this.router.navigate([index]);
+            return this.settingS.getSettingsObservable(user);
+        })).subscribe(index => {
+            this.globalS.settings = index;
+        });
+
+        this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+          ).subscribe(event => {
+            var routeArr = this.removeHomeRoutes(this.createBreadCrumb(this.activatedRoute.root));
+            this.currRoute = routeArr[routeArr.length - 1].url;
+        });
     }
 
     ngOnInit(): void{
@@ -133,4 +155,44 @@ export class HomeClient implements OnInit {
             this.isVisible = false;
         }
     }
+
+    createBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: Array<any> = []): Array<any> {
+        const children: Array<ActivatedRoute> = route.children;
+    
+        if (children.length === 0) {
+          return breadcrumbs;
+        }
+    
+        for (var child of children) {
+          const routeURL: string = child.snapshot.url.map(x => x.path).join('/');
+          if (routeURL !== '') {
+            url += `/${routeURL}`;
+          }
+          breadcrumbs.push({ label: routeURL, url: url })
+          return this.createBreadCrumb(child, url, breadcrumbs);
+        }
+    }
+
+    removeHomeRoutes(routes: Array<any>): Array<any> {
+        let finalRoutes = [...routes];
+    
+        if (finalRoutes.length === 0) {
+          return routes;
+        }
+    
+        var removeIndexes = [];
+        for (let route in routes) {
+          const url = routes[route].label;
+          if (url === 'admin' || url === 'landing') {
+            removeIndexes.push(parseInt(route));
+          }
+        }
+    
+        for (var i = removeIndexes.length - 1; i >= 0; i--)
+          finalRoutes.splice(removeIndexes[i], 1);
+    
+        finalRoutes.forEach(x => x.label = x.label.replace(/^\w/, c => c.toUpperCase()));
+    
+        return finalRoutes;
+      }
 }

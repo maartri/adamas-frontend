@@ -17,8 +17,11 @@ export class SettingsService {
     getSettings(name: any) {
         this.timeS.getusersettings(name).subscribe(data => {
             this.globalS.settings = data;
-            console.log(data);
         });
+    }
+
+    getSettingsObservable(name: any){
+        return this.timeS.getusersettings(name);
     }
     
     VERIFY_OUTPUT(value: string): boolean {
@@ -96,6 +99,27 @@ export class SettingsService {
         if (!settings) return 0;
 
         return settings.bookingLeadTime ? parseInt(settings.bookingLeadTime) + 1 : 1;
+    }
+
+    CANMANAGESERVICES(): boolean{
+        let settings: any = this.globalS.settings;
+        if (!settings) return false;
+
+        return this.VERIFY_OUTPUT(settings.canManageServices);
+    }
+
+    CANMANAGEPREFERENCES(): boolean{
+        let settings: any = this.globalS.settings;
+        if (!settings) return false;
+
+        return this.VERIFY_OUTPUT(settings.canManagePreferences);
+    }
+
+    VIEWPACKAGESTATEMENT(): boolean{
+        let settings: any = this.globalS.settings;
+        if (!settings) return false;
+
+        return this.VERIFY_OUTPUT(settings.viewPackageStatement);
     }
 
     

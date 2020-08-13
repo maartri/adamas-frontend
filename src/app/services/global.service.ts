@@ -470,10 +470,12 @@ export class GlobalService {
     computeTimeDATE_FNS(_start: any, _end: any): Dto.DateTimeVariables {
         
         const minutesInAnHour = 60;
-        const invalid = 'Invalid Time'
+        const invalid = 'Invalid Time';
+        const noTime = 'Both time values are required'
 
-        if (getHours(_start) > getHours(_end)) return { durationStr: invalid }
-        if (getHours(_start) === getHours(_end) && getMinutes(_start) >= getMinutes(_end)) return { durationStr: invalid }
+        if(!_start || !_end) return  { durationStr: noTime, error: true }
+        if (getHours(_start) > getHours(_end)) return { durationStr: invalid, error: true }
+        if (getHours(_start) === getHours(_end) && getMinutes(_start) >= getMinutes(_end)) return { durationStr: invalid, error: true }
 
         var starttime = getHours(_start) * minutesInAnHour + getMinutes(_start);
         var endtime = getHours(_end) * minutesInAnHour + getMinutes(_end);
@@ -487,7 +489,8 @@ export class GlobalService {
             duration: (diffTime / minutesInAnHour) * 12,
             durationInHours: (diffTime / minutesInAnHour),
             quants: (diffTime / minutesInAnHour).toFixed(2),
-            blockNo: starttime / 5
+            blockNo: starttime / 5,
+            error: false
         }
     }
 

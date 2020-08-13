@@ -5,6 +5,13 @@ import { LoginComponent } from './pages/login/login.component';
 
 import {  ProfilePage } from '@components/index';
 
+// Docusign
+import {  DocusignComponent } from './pages/docusign/docusign';
+
+import {
+  UnauthorizedComponent
+} from './pages/unauthorized/unauthorized';
+
 import {
   HomeClient,
   NotesClient,
@@ -60,6 +67,7 @@ import {
   StaffTrainingAdmin
 } from './pages/admin/staff-views/index';
 
+
 import {
   RecipientCasenoteAdmin,
   RecipientContactsAdmin,
@@ -101,6 +109,7 @@ const routes: Routes = [
   {
     path: 'client',
     component: HomeClient,
+    canActivate: [RouteGuard],
     children: [
       {
         path: '',
@@ -109,41 +118,53 @@ const routes: Routes = [
       },
       {
         path: 'notes',
-        component: NotesClient
+        component: NotesClient,
+        canActivate: [RouteGuard],
       },
       {
         path: 'history',
-        component: HistoryClient
+        component: HistoryClient,
+        canActivate: [RouteGuard],
       },
       {
         path: 'booking',
-        component: BookingClient
+        component: BookingClient,
+        canActivate: [RouteGuard],
       },
       {
         path: 'document',
-        component: DocumentClient
+        component: DocumentClient,
+        canActivate: [RouteGuard],
       },
       {
         path: 'package',
-        component: PackageClient
+        component: PackageClient,
+        canActivate: [RouteGuard],
       },
       {
         path: 'preferences',
-        component: PreferencesClient
+        component: PreferencesClient,
+        canActivate: [RouteGuard],
       },
       {
         path: 'manage-services',
-        component: ShiftClient
+        component: ShiftClient,
+        canActivate: [RouteGuard],
       },
       {
         path: 'profile',
-        component: ProfileClient
+        component: ProfileClient,
+        canActivate: [RouteGuard],
       },
       {
         path: 'calendar',
-        component: CalendarClient
+        component: CalendarClient,
+        canActivate: [RouteGuard],
+      },
+      {
+        path: 'unauthorized',
+        component: UnauthorizedComponent
       }
-
     ]
   },
   {
@@ -385,6 +406,10 @@ const routes: Routes = [
   {
     path: 'traccsadmin',
     component: StaffAdmin
+  },
+  {
+    path: 'docusign',
+    component: DocusignComponent
   }
   // {
   //   path: '**',
@@ -479,5 +504,6 @@ export const PAGE_COMPONENTS = [
   IntakeServices,
   IntakeStaff,
 
-  ExtraComponent
+  ExtraComponent,
+  UnauthorizedComponent
 ]

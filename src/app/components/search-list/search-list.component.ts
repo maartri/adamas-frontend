@@ -108,7 +108,6 @@ export class SearchListComponent implements OnInit , AfterViewInit, OnDestroy, C
       SearchString: ''
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.lists = data;
-      console.log(data);
       this.loading = false;
       this.cd.markForCheck();
     });

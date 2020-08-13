@@ -41,6 +41,9 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     // references the #calendar in the template
     @ViewChild('calendar') calendarComponent: FullCalendarComponent;
 
+    isVisible: boolean = false;
+    hahays = new Subject<any>();
+
     calendarOptions: CalendarOptions = {
         initialView: 'timeGridMonth',
         plugins: [dayGridPlugin,timeGridPlugin,interactionPlugin],
@@ -53,13 +56,9 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         duration: {
             months: 1           
         },
-        eventDidMount: function(e){
-            e.el.addEventListener('contextmenu', function (ev) {
-                ev.preventDefault();
-                alert(JSON.stringify(e.event)); 
-                return false;
-            }, false);
-        },     
+        // eventClassNames: [ 'myclassname', 'otherclassname' ],
+        // eventContent: { html: '<i>some html</i>' },
+        // eventDidMount: this.rightClick.bind(this),
         headerToolbar: {
             left: '',
             center: '',
@@ -72,10 +71,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         select: function(info){
 
         },
-        eventClick: function(e) {
-            // console.log(e.event.id)
-            console.log(e);           
-        },
+        eventClick: this.handleClick.bind(this),
         views: {
             timeGridMonth: {
               type: 'timeGrid',
@@ -90,6 +86,13 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         }        
     };
 
+    onRightClick(e){
+        console.log(e.target);
+    }
+
+    handleClick(e){
+        console.log(e);
+    }
 
     calendarPlugins = [dayGridPlugin,timeGridPlugin,interactionPlugin]; // important!
 
@@ -119,6 +122,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         private staffS: StaffService,
         private globalS: GlobalService
     ) {
+        
 
         this.dateStream.pipe(
             distinctUntilChanged(),          
@@ -169,8 +173,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     searchRoster(date: any): void{
-        console.log(date);
-        console.log(this.recipient)
+
         this.calendarOptions.eventClick;
         // console.log(format(startOfMonth(date),'yyyy/MM/dd'));
         if(!this.recipient) return;

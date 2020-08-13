@@ -413,7 +413,7 @@ export class BookingClient implements OnInit, OnDestroy {
         this.selectedService = null;
         this.startTime = new Date(1990, 1, 1, 9, 0, 0);
         this.endTime = new Date(1990, 1, 1, 10, 0, 0);
-        this.date = new Date();
+        this.date = addDays(new Date(), this._settings.BOOKINGLEADTIME());
         this.loadBooking = false;
         this.selectedStaff = '';
         this.weekly = '';

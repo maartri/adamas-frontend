@@ -119,8 +119,8 @@
                 </div>
 
             </div>
-            <div *ngIf="(!cprovider && current == 2) || (cprovider && current == 3)">
-                <div>
+            <div nz-row *ngIf="(!cprovider && current == 2) || (cprovider && current == 3)">
+                <div nz-col nzSpan="12">
                     <label for="">Notes</label>
                     <textarea [(ngModel)]="notes" rows="4" nz-input></textarea>
                 </div>

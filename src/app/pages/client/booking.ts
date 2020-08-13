@@ -4,7 +4,7 @@ import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsS
 import * as moment from 'moment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import format from 'date-fns/format';
-
+import addDays from 'date-fns/addDays'
 
 import { forkJoin, Subject, Observable, EMPTY } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged, switchMap, mergeMap } from 'rxjs/operators';
@@ -190,14 +190,10 @@ export class BookingClient implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log(this.globalS.decode());
-        // console.log(this.globalS.userProfile);
-
         this._settings = this.settings;
-        console.log(this._settings);
-
         this.user = this.inputUser || this.globalS.decode().code;
         this.token = this.globalS.decode();
+        this.date = addDays(this.date, this._settings.BOOKINGLEADTIME());
     }
 
     computeDuration(start: any, end: any) {

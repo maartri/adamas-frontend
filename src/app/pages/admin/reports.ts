@@ -41,16 +41,32 @@ const inputFormDefault = {
     staffArr: [[]],
     allStaff: [true],   
 
- //   vehiclesArr: [[]],
- //   allVehicles: [true],
+    incidentArr: [[]],    
+    allIncidents: [true],
 
     svcTypeArr: [[]],
     allSvctypes: [true] ,
    
     vehiclesArr:[[]],
-    allVehicles:[true]  
+    allVehicles:[true],
 
-    
+    itemArr:[[]],
+    allItems:[true],
+
+    planArr:[[]],
+    allPlans:[true],
+
+    caredomainArr:[[]],
+    allCareDomains:[true],
+
+    casenotesArr:[[]],
+    allCaseNotes:[true],
+
+    disiplineArr:[[]],
+    allDisciplines:[true],
+
+    recipientArr:[[]],
+    allRecipients:[true],
     
 
     
@@ -126,7 +142,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     staffArr: Array<any> = []; 
     vehiclesArr: Array<any> = [];   
     svcTypeArr: Array<any> = [];
-
+    disiplineArr: Array<any> = [];
+    casenotesArr: Array<any> = [];
+    caredomainArr: Array<any> = [];
+    planArr: Array<any> = [];
+    itemArr: Array<any> = [];
+    recipientArr: Array<any> = [];
+    incidentArr: Array<any> = [];
     btnid:string;
     id:string ;
     tryDoctype: any;
@@ -145,8 +167,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
  //   startdate: string ;
     //format(new Date(), 'yyyy-MM-dd');
 
- //   rpthttp = 'http://45.77.37.207:5488/api/report';
- rpthttp = 'http://localhost:5488/api/report';
+    rpthttp = 'http://45.77.37.207:5488/api/report';
+  
     dropDownArray: any = {
         branches: Array,
         serviceRegions: Array,
@@ -157,7 +179,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     inputForm: FormGroup;   
     drawerVisible: boolean = false;
-    // END - MARK
+    
 
     listOfOption: Array<{ label: string; value: string }> = [];
     multipleValue = ['a10', 'c12'];
@@ -260,8 +282,45 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 svcTypeArr: []
             });
         });
+        this.inputForm.get('allDisciplines').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                disiplineArr: []
+            });
+        });
+        this.inputForm.get('allCareDomains').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                caredomainArr: []
+               
+            });
+        });
+        this.inputForm.get('allItems').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                itemArr: [] 
+            });
+        });
+        this.inputForm.get('allIncidents').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                incidentArr: [] 
+            });
+        });
+        this.inputForm.get('allCaseNotes').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                casenotesArr: [] 
+            });
+        });
+        this.inputForm.get('allPlans').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                planArr: [] 
+            });
+        });
+        this.inputForm.get('allRecipients').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                recipientArr: [] 
+            });
+        });
+        
 
-    }//ngOninit     
+    }//ngOninit
 
  /*   hello(data: any){
         console.log(data)
@@ -283,6 +342,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.listS.getcstdaoutlets().subscribe(x => this.outletsArr = x);
         this.listS.GetVehicles().subscribe(x => this.vehiclesArr = x);
         this.listS.GetStaffServiceTypes().subscribe(x => this.svcTypeArr = x);
+        this.listS.GetRecipientAll().subscribe(x => this.recipientArr = x);
+        
+
 
         this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
@@ -293,9 +355,15 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             listType: 'BRANCHES',
             includeInactive: false
         }).subscribe(x => this.branchesArr = x);
-
-
+        this.listS.Getrptincidents().subscribe(x => this.incidentArr = x);
+        this.listS.GetrptLoanItems().subscribe(x => this.itemArr = x);
+        this.listS.getstaffdiscipline().subscribe(x => this.disiplineArr = x )
+        this.listS.getstaffcaredomain().subscribe(x => this.caredomainArr = x )
         this.listS.getserviceregion().subscribe(x => this.serviceRegionsArr = x )
+        this.listS.Getrptcasenotes().subscribe(x => this.casenotesArr = x )
+        this.listS.Getrptiplantypes().subscribe(x => this.planArr = x )
+        this.listS.GetTraccsStaffCodes().subscribe(x => this.staffArr = x )
+        
 
         this.listS.getreportcriterialist({
             listType: 'MANAGERS',
@@ -570,15 +638,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     const headerDict = {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',            
+        'Accept': 'application/json',
+                   
     }
       
     const requestOptions = {
-        headers: new HttpHeaders(headerDict)
+        headers: new HttpHeaders(headerDict),
+        credentials:true
     };
   
   //this.rpthttp
-    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
         .subscribe((blob: any) => {
             console.log(blob);
             

@@ -66,6 +66,21 @@ export class ListService {
 
     GetVehicles(): Observable<any>{
         return this.auth.get(`${list}/vehicles`);
+    } 
+    GetRecipientAll(): Observable<any>{
+        return this.auth.get(`${list}/intake/recipients/all`);
+    }
+    Getrptcasenotes(): Observable<any>{
+        return this.auth.get(`${list}/casenotesgroup`);
+    }
+    Getrptincidents(): Observable<any>{
+        return this.auth.get(`${list}/incidenttype`);
+    }
+    Getrptiplantypes(): Observable<any>{
+        return this.auth.get(`${list}/planttype`);
+    }
+    GetrptLoanItems(): Observable<any>{
+        return this.auth.get(`${list}/loanitems`);
     }
     
     GetStaffServiceTypes(): Observable<any>{ 
@@ -401,7 +416,6 @@ export class ListService {
     getlisthr(): Observable<any>{
         return this.auth.get(`${list}/hrgroups`)
     }
-
     getlistop(): Observable<any>{
         return this.auth.get(`${list}/opgroups`)
     }

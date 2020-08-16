@@ -74,8 +74,12 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked()
-        this.search(this.user);
-        this.buildForm();
+        if(this.user){
+            this.search(this.user);
+            this.buildForm();
+            return;
+        }
+        this.router.navigate(['/admin/staff/personal'])
     }
 
     ngOnDestroy(): void {

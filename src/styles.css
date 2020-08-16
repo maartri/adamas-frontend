@@ -235,3 +235,14 @@ th.action{
     margin-bottom: 8px;
     display: inline-block;
   }
+
+  .nzselect-min{
+      min-width: 15rem;
+  }
+
+  .margin-btm-10{
+    margin-bottom:10px;
+}
+.pad-15{
+    padding:15px;
+}

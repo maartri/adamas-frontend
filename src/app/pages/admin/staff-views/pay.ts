@@ -76,10 +76,15 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
-        this.buildForm();
+        if(this.user){
+            this.search(this.user);
+            this.buildForm();
+            this.populateDropdDowns();
+            return;
+        }
+        this.router.navigate(['/admin/staff/personal'])
 
-        this.populateDropdDowns();
+
     }
 
     ngOnDestroy(): void {

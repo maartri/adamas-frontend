@@ -39,6 +39,7 @@ import { ReferInComponent } from './refer-in/refer-in.component';
 import { IntervalDesignComponent } from './interval-design/interval-design.component';
 import { StaffPopupComponent } from './staff-popup/staff-popup.component';
 import { LeaveApplicationComponent } from './leave-application/leave-application.component';
+import { IncidentProfileComponent } from './incident-profile/incident-profile.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { LeaveApplicationComponent } from './leave-application/leave-application
     ReferInComponent,
     IntervalDesignComponent,
     StaffPopupComponent,
-    LeaveApplicationComponent
+    LeaveApplicationComponent,
+    IncidentProfileComponent
   ],
   imports: [
     CommonModule,
@@ -100,7 +102,8 @@ import { LeaveApplicationComponent } from './leave-application/leave-application
     AddReferralComponent,
     IntervalDesignComponent,
     StaffPopupComponent,
-    LeaveApplicationComponent
+    LeaveApplicationComponent,
+    IncidentProfileComponent
   ],
   providers: [
     

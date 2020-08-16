@@ -44,7 +44,12 @@ export class StaffContactAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.transform(this.user)
+        if(this.user){
+            this.transform(this.user)
+            return;
+        }
+        this.router.navigate(['/admin/staff/personal'])
+
     }
 
     ngOnDestroy(): void {

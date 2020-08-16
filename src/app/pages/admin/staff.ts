@@ -96,25 +96,27 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
 
         if (!this.isFirstLoad) {
-            this.view(0);
+            this.view(9);
             this.isFirstLoad = true;
         }
 
+        this.user = {
+            agencyDefinedGroup: undefined,
+            code: "AASTAFF HELP",
+            id: "S0100005616",
+            sysmgr: true,
+            view: "staff"
+        }
+
         // this.user = {
-        //     agencyDefinedGroup: "ARUNDEL",
-        //     code: "2CDC STEPH",
-        //     id: "T0100005506",
-        //     sysmgr: true,
-        //     view: "recipient"
+        //     code: event.accountNo,
+        //     id: event.uniqueID,
+        //     view: event.view,
+        //     agencyDefinedGroup: event.agencyDefinedGroup,
+        //     sysmgr: event.sysmgr
         // }
 
-        this.user = {
-            code: event.accountNo,
-            id: event.uniqueID,
-            view: event.view,
-            agencyDefinedGroup: event.agencyDefinedGroup,
-            sysmgr: event.sysmgr
-        }
+        console.log(this.user);
 
         this.sharedS.emitChange(this.user);
         this.cd.detectChanges();
@@ -136,6 +138,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         const { user } = this.globalS.decode();
+
+
 
         this.listS.getstaffrecordview(user).subscribe(data => {
             this.userview = data;
@@ -166,6 +170,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
             unallocMaster: false,
             deletePending: false
         });
+        this.listChange({});
     }
 
     ngOnDestroy(): void {

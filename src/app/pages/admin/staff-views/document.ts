@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, UploadService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,6 +11,13 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     styles: [`
         nz-table{
             margin-top:20px;
+        }
+        button{
+            margin-right:10px;
+        }
+        .limit-width{
+            width: 5rem;
+            overflow: hidden;
         }
     `],
     templateUrl: './document.html',
@@ -34,7 +41,8 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private uploadS: UploadService
     ) {
         cd.reattach();
 
@@ -74,7 +82,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         });
     }
 
-    search(user: any) {
+    search(user: any = this.user) {
         this.cd.reattach();
 
         this.loading = true;
@@ -99,6 +107,16 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     }
     
     delete(data: any) {
-        
+        this.uploadS.delete(this.user.id,{ 
+            id: data.docID,
+            filename: data.title
+        }).pipe(takeUntil(this.unsubscribe))
+            .subscribe(data => {
+            if(data){
+                this.search();
+                this.globalS.sToast('Success','File deleted')
+                return;
+            }
+        })
     }
 }

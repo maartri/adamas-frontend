@@ -149,10 +149,10 @@ export class UploadSharedComponent implements OnInit, OnDestroy, ControlValueAcc
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
+    console.log(value);
     if (value != null) {
       this.innerValue = value;
       this.urlPath = `api/v2/file/upload/document/${this.innerValue.id}`;
-
     }
   }
 

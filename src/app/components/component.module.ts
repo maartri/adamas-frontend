@@ -40,6 +40,7 @@ import { IntervalDesignComponent } from './interval-design/interval-design.compo
 import { StaffPopupComponent } from './staff-popup/staff-popup.component';
 import { LeaveApplicationComponent } from './leave-application/leave-application.component';
 import { IncidentProfileComponent } from './incident-profile/incident-profile.component';
+import { UploadSharedComponent } from './upload-shared/upload-shared.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { IncidentProfileComponent } from './incident-profile/incident-profile.co
     IntervalDesignComponent,
     StaffPopupComponent,
     LeaveApplicationComponent,
-    IncidentProfileComponent
+    IncidentProfileComponent,
+    UploadSharedComponent
   ],
   imports: [
     CommonModule,
@@ -103,7 +105,8 @@ import { IncidentProfileComponent } from './incident-profile/incident-profile.co
     IntervalDesignComponent,
     StaffPopupComponent,
     LeaveApplicationComponent,
-    IncidentProfileComponent
+    IncidentProfileComponent,
+    UploadSharedComponent
   ],
   providers: [
     

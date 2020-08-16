@@ -12,6 +12,29 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         nz-table{
             margin-top:20px;
         }
+        .ant-checkbox-wrapper{
+            display:flex;
+        }
+        .ant-checkbox-wrapper >>> span{
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+        }
+        .options > div{
+            margin-bottom:13px;
+        }
+        .check-oneline{
+            display:flex;
+        }
+        .check-oneline label:first-child{
+            flex:1;
+        }
+        .flexy{
+            max-height: 33rem;
+        }
+        textarea{
+            max-height:4rem;
+        }
     `],
     templateUrl: './incident.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -21,9 +44,15 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 export class StaffIncidentAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
-    inputForm: FormGroup;
+    incidentForm: FormGroup;
     tableData: Array<any>;
     loading: boolean = false;
+    postLoading: boolean = false;
+
+    current: number = 1;
+    modalOpen: boolean = false;
+
+    incidentTypeList: Array<any> = []
 
     constructor(
         private timeS: TimeSheetService,
@@ -54,8 +83,12 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
-        this.buildForm();
+        if(this.user){
+            this.search(this.user);
+            this.buildForm();
+            return;
+        }
+        this.router.navigate(['/admin/staff/personal'])
     }
 
     ngOnDestroy(): void {
@@ -63,13 +96,17 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    buildForm() {
-        this.inputForm = this.formBuilder.group({
+    handleCancel(){
+        this.modalOpen = false;
+    }
 
+    buildForm() {
+        this.incidentForm = this.formBuilder.group({
+            incidentType: ''
         });
     }
 
-    search(user: any) {
+    search(user: any = this.user) {
         this.cd.reattach();
         this.loading = true;
         this.timeS.getincidents(user.code).subscribe(data => {
@@ -83,9 +120,32 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
         return item.id;
     }
 
-    showAddModal() {
-        
+    pre(): void {
+        this.current -= 1;
     }
+
+    next(): void {
+        this.current += 1;
+    }
+
+    showAddModal() {
+        this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
+            console.log(data);
+            this.incidentTypeList = data;
+        });
+
+        this.modalOpen = true;
+    }
+
+    get nextRequired() {
+        const { incidentType  } = this.incidentForm.value;
+        
+        if (this.current == 0 && this.globalS.isEmpty(incidentType)) {
+          return false;
+        }
+    
+        return true;
+      }
 
     showEditModal(index: number) {
         
@@ -93,5 +153,9 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
 
     delete(data: any) {
         
+    }
+
+    save(){
+
     }
 }

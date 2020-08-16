@@ -49,7 +49,7 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
     loading: boolean = false;
     postLoading: boolean = false;
 
-    current: number = 1;
+    current: number = 0;
     modalOpen: boolean = false;
 
     incidentTypeList: Array<any> = []
@@ -98,6 +98,9 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
 
     handleCancel(){
         this.modalOpen = false;
+        this.incidentForm.reset();
+        this.user = {};
+        this.current = 0;
     }
 
     buildForm() {
@@ -130,7 +133,6 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
 
     showAddModal() {
         this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
-            console.log(data);
             this.incidentTypeList = data;
         });
 

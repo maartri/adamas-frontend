@@ -96,25 +96,25 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
 
         if (!this.isFirstLoad) {
-            this.view(9);
+            this.view(0);
             this.isFirstLoad = true;
         }
 
-        this.user = {
-            agencyDefinedGroup: undefined,
-            code: "AASTAFF HELP",
-            id: "S0100005616",
-            sysmgr: true,
-            view: "staff"
-        }
-
         // this.user = {
-        //     code: event.accountNo,
-        //     id: event.uniqueID,
-        //     view: event.view,
-        //     agencyDefinedGroup: event.agencyDefinedGroup,
-        //     sysmgr: event.sysmgr
+        //     agencyDefinedGroup: undefined,
+        //     code: "AASTAFF HELP",
+        //     id: "S0100005616",
+        //     sysmgr: true,
+        //     view: "staff"
         // }
+
+        this.user = {
+            code: event.accountNo,
+            id: event.uniqueID,
+            view: event.view,
+            agencyDefinedGroup: event.agencyDefinedGroup,
+            sysmgr: event.sysmgr
+        }
 
         console.log(this.user);
 
@@ -170,7 +170,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
             unallocMaster: false,
             deletePending: false
         });
-        this.listChange({});
+
+        // this.listChange({});
     }
 
     ngOnDestroy(): void {

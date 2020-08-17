@@ -41,6 +41,7 @@ import { StaffPopupComponent } from './staff-popup/staff-popup.component';
 import { LeaveApplicationComponent } from './leave-application/leave-application.component';
 import { IncidentProfileComponent } from './incident-profile/incident-profile.component';
 import { UploadSharedComponent } from './upload-shared/upload-shared.component';
+import { MembersComponent } from './members/members.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { UploadSharedComponent } from './upload-shared/upload-shared.component';
     StaffPopupComponent,
     LeaveApplicationComponent,
     IncidentProfileComponent,
-    UploadSharedComponent
+    UploadSharedComponent,
+    MembersComponent
   ],
   imports: [
     CommonModule,
@@ -106,7 +108,8 @@ import { UploadSharedComponent } from './upload-shared/upload-shared.component';
     StaffPopupComponent,
     LeaveApplicationComponent,
     IncidentProfileComponent,
-    UploadSharedComponent
+    UploadSharedComponent,
+    MembersComponent
   ],
   providers: [
     

@@ -1,0 +1,18 @@
+ul{
+    list-style: none;
+    margin: 1rem 0;
+    padding: 0;
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+}
+li{
+    padding: 10px;
+    cursor:pointer;
+    color: #9b9b9b;
+}
+li:hover{
+    color:#4d4d4d;
+}
+li:not(:last-child){
+    border-bottom: 1px solid #dfdfdf;
+}

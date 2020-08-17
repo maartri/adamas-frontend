@@ -56,6 +56,8 @@ export class LoginComponent implements OnInit {
     this.settingS.getSettingsObservable(user.Username).pipe(
       switchMap(x => {
         this.globalS.settings = x;
+        this.globalS.originalSettings = x;
+        
         return this.loginS.login(user);
       }) 
     ).subscribe(data => {

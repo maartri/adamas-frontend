@@ -49,11 +49,22 @@ export class ProfileClient implements OnInit, OnDestroy {
         this.token = this.globalS.decode();
         this.personID = this.token.code;
         
-        this.user = {
-            name: this.token.code,
-            view: 'recipient',
-            id: this.token.uniqueID
-        }
+        if(this.globalS.pickedMember){
+            var pickedUser: any = this.globalS.pickedMember;
+
+            this.user = {
+                name: pickedUser.accountNo,
+                id: pickedUser.uniqueID,
+                view: 'recipient'
+            }
+        } else {
+            this.user = {
+                name: this.token.code,
+                view: 'recipient',
+                id: this.token.uniqueID
+            }
+            console.log(this.user)
+        }       
         
     }
 

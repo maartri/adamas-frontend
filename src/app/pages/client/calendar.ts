@@ -319,7 +319,7 @@ export class CalendarClient implements OnInit, OnDestroy {
 
         this.staffS.getroster({
             RosterType: 'PORTAL CLIENT',
-            AccountNo: this.accountNo || this.globalS.decode().code,
+            AccountNo: this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode().code,
             StartDate: startDate,
             EndDate: endDate
         }).pipe(

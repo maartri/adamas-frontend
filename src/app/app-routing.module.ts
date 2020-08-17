@@ -3,7 +3,10 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './pages/login/login.component';
 
-import {  ProfilePage } from '@components/index';
+import {  
+  ProfilePage,
+  MembersComponent
+} from '@components/index';
 
 // Docusign
 import {  DocusignComponent } from './pages/docusign/docusign';
@@ -11,6 +14,7 @@ import {  DocusignComponent } from './pages/docusign/docusign';
 import {
   UnauthorizedComponent
 } from './pages/unauthorized/unauthorized';
+
 
 import {
   HomeClient,
@@ -160,6 +164,10 @@ const routes: Routes = [
         path: 'calendar',
         component: CalendarClient,
         canActivate: [RouteGuard],
+      },
+      {
+        path: 'members',
+        component: MembersComponent
       },
       {
         path: 'unauthorized',

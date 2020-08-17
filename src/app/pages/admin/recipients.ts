@@ -91,17 +91,18 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (!this.isFirstLoad) {
-            this.view(0);
+            // this.view(0);
+            this.view(6);
             this.isFirstLoad = true;
         }
         
-        // this.user = {
-        //     agencyDefinedGroup: "ARUNDEL",
-        //     code: "2CDC STEPH",
-        //     id: "T0100005506",
-        //     sysmgr: true,
-        //     view: "recipient"
-        // }
+        this.user = {
+            agencyDefinedGroup: "GRAFTON",
+            code: "ABERKIRDO TYBI",
+            id: "T0100004514",
+            sysmgr: true,
+            view: "recipient"
+        }
 
         // this.user = {
         //     code: event.accountNo,
@@ -111,54 +112,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         //     sysmgr: event.sysmgr
         // }
 
-        this.user = {
-            code: event.accountNo,
-            id: event.uniqueID,
-            view: event.view,
-            agencyDefinedGroup: event.agencyDefinedGroup,
-            sysmgr: event.sysmgr
-        }
 
         this.sharedS.emitChange(this.user);
         this.cd.detectChanges();
-    }
-
-    change(data: any) {
-        let user = {};
-        if (data == 'ABBERTON B') {
-            user = {
-                code: "ABBERTON B",
-                id: "T0100005189",
-                view: "recipient",
-                agencyDefinedGroup: "ARUNDEL",
-                sysmgr: true
-            }
-        }
-        
-        if (data == '*****AAAZ T'){
-            user = {
-                code: "*****AAAZ T",
-                id: "T0100005581",
-                view: "recipient",
-                agencyDefinedGroup: "ASHMORE",
-                sysmgr: true
-            }
-        }
-
-        if (data == '3CDC STEPH') {
-            user = {
-                code: "3CDC STEPH",
-                id: "T0100005508",
-                view: "recipient",
-                agencyDefinedGroup: "ARUNDEL",
-                sysmgr: true
-            }
-        }
-        if (!this.isFirstLoad) {
-            this.view(0);
-            this.isFirstLoad = true;
-        }
-        this.sharedS.emitChange(user);
     }
 
     constructor(
@@ -171,7 +127,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        
+        this.listChange({});
     }
 
     ngOnDestroy(): void {

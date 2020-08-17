@@ -14,6 +14,10 @@ export class ClientService {
         private auth: AuthService
     ) { }
 
+    getuserinfoname(accountNo: string): Observable<any>{
+        return this.auth.get(`${client}/userinfo-name/${accountNo}`);
+    }
+
     getagencydefinedgroup(accountNo: string): Observable<any>{
         return this.auth.get(`${client}/agencydefinedgroup/${accountNo}`);
     }

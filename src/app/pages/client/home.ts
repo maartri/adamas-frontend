@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, ActivatedRoute, NavigationEnd } from '@angular/router';
 
-import { GlobalService, SettingsService } from '@services/index';
+import { GlobalService, SettingsService, ShareService, ClientService } from '@services/index';
 import { Observable, Subject, EMPTY } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 
@@ -107,6 +107,30 @@ import { filter, switchMap } from 'rxjs/operators';
     nz-header {
         padding: 0;
     }
+    .logged-in-user{
+        height: 3rem;
+        display: inline-flex;
+        padding: 10px;
+        line-height: 1rem;
+        width: 100%;
+    }
+    .logged-in-user div{
+        position:relative;
+    }
+    .belongsto-user{
+        font-size: 10px;
+        color: #6eff00;
+        line-height: 1.5rem;
+    }
+    .logged-in-user i{
+        position: absolute;
+        top: 0.5rem;
+        right: -2.5rem;
+        cursor: pointer;
+    }
+    .logged-in-user i:hover{
+        color:#62ff00;
+    }
         `
     ]
 })
@@ -114,14 +138,20 @@ import { filter, switchMap } from 'rxjs/operators';
 export class HomeClient implements OnInit {
     isCollapsed = false;
     isVisible: boolean = false;
+    hide: boolean = true;
 
     _settings: SettingsService;
     changeRoute = new Subject<string>();
     currRoute: string;
+
+    pickedUser: any;
+
     constructor(
         private globalS: GlobalService,
         private settingS: SettingsService,
         private router: Router,
+        private sharedS: ShareService,
+        private clientS: ClientService,
         private activatedRoute: ActivatedRoute
     ) {
         
@@ -140,10 +170,39 @@ export class HomeClient implements OnInit {
             var routeArr = this.removeHomeRoutes(this.createBreadCrumb(this.activatedRoute.root));
             this.currRoute = routeArr[routeArr.length - 1].url;
         });
+
+        // For the Client Manager
+        this.sharedS.emitMemberPicked$
+        .pipe(
+            switchMap(data =>{
+                this.globalS.pickedMember = data;
+                this.pickedUser = data;
+
+                return this.clientS.getuserinfoname(this.pickedUser.accountNo)
+            }),
+            switchMap(data => {
+                this.globalS.pickedMemberUser = data.name;
+                return this.settingS.getSettingsObservable(data.name);
+            })
+        )
+        .subscribe(data => {
+            localStorage.removeItem('settings');
+
+            this.globalS.settings = data;
+
+            console.log(this.globalS.settings);
+            setTimeout(() => {
+                this._settings = this.settingS; 
+            }, 100);
+        });
     }
 
     ngOnInit(): void{
         this._settings = this.settingS;
+
+        if(this.globalS.pickedMember){
+            this.sharedS.emitMemberPickedChange(this.globalS.pickedMember);
+        }
     }
     
     logout() {
@@ -171,6 +230,19 @@ export class HomeClient implements OnInit {
           breadcrumbs.push({ label: routeURL, url: url })
           return this.createBreadCrumb(child, url, breadcrumbs);
         }
+    }
+
+    toMemberPage(){
+        this.pickedUser = null;
+        localStorage.removeItem('settings');
+        this.globalS.settings = this.globalS.originalSettings;
+
+        setTimeout(() => {
+            this._settings = this.settingS; 
+        }, 100);
+
+        localStorage.removeItem('picked_member');
+        this.router.navigate(['client/members']);
     }
 
     removeHomeRoutes(routes: Array<any>): Array<any> {

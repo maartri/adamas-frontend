@@ -7,6 +7,13 @@
         [nzZeroTrigger]="zeroTrigger">
         <div class="logo"></div>
         <ul nz-menu nzTheme="dark" nzMode="inline" class="main-list"[nzInlineCollapsed]="isCollapsed">
+            <li *ngIf="pickedUser" class="logged-in-user">
+                <div>
+                    <div>You are Logged in as</div>
+                    <div class="belongsto-user">{{ pickedUser.accountNo }}</div>
+                    <i nz-icon nzType="close-circle" nzTheme="outline" (click)="toMemberPage()"></i>
+                </div>
+            </li>
             <li nz-menu-item  routerLink="/client/profile" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="user"></i>
                 <span>Profile</span>

@@ -135,6 +135,10 @@ nz-sider{
 .ant-menu-dark, .ant-menu-dark .ant-menu-sub{
     background:#004165;
 }
+.staff-icon-fix{
+    float: left;
+    margin-top: 12px;
+}
     `],
     templateUrl: './homev2.html'
 })

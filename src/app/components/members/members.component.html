@@ -1,0 +1,19 @@
+<div>
+   <div nz-row>
+       <div nz-col nzSpan="8">
+            <div nz-row>
+                <div nz-col>
+                    <input nz-input placeholder="Recipient Search.." [(ngModel)]="value" />
+                </div>
+            </div>  
+            <div nz-row>
+                <ul>
+                    <li *ngFor="let member of members" (click)="toProfile(member)">{{ member.accountNo }}</li>
+                </ul>
+            </div>
+       </div>
+       <div nz-col nzSpan="16">
+
+        </div>       
+   </div>
+</div>

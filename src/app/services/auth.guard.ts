@@ -29,7 +29,7 @@ export class RouteGuard implements CanActivate, CanActivateChild{
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {  
         // console.log(this.globalS.settings)
         // console.log(this.globalS.decode())
-        const { role, user } = this.globalS.decode();
+        const { role, user } = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERROLEANDUSER() : this.globalS.decode();
         // console.log('haha')
 
         // if(role === 'PORTAL CLIENT'){
@@ -53,7 +53,6 @@ export class RouteGuard implements CanActivate, CanActivateChild{
 
         return this.settingS.getSettingsObservable(user).pipe(
             switchMap((data: any) => {
-                console.log(data);
                 this.globalS.settings = data;
                 if(this.globalS.isExpired){
                     return of(false);
@@ -82,8 +81,8 @@ export class RouteGuard implements CanActivate, CanActivateChild{
 
     CHECKPORTALROUTES(data: Array<any>, settings: any): boolean {
         if(data.length < 1) return false;
-        console.log(this.settingS.CANMANAGEPREFERENCES())
-        console.log(data[data.length - 1].url)
+        // console.log(this.settingS.CANMANAGEPREFERENCES())
+        // console.log(data[data.length - 1].url)
 
         const currentURL = data[data.length - 1].url;
 

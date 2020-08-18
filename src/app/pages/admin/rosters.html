@@ -10,18 +10,11 @@
                 <button nz-button nzType="primary" (click)="prev()"><i nz-icon nzType="left"></i></button>
                 <button nz-button nzType="primary" (click)="next()"><i nz-icon nzType="right"></i></button>
               </nz-button-group>
-            <!-- <div>
-                <button (click)="prev()"><i class="material-icons left"> keyboard_arrow_left </i></button>
-            </div> -->
+         
             <div class="date-title">
                 {{ date | date: 'MMMM yyyy'}}
             </div>
-            <!-- <div>
-                <button (click)="next()"><i class="material-icons right"> keyboard_arrow_right </i></button>
-            </div>
-    -->
-            <!-- <button (click)="prev()">prev</button>
-            <button (click)="next()">next</button> -->
+          
         </div>
     </div>
 
@@ -103,9 +96,65 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" >
-    <p>Content one</p>
-    <p>Content two</p>
-    <p>Content three</p>
-    <p>Content three</p>
+<nz-modal class="options" [nzStyle]="{ top: '15px' }" [(nzVisible)]="optionsModal" nzTitle="" (nzOnCancel)="optionsModal = false">
+        <div nz-row>
+        <ul>
+           
+            <li> View Roster Details</li>
+            <li>View Service Shift Notes</li>
+            <hr/>
+            <li>Copy</li>
+            <li>Cut</li>
+            <li>Past</li>
+            <hr/>
+            <li>Delete</li>
+            <hr/>
+            <li>Re-Allocate Staff</li>
+            <li>Un-allocate Staff</li>
+            <hr/>
+            <li>Set Multishift</li>
+            <li>Clear Multishift</li>
+            <hr/>
+            <li>View Staff Details</li>
+            <li (click)="changeViewRecipientDetails.next(1)">View Recipient Details</li>
+            <li>View Service Details</li>
+            <li>View Additional Information (Xtra Info)</li>
+            <!-- <li>Change <i nz-icon nzType="right" nzTheme="outline"></i>
+               <ul>
+                    <li (click)="changeModalView.next(1)">Change Output Type</li>
+                    <li (click)="changeModalView.next(2)">Change Program</li>
+                    <li (click)="changeModalView.next(3)">Change Activity</li>
+                    <li (click)="changeModalView.next(4)">Change Pay Type</li>
+                    <li (click)="changeModalView.next(5)">Change Bill Amount</li>
+                    <li (click)="changeModalView.next(6)">Change Bill Quantity</li>
+                    <li (click)="changeModalView.next(7)">Change Pay Quantity</li>
+                    <li (click)="changeModalView.next(8)">Set Unit Cost</li>
+                </ul> 
+            </li> -->
+        </ul>
+    </div>
+    <div *nzModalFooter>
+        <!-- <span>Modal Footer: </span> -->
+        <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button> -->
+        <!-- <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>  -->
+      </div>
+    </nz-modal>
+
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="recipientDetailsModal" nzTitle="Recipients Details" (nzOnCancel)="recipientDetailsModal = false" >
+        <div nz-row>
+            sd
+        </div>
+        <div *nzModalFooter>
+            <button nz-button nzType="default" >Cancel</button>
+        </div>
+      </nz-modal>
+   
+  
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="recipientDetailsModal" nzTitle="Recipients Details" (nzOnCancel)="recipientDetailsModal = false" >
+    <div nz-row>
+        sd
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" >Cancel</button>
+    </div>
   </nz-modal>

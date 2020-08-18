@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
         `
     .logo {
         height: 2rem;
-        background: url(../../../assets/logo/image2.png) no-repeat;
+        background: url(./assets/logo/image2.png) no-repeat;
         background-size: 64%;
         margin: 7px 24px;
         width: 10rem;

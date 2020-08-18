@@ -51,7 +51,6 @@ export class MembersComponent implements OnInit {
   toProfile(member: any, index: number){
     this.selectedIndex = index;
     this.sharedS.emitMemberPickedChange(member);
-    //this.router.navigate([`client/members/${member.uniqueID}`])
   }
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
-import { GlobalService, SettingsService } from '@services/index';
+import { GlobalService, SettingsService, ShareService } from '@services/index';
 declare var Dto: any;
 
 @Component({
@@ -39,9 +39,20 @@ export class ProfileClientManager implements OnInit, OnDestroy {
 
     constructor(
         private globalS: GlobalService,
-        private settings: SettingsService
+        private settings: SettingsService,
+        private sharedS: ShareService
     ) {
+        this.sharedS.emitMemberPicked$
+        .subscribe(data => {
+            this.globalS.pickedMember = data;
 
+            var pickedUser = data;
+            this.user = {
+                name: pickedUser.accountNo,
+                id: pickedUser.uniqueID,
+                view: 'recipient'
+            }
+        });
     }
 
     ngOnInit() {
@@ -64,7 +75,7 @@ export class ProfileClientManager implements OnInit, OnDestroy {
                 id: this.token.uniqueID
             }
             console.log(this.user)
-        }       
+        }
         
     }
 

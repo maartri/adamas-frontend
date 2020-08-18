@@ -1,0 +1,225 @@
+<div>
+    <nz-steps [nzCurrent]="current" nzSize="small">
+        <nz-step nzTitle="Booking Details"></nz-step>
+        <nz-step nzTitle="Services"></nz-step>
+        <nz-step *ngIf="cprovider" nzTitle="Staff"></nz-step>
+        <nz-step nzTitle="Notes"></nz-step>
+    </nz-steps>
+
+    <div nzRow>
+        <div class="steps-content">
+            <div *ngIf="current == 0" style="height:100%">
+                <div nz-row nzGutter="8" style="height:100%">
+                    <div nz-col nzSpan="6"  style="height:100%" >
+                        <div nzRow>
+                            <div class="mrg-btm form-wrap" nz-col [nzSpan]="12" [nzXs]="12" [nzMd]="12">
+                                <label for="">Start Time</label>
+                                <nz-time-picker [(ngModel)]="startTime" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                            <div class="mrg-btm form-wrap" nz-col [nzSpan]="12" [nzXs]="12" [nzMd]="12">
+                                <label for="">End Time</label>
+                                <nz-time-picker [(ngModel)]="endTime" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div class="mrg-btm form-wrap" nzRow>
+                            <div nz-col [nzMd]="24">
+                                <label for="">Date</label>
+                                <nz-date-picker [(ngModel)]="date" [nzFormat]="'yyyy/MM/dd'" [nzDisabledDate]="disabledDate"></nz-date-picker>
+                                <div class="leadtime">Booking Lead Time: {{ _settings?.BOOKINGLEADTIME() - 1 }}</div>
+                            </div>
+                        </div>
+                        <div nzRow>
+                            <div class="mrg-btm chkboxes" nz-col [nzSpan]="24" [nzXs]="24" [nzMd]="24">
+                                <div>
+                                    <label nz-checkbox [(ngModel)]="once" (ngModelChange)="change($event,'once')">Once
+                                        Only</label>
+                                </div>
+                                <div>
+                                    <label nz-checkbox [(ngModel)]="permanent" (ngModelChange)="change($event,'permanent')">Permanent</label>
+                                </div>                                
+                            </div>
+                        
+                            <div class="mrg-btm chkboxes" [nzSpan]="24" nz-col [nzXs]="24" [nzMd]="24" *ngIf="_settings?.CANCHOOSEPROVIDER()">
+                                <div>
+                                    <label nz-checkbox [(ngModel)]="aprovider" (ngModelChange)="change($event,'aprov')">Any
+                                        Provider</label>
+                                </div>
+                                <div>
+                                    <label nz-checkbox [(ngModel)]="cprovider" (ngModelChange)="change($event,'cprov')">Pick
+                                        Provider</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="1" style="height:100%">
+                        <i nz-icon nzType="right" *ngIf="permanent" class="arrow-right" nzTheme="outline"></i>
+                    </div>
+                    <div nz-col nzSpan="17">
+                        <div nz-row *ngIf="permanent">
+                            <div nz-row class="mrg-btm form-wrap">
+                                <label for="">Interval Period</label>
+                                <nz-select style="width: 10rem;" nzShowSearch nzAllowClear nzPlaceHolder="Time Interval"
+                                    [(ngModel)]="weekly">
+                                    <nz-option nzLabel="Weekly" nzValue="Weekly"></nz-option>
+                                    <nz-option nzLabel="Fortnightly" nzValue="Fortnightly"></nz-option>
+                                    <nz-option nzLabel="4 Weekly" nzValue="FourWeekly"></nz-option>
+                                </nz-select>
+                            </div>
+                            <div nz-row>
+                                <app-interval-design [interval]="weekly"></app-interval-design>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="current == 1">
+                <div nz-row [nzGutter]="7" class="services-list">
+                    <div class="example" *ngIf="loading">
+                        <nz-spin nzSimple></nz-spin>
+                    </div>
+                    <div nz-col [nzSpan]="8" *ngFor="let svc of services">
+                        <!-- <nz-card [nzTitle]="svc.serviceName | uppercase"
+                            [nzBodyStyle]="{'height':'6rem', 'fontSize': '11px'}">
+                            <p>{{ svc.serviceProgram | uppercase }}</p>
+                        </nz-card> -->
+                        <div class="book-wrapper" [class.pick]="isPicked(svc)">
+                            <div>
+                                <div class="book-image" [style.background-position]="getPositionImg(svc)"></div>
+                                <h4>{{ svc.serviceName | uppercase }}</h4>
+                                <h3 style="color:#63db54">{{ svc.serviceBillRate | currency: 'USD' }}</h3>
+                            </div>
+                            <p>{{ svc.serviceProgram | uppercase }}</p>
+                            <button nz-button nzType="primary" [nzSize]="'small'"
+                                (click)="add(svc)"><i nz-icon nzType="bulb" nzTheme="outline"></i> Pick</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="cprovider && current == 2">
+                <div class="example" *ngIf="loading">
+                    <nz-spin nzSimple></nz-spin>
+                </div>
+                <div nz-row>
+                    <div nz-col nzSpan="12" nzGutter="32">
+                        <nz-radio-group [(ngModel)]="selectedStaff" nzName="radiogroup" style="width:100%">
+                            <ul>                        
+                                <li *ngFor="let staff of results;let i=index">
+                                    <nz-avatar [nzShape]="'square'" [nzSize]="'large'" [nzIcon]="'user'"></nz-avatar>
+                                    <h3>{{staff.accountNo}}</h3>
+                                    <h5>{{ staff.firstName}} <span *ngIf="staff.age && _settings?.CANSEEPROVIDERAGE()"> * {{ staff.age }} yrs old</span></h5>
+                                    <nz-rate *ngIf="staff.rating && _settings?.CANESEEPROVIDERREVIEWS()" [nzCount]="7" [ngModel]="computeRating(staff.rating)" nzDisabled></nz-rate>
+                                    <label nz-radio [nzValue]="staff"></label>
+                                </li>
+                            </ul>
+                        </nz-radio-group>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        #
+                    </div>
+                </div>
+
+            </div>
+            <div nz-row *ngIf="(!cprovider && current == 2) || (cprovider && current == 3)">
+                <div nz-col nzSpan="12">
+                    <label for="">Notes</label>
+                    <textarea [(ngModel)]="notes" rows="4" nz-input></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="steps-action">
+        <div>
+            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                <span>Previous</span>
+            </button>
+
+            <!-- *ngIf="current == 0 || ( current == 1 && selectedService )" -->
+            <button nz-button nzType="default" (click)="next()"
+                *ngIf="canGoNext">
+                <span>Next</span>
+            </button>
+
+            <button nz-button *ngIf="canBeDone && _settings?.ALLOWBOOKING()" nzType="primary" (click)="confirm()">
+                <span>Done</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
+<nz-modal [nzWidth]="'800'" [(nzVisible)]="bookingModalOpen" nzTitle="BOOKING DETAILS"
+    (nzOnCancel)="bookingModalOpen = false">
+    <div>
+        <div nz-row>
+            <div nz-col nzSpan="8" class="item">
+                <label for="">Date</label>
+                <div>{{ date | date: 'MMMM dd, yyyy' }}</div>
+            </div>
+            <div nz-col nzSpan="5" class="item">
+                <label for="">Start Time</label>
+                <div>{{ startTime | date: 'HH:mm' }}</div>
+            </div>
+            <div nz-col nzSpan="5" class="item">
+                <label for="">End Time</label>
+                <div>{{ endTime | date: 'HH:mm' }}</div>
+            </div>
+            <div nz-col nzSpan="5" class="item">
+                <label for="">Duration</label>
+                <div>{{ computeDuration(startTime,endTime).durationStr }}</div>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="8" class="item">
+                <label for="">Service Name</label>
+                <div>{{ selectedService?.serviceName | uppercase }}</div>
+            </div>
+            <div nz-col nzSpan="14" class="item">
+                <label for="">Program</label>
+                <div>{{ selectedService?.serviceProgram }}</div>
+            </div>
+        </div>
+        <div nz-row>
+            <div class="item">
+                <label for="">Notes</label>
+                <textarea rows="4" nz-input readonly [ngModel]="notes"></textarea>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="24">
+                <label for="">Total</label>
+                <div nz-row>
+                    <div nz-col nzOffset="2" nzSpan="4" class="numVars">
+                        <label for="">Rate</label>
+                        <div>${{ selectedService?.serviceBillRate | number : '1.2-2' }} /hr</div>
+                    </div>
+                    <div nz-col nzSpan="3" class="numVars">
+                        <label for="" style="height: 20px;"></label>
+                        <div>X</div>
+                    </div>
+                    <div nz-col nzSpan="3" class="numVars">
+                        <label for="">Duration</label>
+                        <div>{{ computeDuration(startTime,endTime).durationInHours | number : '1.2-2' }}</div>
+                    </div>
+                    <div nz-col nzSpan="3" class="numVars">
+                        <label for="" style="height: 20px;"></label>
+                        <div>=</div>
+                    </div>
+                    <div nz-col nzSpan="3" class="numVars">
+                        <label for="" style="height: 20px;"></label>
+                        <div class="total">
+                            ${{ selectedService?.serviceBillRate * computeDuration(startTime,endTime).durationInHours | number : '1.2-2' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="bookingModalOpen = false">Cancel</button>
+        <button nz-button nzType="primary" [nzLoading]="loadBooking" (click)="book()">Book</button>
+    </div>
+</nz-modal>

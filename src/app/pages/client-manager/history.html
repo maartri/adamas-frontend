@@ -1,0 +1,53 @@
+<div>
+    <div nz-row>
+        <nz-form-item>
+            <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
+                <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="dateRange"
+                    (ngModelChange)="dateStream.next($event)">
+                </nz-range-picker>
+            </nz-form-control>
+        </nz-form-item>
+    </div>
+    <div nz-row>
+        <nz-table #virtualTable nzVirtualScroll [nzSize]="'middle'" [nzVirtualItemSize]="20" [nzData]="timesheets"
+            [nzLoading]="loading" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+            [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: '350px' }">
+            <thead>
+                <tr>
+                    <th nzWidth="100px" nzLeft="0px">Shift No</th>
+                    <th nzWidth="120px" nzLeft="100px">Date</th>
+                    <th nzWidth="90px">Start Time</th>
+                    <th nzWidth="60px">Duration</th>
+                    <th nzWidth="110px">Provider</th>
+                    <th nzWidth="280px">Program</th>
+                    <th nzWidth="100px">Activity</th>
+                    <th nzWidth="100px">Bill Quantity</th>
+                    <th nzWidth="100px">Bill Rate</th>
+                    <th nzWidth="100px">Total Billing</th>
+                    <th nzWidth="100px">App</th>
+                    <th nzWidth="100px">Bill To</th>
+                    <th nzWidth="200px" nzRight="0px">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-template nz-virtual-scroll let-data let-index="index">
+                    <tr>
+                        <td nzLeft="0px">{{ data.shiftbookNo }}</td>
+                        <td nzLeft="100px">{{ data.activityDate | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ data.activity_Time.start_time | date: 'HH:mm' }}</td>
+                        <td>{{ data.activity_Time.calculated_Duration }}</td>
+                        <td>{{ data.carer_Code }}</td>
+                        <td>{{ data.program.title }}</td>
+                        <td>{{ data.activity.name }}</td>
+                        <td>{{ data.bill.quantity | number: '1.2-2' }}</td>
+                        <td>{{ data.bill.bill_Rate | currency: 'USD' }}</td>
+                        <td>{{ (data.bill.quantity * data.bill.bill_Rate) | currency: 'USD' }}</td>
+                        <td>{{ data.address }}</td>
+                        <td>{{ data.billedTo.accountNo }}</td>
+                        <td nzRight="0px">{{ data.note }}</td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </nz-table>
+    </div>
+</div>

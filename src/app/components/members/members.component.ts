@@ -6,6 +6,7 @@ import { GlobalService, MemberService, ShareService } from '@services/index';
   templateUrl: './members.component.html',
   styleUrls: ['./members.component.css']
 })
+
 export class MembersComponent implements OnInit {
   members: Array<any>;
   membersTemp: Array<any>;
@@ -13,6 +14,7 @@ export class MembersComponent implements OnInit {
   isActive: boolean = false;
 
   value: string;
+  selectedIndex: number;
 
   constructor(
     private memberS: MemberService,
@@ -46,7 +48,8 @@ export class MembersComponent implements OnInit {
   }
 
 
-  toProfile(member: any){
+  toProfile(member: any, index: number){
+    this.selectedIndex = index;
     this.sharedS.emitMemberPickedChange(member);
     //this.router.navigate([`client/members/${member.uniqueID}`])
   }

@@ -1,6 +1,6 @@
 <div>
    <div nz-row>
-       <div nz-col nzSpan="8">
+       <div nz-col>
             <div nz-row>
                 <div nz-col>
                     <input nz-input placeholder="Recipient Search.." [(ngModel)]="value" />
@@ -8,12 +8,9 @@
             </div>  
             <div nz-row>
                 <ul>
-                    <li *ngFor="let member of members" (click)="toProfile(member)">{{ member.accountNo }}</li>
+                    <li *ngFor="let member of members;let i = index" [class.selected]="i == selectedIndex" (click)="toProfile(member, i)">{{ member.accountNo }}</li>
                 </ul>
             </div>
-       </div>
-       <div nz-col nzSpan="16">
-
-        </div>       
+       </div>    
    </div>
 </div>

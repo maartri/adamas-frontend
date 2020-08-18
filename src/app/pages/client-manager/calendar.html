@@ -1,0 +1,112 @@
+<div nz-row>
+    <div nz-col nzSpan="22" nzOffset="1">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="btn-group">
+                    <div class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+                        (viewDateChange)="dateChanged($event,view);activeDayIsOpen = false;closeOpenMonthViewDay()">
+                        Previous
+                    </div>
+                    <div class="btn btn-outline-secondary" mwlCalendarToday [(viewDate)]="viewDate"
+                        (viewDateChange)="dateChanged($event,view);activeDayIsOpen = false;closeOpenMonthViewDay()">
+                        Current {{ view | titlecase }}
+                    </div>
+                    <div class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+                        (viewDateChange)="dateChanged($event,view);activeDayIsOpen = false;closeOpenMonthViewDay()">
+                        Next
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h4>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h4>
+            </div>
+            <div class="col-md-4">
+                <div class="btn-group">
+                    <div class="btn btn-primary" (click)="setView(CalendarView.Month);dateChanged(viewDate)"
+                        [class.active]="view === CalendarView.Month">
+                        Month
+                    </div>
+                    <div class="btn btn-primary" (click)="setView(CalendarView.Week);dateChanged(viewDate)"
+                        [class.active]="view === CalendarView.Week">
+                        Week
+                    </div>
+                    <div class="btn btn-primary" (click)="setView(CalendarView.Day);dateChanged(viewDate)"
+                        [class.active]="view === CalendarView.Day">
+                        Day
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <div nz-row>
+            <div nz-col nzSpan="22">
+                <nz-switch nzSize="small" [ngModel]="toggleAdminFees" (ngModelChange)="toggle($event)"></nz-switch>
+                <label for="" style="margin-left:10px">Admin Fees</label>
+            </div>
+            <div class="clearfix" *ngIf="view === CalendarView.Day">
+                <nz-select nzAllowClear nzPlaceHolder="Interval" [(ngModel)]="minuteInterval"
+                    (ngModelChange)="timeSegChange($event)">
+                    <nz-option *ngFor="let time of timeArray" [nzLabel]="time + ' minutes'" [nzValue]="time">
+                    </nz-option>
+                </nz-select>
+            </div>
+        </div>
+        <div [ngSwitch]="view">
+            <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
+                [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+                (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+            </mwl-calendar-month-view>
+            <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events"
+                [refresh]="refresh" (eventClicked)="handleEvent('Clicked', $event.event)"
+                (eventTimesChanged)="eventTimesChanged($event)">
+            </mwl-calendar-week-view>
+            <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events"
+                [hourSegments]="hourSegments" [dayStartHour]="6" [hourSegmentHeight]="28" [refresh]="refresh"
+                (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+            </mwl-calendar-day-view>
+        </div>
+    </div>
+</div>
+
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="title" (nzOnCancel)="handleCancel()">
+    <div>
+        <div nz-row class="mrg-btm">
+            <div nz-col nzSpan="8" nzOffset="4" class="item">
+                <label for="">Start Time</label>
+                <div>{{ rosterData?.startTime }}</div>
+            </div>
+            <div nz-col nzSpan="8" class="item">
+                <label for="">End Time</label>
+                <div>{{ rosterData?.endTime }}</div>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="12" class="item">
+                <label for="">Client Code</label>
+                <div>{{ rosterData?.client }}</div>
+            </div>
+            <div nz-col nzSpan="12" class="item">
+                <label for="">Carer Code</label>
+                <div>{{ rosterData?.carer }}</div>
+            </div>
+        </div>
+
+        <div nz-row class="mrg-btm">
+            <div nz-col nzSpan="8" class="item">
+                <label for="">Service Type</label>
+                <div>{{ rosterData?.service }}</div>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="8" class="item">
+                <label for="">Notes</label>
+                <div>{{ rosterData?.notes }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    </div>
+</nz-modal>

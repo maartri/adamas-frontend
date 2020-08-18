@@ -124,10 +124,12 @@ export class GlobalService {
             this.router.navigate(['provider']);
         if (data.role === roles.admin)
             this.router.navigate(['admin']);
-        if (data.role === roles.client || data.role === roles.manager)
+        if (data.role === roles.client)
             this.router.navigate(['client']);
         if (data.role === roles.portal)
             this.router.navigate(['portal']);
+        if (data.role === roles.manager)
+            this.router.navigate(['client-manager']);
     }
 
     get settings(): string {

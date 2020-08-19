@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router'
 import { GlobalService, MemberService, ShareService } from '@services/index';
+
+import { distinctUntilChanged, debounceTime} from 'rxjs/operators';
+import { Subject } from 'rxjs'
+
 @Component({
   selector: 'app-members',
   templateUrl: './members.component.html',
@@ -12,16 +16,32 @@ export class MembersComponent implements OnInit {
   membersTemp: Array<any>;
   loading:boolean = false;
   isActive: boolean = false;
+  search: string;
 
   value: string;
   selectedIndex: number;
+
+  textChanges = new Subject<string>();
 
   constructor(
     private memberS: MemberService,
     private globalS: GlobalService,
     private sharedS: ShareService,
     private router: Router
-  ) { }
+  ) { 
+
+    this.textChanges
+    .pipe(
+        debounceTime(500),
+        distinctUntilChanged()
+    ).subscribe(data => {
+        this.members = this.membersTemp.filter(x => {
+            if((x.accountNo).indexOf(data.toUpperCase()) > -1){
+                return x;
+            }
+        })      
+    });
+  }
 
   ngOnInit(): void {
     this.getmembers(this.isActive);
@@ -37,7 +57,6 @@ export class MembersComponent implements OnInit {
     }).subscribe(data => {
       this.membersTemp = data;
       this.members = this.membersTemp;
-
       this.loading = false;
     });
   }

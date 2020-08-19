@@ -3,13 +3,16 @@
        <div nz-col>
             <div nz-row>
                 <div nz-col>
-                    <input nz-input placeholder="Recipient Search.." [(ngModel)]="value" />
+                    <input nz-input placeholder="Recipient Search.." [ngModel]="search" (ngModelChange)="textChanges.next($event)" />
                 </div>
             </div>  
             <div nz-row>
-                <ul>
-                    <li *ngFor="let member of members;let i = index" [class.selected]="i == selectedIndex" (click)="toProfile(member, i)">{{ member.accountNo }}</li>
+                <ul *ngIf="!loading">
+                    <li *ngFor="let member of members;let i = index" [class.selected]="i == selectedIndex" (click)="toProfile(member, i)">
+                        {{ i + 1 + ')&nbsp;&nbsp;&nbsp;' + member.accountNo }}
+                    </li>
                 </ul>
+                <nz-spin *ngIf="loading" nzSimple></nz-spin>
             </div>
        </div>    
    </div>

@@ -155,7 +155,8 @@ export class PackageProvider implements OnInit, OnDestroy {
             delay(200),
             takeUntil(this.unsubscribe$),
             switchMap((data: any) => {
-               
+                this.loading = false;
+                
                 this.listOfData = data.map(x => {
                     return {
                         shiftbookNo: x.shiftbookNo,
@@ -183,8 +184,6 @@ export class PackageProvider implements OnInit, OnDestroy {
                     }
                 });
                 this.calculateTotalApprovedShifts(this.listOfData);
-
-                this.loading = false;
 
                 var shiftsList = [];
 

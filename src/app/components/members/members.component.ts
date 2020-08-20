@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router'
 import { GlobalService, MemberService, ShareService } from '@services/index';
 
@@ -12,6 +12,8 @@ import { Subject } from 'rxjs'
 })
 
 export class MembersComponent implements OnInit {
+
+  @Output() MEMBER_LENGTH = new EventEmitter<number>();
   members: Array<any>;
   membersTemp: Array<any>;
   loading:boolean = false;
@@ -31,16 +33,16 @@ export class MembersComponent implements OnInit {
   ) { 
 
     this.textChanges
-    .pipe(
-        debounceTime(500),
-        distinctUntilChanged()
-    ).subscribe(data => {
-        this.members = this.membersTemp.filter(x => {
-            if((x.accountNo).indexOf(data.toUpperCase()) > -1){
-                return x;
-            }
-        })      
-    });
+      .pipe(
+          debounceTime(500),
+          distinctUntilChanged()
+      ).subscribe(data => {
+          this.members = this.membersTemp.filter(x => {
+              if((x.accountNo).indexOf(data.toUpperCase()) > -1){
+                  return x;
+              }
+          })      
+      });
   }
 
   ngOnInit(): void {
@@ -57,6 +59,8 @@ export class MembersComponent implements OnInit {
     }).subscribe(data => {
       this.membersTemp = data;
       this.members = this.membersTemp;
+
+      this.MEMBER_LENGTH.emit(data.length);
       this.loading = false;
     });
   }

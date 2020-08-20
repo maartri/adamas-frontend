@@ -6,8 +6,7 @@ import { UploadXHRArgs } from 'ng-zorro-antd/upload';
 import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 
 import { forkJoin } from 'rxjs';
-import { TimeSheetService, GlobalService, UploadService } from '@services/index';
-
+import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService } from '@services/index';
 @Component({
     styles: [`
         :host ::ng-deep .upload-list-inline .ant-upload-list-item {
@@ -66,13 +65,18 @@ import { TimeSheetService, GlobalService, UploadService } from '@services/index'
 export class DocumentClientManager implements OnInit, OnDestroy {
 
     file: any;
-    constructor() {
+    constructor(
+        private clientS: ClientService,
+        private globalS: GlobalService,
+        private settings: SettingsService
+    ) {
 
     }
 
     ngOnInit() {
         this.file = {
-            view: 'recipient'
+            view: 'recipient',
+            token: this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode()
         }
     }
 

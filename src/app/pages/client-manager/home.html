@@ -1,12 +1,12 @@
 <nz-layout>
-    <nz-sider 
+    <nz-sider         
         nzCollapsible
         [(nzCollapsed)]="isCollapsed"
         [nzBreakpoint]="'lg'"
         [nzCollapsedWidth]="0"
         [nzZeroTrigger]="zeroTrigger">
         <div class="logo"></div>
-        <ul nz-menu nzTheme="dark" nzMode="inline" class="main-list"[nzInlineCollapsed]="isCollapsed">
+        <ul *ngIf="!hideAccess" nz-menu nzTheme="dark" nzMode="inline" class="main-list"[nzInlineCollapsed]="isCollapsed">
             <li nz-menu-item  routerLink="/client-manager/profile" routerLinkActive="ant-menu-item-selected">
                 <i nz-icon nzType="user"></i>
                 <span>Profile</span>
@@ -53,11 +53,12 @@
             <div class="inner-content">
                 <div nz-row nzGutter="16">
                     <div nz-col nzSpan="4">
-                        <app-members></app-members>
+                        <app-members (MEMBER_LENGTH)="MEMBER_LENGTH($event)"></app-members>
                     </div>
                     <div nz-col nzSpan="20">
-                        <router-outlet></router-outlet>
-                    </div>                    
+                        <router-outlet *ngIf="!hideAccess"></router-outlet>
+                        <nz-result *ngIf="hideAccess" nzStatus="404" nzTitle="No Recipients!" nzSubTitle="Sorry, you have no recipient associated on your account"></nz-result>
+                    </div>
                 </div>
             </div>
         </nz-content>

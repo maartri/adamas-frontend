@@ -55,7 +55,7 @@ export class PreferencesClientManager implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.user = this.id || this.globalS.decode()['code'];
+        this.user = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode().code;
 
         this.clientS.getcompetencies(this.user)
             .pipe(takeUntil(this.unsubscribe)).subscribe(data => {

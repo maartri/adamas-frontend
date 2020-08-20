@@ -65,7 +65,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   }
 
   ngOnInit() {
-    this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
+    // this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
   }
 
   loadFiles() {
@@ -127,7 +127,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
     const { docID, filename, type, originalLocation } = this.loadedFiles[index];
 
     this.uploadS.downloadFileDocuments({
-      PersonID: this.token.uniqueID,
+      PersonID: this.token.id,
       Extension: type,
       FileName: filename,
       DocPath: originalLocation
@@ -147,10 +147,10 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
-    console.log(value);
     if (value != null) {
       this.innerValue = value;
-      this.urlPath = `api/v2/file/${this.token.uniqueID}`;
+      this.token = value.token;
+      this.urlPath = `api/v2/file/${(this.token).id}`;
 
       this.loadFiles();
       // this.pathForm(this.innerValue);

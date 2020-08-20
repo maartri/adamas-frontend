@@ -124,7 +124,7 @@ export class ShiftClientManager implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.user = this.id || this.globalS.decode()['code'];
+        this.user = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode().code;
         this.tabStream.next(0);
 
         this.timeS.getuname(this.user)

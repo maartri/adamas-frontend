@@ -6,7 +6,7 @@ import { UploadXHRArgs } from 'ng-zorro-antd/upload';
 import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 
 import { forkJoin } from 'rxjs';
-import { TimeSheetService, GlobalService, UploadService } from '@services/index';
+import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService } from '@services/index';
 
 @Component({
     styles: [`
@@ -66,13 +66,16 @@ import { TimeSheetService, GlobalService, UploadService } from '@services/index'
 export class DocumentClient implements OnInit, OnDestroy {
 
     file: any;
-    constructor() {
+    constructor(
+        private globalS: GlobalService
+    ) {
 
     }
 
     ngOnInit() {
         this.file = {
-            view: 'recipient'
+            view: 'recipient',
+            token: this.globalS.decode()
         }
     }
 

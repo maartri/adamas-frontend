@@ -29,6 +29,28 @@ import {
   UnauthorizedComponent
 } from './pages/unauthorized/unauthorized';
 
+import {
+  HomeV2Admin as HomeStaffRedirect,
+  StaffAdmin as StaffRedirect
+} from './pages/staff-direct/index'
+
+import {
+  StaffPersonalAdmin as StaffPersonalAdminRedirect,
+  StaffContactAdmin as StaffContactAdminRedirect,
+  StaffPayAdmin as StaffPayAdminRedirect,
+  StaffLeaveAdmin as StaffLeaveAdminRedirect,
+  StaffReminderAdmin as StaffReminderAdminRedirect,
+  StaffOPAdmin as StaffOPAdminRedirect,
+  StaffHRAdmin as StaffHRAdminRedirect,
+  StaffCompetenciesAdmin as StaffCompetenciesAdminRedirect,
+  StaffTrainingAdmin as StaffTrainingAdminRedirect,
+  StaffIncidentAdmin as StaffIncidentAdminRedirect,
+  StaffDocumentAdmin as StaffDocumentAdminRedirect,
+  StaffAttendanceAdmin as StaffAttendanceAdminRedirect,
+  StaffPositionAdmin as StaffPositionAdminRedirect,
+  StaffGroupingsAdmin as StaffGroupingsAdminRedirect
+} from './pages/staff-direct/staff-views/index'
+
 
 import {
   HomeClient,
@@ -272,6 +294,84 @@ const routes: Routes = [
     ]
   },
   {
+    path:'staff-direct',
+    component: HomeStaffRedirect,
+    children: [
+      {
+        path: '',
+        redirectTo: 'staff',
+        pathMatch: 'full'
+      },
+      {
+        path: 'staff/:user/:id',
+        component: StaffRedirect
+      },
+      {
+        path: 'staff',
+        component: StaffRedirect,
+        children: [
+          {
+            path: 'personal',
+            component: StaffPersonalAdminRedirect
+          },
+          {
+            path: 'contacts',
+            component: StaffContactAdminRedirect
+          },
+          {
+            path: 'pay',
+            component: StaffPayAdminRedirect
+          },
+          {
+            path: 'leave',
+            component: StaffLeaveAdminRedirect
+          },
+          {
+            path: 'reminders',
+            component: StaffReminderAdminRedirect
+          },
+          {
+            path: 'op-note',
+            component: StaffOPAdminRedirect
+          },
+          {
+            path: 'hr-note',
+            component: StaffHRAdminRedirect
+          },
+          {
+            path: 'competencies',
+            component: StaffCompetenciesAdminRedirect
+          },
+          {
+            path: 'training',
+            component: StaffTrainingAdminRedirect
+          },
+          {
+            path: 'incident',
+            component: StaffIncidentAdminRedirect
+          },
+          {
+            path: 'document',
+            component: StaffDocumentAdminRedirect
+          },
+          {
+            path: 'time-attendance',
+            component: StaffAttendanceAdminRedirect,
+            canDeactivate: [CanDeactivateGuard]
+          },
+          {
+            path: 'position',
+            component: StaffPositionAdminRedirect
+          },
+          {
+            path: 'groupings-preferences',
+            component: StaffGroupingsAdminRedirect
+          },
+        ]
+      }
+    ]
+  },
+  {
     path: 'admin',
     component: HomeV2Admin,
     canActivate: [AdminStaffRouteGuard],
@@ -304,11 +404,6 @@ const routes: Routes = [
       {
         path: 'rosters',
         component: RostersAdmin
-      },
-      {
-        path: 'staff/:user/:id',
-        component: StaffAdmin,
-        canActivate: [AdminStaffRouteGuard]
       },
       {
         path: 'staff',
@@ -586,5 +681,24 @@ export const PAGE_COMPONENTS = [
   NotesClientManager,
   PackageClientManager,
   PreferencesClientManager,
-  ShiftClientManager
+  ShiftClientManager,
+
+  //Staff Redirect
+  HomeStaffRedirect,
+  StaffRedirect,
+
+  StaffPersonalAdminRedirect,
+  StaffContactAdminRedirect,
+  StaffPayAdminRedirect,
+  StaffLeaveAdminRedirect,
+  StaffReminderAdminRedirect,
+  StaffOPAdminRedirect,
+  StaffHRAdminRedirect,
+  StaffCompetenciesAdminRedirect,
+  StaffTrainingAdminRedirect,
+  StaffIncidentAdminRedirect,
+  StaffDocumentAdminRedirect,
+  StaffAttendanceAdminRedirect,
+  StaffPositionAdminRedirect,
+  StaffGroupingsAdminRedirect
 ]

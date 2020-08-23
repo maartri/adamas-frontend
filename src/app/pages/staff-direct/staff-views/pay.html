@@ -1,0 +1,236 @@
+<div>
+    <div>
+        <div nz-row>
+            <button class="botton success" (click)="updateWorkHours()" [disabled]="!payGroup?.dirty">Save Changes</button>
+        </div>
+
+        <div nz-row [nzGutter]="8" style="margin-top:1rem">
+            <div nz-col [nzSpan]="12" [formGroup]="payGroup">
+                <nz-card nzTitle="Commencement and Termination Dates">
+                    <div nz-row nzGutter="8">
+                        <div nz-col nzSpan="12">
+                           <div class="form-group">
+                                <label for="">Start Date</label>
+                                <nz-date-picker formControlName="commencementDate"></nz-date-picker>
+                           </div>
+                        </div>
+                        <div nz-col nzSpan="12">
+                           <div class="form-group">
+                                <label for="">End Date</label>
+                                <nz-date-picker formControlName="terminationDate"></nz-date-picker>
+                           </div>
+                        </div>
+                    </div>
+                    <div nz-row>
+                       <div class="form-group">
+                            <label for="">Public Holiday Region</label>
+                            <input type="text" nz-input formControlName="publicHolidayRegion">
+                       </div>
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col [nzSpan]="12" [formGroup]="payGroup">
+                <nz-card nzTitle="Position Details">
+                    <div nz-row nzGutter="8">
+                        <div nz-row nzGutter="8">
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">Job Status</label>
+                                    <nz-select formControlName="jobStatus">
+                                        <nz-option *ngFor="let status of statuses" [nzValue]="status" [nzLabel]="status"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">Job Title</label>
+                                    <input type="text" nz-input formControlName="jobTitle">
+                                </div>
+                            </div>
+                        </div>
+                        <div nz-row nzGutter="8">
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">Weighting</label>
+                                    <input type="text" nz-input formControlName="jobWeighting">
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">FTE</label>
+                                    <input type="text" nz-input formControlName="jobFTE">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>           
+        </div>
+
+        <div nz-row [nzGutter]="8" class="card-container" [formGroup]="payGroup">
+            <div nz-col [nzSpan]="24">
+                <nz-card nzTitle="Payroll Information">
+                    <div nz-row nzGutter="8">
+                        <div nz-row nzGutter="8">
+                            <div nz-col nzSpan="4">
+                                <div class="form-group">
+                                    <label for="">Staff No</label>
+                                    <input type="text" nz-input formControlName="stF_CODE">
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="4">
+                                <div class="form-group">
+                                    <label for="">Award Level</label>
+                                    <input type="text" nz-input formControlName="awardLevel">
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="4">
+                                <div class="form-group">
+                                    <label for="">Party Group</label>
+                                    <input type="text" nz-input formControlName="payGroup">
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="4" nzOffset="4">
+                                <div class="form-group">
+                                    <label for="">Award</label>
+                                    <nz-select formControlName="award">
+                                        <nz-option *ngFor="let award of awardsArr" [nzValue]="award" [nzLabel]="award"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="4">
+                                <div class="form-group">
+                                    <label for="">Employee Of</label>
+                                    <nz-select formControlName="employeeOf">
+                                        <nz-option *ngFor="let staff of staffsArr" [nzValue]="staff.accountNo" [nzLabel]="staff.accountNo"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div nz-row>
+                            <div nz-col nzSpan="24">
+                                <div class="checkboxes">
+                                    <label nz-checkbox formControlName="includeUniform">Uniform</label>
+                                    <label nz-checkbox formControlName="excludeFromPayExport">Exclude From Pay Export</label>
+                                </div>
+                                <div class="checkboxes">
+                                    <label nz-checkbox formControlName="includeLaundry">Laundry</label>
+                                    <label nz-checkbox formControlName="excludeClientAdminFromPay">Exclude Client Administration From Payroll</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>           
+        </div>
+
+
+        <div nz-row [nzGutter]="8" class="card-container" >
+            <div nz-row>
+                <nz-card nzTitle="Work Hours">
+                    <div nz-row nzGutter="8" [formGroup]="payGroup">
+                        <div nz-col nzSpan="8">
+                            <table>
+                                <tbody class="hours">
+                                    <tr>
+                                        <td>Min Daily Hours</td>
+                                        <td><input type="text" nz-input numeric formControlName="hrS_DAILY_MIN" (keypress)="onKeyPress($event)"  maxlength="5"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Max Daily Hours</td>
+                                        <td><input type="text" nz-input numeric formControlName="hrS_DAILY_MAX" (keypress)="onKeyPress($event)" maxlength="5"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Min Weekly Hours</td>
+                                        <td><input type="text" nz-input numeric formControlName="hrS_WEEKLY_MIN" (keypress)="onKeyPress($event)" maxlength="5"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Max Weekly Hours</td>
+                                        <td><input type="text" nz-input numeric formControlName="hrS_WEEKLY_MAX" (keypress)="onKeyPress($event)" maxlength="5"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Min Pay Period Hours</td>
+                                        <td><input type="text" nz-input numeric formControlName="hrS_FNIGHTLY_MIN" (keypress)="onKeyPress($event)" maxlength="5"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Max Pay Period Hours</td>
+                                        <td><input type="text" nz-input numeric formControlName="hrS_FNIGHTLY_MAX" (keypress)="onKeyPress($event)" maxlength="5"></td>
+                                    </tr>                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        <div nz-col nzSpan="16">
+                           <table>
+                               <tbody class="work-chart">
+                                    <tr style="background: #c6dfff;">
+                                        <td>Day</td>
+                                        <td>1</td>
+                                        <td>2</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>5</td>
+                                        <td>6</td>
+                                        <td>7</td>
+                                        <td>1</td>
+                                        <td>2</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>5</td>
+                                        <td>6</td>
+                                        <td>7</td>
+                                    </tr>
+                                    <tr style="background:#8cbeff">
+                                        <td>Week</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><input type="text" nz-input formControlName="cH_1_1" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_1_2" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_1_3" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_1_4" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_1_5" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_1_6" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_1_7" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_2_1" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_2_2" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_2_3" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_2_4" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_2_5" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_2_6" numeric maxlength="5"></td>
+                                        <td><input type="text" nz-input formControlName="cH_2_7" numeric maxlength="5"></td>
+                                    </tr>
+                               </tbody>
+                           </table>
+                        </div>
+                    </div>                   
+                </nz-card>
+            </div>
+        </div>
+
+        <div nz-row [nzGutter]="8" class="card-container">
+            <div nz-col [nzSpan]="24">
+                <nz-card nzTitle="Current Leave Details">
+                    <div nz-row>
+
+                    </div>
+                </nz-card>
+            </div>           
+        </div>
+
+
+    </div>
+</div>

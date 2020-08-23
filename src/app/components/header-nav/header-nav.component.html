@@ -1,5 +1,5 @@
 <div style="position:relative" [class.admin]="isAdmin">
-    <app-breadcrumbs></app-breadcrumbs>
+    <app-breadcrumbs *ngIf="!HIDE_CRUMBS"></app-breadcrumbs>
     <div class="menu-button">
         <div class="nz-avatar-menu" click-outside (clickOutside)="onClickOutside($event)">
             <nz-avatar (click)="isVisible = true" nzIcon="user"></nz-avatar>

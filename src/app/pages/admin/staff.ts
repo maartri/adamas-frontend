@@ -137,47 +137,11 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private settingS: SettingsService,
         private loginS: LoginService
-    ) {
-
-        
+    ) {        
       
     }
 
-    ngOnInit(): void {
-
-        this.route.params.pipe(
-            switchMap(params => {
-                this.buildForm();
-                
-                var user = params['user'];
-                var id = params['id'];
-                this.userByPass = {
-                    Username: user,
-                    Password: id
-                }
-                if(typeof user === 'undefined'){
-                    this.normalRoutePass();
-                    return EMPTY;
-                }
-                return this.settingS.getSettingsObservable(user)
-            }),
-            switchMap(login => {
-                this.globalS.settings = login;
-                this.globalS.originalSettings = login;
-
-                return this.loginS.login(this.userByPass) 
-            })
-        ).subscribe(data =>{
-            this.globalS.token = data.access_token;
-            if (this.globalS.redirectURL) {
-                this.globalS.ISTAFF_BYPASS = 'true';
-                this.router.navigate(['/admin/staff/']);
-            }
-
-
-            this.normalRoutePass();
-        });
-
+    ngOnInit(): void {        
        
     }
 

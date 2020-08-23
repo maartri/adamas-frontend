@@ -47,6 +47,8 @@ export class SearchListComponent implements OnInit , AfterViewInit, OnDestroy, C
   lists: Array<any> = [];
   loading: boolean = false;
 
+  nzFilterOption  = () => true;
+
   constructor(
     private cd: ChangeDetectorRef,
     private timeS: TimeSheetService,
@@ -88,21 +90,21 @@ export class SearchListComponent implements OnInit , AfterViewInit, OnDestroy, C
 
   change(event: SearchProperties) {
     console.log(event);
-    // let user: SearchProperties | null;
+    let user: SearchProperties | null;
 
-    // if (!event) {
-    //   user = null;
-    // } else {
-    //   user = {
-    //     agencyDefinedGroup: event.agencyDefinedGroup,
-    //     accountNo: event.accountNo,
-    //     uniqueID: event.uniqueID,
-    //     sysmgr: true,
-    //     view: this.view == 0 ? 'recipient' : 'staff'
-    //   }
-    // }
+    if (!event) {
+      user = null;
+    } else {
+      user = {
+        agencyDefinedGroup: event.agencyDefinedGroup,
+        accountNo: event.accountNo,
+        uniqueID: event.uniqueID,
+        sysmgr: true,
+        view: this.view == 0 ? 'recipient' : 'staff'
+      }
+    }
 
-    // this.onChangeCallback(user);
+    this.onChangeCallback(user);
   }
 
   search() {

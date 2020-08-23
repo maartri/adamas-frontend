@@ -91,27 +91,26 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (!this.isFirstLoad) {
-            // this.view(0);
-            this.view(6);
+            this.view(0);
+            //this.view(6);
             this.isFirstLoad = true;
         }
         
-        this.user = {
-            agencyDefinedGroup: "GRAFTON",
-            code: "ABERKIRDO TYBI",
-            id: "T0100004514",
-            sysmgr: true,
-            view: "recipient"
-        }
-
         // this.user = {
-        //     code: event.accountNo,
-        //     id: event.uniqueID,
-        //     view: event.view,
-        //     agencyDefinedGroup: event.agencyDefinedGroup,
-        //     sysmgr: event.sysmgr
+        //     agencyDefinedGroup: "GRAFTON",
+        //     code: "ABERKIRDO TYBI",
+        //     id: "T0100004514",
+        //     sysmgr: true,
+        //     view: "recipient"
         // }
 
+        this.user = {
+            code: event.accountNo,
+            id: event.uniqueID,
+            view: event.view,
+            agencyDefinedGroup: event.agencyDefinedGroup,
+            sysmgr: event.sysmgr
+        }
 
         this.sharedS.emitChange(this.user);
         this.cd.detectChanges();
@@ -127,7 +126,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.listChange({});
+        // this.listChange({});
     }
 
     ngOnDestroy(): void {

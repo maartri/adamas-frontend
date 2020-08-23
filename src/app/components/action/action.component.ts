@@ -1,18 +1,25 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import parseISO from 'date-fns/parseISO';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-action',
   templateUrl: './action.component.html',
-  styleUrls: ['./action.component.css']
+  styleUrls: ['./action.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ActionComponent implements OnInit {
 
   @Input() data: any;
   @Input() settings: any;
   @Input() status: number;
+
+  private unsubscribe: Subject<void> = new Subject();
 
   visible: boolean = false;
   notesIsOpen: boolean = false;
@@ -22,6 +29,7 @@ export class ActionComponent implements OnInit {
   recordIncidentOpen: boolean = false;
 
   isConfirmLoading: boolean = false;
+  timeDuration: string;
 
   title: string;
   whatNote: number;
@@ -29,15 +37,27 @@ export class ActionComponent implements OnInit {
   optionForm: FormGroup;
   token: any;
 
+  startTime: Date;
+  endTime: Date;
+
   constructor(
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
-    private timeS: TimeSheetService
+    private timeS: TimeSheetService,
+    private staffS: StaffService,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.token = this.globalS.decode();
     this.buildForm();
+
+    console.log(this.settings);
+    
+    this.startTime = this.CONVERT_TO_TIME(this.data.activityTime.start_time);
+    this.endTime = this.CONVERT_TO_TIME(this.data.activityTime.end_Time);
+
+    this.computeTime();
   }
 
   buildForm(){
@@ -86,6 +106,10 @@ export class ActionComponent implements OnInit {
     this.visible = false;    
   }
 
+  CONVERT_TO_TIME(date: string){
+    return parseISO(date);
+  } 
+
   handleCancel() {
     this.notesIsOpen = false;
     this.claimVariationOpen = false;
@@ -93,6 +117,37 @@ export class ActionComponent implements OnInit {
     this.rosterNoteOpen = false;
     this.recordIncidentOpen = false;
   }
+
+  computeTime() {
+      var timeObj = this.globalS.computeTime(this.startTime, this.endTime)
+      this.timeDuration = timeObj.durationStr;
+
+      this.cd.detectChanges();
+  }
+
+  claimVariation(){
+
+    let claim: Dto.ClaimVariation = {
+        RecordNo: this.data.shiftbookNo,
+        ClaimedBy: this.token.nameid,
+        ClaimedDate: moment().format('YYYY-MM-DDTHH:mm:ss'),
+        ClaimedEnd: this.data.activityTime.end_Time,
+        ClaimedStart: this.data.activityTime.start_time
+    }
+
+    console.log(claim)
+
+    this.staffS.postclaimvariation(claim)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+              this.globalS.sToast('Claim Updated', 'Success');
+              return false;
+          }
+          this.globalS.eToast('Update Error', 'Error');
+      });
+  }
+
+
 
   handleOk() {
     

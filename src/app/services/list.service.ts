@@ -12,6 +12,14 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getservicetypeincident(data: any): Observable<any>{
+        return this.auth.get(`${list}/servicetype/incident/recipient/list`, data);
+    }
+    
+    getprogramsincident(id: string):Observable<any>{
+        return this.auth.get(`${list}/programs/incident/recipient/list/${id}`);
+    }    
+
     getstaffrecordview(user: string): Observable<any>{
         return this.auth.get(`${list}/staff-record-view/${user}`);
     }

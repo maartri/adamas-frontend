@@ -23,18 +23,6 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .options > div{
             margin-bottom:13px;
         }
-        .check-oneline{
-            display:flex;
-        }
-        .check-oneline label:first-child{
-            flex:1;
-        }
-        .flexy{
-            max-height: 33rem;
-        }
-        textarea{
-            max-height:4rem;
-        }
     `],
     templateUrl: './incident.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -147,7 +135,7 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
         }
     
         return true;
-      }
+    }
 
     showEditModal(index: number) {
         

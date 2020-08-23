@@ -42,6 +42,7 @@ import { LeaveApplicationComponent } from './leave-application/leave-application
 import { IncidentProfileComponent } from './incident-profile/incident-profile.component';
 import { UploadSharedComponent } from './upload-shared/upload-shared.component';
 import { MembersComponent } from './members/members.component';
+import { IncidentPostComponent } from './incident-post/incident-post.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { MembersComponent } from './members/members.component';
     LeaveApplicationComponent,
     IncidentProfileComponent,
     UploadSharedComponent,
-    MembersComponent
+    MembersComponent,
+    IncidentPostComponent
   ],
   imports: [
     CommonModule,
@@ -109,7 +111,8 @@ import { MembersComponent } from './members/members.component';
     LeaveApplicationComponent,
     IncidentProfileComponent,
     UploadSharedComponent,
-    MembersComponent
+    MembersComponent,
+    IncidentPostComponent
   ],
   providers: [
     

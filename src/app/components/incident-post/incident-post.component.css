@@ -1,0 +1,16 @@
+
+.check-oneline{
+    display:flex;
+}
+.check-oneline label:first-child{
+    flex:1;
+}
+.flexy{
+    max-height: 33rem;
+}
+textarea{
+    max-height:4rem;
+}
+.options > div{
+    margin-bottom:13px;
+}

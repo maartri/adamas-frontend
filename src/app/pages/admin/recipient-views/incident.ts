@@ -22,13 +22,16 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
-    user: any;
+    user: Dto.User;
     inputForm: FormGroup;
     tableData: Array<any>;
 
     checked: boolean = false;
     isDisabled: boolean = false;
     loading: boolean = false;
+    incidentOpen: boolean = false;
+
+    incidentRecipient: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -58,8 +61,12 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
-        this.buildForm();
+        if(this.user){
+            this.search(this.user);
+            this.buildForm();
+            return;
+        }
+        this.router.navigate(['/admin/staff/personal'])
     }
 
     ngOnDestroy(): void {
@@ -67,14 +74,17 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    search(user: any) {
+    search(user: any = this.user) {
         this.cd.reattach();
         this.loading = true;
         this.clientS.getincidents(user.id).subscribe(data => {
             this.tableData = data.list;
             this.loading = false;
             this.cd.detectChanges();
-        })
+        });
+
+        console.log(this.user);
+        this.incidentRecipient = this.user;
     }
 
     patchData(data: any) {
@@ -154,7 +164,7 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     }
 
     showAddModal() {
-
+        this.incidentOpen = !this.incidentOpen;
     }
 
     showEditModal(index: number) {

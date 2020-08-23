@@ -49,15 +49,53 @@
 <!-- FOR CLAIM VARIATION -->
 <nz-modal [(nzVisible)]="claimVariationOpen" nzTitle="Claim Variation" (nzOnCancel)="handleCancel()">
     <div>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
+       <div nz-row>
+            <div nz-col nzSpan="8">
+                <div class="form-group">
+                    <label for="">Job ID</label>
+                    <p>{{ data.shiftbookNo }}</p>
+                </div>
+            </div>
+            <div nz-col nzSpan="8">
+                <div class="form-group">
+                    <label for="">Date</label>
+                    <p>{{ data.activityDate | date:'dd/MM/yyyy' }}</p>
+                </div>
+            </div>
+            <div nz-col nzSpan="8">
+                <div class="form-group">
+                    <label for="">Status</label>
+                    <p>
+                        <nz-badge *ngIf="data.approved" nzColor="#87d068" nzText="Approved"></nz-badge>
+                        <nz-badge *ngIf="!data.approved" nzColor="#f50" nzText="Unapproved"></nz-badge>
+                    </p>
+                </div>
+            </div>
+       </div>
+       <div nz-row>
+            <div nz-col nzSpan="8">
+                <div class="form-group">
+                    <label for="">Start Time</label>
+                    <nz-time-picker [(ngModel)]="startTime" nzFormat="HH:mm" (ngModelChange)="computeTime()"></nz-time-picker>
+                </div>
+            </div>
+            <div nz-col nzSpan="8">
+                <div class="form-group">
+                    <label for="">End Time</label>
+                    <nz-time-picker [(ngModel)]="endTime" nzFormat="HH:mm" (ngModelChange)="computeTime()"></nz-time-picker>
+                </div>
+            </div>
+            <div nz-col nzSpan="8">
+                <div class="form-group">
+                    <label for="">Duration</label>
+                    <p style="margin-top: 8px;">{{ timeDuration }}</p>
+                </div>
+            </div>
+    </div>
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>
+        <button nz-button nzType="primary" (click)="claimVariation()" [nzLoading]="isConfirmLoading">Ok</button>
     </div>
 </nz-modal>
 

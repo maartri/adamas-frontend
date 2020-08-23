@@ -482,12 +482,16 @@ export class GlobalService {
     }
 
     computeTime(_start: any, _end: any): Dto.DateTimeVariables {
-
+        
         const minutesInAnHour = 60;
 
         const start = moment(_start, ['HH:mm']);
         const end = moment(_end, ['HH:mm']);
         const invalid = 'Invalid Time'
+
+        if (typeof _start === "undefined" || typeof _end === "undefined") {
+            return { durationStr: invalid };
+        }
 
         if (start.hour() > end.hour()) return { durationStr: invalid }
         if (start.hour() === end.hour() && start.minute() >= end.minute()) return { durationStr: invalid }

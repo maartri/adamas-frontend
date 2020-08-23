@@ -85,7 +85,7 @@ export class ListService {
         return this.auth.get(`${list}/incidenttype`);
     }
     Getrptiplantypes(): Observable<any>{
-        return this.auth.get(`${list}/planttype`);
+        return this.auth.get(`${list}/planitype`);
     }
     GetrptLoanItems(): Observable<any>{
         return this.auth.get(`${list}/loanitems`);
@@ -455,7 +455,10 @@ export class ListService {
     getrecipientpreference(personID: string):Observable<any>{
         return this.auth.get(`${list}/group/recipient-preference/${personID}`)
     }
-
+    
+    GetCopetencyGroup(): Observable<any>{        
+        return this.auth.get(`${list}/Copetency-Group`)
+    }
 
 
 }

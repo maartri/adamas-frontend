@@ -37,10 +37,12 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
     loading: boolean = false;
     postLoading: boolean = false;
 
+    incidentOpen: boolean = false;
+
     current: number = 0;
-    modalOpen: boolean = false;
 
     incidentTypeList: Array<any> = []
+    incidentRecipient: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -84,13 +86,6 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    handleCancel(){
-        this.modalOpen = false;
-        this.incidentForm.reset();
-        this.user = {};
-        this.current = 0;
-    }
-
     buildForm() {
         this.incidentForm = this.formBuilder.group({
             incidentType: ''
@@ -105,36 +100,20 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
             this.loading = false;
             this.cd.detectChanges();
         });
+
+        this.incidentRecipient = this.user;
     }
 
     trackByFn(index, item) {
         return item.id;
-    }
+    }  
 
-    pre(): void {
-        this.current -= 1;
-    }
+    showAddModal() {        
+        // this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
+        //     this.incidentTypeList = data;
+        // });
 
-    next(): void {
-        this.current += 1;
-    }
-
-    showAddModal() {
-        this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
-            this.incidentTypeList = data;
-        });
-
-        this.modalOpen = true;
-    }
-
-    get nextRequired() {
-        const { incidentType  } = this.incidentForm.value;
-        
-        if (this.current == 0 && this.globalS.isEmpty(incidentType)) {
-          return false;
-        }
-    
-        return true;
+        this.incidentOpen = !this.incidentOpen;
     }
 
     showEditModal(index: number) {

@@ -257,6 +257,8 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
     if (this.innerValue.view === view.staff) {
 
       this.userForm.patchValue({
+        accountNo: user.accountNo,
+        
         title: user.title,
         surnameOrg: user.lastName,
         firstName: user.firstName,

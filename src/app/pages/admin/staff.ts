@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 
-import { GlobalService, StaffService, ShareService, leaveTypes, ListService, TimeSheetService } from '@services/index';
+import { GlobalService, StaffService, ShareService, leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
+import { EMPTY } from 'rxjs';
 
 interface Person {
     key: string;
@@ -86,6 +87,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     userview: UserView;
 
+    userByPass: Dto.ApplicationUser;
+
     listChange(event: any) {
 
         if (event == null) {
@@ -130,23 +133,63 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private listS: ListService,
         private cd: ChangeDetectorRef,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private route: ActivatedRoute,
+        private settingS: SettingsService,
+        private loginS: LoginService
     ) {
 
+        
       
     }
 
     ngOnInit(): void {
+
+        this.route.params.pipe(
+            switchMap(params => {
+                this.buildForm();
+                
+                var user = params['user'];
+                var id = params['id'];
+                this.userByPass = {
+                    Username: user,
+                    Password: id
+                }
+                if(typeof user === 'undefined'){
+                    this.normalRoutePass();
+                    return EMPTY;
+                }
+                return this.settingS.getSettingsObservable(user)
+            }),
+            switchMap(login => {
+                this.globalS.settings = login;
+                this.globalS.originalSettings = login;
+
+                return this.loginS.login(this.userByPass) 
+            })
+        ).subscribe(data =>{
+            this.globalS.token = data.access_token;
+            if (this.globalS.redirectURL) {
+                this.globalS.ISTAFF_BYPASS = 'true';
+                this.router.navigate(['/admin/staff/']);
+            }
+
+
+            this.normalRoutePass();
+        });
+
+       
+    }
+
+    normalRoutePass(): void{
         const { user } = this.globalS.decode();
-
-
 
         this.listS.getstaffrecordview(user).subscribe(data => {
             this.userview = data;
             this.cd.detectChanges();
         })
 
-        this.buildForm();
+       
         this.isFirstLoad = false;   
         
         this.router.events.pipe(

@@ -63,15 +63,48 @@ export class IncidentPostComponent implements OnInit, ControlValueAccessor {
         program: ''
     });
 
-    this.incidentForm.get('program').valueChanges.pipe(
-      switchMap(program => {
-        this.clearServiceType();
-        return this.listS.getservicetypeincident({
-          id: this.user.id,
-          program: program
+    
+  }
+
+  buildValueChanges(){
+
+    this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
+        this.listIncidentTypes = data;
+    });
+
+
+    if(this.user.view == 'recipient'){
+
+      this.listS.getprogramsincident(this.user.id).subscribe(data =>{
+        this.listPrograms = data
+      });
+
+      this.incidentForm.get('program').valueChanges.pipe(
+        switchMap(program => {
+          this.clearServiceType();
+          return this.listS.getservicetypeincident({
+            id: this.user.id,
+            program: program
+          })
         })
-      })
-    ).subscribe(data => this.listServiceTypes = data);
+      ).subscribe(data => this.listServiceTypes = data);
+    }
+
+
+    if(this.user.view === 'staff'){
+      this.listS.getactivities().subscribe(data => {
+        this.listServiceTypes = data;
+      });
+      let momentDate = this.globalS.getStartEndCurrentMonth()
+      
+      let dates = {
+          StartDate: momentDate.start.format('MM-DD-YYYY'),
+          EndDate: momentDate.end.format('MM-DD-YYYY')
+      };
+
+      this.listS.getprograms(dates).subscribe(data => this.listPrograms = data);
+
+    }
   }
 
   clearServiceType(){
@@ -80,15 +113,6 @@ export class IncidentPostComponent implements OnInit, ControlValueAccessor {
   }
 
   openModal(){
-
-    this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
-        this.listIncidentTypes = data;
-    });
-
-    this.listS.getprogramsincident(this.user.id).subscribe(data =>{
-      this.listPrograms = data
-    });
-
     this.open = true;
   }
 
@@ -107,7 +131,9 @@ export class IncidentPostComponent implements OnInit, ControlValueAccessor {
   writeValue(value: any) {
     if (value != null) {
       this.user = value;
+      this.buildValueChanges();
       console.log(this.user);
+    
     }
   }
 

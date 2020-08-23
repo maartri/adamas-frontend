@@ -12,7 +12,7 @@
             </ul>
         </div>
 
-        <div nz-col nzSpan="24">
+        <div nz-col nzSpan="24" *ngIf="userview">
             <nz-tabset *ngIf="user && userview" [nzTabPosition]="'top'" [nzSelectedIndex]="nzSelectedIndex" [nzType]="'card'">
                 <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
                 <nz-tab [nzDisabled]="userview.staffRecordView[1] != '1'" nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
@@ -98,4 +98,4 @@
   </div>
 </nz-modal>
 
-<app-leave-application [open]="putonLeaveModal" [user]="user"></app-leave-application>
+<app-leave-application *ngIf="user" [open]="putonLeaveModal" [user]="user"></app-leave-application>

@@ -45,7 +45,6 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
-        console.log('haha')
         this.open = true;
         this.resetGroup();
         this.populate();

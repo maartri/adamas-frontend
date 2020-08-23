@@ -27,8 +27,7 @@ export class RouteGuard implements CanActivate, CanActivateChild{
     }
  
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {  
-        // console.log(this.globalS.settings)
-        // console.log(this.globalS.decode())
+        
         const { role, user } = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERROLEANDUSER() : this.globalS.decode();
         // console.log('haha')
 
@@ -178,26 +177,28 @@ export class RouteGuard implements CanActivate, CanActivateChild{
         return false;
     }
     
-    detectStaffDirectAccess(url: string) {
-        const urlLen = url.split('?');
+    detectStaffDirectAccess(url: string): boolean {
+        const urlLen = url.split('?');        
 
         if (urlLen.length > 1 && new URLSearchParams(urlLen[1]).has('securityByPass') &&
             new URLSearchParams(urlLen[1]).get('securityByPass')) {            
             this.globalS.redirectURL = url;
+            return true;
         }
 
         return false;
     }
 
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):boolean {     
-        if(!this.globalS.isExpired()){
-            return true;
-        }
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {     
+        return true;
+        // if(!this.globalS.isExpired()){
+        //     return true;
+        // }
 
-        this.router.navigate(['']);
+        // this.router.navigate(['']);
 
-        this.detectStaffDirectAccess(state.url);
+        // this.detectStaffDirectAccess(state.url);
 
-        return false;
+        // return false;
     }
 }

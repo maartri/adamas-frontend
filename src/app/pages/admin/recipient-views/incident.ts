@@ -82,8 +82,6 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
             this.loading = false;
             this.cd.detectChanges();
         });
-
-        console.log(this.user);
         this.incidentRecipient = this.user;
     }
 

@@ -102,6 +102,7 @@ import {
 
 import {
   RouteGuard,
+  AdminStaffRouteGuard,
   CanDeactivateGuard
 } from '@services/index'
 
@@ -273,8 +274,7 @@ const routes: Routes = [
   {
     path: 'admin',
     component: HomeV2Admin,
-    canActivate: [RouteGuard],
-    canActivateChild: [RouteGuard],
+    canActivate: [AdminStaffRouteGuard],
     children: [
       {
         path: '',
@@ -306,8 +306,9 @@ const routes: Routes = [
         component: RostersAdmin
       },
       {
-        path: 'staff/**',
+        path: 'staff/:user/:id',
         component: StaffAdmin,
+        canActivate: [AdminStaffRouteGuard]
       },
       {
         path: 'staff',

@@ -24,7 +24,7 @@
                         <div class="mrg-btm form-wrap" nzRow>
                             <div nz-col [nzMd]="24">
                                 <label for="">Date</label>
-                                <nz-date-picker [(ngModel)]="date" [nzFormat]="'yyyy/MM/dd'" [nzDisabledDate]="disabledDate"></nz-date-picker>
+                                <nz-date-picker [(ngModel)]="date" [nzFormat]="'dd/MM/yyyy'" [nzDisabledDate]="disabledDate"></nz-date-picker>
                                 <div class="leadtime">Booking Lead Time: {{ _settings?.BOOKINGLEADTIME() - 1 }}</div>
                             </div>
                         </div>

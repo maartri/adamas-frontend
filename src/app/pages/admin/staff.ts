@@ -142,7 +142,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {        
-       
+        this.buildForm();
+        this.normalRoutePass();
     }
 
     normalRoutePass(): void{

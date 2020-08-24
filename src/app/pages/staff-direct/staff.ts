@@ -186,6 +186,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
         this.listS.getstaffrecordview(user).subscribe(data => {
             this.userview = data;
+
+            console.log(this.userview);
             this.cd.detectChanges();
         })
 

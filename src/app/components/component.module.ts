@@ -43,6 +43,7 @@ import { IncidentProfileComponent } from './incident-profile/incident-profile.co
 import { UploadSharedComponent } from './upload-shared/upload-shared.component';
 import { MembersComponent } from './members/members.component';
 import { IncidentPostComponent } from './incident-post/incident-post.component';
+import { AddStaffComponent } from './add-staff/add-staff.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { IncidentPostComponent } from './incident-post/incident-post.component';
     IncidentProfileComponent,
     UploadSharedComponent,
     MembersComponent,
-    IncidentPostComponent
+    IncidentPostComponent,
+    AddStaffComponent
   ],
   imports: [
     CommonModule,
@@ -112,7 +114,8 @@ import { IncidentPostComponent } from './incident-post/incident-post.component';
     IncidentProfileComponent,
     UploadSharedComponent,
     MembersComponent,
-    IncidentPostComponent
+    IncidentPostComponent,
+    AddStaffComponent
   ],
   providers: [
     

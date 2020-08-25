@@ -37,7 +37,7 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
 
   userForm: FormGroup;
 
-  dateFormat: string = 'dd/MM/yyyy'
+  dateFormat: string = 'dd/MM/yyyy';
 
   constructor(
     private globalS: GlobalService,

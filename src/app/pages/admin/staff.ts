@@ -81,6 +81,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     terminateModal: boolean = false;
     putonLeaveModal: boolean = false;
+    newStaffModal: boolean = false;
     
     leaveBalanceList: Array<any>;
     terminateGroup: FormGroup;
@@ -118,8 +119,6 @@ export class StaffAdmin implements OnInit, OnDestroy {
             agencyDefinedGroup: event.agencyDefinedGroup,
             sysmgr: event.sysmgr
         }
-
-        console.log(this.user);
 
         this.sharedS.emitChange(this.user);
         this.cd.detectChanges();

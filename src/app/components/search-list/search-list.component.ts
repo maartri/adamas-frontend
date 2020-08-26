@@ -33,7 +33,7 @@ interface Refresh {
   ],
   //changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchListComponent implements OnInit , AfterViewInit, OnDestroy, ControlValueAccessor {
+export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, OnDestroy, ControlValueAccessor {
 
   private onTouchedCallback: any = () => { };
   private onChangeCallback: any = () => { };
@@ -42,6 +42,8 @@ export class SearchListComponent implements OnInit , AfterViewInit, OnDestroy, C
 
   // 0 if recipient / 1 if staff
   @Input() view: number;
+  @Input() reload: boolean;
+
   searchModel: any;
   listsAll: Array<any> = [];
   lists: Array<any> = [];
@@ -62,13 +64,22 @@ export class SearchListComponent implements OnInit , AfterViewInit, OnDestroy, C
         this.lists = this.listsAll.slice(0, 200);
       } else {
         this.lists = this.listsAll.filter(x => x.accountNo).filter(x => (x.accountNo).toLowerCase().indexOf(data) > -1);
-      }
-      
-    })
+      }      
+    });
   }
 
   ngOnInit(): void {
     this.search();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    for (let property in changes) {
+      if (property == 'reload' && 
+        !changes[property].firstChange && 
+        changes[property].currentValue != null) {
+          this.search();
+      }
+    }
   }
 
   ngAfterViewInit(): void{
@@ -119,7 +130,6 @@ export class SearchListComponent implements OnInit , AfterViewInit, OnDestroy, C
   }
 
   searchChange(data: any){
-    console.log(data);
     this.searchChangeEmit.next(data);
   }
 
@@ -154,7 +164,6 @@ export class SearchListComponent implements OnInit , AfterViewInit, OnDestroy, C
   //From ControlValueAccessor interface
   writeValue(value: any) {
     this.cd.detectChanges();
-
     if (value != null) {
       this.searchModel = value;
     }

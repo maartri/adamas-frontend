@@ -259,5 +259,10 @@ export class StaffAdmin implements OnInit, OnDestroy {
             this.isConfirmLoading = false;
         });
     }
+
+    reloadVal: boolean = false;
+    reload(reload: boolean){
+        this.reloadVal = !this.reloadVal;
+    }
     
 }

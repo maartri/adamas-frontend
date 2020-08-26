@@ -27,6 +27,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
+
   @Input() open: boolean = false;
   @Output() reload = new EventEmitter();
 
@@ -56,6 +57,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   };
 
   private verifyAccount = new Subject<any>();
+  private verifyAccountPerOrg = new Subject<any>();
   
   constructor(
     private globalS: GlobalService,
@@ -75,6 +77,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         !changes[property].firstChange && 
         changes[property].currentValue != null) {
         this.open = true;
+        
         this.buildForm();
         this.populate();
       }
@@ -82,18 +85,20 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   }
 
   buildForm() {
+    this.current = 0;
+
     this.staffForm = this.fb.group({
         type: null,
         orgType: 'Individual',
 
-        accountNo:'',
+        accountNo:[''],
 
         surnameOrg: ['', Validators.required],
         firstName: ['', Validators.required],
-        birthDate: ['', Validators.required],
-        gender: ['', Validators.required],
-        addressForm: this.fb.array([this.createAddress()]),
-        contactForm: this.fb.array([this.createContact()]),
+        birthDate: ['',Validators.required],
+        gender: ['',Validators.required],
+        addressForm: this.fb.array(this.defaultAddress() || []),
+        contactForm: this.fb.array(this.defaultContacts() || []),
 
         commencementDate: '',
         branch:'',
@@ -101,10 +106,29 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         manager: '',
     });
 
+    this.staffForm.get('orgType').valueChanges
+    .pipe(debounceTime(300))
+    .subscribe(data => {
+        this.clearPersonalDetails();
+    });
+
+    this.staffForm.get('type').valueChanges
+      .pipe(debounceTime(300))
+      .subscribe(data => {
+          this.staffForm.patchValue({
+            orgType: 'Individual'
+          })
+          this.clearPersonalDetails();
+      });
+
     this.staffForm.get('surnameOrg').valueChanges
       .pipe(debounceTime(300))
       .subscribe(data => {
-          this.verifyAccount.next();
+          if(this.staffForm.get('orgType').value === 'Organisation'){
+            this.verifyAccountPerOrg.next(data);
+          } else {
+            this.verifyAccount.next();
+          }          
       });
 
     this.staffForm.get('firstName').valueChanges
@@ -125,42 +149,82 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           this.verifyAccount.next();
       });
 
-
+    // For Person Check if Account is present
     this.verifyAccount.pipe(
         debounceTime(300),
         concatMap(e => {
-          if (this.staffForm && this.staffForm.valid) {
-            this.generatedAccount = this.generateAccount();
-            return this.staffS.isAccountNoUnique(this.generatedAccount);
+          this.accountTaken = null;  
+          if (this.staffForm) {
+            this.generatedAccount = this.generateAccount(); 
+            if(this.generatedAccount && this.staffForm.valid) {
+              return this.staffS.isAccountNoUnique(this.generatedAccount);
+            }
           } return EMPTY;
         })
       ).subscribe(next => {
-       
+        this.staffForm.patchValue({
+          accountNo: this.generatedAccount.toUpperCase()
+        });
         if (next == 1) {
-          this.accountTaken = false;  
-          this.staffForm.patchValue({
-            accountNo: this.generatedAccount
-          });
+          this.accountTaken = false;
         }
 
         if (next == 0) {
           this.accountTaken = true;
         }
-        
+      });
+
+      // For Organisation Check if Account is present
+      this.verifyAccountPerOrg
+          .pipe(
+            debounceTime(300),
+            concatMap(data => {
+              this.accountTaken = null;  
+              if(data){
+                this.generatedAccount = data;
+                return this.staffS.isAccountNoUnique(data);
+              }
+              return EMPTY;
+            })
+          ).subscribe(next => {
+            if (next == 1) {
+              this.accountTaken = false;
+              this.staffForm.patchValue({
+                accountNo: this.generatedAccount.toUpperCase()
+              });
+            }
+    
+            if (next == 0) {
+              this.accountTaken = true;
+            }
       });
   }
 
+  clearPersonalDetails(): void{
+    this.staffForm.patchValue({      
+      surnameOrg: '',
+      firstName: '',
+      birthDate: '',
+      gender: '',
+      accountNo: ''
+    });
+
+    this.accountTaken = null;
+  }
+
   generateAccount(): string {
+
     const fname = (this.staffForm.get('firstName').value).trim();
     const lname = (this.staffForm.get('surnameOrg').value).trim();
     const birthdate = this.staffForm.get('birthDate').value ? moment(this.staffForm.get('birthDate').value).format('YYYYMMDD') : '';
     const gender = this.staffForm.get('gender').value ? ' (' + (this.staffForm.get('gender').value).trim()[0] + ') ' : '';
 
     var _account = lname + ' ' + fname + gender + ' ' + birthdate;
-    return _account.toUpperCase() || '';
+    return this.globalS.isEmpty(_account.toUpperCase()) && _account.trim() !== '' ? null : _account.toUpperCase();
   }
 
   populate(){
+
     this.clientS.getcontacttype().subscribe(data => {
         this.contactType = data.map(x => {
             return (new RemoveFirstLast().transform(x.description)).trim();
@@ -218,6 +282,34 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     });
   }
 
+  defaultContacts(): Array<FormGroup>{
+    var groupArr: Array<FormGroup> = [];
+
+    groupArr =[ new FormGroup({
+      contacttype: new FormControl('HOME'),
+      contact: new FormControl('')
+    }),new FormGroup({
+        contacttype: new FormControl('MOBILE'),
+        contact: new FormControl('')
+    })]
+    return groupArr;
+  }
+
+  defaultAddress(): Array<FormGroup>{
+    var groupArr: Array<FormGroup> = [];
+
+    groupArr =[ new FormGroup({
+        type: new FormControl('RESIDENTIAL'),
+        address1: new FormControl(''),
+        suburb: new FormControl('')
+    }),new FormGroup({
+       type: new FormControl('POSTAL'),
+        address1: new FormControl(''),
+        suburb: new FormControl('')
+    })]
+    return groupArr;
+  }
+
   addAddress(){
     var field = this.staffForm.get('addressForm') as FormArray;
     field.push(this.createAddress());
@@ -238,11 +330,12 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   get nextRequired() {
     
+    if(this.current == 1 && ((this.accountTaken) || this.globalS.isEmpty(this.staffForm.get('accountNo').value) || this.globalS.isEmpty(this.staffForm.get('surnameOrg').value)) ) return false;
     return true;
   }
 
   save(){
-
+    
     const {
           type,               //category
           accountNo,
@@ -258,6 +351,16 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           commencementDate,   //commencement date      
           
       } = this.staffForm.value;
+
+      if(
+          this.globalS.isEmpty(commencementDate) || 
+          this.globalS.isEmpty(manager) || 
+          this.globalS.isEmpty(branch) || 
+          this.globalS.isEmpty(jobCategory)
+        ){
+          this.globalS.eToast('Error','Some Fields are required');
+          return;
+        }
 
 
 
@@ -287,7 +390,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           }
       }).filter(x => x);
 
-      console.log(this.staffForm.value);
+      
 
       this.staffS.poststaffprofile({
           Staff: {
@@ -308,7 +411,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
       }).subscribe(data => {
           if(data){
               this.globalS.sToast('Success','Staff Added');
-
+              this.handleCancel();
+              this.reload.next(true);
           }
       });
 

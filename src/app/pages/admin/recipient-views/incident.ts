@@ -22,7 +22,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
-    user: Dto.User;
+    user: any;
     inputForm: FormGroup;
     tableData: Array<any>;
 
@@ -32,6 +32,8 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     incidentOpen: boolean = false;
 
     incidentRecipient: any;
+
+    operation: any; 
 
     constructor(
         private timeS: TimeSheetService,
@@ -82,7 +84,8 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
             this.loading = false;
             this.cd.detectChanges();
         });
-        this.incidentRecipient = this.user;
+
+        //this.incidentRecipient = this.user;
     }
 
     patchData(data: any) {
@@ -162,14 +165,52 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     }
 
     showAddModal() {
+        const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
+
+        var newPass = {
+            agencyDefinedGroup: agencyDefinedGroup,
+            code: code,
+            id: id,
+            sysmgr: sysmgr,
+            view: view,
+            operation: 'ADD',
+            recordNo: 0
+        }
+
+        this.operation = {
+            process: 'ADD'
+        }
+        
+        this.incidentRecipient = newPass;
+        this.incidentOpen = !this.incidentOpen;
+        
+
+    }
+
+    showEditModal(data: any) {
+
+        const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
+
+        var newPass = {
+            agencyDefinedGroup: agencyDefinedGroup,
+            code: code,
+            id: id,
+            sysmgr: sysmgr,
+            view: view,
+            operation: 'UPDATE',
+            recordNo: data.recordNumber
+        }
+
+        this.operation = {
+            process: 'UPDATE'
+        }
+        
+        this.incidentRecipient = newPass;
         this.incidentOpen = !this.incidentOpen;
     }
 
-    showEditModal(index: number) {
-
-    }
-
     delete(data: any) {
-
+        this.timeS.deleteincident(data.recordNumber)
+            .subscribe(data => this.search());
     }
 }

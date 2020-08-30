@@ -681,6 +681,56 @@ declare namespace Dto {
             sysmgr: boolean,
             view: string
         }
+
+        export interface IM_Master {
+            PersonId: string,
+            Type: string,
+            Service: string,
+            Date: Date,
+
+            Location: string,
+            ReportedBy: string,
+            CurrentAssignee: string,
+            ShortDesc: string,
+            FullDesc: string,
+            Triggers: string,
+            InitialNotes: string,
+
+            OngoingNotes: string,
+            Notes: string,
+            Setting: string,
+            Status: string,
+            Region: string,
+            Phone: string,
+            Verbal_Date: Date,
+            By_Whome: string,
+            ReleventBackground: string,
+            SummaryofAction: string,
+            SummaryOfOtherAction: string,
+            SubjectName: string,
+            SubjectGender: string,
+            ResidenceSubjectOther: string,
+            TypeOther: string,
+            Manager: string,
+
+            IncidentTypeOther: string,
+            Mobile: string,
+            OfficeUse: string,
+            FollowupContacted: string,
+            FollowupContactedOther: string,
+            SubjectMood: string,
+
+            Staff?: Array<any>,
+            NewRelationship: Array<any>
+        }
+
+        export interface NewRelationShip
+        {
+        name: string,
+        relationship: string,
+        checked: boolean
+        }
+
         
         // export interface NewStaffUser {
         //     type?: number,

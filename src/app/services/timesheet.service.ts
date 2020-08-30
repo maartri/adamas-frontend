@@ -17,6 +17,18 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    getspecificincidentdetails(recordNo: number): Observable<any>{
+        return this.auth.get(`${timesheet}/incident/${recordNo}`);
+    }
+
+    deleteincident(recordNo: number): Observable<any>{
+        return this.auth.delete(`${timesheet}/incident/${recordNo}`);
+    }
+
+    postincident(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/incidents`, data);
+    }
+
     getclosedate(name: any): Observable<any>{
         return this.auth.get(`${timesheet}/closedate`, name);
     }

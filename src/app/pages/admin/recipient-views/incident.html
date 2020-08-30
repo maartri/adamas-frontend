@@ -21,7 +21,7 @@
                     <td>{{ data.subCategory }}</td>
                     <td>{{ data.description || '-' }}</td>
                     <td>
-                        <a (click)="showEditModal(i)">Update</a>
+                        <a (click)="showEditModal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
@@ -32,4 +32,4 @@
     </div>
 </div>
 
-<app-incident-post [open]="incidentOpen" [(ngModel)]="incidentRecipient"></app-incident-post>
+<app-incident-post [open]="incidentOpen" [operation]="operation" [(ngModel)]="incidentRecipient"></app-incident-post>

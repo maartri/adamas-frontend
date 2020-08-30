@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import { Component, OnInit, forwardRef, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap, map } from 'rxjs/operators';
 import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
 import parseISO from 'date-fns/parseISO'
+
 
 const noop = () => {};
 
@@ -53,7 +54,7 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
   }  
 
   pathForm(token: Dto.ProfileInterface) {
-
+    console.log(token);
     if (this.globalS.isEmpty(token))
       return;
     
@@ -61,7 +62,7 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
       this.clientS.getprofile(token.name).pipe(
         concatMap(data => {
           this.user = data;
-          console.log(data);
+
           this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);
         }),
@@ -85,7 +86,7 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
           primaryPhone: this.getPrimaryContact(data[1])
         })
 
-        console.log(data);
+        //this.onChangeCallback(this.userForm.value);
       });     
     }
 
@@ -194,10 +195,11 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
-    if (value != null && !_.isEqual(value, this.innerValue)) {
+    console.log(value);
+    if (value != null) {
       this.innerValue = value;      
       this.pathForm(this.transform(this.innerValue));
-      this.searchStaff();
+      // this.searchStaff();
     }    
   }
 

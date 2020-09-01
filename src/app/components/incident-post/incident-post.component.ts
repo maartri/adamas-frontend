@@ -680,6 +680,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   writeValue(value: any) {
     if (value != null) {
       this.innerValue = value;
+      console.log(this.innerValue);
 
       this.buildValueChanges();
       this.pathForm(this.transform(value));

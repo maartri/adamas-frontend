@@ -222,10 +222,11 @@ export class GlobalService {
     }
 
     
-    GETPICKEDMEMBERDATA(data: any){
+    GETPICKEDMEMBERDATA(data: any, recipientDocFolder: string = null){
         return {
             code: data.accountNo,
-            uniqueID: data.uniqueID
+            uniqueID: data.uniqueID,
+            recipientDocFolder: recipientDocFolder
         } 
     }
 

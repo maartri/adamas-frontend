@@ -50,6 +50,8 @@ export class RouteGuard implements CanActivate, CanActivateChild{
         // this.detectStaffDirectAccess(state.url);
         // return false;
 
+        if(this.globalS.isEmpty(user) || !user) return false;
+
         return this.settingS.getSettingsObservable(user).pipe(
             switchMap((data: any) => {
                 this.globalS.settings = data;

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
-import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService } from '@services/index';
+import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService, dateFormat } from '@services/index';
 
 import * as moment from 'moment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -146,6 +146,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
     current = 0;
 
     time = new Date(1990, 1, 1, 9, 0, 0);
+
+    dateFormat: string = dateFormat;
 
     startTime: any = new Date(1990, 1, 1, 9, 0, 0);
     endTime: any = new Date(1990, 1, 1, 10, 0, 0);

@@ -85,6 +85,10 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
     console.log(item);
     const formData = new FormData();
     formData.append('file', item.file as any);
+    formData.append('data', JSON.stringify({
+      PersonID: this.token.uniqueID,
+      DocPath: this.token.recipientDocFolder
+    }))
 
     const req = new HttpRequest('POST', item.action!, formData, {
       reportProgress: true,
@@ -154,7 +158,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
     if (value != null) {
       this.innerValue = value;
       this.token = value.token;
-      this.urlPath = `api/v2/file/upload-document-procedure/${(this.token).uniqueID}`;
+      this.urlPath = `api/v2/file/upload-document-procedure`;
 
       this.loadFiles();
       // this.pathForm(this.innerValue);

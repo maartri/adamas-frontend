@@ -127,23 +127,24 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   downloadDocument(index: number) {
     const { docID, filename, type, originalLocation } = this.loadedFiles[index];
 
-    // this.uploadS.downloadFileDocuments({
-    //   PersonID: this.token.id,
-    //   Extension: type,
-    //   FileName: filename,
-    //   DocPath: originalLocation
-    // }).subscribe(blob => {
-    //   // console.log(blob);
-    //   let data = window.URL.createObjectURL(blob);
-    //   let link = document.createElement('a');
-    //   link.href = data;
-    //   link.download = filename;
-    //   link.click();
+    console.log(this.loadedFiles[index])
+    this.uploadS.downloadFileDocumentInProjectDirectory({
+      PersonID: this.token.id,
+      Extension: type,
+      FileName: filename,
+      DocPath: originalLocation
+    }).subscribe(blob => {
+      // console.log(blob);
+      let data = window.URL.createObjectURL(blob);
+      let link = document.createElement('a');
+      link.href = data;
+      link.download = filename;
+      link.click();
 
-    //   setTimeout(() => {
-    //     window.URL.revokeObjectURL(data);
-    //   }, 100);
-    // });
+      setTimeout(() => {
+        window.URL.revokeObjectURL(data);
+      }, 100);
+    });
   }
 
   //From ControlValueAccessor interface

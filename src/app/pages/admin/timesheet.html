@@ -171,7 +171,7 @@
                 <nz-step nzTitle="Pay Details"></nz-step>
                 <!-- <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Time"></nz-step> -->
                 <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Pay"></nz-step>
-                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)"nzTitle="Bills"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup) && rosterGroup != 'ADMINISTRATION' "nzTitle="Bills"></nz-step>
             </nz-steps>
     
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
@@ -382,7 +382,7 @@
         <button nz-button nzType="default" (click)="next()" *ngIf="nextCondition" [disabled]="nextDisabled">
             <span>Next</span>
         </button>
-        <button nz-button nzType="primary" (click)="done()" [disabled]="!isFormValid" *ngIf="current >= 4">
+        <button nz-button nzType="primary" (click)="done()" [disabled]="!isFormValid" *ngIf="showDone">
             <span>Done</span>
         </button>
         <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>

@@ -1269,7 +1269,14 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (this.current == 2 && !this.ifRosterGroupHasTimePayBills(this.rosterGroup)) {
             return false; 
         }
+        if(this.current == 3 && this.rosterGroup == 'ADMINISTRATION'){
+            return false;
+        }
         return this.current < 4;
+    }
+
+    get showDone(){
+        return this.current >= 4 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3);
     }
 
     get isFormValid(){
@@ -1338,7 +1345,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (tgroup.isMultipleRecipient) {
                 return "!MULTIPLE"
             }
-            return tgroup.recipientCode;            
+            return tgroup.recipientCode;
         }
 
         return tgroup.recipientCode;

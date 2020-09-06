@@ -438,7 +438,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             })
         ).subscribe(d => {
             if (d.length > 1) return false;
-            this.rosterGroup = (d[0].RosterGroup).toUpperCase();
+            this.rosterGroup = (d[0].rosterGroup).toUpperCase();
             this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
 
             this.timesheetForm.patchValue({
@@ -1265,6 +1265,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     get nextCondition() {
+        console.log(this.rosterGroup)
         if (this.current == 2 && !this.ifRosterGroupHasTimePayBills(this.rosterGroup)) {
             return false; 
         }
@@ -1324,6 +1325,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.timeS.posttimesheet(inputs).subscribe(data => {
             this.globalS.sToast('Success', 'Timesheet has been added');
             this.addTimesheetVisible = false;
+            this.picked(this.selected);
         });
     }
 

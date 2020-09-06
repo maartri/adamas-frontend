@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges,forwardRef, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges,forwardRef, OnChanges, Output, EventEmitter  } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, StaffService, view } from '@services/index';
@@ -27,6 +27,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   @Input() open: boolean = false;
   @Input() operation: any;
+
+  @Output() reload = new EventEmitter();
 
   dateFormat: string = 'dd/MM/yyyy';
 
@@ -621,11 +623,14 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           NewRelationship: this.listNewPeople
     };
 
-    console.log(this.selectedStaff);
-    console.log(this.user);
-
+    // console.log(this.selectedStaff);
+    // console.log(this.user);
+    // this.reload.emit("");
+    
     this.timeS.postincident(im_master).subscribe(data => {
       this.globalS.sToast('Success', 'Data saved');
+
+      this.reload.emit("");
     });
   }
 

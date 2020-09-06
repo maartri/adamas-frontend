@@ -32,4 +32,4 @@
     </div>
 </div>
 
-<app-incident-post [open]="incidentOpen" [operation]="operation" [(ngModel)]="incidentRecipient"></app-incident-post>
+<app-incident-post [open]="incidentOpen" [operation]="operation" (reload)="reload($event)" [(ngModel)]="incidentRecipient"></app-incident-post>

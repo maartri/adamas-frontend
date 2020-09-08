@@ -66,15 +66,19 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
 
   ngOnInit() {
     this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
+    console.log(this.token);
   }
 
   loadFiles() {
     this.loadDocument = true;
-    this.uploadS.getFileDocuments(this.token.code, this.innerValue.view)
+
+    if(!this.globalS.isEmpty(this.token.code) && typeof this.token.code !== 'undefined'){
+      this.uploadS.getFileDocuments(this.token.code, this.innerValue.view)
       .subscribe(data => {
         this.loadedFiles = data;
         this.loadDocument = false;
       });
+    }
   }
 
   ngOnDestroy() {
@@ -153,8 +157,6 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
-    console.log(value);
-
     if (value != null) {
       this.innerValue = value;
       this.token = value.token;

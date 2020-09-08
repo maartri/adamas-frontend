@@ -324,13 +324,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         });
 
-        // this.timesheetForm.get('time.startTime').valueChanges.pipe(
-        //     takeUntil(this.unsubscribe)
-        // ).subscribe(d => {
-
-        //     this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
-        // });
-
         this.timesheetForm.get('isMultipleRecipient').valueChanges.pipe(
             takeUntil(this.unsubscribe),
             switchMap(d => {
@@ -1105,9 +1098,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
-        const { serviceType } = this.timesheetForm.value;
-
-        console.log(this.selected.option)
+        const { serviceType, date, time } = this.timesheetForm.value;
 
         if (!program) return EMPTY;
         console.log(this.timesheetForm.value)
@@ -1118,7 +1109,11 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 program,
                 recipient: this.GETRECIPIENT(this.selected.option),
                 mainGroup: serviceType,
-                viewType: this.viewType
+                viewType: this.viewType,
+                date: format(date, 'yyyy/MM/dd'),
+                startTime: format(this.defaultStartTime,'hh:mm'),
+                endTime: format(this.defaultEndTime,'hh:mm'),
+                duration: this.durationObject?.duration
             });
         }
         else {
@@ -1156,9 +1151,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         return this.listS.getlist(sql);
     }
 
-
     // Add Timesheet
-
     current = 0;
     nextDisabled: boolean = false;
     programsList: Array<any> = [];
@@ -1370,8 +1363,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.globalS.eToast('Error', 'All fields are required');
             return;
         }
-
-        console.log(inputs);
 
         this.timeS.posttimesheet(inputs).subscribe(data => {
             this.globalS.sToast('Success', 'Timesheet has been added');

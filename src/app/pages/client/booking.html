@@ -82,7 +82,7 @@
                             [nzBodyStyle]="{'height':'6rem', 'fontSize': '11px'}">
                             <p>{{ svc.serviceProgram | uppercase }}</p>
                         </nz-card> -->
-                        <div class="book-wrapper" [class.pick]="isPicked(svc)">
+                        <div class="book-wrapper" *ngIf="!(svc?.excludeFromClientPortal)" [class.pick]="isPicked(svc)">
                             <div>
                                 <div class="book-image" [style.background-position]="getPositionImg(svc)"></div>
                                 <h4>{{ svc.serviceName | uppercase }}</h4>

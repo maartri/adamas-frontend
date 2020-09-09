@@ -93,6 +93,7 @@
                                 (click)="add(svc)"><i nz-icon nzType="bulb" nzTheme="outline"></i> Pick</button>
                         </div>
                     </div>
+                    <nz-empty *ngIf="services?.length == 0"></nz-empty>
                 </div>
             </div>
             <div *ngIf="cprovider && current == 2">

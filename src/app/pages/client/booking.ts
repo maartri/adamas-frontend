@@ -8,6 +8,7 @@ import addDays from 'date-fns/addDays'
 
 import { forkJoin, Subject, Observable, EMPTY } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged, switchMap, mergeMap } from 'rxjs/operators';
+
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 const enum ImagePosition {
@@ -137,7 +138,8 @@ const enum ImageActivity {
 
 
 export class BookingClient implements OnInit, OnDestroy {
-
+    dayKeys: Array<string> = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+    
     @Input() inputUser: any;
 
     current = 0;
@@ -178,7 +180,9 @@ export class BookingClient implements OnInit, OnDestroy {
 
     loadBooking: boolean = false;
 
-    private unsubscribe = new Subject()
+    private unsubscribe = new Subject();
+
+    slots: Array<any>;
 
     constructor(
         private clientS: ClientService,
@@ -375,6 +379,57 @@ export class BookingClient implements OnInit, OnDestroy {
         this.bookingModalOpen = true;
     }
 
+    buildPermanentBookings(): Array<Dto.PermanentBookings>{
+
+        if(typeof this.slots === 'undefined') return [];
+
+        const originalLen = this.slots.length;
+        var objWithQuantity = this.buildDateFrames(this.slots);
+        var newDates = []
+        
+        if(originalLen == 1 && objWithQuantity.length > 0){
+            var newArr = [];
+            var counter = 1;
+            for( var a = 0 ; a < 3 ; a++){
+                var ehem = objWithQuantity.map(x => {
+                    return {
+                        time: addDays(x.time, (7*counter)),
+                        quantity: x.quantity,                  
+                        week: x.week
+                    }
+                });
+                newArr.push(...ehem);
+                counter++;
+            }
+            newDates = [...objWithQuantity,...newArr];
+        }
+
+        if(originalLen == 2 && objWithQuantity.length > 0){
+            newDates = objWithQuantity.map(x => {
+                return {
+                    quantity: x.quantity,
+                    time: addDays(x.time, 14),
+                    week: x.week
+                }
+            })
+            newDates = [...objWithQuantity,...newDates]            
+        }
+
+        return newDates;       
+    }
+
+    buildDateFrames(timeSlots: Array<any>): Array<any>{
+        var newArr: Array<any> = [];  
+        for(var timeLen = 0 ; timeLen < timeSlots.length ; timeLen++){
+          for(var day = 0; day < this.dayKeys.length ; day++){
+            if(timeSlots[timeLen][this.dayKeys[day]].quantity > 0){
+                newArr.push(timeSlots[timeLen][this.dayKeys[day]])
+            }
+          }
+        }
+        return newArr;
+    }
+
     book() {
         let booking: Dto.AddBooking = {
             BookType: this.bookType,
@@ -387,11 +442,14 @@ export class BookingClient implements OnInit, OnDestroy {
             Username: this.token['nameid'],
             AnyProvider: this.aprovider,
             BookingType: this.once ? 'Normal' : this.permanent ? this.weekly : '',
-            Notes: this.notes
+            Notes: this.notes,
+            PermanentBookings: this.buildPermanentBookings() 
         }
-        // console.log(booking);
-        this.loadBooking = true;
+        
+        //var permBookings = this.buildPermanentBookings();
+        //console.log(booking);
 
+        this.loadBooking = true;
         this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let resultRows = parseInt(data);
             if (resultRows == 1) {

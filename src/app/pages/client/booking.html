@@ -66,7 +66,7 @@
                                 </nz-select>
                             </div>
                             <div nz-row>
-                                <app-interval-design [interval]="weekly"></app-interval-design>
+                                <app-interval-design [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'"></app-interval-design>
                             </div>
                         </div>
                     </div>
@@ -221,6 +221,6 @@
 
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="bookingModalOpen = false">Cancel</button>
-        <button nz-button nzType="primary" [nzLoading]="loadBooking" (click)="book()">Book</button>
+        <button nz-button nzType="primary" (click)="book()">Book</button>
     </div>
 </nz-modal>

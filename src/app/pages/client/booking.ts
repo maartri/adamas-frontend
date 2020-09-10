@@ -460,6 +460,7 @@ export class BookingClient implements OnInit, OnDestroy {
             this.resetStepper();
             this.bookingModalOpen = false;
         }, (err) => {
+            this.resetStepper();
             this.globalS.eToast('Error', 'Booking Unsuccessful')
         });
 

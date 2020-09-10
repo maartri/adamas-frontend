@@ -62,6 +62,7 @@ export const fundingDropDowns = {
     cycle: ['CYCLE 1', 'CYCLE 2', 'CYCLE 3', 'CYCLE 4', 'CYCLE 5', 'CYCLE 6', 'CYCLE 7', 'CYCLE 8', 'CYCLE 9', 'CYCLE 10']
 }
 
+export const dateFormat = "dd/MM/yyyy";
 export const states = ['AUSTRALIAN CAPITAL TERRITORY', 'NEW SOUTH WALES', 'NORTHERN TERRITORY', 'QUEENSLAND', 'SOUTH AUSTRALIA', 'TASMANIA', 'VICTORIA', 'WESTERN AUSTRALIA']
 export const cycles = ['1st Monday - CYCLE 1', '1st Tuesday - CYCLE 1', '1st Wednesday - CYCLE 1', '1st Thursday - CYCLE 1', '1st Friday - CYCLE 1']
 export const billunit = ['HOUR', 'SERVICE']
@@ -70,8 +71,8 @@ export const status = ['WAIT LIST', 'ON HOLD', 'ACTIVE', 'INACTIVE']
 export const achievementIndex = ['(1) NOT ACHIEVED', '(2) PARTIALLY ACHIEVED', '(3) MOSTLY ACHIEVED', '(4) FULLY ACHIEVED', '(5) ONGOING', '(6) FUNDING NOT APPROVED']
 export const caldStatuses = ['CALD BACKGROUND', 'NOT CALD BACKGROUND']
 export const titles = ["Mr", "Ms", "Mrs", "Dr"]
-export const types = ['', 'BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
-export const gender = ['', 'MALE', 'FEMALE', 'NOT STATED']
+export const types = ['BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
+export const gender = ['MALE', 'FEMALE', 'NOT STATED']
 export const months = moment.months()
 export const recurringInt = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
 export const recurringStr = ['Day/s', 'Week/s', 'Month/s', 'Year/s']
@@ -221,10 +222,11 @@ export class GlobalService {
     }
 
     
-    GETPICKEDMEMBERDATA(data: any){
+    GETPICKEDMEMBERDATA(data: any, recipientDocFolder: string = null){
         return {
             code: data.accountNo,
-            uniqueID: data.uniqueID
+            uniqueID: data.uniqueID,
+            recipientDocFolder: recipientDocFolder
         } 
     }
 
@@ -482,12 +484,16 @@ export class GlobalService {
     }
 
     computeTime(_start: any, _end: any): Dto.DateTimeVariables {
-
+        
         const minutesInAnHour = 60;
 
         const start = moment(_start, ['HH:mm']);
         const end = moment(_end, ['HH:mm']);
         const invalid = 'Invalid Time'
+
+        if (typeof _start === "undefined" || typeof _end === "undefined") {
+            return { durationStr: invalid };
+        }
 
         if (start.hour() > end.hour()) return { durationStr: invalid }
         if (start.hour() === end.hour() && start.minute() >= end.minute()) return { durationStr: invalid }

@@ -246,3 +246,10 @@ th.action{
 .pad-15{
     padding:15px;
 }
+.width-55{
+    width:55%;
+}
+
+.text-upper{
+    text-transform: uppercase;
+}

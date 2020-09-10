@@ -40,7 +40,7 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     private _subscription$: Subscription;
     private searchResult$: Observable<any>;
 
-    innerValue: any;
+    innerValue: any = null;
     lists: Array<any> = [];
     isLoading: boolean;
 

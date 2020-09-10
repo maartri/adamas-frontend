@@ -73,6 +73,7 @@ export class DocumentClient implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        console.log(this.globalS.decode())
         this.file = {
             view: 'recipient',
             token: this.globalS.decode()

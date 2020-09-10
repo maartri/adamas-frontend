@@ -1,0 +1,50 @@
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Document</button>
+        <app-upload-shared [(ngModel)]="user"></app-upload-shared>
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Classification</th>
+                    <th>Category</th>
+                    <th>Created</th>
+                    <th>Author</th>
+                    <th>Modified</th>
+                    <th>Filename</th>
+                    <th>Type</th>
+                    <th>Original Location</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.title  }}</td>
+                    <td>{{ data.status }}</td>
+                    <td>{{ data.classification }}</td>
+                    <td>{{ data.category }}</td>
+                    <td>{{ data.created | date: 'd/M/yyyy'  }}</td>
+                    <td>{{ data.author }}</td>
+                    <td>{{ data.modified | date: 'd/M/yyyy'  }}</td>
+                    <td>{{ data.filename }}</td>
+                    <td>{{ data.type }}</td>
+                    <td>
+                        <div class="limit-width">
+                            {{ data.originalLocation }}
+                        </div>
+                    </td>
+                    <td>
+                        <a (click)="showEditModal(i)">Download</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a (click)="showEditModal(i)">View</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>

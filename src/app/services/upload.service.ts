@@ -94,4 +94,9 @@ export class UploadService {
       return this.http.post(`${fileV2}/download`, data, { responseType: 'blob', reportProgress: true });
    }
 
+   downloadFileDocumentInProjectDirectory(data: any): Observable<any> {
+      return this.http.post(`${fileV2}/download-document`, data, { responseType: 'blob', reportProgress: true });
+   }
+
+
 }

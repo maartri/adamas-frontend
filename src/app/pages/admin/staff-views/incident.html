@@ -32,8 +32,9 @@
     </div>
 </div>
 
+<app-incident-post [open]="incidentOpen" [(ngModel)]="incidentRecipient"></app-incident-post>
 
-<nz-modal [nzWidth]="1200" [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="'Add Competency'" (nzOnCancel)="handleCancel()">
+<!-- <nz-modal [nzWidth]="1200" [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="'Add Incident'" (nzOnCancel)="handleCancel()">
     <div class="flexy">
 
         <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
@@ -376,4 +377,4 @@
             </button>
         </ng-container>
     </div>
-</nz-modal>
+</nz-modal> -->

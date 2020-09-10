@@ -74,9 +74,10 @@ export class DocumentClientManager implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        console.log(this.globalS.decode());
         this.file = {
             view: 'recipient',
-            token: this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode()
+            token: this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember, this.globalS.decode().recipientDocFolder) : this.globalS.decode()
         }
     }
 

@@ -29,6 +29,11 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     checked: boolean = false;
     isDisabled: boolean = false;
     loading: boolean = false;
+    incidentOpen: boolean = false;
+
+    incidentRecipient: any;
+
+    operation: any; 
 
     constructor(
         private timeS: TimeSheetService,
@@ -58,8 +63,12 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
-        this.buildForm();
+        if(this.user){
+            this.search(this.user);
+            this.buildForm();
+            return;
+        }
+        this.router.navigate(['/admin/staff/personal'])
     }
 
     ngOnDestroy(): void {
@@ -67,14 +76,16 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    search(user: any) {
+    search(user: any = this.user) {
         this.cd.reattach();
         this.loading = true;
         this.clientS.getincidents(user.id).subscribe(data => {
             this.tableData = data.list;
             this.loading = false;
             this.cd.detectChanges();
-        })
+        });
+
+        //this.incidentRecipient = this.user;
     }
 
     patchData(data: any) {
@@ -154,14 +165,57 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     }
 
     showAddModal() {
+        const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
+
+        var newPass = {
+            agencyDefinedGroup: agencyDefinedGroup,
+            code: code,
+            id: id,
+            sysmgr: sysmgr,
+            view: view,
+            operation: 'ADD',
+            recordNo: 0
+        }
+
+        this.operation = {
+            process: 'ADD'
+        }
+        
+        this.incidentRecipient = newPass;
+        this.incidentOpen = !this.incidentOpen;
+        
 
     }
 
-    showEditModal(index: number) {
+    showEditModal(data: any) {
 
+        const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
+
+        var newPass = {
+            agencyDefinedGroup: agencyDefinedGroup,
+            code: code,
+            id: id,
+            sysmgr: sysmgr,
+            view: view,
+            operation: 'UPDATE',
+            recordNo: data.recordNumber
+        }
+
+        this.operation = {
+            process: 'UPDATE'
+        }
+        
+        this.incidentRecipient = newPass;
+        this.incidentOpen = !this.incidentOpen;
+    }
+
+    reload(data: any){
+        console.log(data);
+        this.search(this.user);
     }
 
     delete(data: any) {
-
+        this.timeS.deleteincident(data.recordNumber)
+            .subscribe(data => this.search());
     }
 }

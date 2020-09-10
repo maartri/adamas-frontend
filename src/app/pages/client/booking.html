@@ -24,7 +24,7 @@
                         <div class="mrg-btm form-wrap" nzRow>
                             <div nz-col [nzMd]="24">
                                 <label for="">Date</label>
-                                <nz-date-picker [(ngModel)]="date" [nzFormat]="'yyyy/MM/dd'" [nzDisabledDate]="disabledDate"></nz-date-picker>
+                                <nz-date-picker [(ngModel)]="date" [nzFormat]="'dd/MM/yyyy'" [nzDisabledDate]="disabledDate"></nz-date-picker>
                                 <div class="leadtime">Booking Lead Time: {{ _settings?.BOOKINGLEADTIME() - 1 }}</div>
                             </div>
                         </div>
@@ -66,7 +66,7 @@
                                 </nz-select>
                             </div>
                             <div nz-row>
-                                <app-interval-design [interval]="weekly"></app-interval-design>
+                                <app-interval-design [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'"></app-interval-design>
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                             [nzBodyStyle]="{'height':'6rem', 'fontSize': '11px'}">
                             <p>{{ svc.serviceProgram | uppercase }}</p>
                         </nz-card> -->
-                        <div class="book-wrapper" [class.pick]="isPicked(svc)">
+                        <div class="book-wrapper" *ngIf="!(svc?.excludeFromClientPortal)" [class.pick]="isPicked(svc)">
                             <div>
                                 <div class="book-image" [style.background-position]="getPositionImg(svc)"></div>
                                 <h4>{{ svc.serviceName | uppercase }}</h4>
@@ -93,6 +93,7 @@
                                 (click)="add(svc)"><i nz-icon nzType="bulb" nzTheme="outline"></i> Pick</button>
                         </div>
                     </div>
+                    <nz-empty *ngIf="services?.length == 0"></nz-empty>
                 </div>
             </div>
             <div *ngIf="cprovider && current == 2">

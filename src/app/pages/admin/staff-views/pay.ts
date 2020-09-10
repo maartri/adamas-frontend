@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, statuses } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, statuses, dateFormat } from '@services/index';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Router, NavigationEnd } from '@angular/router';
@@ -28,6 +28,9 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
       tbody.work-chart tr td:not(:first-child){
           text-align:center;
       }
+      nz-input-number{
+        width: 8rem;
+      }
     `],
     templateUrl: './pay.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -48,6 +51,8 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
 
     payGroup: FormGroup;
 
+    dateFormat: string = dateFormat;
+
     constructor(
         private listS: ListService,
         private timeS: TimeSheetService,
@@ -57,7 +62,7 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
         private router: Router,
         private formBuilder: FormBuilder,
     ) {
-
+        cd.detach();
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -67,7 +72,7 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'leave')) {
+            if (this.globalS.isCurrentRoute(this.router, 'pay')) {
                 this.user = data;
                 this.search(data);
             }
@@ -82,9 +87,7 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
             this.populateDropdDowns();
             return;
         }
-        this.router.navigate(['/admin/staff/personal'])
-
-
+        this.router.navigate(['/admin/staff/personal']);
     }
 
     ngOnDestroy(): void {
@@ -96,10 +99,18 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any = this.user) {
+        this.cd.reattach();
         this.timeS.getpaydetails(user.id)
             .subscribe(data => {
-                this.payGroup.patchValue(data)
+                this.payGroup.patchValue(data);               
+                this.refreshDetector();
             });
+    }
+
+
+    refreshDetector(): void{
+        this.cd.markForCheck();
+        this.cd.detectChanges();
     }
 
     onKeyPress(data: KeyboardEvent) {
@@ -165,7 +176,6 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
             rating: "",
             serviceRegion: "",
             sqlid: null,
-            stF_CODE: "",
             staffGroup: "",
             staffTeam: "",
             stf_Code: "",
@@ -178,17 +188,21 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
             ubdMap: "",
             uniqueID: "",
             vRegistration: "",
-        })
+        });
     }
 
     populateDropdDowns() {
-        this.listS.getawards().subscribe(data => this.awardsArr = data);
+        this.listS.getawards().subscribe(data => {
+            this.awardsArr = data;
+            this.refreshDetector();
+        });
 
         this.timeS.getstaff({
             User: this.globalS.decode().nameid,
             SearchString: ''
         }).subscribe(data => {
             this.staffsArr = data;
+            this.refreshDetector();
         }); 
     }
 

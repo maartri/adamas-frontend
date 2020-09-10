@@ -1,10 +1,11 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import { Component, OnInit, forwardRef, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
 import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap, map } from 'rxjs/operators';
-import { forkJoin, Observable, EMPTY } from 'rxjs';
+import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
+import parseISO from 'date-fns/parseISO'
 
 
 const noop = () => {};
@@ -22,7 +23,9 @@ const noop = () => {};
   ],
 })
 
+
 export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
+  private unsubscribe: Subject<void> = new Subject();
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
@@ -31,23 +34,27 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
   innerValue: any;
   user: any;
   genderArr: Array<string> = gender;
+  listRecipients: Array<string>  = [];
 
   userForm: FormGroup;
+
+  dateFormat: string = 'dd/MM/yyyy';
 
   constructor(
     private globalS: GlobalService,
     private clientS: ClientService,
     private staffS: StaffService,
     private timeS: TimeSheetService,
+    private listS: ListService,
     private formBuilder: FormBuilder,
   ) { }
 
   ngOnInit(): void {
     this.buildForm();
-  }
+  }  
 
   pathForm(token: Dto.ProfileInterface) {
-
+    console.log(token);
     if (this.globalS.isEmpty(token))
       return;
     
@@ -55,8 +62,8 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
       this.clientS.getprofile(token.name).pipe(
         concatMap(data => {
           this.user = data;
-          
-          //this.patchTheseValuesInForm(data);
+
+          this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);
         }),
         // concatMap(data => {
@@ -73,7 +80,13 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
       ).subscribe(data => {
         //   this.user.addresses = this.addressBuilder(data[0]);
         //   this.user.contacts = this.contactBuilder(data[1]);
-        console.log(data);
+
+        this.userForm.patchValue({
+          primaryAddress: this.getPrimaryAddress(data[0]),
+          primaryPhone: this.getPrimaryContact(data[1])
+        })
+
+        //this.onChangeCallback(this.userForm.value);
       });     
     }
 
@@ -88,20 +101,19 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
           return this.getUserData(data.uniqueID);
         }),
       ).subscribe(data => {
-        console.log(data);
-        console.log(this.user);
         this.userForm.patchValue({
           primaryAddress: this.getPrimaryAddress(data[0]),
           primaryPhone: this.getPrimaryContact(data[1])
         })
         // this.user.addresses = this.addressBuilder(data[0]);
-        // this.user.contacts = this.contactBuilder(data[1]);       
+        // this.user.contacts = this.contactBuilder(data[1]);
       });
     }
   }
 
   buildForm(): void{
     this.userForm = this.formBuilder.group({
+      accountNo: [''],
       surnameOrg: [''],
       preferredName: [''],
       firstName: [''],
@@ -139,10 +151,16 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
       stf_Department: '',
       rating: '',
 
+      // Incidents Properties
       subjectName: '',
       dob: '',
       primaryAddress: '',
-      primaryPhone: ''
+      primaryPhone: '',
+      recipient: '',
+      reportedBy: '',
+      startTimeOfIncident: '',
+      endTimeOfIncident: '',
+      dateOfIncident: ''
     });
   }
 
@@ -155,25 +173,34 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
   }
 
   transform(user: any) {
-    if (!user) return;
-    
-    return {
-        name: user.code,
-        view: user.view,
-        id: user.id,
-        sysmgr: user.sysmgr
-    }
-}
+      if (!user) return;
+      
+      return {
+          name: user.code,
+          view: user.view,
+          id: user.id,
+          sysmgr: user.sysmgr
+      }
+  }
+
+  searchStaff(): void {
+    this.listRecipients = []
+    this.timeS.getstaff({
+      User: this.globalS.decode().nameid,
+      SearchString: ''
+    }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+      this.listRecipients = data;
+    });
+  }
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
     console.log(value);
-    if (value != null && !_.isEqual(value, this.innerValue)) {
+    if (value != null) {
       this.innerValue = value;      
       this.pathForm(this.transform(this.innerValue));
-    }
-    
-    
+      // this.searchStaff();
+    }    
   }
 
   //From ControlValueAccessor interface
@@ -191,11 +218,12 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
 
     if (this.innerValue.view === view.recipient) {
       this.userForm.patchValue({
+        accountNo: user.accountNo,
         title: user.title,
         surnameOrg: user.surnameOrg,
         firstName: user.firstName,
         middleNames: user.middleNames,
-        gender: this.globalS.searchOf(user.gender, this.genderArr, this.genderArr[2]),
+        gender: this.getGender(user.gender),
         year: this.globalS.filterYear(user.dateOfBirth),
         month: this.globalS.searchOf(this.globalS.filterMonth(user.dateOfBirth), months, 'December'),
         day: this.globalS.filterDay(user.dateOfBirth),
@@ -205,7 +233,9 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
         branch: user.branch,
         file2: user.urNumber,
         subCategory: user.ubdMap,
-        serviceRegion: user.agencyDefinedGroup
+        serviceRegion: user.agencyDefinedGroup,
+
+        dob: this.getBirthdate(user.dateOfBirth)
       });
 
       // this.contactIssueGroup.patchValue({
@@ -229,6 +259,8 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
     if (this.innerValue.view === view.staff) {
 
       this.userForm.patchValue({
+        accountNo: user.accountNo,
+        
         title: user.title,
         surnameOrg: user.lastName,
         firstName: user.firstName,
@@ -280,6 +312,23 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
     if(this.globalS.isEmpty(contact)) return '';
     var contact = contact[0]
     return `${contact.detail}`;
+  }
+
+  getGender(gender: string): string{
+    if(this.globalS.isEmpty(gender)) return;
+
+    var _gender = gender.toLowerCase();
+    if(_gender === 'male')
+      return 'male';
+
+    if(_gender === 'female')
+      return 'female';
+  }
+
+  getBirthdate(bday: string): Date{
+    var _bday = parseISO(bday);
+    if(_bday.toString() === 'Invalid Date')  return null;
+    return parseISO(bday);
   }
 
 }

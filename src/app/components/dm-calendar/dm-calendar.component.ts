@@ -237,7 +237,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   }
 
   getPositionImg(data: any) {
-    let activity = data.Activity;
+    let activity = data.activity;
     if (activity.indexOf(ImageActivity.Unavailable) !== -1) return ImagePosition.Unavailable;
     if (activity.indexOf(ImageActivity.Transport) !== -1) return ImagePosition.Transport;
     if (activity.indexOf(ImageActivity.StaffTravel) !== -1) return ImagePosition.StaffTravel;
@@ -259,14 +259,12 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   drop(event: DragEvent | any) {
     event.stopPropagation();
-    //console.log(event.target.getAttribute('date'))
 
     if (event.target.getAttribute('date') > 0) {
       var data = event.dataTransfer.getData("text")
       event.target.appendChild(document.getElementById(data));
     }
-    //console.log(event)
-    //console.log(event)
+
     //this.daymanager[0].value.push(this.draggedObject)
     //this.daymanager = [{"key":"AHMAD A","value":[{"Staff":"AHMAD A","UniqueID":"T0100005533","CoOrdinator":"K AGGARWAL","ServiceOrder/GridNo":"jh","RecipientType":"RECIPIENT","Category":"ARUNDEL","":"Male","Recipient":"ABBOT T","CarerCode":"AHMAD A","Activity":"CDC - DA-WD","BillQty":2,"DMColor":"FFFFFF","JobType":"","InfoOnly":false,"RosterGroup":"ONEONONE","MinorGroup":"NOT APPLICABLE","NoChangeDate":false,"NoChangeTime":false,"TimeChangeLimit":600,"StartTimeLimit":"06:00","EndTimeLimit":"18:00","DayMask":"00000111","StaffCategory":"","Team":"MTA STEPH ARSHAD IRFAN","StfGender":"MALE","HRS_FNIGHTLY_MIN":"","HRS_FNIGHTLY_MAX":"","HRS_WEEKLY_MIN":"","HRS_WEEKLY_MAX":"","CH_1_1":"","CH_1_2":"","CH_1_3":"","CH_1_4":"","CH_1_5":"","CH_1_6":"","CH_1_7":"","ShiftType":"CDC - DA-WD","Setting/Location":"","rProgram":"CDC-L2-001","RecipientCategory/Region":"","RecordNo":904200,"Date":"2019/01/07","YearNo":2019,"MonthNo":1,"Dayno":7,"BillRate":36,"BillUnit":"HOUR","StartTime":"09:00","Duration":24,"WkdHrs":24,"Type":2,"Status":"1","Notes":"YES","HasServiceNotes":"","DMStat":"","ShiftName":"AHMAD A","EndTime":"11:00"}]},{"key":"AI CLA PT GRAHAM N L","value":[{"Staff":"AI CLA PT GRAHAM N L","UniqueID":"T0100005533","CoOrdinator":"K AGGARWAL","ServiceOrder/GridNo":"jh","RecipientType":"RECIPIENT","Category":"ARUNDEL","":"Male","Recipient":"ABBOT T","CarerCode":"AI CLA PT GRAHAM N L","Activity":"CDC - DA-WD","BillQty":0,"DMColor":"FFFFFF","JobType":"","InfoOnly":false,"RosterGroup":"ONEONONE","MinorGroup":"NOT APPLICABLE","NoChangeDate":false,"NoChangeTime":false,"TimeChangeLimit":600,"StartTimeLimit":"06:00","EndTimeLimit":"18:00","DayMask":"00000111","StaffCategory":"","Team":"AI CLA","StfGender":"FEMALE","HRS_FNIGHTLY_MIN":"","HRS_FNIGHTLY_MAX":"","HRS_WEEKLY_MIN":"","HRS_WEEKLY_MAX":"","CH_1_1":"","CH_1_2":"","CH_1_3":"","CH_1_4":"","CH_1_5":"","CH_1_6":"","CH_1_7":"","ShiftType":"CDC - DA-WD","Setting/Location":"","rProgram":"CDC-L2-001","RecipientCategory/Region":"","RecordNo":904202,"Date":"2019/01/09","YearNo":2019,"MonthNo":1,"Dayno":9,"BillRate":36,"BillUnit":"HOUR","StartTime":"10:00","Duration":12,"WkdHrs":12,"Type":2,"Status":"1","Notes":"YES","HasServiceNotes":"","DMStat":"","ShiftName":"AI CLA PT GRAHAM N L","EndTime":"11:00"}]}]
     this.draggedObject.Date = "2019/01/09"
@@ -279,7 +277,6 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     this.daymanager = sample;
 
     // this.daymanager = this.daymanager;
-    //console.log(sample)
   }
 
   draggedObject: any;

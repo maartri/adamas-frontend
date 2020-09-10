@@ -451,6 +451,29 @@ export class ListService {
     GetCopetencyGroup(): Observable<any>{        
         return this.auth.get(`${list}/Copetency-Group`)
     }
+    Getrpttrainingtype(): Observable<any>{        
+        return this.auth.get(`${list}/trainingtype`)
+    }
+    Getrpttraccsuser(): Observable<any>{        
+        return this.auth.get(`${list}/traccsuser`)
+    }
+    
+    Getrptmdstype(): Observable<any>{        
+        return this.auth.get(`${list}/mdstype`)
+    }
+    Getrptagencyid(): Observable<any>{        
+        return this.auth.get(`${list}/agencyid`)
+    }
+    Getrptpaytype(): Observable<any>{        
+        return this.auth.get(`${list}/paytype`)
+    }
+    Getrptactivity(): Observable<any>{        
+        return this.auth.get(`${list}/activity`)
+    }
+    Getrptsettings_vehicles(): Observable<any>{        
+        return this.auth.get(`${list}/settings_vehicles`)
+    }
 
 
-}
+
+} //  

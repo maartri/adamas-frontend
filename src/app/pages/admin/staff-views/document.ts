@@ -19,6 +19,18 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             width: 5rem;
             overflow: hidden;
         }
+        .exist{
+            color:green;
+        }
+        .not-exist{
+            color:red;
+        }
+        ul{
+            list-style:none;
+        }
+        ul li {
+            padding:5px;
+        }
     `],
     templateUrl: './document.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,12 +38,19 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 
 export class StaffDocumentAdmin implements OnInit, OnDestroy {
+
     private unsubscribe: Subject<void> = new Subject();
+    public templates$: Observable<any>;
+
     user: any;
     inputForm: FormGroup;
     tableData: Array<any>;
 
     loading: boolean = false;
+    addDocumentModal: boolean = false;
+    current: number = 0;
+
+    postLoading: boolean = false;
 
     constructor(
         private timeS: TimeSheetService,
@@ -94,16 +113,31 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
 
     }
 
+    selectDocument(template){
+        console.log(template);
+    }
+
     trackByFn(index, item) {
         return item.id;
     }
 
     showAddModal() {
-        
+        this.addDocumentModal = true;
+        this.templates$ = this.uploadS.getdocumenttemplate();
+    }
+
+    reload(reload: boolean){
+        if(reload){
+            this.search();
+        }
     }
 
     showEditModal(index: any) {
         
+    }
+
+    handleCancel(){
+        this.addDocumentModal = false;
     }
     
     delete(data: any) {
@@ -118,5 +152,17 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
                 return;
             }
         })
+    }
+
+    save(){
+
+    }
+
+    pre(): void {
+        this.current -= 1;
+    }
+
+    next(): void {
+        this.current += 1;
     }
 }

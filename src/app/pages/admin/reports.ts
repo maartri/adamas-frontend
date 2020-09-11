@@ -10,8 +10,10 @@ import parseISO from 'date-fns/parseISO'
 import { EventInputTransformer } from '@fullcalendar/angular';
 import { getDate } from 'date-fns';
 import { now } from 'lodash';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 
+//Sets defaults of Criteria Model
 const inputFormDefault = {
     statesArr: [[]],
     allState: [true],
@@ -80,12 +82,68 @@ const inputFormDefault = {
     allCompetenciesGroup:[true],
     
     cycleArr:[[]],
-    cycles:[true], 
-    //// allStaff
+    cycles:[true],     
     
     stafftypeArr:[[]],
     allStafftype:[true],
+
+    rostertypeArr:[[]],
+    allRostertypes:[true],
+
+    trainingtypeArr:[[]],
+    alltrainingtype:[true],    
+
+    traccsuserArr:[[]],
+    alltraccsusers:[true],
+
+    agencyidArr:[[]],
+    allagencies:[true],
+
+    mdstypeArr:[[]],
+    allmdsypes:[true],
+
+    paytypeArr:[[]],
+    allpaytypes:[true],
+
+    activityArr:[[]],
+    allactivities:[true],
+
+    settting_vehicleArr:[[]],
+    Allsettting_vehicle:[true],
+
+    incidentcategoryArr:[[]],
+    allIncidentcategory:[true],
+   
+    OPnotesArr:[[]],
+    allOPNotes:[true],
+
+    hrnotesArr:[[]],
+    allhrNotes:[true],
     
+    whowhat:[],    
+
+    description:[],
+    
+
+    RecipientLeave : [true],   
+    RecipientUR :  [true],
+    DBO :  [false],
+    splitonHyphen :  [false], 
+    allowances  :  [false],
+    InternalCost:   [false],
+    NotAllocated  : [true],
+    InfoOnly  : [true],
+    XtraInfo : [false],
+    InclFinancials: [false],
+    ExcluPgeHeader: [false],
+    radioFormat: ['Summary'],
+
+    DatetypeArr:[[]],
+    statuscategoryArr:[[]],
+    branchprimacyArr:[[]],
+    AGE_ATSI_StatusArr:[[]],
+    
+  
 
 
 
@@ -98,9 +156,20 @@ const inputFormDefault = {
         '[style.overflow]': 'hidden'
       },
     styles: [`
+        
         button {
             width: 200pt !important;
-            text-align: left !important
+            text-align: left !important;
+        }
+        .btn{
+            border:none;
+            cursor:pointer;
+            outline:none;
+            transition: background-color 0.5s ease;
+            padding: 5px 7px;
+            border-radius: 3px;
+            text-align: center !important;
+            width: 100px !important;
         }
         label{
             font-weight: bold; 
@@ -130,8 +199,86 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     
     validateForm!: FormGroup;
     
+    //Modals visibility
     isVisibleTop = false;
+    FOReports = false;
+
+    tabset = false;
+    showtabother = false;
+    showtabRostcriteria= false;
+    showtabstaffcriteria= false;
+    showtabRegcriteria= false;
+    showtabrecpcriteria = false;
     
+    //Financial Output Criteri ##EXTRA OPTIONS##
+    show =false ;
+    showoption = true;
+    
+    // 
+     
+    frm_Date :boolean ;
+    frm_Programs :boolean ;  
+    frm_Branches :boolean ;
+    frm_Managers :boolean ;
+    frm_Categories :boolean;
+    frm_SVCTypes :boolean;
+    frm_vehicles :boolean;
+    frm_Incidents:boolean;
+    frm_Incidentcategories:boolean;
+    frm_Staff  :boolean;
+    frm_Recipients :boolean;
+    frm_Items :boolean;
+    frm_PlanTypes :boolean;
+    frm_CareDomain :boolean;
+    frm_CaseNots :boolean;
+    frm_Disciplines :boolean;    
+    frm_StaffGroup :boolean;
+    frm_CompetenciesGroups :boolean;
+    frm_StaffTeam :boolean;
+    frm_Competencies :boolean;
+    frm_StaffType :boolean;
+    frm_Description  :boolean;      
+    frm_TrainingType :boolean;
+    frm_MasterRosterCycles :boolean;
+    frm_TraccsUsers :boolean;
+    frm_Funders :boolean;
+    frm_SVCProviders :boolean;
+    frm_Outlets:boolean;
+    frm_WhoWhat:boolean;
+    frm_HRNotes :boolean;
+    frm_OPNotes:boolean;
+    
+
+
+    RecipientLeave : [true];   
+    RecipientUR :  [true];
+    DBO :  [false];
+    splitonHyphen :  [false];
+    allowances  :  [false];
+    InternalCost:   [false];
+    NotAllocated  : [true];
+    InfoOnly  : [true];
+    XtraInfo : [false];
+    InclFinancials: [false];
+    ExcluPgeHeader: [false];
+    radioFormat: ['Summary'];
+
+
+
+/*
+    //RecipientLeave    RecipientUR DBO splitonHyphen allowances  InternalCost NotAllocated InfoOnly XtraInfo
+    RecipientLeave  = true;   
+    RecipientUR  = true;
+    DBO  = true;
+    splitonHyphen  = true; 
+    allowances   = true;
+    InternalCost  = true;
+    NotAllocated  = true;
+    InfoOnly  = true;
+    XtraInfo = true;
+ */  
+
+
     checked = true;
     State = true;
     Branches = true;
@@ -168,7 +315,28 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     competeciesgroupArr: Array<any> = [];
     cycleArr: Array<any> = ['Cycle 1','Cycle 2','Cycle 3','Cycle 4','Cycle 5','Cycle 6','Cycle 7','Cycle 8','Cycle 9','Cycle 10'];
     stafftypeArr: Array<any> = ['BROKERAGE ORGANISATION','STAFF','VOLUNTEER']
-      
+    trainingtypeArr: Array<any> = []; 
+    traccsuserArr: Array<any> = []; 
+    rostertypeArr: Array<any> = ['BOOKINGS','ADMISSION SERVICES','DIRECT CARE','SLEEPOVERS','BROKERAGE','TRANSPORT','MEALS','CENTRE BASED ACTIVITIES','GROUP BASED ACTIVITIES','TRAVEL TIME','LEAVE/ABSENCE','ADMINISTRATION','ALLOWANCES'];
+    mdstypeArr: Array<any> = []; 
+    agencyidArr: Array<any> = []; 
+    paytypeArr: Array<any> = []; 
+    activityArr: Array<any> = [];  
+    settting_vehicleArr: Array<any> = [];    
+    OPnotesArr: Array<any> = [];  
+    hrnotesArr: Array<any> = [];
+    DatetypeArr: Array<any> = ['Billing Date' , 'Pay Period EndDate' , 'Service Date'];
+    statuscategoryArr: Array<any> = ['All services','Approved Services Only','UnApproved Services Only'];
+    branchprimacyArr: Array<any> = ['Automatic','Recipient Branch Overrides ','Staff Branch Overrides '];
+    AGE_ATSI_StatusArr: Array<any> = ['Over 64 OR ATSI Over 49   ','Under 65 OR ATSI under 50'];
+    incidentcategoryArr: Array<any> = ['Open' , 'Close' ];
+    
+
+
+    whowhat:string; 
+    description:string;  
+    
+    ModalName :string;
     btnid:string;
     id:string ;
     tryDoctype: any;
@@ -195,8 +363,24 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     s_CaseNoteSQL:string;
     s_CareDomainSQL:string;
     s_DisciplineSQL:string;
+    s_TrainingTypeSQL:string;
+    s_whowhatSQL:string; 
+    s_DescribeSQL:string;
+    s_TraccsuserSQL:string;
+    s_AgeSQL:string;    
+    s_MdsAgencySQL:string;  
+    s_RosterCategorySQL:string;   
+    s_FundersSQL :string; 
+    s_DatetypeSQL:string;  
+    s_OutletIDSQL:string;
+    s_HACCCategorySQL:string;
+    s_statusSQL:string;
+    s_paytypeSQL:string;
+    s_activitySQL:string;
+    s_setting_vehicleSQL:string;
 
 
+   
     dateFormat: string = 'yyyy-MM-dd'   
     enddate :Date;
     startdate :Date;
@@ -228,7 +412,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         private TimesheetS: TimeSheetService,
         private http: HttpClient,
         private fb: FormBuilder,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        private ModalS:NzModalService
     ) {
        
     }
@@ -385,8 +570,67 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             stafftypeArr: [] 
         });
     });
+    this.inputForm.get('allRostertypes').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            rostertypeArr: [] 
+        });
+    });   
+    this.inputForm.get('alltrainingtype').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            trainingtypeArr: [] 
+        });
+    });
 
-    }//ngOninit
+    this.inputForm.get('alltraccsusers').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            traccsuserArr: [] 
+        });
+    });
+
+    this.inputForm.get('allmdsypes').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            mdstypeArr: [] 
+        });
+    });
+    this.inputForm.get('allagencies').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            agencyidArr: [] 
+        });
+    });
+    this.inputForm.get('allpaytypes').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            paytypeArr: [] 
+        });
+    });
+    this.inputForm.get('allactivities').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            activityArr: [] 
+        });
+    });
+    this.inputForm.get('Allsettting_vehicle').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            settting_vehicleArr: [] 
+        });
+    });
+    this.inputForm.get('allIncidentcategory').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            incidentcategoryArr: [] 
+        });
+    });
+    this.inputForm.get('allOPNotes').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            OPnotesArr: [] 
+        });
+    });
+    this.inputForm.get('allhrNotes').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            hrnotesArr: [] 
+        });
+    });
+    
+
+
+    }//ngOninit  
 
  /*   hello(data: any){
         console.log(data)
@@ -409,7 +653,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.listS.GetVehicles().subscribe(x => this.vehiclesArr = x);
         this.listS.GetStaffServiceTypes().subscribe(x => this.svcTypeArr = x);
         this.listS.GetRecipientAll().subscribe(x => this.recipientArr = x);
-        
+        this.listS.Getrpttraccsuser().subscribe(x => this.traccsuserArr = x);
+        this.listS.Getrptagencyid().subscribe(x => this.agencyidArr = x);
+        this.listS.Getrptmdstype().subscribe(x => this.mdstypeArr = x);
+        this.listS.Getrptpaytype().subscribe(x => this.paytypeArr = x);  
+        this.listS.Getrptactivity().subscribe(x => this.activityArr = x);
+         	
 
 
         this.listS.getreportcriterialist({
@@ -421,6 +670,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             listType: 'BRANCHES',
             includeInactive: false
         }).subscribe(x => this.branchesArr = x);
+
+        this.listS.getcasenotecategory(0).subscribe(x => this.casenotesArr = x);
+        this.listS.getcasenotecategory(1).subscribe(x => this.OPnotesArr = x);
         this.listS.Getrptincidents().subscribe(x => this.incidentArr = x);
         this.listS.GetrptLoanItems().subscribe(x => this.itemArr = x);
         this.listS.getstaffdiscipline().subscribe(x => this.disciplineArr = x )
@@ -432,6 +684,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.listS.GetCopetencyGroup().subscribe(x => this.competeciesgroupArr = x )
         this.listS.getliststaffteam().subscribe(x => this.staffteamArr = x )
         this.TimesheetS.getcompetenciesall().subscribe(x => this.CompetenciesArr = x )
+        this.listS.Getrpttrainingtype().subscribe(x => this.trainingtypeArr = x )
+        this.listS.Getrptsettings_vehicles().subscribe(x => this.settting_vehicleArr = x )
         
 
         this.listS.getreportcriterialist({
@@ -457,13 +711,511 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnDestroy(): void {
         console.log('on destroy');
+        
+    }
+    ResetVisibility(){
+        this.frm_Date =false;
+    this.frm_Programs =false;
+    this.frm_Branches =false;
+    this.frm_Managers =false;
+    this.frm_Categories =false;
+    this.frm_SVCTypes =false;
+    this.frm_vehicles =false;
+    this.frm_Incidents=false;
+    this.frm_Incidentcategories=false;
+    this.frm_Staff  =false;
+    this.frm_Recipients =false;
+    this.frm_Items =false;
+    this.frm_PlanTypes =false;
+    this.frm_CareDomain =false;
+    this.frm_CaseNots =false;
+    this.frm_Disciplines =false;
+    this.frm_StaffGroup =false;
+    this.frm_CompetenciesGroups =false;
+    this.frm_StaffTeam =false;
+    this.frm_Competencies =false;
+    this.frm_StaffType =false;
+    this.frm_Description  =false;
+    this.frm_TrainingType =false;
+    this.frm_MasterRosterCycles =false;
+    this.frm_TraccsUsers =false;
+    this.frm_Funders =false;
+    this.frm_SVCProviders =false;
+    this.frm_Outlets=false;
+    this.frm_WhoWhat=false;
+    this.frm_HRNotes =false;
+    this.frm_OPNotes=false;
+    this.ModalName = " CRITERIA "
+    }
+    toggle(){
+        this.show = !this.show;
+        this.showoption = !this.showoption ;
     }
     showModal(e){
             e = e || window.event;
             e = e.target || e.srcElement; 
             this.btnid = e.id
-         //   this.showModal();
+            this.ModalS.closeAll();
+            var lftstr = e.id.substring(0,10)
+        //    alert(lftstr)
+        
+        //Criteria Items/Lists Visibility   
+        this.ResetVisibility();
+        switch(this.btnid){
+            case 'btn-refferallist' :
+                this.ModalName = "REFERRAL LIST CRITERIA"
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-activepackagelist' :
+                this.ModalName = "ACTIVE PACKAGE CRITERIA"                
+                this.frm_Date = true;
+                this.frm_Programs = true;
+                this.frm_Funders = true;
+                 break;
+            case 'btn-recipientroster':
+                this.ModalName = "RECIPIENT ROSTER CRITERIA"
+                this.frm_Date = true;                
+                this.frm_Recipients = true;
+                this.frm_Branches = true;
+                this.frm_StaffType = true;
+                this.frm_StaffGroup = true;            
+                break;
+            case 'btn-suspendedrecipient':
+                this.ModalName = "SUSPENDED RECIPIENT REPORT CRITERIA"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-vouchersummary':
+                this.ModalName = "VOUCHER SUMMARY REPORT CRITERIA"
+                this.frm_Date = true;
+                this.frm_Recipients = true;
+                this.frm_Programs = true;
+                break;
+            case 'btn-packageusage':
+                this.ModalName = "PACKAGE USAGE REPORT CRITERIA"
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-timelength':
+                this.ModalName = "RECIPIENTS TIME LENGTH REPORT"
+                this.frm_Date = true;                
+                break;
+            case 'btn-unallocatedbookings':
+                this.ModalName = "UNFILLED BOOKINGS REPORT CRITERIA"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_SVCTypes = true;
+                break;
+            case 'btn-transportsummary':
+                this.ModalName = "TRANSPORT SUMMARY REPORT CRITERIA"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_vehicles = true;
+                break;
+            case 'btn-refferalduringperiod':
+                this.ModalName = " REFERRALS DURING PERIOD"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Managers = true;
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-recipientMasterroster':
+                this.ModalName = "RECIPINT MASTER ROSTER CRITERIA"
+                this.frm_MasterRosterCycles = true;
+                this.frm_Recipients = true;
+                this.frm_Branches = true;
+                this.frm_StaffType = true;
+                this.frm_Managers = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-activerecipient':
+                this.ModalName = "ACTIVE RECIPIENT REPORT"
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-inactiverecipient':
+                this.ModalName = "ACTIVE RECIPIENT REPORT"
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-adminduringperiod':
+                this.ModalName = "ADMISSIONS DURING PERIOD REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Managers = true;
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-dischargeduringperiod':
+                this.ModalName = "DISCHARGES DURING PERIOD"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Managers = true;
+                this.frm_Programs = true;
+
+                break;
+            case 'btn-absentclient':
+                this.ModalName = "ABSENT CLIENT STATUS REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Managers = true;
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-careerlist':
+                this.ModalName = "CARER LIST CRITERIA"
+                this.frm_Branches = true;                
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-onlybillingclients':
+                this.ModalName = "ONLY BILLING CLIENTS REPORT"
+                this.frm_Branches = true;                
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-associatelist':
+                this.ModalName = "ASSOCIATE LIST CRITERIA"                
+                this.frm_Branches = true;                
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;
+                break;
+            case 'btn-unserviced':
+                this.ModalName = "UNSERVICED RECIPIENTS REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                
+                break;
+            case 'btn-staff-Activestaff':
+                this.ModalName = "ACTIVE STAFF REPORT"
+                this.frm_Branches = true;
+                this.frm_StaffGroup = true;
+                this.frm_Managers = true;
+                break;
+            case 'btn-staff-ActiveBrokerage':
+                this.ModalName = "ACTIVE BROKERAGE REPORT"
+                this.frm_Branches = true;
+                this.frm_StaffGroup = true;
+                this.frm_Managers = true;
+                break;
+            case 'btn-staff-Activevolunteers':
+                this.ModalName = "ACTIVE VOLUNTEERS REPORT"
+                this.frm_Branches = true;
+                this.frm_StaffGroup = true;
+                this.frm_Managers = true;
+                break;
+            case 'btn-staff-InactiveBrokerage':
+                this.ModalName = "INACTIVE BROKERAGE REPORT"
+                this.frm_Branches = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-staff-InactiveVolunteer':
+                this.ModalName = "INACTIVE VOLUNTEER REPORT"
+                this.frm_Branches = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-staff-Inactivestaff':
+                this.ModalName = "INACTIVE STAFF CRITERIA"
+                this.frm_Branches = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-staff-Userpermissions':
+                this.ModalName = "STAFF USER PERMISSIONS"
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-Regis-mealregisterreport':
+                this.ModalName = "MEAL ORDER REPORT"
+                this.frm_Date = true;
+                this.frm_Recipients = true;
+                break;
+            case 'btn-Regis-hasreport':
+                this.ModalName = "HAS REPORT CRITERIA"
+                this.frm_Date = true;                
+                this.frm_Programs = true;
+                break;
+            case 'btn-Regis-cdcleavereport':
+                this.ModalName = "CDC LEAVE REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                break;
+            case 'btn-Regis-cdcpackagebalance':
+                this.ModalName = "CDC PACKAGE BALANCE REPORT"
+                this.frm_Date = true;
+                this.frm_Recipients = true;
+                this.frm_Programs = true;
+                break;
+            case 'btn-Regis-incidentregister':
+                this.ModalName = "INCIDENT REGISTER"
+                this.frm_Date = true;                
+                this.frm_Branches = true;
+                this.frm_SVCTypes = true;
+                this.frm_Staff = true; 
+                this.frm_Incidentcategories = true;
+                this.frm_Incidents = true;  
+                
+                break;
+            case 'btn-Regis-loanregister':
+                this.ModalName = "LOAN REGISTER"
+                this.frm_Date = true; 
+                this.frm_Branches = true; 
+                this.frm_Programs = true; 
+                this.frm_Recipients = true; 
+                this.frm_Items = true; 
+                this.frm_Categories = true; 
+                break;
+            case 'btn-staff-leaveregister':
+                this.ModalName = "LEAVE REGISTER"
+                this.frm_Date = true;
+                break;
+            case 'btn-staff-staffnotworked':
+                this.ModalName = "STAFF NOT WORKED REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Staff = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-staff-competencyrenewal':
+                this.ModalName = "COMPETENCY RENEWAL REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Staff = true;
+                this.frm_Competencies = true;
+                this.frm_Managers = true;
+                this.frm_StaffTeam = true;
+                this.frm_CompetenciesGroups = true;
+                break;
+            case 'btn-staff-unavailability':
+                this.ModalName = "STAFF UNAVAILABILITY REPORT"
+                this.frm_Date = true;
+                this.frm_Staff = true;
+                this.frm_Branches = true;
+                this.frm_StaffType = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-staff-Roster':
+                this.ModalName = "STAFF ROSTER CRITERIA"
+                this.frm_Date = true;
+                this.frm_Staff = true;
+                this.frm_Branches = true;
+                this.frm_StaffType = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-staff-MasterRoster':
+                this.ModalName = "STAFF MASTER ROSTER"
+                this.frm_MasterRosterCycles = true;
+                this.frm_Staff = true;
+                this.frm_Branches = true;
+                this.frm_StaffType = true;
+                this.frm_StaffGroup = true;
+                break;
+            case 'btn-staff-loanregister':
+                this.ModalName = "lOAN REGISTER CRITERIA"
+                this.frm_Date = true; 
+                this.frm_Branches = true; 
+                this.frm_Programs = true;
+                this.frm_Staff = true;
+                this.frm_Items = true;
+                this.frm_StaffGroup = true; 
+                break;
+            case 'btn-Regis-progcasenotes':
+                this.ModalName = "RECIPIENT CASE/PROGRESS NOTES CRITERIA  "
+                this.frm_Date = true; 
+                this.frm_Branches = true; 
+                this.frm_CaseNots = true; 
+                this.frm_Recipients = true; 
+                this.frm_Disciplines = true; 
+                this.frm_CareDomain = true; 
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                this.frm_Managers = true;
+                break;
+            case 'btn-Regis-servicenotesreg':
+                this.ModalName = "SERVICE NOTES CRITERIA"
+                this.frm_Date = true; 
+                this.frm_Branches = true; 
+                this.frm_CaseNots = true; 
+                this.frm_Recipients = true; 
+                this.frm_Disciplines = true; 
+                this.frm_CareDomain = true; 
+                this.frm_Programs = true;
+                break;
+            case 'btn-Regis-opnotesregister':
+                this.ModalName = "OP NOTES CRITERIA"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_OPNotes = true; 
+                this.frm_Recipients = true;
+                this.frm_Disciplines = true;
+                this.frm_CareDomain = true;
+                this.frm_Programs = true;
+
+                break;
+            case 'btn-Regis-careplanstatus':
+                this.ModalName = "CARER PLAN STATUS REPORT"
+                this.frm_Date = true;
+                this.frm_PlanTypes = true;
+                this.frm_Recipients = true;
+                break;
+            case 'btn-staff-availability':
+                this.ModalName = "STAFF AVAILABILITY REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;                 
+                this.frm_Staff = true;
+                break;
+            case 'btn-staff-timeattandencecomp':
+                this.ModalName = "MTA COMPARISON REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;                 
+                this.frm_Staff = true;
+                break;
+            case 'btn-staff-hrnotesregister':
+                this.ModalName = "HR NOTES CRITERIA"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_HRNotes = true; 
+                this.frm_Staff = true;
+                break;
+            case 'btn-staff-opnotes':
+                this.ModalName = "STAFF OP NOTES REPORT "
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_OPNotes = true; 
+                this.frm_Staff = true;
+                this.frm_Disciplines = true;
+                this.frm_CareDomain = true;
+                this.frm_Programs = true;
+                break;
+            case 'btn-staff-incidentregister':
+                this.ModalName = "INCIDENT REGISTER CRITERIA"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_SVCTypes = true;
+                this.frm_Staff = true;
+                this.frm_StaffGroup = true;
+                this.frm_Incidents = true;
+                break;
+            case 'btn-staff-training':
+                this.ModalName = "STAFF TRAINING REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Staff = true;
+                this.frm_Programs = true;
+                this.frm_TrainingType = true;
+                this.frm_Managers = true;
+                this.frm_StaffGroup = true;
+                this.frm_StaffTeam = true;
+                
+                break;
+            case 'btn-competenciesrenewal':
+                this.ModalName = "COMPETENCIES RENEWAL REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Staff = true;
+                this.frm_Competencies = true;
+                this.frm_Managers = true;
+                this.frm_StaffTeam = true;
+                this.frm_CompetenciesGroups = true;
+                break;
+            case 'btn-Systm-AuditRegister':
+                this.ModalName = "AUDIT REGISTER REPORT"
+                this.frm_Date = true;
+                this.frm_TraccsUsers = true;                 
+                this.frm_WhoWhat = true;
+                this.frm_Description = true;
+                break;
+            case 'btn-Systm-ActivityStatusAudit':
+                this.ModalName = "PROGRAM ACTIVITY STATUS AUDIT REPORT"
+                this.frm_Programs = true;
+                break;
+            case 'btn-Systm-MTARegister':
+                this.ModalName = "MTA REGISTER CRITERIA"
+                this.frm_Date = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_StaffGroup = true;
+                this.frm_Recipients = true;
+                this.frm_Staff = true;
+                break;
+            case 'btn-Systm-RosterOverlap':
+                this.ModalName = "ROSTER OVERLAP REPORT"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Recipients = true;
+                this.frm_Staff = true;
+                this.frm_Programs = true;
+                break;
+            case 'btn-Systm- MTAVerification':
+                this.ModalName = "MTA VERIFICATION REPORT"
+                this.frm_Date = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_StaffGroup = true;
+                this.frm_Recipients = true;
+                this.frm_Staff = true;
+                break;  
+            case 'btn-UnsedFunding':
+                this.ModalName = "RECIPIENT UNUSED FUNDING REPORT"
+                this.frm_Recipients = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;                
+                break; 
+            
+            
+            
+            default://
+              //  alert("Yet to do")
+            
+        }
+        
+        
          
+        switch(lftstr){
+                case 'btn-staff-':                    
+                    this.isVisibleTop = true;
+                    break;
+                case 'btn-Regis-':                    
+                    this.isVisibleTop = true;   
+                    break;
+                case 'btn-FORPT-': 
+                    this.FOReports = true;                   
+                
+                    break;
+                default:
+                    this.isVisibleTop = true; 
+            }
+            
+
+        //    this.showtab = true;
+         //   this.showModal();
+          //   this.showtabRegcriteria =false;
+                //    this.tabset = false;
+         
+
     
         /*     
             this.inputForm.controls['allVehicles'].disable(); 
@@ -490,7 +1242,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
             
-            this.isVisibleTop = true;   
+              
             return this.btnid                
      }
      onChange(result: Date): void {
@@ -506,8 +1258,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         return this.btnid    
      //  
         
-    } 
-
+    }
+    handleOk(){
+        this.reportRender(this.btnid);
+        this.tryDoctype = ""
+        this.FOReports = false;
+        
+    }
+    handleCancel(){
+        this.inputForm.reset(inputFormDefault);
+        this.FOReports = false;
+    }
 
     handleOkTop() {
     //    console.log(this.inputForm.value)
@@ -516,7 +1277,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     //    console.log(this.enddate)        
         this.isVisibleTop = false;
         
-         
+    
     this.reportRender(this.btnid);
     this.tryDoctype = ""
      //   this.QueryFormatter(this.btnid);
@@ -543,21 +1304,40 @@ var strdate;
         var s_Recipient = this.inputForm.value.recipientArr;
         var s_SvcType = this.inputForm.value.svcTypeArr;
         var s_incidenttype = this.inputForm.value.incidentArr;
-        var s_Incidentcategory = "";// this.inputForm.value.itemArr; Open/Close
+        var s_Incidentcategory = this.inputForm.value.incidentcategoryArr; 
         var s_LoanItems = this.inputForm.value.itemArr;
         var s_Competencies = this.inputForm.value.CompetenciesArr;
         var s_CompetencyGroups = this.inputForm.value.competeciesgroupArr;
         var s_StaffTeam = this.inputForm.value.staffteamArr;
         var s_Staff = this.inputForm.value.staffArr;
-        var s_Stafftype = ""; //this.inputForm.value.stafftypeArr; 
-        var s_Cycle = this.inputForm.value.cycleArr;
+        var s_Stafftype = this.inputForm.value.stafftypeArr; 
+        var cycle = this.inputForm.value.cycleArr;
+        var s_Cycle = cycle.toString();
         var s_CaseNotes = this.inputForm.value.casenotesArr;
         var s_Descipiline = this.inputForm.value.disciplineArr;
         var s_CareDomain = this.inputForm.value.caredomainArr;
         var s_PlanType = this.inputForm.value.planArr;
-        var s_OPCaseNotes = "";
+        var s_OPCaseNotes = this.inputForm.value.opnotesArr;
         var s_HRCaseNotes ="";
-        console.log(s_Cycle)
+        var s_TrainingType = this.inputForm.value.trainingtypeArr;
+        var s_TraccsUser = this.inputForm.value.traccsuserArr;
+        var s_who = this.whowhat;
+        var s_Description = this.description;
+        var s_RosterType = this.inputForm.value.rostertypeArr   
+
+
+        var s_Funders = this.inputForm.value.fundersArr;
+        var s_HACCCategory = this.inputForm.value.mdstypeArr;
+        var s_Age = this.inputForm.value.AGE_ATSI_StatusArr;
+        var s_DateType:string;
+        s_DateType = (this.inputForm.value.DatetypeArr);          
+        var s_MdsAgencyID = "" //this.inputForm.value.???? still to add Agencyids
+        var s_OutLetID = this.inputForm.value.outletsArr;
+        var s_Activity = this.inputForm.value.activityArr;
+        var s_Settings_vehicle = this.inputForm.value.settting_vehicleArr;
+        var s_PayType = this.inputForm.value.paytypeArr;
+
+        
         //console.log(s_Stafftype) 
         
             var date = new Date();
@@ -577,56 +1357,7 @@ var strdate;
                endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'yyyy-MM-dd');
               
             } 
-   /*         if ( (this.btnid = 'btn-recipientMasterroster') || (this.btnid = 'btn-staff-MasterRoster')) {    
-            switch(s_Cycle){
-              
-                case'Cycle 1':
-                    strdate = "01/01/1900";
-                    endate = "28/01/1900";
-                break;
-                case'Cycle 2':
-                    strdate = "01/10/1900";
-                    endate = "28/10/1900";
-                break;
-                case'Cycle 3':
-                    strdate = "01/04/1901";
-                    endate = "28/04/1901";
-                break;
-                case'Cycle 4':
-                    strdate ="01/07/1901";
-                    endate = "28/07/1901";
-                break;
-                case'Cycle 5':
-                    strdate = "01/09/1902";
-                    endate = "28/09/1902";
-                break;
-                 
-                case'Cycle 6':
-                    strdate = "01/12/1902";
-                    endate = "28/12/1902";
-                break;
-                case'Cycle 7':
-                    strdate = "01/06/1903";
-                    endate = "28/06/1903";
-                break;
-                case'Cycle 8':
-                    strdate ="01/02/1904";
-                    endate = "28/02/1904";
-                break;
-                case'Cycle 9':
-                    strdate = "01/08/1904";
-                 endate = "28/08/1904";
-                break;
-                case'Cycle 10':
-                    strdate = "01/05/1905";
-                    endate = "28/05/1905";
-                break;
-                default:
-                    strdate ="1900/01/01";
-                    endate = "1900/01/28";
-            }
-            
-        } */
+   
      
     // console.log(strdate)
         switch(idbtn){
@@ -708,7 +1439,7 @@ var strdate;
                     default: 
                         strdate ="1900/01/01";
                         endate = "1900/01/28";
-                        console.log("bydefault")
+                        
                         break;
 				}
 
@@ -762,22 +1493,22 @@ var strdate;
             case 'btn-staff-Userpermissions':
                 this.StaffPermissions(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
                 break;
-            case 'btn-mealregisterreport':
+            case 'btn-Regis-mealregisterreport':
                 this.MealOrderReport(s_Recipient,strdate,endate);
                 break;
-            case 'btn-hasreport':
+            case 'btn-Regis-hasreport':
                 this.HASReport(s_Programs,strdate,endate);
                 break;
-            case 'btn-cdcleavereport':
+            case 'btn-Regis-cdcleavereport':
                 this.CDCLeaveRegister(s_Branches, s_Programs,strdate,endate);
                 break;
-            case 'btn-cdcpackagebalance':
+            case 'btn-Regis-cdcpackagebalance':
                 this.CDCPackageBalanceReport(s_Recipient, s_Programs,strdate,endate);
                 break;
-            case 'btn-incidentregister':
-                this.IncidentRegister(s_Branches,s_SvcType,s_StfGroup,s_incidenttype,s_Incidentcategory,strdate,endate)
+            case 'btn-Regis-incidentregister':
+                this.IncidentRegister(s_Branches,s_SvcType,s_Staff,s_incidenttype,s_Incidentcategory,strdate,endate)
                 break;
-            case 'btn-loanregister':
+            case 'btn-Regis-loanregister':
                 this.LoanItemRegister(s_Branches,s_Programs,s_Recipient,s_LoanItems,s_ServiceRegions,strdate,endate)
                 break;
             case 'btn-staff-leaveregister':
@@ -843,7 +1574,7 @@ var strdate;
                     default: 
                         strdate ="1900/01/01";
                         endate = "1900/01/28";
-                        console.log("bydefault")
+                        
                         break;
 				}
 
@@ -852,31 +1583,75 @@ var strdate;
             case 'btn-staff-loanregister':
                 this.StaffLoanRegister(s_Branches,s_Programs,s_Staff,s_LoanItems,s_ServiceRegions,strdate,endate)
                 break;
-            case 'btn-progcasenotes':
+            case 'btn-Regis-progcasenotes':
                 this.RecipientProg_CaseReport(s_Branches,s_Programs,s_CaseNotes,s_Recipient,s_Descipiline,s_CareDomain,s_ServiceRegions,s_Managers,strdate,endate)
                 break;
-            case 'btn-servicenotesreg':
+            case 'btn-Regis-servicenotesreg':
                 this.ServiceNotesRegister(s_Branches,s_Programs,s_CaseNotes,s_Recipient,s_Descipiline,s_CareDomain,strdate,endate)
                 break;
-            case 'btn-opnotesregister':
+            case 'btn-Regis-opnotesregister':
                 this.OPNotesRegister(s_Branches,s_Programs,s_CaseNotes,s_Recipient,s_Descipiline,s_CareDomain,strdate,endate)
                 break;
-            case 'btn-careplanstatus':
+            case 'btn-Regis-careplanstatus':
                 this.Careplanstatus(s_Recipient,s_PlanType,strdate,endate)
                 break;
-            case 'btn-staffavailability':
+            case 'btn-staff-availability':
                 this.StaffAvailability(s_Branches,s_Staff,strdate)
                 break;
-            case 'btn-timeattandencecomp':
+            case 'btn-staff-timeattandencecomp':
                 this.TimeattandanceComparison(s_Branches,s_Staff,strdate,endate)
                 break;
-            case 'btn-hrnotesregister':
+            case 'btn-staff-hrnotesregister':
                 this.HRNotesRegister(s_Branches,s_Staff,s_HRCaseNotes,strdate,endate)
                 break;
-            case 'btn-staffopnotes':
+            case 'btn-staff-opnotes':
                 this.StaffOPNotesRegister(s_Branches,s_Programs,s_OPCaseNotes,s_Staff,s_Descipiline,s_CareDomain,strdate,endate)
                 break;
-            default:// 
+            case 'btn-staff-incidentregister':
+                this.StaffIncidentRegister(s_Branches,s_SvcType,s_Staff,s_incidenttype,s_Incidentcategory,strdate,endate)
+                break;
+            case 'btn-staff-training':
+                this.StaffTraining(s_Branches,s_Managers,s_ServiceRegions,s_Programs,s_StaffTeam,s_TrainingType,s_StfGroup,strdate,endate)
+                break;
+            case 'btn-competenciesrenewal':
+                this.StaffCompetencyRenewal(s_Branches,s_Staff,s_Competencies,s_Managers,s_StaffTeam,s_CompetencyGroups,strdate,endate)
+                break;
+            case 'btn-Systm-AuditRegister':
+                this.AuditRegister(s_who,s_Description,s_TraccsUser,strdate,endate)
+                break;
+            case 'btn-Systm-ActivityStatusAudit':
+                this.ProgramActivityStatusAudit(s_Programs)
+                break;
+            case 'btn-Systm-MTARegister':
+                this.MTARegister(s_Programs,s_Managers,s_Staff,s_StfGroup,s_Recipient,strdate,endate)
+                break;
+            case 'btn-Systm-RosterOverlap':
+                this.RosterOverlapRegister(s_Programs,s_Branches,s_Staff,s_Recipient,strdate,endate)
+                break;
+            case 'btn-Systm- MTAVerification':
+                this.MTAVerificationAudit(s_Programs,s_Managers,s_Staff,s_StfGroup,s_Recipient,strdate,endate)
+                break;                                
+            case 'btn-FORPT-ProgramUtilisation':               
+                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;            
+            case 'btn-FORPT-PaytypeReport':                               
+                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break; 
+            case 'btn-FORPT-StaffusageReport':                               
+                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break; 
+            case 'btn-FORPT-RecipientserviceReport':                               
+                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+            case 'btn-FORPT-PayTypeProgram':                               
+                this.PayTypeProgram(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+            case 'btn-FORPT-DailyStaffHrs':                               
+                this.DailyStaffHrs(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+            
+            
+            default://
                 alert("Yet to do")
             
         }
@@ -937,8 +1712,9 @@ var strdate;
    // console.log(lblcriteria)
 
    
-
+   
     const data =    {
+        
         "template": {  "_id":"zrBLd931LZblcnNH"  },    
         "options": {
             "reports": { "save": false },
@@ -950,9 +1726,10 @@ var strdate;
 
 
     const headerDict = {
+        
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-                   
+               
     }
       
     const requestOptions = {
@@ -3490,7 +4267,7 @@ var strdate;
     });        
     }
 
-    IncidentRegister(branch,SvcType,stfgroup,incidenttype,category,startdate,enddate){
+    IncidentRegister(branch,SvcType,Staff,incidenttype,category,startdate,enddate){
             
             
         var fQuery = "SELECT AccountNo, Branch, AccountNo + ' - ' + CASE WHEN [Surname/Organisation]<> '' THEN Upper([Surname/Organisation]) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN pSuburb <> '' THEN ' ' + pSuburb  ELSE ' '  END + CASE WHEN R.[Phone] <> '' THEN ' Ph.' + R.[Phone]  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.*,Convert(nvarchar,Date,23) as ReportedDate FROM IM_Master I INNER JOIN RECIPIENTS R ON I.PERSONID = R.UNIQUEID WHERE"
@@ -3513,9 +4290,9 @@ var strdate;
             this.s_SvcTypeSQL = " ([Service] in ('" + SvcType.join("','")  +  "'))";
             if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_SvcTypeSQL}
         }
-        if(stfgroup != ""){
-            this.s_StfGroupSQL = "([CurrentAssignee] in ('" + stfgroup.join("','")  +  "'))";            
-            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        if(Staff != ""){
+            this.s_StfSQL = "([CurrentAssignee] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
         }
         if(incidenttype != ""){
             this.s_IncedentTypeSQL = "(i.[Type] in ('" + incidenttype.join("','")  +  "'))";            
@@ -3541,9 +4318,9 @@ var strdate;
         if (branch != ""){ 
             lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
             else{lblcriteria = lblcriteria + " All Branches "}
-        if (stfgroup != ""){ 
-            lblcriteria =lblcriteria + " Assigned To: " + stfgroup.join(",")+ "; "}
-            else{lblcriteria = lblcriteria + "All Staff Groups,"}
+        if (Staff != ""){ 
+            lblcriteria =lblcriteria + " Assigned To: " + Staff.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Staff ,"}
                                                 
         fQuery = fQuery + " ORDER BY DATE  "
         
@@ -4148,7 +4925,7 @@ var strdate;
             lblcriteria = " Staff:" + branch.join(",") + "; "        } 
                 else{lblcriteria = "All Staff"}
         if (stfgroup != ""){ 
-            lblcriteria =lblcriteria + " Assigned To: " + stfgroup.join(",")+ "; "}
+            lblcriteria =lblcriteria + " Staff Group: " + stfgroup.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Staff Groups,"}
         if (startdate != ""){ 
             lblcriteria = lblcriteria + " Date Between " +startdate  + " and "+ enddate +"; "}
@@ -5062,6 +5839,1746 @@ var strdate;
         console.log(err);
     });        
     }
+
+    StaffIncidentRegister(branch,SvcType,Staff,incidenttype,category,startdate,enddate){
+            
+            
+        var fQuery = "SELECT AccountNo, STF_Department AS Branch, AccountNo + ' - ' + CASE WHEN LastName<> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN Suburb <> '' THEN ' ' + Suburb  ELSE ' '  END + CASE WHEN TelePhone <> '' THEN ' Ph.' + TelePhone  ELSE ' '  END AS NameAddressPhone, (SELECT           CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' +        CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' +        CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName        FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT           CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' +        CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' +        CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName        FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.* FROM IM_Master I INNER JOIN STAFF R ON I.PERSONID = R.UNIQUEID WHERE"
+        var lblcriteria;
+        
+        
+        
+
+
+        
+        if (startdate != "" ||enddate != ""){
+            this.s_DateSQL = " (Date BETWEEN '" +startdate + ("'AND'") + enddate  +  "')";
+            if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
+        }
+        if (branch != ""){
+            this.s_BranchSQL = "([STF_DEPARTMENT] in ('" + branch.join("','")  +  "'))";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL}
+        } 
+        if(SvcType != ""){
+            this.s_SvcTypeSQL = " ([Service] in ('" + SvcType.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_SvcTypeSQL}
+        }
+        if(Staff != ""){
+            this.s_StfSQL = "([CurrentAssignee] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(incidenttype != ""){
+            this.s_IncedentTypeSQL = "(i.[Type] in ('" + incidenttype.join("','")  +  "'))";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_IncedentTypeSQL};            
+        }
+        if(category != ""){
+            this.s_incidentCategorySQL = "(i.[Status] in ('" + category.join("','")  +  "'))";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_incidentCategorySQL};            
+        }
+
+        if (category != ""){
+            lblcriteria =" Incident Category: " + category.join(",")+ "; "}
+            else{lblcriteria = "All Categories,"}
+        if (incidenttype != ""){
+            lblcriteria =lblcriteria + " Incedent Type: " + incidenttype.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Incedent Types,"}
+        if (startdate != ""){ 
+            lblcriteria = lblcriteria + " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria =lblcriteria + " All Dated "} 
+        if (SvcType != ""){ 
+                lblcriteria =lblcriteria + " Service Type " + SvcType.join(",")+ "; "}
+                else{lblcriteria = lblcriteria + "All Svc. Types"}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        if (Staff != ""){ 
+            lblcriteria =lblcriteria + " Assigned To: " + Staff.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Staff ,"}
+                                                
+        fQuery = fQuery + " ORDER BY DATE  "
+        
+   // console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"elFITHKE2y1STfUR"  },    
+        "options": {
+            "reports": { "save": false },
+        
+            "sql":fQuery,
+            "Criteria":lblcriteria,
+            
+                    
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
+
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+    
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+    StaffTraining(branch,manager,region,program,staffteam,trainingtype,stfgroup,startdate,enddate){
+        
+        
+        var fQuery = "SELECT [Roster].[Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal] AS ExpiryDate , [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Notes], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno], [Staff].[STF_DEPARTMENT], [Staff].[StaffGroup]  FROM Roster INNER JOIN STAFF on Roster.[Carer Code] = Staff.Accountno              INNER JOIN ITEMTYPES I ON Roster.[Service Type] = I.TITLE  WHERE  ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE') AND ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE') AND I.MINORGROUP = 'TRAINING'   "
+
+        if (branch != ""){
+            this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        } 
+        if(region != ""){
+            this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        }
+        if (startdate != "" ||enddate != ""){
+            this.s_DateSQL = " Date BETWEEN '" +startdate + ("'AND'") + enddate  +  "')";
+            if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
+        }
+
+        if(trainingtype != ""){
+            this.s_TrainingTypeSQL = " ([Service Type] in ('" + trainingtype.join("','")  +  "'))";
+            if (this.s_TrainingTypeSQL != ""){ fQuery = fQuery + " AND " + this.s_TrainingTypeSQL}
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "(StaffGroup in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([STAFFTEAM] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        
+
+
+        if (startdate != ""){ 
+          var  lblcriteria = " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria =  " All Dated "}
+        if (staffteam != ""){ 
+                lblcriteria =lblcriteria + " Staff Team: " + staffteam.join(",")+ "; "}
+                else{lblcriteria = lblcriteria + " All Staff Groups,"}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria +  " Branches:" + branch.join("','") + "; "        } 
+                else{lblcriteria =lblcriteria + " All Branches "}
+
+        if (trainingtype != ""){ 
+            lblcriteria =lblcriteria +  " Training Type:" + trainingtype.join("','") + "; "        } 
+             else{lblcriteria =lblcriteria + " All Training types "}
+         
+          if (manager != ""){
+             lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Managers,"}
+         
+         
+         if (region != ""){ 
+             lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Regions,"}
+         
+        
+         if (program != ""){ 
+             lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
+             else{lblcriteria = lblcriteria + "All Programs."}
+
+        
+        if (stfgroup != ""){ 
+        lblcriteria =lblcriteria + " Staff Group: " + stfgroup.join(",")+ "; "}
+        else{lblcriteria = lblcriteria + "All Staff Groups,"}
+                                                            
+        fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time] "
+    /*   
+    console.log(s_BranchSQL)
+    console.log(s_CategorySQL)
+    console.log(s_CoordinatorSQL)*/
+   // console.log(fQuery)
+
+    this.drawerVisible = true;
+
+    const data =    {
+        "template": {  "_id":"7o1ScJuvyRZk8xZ6"  },    
+        "options": {
+            "reports": { "save": false },
+         
+            "sql":fQuery,
+            "Criteria":lblcriteria 
+        }
+    }
+
+
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',            
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        console.log(blob);
+        
+        let _blob: Blob = blob;
+       
+        let fileURL = URL.createObjectURL(_blob);
+        this.pdfTitle = "Reports.pdf"
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+    }, err => {
+        console.log(err);
+    });        
+    }
+    AuditRegister(who,descibe,traccsuser,startdate,enddate){
+
+        var fQuery = "SELECT RecordNumber,Convert(nvarchar, ActionDate,23) as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
+        var lblcriteria;
+            
+        if (startdate != "" ||enddate != ""){
+            this.s_DateSQL = " (ActionDate  >=  '" +startdate + ("' AND ActionDate <  '") + enddate  +  "' )";
+            if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
+        }
+        if(traccsuser != ""){
+            this.s_TraccsuserSQL = "R.[RECIPIENT_COOrdinator] in ('" + traccsuser.join("','")  +  "')";            
+            if (this.s_TraccsuserSQL != ""){ fQuery = fQuery + " AND " + this.s_TraccsuserSQL};
+        }
+        if(descibe != ""){
+            this.s_DescribeSQL = "AuditDescription like ('" + descibe.join("','")  +  "')";            
+            if (this.s_DescribeSQL != ""){ fQuery = fQuery + " AND " + this.s_DescribeSQL};
+        }
+        if(who != ""){
+            this.s_whowhatSQL = "whowhatcode like ('" + who.join("','")  +  "')";            
+            if (this.s_whowhatSQL != ""){ fQuery = fQuery + " AND " + this.s_whowhatSQL};
+        }
+
+        if (startdate != ""){ 
+              lblcriteria = " Date Between " +startdate  + " and "+ enddate +"; "}
+              else{lblcriteria =  " All Dated "}
+        if (traccsuser != ""){ 
+            lblcriteria =lblcriteria + " Traccs Users: " + traccsuser.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Users,"}
+        if (descibe != ""){ 
+            lblcriteria =lblcriteria + " Description: " + descibe.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Descriptions,"}
+        if (who != ""){ 
+            lblcriteria =lblcriteria + " Who/What: " + who.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Who/what,"}
+
+
+        fQuery = fQuery + " ORDER BY ActionDate "
+        
+        //console.log(fQuery)
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"YD5T4jvODtGyusH8"  },    
+                "options": {
+                    "reports": { "save": false },
+                
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
+    ProgramActivityStatusAudit(program){
+
+        var fQuery = "SELECT H.[NAME], H.[TYPE], S.[SERVICE TYPE], S.SERVICESTATUS FROM HUMANRESOURCETYPES H INNER JOIN SERVICEOVERVIEW S ON CONVERT(VARCHAR(15),H.RECORDNUMBER) = S.PERSONID WHERE [GROUP] = 'PROGRAMS' AND (ENDDATE >= getDate() OR ENDDATE IS NULL) ";
+        var lblcriteria;
+
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        }
+        if (program != ""){ 
+            lblcriteria = " Programs " + program.join(",")+ "; "}
+            else{lblcriteria = "All Programs."}
+
+
+            fQuery = fQuery + " ORDER BY H.[NAME], S.[SERVICE TYPE] "
+        
+            //console.log(fQuery)
+            
+                this.drawerVisible = true;
+            
+                const data =    {
+                    "template": {  "_id":"4bzgeVt7vedkx8Uh"  },    
+                    "options": {
+                        "reports": { "save": false },
+                    
+                        "sql":fQuery,
+                        "Criteria":lblcriteria,
+                        
+                                
+                    }
+                }
+            
+            
+                const headerDict = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',            
+                }
+            
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict)
+                };
+            
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+                    
+                    let _blob: Blob = blob;
+                
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = "Reports.pdf"
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            
+                }, err => {
+                    console.log(err);
+                });  
+    
+    
+    }
+    MTARegister(program,manager,Staff,stfgroup,recipient,startdate,enddate){
+        
+        
+        var fQuery = "select t0.*, ez.jobno, Convert(varchar(5),ez.datetime,108) AS ActualStart, DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS StartVAR,Convert(varchar(5), ez.lodatetime,108) AS ActualEnd,  DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) AS EndVAR, Round(ez.WorkDuration * 60, 0) AS [ActualDuration], DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) - DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS [DurationVAR], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF' WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF' ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON' WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.PANNoGoTH,     re.PANNoWorkTH,     re.PANEarlyStartTH,     re.PANLateStartTH,     re.PANEarlyFinishTH,     re.PANLateFinishTH,     re.PANOverstayTH,     re.PANUnderstayTH,     re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ', ' +     CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE            WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting            WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]'            WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where  (ro.[Carer Code] > '!MULTIPLE') AND ro.Type <> 9    and isnull(it.taexclude1, 0) = 0 ) t0 left join ezitracker_log ez on t0.recordno = ez.jobno ";
+        var lblcriteria;
+
+        
+        if (startdate != "" ||enddate != ""){
+            this.s_DateSQL = " (ro.Date BETWEEN  '" +startdate + ("' AND '") + enddate  +  "' )";
+            if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " (ro.[Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "re.[RECIPIENT_COORDINATOR] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(Staff != ""){
+            this.s_StfSQL = "(ro.[carer code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "(st.[STAFFGROUP] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "ro.[client code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        
+
+
+
+
+
+
+        if (program != ""){ 
+            lblcriteria = " Programs " + program.join(",")+ "; "}
+            else{lblcriteria = "All Programs."}
+        if (manager != ""){
+            lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Managers,"}
+        if (Staff != ""){ 
+            lblcriteria =lblcriteria + " Assigned To: " + Staff.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Staff ,"}
+        if (stfgroup != ""){ 
+            lblcriteria =lblcriteria + " Staff Group: " + stfgroup.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Staff Groups,"}
+            if (recipient != ""){
+                lblcriteria =lblcriteria + " Recipients: " + recipient.join(",")+ "; "}
+                else{lblcriteria =lblcriteria + "All Recipients,"}
+        if (startdate != ""){ 
+            lblcriteria = " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria =  " All Dated "}
+
+
+            fQuery = fQuery + "  ORDER BY staffcode, [Date], [Start Time] "
+        
+            //console.log(fQuery)
+            
+                this.drawerVisible = true;
+            
+                const data =    {
+                    "template": {  "_id":"l4nWCteKG2bDS0QA"  },    
+                    "options": {
+                        "reports": { "save": false },
+                    
+                        "sql":fQuery,
+                        "Criteria":lblcriteria,
+                        
+                                
+                    }
+                }
+            
+            
+                const headerDict = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',            
+                }
+            
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict)
+                };
+            
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+                    
+                    let _blob: Blob = blob;
+                
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = "Reports.pdf"
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            
+                }, err => {
+                    console.log(err);
+                });  
+
+    }
+    RosterOverlapRegister(program,branch,Staff,recipient,startdate,enddate){
+        
+        
+        var fQuery = "SELECT RECORDNO, [CLIENT CODE], [CARER CODE], [SERVICE TYPE], PROGRAM, [DATE], [START TIME], DURATION * 5 as DURATION,  ST.[STAFFGROUP] ,[STF_DEPARTMENT] AS BRANCH  FROM ROSTER ro INNER JOIN STAFF ST ON ro.[CARER CODE] = ST.[ACCOUNTNO] LEFT JOIN ITEMTYPES IT ON  IT.Title = RO.[Service Type] Where Exists ( SELECT * FROM ROSTER ro2 Where ro.[CARER CODE] = ro2.[CARER CODE] AND ro.RECORDNO <> ro2.RECORDNO AND ro.[DATE] = ro2.[DATE] AND ro.BLOCKNO >= ro2.BLOCKNO AND ro.BLOCKNO < ro2.BLOCKNO+ro2.DURATION AND TYPE NOT IN (13) )    AND ro.[Type] NOT IN (13) AND ro.[CARER CODE] > '!z'     AND st.[STAFFGROUP] <> 'NON-STAFF' AND  ST.CATEGORY = 'STAFF'    AND InfoOnly <> 1    ";
+        var lblcriteria;
+
+        
+        if (startdate != "" ||enddate != ""){
+            this.s_DateSQL = " (ro.Date BETWEEN  '" +startdate + ("' AND '") + enddate  +  "' )";
+            if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " (ro.[Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        }
+        if (branch != ""){
+            this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        } 
+        
+        if(Staff != ""){
+            this.s_StfSQL = "(ro.[carer code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        
+        if(recipient != ""){
+            this.s_RecipientSQL = "ro.[client code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        
+
+
+
+
+
+
+        if (program != ""){ 
+            lblcriteria = " Programs " + program.join(",")+ "; "}
+            else{lblcriteria = "All Programs."}
+        
+        if (Staff != ""){ 
+            lblcriteria =lblcriteria + " Assigned To: " + Staff.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Staff ,"}
+        
+        if (recipient != ""){
+            lblcriteria =lblcriteria + " Recipients: " + recipient.join(",")+ "; "}
+            else{lblcriteria =lblcriteria + "All Recipients,"}
+        if (startdate != ""){ 
+            lblcriteria = " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria =  " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria +  " Branches:" + branch.join("','") + "; "        } 
+                else{lblcriteria =lblcriteria + " All Branches "}
+
+
+            fQuery = fQuery + " ORDER BY [Carer Code], [Date], [Start Time], [Client Code]  "
+        
+            //console.log(fQuery)
+            
+                this.drawerVisible = true;
+            
+                const data =    {
+                    "template": {  "_id":"lK0psB9gWfDQkZhG"  },    
+                    "options": {
+                        "reports": { "save": false },
+                    
+                        "sql":fQuery,
+                        "Criteria":lblcriteria,
+                        
+                                
+                    }
+                }
+            
+            
+                const headerDict = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',            
+                }
+            
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict)
+                };
+            
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+                    
+                    let _blob: Blob = blob;
+                
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = "Reports.pdf"
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            
+                }, err => {
+                    console.log(err);
+                });  
+
+    }
+    MTAVerificationAudit(program,manager,Staff,stfgroup,recipient,startdate,enddate){
+        
+        
+        var fQuery = "select t0.RecordNo,t0.Date,Recipient_Signature,ClientCode,StaffCode, ez.jobno,CONVERT(VARCHAR(5),ez.datetime, 108)  AS ActualStart,CONVERT(VARCHAR(5),ez.lodatetime, 108)  AS ActualEnd,  Round(ez.WorkDuration * 60, 0) AS [ActualDuration], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF'      WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF'      ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON'                WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.Recipient_Signature,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ', ' +         CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting   WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]'            WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where    (ro.Date BETWEEN '2019/08/01' AND '2020/08/31') AND (ro.[Carer Code] > '!MULTIPLE') AND ro.Type <> 9    and isnull(it.taexclude1, 0) = 0 ) t0 left join ezitracker_log ez on t0.recordno = ez.jobno  WHERE  ISNULL(ez.JobNo, '') <> ''  ";
+        var lblcriteria;
+
+        
+        if (startdate != "" ||enddate != ""){
+            this.s_DateSQL = " (ro.Date BETWEEN  '" +startdate + ("' AND '") + enddate  +  "' )";
+            if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " (ro.[Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "re.[RECIPIENT_COORDINATOR] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(Staff != ""){
+            this.s_StfSQL = "(ro.[carer code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "(st.[STAFFGROUP] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "ro.[client code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        
+
+
+
+
+
+
+        if (program != ""){ 
+            lblcriteria = " Programs " + program.join(",")+ "; "}
+            else{lblcriteria = "All Programs."}
+        if (manager != ""){
+            lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Managers,"}
+        if (Staff != ""){ 
+            lblcriteria =lblcriteria + " Assigned To: " + Staff.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Staff ,"}
+        if (stfgroup != ""){ 
+            lblcriteria =lblcriteria + " Staff Group: " + stfgroup.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Staff Groups,"}
+            if (recipient != ""){
+                lblcriteria =lblcriteria + " Recipients: " + recipient.join(",")+ "; "}
+                else{lblcriteria =lblcriteria + "All Recipients,"}
+        if (startdate != ""){ 
+            lblcriteria = " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria =  " All Dated "}
+
+
+            fQuery = fQuery + "  ORDER BY staffcode, [Date], [Start Time] "
+        
+            //console.log(fQuery)
+            
+                this.drawerVisible = true;
+            
+                const data =    {
+                    "template": {  "_id":"dpEyUTAAn5HXqGhK"  },    
+                    "options": {
+                        "reports": { "save": false },
+                    
+                        "sql":fQuery,
+                        "Criteria":lblcriteria,
+                        
+                                
+                    }
+                }
+            
+            
+                const headerDict = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',            
+                }
+            
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict)
+                };
+            
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+                    
+                    let _blob: Blob = blob;
+                
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = "Reports.pdf"
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            
+                }, err => {
+                    console.log(err);
+                });  
+
+    }
+    UnsedFunding(program,manager,recipient,region){
+        
+        
+        var fQuery = "Select Recipients.UniqueID, Recipients.AccountNo, Recipients.Branch, Recipients.AdmissionDate, Recipients.DischargeDate, CASE WHEN Recipients.[Surname/Organisation] <> '' THEN [Surname/Organisation] ELSE '*' END + ', ' + CASE WHEN Recipients.FirstName <> '' THEN FirstName ELSE '*' END AS NameDetails, Recipients.RECIPIENT_Coordinator, RecipientPrograms.Program, RecipientPrograms.Quantity, RecipientPrograms.ItemUnit, RecipientPrograms.PerUnit, RecipientPrograms.TimeUnit, RecipientPrograms.Period, RecipientPrograms.ExpiryDate, RecipientPrograms.TotalAllocation, RecipientPrograms.Used, RecipientPrograms.Remaining FROM RecipientPrograms INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID  WHERE AccountNo > '!z' AND ((Recipients.AdmissionDate is NOT NULL) and (Recipients.DischargeDate is NULL))    AND AccountNo BETWEEN '**BROWN D' AND '**BROWN D' AND ([Program] BETWEEN '!INTERNAL' AND '!INTERNAL') AND ([RECIPIENT_Coordinator] BETWEEN 'ANNE MILLER' AND 'ANNE MILLER') AND ([AgencyDefinedGroup] BETWEEN 'ARUNDEL' AND 'ARUNDEL') ";
+        var lblcriteria;
+
+        
+        
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "[RECIPIENT_Coordinator] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+                
+        if(recipient != ""){
+            this.s_RecipientSQL = "AccountNo in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(region != ""){
+            this.s_CategorySQL = "[AgencyDefinedGroup] in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        
+
+
+
+
+
+
+        if (program != ""){ 
+            lblcriteria = " Programs " + program.join(",")+ "; "}
+            else{lblcriteria = "All Programs."}
+        if (manager != ""){
+            lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Managers,"}
+        
+        if (recipient != ""){
+            lblcriteria =lblcriteria + " Recipients: " + recipient.join(",")+ "; "}
+            else{lblcriteria =lblcriteria + "All Recipients,"} 
+        if (region != ""){ 
+            lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Regions,"}       
+
+
+            fQuery = fQuery + " ORDER BY Recipients.AccountNo "
+        
+            //console.log(fQuery)
+            
+                this.drawerVisible = true;
+            
+                const data =    {
+                    "template": {  "_id":"X641oa708kHECwiT"  },    
+                    "options": {
+                        "reports": { "save": false },
+                    
+                        "sql":fQuery,
+                        "Criteria":lblcriteria,
+                        
+                                
+                    }
+                }
+            
+            
+                const headerDict = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',            
+                }
+            
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict)
+                };
+            
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+                    
+                    let _blob: Blob = blob;
+                
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = "Reports.pdf"
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            
+                }, err => {
+                    console.log(err);
+                });  
+
+    }
+    ReportUtilisation(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings){
+       
+        var fQuery = "SELECT  [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE Round([Roster].[Duration] / 12,2) END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  WHERE  ([Client Code] > '!MULTIPLE') "
+        var lblcriteria;
+
+
+
+        if (branch != ""){
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        }
+        if (startdate != "" ||enddate != ""){
+       
+       
+           let strkey = Datetype.toString();
+           switch (strkey) {
+                
+                case "Pay Period EndDate":
+                   
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    break;
+                case 'Billing Date': 
+                  
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    break;
+                case 'Service Date':
+                    
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    break;
+                default:
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    
+                    break;
+                }                         
+           
+        if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
+        console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(region != ""){
+            this.s_CategorySQL = "Anal in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        if(Staff != ""){
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(status != ""){
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','")  +  "'))";            
+            if (this.s_statusSQL != ""){ fQuery = fQuery + " AND " + this.s_statusSQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+        
+        if(funders != ""){
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','")  +  "')";            
+            if (this.s_FundersSQL != ""){ fQuery = fQuery + " AND " + this.s_FundersSQL};
+        }
+        if(RosterCategory != ""){
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','")  +  "')";            
+            if (this.s_RosterCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_RosterCategorySQL};
+        }
+        if(HACCCategory != ""){
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','")  +  "')";            
+            if (this.s_HACCCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_HACCCategorySQL};
+        }
+        if(mdsagencyID != ""){
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','")  +  "')";            
+            if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
+        }
+
+        if(Age != ""){ 
+            switch(Age){ 
+                case 'Under 65 OR ATSI under 50':
+                    this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) ";      
+                    break;
+                case 'Over 64 OR ATSI Over 49':
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+               
+            }
+           
+            if (this.s_AgeSQL != ""){ fQuery = fQuery + " AND " + this.s_AgeSQL};
+        }
+     
+        if(outletid != ""){
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','")  +  "')";            
+            if (this.s_OutletIDSQL != ""){ fQuery = fQuery + " AND " + this.s_OutletIDSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(stafftype != ""){
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','")  +  "')";            
+            if (this.s_StafftypeSQL != ""){ fQuery = fQuery + " AND " + this.s_StafftypeSQL};
+        } 
+        if(paytype != ""){
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','")  +  "')";            
+            if (this.s_paytypeSQL != ""){ fQuery = fQuery + " AND " + this.s_paytypeSQL};
+        }
+        if(activity != ""){
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','")  +  "')";            
+            if (this.s_activitySQL != ""){ fQuery = fQuery + " AND " + this.s_activitySQL};
+        }
+        if(settings != ""){
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','")  +  "')";            
+            if (this.s_setting_vehicleSQL != ""){ fQuery = fQuery + " AND " + this.s_setting_vehicleSQL};
+        }
+
+
+
+
+
+        if (startdate != ""){ 
+            lblcriteria =  " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria = " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        
+
+        if(outletid != ""){
+           var OutletID = outletid.join(",") + "; "        } 
+            else{OutletID =  " All "
+        }
+        
+
+        if(Datetype != ""){
+            var Datetypes =  Datetype.join(",") + "; "        } 
+            else{Datetypes =  " Service Date "
+        }
+        
+
+        if(Age != ""){
+            var Age_ATSI =  Age.join(",") + "; "        } 
+            else{Age_ATSI =  " All "
+        }
+       
+
+
+        if(mdsagencyID != ""){
+            var mdsagency =  mdsagencyID.join(",") + "; "        } 
+            else{mdsagency =  " All "
+        }
+        
+
+
+        if(HACCCategory != ""){
+            var HACCCategories =  HACCCategory.join(",") + "; "        } 
+            else{HACCCategories =  " All "
+        }
+        
+
+
+        if(RosterCategory != ""){
+            var RosterCategories = RosterCategory.join(",") + "; "        } 
+            else{RosterCategories =  " All "
+        }
+     
+        if(program != ""){
+            var programs =  program.join(",") + "; "        } 
+            else{programs =  " All "
+        }
+        
+
+
+        if(Staff != ""){
+            var Staffs = Staff.join(",") + "; "        } 
+            else{Staffs =  " All "
+        }
+        
+
+
+        if(staffteam != ""){
+            var staffteams =  staffteam.join(",") + "; "        } 
+            else{staffteams =  " All "
+        }
+        
+
+
+        if(stfgroup != ""){
+            var stfgroups =  stfgroup.join(",") + "; "        } 
+            else{stfgroups =  " All "
+        }
+        
+
+
+        if(region != ""){
+            var regions =  region.join(",") + "; "        } 
+            else{regions =  " All "
+        }
+        
+
+        
+        if(manager != ""){
+           var managers =  manager.join(",") + "; "        } 
+            else{managers =  " All "
+        }
+        
+        
+         if(funders != ""){
+            var fundingsource =  funders.join(",") + "; "        } 
+             else{fundingsource =  " All "
+         }
+         
+
+         if(status != ""){
+            var statuscat =  status.join(",") + "; "        } 
+             else{statuscat =  " All "
+         }
+        
+
+
+         if(recipient != ""){
+            var recipients =  recipient.join(",") + "; "        } 
+             else{recipients =  " All "
+         }
+         
+
+         if(stafftype != ""){
+            var stafftypes =  stafftype.join(",") + "; "        } 
+             else{stafftypes =  " All "
+         }
+         
+         if(paytype != ""){
+            var paytypes =  paytype.join(",") + "; "        } 
+             else{paytypes =  " All "
+         }
+         if(activity != ""){
+            var activities =  activity.join(",") + "; "        } 
+             else{activities =  " All "
+         }
+         if(settings != ""){
+            var setting =  settings.join(",") + "; "        } 
+             else{setting =  " All "
+         }
+
+         
+         switch (rptname){
+            case 'btn-FORPT-ProgramUtilisation':
+                var Title = "RECIPIENT PROGRAM UTILISATION REPORT";
+                fQuery = fQuery + "And (([Roster].[Type] IN (1, 2, 3, 5, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] > '!MULTIPLE') ";
+                fQuery = fQuery + " ORDER BY [Client Code], [Program], Date, [Start Time] "                       
+                break;
+            case 'btn-FORPT-PaytypeReport':
+                var Title = "RECIPIENT PAY TYPE REPORT";
+                fQuery = fQuery + "And (([Roster].[Type] IN (1, 2, 3, 5, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] > '!MULTIPLE') ";
+                fQuery = fQuery + "ORDER BY [Client Code], [Service Description], Date, [Start Time]";
+                break;
+            case 'btn-FORPT-RecipientserviceReport':
+                var Title = "RECIPIENT SERVICE REPORT";
+                fQuery = fQuery + "AND ([Roster].[Type] = 2 OR ([Roster].[Type] = 4 AND [Roster].[Carer Code] = '!INTERNAL') OR  [Roster].[Type]=1 OR [Roster].[Type] = 3 OR [Roster].[Type] = 5 OR [Roster].[Type] = 7 OR [Roster].[Type] = 8 OR [Roster].[Type] = 10 OR [Roster].[Type] = 11 OR [Roster].[Type] = 14 OR [Roster].[Type] = 12) AND ([Client Code] > '!MULTIPLE') ";
+                fQuery = fQuery + "ORDER BY [Client Code], [Service Type], Date, [Start Time]"                        
+                break;
+            case 'btn-FORPT-StaffusageReport':
+                var Title = "RECIPIENT STAFF USAGE REPORT";
+                fQuery = fQuery + "And (([Roster].[Type] IN (1, 2, 3, 5, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] > '!MULTIPLE')";
+                fQuery = fQuery + "ORDER BY [Client Code], [Carer Code], Date, [Start Time]";
+                break;
+
+        }//
+            
+
+        
+        
+        console.log(fQuery)
+       
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"QRa7a6vcHl74gzKk"  },    
+                "options": {
+                    "reports": { "save": false },
+                    
+                    "txtTitle":Title,
+
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+
+                    "txtregions": regions, 
+                    "txtstfgroups": stfgroups, 
+                    "txtstaffteams":staffteams, 
+                    "txtStaffs":Staffs ,
+                    "txtprograms":programs,  
+                    "txtRosterCategories":RosterCategories,
+                    "txtHACCCategories":HACCCategories,
+                    "txtmdsagency":mdsagency,
+                    "txtAge_ATSI":Age_ATSI ,
+                    "txtDatetypes":Datetypes,
+                    "txtmanagers":managers ,
+                    "txtfundingsource":fundingsource,                
+                    "txtOutletID":OutletID,
+                    "txtstatuscat":statuscat,
+                    "txtrecipients":recipients,
+                    "txtstafftypes":stafftypes,
+                    "txtpaytypes":paytypes,
+                    "txtactivities":activities,
+                    "txtsetting":setting,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
+
+    PayTypeProgram(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings){
+       
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE Round([Roster].[Duration] / 12,2) END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE (Date >= '2019/09/01' And Date <='2020/09/30') AND ([Carer Code] > '!MULTIPLE')  And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION')   "
+        var lblcriteria;
+
+        var Title = "PAY TYPE PROGRAM REPORT";
+
+
+
+        if (branch != ""){
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        }
+        if (startdate != "" ||enddate != ""){
+       
+       
+           let strkey = Datetype.toString();
+           switch (strkey) {
+                
+                case "Pay Period EndDate":
+                   
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    break;
+                case 'Billing Date': 
+                  
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    break;
+                case 'Service Date':
+                    
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    break;
+                default:
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    
+                    break;
+                }                         
+           
+        if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
+        console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(region != ""){
+            this.s_CategorySQL = "Anal in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        if(Staff != ""){
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(status != ""){
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','")  +  "'))";            
+            if (this.s_statusSQL != ""){ fQuery = fQuery + " AND " + this.s_statusSQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+        
+        if(funders != ""){
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','")  +  "')";            
+            if (this.s_FundersSQL != ""){ fQuery = fQuery + " AND " + this.s_FundersSQL};
+        }
+        if(RosterCategory != ""){
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','")  +  "')";            
+            if (this.s_RosterCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_RosterCategorySQL};
+        }
+        if(HACCCategory != ""){
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','")  +  "')";            
+            if (this.s_HACCCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_HACCCategorySQL};
+        }
+        if(mdsagencyID != ""){
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','")  +  "')";            
+            if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
+        }
+
+        if(Age != ""){ 
+            switch(Age){ 
+                case 'Under 65 OR ATSI under 50':
+                    this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) ";      
+                    break;
+                case 'Over 64 OR ATSI Over 49':
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+               
+            }
+           
+            if (this.s_AgeSQL != ""){ fQuery = fQuery + " AND " + this.s_AgeSQL};
+        }
+     
+        if(outletid != ""){
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','")  +  "')";            
+            if (this.s_OutletIDSQL != ""){ fQuery = fQuery + " AND " + this.s_OutletIDSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(stafftype != ""){
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','")  +  "')";            
+            if (this.s_StafftypeSQL != ""){ fQuery = fQuery + " AND " + this.s_StafftypeSQL};
+        } 
+        if(paytype != ""){
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','")  +  "')";            
+            if (this.s_paytypeSQL != ""){ fQuery = fQuery + " AND " + this.s_paytypeSQL};
+        }
+        if(activity != ""){
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','")  +  "')";            
+            if (this.s_activitySQL != ""){ fQuery = fQuery + " AND " + this.s_activitySQL};
+        }
+        if(settings != ""){
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','")  +  "')";            
+            if (this.s_setting_vehicleSQL != ""){ fQuery = fQuery + " AND " + this.s_setting_vehicleSQL};
+        }
+
+
+
+
+
+        if (startdate != ""){ 
+            lblcriteria =  " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria = " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        
+
+        if(outletid != ""){
+           var OutletID = outletid.join(",") + "; "        } 
+            else{OutletID =  " All "
+        }
+        
+
+        if(Datetype != ""){
+            var Datetypes =  Datetype.join(",") + "; "        } 
+            else{Datetypes =  " Service Date "
+        }
+        
+
+        if(Age != ""){
+            var Age_ATSI =  Age.join(",") + "; "        } 
+            else{Age_ATSI =  " All "
+        }
+       
+
+
+        if(mdsagencyID != ""){
+            var mdsagency =  mdsagencyID.join(",") + "; "        } 
+            else{mdsagency =  " All "
+        }
+        
+
+
+        if(HACCCategory != ""){
+            var HACCCategories =  HACCCategory.join(",") + "; "        } 
+            else{HACCCategories =  " All "
+        }
+        
+
+
+        if(RosterCategory != ""){
+            var RosterCategories = RosterCategory.join(",") + "; "        } 
+            else{RosterCategories =  " All "
+        }
+     
+        if(program != ""){
+            var programs =  program.join(",") + "; "        } 
+            else{programs =  " All "
+        }
+        
+
+
+        if(Staff != ""){
+            var Staffs = Staff.join(",") + "; "        } 
+            else{Staffs =  " All "
+        }
+        
+
+
+        if(staffteam != ""){
+            var staffteams =  staffteam.join(",") + "; "        } 
+            else{staffteams =  " All "
+        }
+        
+
+
+        if(stfgroup != ""){
+            var stfgroups =  stfgroup.join(",") + "; "        } 
+            else{stfgroups =  " All "
+        }
+        
+
+
+        if(region != ""){
+            var regions =  region.join(",") + "; "        } 
+            else{regions =  " All "
+        }
+        
+
+        
+        if(manager != ""){
+           var managers =  manager.join(",") + "; "        } 
+            else{managers =  " All "
+        }
+        
+        
+         if(funders != ""){
+            var fundingsource =  funders.join(",") + "; "        } 
+             else{fundingsource =  " All "
+         }
+         
+
+         if(status != ""){
+            var statuscat =  status.join(",") + "; "        } 
+             else{statuscat =  " All "
+         }
+        
+
+
+         if(recipient != ""){
+            var recipients =  recipient.join(",") + "; "        } 
+             else{recipients =  " All "
+         }
+         
+
+         if(stafftype != ""){
+            var stafftypes =  stafftype.join(",") + "; "        } 
+             else{stafftypes =  " All "
+         }
+         
+         if(paytype != ""){
+            var paytypes =  paytype.join(",") + "; "        } 
+             else{paytypes =  " All "
+         }
+         if(activity != ""){
+            var activities =  activity.join(",") + "; "        } 
+             else{activities =  " All "
+         }
+         if(settings != ""){
+            var setting =  settings.join(",") + "; "        } 
+             else{setting =  " All "
+         }
+
+         
+         
+                
+               
+                fQuery = fQuery + "ORDER BY [Service Description], [Program], Date, [Start Time]";
+               
+        console.log(fQuery)
+       
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"gHY4F0UbTNzf4oPk"  },    
+                "options": {
+                    "reports": { "save": false },
+                    
+                   
+
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+
+                    "txtTitle":Title,
+         
+
+                    "txtregions": regions, 
+                    "txtstfgroups": stfgroups, 
+                    "txtstaffteams":staffteams, 
+                    "txtStaffs":Staffs ,
+                    "txtprograms":programs,  
+                    "txtRosterCategories":RosterCategories,
+                    "txtHACCCategories":HACCCategories,
+                    "txtmdsagency":mdsagency,
+                    "txtAge_ATSI":Age_ATSI ,
+                    "txtDatetypes":Datetypes,
+                    "txtmanagers":managers ,
+                    "txtfundingsource":fundingsource,                
+                    "txtOutletID":OutletID,
+                    "txtstatuscat":statuscat,
+                    "txtrecipients":recipients,
+                    "txtstafftypes":stafftypes,
+                    "txtpaytypes":paytypes,
+                    "txtactivities":activities,
+                    "txtsetting":setting,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
+
+    DailyStaffHrs(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings){
+       
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE Round([Roster].[Duration] / 12,2) END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE (Date >= '2019/09/01' And Date <='2020/09/30') AND ([Carer Code] > '!MULTIPLE') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION')  "
+        var lblcriteria;
+
+        
+         var Title = "STAFF DAILY HOURS REPORT";
+
+
+        if (branch != ""){
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        }
+        if (startdate != "" ||enddate != ""){
+       
+       
+           let strkey = Datetype.toString();
+           switch (strkey) {
+                
+                case "Pay Period EndDate":
+                   
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    break;
+                case 'Billing Date': 
+                  
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    break;
+                case 'Service Date':
+                    
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    break;
+                default:
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    
+                    break;
+                }                         
+           
+        if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
+        console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(region != ""){
+            this.s_CategorySQL = "Anal in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        if(Staff != ""){
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(status != ""){
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','")  +  "'))";            
+            if (this.s_statusSQL != ""){ fQuery = fQuery + " AND " + this.s_statusSQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+        
+        if(funders != ""){
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','")  +  "')";            
+            if (this.s_FundersSQL != ""){ fQuery = fQuery + " AND " + this.s_FundersSQL};
+        }
+        if(RosterCategory != ""){
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','")  +  "')";            
+            if (this.s_RosterCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_RosterCategorySQL};
+        }
+        if(HACCCategory != ""){
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','")  +  "')";            
+            if (this.s_HACCCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_HACCCategorySQL};
+        }
+        if(mdsagencyID != ""){
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','")  +  "')";            
+            if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
+        }
+
+        if(Age != ""){ 
+            switch(Age){ 
+                case 'Under 65 OR ATSI under 50':
+                    this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) ";      
+                    break;
+                case 'Over 64 OR ATSI Over 49':
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+               
+            }
+           
+            if (this.s_AgeSQL != ""){ fQuery = fQuery + " AND " + this.s_AgeSQL};
+        }
+     
+        if(outletid != ""){
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','")  +  "')";            
+            if (this.s_OutletIDSQL != ""){ fQuery = fQuery + " AND " + this.s_OutletIDSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(stafftype != ""){
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','")  +  "')";            
+            if (this.s_StafftypeSQL != ""){ fQuery = fQuery + " AND " + this.s_StafftypeSQL};
+        } 
+        if(paytype != ""){
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','")  +  "')";            
+            if (this.s_paytypeSQL != ""){ fQuery = fQuery + " AND " + this.s_paytypeSQL};
+        }
+        if(activity != ""){
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','")  +  "')";            
+            if (this.s_activitySQL != ""){ fQuery = fQuery + " AND " + this.s_activitySQL};
+        }
+        if(settings != ""){
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','")  +  "')";            
+            if (this.s_setting_vehicleSQL != ""){ fQuery = fQuery + " AND " + this.s_setting_vehicleSQL};
+        }
+
+
+
+
+
+        if (startdate != ""){ 
+            lblcriteria =  " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria = " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        
+
+        if(outletid != ""){
+           var OutletID = outletid.join(",") + "; "        } 
+            else{OutletID =  " All "
+        }
+        
+
+        if(Datetype != ""){
+            var Datetypes =  Datetype.join(",") + "; "        } 
+            else{Datetypes =  " Service Date "
+        }
+        
+
+        if(Age != ""){
+            var Age_ATSI =  Age.join(",") + "; "        } 
+            else{Age_ATSI =  " All "
+        }
+       
+
+
+        if(mdsagencyID != ""){
+            var mdsagency =  mdsagencyID.join(",") + "; "        } 
+            else{mdsagency =  " All "
+        }
+        
+
+
+        if(HACCCategory != ""){
+            var HACCCategories =  HACCCategory.join(",") + "; "        } 
+            else{HACCCategories =  " All "
+        }
+        
+
+
+        if(RosterCategory != ""){
+            var RosterCategories = RosterCategory.join(",") + "; "        } 
+            else{RosterCategories =  " All "
+        }
+     
+        if(program != ""){
+            var programs =  program.join(",") + "; "        } 
+            else{programs =  " All "
+        }
+        
+
+
+        if(Staff != ""){
+            var Staffs = Staff.join(",") + "; "        } 
+            else{Staffs =  " All "
+        }
+        
+
+
+        if(staffteam != ""){
+            var staffteams =  staffteam.join(",") + "; "        } 
+            else{staffteams =  " All "
+        }
+        
+
+
+        if(stfgroup != ""){
+            var stfgroups =  stfgroup.join(",") + "; "        } 
+            else{stfgroups =  " All "
+        }
+        
+
+
+        if(region != ""){
+            var regions =  region.join(",") + "; "        } 
+            else{regions =  " All "
+        }
+        
+
+        
+        if(manager != ""){
+           var managers =  manager.join(",") + "; "        } 
+            else{managers =  " All "
+        }
+        
+        
+         if(funders != ""){
+            var fundingsource =  funders.join(",") + "; "        } 
+             else{fundingsource =  " All "
+         }
+         
+
+         if(status != ""){
+            var statuscat =  status.join(",") + "; "        } 
+             else{statuscat =  " All "
+         }
+        
+
+
+         if(recipient != ""){
+            var recipients =  recipient.join(",") + "; "        } 
+             else{recipients =  " All "
+         }
+         
+
+         if(stafftype != ""){
+            var stafftypes =  stafftype.join(",") + "; "        } 
+             else{stafftypes =  " All "
+         }
+         
+         if(paytype != ""){
+            var paytypes =  paytype.join(",") + "; "        } 
+             else{paytypes =  " All "
+         }
+         if(activity != ""){
+            var activities =  activity.join(",") + "; "        } 
+             else{activities =  " All "
+         }
+         if(settings != ""){
+            var setting =  settings.join(",") + "; "        } 
+             else{setting =  " All "
+         }
+
+         
+         
+               
+               
+                fQuery = fQuery + "ORDER BY [Carer Code], Date, [Service Type], [Start Time]";
+               
+        console.log(fQuery)
+       
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"VFZKXpQuPdRjOz7U"  },    
+                "options": {
+                    "reports": { "save": false },
+                    
+                    "txtTitle":Title,
+         
+
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+
+                    "txtregions": regions, 
+                    "txtstfgroups": stfgroups, 
+                    "txtstaffteams":staffteams, 
+                    "txtStaffs":Staffs ,
+                    "txtprograms":programs,  
+                    "txtRosterCategories":RosterCategories,
+                    "txtHACCCategories":HACCCategories,
+                    "txtmdsagency":mdsagency,
+                    "txtAge_ATSI":Age_ATSI ,
+                    "txtDatetypes":Datetypes,
+                    "txtmanagers":managers ,
+                    "txtfundingsource":fundingsource,                
+                    "txtOutletID":OutletID,
+                    "txtstatuscat":statuscat,
+                    "txtrecipients":recipients,
+                    "txtstafftypes":stafftypes,
+                    "txtpaytypes":paytypes,
+                    "txtactivities":activities,
+                    "txtsetting":setting,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
+    
+
+
 
     
 

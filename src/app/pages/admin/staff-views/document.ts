@@ -52,6 +52,11 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
 
     postLoading: boolean = false;
 
+    fileObject: {
+        file: '',
+        newFile: ''
+    }
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -113,8 +118,15 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
 
     }
 
-    selectDocument(template){
-        console.log(template);
+    selectDocument(doc: any){
+        if(doc.exists){
+            this.fileObject = {
+                file: doc.name,
+                newFile: doc.name
+            };
+            return;
+        }
+        this.globalS.eToast('Error','File not exists')            
     }
 
     trackByFn(index, item) {
@@ -155,7 +167,17 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     }
 
     save(){
-
+        console.log(this.fileObject)
+        this.uploadS.postdocumenttemplate({
+            PersonID: this.user.id,
+            OriginalFileName: this.fileObject.file,
+            NewFileName: this.fileObject.newFile
+        }).subscribe(data => {
+            if(data){
+                // this.changeTab.next(12);
+                this.globalS.sToast('Success','Document has been added');
+            }
+        })
     }
 
     pre(): void {

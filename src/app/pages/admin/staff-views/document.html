@@ -73,8 +73,11 @@
                     </li>
                 </ul>
             </div>
-            <div *ngIf="current == 1">
-              
+            <div nz-row *ngIf="current == 1">
+                <div nz-col nzSpan="10">
+                    <label for="">Enter New Filename</label>
+                    <input nz-input  />
+                </div>
             </div>
         </div>
 

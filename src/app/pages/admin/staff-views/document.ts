@@ -181,7 +181,6 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     }
 
     save(){
-        // console.log(this.globalS.decode())
         this.uploadS.postdocumenttemplate({
             User: this.globalS.decode().user,
             PersonID: this.user.id,
@@ -190,9 +189,11 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
             Path:  this.fileObject.path
         }).subscribe(data => {
             if(data){
-                // this.changeTab.next(12);
                 this.globalS.sToast('Success','Document has been added');
             }
+        }, (err) =>{
+            console.log(err);
+            this.globalS.eToast('Error', err.error.message);
         })
     }
 

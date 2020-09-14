@@ -61,10 +61,10 @@
 
         <nz-divider class="full-height" nzType="vertical"></nz-divider>
 
-        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+        <div class="steps-content" *ngIf="inputForm">
             <div *ngIf="current == 0">
                 <ul>
-                    <li *ngFor="let template of templates$ | async" (click)="selectDocument(template)">
+                    <li [class.active]="i == selectedIndex" *ngFor="let template of templates$ | async;let i = index" (click)="selectDocument(template, i)">
                         <div [class.exist]="template?.exists" [class.not-exist]="!template?.exists">
                             <i nz-icon nzType="info-circle" *ngIf="!template?.exists"  nzTheme="outline"></i>
                             <i nz-icon nzType="check-circle" *ngIf="template?.exists" nzTheme="outline"></i>                     
@@ -74,9 +74,9 @@
                 </ul>
             </div>
             <div nz-row *ngIf="current == 1">
-                <div nz-col nzSpan="10">
+                <div nz-col nzSpan="24">
                     <label for="">Enter New Filename</label>
-                    <input nz-input  />
+                    <input nz-input [ngModel]="fileObject?.newFile" (ngModelChange)="fileObject?.newFile ? fileObject.newFile = $event : null"  />
                 </div>
             </div>
         </div>

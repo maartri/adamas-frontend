@@ -7,6 +7,13 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
+
+interface NewDocument{
+    file: string,
+    newFile: string,
+    path: string
+}
+
 @Component({
     styles: [`
         nz-table{
@@ -30,6 +37,13 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         }
         ul li {
             padding:5px;
+            cursor:pointer;
+        }
+        ul li.active{
+            background:#e6f1ff;
+        }
+        ul li:not(.active):hover{
+            background:#e6f1ff;
         }
     `],
     templateUrl: './document.html',
@@ -51,11 +65,9 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     current: number = 0;
 
     postLoading: boolean = false;
+    selectedIndex: number;
 
-    fileObject: {
-        file: '',
-        newFile: ''
-    }
+    fileObject: NewDocument;
 
     constructor(
         private timeS: TimeSheetService,
@@ -118,15 +130,17 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
 
     }
 
-    selectDocument(doc: any){
-        if(doc.exists){
+    selectDocument(doc: any, index: number){
+        this.selectedIndex = index;
+        // if(doc.exists){
             this.fileObject = {
                 file: doc.name,
-                newFile: doc.name
+                newFile: `${doc.name}-${this.user.id}`,
+                path: doc.template
             };
             return;
-        }
-        this.globalS.eToast('Error','File not exists')            
+        // }
+        //this.globalS.eToast('Error','File not exists')            
     }
 
     trackByFn(index, item) {
@@ -167,11 +181,13 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     }
 
     save(){
-        console.log(this.fileObject)
+        // console.log(this.globalS.decode())
         this.uploadS.postdocumenttemplate({
+            User: this.globalS.decode().user,
             PersonID: this.user.id,
             OriginalFileName: this.fileObject.file,
-            NewFileName: this.fileObject.newFile
+            NewFileName: this.fileObject.newFile,
+            Path:  this.fileObject.path
         }).subscribe(data => {
             if(data){
                 // this.changeTab.next(12);

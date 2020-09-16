@@ -85,6 +85,17 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
             this.cd.detectChanges();
         });
 
+
+        this.incidentRecipient = {
+            agencyDefinedGroup: user.agencyDefinedGroup,
+            code: user.code,
+            id: user.id,
+            sysmgr: user.sysmgr,
+            view: user.view,
+            operation: 'ADD',
+            recordNo: 0
+        };
+
         //this.incidentRecipient = this.user;
     }
 
@@ -167,22 +178,14 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     showAddModal() {
         const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
 
-        var newPass = {
-            agencyDefinedGroup: agencyDefinedGroup,
-            code: code,
-            id: id,
-            sysmgr: sysmgr,
-            view: view,
-            operation: 'ADD',
-            recordNo: 0
-        }
-
         this.operation = {
             process: 'ADD'
         }
         
-        this.incidentRecipient = newPass;
+        
+
         this.incidentOpen = !this.incidentOpen;
+
         
 
     }
@@ -210,7 +213,6 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     }
 
     reload(data: any){
-        console.log(data);
         this.search(this.user);
     }
 

@@ -481,7 +481,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     if (index == 1) {
-      console.log(this.user)
+
       this.contactIssueGroup.patchValue({
         value: this.user.notes
       })
@@ -889,7 +889,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     if (value != null && !_.isEqual(value, this.innerValue)) {
       this.innerValue = value;
       this.pathForm(this.innerValue);
-      console.log(value);
       // this.tab = 1;
     }
   }

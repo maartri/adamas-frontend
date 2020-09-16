@@ -139,10 +139,10 @@
                                                 <label for="">Time of Incident</label>
                                                 <div nz-row nzGutter="16">
                                                     <div nz-col nzSpan="9">
-                                                        <nz-time-picker formControlName="startTimeOfIncident" [nzPlaceHolder]="'Start Time'" nzFormat="HH:mm"></nz-time-picker>
+                                                        <nz-time-picker formControlName="startTimeOfIncident" [nzMinuteStep]="5" [nzPlaceHolder]="'Start Time'" nzFormat="HH:mm"></nz-time-picker>
                                                     </div>
                                                     <div nz-col nzSpan="9">
-                                                        <nz-time-picker formControlName="endTimeOfIncident" [nzPlaceHolder]="'End Time'" nzFormat="HH:mm"></nz-time-picker>
+                                                        <nz-time-picker formControlName="endTimeOfIncident" [nzMinuteStep]="5" [nzPlaceHolder]="'End Time'" nzFormat="HH:mm"></nz-time-picker>
                                                     </div>
                                                 </div>
                                             </div>
@@ -286,13 +286,14 @@
                             <div nz-row>                            
                                 <div nz-col="24">
                                     <div class="staff-wrapper">
-                                        <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
-                                            <div nz-row>
-                                              <div nz-col nzSpan="24" *ngFor="let d of listNewPeople">
-                                                  <label class="new-relationship" nz-checkbox [nzValue]="d.name" [(ngModel)]="d.checked" [ngModelOptions]="{standalone: true}">
-                                                    <span> {{ d.name }} </span> <span>{{ d.relationship }}</span>
-                                                 </label>
-                                             </div>
+                                        <nz-checkbox-wrapper style="width:100%" [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                            <div nz-row *ngFor="let d of listNewPeople;let i = index"> 
+                                                <div nz-col nzSpan="21">
+                                                    <label class="new-relationship" nz-checkbox [nzValue]="d.staff" [(ngModel)]="d.checked" [ngModelOptions]="{standalone: true}">
+                                                        <span> {{ d.staff }} </span> <span>{{ d.relationship }}</span>
+                                                    </label>
+                                                </div>
+                                                <div nz-col nzSpan="3"><i (click)="deleteListNewPeople(i)" nz-icon nzType="close" nzTheme="outline"></i></div>
                                             </div>
                                         </nz-checkbox-wrapper>
                                     </div>

@@ -29,6 +29,10 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/incidents`, data);
     }
 
+    updateincident(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/incidents`, data);
+    }
+
     getclosedate(name: any): Observable<any>{
         return this.auth.get(`${timesheet}/closedate`, name);
     }

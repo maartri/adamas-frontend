@@ -690,10 +690,13 @@ declare namespace Dto {
         }
 
         export interface IM_Master {
+            RecordNo?: number,
             PersonId: string,
             Type: string,
             Service: string,
-            Date: Date,
+            Date: string,
+            Time: string,
+            EstimatedTimeOther: string,
 
             Location: string,
             ReportedBy: string,
@@ -733,9 +736,9 @@ declare namespace Dto {
 
         export interface NewRelationShip
         {
-        name: string,
-        relationship: string,
-        checked: boolean
+            staff: string,
+            relationship: string,
+            checked: boolean
         }
 
         

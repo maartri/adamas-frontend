@@ -731,6 +731,7 @@ declare namespace Dto {
             SubjectMood: string,
 
             Staff?: Array<any>,
+            IncidentNotes: Array<any>,
             NewRelationship: Array<any>
         }
 

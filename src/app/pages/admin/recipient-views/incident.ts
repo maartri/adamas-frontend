@@ -64,6 +64,7 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
         if(this.user){
+            console.log(this.user);
             this.search(this.user);
             this.buildForm();
             return;
@@ -180,14 +181,9 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
 
         this.operation = {
             process: 'ADD'
-        }
-        
-        
+        }        
 
         this.incidentOpen = !this.incidentOpen;
-
-        
-
     }
 
     showEditModal(data: any) {
@@ -207,6 +203,8 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         this.operation = {
             process: 'UPDATE'
         }
+
+        console.log(newPass);
         
         this.incidentRecipient = newPass;
         this.incidentOpen = !this.incidentOpen;

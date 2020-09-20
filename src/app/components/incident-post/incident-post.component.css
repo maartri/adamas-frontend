@@ -36,3 +36,36 @@ textarea{
 .capitalize{
     text-transform: uppercase;
 }
+nz-select.full-width{
+    width:100%;
+}
+label.chk{
+    position: absolute;
+    top: 1.5rem;
+}
+.overflow-list{
+    overflow: auto;
+    height: 8rem;
+    border: 1px solid #e3e3e3;
+}
+span.time{
+    font-size: 12px;
+    line-height: 0;
+    padding: 6px 0;
+}
+.note-list{
+    border-bottom: 1px solid #e5e5e5;
+    padding: 10px;
+}
+.creator{
+    font-weight: 500;
+    color: #ff6c6c;
+    text-transform: uppercase;
+    font-size:11px;
+}
+.notif-wrapper{
+    min-height: 10rem;
+    border: 1px solid #e7e5e5;
+    padding: 10px;
+    margin-bottom: 1rem;
+}

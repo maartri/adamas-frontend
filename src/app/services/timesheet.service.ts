@@ -17,6 +17,23 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+
+    getincidentdocuments(data: any): Observable<any>{
+        return this.auth.get(`${timesheet}/incident-documents`, data);
+    }
+
+    getincidentnotifications(): Observable<any>{
+        return this.auth.get(`${timesheet}/incident-notifications`);
+    }
+
+    getincidentnotes(recordNo: number): Observable<any>{
+        return this.auth.get(`${timesheet}/incident-note/${recordNo}`);
+    }
+
+    postincidentnote(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/incident-note`, data);
+    }
+
     getspecificincidentdetails(recordNo: number): Observable<any>{
         return this.auth.get(`${timesheet}/incident/${recordNo}`);
     }

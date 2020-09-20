@@ -16,7 +16,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
          nz-select{
             width:100%;
         }
-         label.chk{
+        label.chk{
             position: absolute;
             top: 1.5rem;
         }
@@ -292,8 +292,6 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
 
     showEditModal(index: number) {
         this.addOrEdit = 2;
-
-        console.log(this.tableData[index]);
         const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
 
         this.caseFormGroup.patchValue({

@@ -12,6 +12,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getcategoryincident(): Observable<any>{
+        return this.auth.get(`${list}/category-incident-note`);
+    }
+
     getservicetypeincident(data: any): Observable<any>{
         return this.auth.get(`${list}/servicetype/incident/recipient/list`, data);
     }

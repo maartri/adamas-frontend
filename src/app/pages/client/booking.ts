@@ -385,6 +385,15 @@ export class BookingClient implements OnInit, OnDestroy {
 
         const originalLen = this.slots.length;
         var objWithQuantity = this.buildDateFrames(this.slots);
+
+        var filtered = objWithQuantity.map(x => {
+            return {
+                time: format(x.time,"yyyy-MM-dd'T'HH:mm:ss"),
+                quantity: x.quantity,                  
+                week: x.week
+            }
+        });
+
         var newDates = []
         
         if(originalLen == 1 && objWithQuantity.length > 0){
@@ -393,7 +402,7 @@ export class BookingClient implements OnInit, OnDestroy {
             for( var a = 0 ; a < 3 ; a++){
                 var ehem = objWithQuantity.map(x => {
                     return {
-                        time: addDays(x.time, (7*counter)),
+                        time: format(addDays(x.time, (7*counter)),"yyyy-MM-dd'T'HH:mm:ss"),
                         quantity: x.quantity,                  
                         week: x.week
                     }
@@ -401,25 +410,25 @@ export class BookingClient implements OnInit, OnDestroy {
                 newArr.push(...ehem);
                 counter++;
             }
-            newDates = [...objWithQuantity,...newArr];
+            newDates = [...filtered,...newArr];
         }
 
         if(originalLen == 2 && objWithQuantity.length > 0){
             newDates = objWithQuantity.map(x => {
                 return {
                     quantity: x.quantity,
-                    time: addDays(x.time, 14),
+                    time: format(addDays(x.time, 14),"yyyy-MM-dd'T'HH:mm:ss"),
                     week: x.week
                 }
             })
-            newDates = [...objWithQuantity,...newDates]            
+            newDates = [...filtered,...newDates]            
         }
 
         if(originalLen == 4 && objWithQuantity.length > 0){
             newDates = objWithQuantity.map(x => {
                 return {
                     quantity: x.quantity,
-                    time: addDays(x.time, 14),
+                    time: format(x.time,"yyyy-MM-dd'T'HH:mm:ss"),
                     week: x.week
                 }
             })
@@ -462,19 +471,19 @@ export class BookingClient implements OnInit, OnDestroy {
 
         this.loadBooking = true;
 
-        // this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     let resultRows = parseInt(data);
-        //     if (resultRows == 1) {
-        //         this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
-        //     } else if (resultRows > 1)
-        //         this.globalS.eToast('Error', 'You already have a booking in that timeslot');
+        this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            let resultRows = parseInt(data);
+            if (resultRows == 1) {
+                this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
+            } else if (resultRows > 1)
+                this.globalS.eToast('Error', 'You already have a booking in that timeslot');
 
-        //     this.resetStepper();
-        //     this.bookingModalOpen = false;
-        // }, (err) => {
-        //     this.resetStepper();
-        //     this.globalS.eToast('Error', 'Booking Unsuccessful')
-        // });
+            this.resetStepper();
+            this.bookingModalOpen = false;
+        }, (err) => {
+            this.resetStepper();
+            this.globalS.eToast('Error', 'Booking Unsuccessful')
+        });
 
     }
 

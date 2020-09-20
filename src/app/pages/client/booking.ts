@@ -415,6 +415,17 @@ export class BookingClient implements OnInit, OnDestroy {
             newDates = [...objWithQuantity,...newDates]            
         }
 
+        if(originalLen == 4 && objWithQuantity.length > 0){
+            newDates = objWithQuantity.map(x => {
+                return {
+                    quantity: x.quantity,
+                    time: addDays(x.time, 14),
+                    week: x.week
+                }
+            })
+            newDates = [...newDates]            
+        }
+
         return newDates;       
     }
 
@@ -447,22 +458,22 @@ export class BookingClient implements OnInit, OnDestroy {
         }
         
         //var permBookings = this.buildPermanentBookings();
-        //console.log(booking);
+        console.log(booking);
 
         this.loadBooking = true;
-        this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            let resultRows = parseInt(data);
-            if (resultRows == 1) {
-                this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
-            } else if (resultRows > 1)
-                this.globalS.eToast('Error', 'You already have a booking in that timeslot');
+        // this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        //     let resultRows = parseInt(data);
+        //     if (resultRows == 1) {
+        //         this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
+        //     } else if (resultRows > 1)
+        //         this.globalS.eToast('Error', 'You already have a booking in that timeslot');
 
-            this.resetStepper();
-            this.bookingModalOpen = false;
-        }, (err) => {
-            this.resetStepper();
-            this.globalS.eToast('Error', 'Booking Unsuccessful')
-        });
+        //     this.resetStepper();
+        //     this.bookingModalOpen = false;
+        // }, (err) => {
+        //     this.resetStepper();
+        //     this.globalS.eToast('Error', 'Booking Unsuccessful')
+        // });
 
     }
 

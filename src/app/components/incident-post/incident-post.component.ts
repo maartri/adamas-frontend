@@ -836,7 +836,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     return parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
   }
 
-  getTime(data: any): string{
+  getTime(data: any): string | null{
+    if(data == null) return null;
     var _date = format(parseISO(data),"yyyy-MM-dd'T'HH:mm:ss");
     var date = parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
     if(date.toString() === 'Invalid Date') return '-';

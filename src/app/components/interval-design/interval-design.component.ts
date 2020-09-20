@@ -30,7 +30,7 @@ enum Interval {
 })
 export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges, ControlValueAccessor {
 
-  endTime: any = new Date(1990, 1, 1, 9, 0, 0);
+  endTime: any = new Date(1900, 1, 1, 9, 0, 0);
   quoteDetailsGroup: FormGroup;
 
   dayKeys: Array<string> = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
@@ -139,37 +139,37 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
 
     return this.formBuilder.group({
       monday: new FormGroup({
-        time: new FormControl(data ? data[0].split('|')[0] : new Date(1990, 0, dayCounter, 9, 0, 0)),
+        time: new FormControl(data ? data[0].split('|')[0] : new Date(1900, 0, dayCounter, 9, 0, 0)),
         quantity: new FormControl(data ? Math.trunc(data[0].split('|')[1]) : 0),
         week: new FormControl(counter)
       }),
       tuesday: new FormGroup({
-        time: new FormControl(data ? data[1].split('|')[0] : new Date(1990, 0, dayCounter + 1, 9, 0, 0)),
+        time: new FormControl(data ? data[1].split('|')[0] : new Date(1900, 0, dayCounter + 1, 9, 0, 0)),
         quantity: new FormControl(data ? Math.trunc(data[1].split('|')[1]) : 0),
         week: new FormControl(counter)
       }),
       wednesday: new FormGroup({
-        time: new FormControl(data ? data[2].split('|')[0] : new Date(1990, 0, dayCounter + 2, 9, 0, 0)),
+        time: new FormControl(data ? data[2].split('|')[0] : new Date(1900, 0, dayCounter + 2, 9, 0, 0)),
         quantity: new FormControl(data ? Math.trunc(data[2].split('|')[1]) : 0),
         week: new FormControl(counter)
       }),
       thursday: new FormGroup({
-        time: new FormControl(data ? data[2].split('|')[0] : new Date(1990, 0, dayCounter + 3, 9, 0, 0)),
+        time: new FormControl(data ? data[2].split('|')[0] : new Date(1900, 0, dayCounter + 3, 9, 0, 0)),
         quantity: new FormControl(data ? Math.trunc(data[2].split('|')[1]) : 0),
         week: new FormControl(counter)
       }),
       friday: new FormGroup({
-        time: new FormControl(data ? data[4].split('|')[0] : new Date(1990, 0, dayCounter + 4, 9, 0, 0)),
+        time: new FormControl(data ? data[4].split('|')[0] : new Date(1900, 0, dayCounter + 4, 9, 0, 0)),
         quantity: new FormControl(data ? Math.trunc(data[4].split('|')[1]) : 0),
         week: new FormControl(counter)
       }),
       saturday: new FormGroup({
-        time: new FormControl(data ? data[5].split('|')[0] : new Date(1990, 0, dayCounter + 5, 9, 0, 0)),
+        time: new FormControl(data ? data[5].split('|')[0] : new Date(1900, 0, dayCounter + 5, 9, 0, 0)),
         quantity: new FormControl(data ? Math.trunc(data[5].split('|')[1]) : 0),
         week: new FormControl(counter)
       }),
       sunday: new FormGroup({
-        time: new FormControl(data ? data[6].split('|')[0] : new Date(1990, 0, dayCounter + 6, 9, 0, 0)),
+        time: new FormControl(data ? data[6].split('|')[0] : new Date(1900, 0, dayCounter + 6, 9, 0, 0)),
         quantity: new FormControl(data ? Math.trunc(data[6].split('|')[1]) : 0),
         week: new FormControl(counter)
       })

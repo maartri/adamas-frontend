@@ -144,10 +144,10 @@ export class BookingClient implements OnInit, OnDestroy {
 
     current = 0;
 
-    time = new Date(1990, 1, 1, 9, 0, 0);
+    time = new Date(1900, 1, 1, 9, 0, 0);
 
-    startTime: any = new Date(1990, 1, 1, 9, 0, 0);
-    endTime: any = new Date(1990, 1, 1, 10, 0, 0);
+    startTime: any = new Date(1900, 1, 1, 9, 0, 0);
+    endTime: any = new Date(1900, 1, 1, 10, 0, 0);
     date = new Date();
 
     checked: boolean = false;
@@ -385,6 +385,7 @@ export class BookingClient implements OnInit, OnDestroy {
 
         const originalLen = this.slots.length;
         var objWithQuantity = this.buildDateFrames(this.slots);
+        console.log(objWithQuantity);
 
         var filtered = objWithQuantity.map(x => {
             return {
@@ -468,7 +469,6 @@ export class BookingClient implements OnInit, OnDestroy {
         
         //var permBookings = this.buildPermanentBookings();
         console.log(booking);
-
         this.loadBooking = true;
 
         this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -491,8 +491,8 @@ export class BookingClient implements OnInit, OnDestroy {
         this.current = 0;
         this.notes = "";
         this.selectedService = null;
-        this.startTime = new Date(1990, 1, 1, 9, 0, 0);
-        this.endTime = new Date(1990, 1, 1, 10, 0, 0);
+        this.startTime = new Date(1900, 1, 1, 9, 0, 0);
+        this.endTime = new Date(1900, 1, 1, 10, 0, 0);
         this.date = addDays(new Date(), this._settings.BOOKINGLEADTIME());
         this.loadBooking = false;
         this.selectedStaff = '';

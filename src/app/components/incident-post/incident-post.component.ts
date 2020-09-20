@@ -819,12 +819,21 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   }
 
   getDate(data: any): string{
+    if(data == null) return null;
+
     var _date = format(parseISO(data),"yyyy-MM-dd'T'HH:mm:ss");
 
     var date = parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
     if(date.toString() === 'Invalid Date') return '-';
     
     return format(date, 'dd/MM/yyyy');
+  }
+
+  getRealDate(data: any): Date | null{
+    if(data == null) return null;
+
+    var _date = format(parseISO(data),"yyyy-MM-dd'T'HH:mm:ss");
+    return parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
   }
 
   getTime(data: any): string{
@@ -894,8 +903,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       commentsStaff: data.ongoingNotes,
 
       endTimeOfIncident: data.estimatedTimeOther ? parse(data.estimatedTimeOther,'HH:mm', new Date()) : null,
-      startTimeOfIncident: data.time ? parse(data.time,"yyyy-MM-dd'T'HH:mm:ss", new Date()): null,
-      dateOfIncident: data.date ? parse(data.date,"yyyy-MM-dd'T'HH:mm:ss", new Date()): null,
+      startTimeOfIncident: this.getRealDate(data.time),
+      dateOfIncident: this.getRealDate(data.date),
       reportedBy: data.reportedBy,
 
       recordNo: data.recordNo

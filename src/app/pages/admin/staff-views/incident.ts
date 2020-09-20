@@ -43,6 +43,8 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
 
     incidentTypeList: Array<any> = []
     incidentRecipient: any;
+    operation: any; 
+
 
     constructor(
         private timeS: TimeSheetService,
@@ -116,8 +118,31 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
         this.incidentOpen = !this.incidentOpen;
     }
 
-    showEditModal(index: number) {
+    showEditModal(data: any) {
+        const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
+
+        var newPass = {
+            agencyDefinedGroup: agencyDefinedGroup,
+            code: code,
+            id: id,
+            sysmgr: sysmgr,
+            view: view,
+            operation: 'UPDATE',
+            recordNo: data.recordNumber
+        }
+
+        this.operation = {
+            process: 'UPDATE'
+        }
+
+        console.log(newPass);
         
+        this.incidentRecipient = newPass;
+        this.incidentOpen = !this.incidentOpen;
+    }
+    
+    reload(data: any){
+        this.search(this.user);
     }
 
     delete(data: any) {

@@ -70,7 +70,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   incidentDocument: any;
 
-  current: number = 9;
+  current: number = 0;
 
   incidentTypeList: Array<any> = [];
 

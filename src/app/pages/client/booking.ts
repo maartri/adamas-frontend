@@ -462,19 +462,19 @@ export class BookingClient implements OnInit, OnDestroy {
 
         this.loadBooking = true;
 
-        this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            let resultRows = parseInt(data);
-            if (resultRows == 1) {
-                this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
-            } else if (resultRows > 1)
-                this.globalS.eToast('Error', 'You already have a booking in that timeslot');
+        // this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        //     let resultRows = parseInt(data);
+        //     if (resultRows == 1) {
+        //         this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
+        //     } else if (resultRows > 1)
+        //         this.globalS.eToast('Error', 'You already have a booking in that timeslot');
 
-            this.resetStepper();
-            this.bookingModalOpen = false;
-        }, (err) => {
-            this.resetStepper();
-            this.globalS.eToast('Error', 'Booking Unsuccessful')
-        });
+        //     this.resetStepper();
+        //     this.bookingModalOpen = false;
+        // }, (err) => {
+        //     this.resetStepper();
+        //     this.globalS.eToast('Error', 'Booking Unsuccessful')
+        // });
 
     }
 

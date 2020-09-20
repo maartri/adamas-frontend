@@ -221,6 +221,6 @@
 
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="bookingModalOpen = false">Cancel</button>
-        <button nz-button nzType="primary"  (click)="book()">Book</button>
+        <button nz-button nzType="primary" [nzLoading]="loadBooking" (click)="book()">Book</button>
     </div>
 </nz-modal>

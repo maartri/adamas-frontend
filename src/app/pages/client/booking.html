@@ -31,8 +31,7 @@
                         <div nzRow>
                             <div class="mrg-btm chkboxes" nz-col [nzSpan]="12" [nzXs]="24" [nzMd]="12">
                                 <div>
-                                    <label nz-checkbox [(ngModel)]="once" (ngModelChange)="change($event,'once')">Once
-                                        Only</label>
+                                    <label nz-checkbox [(ngModel)]="once" (ngModelChange)="change($event,'once')">Once Only</label>
                                 </div>
                                 <div>
                                     <label nz-checkbox [(ngModel)]="permanent" (ngModelChange)="change($event,'permanent')">Permanent</label>
@@ -73,9 +72,9 @@
                                     <label for="">End Date</label>
                                     <nz-date-picker [(ngModel)]="publishedEndDate" [nzFormat]="'dd/MM/yyyy'" [nzDisabled]="true" [nzDisabledDate]="disabledDate"></nz-date-picker>
                                 </div>
-                                <div nz-col nzSpan="6">
+                                <!-- <div nz-col nzSpan="6">
                                    <button (click)="gwapo()">Go</button>
-                                </div>
+                                </div> -->
                             </div>
                             <div nz-row>
                                 <app-interval-design [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'"></app-interval-design>

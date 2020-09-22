@@ -10,14 +10,18 @@ import * as moment from 'moment';
 
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
-const helper = new JwtHelperService();
-
-import { FormGroup} from '@angular/forms';
-
+import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
+import parse from 'date-fns/parse';
 import isValid from 'date-fns/isValid'
 import getHours from 'date-fns/getHours'
 import getMinutes from 'date-fns/getMinutes'
+import differenceInDays from 'date-fns/differenceInDays'
+import differenceInWeeks from 'date-fns/differenceInWeeks'
+
+const helper = new JwtHelperService();
+
+import { FormGroup} from '@angular/forms';
 
 export const roles = {
     provider: 'SERVICE PROVIDER',
@@ -313,7 +317,7 @@ export class GlobalService {
             }
         }
         return -1;
-    }
+    }    
 
     IsRTF2TextRequired(escaped: string) {
         return (((escaped.match(/\\/g) || []).length > 5 && (escaped.match(/{/g) || []).length > 0 && (escaped.match(/}/g) || []).length > 0));  
@@ -586,4 +590,85 @@ export class GlobalService {
     }
 
 
+
+    // DATE CALCULATIONS
+
+    SAMPLE_START_DATE_ZEROHOURSMINUTES(date: Date): Date{
+        return new Date(2020,8,21, 0, 0);
+    }
+
+    SAMPLE_END_DATE_MAXHOURSMINUTES(date: Date): Date{
+        return new Date(2020,9,19, 23, 59);
+    }
+
+    START_DATE_ZEROHOURSMINUTES(date: Date): Date{
+        return new Date(date.getFullYear(),date.getMonth(),date.getDate(), 0, 0);
+    }
+
+    END_DATE_MAXHOURSMINUTES(date: Date): Date{
+        return new Date(date.getFullYear(),date.getMonth(),date.getDate(), 23, 59);
+    }
+
+    DIFFERENCE_DATE(laterDate: Date, earlierDate: Date){
+        var _laterDate = this.END_DATE_MAXHOURSMINUTES(laterDate);
+        var _earlierDate = this.START_DATE_ZEROHOURSMINUTES(earlierDate);
+        
+        return differenceInDays(_laterDate, _earlierDate);
+    }
+
+    CONVERTSTRING_TO_DATETIME(data: any): Date | null{
+        if(data == null) return null;
+    
+        var _date = format(parseISO(data),"yyyy-MM-dd'T'HH:mm:ss");
+        return parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
+    }
+
+    CALCULATE_WHAT_WEEK_FORTNIGHT(payperiod: Date, dateToBeCalculated: Date){
+
+        var _laterDate = this.END_DATE_MAXHOURSMINUTES(dateToBeCalculated);
+        var _earlierDate = this.START_DATE_ZEROHOURSMINUTES(payperiod);
+
+        var diffWeeks = differenceInWeeks(_laterDate, _earlierDate);
+
+        if(diffWeeks == 0 || diffWeeks % 2 == 0){
+            return 1;
+        } 
+
+        if(diffWeeks % 2 == 1){
+            return 2;
+        }
+    }
+
+    CALCULATE_WHAT_WEEK_FOURWEEKLY(payperiod: Date, dateToBeCalculated: Date){
+
+        var _laterDate = this.END_DATE_MAXHOURSMINUTES(dateToBeCalculated);
+        var _earlierDate = this.START_DATE_ZEROHOURSMINUTES(payperiod);
+        
+        var diffWeeks = differenceInWeeks(_laterDate, _earlierDate);
+        
+        if(diffWeeks % 4 == 1){
+            return 2;
+        }
+
+        if(diffWeeks % 4 == 2){
+            return 3;
+        }
+
+        if(diffWeeks % 4 == 3){
+            return 4;
+        }
+
+        if(diffWeeks % 4 == 0){
+            return 1;
+        }
+    }
+
+    APPEND_DATE_TIME_ON_DIFFERENT_DATETIMES(forDate: Date, forTime: Date): Date{
+        var _date = format(forDate,"yyyy-MM-dd");
+        var _time = format(forTime,"HH:mm");
+
+        return parseISO(`${_date}T${_time}:00`);
+    }
+
+    // DATE CALCULATIONS -  END
 }

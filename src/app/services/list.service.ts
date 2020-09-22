@@ -12,6 +12,14 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getpayperiod(): Observable<any>{
+        return this.auth.get(`${list}/payperiod`);
+    }
+
+    getrosterpublishedenddate():Observable<any>{
+        return this.auth.get(`${list}/rosterpublished-end-date`);
+    }
+
     getcategoryincident(): Observable<any>{
         return this.auth.get(`${list}/category-incident-note`);
     }

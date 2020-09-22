@@ -55,13 +55,27 @@
                     <div nz-col nzSpan="17">
                         <div nz-row *ngIf="permanent">
                             <div nz-row class="mrg-btm form-wrap">
-                                <label for="">Interval Period</label>
-                                <nz-select style="width: 10rem;" nzShowSearch nzAllowClear nzPlaceHolder="Time Interval"
-                                    [(ngModel)]="weekly">
-                                    <nz-option nzLabel="Weekly" nzValue="Weekly"></nz-option>
-                                    <nz-option nzLabel="Fortnightly" nzValue="Fortnightly"></nz-option>
-                                    <nz-option nzLabel="4 Weekly" nzValue="FourWeekly"></nz-option>
-                                </nz-select>
+                                <div nz-col nzSpan="6">
+                                    <label for="">Interval Period</label>
+                                    <nz-select style="width: 10rem;" nzShowSearch nzAllowClear nzPlaceHolder="Time Interval"
+                                        [(ngModel)]="weekly">
+                                        <nz-option nzLabel="Weekly" nzValue="Weekly"></nz-option>
+                                        <nz-option nzLabel="Fortnightly" nzValue="Fortnightly"></nz-option>
+                                        <nz-option nzLabel="4 Weekly" nzValue="FourWeekly"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div nz-col nzSpan="6">
+                                    <label for="">Start Date</label>
+                                    <nz-date-picker [(ngModel)]="date" [nzFormat]="'dd/MM/yyyy'" [nzDisabledDate]="disabledDate"></nz-date-picker>
+                                    <div class="leadtime">Booking Lead Time: {{ _settings?.BOOKINGLEADTIME() - 1 }}</div>
+                                </div>
+                                <div nz-col nzSpan="6">
+                                    <label for="">End Date</label>
+                                    <nz-date-picker [(ngModel)]="publishedEndDate" [nzFormat]="'dd/MM/yyyy'" [nzDisabled]="true" [nzDisabledDate]="disabledDate"></nz-date-picker>
+                                </div>
+                                <div nz-col nzSpan="6">
+                                   <button (click)="gwapo()">Go</button>
+                                </div>
                             </div>
                             <div nz-row>
                                 <app-interval-design [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'"></app-interval-design>

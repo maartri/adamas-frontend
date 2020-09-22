@@ -147,13 +147,14 @@ declare namespace Dto {
             AnyProvider: boolean,
             BookingType?: string,
             Notes?: string,
-            PermanentBookings?: Array<PermanentBookings>
+            PermanentBookings?: PermanentBookings[]
         }
 
         export interface PermanentBookings{
-            Time?: Date,
+            Time?: string,
             Quantity?: number,
-            Week?: number
+            Week?: number,
+            Day?: number
         }
     
         export interface Service {

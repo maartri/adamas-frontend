@@ -65,7 +65,7 @@
                                 </div>
                                 <div nz-col nzSpan="6">
                                     <label for="">Start Date</label>
-                                    <nz-date-picker [(ngModel)]="date" [nzFormat]="'dd/MM/yyyy'" [nzDisabledDate]="disabledDate"></nz-date-picker>
+                                    <nz-date-picker [(ngModel)]="date" [nzFormat]="'dd/MM/yyyy'" [nzDisabledDate]="disabledStartDatePermanent"></nz-date-picker>
                                     <div class="leadtime">Booking Lead Time: {{ _settings?.BOOKINGLEADTIME() - 1 }}</div>
                                 </div>
                                 <div nz-col nzSpan="6">

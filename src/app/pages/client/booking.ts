@@ -496,7 +496,7 @@ export class BookingClient implements OnInit, OnDestroy {
         // console.log(this.gwapo());
         console.log(booking)
         this.loadBooking = true;
-        
+
         this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let resultRows = parseInt(data);
             if (resultRows == 1) {
@@ -529,7 +529,10 @@ export class BookingClient implements OnInit, OnDestroy {
     disabledDate = (current: Date): boolean => {
         // Can not select days before today and today
         return differenceInCalendarDays(current, new Date()) < this._settings?.BOOKINGLEADTIME();
+    };
 
+    disabledStartDatePermanent = (current: Date): boolean => {
+        return (differenceInCalendarDays(current, new Date()) < this._settings?.BOOKINGLEADTIME()) || this.publishedEndDate <= current;
     };
 
     gwapo(): Array<Dto.PermanentBookings>{

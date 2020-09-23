@@ -12,20 +12,19 @@ import * as _ from 'lodash';
 const noop = () => {
 };
 
-const UPLOADFILE_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  multi: true,
-  useExisting: forwardRef(() => UploadFileComponent),
-};
-
 @Component({
   selector: 'app-upload-file',
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
   providers: [
-    UPLOADFILE_VALUE_ACCESSOR
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: forwardRef(() => UploadFileComponent),
+    }
   ]
 })
+
 export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   private onTouchedCallback: () => void = noop;

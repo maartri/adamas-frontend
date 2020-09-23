@@ -7,6 +7,13 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
+
+interface NewDocument{
+    file: string,
+    newFile: string,
+    path: string
+}
+
 @Component({
     styles: [`
         nz-table{
@@ -19,6 +26,25 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             width: 5rem;
             overflow: hidden;
         }
+        .exist{
+            color:green;
+        }
+        .not-exist{
+            color:red;
+        }
+        ul{
+            list-style:none;
+        }
+        ul li {
+            padding:5px;
+            cursor:pointer;
+        }
+        ul li.active{
+            background:#e6f1ff;
+        }
+        ul li:not(.active):hover{
+            background:#e6f1ff;
+        }
     `],
     templateUrl: './document.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,12 +52,22 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 
 export class StaffDocumentAdmin implements OnInit, OnDestroy {
+
     private unsubscribe: Subject<void> = new Subject();
+    public templates$: Observable<any>;
+
     user: any;
     inputForm: FormGroup;
     tableData: Array<any>;
 
     loading: boolean = false;
+    addDocumentModal: boolean = false;
+    current: number = 0;
+
+    postLoading: boolean = false;
+    selectedIndex: number;
+
+    fileObject: NewDocument;
 
     constructor(
         private timeS: TimeSheetService,
@@ -94,16 +130,40 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
 
     }
 
+    selectDocument(doc: any, index: number){
+        this.selectedIndex = index;
+        // if(doc.exists){
+            this.fileObject = {
+                file: doc.name,
+                newFile: `${doc.name}-${this.user.id}`,
+                path: doc.template
+            };
+            return;
+        // }
+        //this.globalS.eToast('Error','File not exists')            
+    }
+
     trackByFn(index, item) {
         return item.id;
     }
 
     showAddModal() {
-        
+        this.addDocumentModal = true;
+        this.templates$ = this.uploadS.getdocumenttemplate();
+    }
+
+    reload(reload: boolean){
+        if(reload){
+            this.search();
+        }
     }
 
     showEditModal(index: any) {
         
+    }
+
+    handleCancel(){
+        this.addDocumentModal = false;
     }
     
     delete(data: any) {
@@ -118,5 +178,29 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
                 return;
             }
         })
+    }
+
+    save(){
+        this.uploadS.postdocumenttemplate({
+            User: this.globalS.decode().user,
+            PersonID: this.user.id,
+            OriginalFileName: this.fileObject.file,
+            NewFileName: this.fileObject.newFile,
+            Path:  this.fileObject.path
+        }).subscribe(data => {
+            this.globalS.sToast('Success','Document has been added');
+            this.search();
+        }, (err) =>{
+            console.log(err);
+            this.globalS.eToast('Error', err.error.message);
+        })
+    }
+
+    pre(): void {
+        this.current -= 1;
+    }
+
+    next(): void {
+        this.current += 1;
     }
 }

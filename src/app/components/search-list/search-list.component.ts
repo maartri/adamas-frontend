@@ -100,7 +100,6 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   }
 
   change(event: SearchProperties) {
-    console.log(event);
     let user: SearchProperties | null;
 
     if (!event) {

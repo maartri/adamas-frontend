@@ -4,11 +4,44 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, StaffService, view } from '@services/index';
 import { mergeMap, takeUntil, concatMap, switchMap, map } from 'rxjs/operators';
 import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
-import parseISO from 'date-fns/parseISO'
+
+import parseISO from 'date-fns/parseISO';
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
+
+import * as moment from 'moment';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 const noop = () => {
 };
+
+interface Process {
+  process: Mode
+}
+
+interface Note{
+  creator: string,
+  detail: string,
+  alarmDate?: Date | string,
+  detailDate?: Date | string,
+  personID: string,
+  recordNumber: number,
+  restrictions: string,
+  whoCode: string,
+
+  program: string,
+  discipline: string,
+  careDomain: string,
+  publishToApp: boolean,
+  privateFlag: boolean,
+  extraDetail2: string
+}
+
+
+enum Mode{
+  UPDATE = "UPDATE",
+  ADD = "ADD"
+}
 
 @Component({
   selector: 'app-incident-post',
@@ -26,13 +59,17 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   private unsubscribe: Subject<void> = new Subject();
 
   @Input() open: boolean = false;
-  @Input() operation: any;
+  @Input() operation: Process;
 
   @Output() reload = new EventEmitter();
 
   dateFormat: string = 'dd/MM/yyyy';
 
   incidentForm: FormGroup;
+  noteFormGroup: FormGroup;
+
+  incidentDocument: any;
+
   current: number = 0;
 
   incidentTypeList: Array<any> = [];
@@ -53,6 +90,31 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   selectedStaff: Array<any> = [];
 
   indeterminate: boolean = false;
+  modalOpen: boolean = false;
+
+  incidentNotifications: Array<any>;
+
+  alist: Array<any> = [];
+  blist: Array<any> = [];
+  clist: Array<any> = [];
+  dlist: Array<any> = [];
+  mlist: Array<any> = [];
+  recipientStrArr: Array<any> = [];
+
+  private default = {
+    notes: '',
+    publishToApp: false,
+    restrictions: '',
+    restrictionsStr: 'public',
+    alarmDate: null,
+    whocode: '',
+    program: '*VARIOUS',
+    discipline: '*VARIOUS',
+    careDomain: '*VARIOUS',
+    category: null,
+    recordNumber: null,
+    personID: ''
+}
 
   constructor(
     private fb: FormBuilder,
@@ -64,13 +126,15 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     private modal: NzModalService
   ) { 
 
-
   }
 
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.openModal();
+        this.buildForm();
+        this.buildValueChanges();
+        this.pathForm(this.transform());
       }
       if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.operation = changes[property].currentValue;
@@ -86,6 +150,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   buildForm() {
     this.incidentForm = this.fb.group({
+        recordNo: '',
         incidentType: '',
         serviceType: '',
         program: '',
@@ -165,16 +230,20 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         primaryPhone: '',
         recipient: '',
         reportedBy: '',
-        startTimeOfIncident: new Date(),
-        endTimeOfIncident: new Date(),
+        startTimeOfIncident: null,
+        endTimeOfIncident: null,
         dateOfIncident: '',
         gender:'',
 
         //staff
         name: '',
-        relationship:''
+        relationship:'',
 
-    });    
+        incidentNotes: this.fb.array([])
+
+    });
+
+    this.noteFormGroup = this.fb.group(this.default);
   }
 
   searchStaff(): void {
@@ -203,7 +272,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   addRelationShip(){
     const { name, relationship } = this.incidentForm.value;
     this.listNewPeople.push({
-      name: name.toUpperCase(),
+      staff: name.toUpperCase(),
       relationship: relationship.toUpperCase(),
       checked: true
     });
@@ -211,6 +280,34 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     this.incidentForm.patchValue({
       name: '',
       relationship: ''
+    });
+  }
+
+  addNote(data: Note = null){
+    var note = this.incidentForm.get('incidentNotes') as FormArray;
+    
+    if(data){
+      note.push(this.pushNoteInformation(data));
+    }
+  }
+
+  pushNoteInformation(field: Note): FormGroup {
+    return this.fb.group({
+      creator: new FormControl(field.creator),
+      detail: new FormControl(field.detail),
+      alarmDate: new FormControl(field.alarmDate),
+      detailDate: new FormControl(field.detailDate),
+      personID: new FormControl(field.personID),
+      recordNumber: new FormControl(field.recordNumber),
+      restrictions: new FormControl(field.restrictions),
+      whoCode: new FormControl(field.whoCode),
+
+      program: new FormControl(field.program),
+      discipline: new FormControl(field.discipline),
+      careDomain: new FormControl(field.careDomain),
+      publishToApp: new FormControl(field.publishToApp),
+      privateFlag: new FormControl(field.privateFlag),
+      extraDetail2: new FormControl(field.extraDetail2)
     });
   }
 
@@ -313,20 +410,33 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   buildValueChanges(){
 
+    this.getSelect();
+
+    this.timeS.getincidentnotifications().subscribe(data => {
+      this.incidentNotifications = data.map(x =>{
+        var o = Object.assign({}, x);
+        o.checked = true;
+        return o;
+      });
+    });
+
     this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
         this.listIncidentTypes = data;
     });
 
 
     if(this.innerValue.view == 'recipient'){
-
+      
       this.listS.getprogramsincident(this.innerValue.id).subscribe(data =>{
-        this.listPrograms = data
+        this.listPrograms = data;
       });
 
       this.incidentForm.get('program').valueChanges.pipe(
         switchMap(program => {
           this.clearServiceType();
+          if(this.globalS.isEmpty(program) || this.globalS.isEmpty(this.innerValue.id)){
+            return EMPTY;
+          }
           return this.listS.getservicetypeincident({
             id: this.innerValue.id,
             program: program
@@ -365,29 +475,46 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   handleCancel(){
     this.open = false;
     this.incidentForm.reset();
-    this.current = 0;
+
+    this.listNewPeople = [];
+    this.selectedStaff = []
+  }
+
+  handleNoteCancel(){
+    this.modalOpen = false;
+    this.noteFormGroup.reset(this.default);
   }
 
   updateStaffListing(staff: Array<any>){
     if(staff.length == 0 )return;
-    var _staff =staff.map(x => x.staff);
+    var _staff = staff.map(x => x.staff);
 
     this.listStaff.forEach(x => {
       if(_staff.includes(x.accountNo)){
         x.checked = true;
       }
-    })
+    });
+
+    this.selectedStaff = staff.map(x => x.staff);
+  }
+
+  showNoteModal(){
+    this.modalOpen = true;
   }
 
   updateNewRelationShip(staff: Array<any>){
     if(staff.length == 0 )return;
     this.listNewPeople = staff.map(x => {
       return {
-        name: x.othersInvolved.toUpperCase(),
+        staff: x.othersInvolved.toUpperCase(),
         relationship: x.relationship.toUpperCase(),
         checked: true
       }
     })
+  }
+
+  deleteListNewPeople(index: number){
+    this.listNewPeople.splice(index, 1);
   }
 
   buildCheckBoxesInStep2(): string{
@@ -573,7 +700,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           step4, step51, step52, step53, step54,
           step61, step7, reportEnter, communityService, regionalComm, comments,
           other, summary, description,
-          accountNo, dateOfIncident  } = 
+          accountNo, dateOfIncident, reportedBy, recordNo, startTimeOfIncident, endTimeOfIncident, commentsStaff, incidentNotes  } = 
     this.incidentForm.value;
 
     var { 
@@ -582,20 +709,23 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     } = this.user;
 
     var im_master: Dto.IM_Master = {
+          RecordNo: recordNo || 0,
           PersonId: this.innerValue.id,
           Type: incidentType,
           Service: serviceType,
-          Date: dateOfIncident,
+          Date: dateOfIncident ? format(dateOfIncident,'yyyy-MM-dd HH:mm:ss') : null,
+          Time: startTimeOfIncident ? format(startTimeOfIncident,'yyyy-MM-dd HH:mm:ss') : null,
+          EstimatedTimeOther: endTimeOfIncident ? format(endTimeOfIncident, 'HH:mm') : null,
 
           Location: step4,
-          ReportedBy: '',
+          ReportedBy: reportedBy,
           CurrentAssignee: '',
           ShortDesc: summary,
           FullDesc: description,
           Triggers: step53,
           InitialNotes: step54,
 
-          OngoingNotes: '',
+          OngoingNotes: commentsStaff,
           Notes: comments,
           Setting: '',
           Status: '',
@@ -619,19 +749,114 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           FollowupContactedOther: '',
           SubjectMood: step51,
 
-          Staff: this.selectedStaff,
+          Staff: this.selectedStaff.length > 0 ? this.selectedStaff.map(x => {
+            return {
+              IM_MasterId: x.iM_MasterId || 0,
+              Staff: x
+            }
+          }) : [],
+          IncidentNotes: incidentNotes,
           NewRelationship: this.listNewPeople
     };
-
-    // console.log(this.selectedStaff);
-    // console.log(this.user);
-    // this.reload.emit("");
+   
+    console.log(im_master);
     
-    this.timeS.postincident(im_master).subscribe(data => {
-      this.globalS.sToast('Success', 'Data saved');
+    if(this.operation.process === Mode.UPDATE){
+      this.timeS.updateincident(im_master).subscribe(data =>{
+        this.globalS.sToast('Success', 'Data saved');
+        this.reload.emit(true);
+      })
+    }
 
-      this.reload.emit("");
-    });
+    if(this.operation.process === Mode.ADD){
+       this.timeS.postincident(im_master).subscribe(data => {
+        this.globalS.sToast('Success', 'Data saved');
+        this.reload.emit(true);
+      });
+    }   
+  }
+
+  saveNote(){
+
+    if (!this.globalS.IsFormValid(this.noteFormGroup))
+    return;
+
+    const { alarmDate, restrictionsStr, whocode, restrictions } = this.noteFormGroup.value;
+    const cleanDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(alarmDate);
+
+    let privateFlag = restrictionsStr == 'workgroup' ? true : false;
+    let restricts = restrictionsStr != 'restrict';
+
+    this.noteFormGroup.controls["restrictionsStr"].setValue(privateFlag);
+
+    this.noteFormGroup.controls["alarmDate"].setValue(cleanDate);
+
+    this.noteFormGroup.controls["whocode"].setValue(this.globalS.decode().nameid);
+    this.noteFormGroup.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
+
+    const noteValue = this.noteFormGroup.value;
+
+    const note: Note = {
+      creator: 'sysmgr',
+      detail: noteValue.notes,
+      detailDate: format(new Date(),"yyyy-MM-dd'T'HH:mm:ss"),
+      alarmDate: format(noteValue.alarmDate,"yyyy-MM-dd'T'HH:mm:ss"),
+      personID: '',
+      recordNumber: 0,
+      restrictions: noteValue.restrictions,
+      whoCode: noteValue.whocode,
+
+      program: noteValue.program,
+      discipline: noteValue.discipline,
+      careDomain: noteValue.careDomain,
+      publishToApp: noteValue.publishToApp,
+      privateFlag: noteValue.restrictionsStr,
+      extraDetail2: noteValue.category
+    }
+
+    this.addNote(note);
+    this.handleNoteCancel();
+  }
+
+  getDate(data: any): string{
+    if(data == null) return null;
+
+    var _date = format(parseISO(data),"yyyy-MM-dd'T'HH:mm:ss");
+
+    var date = parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
+    if(date.toString() === 'Invalid Date') return '-';
+    
+    return format(date, 'dd/MM/yyyy');
+  }
+
+  getRealDate(data: any): Date | null{
+    if(data == null) return null;
+
+    var _date = format(parseISO(data),"yyyy-MM-dd'T'HH:mm:ss");
+    return parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
+  }
+
+  getTime(data: any): string | null{
+    if(data == null) return null;
+    var _date = format(parseISO(data),"yyyy-MM-dd'T'HH:mm:ss");
+    var date = parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
+    if(date.toString() === 'Invalid Date') return '-';
+    
+    return format(date, 'HH:mm');
+  }
+
+  listStringify(): string {
+      let tempStr = '';
+      this.recipientStrArr.forEach((data, index, array) => {
+          array.length - 1 != index ?
+              tempStr += data.trim() + '|' :
+              tempStr += data.trim();
+      });
+      return tempStr;
+  }
+
+  restrictionsLog(event: any) {
+      this.recipientStrArr = event;
   }
 
   getBirthdate(bday: string): Date{
@@ -640,7 +865,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     return parseISO(bday);
   }
 
-  transform(user: any) {
+  transform(user: any = this.innerValue) {
       if (!user) return;
       
       return {
@@ -652,13 +877,19 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   }
 
   patchUpdateValues(data: any){
-    console.log(data);
+
+    this.updateCheckBoxesInStep2(data.typeOther);
+    this.updateCheckBoxesInOfficeUse(data.officeUse);
+    this.updateCheckBoxesInStep6(data.followupContacted);
+    this.updateStaffListing(data.staff);
+    this.updateNewRelationShip(data.newRelationship);
+
     this.incidentForm.patchValue({
       summary: data.shortDesc,
       description: data.fullDesc,
 
       step4: data.location,
-      step51: data.subjectMood,
+      step51: data.followupContactedOther,
       step52: data.releventBackground,
       step53: data.triggers,
       step54: data.initialNotes,
@@ -670,29 +901,41 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       communityService: data.region,
       regionalComm: data.manager,
       comments: data.notes,
+      commentsStaff: data.ongoingNotes,
 
-     
+      endTimeOfIncident: data.estimatedTimeOther ? parse(data.estimatedTimeOther,'HH:mm', new Date()) : null,
+      startTimeOfIncident: this.getRealDate(data.time),
+      dateOfIncident: this.getRealDate(data.date),
+      reportedBy: data.reportedBy,
+
+      recordNo: data.recordNo
     });
-
-    this.updateCheckBoxesInStep2(data.typeOther);
-    this.updateCheckBoxesInOfficeUse(data.officeUse);
-    this.updateCheckBoxesInStep6(data.followupContacted);
-    this.updateStaffListing(data.staff);
-    this.updateNewRelationShip(data.newRelationship);
   }
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
-    if (value != null) {
+    if (value != null) {      
       this.innerValue = value;
-      console.log(this.innerValue);
-
-      this.buildValueChanges();
-      this.pathForm(this.transform(value));
+      console.log(value);
 
       if(value.operation == 'UPDATE'){
-         this.timeS.getspecificincidentdetails(value.recordNo).subscribe(data => this.patchUpdateValues(data));
+          this.timeS.getincidentnotes(value.recordNo).subscribe(data => {
+              data.map(x => {
+                if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
+                  x.detail = x.detailOriginal
+                }              
+                this.addNote(x)
+              });
+          });
+
+          this.incidentDocument = {
+            incidentId: this.innerValue.recordNo,
+            id: this.innerValue.id
+          }
+
+          this.timeS.getspecificincidentdetails(value.recordNo).subscribe(data => this.patchUpdateValues(data));
       }
+
     }
   }
   
@@ -721,7 +964,6 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   log(event: any) {
     this.selectedStaff = event;
-    console.log(this.selectedStaff);
   }
  
   get nextRequired() {
@@ -732,6 +974,29 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     }
 
     return true;
+  }
+
+  getSelect() {
+      this.timeS.getmanagerop().subscribe(data => {
+          this.mlist = data;
+      });
+
+      this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          data.push('*VARIOUS');
+          this.blist = data;
+      });
+      this.timeS.getcaredomainop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          data.push('*VARIOUS');
+          this.clist = data;
+      });
+      this.timeS.getprogramop(this.innerValue.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          data.push('*VARIOUS');
+          this.alist = data;
+      });
+
+      this.listS.getcategoryincident().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          this.dlist = data;
+      })
   }
 
 }

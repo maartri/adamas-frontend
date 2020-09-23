@@ -147,13 +147,14 @@ declare namespace Dto {
             AnyProvider: boolean,
             BookingType?: string,
             Notes?: string,
-            PermanentBookings?: Array<PermanentBookings>
+            PermanentBookings?: PermanentBookings[]
         }
 
         export interface PermanentBookings{
-            Time?: Date,
+            Time?: string,
             Quantity?: number,
-            Week?: number
+            Week?: number,
+            Day?: number
         }
     
         export interface Service {
@@ -690,10 +691,13 @@ declare namespace Dto {
         }
 
         export interface IM_Master {
+            RecordNo?: number,
             PersonId: string,
             Type: string,
             Service: string,
-            Date: Date,
+            Date: string,
+            Time: string,
+            EstimatedTimeOther: string,
 
             Location: string,
             ReportedBy: string,
@@ -728,14 +732,15 @@ declare namespace Dto {
             SubjectMood: string,
 
             Staff?: Array<any>,
+            IncidentNotes: Array<any>,
             NewRelationship: Array<any>
         }
 
         export interface NewRelationShip
         {
-        name: string,
-        relationship: string,
-        checked: boolean
+            staff: string,
+            relationship: string,
+            checked: boolean
         }
 
         

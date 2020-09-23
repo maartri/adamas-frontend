@@ -39,9 +39,9 @@ const enum ImageActivity {
     styles: [`
         .steps-content{
             display: inline-block;
-            height: 23rem;
-            min-width:40rem;
-            margin:2rem;
+            height: 27rem;
+            min-width: 40rem;
+            margin: 1rem;
             overflow-y: auto;
             padding: 1rem;
         }

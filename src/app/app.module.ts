@@ -14,7 +14,7 @@ import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { AppRoutingModule, PAGE_COMPONENTS } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { registerLocaleData, CommonModule, CurrencyPipe, DatePipe, DecimalPipe, HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { registerLocaleData, CommonModule, CurrencyPipe, DatePipe, TitleCasePipe ,DecimalPipe, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import en from '@angular/common/locales/en';
 
 import { LoginComponent } from './pages/login/login.component';
@@ -145,7 +145,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     ShareService,
     SettingsService,
     VersionCheckService,
-    CurrencyPipe, DatePipe, DecimalPipe
+    CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

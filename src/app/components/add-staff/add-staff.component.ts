@@ -1,12 +1,13 @@
-import { Component, OnInit, forwardRef, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, forwardRef, OnChanges, SimpleChanges, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
+import { TitleCasePipe } from '@angular/common';
 
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
 import * as _ from 'lodash';
 import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
 import parseISO from 'date-fns/parseISO'
 import { RemoveFirstLast } from '../../pipes/pipes';
-import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap } from 'rxjs/operators';
+import { mergeMap, debounceTime, distinctUntilChanged, first, take, takeUntil, switchMap, concatMap } from 'rxjs/operators';
 import * as moment from 'moment';
 
 const noop = () => {};
@@ -65,7 +66,9 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     private staffS: StaffService,
     private timeS: TimeSheetService,
     private listS: ListService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cd: ChangeDetectorRef,
+    private titleCase: TitleCasePipe
   ) { 
 
 
@@ -106,6 +109,14 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         manager: '',
     });
 
+    this.staffForm.get('accountNo').valueChanges
+    .pipe(
+      debounceTime(500)
+    )
+    .subscribe(data => {
+        this.verifyAccount.next(data);
+    })
+
     this.staffForm.get('orgType').valueChanges
     .pipe(debounceTime(300))
     .subscribe(data => {
@@ -122,55 +133,70 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
       });
 
     this.staffForm.get('surnameOrg').valueChanges
-      .pipe(debounceTime(300))
+      .pipe(
+        take(1),
+        debounceTime(500)
+      )
       .subscribe(data => {
           if(this.staffForm.get('orgType').value === 'Organisation'){
             this.verifyAccountPerOrg.next(data);
           } else {
-            this.verifyAccount.next();
+            this.verifyAccount.next(null);
           }          
       });
 
     this.staffForm.get('firstName').valueChanges
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(500))
       .subscribe(data => {
-          this.verifyAccount.next();
+        this.verifyAccount.next(null);
       });
 
     this.staffForm.get('birthDate').valueChanges
       .pipe(debounceTime(300))
       .subscribe(data => {
-          this.verifyAccount.next();
+        this.verifyAccount.next(null);
       });
 
     this.staffForm.get('gender').valueChanges
       .pipe(debounceTime(300))
       .subscribe(data => {
-          this.verifyAccount.next();
+        this.verifyAccount.next(null);
       });
 
     // For Person Check if Account is present
     this.verifyAccount.pipe(
         debounceTime(300),
         concatMap(e => {
-          this.accountTaken = null;  
-          if (this.staffForm) {
+          this.accountTaken = null;
+          if (e == null) {
             this.generatedAccount = this.generateAccount(); 
             if(this.generatedAccount && this.staffForm.valid) {
               return this.staffS.isAccountNoUnique(this.generatedAccount);
             }
-          } return EMPTY;
+          }
+
+          if (!this.globalS.isEmpty(e)) {   
+              this.generatedAccount = e;         
+              return this.staffS.isAccountNoUnique(this.generatedAccount);            
+          }
+          
+          return EMPTY;
         })
       ).subscribe(next => {
+
         this.staffForm.patchValue({
           accountNo: this.generatedAccount.toUpperCase()
-        });
+        }, { emitEvent: false});
+
+
         if (next == 1) {
           this.accountTaken = false;
+          this.cd.markForCheck();
         }
 
         if (next == 0) {
           this.accountTaken = true;
+          this.cd.markForCheck();
         }
       });
 
@@ -198,6 +224,20 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               this.accountTaken = true;
             }
       });
+  }
+
+  Disable(){
+    // this.staffForm.controls['accountNo'].reset(null,{onlySelf:true, emitEvent:false});
+    this.staffForm.controls['accountNo'].disable({onlySelf:true, emitEvent:false});
+  }
+
+  Enable(){
+    this.staffForm.controls['accountNo'].enable({onlySelf:true,  emitEvent:false});
+  }
+
+  checkIfPersonalDetailsHasNoValue(): boolean {
+    const { surnameOrg, firstName, birthDate, gender } = this.staffForm.value;
+    return (!this.globalS.isEmpty(surnameOrg) &&  !this.globalS.isEmpty(firstName) && !this.globalS.isEmpty(birthDate) && !this.globalS.isEmpty(gender));
   }
 
   clearPersonalDetails(): void{
@@ -329,9 +369,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   }
 
   get nextRequired() {
-    
-    if(this.current == 1 && ((this.accountTaken) || this.globalS.isEmpty(this.staffForm.get('accountNo').value) || this.globalS.isEmpty(this.staffForm.get('surnameOrg').value)) ) return false;
-    return true;
+    if(this.current == 0 && (!this.globalS.isEmpty(this.staffForm.get('surnameOrg').value) && (this.staffForm.get('orgType').value === 'Organisation'))) return true;
+    if(this.current == 0 && (this.staffForm.get('orgType').value === 'Individual') && this.checkIfPersonalDetailsHasNoValue()  && (!this.accountTaken) && !this.globalS.isEmpty(this.staffForm.get('accountNo').value)) return true;
+    if(this.current > 0) return true;
+    return false;
   }
 
   save(){
@@ -358,7 +399,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           this.globalS.isEmpty(branch) || 
           this.globalS.isEmpty(jobCategory)
         ){
-          this.globalS.eToast('Error','Some Fields are required');
+          this.globalS.eToast('Error','Commencement Date,Branch, Job Category, Coordinator/Manager Fields are required');
           return;
         }
 
@@ -394,9 +435,9 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
       this.staffS.poststaffprofile({
           Staff: {
-              accountNo: accountNo,
+              accountNo: (accountNo || surnameOrg).toUpperCase(),
               firstName: firstName,
-              lastName: surnameOrg,
+              lastName: this.titleCase.transform(surnameOrg),
               gender: gender,
               dob: birthDate ? moment(birthDate).format() : null,
               category: type,

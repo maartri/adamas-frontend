@@ -1100,7 +1100,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Staff = true;
                 break;
             case 'btn-staff-opnotes':
-                this.ModalName = "STAFF OP NOTES REPORT "
+                this.ModalName = "STAFF OP NOTES REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_OPNotes = true; 
@@ -1119,7 +1119,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Incidents = true;
                 break;
             case 'btn-staff-training':
-                this.ModalName = "STAFF TRAINING REPORT"
+                this.ModalName = "STAFF TRAINING REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1131,7 +1131,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 
                 break;
             case 'btn-competenciesrenewal':
-                this.ModalName = "COMPETENCIES RENEWAL REPORT"
+                this.ModalName = "COMPETENCIES RENEWAL REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1141,7 +1141,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_CompetenciesGroups = true;
                 break;
             case 'btn-Systm-AuditRegister':
-                this.ModalName = "AUDIT REGISTER REPORT"
+                this.ModalName = "AUDIT REGISTER REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_TraccsUsers = true;                 
                 this.frm_WhoWhat = true;
@@ -1152,7 +1152,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Programs = true;
                 break;
             case 'btn-Systm-MTARegister':
-                this.ModalName = "MTA REGISTER CRITERIA"
+                this.ModalName = "MTA REGISTER CRITERIA CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1161,7 +1161,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Staff = true;
                 break;
             case 'btn-Systm-RosterOverlap':
-                this.ModalName = "ROSTER OVERLAP REPORT"
+                this.ModalName = "ROSTER OVERLAP REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Recipients = true;
@@ -1169,7 +1169,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Programs = true;
                 break;
             case 'btn-Systm- MTAVerification':
-                this.ModalName = "MTA VERIFICATION REPORT"
+                this.ModalName = "MTA VERIFICATION REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1178,12 +1178,24 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Staff = true;
                 break;  
             case 'btn-UnsedFunding':
-                this.ModalName = "RECIPIENT UNUSED FUNDING REPORT"
+                this.ModalName = "RECIPIENT UNUSED FUNDING REPORT CRITERIA"
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 this.frm_Categories = true;                
-                break; 
+                break;
+                case 'btn-BudgetAuditReport':
+                    this.ModalName = "PROGRAM BUDGET AUDIT REPORT CRITERIA"
+                    this.frm_Branches = true;
+                    this.frm_Programs = true;                                    
+                    break;
+                case 'btn-ProgramSummaryRpt' :
+                    this.ModalName = "PROGRAM SUMMARY REPORT CRITERIA"
+                    this.frm_Branches = true;
+                    this.frm_Programs = true;
+                    this.frm_Managers = true;
+                    this.frm_Categories = true;
+                    break;
             
             
             
@@ -1295,7 +1307,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
       console.log(idbtn)
 var endate ;
 var strdate;
-        var s_States = this.inputForm.value.statesArr;
+    //    var s_States = this.inputForm.value.statesArr;
         var s_Branches = this.inputForm.value.branchesArr;
         var s_Managers = this.inputForm.value.managersArr;
         var s_ServiceRegions = this.inputForm.value.serviceRegionsArr;
@@ -1330,8 +1342,8 @@ var strdate;
         var s_HACCCategory = this.inputForm.value.mdstypeArr;
         var s_Age = this.inputForm.value.AGE_ATSI_StatusArr;
         var s_DateType:string;
-        s_DateType = (this.inputForm.value.DatetypeArr);          
-        var s_MdsAgencyID = "" //this.inputForm.value.???? still to add Agencyids
+        s_DateType = this.inputForm.value.DatetypeArr;          
+        var s_MdsAgencyID = this.inputForm.value.agencyidArr; 
         var s_OutLetID = this.inputForm.value.outletsArr;
         var s_Activity = this.inputForm.value.activityArr;
         var s_Settings_vehicle = this.inputForm.value.settting_vehicleArr;
@@ -1341,55 +1353,75 @@ var strdate;
         //console.log(s_Stafftype) 
         
             var date = new Date();
+            var temp_lftstr = idbtn.substring(0,10)
+            switch(temp_lftstr){
+                case 'btn-staff-':                    
+                    this.isVisibleTop = true;
+                    break;
+                case 'btn-Regis-':                    
+                    this.isVisibleTop = true;   
+                    break;
+                case 'btn-FORPT-': 
+                if (this.startdate != null )
+                { strdate = format(this.startdate,'yyyy/MM/dd')}else{                                  
+                    strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'yyyy/MM/dd')                   
+                } 
+                if (this.enddate != null )
+                { endate = format(this.enddate,'yyyy/MM/dd')}else{                  
+                   endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'yyyy/MM/dd');                  
+                }         
+                
+                    break;
+                default:
+                    if (this.startdate != null )
+                    { strdate = format(this.startdate,'yyyy-MM-dd')}else{
+                        //strdate = "2020-07-01"              
+                        strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'yyyy-MM-dd')
+                       
+        
+                    } 
+                    if (this.enddate != null )
+                    { endate = format(this.enddate,'yyyy-MM-dd')}else{
+                       // endate = "2020-07-31"
+                       endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'yyyy-MM-dd');
+                      
+                    }  
+            }     
+
             
-             
-
-            if (this.startdate != null )
-            { strdate = format(this.startdate,'yyyy-MM-dd')}else{
-                //strdate = "2020-07-01"              
-                strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'yyyy-MM-dd')
-               
-
-            } 
-            if (this.enddate != null )
-            { endate = format(this.enddate,'yyyy-MM-dd')}else{
-               // endate = "2020-07-31"
-               endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'yyyy-MM-dd');
-              
-            } 
    
      
     // console.log(strdate)
         switch(idbtn){
             case 'btn-refferallist' :
-                this.Refeeral_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                this.Refeeral_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
             case 'btn-activepackagelist' :                
-                this.ActivePackage_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);                  
+                this.ActivePackage_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);                  
                  break;
             case 'btn-recipientroster':
                  this.RecipientRoster(s_Branches,s_StfGroup,s_Recipient ,s_Stafftype,strdate,endate);
                 break;
             case 'btn-suspendedrecipient':
-                this.SuspendedRecipient(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.SuspendedRecipient(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-vouchersummary':
-                this.VoucherSummary(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.VoucherSummary(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-packageusage':
-                this.PackageUsage(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                this.PackageUsage(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
             case 'btn-timelength':
                 this.RecipientTimeLength(strdate,endate);
                 break;
             case 'btn-unallocatedbookings':
-                this.UnallocatedBookings(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.UnallocatedBookings(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-transportsummary':
-                this.TransportSummary(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.TransportSummary(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-refferalduringperiod':
-                this.RefferalsduringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.RefferalsduringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-recipientMasterroster':
 
@@ -1446,31 +1478,31 @@ var strdate;
                 this.RecipientMasterRoster(s_Branches,s_StfGroup,s_Recipient ,s_Stafftype,strdate,endate);
                 break;
             case 'btn-activerecipient':
-                this.ActiveRecipientList(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                this.ActiveRecipientList(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
             case 'btn-inactiverecipient':
-                this.InActiveRecipientList(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                this.InActiveRecipientList(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
             case 'btn-adminduringperiod':
-                this.AdmissiionDuringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.AdmissiionDuringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-dischargeduringperiod':
-                this.DischargeDuringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.DischargeDuringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-absentclient':
-                this.AbsentClientStatus(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.AbsentClientStatus(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-careerlist':
-                this.CareerList(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                this.CareerList(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
             case 'btn-onlybillingclients':
-                this.BillingCliens(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                this.BillingCliens(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
             case 'btn-associatelist':
-                this.Associate_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                this.Associate_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
             case 'btn-unserviced':
-                this.UnServicedRecipient(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States,strdate,endate);
+                this.UnServicedRecipient(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);
                 break;
             case 'btn-staff-Activestaff':
                 this.ActiveStaffListing(s_Managers,s_Branches,s_StfGroup);
@@ -1491,7 +1523,7 @@ var strdate;
                 this.InActiveStaffListing(s_Managers,s_Branches,s_StfGroup);
                 break;
             case 'btn-staff-Userpermissions':
-                this.StaffPermissions(s_Branches, s_Managers, s_ServiceRegions, s_Programs,s_States);
+                this.StaffPermissions(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
             case 'btn-Regis-mealregisterreport':
                 this.MealOrderReport(s_Recipient,strdate,endate);
@@ -1649,7 +1681,33 @@ var strdate;
             case 'btn-FORPT-DailyStaffHrs':                               
                 this.DailyStaffHrs(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
                 break;
-            
+            case 'btn-FORPT-ProgramActivitySpread':                               
+                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+            case 'btn-FORPT-ProgramStaffUtilized':                               
+                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+            case 'btn-FORPT-ProgramRecipientServiced':                               
+                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+            case 'btn-FORPT-ProgramBillingReport':                               
+                this.ProgramBillingReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+            case 'btn-BudgetAuditReport':                               
+                this.ProgramBudgetAudit(s_Branches,s_Programs);
+                break;
+            case 'btn-ProgramSummaryRpt' :
+                this.ProgramSummaryReport(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
+                break;
+            case 'btn-FORPT-ActivityGroupRpt':                               
+                this.ActivityGroupReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+            case 'btn-FORPT-StaffActivityRpt':                               
+                this.StaffActivityReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
+                case 'btn-FORPT-StaffAdminRpt':                               
+                this.StaffAdminReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle)                               
+                break;
             
             default://
                 alert("Yet to do")
@@ -1658,7 +1716,7 @@ var strdate;
     
     } 
 //           
-    Refeeral_list(branch,manager,region,program,state){
+    Refeeral_list(branch,manager,region,program){
         
         
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)"
@@ -1753,7 +1811,7 @@ var strdate;
         });    this.drawerVisible = true;     
     }  
 
-    ActivePackage_list(branch,manager,region,program,state,startdate,enddate){
+    ActivePackage_list(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT [CLIENT CODE], PROGRAM, H.[Type] AS [FUNDING SOURCE], MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END)AS FIRST_ADMISSION,MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) AS FIRST_DISCHARGE  FROM HumanResourceTypes, ROSTER R INNER JOIN ITEMTYPES I ON R.[SERVICE TYPE] = I.TITLE AND MINORGROUP IN ('ADMISSION','DISCHARGE')  INNER JOIN HumanResourceTypes H on R.Program = H.[Name] AND H.[Group] = 'Programs'  WHERE R.[TYPE] = 7 AND R.[DATE] >= '2010/01/01' GROUP BY [CLIENT CODE], PROGRAM, h.[Type]  HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION'  "
@@ -1938,7 +1996,7 @@ var strdate;
         });        
     } 
 
-    SuspendedRecipient(branch,manager,region,program,state,startdate,enddate){
+    SuspendedRecipient(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE'   AND   (ServiceOverview.ServiceStatus = 'ON HOLD') "
@@ -2032,7 +2090,7 @@ var strdate;
     }
 
 
-    VoucherSummary(branch,manager,region,program,state,startdate,enddate){
+    VoucherSummary(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT Recipients.AccountNo as [Recipient],  COUNT(SrNo) as  [Vouchers Issued], COUNT(CASE Cancelled WHEN 1 then 'True' else NULL END) as [Vouchers Cancelled], COUNT(CASE Redeemed WHEN 1 then 'True' else NULL END) as [Vouchers Redeemed], SUM(((CASE Redeemed WHEN 1 then 1 else 0 END) * SubsidyAmountt)) as [Value] FROM LMVoucher LEFT JOIN Recipients on LMVoucher.PersonID = Recipients.UniqueID  WHERE  "
@@ -2123,7 +2181,7 @@ var strdate;
         });        
     }
 
-    PackageUsage(branch,manager,region,program,state){
+    PackageUsage(branch,manager,region,program){
         
         
         var fQuery = "Select DISTINCT R.AccountNo, R.[BRANCH], R.[RECIPIENT_COOrdinator], R.[AgencyDefinedGroup], RP.[PersonId], RP.[Program], RP.ProgramStatus, ISNULL(AP_BasedOn, 0) AS Allowed, ISNULL(AP_CostType, '') AS CostType,  ISNULL(AP_PerUnit, '') AS AP_PerUnit, ISNULL(AP_Period, '') AS AP_Period, ISNULL(ExpireUsing, '') AS ExpireUsing, ISNULL(AlertStartDate, '') AS AlertStartDate, '0' AS Balance,  ISNULL(AP_RedQty, 0) AS [RedAmount], ISNULL(AP_OrangeQty, 0) AS [OrangeAmount],  ISNULL(AP_YellowQty, 0) AS [YellowAmount] FROM Recipients R LEFT JOIN RecipientPrograms RP ON RP.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RP.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT')  AND (RP.ProgramStatus = 'ACTIVE')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))  "
@@ -2264,7 +2322,7 @@ var strdate;
         });        
     }
 
-    UnallocatedBookings(branch,manager,region,program,state,startdate,enddate){
+    UnallocatedBookings(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT [Roster].[Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON Roster.[CLient Code] = Recipients.[Accountno]  WHERE ([Client Code] <> '!INTERNAL')  AND Roster.[Type] = 1  "
@@ -2354,7 +2412,7 @@ var strdate;
         });        
     }
     
-    TransportSummary(branch,manager,region,program,state,startdate,enddate){
+    TransportSummary(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT  DATADOMAINS.[User1]  as [District], [Roster].[ServiceSetting] as Vehicle, [Roster].[Client Code] as Client, [Roster].[Date] as [Date of Travel] , (Case UPPER(LEFT([Roster].[Service Type],3)) WHEN 'MED' THEN 1 ELSE 0 END) as [MED], (Case UPPER(LEFT([Roster].[Service Type],3)) WHEN 'MED' THEN 0 ELSE 1 END) as [SOC], [Roster].[Program], PR.[Type] AS FundingSource FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo]   INNER JOIN DATADOMAINS ON DATADOMAINS.[Description] =  [Roster].[ServiceSetting] INNER JOIN HumanResourceTypes PR ON PR.[Name] = Roster.[Program]WHERE  Roster.Type = 10 AND [Client Code] > '!MULTIPLE' AND Roster.[Status] >= 2 "
@@ -2447,7 +2505,7 @@ var strdate;
     }
 
 
-    RefferalsduringPeriod(branch,manager,region,program,state,startdate,enddate){
+    RefferalsduringPeriod(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ', ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode, [Recipients].[AdmissionDate] As [Activation Date], [Recipients].[DischargeDate] As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Date], [Roster].[Program]  ,Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID =Recipients.[UniqueID] For XML path ('')),1, 1, '') [Detail]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'    WHERE ItemTypes.MinorGroup = 'REFERRAL-IN'"
@@ -2628,7 +2686,7 @@ var strdate;
     });        
     }
 
-    ActiveRecipientList(branch,manager,region,program,state){
+    ActiveRecipientList(branch,manager,region,program){
         
         
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,CONVERT(varchar, R.AdmissionDate,23) As [Activation Date],CONVERT(varchar, R.DischargeDate,23)  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT')  AND (RecipientPrograms.ProgramStatus = 'ACTIVE')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))  "
@@ -2711,7 +2769,7 @@ var strdate;
     });        
     }
 
-    InActiveRecipientList(branch,manager,region,program,state){
+    InActiveRecipientList(branch,manager,region,program){
         
         
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, CONVERT(varchar, R.AdmissionDate,23)  As [Activation Date], CONVERT(varchar,R.DischargeDate,23)  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT') AND (DischargeDate is not null)"
@@ -2795,7 +2853,7 @@ var strdate;
     });        
     }
 
-    CareerList(branch,manager,region,program,state){
+    CareerList(branch,manager,region,program){
         
         
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,CONVERT(VARCHAR,R.AdmissionDate ,23) As [Activation Date],CONVERT (varchar,R.DischargeDate,23)  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'CARER' OR [R].[Type] = 'CARER/RECIPIENT')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))"
@@ -2879,7 +2937,7 @@ var strdate;
     });        
     }
 
-    BillingCliens(branch,manager,region,program,state){
+    BillingCliens(branch,manager,region,program){
         
         
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] IN ('BILLING CLIENTS', 'BILLING CLIENT ONLY'))  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))"
@@ -2961,7 +3019,7 @@ var strdate;
         console.log(err);
     });        
     }
-    AdmissiionDuringPeriod(branch,manager,region,program,state,startdate,enddate){
+    AdmissiionDuringPeriod(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ', ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode, [Recipients].[AdmissionDate] As [Activation Date], [Recipients].[DischargeDate] As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Date], [Roster].[Program]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'  WHERE ItemTypes.MinorGroup = 'ADMISSION'  "
@@ -3053,7 +3111,7 @@ var strdate;
         console.log(err);
     });        
     }
-    DischargeDuringPeriod(branch,manager,region,program,state,startdate,enddate){
+    DischargeDuringPeriod(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ', ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode, [Recipients].[AdmissionDate] As [Activation Date], [Recipients].[DischargeDate] As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Date], [Roster].[Program]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'  WHERE ItemTypes.MinorGroup = 'DISCHARGE' "
@@ -3148,7 +3206,7 @@ var strdate;
     });        
     }
 
-    AbsentClientStatus(branch,manager,region,program,state,startdate,enddate){
+    AbsentClientStatus(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE' AND Rs.[TYPE] = 4  AND ((admissiondate is not null) and (DischargeDate is null))"
@@ -3239,7 +3297,7 @@ var strdate;
         console.log(err);
     });        
     }
-    Associate_list(branch,manager,region,program,state){
+    Associate_list(branch,manager,region,program){
         
         
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'ASSOCIATE')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))"
@@ -3329,7 +3387,7 @@ var strdate;
         });    this.drawerVisible = true;     
     }
 
-    UnServicedRecipient(branch,manager,region,program,state,startdate,enddate){
+    UnServicedRecipient(branch,manager,region,program,startdate,enddate){
         
         
         var fQuery = "SELECT DISTINCT T.[Date], R.ACCOUNTNO, R.[Surname/Organisation] as Surname, R.FirstName,  R.Branch,  R.RECIPIENT_CoOrdinator, RP.Program FROM RECIPIENTS R LEFT JOIN RecipientPrograms RP on R.UniqueID = RP.PersonID LEFT JOIN ( SELECT RECORDNO, [Date],[CLIENT CODE], Program FROM ROSTER WHERE [TYPE] IN (2,3,4,5,6,7,8,10,11,12)  "
@@ -3891,7 +3949,7 @@ var strdate;
     });        
     }
 
-    StaffPermissions(branch,manager,region,program,state){
+    StaffPermissions(branch,manager,region,program){
         
         
         var fQuery = "SELECT [NAME], CASE WHEN [SYSTEM] = 999 THEN 'YES' ELSE 'NO' END AS [SYSTEM ADMINISTRATOR], CASE WHEN RECIPIENTS = 0 THEN 'NONE'      WHEN RECIPIENTS = 1 THEN 'LEVEL1'      WHEN RECIPIENTS = 101 THEN 'LEVEL2'      WHEN RECIPIENTS = 201 THEN 'LEVEL3'      WHEN RECIPIENTS = 901 THEN 'LEVEL4'      WHEN RECIPIENTS = 951 THEN 'LEVEL5'      WHEN RECIPIENTS = 999 THEN 'LEVEL6' END AS [RECIPIENTS ACCESS LEVEL], CASE WHEN ROSTER = 0 THEN 'NONE'      WHEN ROSTER = 1 THEN 'LEVEL1'      WHEN ROSTER = 101 THEN 'LEVEL2'      WHEN ROSTER = 121 THEN 'LEVEL3'      WHEN ROSTER = 201 THEN 'LEVEL4'      WHEN ROSTER = 251 THEN 'LEVEL5'      WHEN ROSTER = 501 THEN 'LEVEL6'      WHEN ROSTER = 999 THEN 'LEVEL7' END AS [ROSTER ACCESS LEVEL], CASE WHEN STAFF = 0 THEN 'NONE'      WHEN STAFF = 251 THEN 'LEVEL1'      WHEN STAFF = 301 THEN 'LEVEL2'      WHEN STAFF = 901 THEN 'LEVEL3'      WHEN STAFF = 999 THEN 'LEVEL4' END AS [STAFF ACCESS LEVEL], CASE WHEN DAYMANAGER = 0 THEN 'NONE'      WHEN DAYMANAGER = 1 THEN 'LEVEL1'      WHEN DAYMANAGER = 101 THEN 'LEVEL2'      WHEN DAYMANAGER = 121 THEN 'LEVEL3'      WHEN DAYMANAGER = 201 THEN 'LEVEL4'      WHEN DAYMANAGER = 251 THEN 'LEVEL5'      WHEN DAYMANAGER = 301 THEN 'LEVEL6'      WHEN DAYMANAGER = 999 THEN 'LEVEL7' END AS [DAYMANAGER ACCESS LEVEL], CASE WHEN [RECIPMGTVIEW] = 1 THEN 'YES' ELSE 'NO' END AS [RECIPIENT MANAGEMENT VIEW], CASE WHEN [ACCESSHRINFO] = 1 THEN 'YES' ELSE 'NO' END AS [ACCESS HR], CASE WHEN [CASENOTESREADONLY] = 1 THEN 'YES' ELSE 'NO' END AS [CASE NOTES VIEW ONLY], CASE WHEN [ADDNEWRECIPIENT] = 1 THEN 'YES' ELSE 'NO' END AS [ADD NEW RECIPIENTS], CASE WHEN [CHANGEMASTERROSTER] = 1 THEN 'YES' ELSE 'NO' END AS [CHANGE MASTER ROSTER], CASE WHEN [OWNROSTERONLY] = 1 THEN 'YES' ELSE 'NO' END AS [LOCK TO OWN ROSTER], CASE WHEN [APPROVEDAYMANAGER] = 1 THEN 'YES' ELSE 'NO' END AS [APPROVE IN DAYMANAGER], CASE WHEN [MANUALROSTERCOPY] = 999 THEN 'YES' ELSE 'NO' END AS [MANUAL COPY ROSTER], CASE WHEN [AUTOCOPYROSTER] = 999 THEN 'YES' ELSE 'NO' END AS [AUTO COPY ROSTER],CASE WHEN [TIMESHEET] = 999 THEN 'YES' ELSE 'NO' END AS [TIMESHEETS], CASE WHEN [SUGGESTEDTIMESHEETS] = 999 THEN 'YES' ELSE 'NO' END AS [SUGGESTED TIMESHEETS], CASE WHEN [TIMESHEETUPDATE] = 999 THEN 'YES' ELSE 'NO' END AS [PAY AND BILLING UPDATE], CASE WHEN [FINANCIAL] = 999 THEN 'YES' ELSE 'NO' END AS [FINANCIAL], CASE WHEN [STATISTICS] = 999 THEN 'YES' ELSE 'NO' END AS [LISTINGS], CASE WHEN [INVOICEENQUIRY] = 999 THEN 'YES' ELSE 'NO' END AS [INVOICE ENQUIRY], VIEWFILTERBRANCHES, VIEWFILTER AS VIEWFILTERPROGRAMS, VIEWFILTERCATEGORY, VIEWFILTERCOORD, VIEWFILTERREMINDERS, RECIPIENTRECORDVIEW, STAFFRECORDVIEW FROM USERINFO WHERE (EndDate Is Null OR EndDate >= '2020/01/01')  "
@@ -6617,7 +6675,7 @@ var strdate;
                 }                         
            
         if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
-        console.log("s_DateSQL" + this.s_DateSQL)            
+       // console.log("s_DateSQL" + this.s_DateSQL)            
         }
         if(manager != ""){
             this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
@@ -6665,18 +6723,22 @@ var strdate;
             if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
         }
 
-        if(Age != ""){ 
-            switch(Age){ 
-                case 'Under 65 OR ATSI under 50':
-                    this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) ";      
+        if(Age != ""){            
+            let tempkay = (Age.toString()).substring(0,8);            
+            switch (tempkay) {
+                case "Under 65":
+                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
                     break;
-                case 'Over 64 OR ATSI Over 49':
+                case "Over 64 ":
                     this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
                     break;
-               
-            }
+            
+                default:                   
+                    break;
+            }           
            
-            if (this.s_AgeSQL != ""){ fQuery = fQuery + " AND " + this.s_AgeSQL};
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+           
         }
      
         if(outletid != ""){
@@ -6836,21 +6898,25 @@ var strdate;
          switch (rptname){
             case 'btn-FORPT-ProgramUtilisation':
                 var Title = "RECIPIENT PROGRAM UTILISATION REPORT";
+                var Report_Definer = "This report summarises all services delivered to Recipients by the Agency, (either by Agency Staff or Brokered organisations acting on behalf of the Agency, and Travel Time Attributable to Recipients), during the selected period."
                 fQuery = fQuery + "And (([Roster].[Type] IN (1, 2, 3, 5, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] > '!MULTIPLE') ";
                 fQuery = fQuery + " ORDER BY [Client Code], [Program], Date, [Start Time] "                       
                 break;
             case 'btn-FORPT-PaytypeReport':
                 var Title = "RECIPIENT PAY TYPE REPORT";
+                var Report_Definer = "This report summarises all services delivered to Recipients by the Agency, (either by Agency Staff or Brokered organisations acting on behalf of the Agency, and Travel Time Attributable to Recipients), during the selected period."
                 fQuery = fQuery + "And (([Roster].[Type] IN (1, 2, 3, 5, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] > '!MULTIPLE') ";
                 fQuery = fQuery + "ORDER BY [Client Code], [Service Description], Date, [Start Time]";
                 break;
             case 'btn-FORPT-RecipientserviceReport':
                 var Title = "RECIPIENT SERVICE REPORT";
+                var Report_Definer = "This report summarises all services delivered to Recipients by the Agency, (either by Agency Staff or Brokered organisations acting on behalf of the Agency, and Travel Time Attributable to Recipients), during the selected period."
                 fQuery = fQuery + "AND ([Roster].[Type] = 2 OR ([Roster].[Type] = 4 AND [Roster].[Carer Code] = '!INTERNAL') OR  [Roster].[Type]=1 OR [Roster].[Type] = 3 OR [Roster].[Type] = 5 OR [Roster].[Type] = 7 OR [Roster].[Type] = 8 OR [Roster].[Type] = 10 OR [Roster].[Type] = 11 OR [Roster].[Type] = 14 OR [Roster].[Type] = 12) AND ([Client Code] > '!MULTIPLE') ";
                 fQuery = fQuery + "ORDER BY [Client Code], [Service Type], Date, [Start Time]"                        
                 break;
             case 'btn-FORPT-StaffusageReport':
                 var Title = "RECIPIENT STAFF USAGE REPORT";
+                var Report_Definer = "This report summarises all services delivered to Recipients by the Agency, (either by Agency Staff or Brokered organisations acting on behalf of the Agency, and Travel Time Attributable to Recipients), during the selected period."
                 fQuery = fQuery + "And (([Roster].[Type] IN (1, 2, 3, 5, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] > '!MULTIPLE')";
                 fQuery = fQuery + "ORDER BY [Client Code], [Carer Code], Date, [Start Time]";
                 break;
@@ -6860,7 +6926,7 @@ var strdate;
 
         
         
-        console.log(fQuery)
+       // console.log(fQuery)
        
         
             this.drawerVisible = true;
@@ -6871,6 +6937,8 @@ var strdate;
                     "reports": { "save": false },
                     
                     "txtTitle":Title,
+
+                    "txtCriteriaStmt" : Report_Definer,
 
                     "sql":fQuery,
                     "Criteria":lblcriteria,
@@ -6931,7 +6999,7 @@ var strdate;
         var lblcriteria;
 
         var Title = "PAY TYPE PROGRAM REPORT";
-
+        var Report_Definer = "This report includes all Services attributed to Funded Programs during the selected period.It includes any allowances. (It does NOT include pay details for Brokerage Organisations)"
 
 
         if (branch != ""){
@@ -6963,7 +7031,7 @@ var strdate;
                 }                         
            
         if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
-        console.log("s_DateSQL" + this.s_DateSQL)            
+        ///console.log("s_DateSQL" + this.s_DateSQL)            
         }
         if(manager != ""){
             this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
@@ -7011,18 +7079,22 @@ var strdate;
             if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
         }
 
-        if(Age != ""){ 
-            switch(Age){ 
-                case 'Under 65 OR ATSI under 50':
-                    this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) ";      
+        if(Age != ""){            
+            let tempkay = (Age.toString()).substring(0,8);            
+            switch (tempkay) {
+                case "Under 65":
+                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
                     break;
-                case 'Over 64 OR ATSI Over 49':
+                case "Over 64 ":
                     this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
                     break;
-               
-            }
+            
+                default:                   
+                    break;
+            }           
            
-            if (this.s_AgeSQL != ""){ fQuery = fQuery + " AND " + this.s_AgeSQL};
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+           
         }
      
         if(outletid != ""){
@@ -7184,7 +7256,7 @@ var strdate;
                
                 fQuery = fQuery + "ORDER BY [Service Description], [Program], Date, [Start Time]";
                
-        console.log(fQuery)
+       // console.log(fQuery)
        
         
             this.drawerVisible = true;
@@ -7200,7 +7272,8 @@ var strdate;
                     "Criteria":lblcriteria,
 
                     "txtTitle":Title,
-         
+                    
+                    "txtCriteriaStmt" : Report_Definer,
 
                     "txtregions": regions, 
                     "txtstfgroups": stfgroups, 
@@ -7259,7 +7332,7 @@ var strdate;
 
         
          var Title = "STAFF DAILY HOURS REPORT";
-
+         var Report_Definer = "This report includes all amounts paid to Staff employed by the Agency during the selected period.It includes any allowances. (It does NOT include Brokerage or Volunteer activities)";
 
         if (branch != ""){
             this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
@@ -7290,7 +7363,7 @@ var strdate;
                 }                         
            
         if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
-        console.log("s_DateSQL" + this.s_DateSQL)            
+        //console.log("s_DateSQL" + this.s_DateSQL)            
         }
         if(manager != ""){
             this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
@@ -7338,18 +7411,22 @@ var strdate;
             if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
         }
 
-        if(Age != ""){ 
-            switch(Age){ 
-                case 'Under 65 OR ATSI under 50':
-                    this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) ";      
+        if(Age != ""){            
+            let tempkay = (Age.toString()).substring(0,8);            
+            switch (tempkay) {
+                case "Under 65":
+                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
                     break;
-                case 'Over 64 OR ATSI Over 49':
+                case "Over 64 ":
                     this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
                     break;
-               
-            }
+            
+                default:                   
+                    break;
+            }           
            
-            if (this.s_AgeSQL != ""){ fQuery = fQuery + " AND " + this.s_AgeSQL};
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+           
         }
      
         if(outletid != ""){
@@ -7511,7 +7588,7 @@ var strdate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], Date, [Service Type], [Start Time]";
                
-        console.log(fQuery)
+       // console.log(fQuery)
        
         
             this.drawerVisible = true;
@@ -7576,8 +7653,1844 @@ var strdate;
             });  
 
     }
-    
+    ProgramReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings){
+              
 
+        var fQuery = " SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
+
+        if(funders != "" || mdsagencyID != ""){
+            fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
+        }
+        fQuery = fQuery + "WHERE ([Client Code] > '!MULTIPLE')  AND	([Roster].[Type] = 1 OR [Roster].[Type] = 2 OR [Roster].[Type] = 3 OR ([Roster].[Type] = 4 AND [Roster].[Carer Code] = '!INTERNAL')  OR [Roster].[Type] = 5 OR [Roster].[Type] = 7 OR [Roster].[Type] = 8 OR [Roster].[Type] = 10 OR [Roster].[Type] = 11 OR [Roster].[Type] = 14 OR [Roster].[Type] = 12"
+        switch (rptname) {            
+            case 'btn-FORPT-ProgramStaffUtilized':
+                fQuery = fQuery + "OR [Roster].[Type] = 6)"
+                break;
+            case 'btn-FORPT-ProgramActivitySpread':
+                fQuery = fQuery + "OR [Roster].[Type] = 6 OR [Roster].[Type] = 9)"
+                break;
+            case 'btn-FORPT-ProgramRecipientServiced':
+                fQuery = fQuery + ")"
+                break;
+        
+            default:
+                break;
+        }
+
+        var lblcriteria;
+
+        
+         
+
+        if (branch != ""){
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        }
+        if (startdate != "" ||enddate != ""){
+       
+       
+           let strkey = Datetype.toString();
+           switch (strkey) {
+                
+                case "Pay Period EndDate":
+                   
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    break;
+                case 'Billing Date': 
+                  
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    break;
+                case 'Service Date':
+                    
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    break;
+                default:
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    
+                    break;
+                }                         
+           
+        if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
+        //console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(region != ""){
+            this.s_CategorySQL = "Anal in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        if(Staff != ""){
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(status != ""){
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','")  +  "'))";            
+            if (this.s_statusSQL != ""){ fQuery = fQuery + " AND " + this.s_statusSQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+        
+        if(funders != ""){
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','")  +  "')";            
+            if (this.s_FundersSQL != ""){ fQuery = fQuery + " AND " + this.s_FundersSQL};
+        }
+        if(RosterCategory != ""){
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','")  +  "')";            
+            if (this.s_RosterCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_RosterCategorySQL};
+        }
+        if(HACCCategory != ""){
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','")  +  "')";            
+            if (this.s_HACCCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_HACCCategorySQL};
+        }
+        if(mdsagencyID != ""){
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','")  +  "')";            
+            if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
+        }
+
+        if(Age != ""){            
+            let tempkay = (Age.toString()).substring(0,8);            
+            switch (tempkay) {
+                case "Under 65":
+                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                    break;
+                case "Over 64 ":
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+            
+                default:                   
+                    break;
+            }           
+           
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+           
+        }
+     
+        if(outletid != ""){
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','")  +  "')";            
+            if (this.s_OutletIDSQL != ""){ fQuery = fQuery + " AND " + this.s_OutletIDSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(stafftype != ""){
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','")  +  "')";            
+            if (this.s_StafftypeSQL != ""){ fQuery = fQuery + " AND " + this.s_StafftypeSQL};
+        } 
+        if(paytype != ""){
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','")  +  "')";            
+            if (this.s_paytypeSQL != ""){ fQuery = fQuery + " AND " + this.s_paytypeSQL};
+        }
+        if(activity != ""){
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','")  +  "')";            
+            if (this.s_activitySQL != ""){ fQuery = fQuery + " AND " + this.s_activitySQL};
+        }
+        if(settings != ""){
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','")  +  "')";            
+            if (this.s_setting_vehicleSQL != ""){ fQuery = fQuery + " AND " + this.s_setting_vehicleSQL};
+        }
+
+
+
+
+
+        if (startdate != ""){ 
+            lblcriteria =  " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria = " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        
+
+        if(outletid != ""){
+           var OutletID = outletid.join(",") + "; "        } 
+            else{OutletID =  " All "
+        }
+        
+
+        if(Datetype != ""){
+            var Datetypes =  Datetype.join(",") + "; "        } 
+            else{Datetypes =  " Service Date "
+        }
+        
+
+        if(Age != ""){
+            var Age_ATSI =  Age.join(",") + "; "        } 
+            else{Age_ATSI =  " All "
+        }
+       
+
+
+        if(mdsagencyID != ""){
+            var mdsagency =  mdsagencyID.join(",") + "; "        } 
+            else{mdsagency =  " All "
+        }
+        
+
+
+        if(HACCCategory != ""){
+            var HACCCategories =  HACCCategory.join(",") + "; "        } 
+            else{HACCCategories =  " All "
+        }
+        
+
+
+        if(RosterCategory != ""){
+            var RosterCategories = RosterCategory.join(",") + "; "        } 
+            else{RosterCategories =  " All "
+        }
+     
+        if(program != ""){
+            var programs =  program.join(",") + "; "        } 
+            else{programs =  " All "
+        }
+        
+
+
+        if(Staff != ""){
+            var Staffs = Staff.join(",") + "; "        } 
+            else{Staffs =  " All "
+        }
+        
+
+
+        if(staffteam != ""){
+            var staffteams =  staffteam.join(",") + "; "        } 
+            else{staffteams =  " All "
+        }
+        
+
+
+        if(stfgroup != ""){
+            var stfgroups =  stfgroup.join(",") + "; "        } 
+            else{stfgroups =  " All "
+        }
+        
+
+
+        if(region != ""){
+            var regions =  region.join(",") + "; "        } 
+            else{regions =  " All "
+        }
+        
+
+        
+        if(manager != ""){
+           var managers =  manager.join(",") + "; "        } 
+            else{managers =  " All "
+        }
+        
+        
+         if(funders != ""){
+            var fundingsource =  funders.join(",") + "; "        } 
+             else{fundingsource =  " All "
+         }
+         
+
+         if(status != ""){
+            var statuscat =  status.join(",") + "; "        } 
+             else{statuscat =  " All "
+         }
+        
+
+
+         if(recipient != ""){
+            var recipients =  recipient.join(",") + "; "        } 
+             else{recipients =  " All "
+         }
+         
+
+         if(stafftype != ""){
+            var stafftypes =  stafftype.join(",") + "; "        } 
+             else{stafftypes =  " All "
+         }
+         
+         if(paytype != ""){
+            var paytypes =  paytype.join(",") + "; "        } 
+             else{paytypes =  " All "
+         }
+         if(activity != ""){
+            var activities =  activity.join(",") + "; "        } 
+             else{activities =  " All "
+         }
+         if(settings != ""){
+            var setting =  settings.join(",") + "; "        } 
+             else{setting =  " All "
+         }
+
+         
+         switch (rptname) {            
+            case 'btn-FORPT-ProgramStaffUtilized':
+                fQuery = fQuery + "ORDER BY [Program], [Carer Code], Date, [Start Time]";
+                var Title = "PROGRAM STAFF UTILISED REPORT";
+                var Report_Definer = "This report summarises all services delivered to Recipients by the Agency, (either by Agency Staff or Brokered organisations acting on behalf of the Agency, and Travel Time Attributable to Recipients), during the selected period."
+                break;
+            case 'btn-FORPT-ProgramRecipientServiced':
+                fQuery = fQuery + "ORDER BY [Program], [Client Code], Date, [Start Time]";
+                var Title = "PROGRAM RECIPIENT SERVICED REPORT";
+                var Report_Definer = "This report includes all Services attributed to Funded Programs during the selected period.It optionally includes allowances or Staff Administration."
+                break;
+            case 'btn-FORPT-ProgramActivitySpread':
+                fQuery = fQuery + "ORDER BY [Program], [Service Type], Date, [Start Time]";
+                var Title = "PROGRAM ACTIVITY SPREAD REPORT";
+                var Report_Definer = "This report includes all Services attributed to Funded Programs during the selected period.It includes Staff allowances"
+                break;
+        
+            default:
+                break;
+        }
+               
+               
+               
+               
+       // console.log(fQuery)
+       
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"IlzJ8y3CcohttpLy"  },    
+                "options": {
+                    "reports": { "save": false },
+                    
+                    "txtTitle":Title,
+         
+
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+
+                    "txtregions": regions, 
+                    "txtstfgroups": stfgroups, 
+                    "txtstaffteams":staffteams, 
+                    "txtStaffs":Staffs ,
+                    "txtprograms":programs,  
+                    "txtRosterCategories":RosterCategories,
+                    "txtHACCCategories":HACCCategories,
+                    "txtmdsagency":mdsagency,
+                    "txtAge_ATSI":Age_ATSI ,
+                    "txtDatetypes":Datetypes,
+                    "txtmanagers":managers ,
+                    "txtfundingsource":fundingsource,                
+                    "txtOutletID":OutletID,
+                    "txtstatuscat":statuscat,
+                    "txtrecipients":recipients,
+                    "txtstafftypes":stafftypes,
+                    "txtpaytypes":paytypes,
+                    "txtactivities":activities,
+                    "txtsetting":setting,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
+    ProgramBillingReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings){
+       
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE ([Client Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') AND ([Roster].[Type] = 2 OR ([Roster].[Type] = 4 AND [Roster].[Carer Code] = '!INTERNAL') OR ([Roster].[Type] = 1) OR [Roster].[Type] = 3 OR [Roster].[Type] = 5 OR [Roster].[Type] = 7 OR [Roster].[Type] = 8 OR [Roster].[Type] = 10 OR [Roster].[Type] = 11 OR [Roster].[Type] = 14 OR [Roster].[Type] = 12) "
+        var lblcriteria;
+
+        
+         var Title = "PROGRAM BILLING REPORT";
+         var Report_Definer = "";
+
+        if (branch != ""){
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        }
+        if (startdate != "" ||enddate != ""){
+       
+       
+           let strkey = Datetype.toString();//.substring(0,10);
+           console.log(strkey);
+           switch (strkey) {
+           
+                case "Pay Period EndDate":
+                   
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    break;
+                case 'Billing Date': 
+                  
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    break;
+                case 'Service Date':
+                    
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    break;
+                default:
+                    
+                    break;
+                }                         
+           
+        if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
+       // console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(region != ""){
+            this.s_CategorySQL = "Anal in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        if(Staff != ""){
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(status != ""){
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','")  +  "'))";            
+            if (this.s_statusSQL != ""){ fQuery = fQuery + " AND " + this.s_statusSQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+        
+        if(funders != ""){
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','")  +  "')";            
+            if (this.s_FundersSQL != ""){ fQuery = fQuery + " AND " + this.s_FundersSQL};
+        }
+        if(RosterCategory != ""){
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','")  +  "')";            
+            if (this.s_RosterCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_RosterCategorySQL};
+        }
+        if(HACCCategory != ""){
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','")  +  "')";            
+            if (this.s_HACCCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_HACCCategorySQL};
+        }
+        if(mdsagencyID != ""){
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','")  +  "')";            
+            if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
+        }
+
+        if(Age != ""){            
+            let tempkay = (Age.toString()).substring(0,8);            
+            switch (tempkay) {
+                case "Under 65":
+                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                    break;
+                case "Over 64 ":
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+            
+                default:                   
+                    break;
+            }           
+           
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+           
+        }
+     
+        if(outletid != ""){
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','")  +  "')";            
+            if (this.s_OutletIDSQL != ""){ fQuery = fQuery + " AND " + this.s_OutletIDSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(stafftype != ""){
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','")  +  "')";            
+            if (this.s_StafftypeSQL != ""){ fQuery = fQuery + " AND " + this.s_StafftypeSQL};
+        } 
+        if(paytype != ""){
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','")  +  "')";            
+            if (this.s_paytypeSQL != ""){ fQuery = fQuery + " AND " + this.s_paytypeSQL};
+        }
+        if(activity != ""){
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','")  +  "')";            
+            if (this.s_activitySQL != ""){ fQuery = fQuery + " AND " + this.s_activitySQL};
+        }
+        if(settings != ""){
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','")  +  "')";            
+            if (this.s_setting_vehicleSQL != ""){ fQuery = fQuery + " AND " + this.s_setting_vehicleSQL};
+        }
+
+
+
+
+
+        if (startdate != ""){ 
+            lblcriteria =  " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria = " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        
+
+        if(outletid != ""){
+           var OutletID = outletid.join(",") + "; "        } 
+            else{OutletID =  " All "
+        }
+        
+
+        if(Datetype != ""){
+            var Datetypes =  Datetype.join(",") + "; "        } 
+            else{Datetypes =  " Service Date "
+        }
+        
+
+        if(Age != ""){
+            var Age_ATSI =  Age.join(",") + "; "        } 
+            else{Age_ATSI =  " All "
+        }
+       
+
+
+        if(mdsagencyID != ""){
+            var mdsagency =  mdsagencyID.join(",") + "; "        } 
+            else{mdsagency =  " All "
+        }
+        
+
+
+        if(HACCCategory != ""){
+            var HACCCategories =  HACCCategory.join(",") + "; "        } 
+            else{HACCCategories =  " All "
+        }
+        
+
+
+        if(RosterCategory != ""){
+            var RosterCategories = RosterCategory.join(",") + "; "        } 
+            else{RosterCategories =  " All "
+        }
+     
+        if(program != ""){
+            var programs =  program.join(",") + "; "        } 
+            else{programs =  " All "
+        }
+        
+
+
+        if(Staff != ""){
+            var Staffs = Staff.join(",") + "; "        } 
+            else{Staffs =  " All "
+        }
+        
+
+
+        if(staffteam != ""){
+            var staffteams =  staffteam.join(",") + "; "        } 
+            else{staffteams =  " All "
+        }
+        
+
+
+        if(stfgroup != ""){
+            var stfgroups =  stfgroup.join(",") + "; "        } 
+            else{stfgroups =  " All "
+        }
+        
+
+
+        if(region != ""){
+            var regions =  region.join(",") + "; "        } 
+            else{regions =  " All "
+        }
+        
+
+        
+        if(manager != ""){
+           var managers =  manager.join(",") + "; "        } 
+            else{managers =  " All "
+        }
+        
+        
+         if(funders != ""){
+            var fundingsource =  funders.join(",") + "; "        } 
+             else{fundingsource =  " All "
+         }
+         
+
+         if(status != ""){
+            var statuscat =  status.join(",") + "; "        } 
+             else{statuscat =  " All "
+         }
+        
+
+
+         if(recipient != ""){
+            var recipients =  recipient.join(",") + "; "        } 
+             else{recipients =  " All "
+         }
+         
+
+         if(stafftype != ""){
+            var stafftypes =  stafftype.join(",") + "; "        } 
+             else{stafftypes =  " All "
+         }
+         
+         if(paytype != ""){
+            var paytypes =  paytype.join(",") + "; "        } 
+             else{paytypes =  " All "
+         }
+         if(activity != ""){
+            var activities =  activity.join(",") + "; "        } 
+             else{activities =  " All "
+         }
+         if(settings != ""){
+            var setting =  settings.join(",") + "; "        } 
+             else{setting =  " All "
+         }
+
+         
+         
+               
+               
+                fQuery = fQuery + " ORDER BY [Program], [Client Code], Date, [Start Time]";
+               
+     //   console.log(fQuery)
+       
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"7RdGSvcsDNba5xah"  },    
+                "options": {
+                    "reports": { "save": false },
+                    
+                    "txtTitle":Title,
+         
+
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+
+                    "txtregions": regions, 
+                    "txtstfgroups": stfgroups, 
+                    "txtstaffteams":staffteams, 
+                    "txtStaffs":Staffs ,
+                    "txtprograms":programs,  
+                    "txtRosterCategories":RosterCategories,
+                    "txtHACCCategories":HACCCategories,
+                    "txtmdsagency":mdsagency,
+                    "txtAge_ATSI":Age_ATSI ,
+                    "txtDatetypes":Datetypes,
+                    "txtmanagers":managers ,
+                    "txtfundingsource":fundingsource,                
+                    "txtOutletID":OutletID,
+                    "txtstatuscat":statuscat,
+                    "txtrecipients":recipients,
+                    "txtstafftypes":stafftypes,
+                    "txtpaytypes":paytypes,
+                    "txtactivities":activities,
+                    "txtsetting":setting,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
+    ProgramBudgetAudit(branch,program){
+
+        var fQuery = "SELECT H.[NAME] AS PROGRAM, H.FAX AS [GL CODE], I.ROSTERGROUP AS [ACTIVITY TYPE], I.TITLE AS [ACTIVITY NAME], B.HOURS AS [BUDGET OUTPUTS] FROM HUMANRESOURCETYPES H LEFT JOIN BUDGETS B ON ( H.[NAME] = B.PROGRAM)  LEFT JOIN ITEMTYPES I ON (I.TITLE = B.ACTIVITY AND I.PROCESSCLASSIFICATION = 'OUTPUT') WHERE H.[GROUP] = 'PROGRAMS'";
+        var lblcriteria;
+
+        if(program != ""){
+            this.s_ProgramSQL = " (H.[Name] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        }
+        if(branch != ""){
+            this.s_BranchSQL = " (B.BRANCH in ('" + branch.join("','")  +  "'))";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL}
+        }
+        if (branch != ""){ 
+            lblcriteria = " Branch " + branch.join(",")+ "; "}
+            else{lblcriteria = "All Programs."}
+        if (program != ""){ 
+            lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
+            else{lblcriteria = "All Programs."}
+
+
+            fQuery = fQuery + " ORDER BY H.[Name], I.TITLE "
+        
+           // console.log(fQuery)
+            
+                this.drawerVisible = true;
+            
+                const data =    {
+                    "template": {  "_id":"651WtSGmEJ257yjD"  },    
+                    "options": {
+                        "reports": { "save": false },
+                    
+                        "sql":fQuery,
+                        "Criteria":lblcriteria,
+                        
+                                
+                    }
+                }
+            
+            
+                const headerDict = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',            
+                }
+            
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict)
+                };
+            
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+                    
+                    let _blob: Blob = blob;
+                
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = "Reports.pdf"
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            
+                }, err => {
+                    console.log(err);
+                });  
+    
+    
+    }
+    ProgramSummaryReport(branch,manager,region,program){
+        
+        
+        var fQuery = "SELECT ACCOUNTNO, PROGRAM, ALLOWED, USEDAMOUNT, ALLOWED-USEDAMOUNT AS BALANCE, COSTTYPE, AP_PERUNIT, AP_PERIOD,EXPIREUSING , ALERTSTARTDATE,  Convert(nvarchar,RENEWDATE,23) as RENEWDATE, [REDAMOUNT], [ORANGEAMOUNT], [YELLOWAMOUNT],   BRANCH, [RECIPIENT_COORDINATOR], [AGENCYDEFINEDGROUP] FROM ( SELECT ACCOUNTNO,PROGRAM,ISNULL(AP_BASEDON, 0) AS ALLOWED, ISNULL(AP_COSTTYPE, '') AS COSTTYPE, ISNULL(AP_PERUNIT, '') AS AP_PERUNIT,ISNULL(AP_PERIOD, '') AS AP_PERIOD,ISNULL(EXPIREUSING, '') AS EXPIREUSING,ISNULL(ALERTSTARTDATE, '') AS ALERTSTARTDATE, CASE WHEN AP_PERIOD = 'DAY' THEN DATEADD(DAY,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'WEEK' THEN DATEADD(WEEK,1,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'FORTNIGHT' THEN DATEADD(WEEK,2,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'MONTH' THEN DATEADD(MONTH,1,RP.ALERTSTARTDATE)WHEN AP_PERIOD = '6 WEEKS' THEN DATEADD(WEEK,6,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'QUARTER' THEN DATEADD(MONTH,3,RP.ALERTSTARTDATE)WHEN AP_PERIOD = '6 MONTHS' THEN DATEADD(MONTH,6,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'YEAR' THEN DATEADD(MONTH,12,RP.ALERTSTARTDATE) END AS RENEWDATE,ISNULL(AP_REDQTY, 0) AS [REDAMOUNT], ISNULL(AP_ORANGEQTY, 0) AS [ORANGEAMOUNT], ISNULL(AP_YELLOWQTY, 0) AS [YELLOWAMOUNT],(SELECT ISNULL(SUM(ADMINAMOUNT), 0) + ISNULL(SUM(SERVICEAMOUNT), 0) AS GTOTAL FROM (SELECT CASE WHEN ISNULL(IT.MAINGROUP, 'DIRECT SERVICE') IN ('PACKAGE ADMIN', 'CASE MANAGEMENT') THEN ROUND((DURATION * 5) / 60, 2) END AS ADMINAMOUNT, CASE WHEN ISNULL(IT.MAINGROUP, 'DIRECT SERVICE') NOT IN ('PACKAGE ADMIN', 'CASE MANAGEMENT') THEN ROUND((DURATION * 5) / 60, 2) END AS SERVICEAMOUNT FROM ROSTER RO INNER JOIN ITEMTYPES IT ON RO.[SERVICE TYPE] = IT.TITLE Where RO.[CLIENT CODE] = R.ACCOUNTNO AND RO.[PROGRAM] = RP.PROGRAM AND ISNULL(IT.[EXCLUDEFROMUSAGESTATEMENTS], 0) = 0 AND NOT (RO.[TYPE] = 9 AND RO.[SERVICE DESCRIPTION] = 'CONTRIBUTION') AND RO.DATE > '2000/01/01' AND  (RO.[DATE] BETWEEN RP.ALERTSTARTDATE AND  CASE WHEN AP_PERIOD = 'DAY' THEN DATEADD(DAY,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'WEEK' THEN DATEADD(WEEK,7,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'FORTNIGHT' THEN DATEADD(WEEK,2,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'MONTH' THEN DATEADD(MONTH,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = '6 WEEKS' THEN DATEADD(WEEK,6,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'QUARTER' THEN DATEADD(MONTH,3,RP.ALERTSTARTDATE) WHEN AP_PERIOD = '6 MONTHS' THEN DATEADD(MONTH,6,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'YEAR' THEN DATEADD(MONTH,12,RP.ALERTSTARTDATE) END )) AS T ) AS USEDAMOUNT,  R.BRANCH, [RECIPIENT_COORDINATOR], [AGENCYDEFINEDGROUP] FROM RECIPIENTS R INNER JOIN RECIPIENTPROGRAMS RP ON R.UNIQUEID = RP.PERSONID ) AS T2 WHERE ACCOUNTNO > '!Z'  "
+        var lblcriteria;
+        if (branch != ""){
+            this.s_BranchSQL = "BRANCH in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL}
+            
+        } 
+         if(manager != ""){
+            this.s_CoordinatorSQL = "[RECIPIENT_COOrdinator] in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+            
+        } 
+        if(region != ""){
+            this.s_CategorySQL = "[AgencyDefinedGroup] in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL}
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " (PROGRAM in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+
+        
+        if (branch != ""){ 
+            lblcriteria = "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = " All Branches "}
+        
+         if (manager != ""){
+            lblcriteria =lblcriteria + " Manager: " + manager.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Managers,"}
+        
+        
+        if (region != ""){ 
+            lblcriteria =lblcriteria + " Regions: " + region.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Regions,"}
+        
+       
+        if (program != ""){ 
+            lblcriteria =lblcriteria + " Programs " + program.join(",")+ "; "}
+            else{lblcriteria = lblcriteria + "All Programs."}
+        
+                                                            
+        fQuery = fQuery + " ORDER BY ACCOUNTNO, PROGRAM "
+        
+        /*   
+    console.log(s_BranchSQL)
+    console.log(s_CategorySQL)
+    console.log(s_CoordinatorSQL)*/
+   // console.log(fQuery)
+   // console.log(lblcriteria)
+
+   
+   
+    const data =    {
+        
+        "template": {  "_id":"JzFkyOS6RlKiOeqD"  },    
+        "options": {
+            "reports": { "save": false },
+         //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
+            "sql":fQuery,
+            "Criteria" :  lblcriteria
+        }
+    }
+
+
+    const headerDict = {
+        
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+               
+    }
+      
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict),
+        credentials:true
+    };
+  
+  //this.rpthttp
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+        .subscribe((blob: any) => {
+            console.log(blob);
+            
+            let _blob: Blob = blob;
+           
+            let fileURL = URL.createObjectURL(_blob);
+            this.pdfTitle = "Reports.pdf"
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+
+        }, err => {
+            console.log(err);
+        });    this.drawerVisible = true;     
+    }
+    ActivityGroupReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings){
+       
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE  ([Client Code] > '!MULTIPLE')  And (([Roster].[Type] IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] <> '!MULTIPLE')"
+        var lblcriteria;
+
+        
+         var Title = "ACTIVITY GROUP REPORT";
+         var Report_Definer = "";
+
+        if (branch != ""){
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        }
+        if (startdate != "" ||enddate != ""){
+       
+       
+           let strkey = Datetype.toString();
+           switch (strkey) {
+                
+                case "Pay Period EndDate":
+                   
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    break;
+                case 'Billing Date': 
+                  
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    break;
+                case 'Service Date':
+                    
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    break;
+                default:
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    
+                    break;
+                }                         
+           
+        if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
+       // console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(region != ""){
+            this.s_CategorySQL = "Anal in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        if(Staff != ""){
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(status != ""){
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','")  +  "'))";            
+            if (this.s_statusSQL != ""){ fQuery = fQuery + " AND " + this.s_statusSQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+        
+        if(funders != ""){
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','")  +  "')";            
+            if (this.s_FundersSQL != ""){ fQuery = fQuery + " AND " + this.s_FundersSQL};
+        }
+        if(RosterCategory != ""){
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','")  +  "')";            
+            if (this.s_RosterCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_RosterCategorySQL};
+        }
+        if(HACCCategory != ""){
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','")  +  "')";            
+            if (this.s_HACCCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_HACCCategorySQL};
+        }
+        if(mdsagencyID != ""){
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','")  +  "')";            
+            if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
+        }
+
+        if(Age != ""){            
+            let tempkay = (Age.toString()).substring(0,8);            
+            switch (tempkay) {
+                case "Under 65":
+                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                    break;
+                case "Over 64 ":
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+            
+                default:                   
+                    break;
+            }           
+           
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+           
+        }
+     
+        if(outletid != ""){
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','")  +  "')";            
+            if (this.s_OutletIDSQL != ""){ fQuery = fQuery + " AND " + this.s_OutletIDSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(stafftype != ""){
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','")  +  "')";            
+            if (this.s_StafftypeSQL != ""){ fQuery = fQuery + " AND " + this.s_StafftypeSQL};
+        } 
+        if(paytype != ""){
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','")  +  "')";            
+            if (this.s_paytypeSQL != ""){ fQuery = fQuery + " AND " + this.s_paytypeSQL};
+        }
+        if(activity != ""){
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','")  +  "')";            
+            if (this.s_activitySQL != ""){ fQuery = fQuery + " AND " + this.s_activitySQL};
+        }
+        if(settings != ""){
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','")  +  "')";            
+            if (this.s_setting_vehicleSQL != ""){ fQuery = fQuery + " AND " + this.s_setting_vehicleSQL};
+        }
+
+
+
+
+
+        if (startdate != ""){ 
+            lblcriteria =  " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria = " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        
+
+        if(outletid != ""){
+           var OutletID = outletid.join(",") + "; "        } 
+            else{OutletID =  " All "
+        }
+        
+
+        if(Datetype != ""){
+            var Datetypes =  Datetype.join(",") + "; "        } 
+            else{Datetypes =  " Service Date "
+        }
+        
+
+        if(Age != ""){
+            var Age_ATSI =  Age.join(",") + "; "        } 
+            else{Age_ATSI =  " All "
+        }
+       
+
+
+        if(mdsagencyID != ""){
+            var mdsagency =  mdsagencyID.join(",") + "; "        } 
+            else{mdsagency =  " All "
+        }
+        
+
+
+        if(HACCCategory != ""){
+            var HACCCategories =  HACCCategory.join(",") + "; "        } 
+            else{HACCCategories =  " All "
+        }
+        
+
+
+        if(RosterCategory != ""){
+            var RosterCategories = RosterCategory.join(",") + "; "        } 
+            else{RosterCategories =  " All "
+        }
+     
+        if(program != ""){
+            var programs =  program.join(",") + "; "        } 
+            else{programs =  " All "
+        }
+        
+
+
+        if(Staff != ""){
+            var Staffs = Staff.join(",") + "; "        } 
+            else{Staffs =  " All "
+        }
+        
+
+
+        if(staffteam != ""){
+            var staffteams =  staffteam.join(",") + "; "        } 
+            else{staffteams =  " All "
+        }
+        
+
+
+        if(stfgroup != ""){
+            var stfgroups =  stfgroup.join(",") + "; "        } 
+            else{stfgroups =  " All "
+        }
+        
+
+
+        if(region != ""){
+            var regions =  region.join(",") + "; "        } 
+            else{regions =  " All "
+        }
+        
+
+        
+        if(manager != ""){
+           var managers =  manager.join(",") + "; "        } 
+            else{managers =  " All "
+        }
+        
+        
+         if(funders != ""){
+            var fundingsource =  funders.join(",") + "; "        } 
+             else{fundingsource =  " All "
+         }
+         
+
+         if(status != ""){
+            var statuscat =  status.join(",") + "; "        } 
+             else{statuscat =  " All "
+         }
+        
+
+
+         if(recipient != ""){
+            var recipients =  recipient.join(",") + "; "        } 
+             else{recipients =  " All "
+         }
+         
+
+         if(stafftype != ""){
+            var stafftypes =  stafftype.join(",") + "; "        } 
+             else{stafftypes =  " All "
+         }
+         
+         if(paytype != ""){
+            var paytypes =  paytype.join(",") + "; "        } 
+             else{paytypes =  " All "
+         }
+         if(activity != ""){
+            var activities =  activity.join(",") + "; "        } 
+             else{activities =  " All "
+         }
+         if(settings != ""){
+            var setting =  settings.join(",") + "; "        } 
+             else{setting =  " All "
+         }
+
+         
+         
+               
+               
+                fQuery = fQuery + " ORDER BY [Service Type], [Anal], Date, [Start Time] ";
+               
+       // console.log(fQuery)
+       
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"EUpoRvslDL2jReMC"  },    
+                "options": {
+                    "reports": { "save": false },
+                    
+                    "txtTitle":Title,
+         
+
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+
+                    "txtregions": regions, 
+                    "txtstfgroups": stfgroups, 
+                    "txtstaffteams":staffteams, 
+                    "txtStaffs":Staffs ,
+                    "txtprograms":programs,  
+                    "txtRosterCategories":RosterCategories,
+                    "txtHACCCategories":HACCCategories,
+                    "txtmdsagency":mdsagency,
+                    "txtAge_ATSI":Age_ATSI ,
+                    "txtDatetypes":Datetypes,
+                    "txtmanagers":managers ,
+                    "txtfundingsource":fundingsource,                
+                    "txtOutletID":OutletID,
+                    "txtstatuscat":statuscat,
+                    "txtrecipients":recipients,
+                    "txtstafftypes":stafftypes,
+                    "txtpaytypes":paytypes,
+                    "txtactivities":activities,
+                    "txtsetting":setting,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
+    StaffActivityReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings){
+       
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE ([Carer Code] > '!MULTIPLE')  And ( [Roster].[Type] In (1,2,5,6,7,8,10,11,12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') ) "
+        var lblcriteria;
+
+        
+         var Title = "STAFF ACTIVITY REPORT";
+         var Report_Definer = "";
+
+        if (branch != ""){
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        }
+        if (startdate != "" ||enddate != ""){
+       
+       
+           let strkey = Datetype.toString();
+           switch (strkey) {
+                
+                case "Pay Period EndDate":
+                   
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    break;
+                case 'Billing Date': 
+                  
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    break;
+                case 'Service Date':
+                    
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    break;
+                default:
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    
+                    break;
+                }                         
+           
+        if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
+        //console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(region != ""){
+            this.s_CategorySQL = "Anal in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        if(Staff != ""){
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(status != ""){
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','")  +  "'))";            
+            if (this.s_statusSQL != ""){ fQuery = fQuery + " AND " + this.s_statusSQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+        
+        if(funders != ""){
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','")  +  "')";            
+            if (this.s_FundersSQL != ""){ fQuery = fQuery + " AND " + this.s_FundersSQL};
+        }
+        if(RosterCategory != ""){
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','")  +  "')";            
+            if (this.s_RosterCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_RosterCategorySQL};
+        }
+        if(HACCCategory != ""){
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','")  +  "')";            
+            if (this.s_HACCCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_HACCCategorySQL};
+        }
+        if(mdsagencyID != ""){
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','")  +  "')";            
+            if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
+        }
+
+        if(Age != ""){            
+            let tempkay = (Age.toString()).substring(0,8);            
+            switch (tempkay) {
+                case "Under 65":
+                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                    break;
+                case "Over 64 ":
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+            
+                default:                   
+                    break;
+            }           
+           
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+           
+        }
+     
+        if(outletid != ""){
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','")  +  "')";            
+            if (this.s_OutletIDSQL != ""){ fQuery = fQuery + " AND " + this.s_OutletIDSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(stafftype != ""){
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','")  +  "')";            
+            if (this.s_StafftypeSQL != ""){ fQuery = fQuery + " AND " + this.s_StafftypeSQL};
+        } 
+        if(paytype != ""){
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','")  +  "')";            
+            if (this.s_paytypeSQL != ""){ fQuery = fQuery + " AND " + this.s_paytypeSQL};
+        }
+        if(activity != ""){
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','")  +  "')";            
+            if (this.s_activitySQL != ""){ fQuery = fQuery + " AND " + this.s_activitySQL};
+        }
+        if(settings != ""){
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','")  +  "')";            
+            if (this.s_setting_vehicleSQL != ""){ fQuery = fQuery + " AND " + this.s_setting_vehicleSQL};
+        }
+
+
+
+
+
+        if (startdate != ""){ 
+            lblcriteria =  " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria = " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        
+
+        if(outletid != ""){
+           var OutletID = outletid.join(",") + "; "        } 
+            else{OutletID =  " All "
+        }
+        
+
+        if(Datetype != ""){
+            var Datetypes =  Datetype.join(",") + "; "        } 
+            else{Datetypes =  " Service Date "
+        }
+        
+
+        if(Age != ""){
+            var Age_ATSI =  Age.join(",") + "; "        } 
+            else{Age_ATSI =  " All "
+        }
+       
+
+
+        if(mdsagencyID != ""){
+            var mdsagency =  mdsagencyID.join(",") + "; "        } 
+            else{mdsagency =  " All "
+        }
+        
+
+
+        if(HACCCategory != ""){
+            var HACCCategories =  HACCCategory.join(",") + "; "        } 
+            else{HACCCategories =  " All "
+        }
+        
+
+
+        if(RosterCategory != ""){
+            var RosterCategories = RosterCategory.join(",") + "; "        } 
+            else{RosterCategories =  " All "
+        }
+     
+        if(program != ""){
+            var programs =  program.join(",") + "; "        } 
+            else{programs =  " All "
+        }
+        
+
+
+        if(Staff != ""){
+            var Staffs = Staff.join(",") + "; "        } 
+            else{Staffs =  " All "
+        }
+        
+
+
+        if(staffteam != ""){
+            var staffteams =  staffteam.join(",") + "; "        } 
+            else{staffteams =  " All "
+        }
+        
+
+
+        if(stfgroup != ""){
+            var stfgroups =  stfgroup.join(",") + "; "        } 
+            else{stfgroups =  " All "
+        }
+        
+
+
+        if(region != ""){
+            var regions =  region.join(",") + "; "        } 
+            else{regions =  " All "
+        }
+        
+
+        
+        if(manager != ""){
+           var managers =  manager.join(",") + "; "        } 
+            else{managers =  " All "
+        }
+        
+        
+         if(funders != ""){
+            var fundingsource =  funders.join(",") + "; "        } 
+             else{fundingsource =  " All "
+         }
+         
+
+         if(status != ""){
+            var statuscat =  status.join(",") + "; "        } 
+             else{statuscat =  " All "
+         }
+        
+
+
+         if(recipient != ""){
+            var recipients =  recipient.join(",") + "; "        } 
+             else{recipients =  " All "
+         }
+         
+
+         if(stafftype != ""){
+            var stafftypes =  stafftype.join(",") + "; "        } 
+             else{stafftypes =  " All "
+         }
+         
+         if(paytype != ""){
+            var paytypes =  paytype.join(",") + "; "        } 
+             else{paytypes =  " All "
+         }
+         if(activity != ""){
+            var activities =  activity.join(",") + "; "        } 
+             else{activities =  " All "
+         }
+         if(settings != ""){
+            var setting =  settings.join(",") + "; "        } 
+             else{setting =  " All "
+         }
+
+         
+         
+               
+               
+                fQuery = fQuery + "ORDER BY [Carer Code], [Service Type], Date, [Start Time]";
+               
+//        console.log(fQuery)
+       
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"Cjq0J0FwEE9NpEjG"  },    
+                "options": {
+                    "reports": { "save": false },
+                    
+                    "txtTitle":Title,
+         
+
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+
+                    "txtregions": regions, 
+                    "txtstfgroups": stfgroups, 
+                    "txtstaffteams":staffteams, 
+                    "txtStaffs":Staffs ,
+                    "txtprograms":programs,  
+                    "txtRosterCategories":RosterCategories,
+                    "txtHACCCategories":HACCCategories,
+                    "txtmdsagency":mdsagency,
+                    "txtAge_ATSI":Age_ATSI ,
+                    "txtDatetypes":Datetypes,
+                    "txtmanagers":managers ,
+                    "txtfundingsource":fundingsource,                
+                    "txtOutletID":OutletID,
+                    "txtstatuscat":statuscat,
+                    "txtrecipients":recipients,
+                    "txtstafftypes":stafftypes,
+                    "txtpaytypes":paytypes,
+                    "txtactivities":activities,
+                    "txtsetting":setting,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
+    StaffAdminReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings){
+       
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE ([Carer Code] <> '!MULTIPLE')  And [Roster].[Type] in (1, 6)"
+        var lblcriteria;
+
+        
+         var Title = "STAFF ADMIN REPORT";
+         var Report_Definer = "";
+
+        if (branch != ""){
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
+            if (this.s_BranchSQL != ""){ fQuery = fQuery + " AND " + this.s_BranchSQL};            
+        }
+        if (startdate != "" ||enddate != ""){
+       
+       
+           let strkey = Datetype.toString();
+           switch (strkey) {
+                
+                case "Pay Period EndDate":
+                   
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    break;
+                case 'Billing Date': 
+                  
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    break;
+                case 'Service Date':
+                    
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    break;
+                default:
+                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    
+                    break;
+                }                         
+           
+        if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
+       // console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if(manager != ""){
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
+            if (this.s_CoordinatorSQL != ""){ fQuery = fQuery + " AND " + this.s_CoordinatorSQL};
+        }
+        if(region != ""){
+            this.s_CategorySQL = "Anal in ('" + region.join("','")  +  "')";            
+            if (this.s_CategorySQL != ""){ fQuery = fQuery + " AND " + this.s_CategorySQL};
+        }
+        if(stfgroup != ""){
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','")  +  "'))";            
+            if (this.s_StfGroupSQL != ""){ fQuery = fQuery + " AND " + this.s_StfGroupSQL};
+        }
+        if(staffteam != ""){
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','")  +  "'))";            
+            if (this.s_StfTeamSQL != ""){ fQuery = fQuery + " AND " + this.s_StfTeamSQL};
+             }
+        if(Staff != ""){
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','")  +  "'))";            
+            if (this.s_StfSQL != ""){ fQuery = fQuery + " AND " + this.s_StfSQL};
+        }
+        if(status != ""){
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','")  +  "'))";            
+            if (this.s_statusSQL != ""){ fQuery = fQuery + " AND " + this.s_statusSQL};
+        }
+        if(program != ""){
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
+            if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
+        } 
+        
+        if(funders != ""){
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','")  +  "')";            
+            if (this.s_FundersSQL != ""){ fQuery = fQuery + " AND " + this.s_FundersSQL};
+        }
+        if(RosterCategory != ""){
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','")  +  "')";            
+            if (this.s_RosterCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_RosterCategorySQL};
+        }
+        if(HACCCategory != ""){
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','")  +  "')";            
+            if (this.s_HACCCategorySQL != ""){ fQuery = fQuery + " AND " + this.s_HACCCategorySQL};
+        }
+        if(mdsagencyID != ""){
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','")  +  "')";            
+            if (this.s_MdsAgencySQL != ""){ fQuery = fQuery + " AND " + this.s_MdsAgencySQL};
+        }
+
+        if(Age != ""){            
+            let tempkay = (Age.toString()).substring(0,8);            
+            switch (tempkay) {
+                case "Under 65":
+                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                    break;
+                case "Over 64 ":
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+            
+                default:                   
+                    break;
+            }           
+           
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+           
+        }
+     
+        if(outletid != ""){
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','")  +  "')";            
+            if (this.s_OutletIDSQL != ""){ fQuery = fQuery + " AND " + this.s_OutletIDSQL};
+        }
+        if(recipient != ""){
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','")  +  "')";            
+            if (this.s_RecipientSQL != ""){ fQuery = fQuery + " AND " + this.s_RecipientSQL};            
+        }
+        if(stafftype != ""){
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','")  +  "')";            
+            if (this.s_StafftypeSQL != ""){ fQuery = fQuery + " AND " + this.s_StafftypeSQL};
+        } 
+        if(paytype != ""){
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','")  +  "')";            
+            if (this.s_paytypeSQL != ""){ fQuery = fQuery + " AND " + this.s_paytypeSQL};
+        }
+        if(activity != ""){
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','")  +  "')";            
+            if (this.s_activitySQL != ""){ fQuery = fQuery + " AND " + this.s_activitySQL};
+        }
+        if(settings != ""){
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','")  +  "')";            
+            if (this.s_setting_vehicleSQL != ""){ fQuery = fQuery + " AND " + this.s_setting_vehicleSQL};
+        }
+
+
+
+
+
+        if (startdate != ""){ 
+            lblcriteria =  " Date Between " +startdate  + " and "+ enddate +"; "}
+            else{lblcriteria = " All Dated "}
+        if (branch != ""){ 
+            lblcriteria =lblcriteria + "Branches:" + branch.join(",") + "; "        } 
+            else{lblcriteria = lblcriteria + " All Branches "}
+        
+
+        if(outletid != ""){
+           var OutletID = outletid.join(",") + "; "        } 
+            else{OutletID =  " All "
+        }
+        
+
+        if(Datetype != ""){
+            var Datetypes =  Datetype.join(",") + "; "        } 
+            else{Datetypes =  " Service Date "
+        }
+        
+
+        if(Age != ""){
+            var Age_ATSI =  Age.join(",") + "; "        } 
+            else{Age_ATSI =  " All "
+        }
+       
+
+
+        if(mdsagencyID != ""){
+            var mdsagency =  mdsagencyID.join(",") + "; "        } 
+            else{mdsagency =  " All "
+        }
+        
+
+
+        if(HACCCategory != ""){
+            var HACCCategories =  HACCCategory.join(",") + "; "        } 
+            else{HACCCategories =  " All "
+        }
+        
+
+
+        if(RosterCategory != ""){
+            var RosterCategories = RosterCategory.join(",") + "; "        } 
+            else{RosterCategories =  " All "
+        }
+     
+        if(program != ""){
+            var programs =  program.join(",") + "; "        } 
+            else{programs =  " All "
+        }
+        
+
+
+        if(Staff != ""){
+            var Staffs = Staff.join(",") + "; "        } 
+            else{Staffs =  " All "
+        }
+        
+
+
+        if(staffteam != ""){
+            var staffteams =  staffteam.join(",") + "; "        } 
+            else{staffteams =  " All "
+        }
+        
+
+
+        if(stfgroup != ""){
+            var stfgroups =  stfgroup.join(",") + "; "        } 
+            else{stfgroups =  " All "
+        }
+        
+
+
+        if(region != ""){
+            var regions =  region.join(",") + "; "        } 
+            else{regions =  " All "
+        }
+        
+
+        
+        if(manager != ""){
+           var managers =  manager.join(",") + "; "        } 
+            else{managers =  " All "
+        }
+        
+        
+         if(funders != ""){
+            var fundingsource =  funders.join(",") + "; "        } 
+             else{fundingsource =  " All "
+         }
+         
+
+         if(status != ""){
+            var statuscat =  status.join(",") + "; "        } 
+             else{statuscat =  " All "
+         }
+        
+
+
+         if(recipient != ""){
+            var recipients =  recipient.join(",") + "; "        } 
+             else{recipients =  " All "
+         }
+         
+
+         if(stafftype != ""){
+            var stafftypes =  stafftype.join(",") + "; "        } 
+             else{stafftypes =  " All "
+         }
+         
+         if(paytype != ""){
+            var paytypes =  paytype.join(",") + "; "        } 
+             else{paytypes =  " All "
+         }
+         if(activity != ""){
+            var activities =  activity.join(",") + "; "        } 
+             else{activities =  " All "
+         }
+         if(settings != ""){
+            var setting =  settings.join(",") + "; "        } 
+             else{setting =  " All "
+         }
+
+         
+         
+               
+               
+                fQuery = fQuery + "ORDER BY [Service Type], [Client Code], Date, [Start Time]";
+               
+      //  console.log(fQuery)
+       
+        
+            this.drawerVisible = true;
+        
+            const data =    {
+                "template": {  "_id":"52x7yFFEwpini1aA"  },    
+                "options": {
+                    "reports": { "save": false },
+                    
+                    "txtTitle":Title,
+         
+
+                    "sql":fQuery,
+                    "Criteria":lblcriteria,
+
+                    "txtregions": regions, 
+                    "txtstfgroups": stfgroups, 
+                    "txtstaffteams":staffteams, 
+                    "txtStaffs":Staffs ,
+                    "txtprograms":programs,  
+                    "txtRosterCategories":RosterCategories,
+                    "txtHACCCategories":HACCCategories,
+                    "txtmdsagency":mdsagency,
+                    "txtAge_ATSI":Age_ATSI ,
+                    "txtDatetypes":Datetypes,
+                    "txtmanagers":managers ,
+                    "txtfundingsource":fundingsource,                
+                    "txtOutletID":OutletID,
+                    "txtstatuscat":statuscat,
+                    "txtrecipients":recipients,
+                    "txtstafftypes":stafftypes,
+                    "txtpaytypes":paytypes,
+                    "txtactivities":activities,
+                    "txtsetting":setting,
+                    
+                            
+                }
+            }
+        
+        
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',            
+            }
+        
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+        
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+                
+                let _blob: Blob = blob;
+            
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Reports.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        
+            }, err => {
+                console.log(err);
+            });  
+
+    }
 
 
     

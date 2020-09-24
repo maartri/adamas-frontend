@@ -134,7 +134,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     this.staffForm.get('surnameOrg').valueChanges
       .pipe(
-        take(1),
         debounceTime(500)
       )
       .subscribe(data => {
@@ -204,6 +203,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
       this.verifyAccountPerOrg
           .pipe(
             debounceTime(300),
+            distinctUntilChanged(),
             concatMap(data => {
               this.accountTaken = null;  
               if(data){
@@ -217,27 +217,22 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               this.accountTaken = false;
               this.staffForm.patchValue({
                 accountNo: this.generatedAccount.toUpperCase()
-              });
+              }, { emitEvent: false});
             }
     
             if (next == 0) {
               this.accountTaken = true;
             }
+            this.cd.markForCheck();
       });
-  }
-
-  Disable(){
-    // this.staffForm.controls['accountNo'].reset(null,{onlySelf:true, emitEvent:false});
-    this.staffForm.controls['accountNo'].disable({onlySelf:true, emitEvent:false});
-  }
-
-  Enable(){
-    this.staffForm.controls['accountNo'].enable({onlySelf:true,  emitEvent:false});
   }
 
   checkIfPersonalDetailsHasNoValue(): boolean {
     const { surnameOrg, firstName, birthDate, gender } = this.staffForm.value;
-    return (!this.globalS.isEmpty(surnameOrg) &&  !this.globalS.isEmpty(firstName) && !this.globalS.isEmpty(birthDate) && !this.globalS.isEmpty(gender));
+    return (!this.globalS.isEmpty(surnameOrg) 
+              &&  !this.globalS.isEmpty(firstName) 
+              && !this.globalS.isEmpty(birthDate) 
+              && !this.globalS.isEmpty(gender));
   }
 
   clearPersonalDetails(): void{
@@ -369,7 +364,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   }
 
   get nextRequired() {
-    if(this.current == 0 && (!this.globalS.isEmpty(this.staffForm.get('surnameOrg').value) && (this.staffForm.get('orgType').value === 'Organisation'))) return true;
+    if(this.current == 0 && (!this.globalS.isEmpty(this.staffForm.get('surnameOrg').value)   && (!this.accountTaken) && (this.staffForm.get('orgType').value === 'Organisation'))) return true;
     if(this.current == 0 && (this.staffForm.get('orgType').value === 'Individual') && this.checkIfPersonalDetailsHasNoValue()  && (!this.accountTaken) && !this.globalS.isEmpty(this.staffForm.get('accountNo').value)) return true;
     if(this.current > 0) return true;
     return false;

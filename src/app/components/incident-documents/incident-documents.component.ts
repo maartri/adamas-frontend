@@ -4,12 +4,27 @@ import { UploadChangeParam } from 'ng-zorro-antd/upload';
 
 import { UploadXHRArgs } from 'ng-zorro-antd/upload';
 import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
-import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
-import { TimeSheetService, GlobalService, UploadService } from '@services/index';
+
+import { TimeSheetService, GlobalService, UploadService, ListService, dateFormat } from '@services/index';
 import * as _ from 'lodash';
+import { filter } from 'rxjs/operators';
 
 const noop = () => { };
+
+const defaultIncidentForm: any = {
+  name: '',
+  discipline: null,
+  program: null,
+  careDomain: null,
+  classification: null,
+  category: null,
+  reminderDate: null,
+  publishToApp: [false],
+  reminderText: '',
+  notes: ''
+}
 
 
 interface IncidentDocument {
@@ -37,13 +52,27 @@ export class IncidentDocumentsComponent implements OnInit {
   acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";
   defaultFileList = [];
   fileList2: Array<any> = [];
-  urlPath: string;
+
+  urlPath: string = `api/v2/file/upload-incident-document-procedure`;
 
   loadedFiles: Array<any> = [];
   token: any;
   loadDocument: boolean = false;
+  modalInfoOpen: boolean =  false;
 
   innerValue: IncidentDocument;
+
+  incidentForm: FormGroup;
+
+  listPrograms: Array<any> = [];
+  listCareDomain: Array<any> = [];
+  listClassification: Array<any> = [];
+  listCategories: Array<any> = [];
+  listDiscipline: Array<any> = [];
+
+  dateFormat: string = dateFormat;
+
+  file: File;
 
   constructor(
     private msg: NzMessageService,
@@ -51,7 +80,9 @@ export class IncidentDocumentsComponent implements OnInit {
     private uploadS: UploadService,
     private timeS: TimeSheetService,
     private globalS: GlobalService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private listS: ListService
   ) {
 
   }
@@ -70,8 +101,10 @@ export class IncidentDocumentsComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
-    // console.log(this.token);
+    this.buildForm();
+
+    this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
+    console.log(this.token);
   }
 
   loadFiles() {
@@ -88,33 +121,105 @@ export class IncidentDocumentsComponent implements OnInit {
 
   }
 
-  customReq = (item: UploadXHRArgs) => {
-    console.log(item);
+  buildForm(){
+    this.incidentForm = this.fb.group(defaultIncidentForm);
+
+  }
+
+  populate(){
+    this.listS.getprogramsincident(this.innerValue.id).subscribe((data: Array<string>) =>{
+      data.push('VARIOUS');
+      this.listPrograms = data;
+
+      this.incidentForm.patchValue({ program: 'VARIOUS'});
+    });
+
+    this.listS.getcaredomain().subscribe(data => {
+      data.push('VARIOUS')
+      this.listCareDomain = data;
+      this.incidentForm.patchValue({ careDomain: 'VARIOUS'});
+    })
+
+    this.listS.getdiscipline().subscribe(data => {
+      data.push('VARIOUS')
+      this.listDiscipline = data;
+      this.incidentForm.patchValue({ discipline: 'VARIOUS'});
+    })
+
+    this.listS.getfileclassification().subscribe(data => {
+      this.listClassification = data;
+    });
+
+    this.listS.getdocumentcategory().subscribe(data => {
+      this.listCategories = data;
+    });
+  }
+
+  resetForm(){
+    this.incidentForm.reset(defaultIncidentForm);
+  }
+
+  beforeUpload = (file: File): boolean => {
+    this.file = file;
+    console.log(file);
+    
+    this.incidentForm.patchValue({
+      name: this.globalS.removeExtension(this.file.name)
+    });
+
+    this.modalInfoOpen = true;
+
+    return false;
+  };
+
+  handleCancel(){
+    this.modalInfoOpen = false;
+  }
+
+  customReq = () => {
+    console.log(this.incidentForm.value)
+
+    console.log(this.file);
+
     const formData = new FormData();
-    formData.append('file', item.file as any);
+
+    const { program, discipline, careDomain, classification, category, reminderDate, publishToApp, reminderText, notes  } = this.incidentForm.value;
+    
+    formData.append('file', this.file as any);
     formData.append('data', JSON.stringify({
-      PersonID: this.token.uniqueID,
-      DocPath: this.token.recipientDocFolder
+      PersonID: this.innerValue.id,
+      DocPath: this.token.recipientDocFolder,
+      
+      Program: program,
+      Discipline: discipline,
+      CareDomain: careDomain,
+      Classification: classification,
+      Category: category,
+      ReminderDate: reminderDate,
+      PublishToApp: publishToApp,
+      ReminderText: reminderText,
+      Notes: notes
     }))
 
-    const req = new HttpRequest('POST', item.action!, formData, {
+    const req = new HttpRequest('POST', this.urlPath, formData, {
       reportProgress: true,
       withCredentials: true
     });
 
-    return this.http.request(req).subscribe(
+    this.http.request(req).pipe(filter(e => e instanceof HttpResponse)).subscribe(
       (event: HttpEvent<any>) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          if (event.total! > 0) {
-            (event as any).percent = (event.loaded / event.total!) * 100;
-          }
-          item.onProgress!(event, item.file!);
-        } else if (event instanceof HttpResponse) {
-          item.onSuccess!(event.body, item.file!, event);
-        }
+        console.log(event);
+        // if (event.type === HttpEventType.UploadProgress) {
+        //   if (event.total! > 0) {
+        //     (event as any).percent = (event.loaded / event.total!) * 100;
+        //   }
+        //   item.onProgress!(event, item.file!);
+        // } else if (event instanceof HttpResponse) {
+        //   item.onSuccess!(event.body, item.file!, event);
+        // }
       },
       err => {
-        item.onError!(err, item.file!);
+        // item.onError!(err, item.file!);
       }
     );
     
@@ -138,7 +243,6 @@ export class IncidentDocumentsComponent implements OnInit {
   downloadDocument(index: number) {
     const { docID, filename, type, originalLocation } = this.loadedFiles[index];
 
-    console.log(this.loadedFiles[index])
     this.uploadS.downloadFileDocumentInProjectDirectory({
       PersonID: this.token.id,
       Extension: type,
@@ -162,7 +266,8 @@ export class IncidentDocumentsComponent implements OnInit {
   writeValue(value: IncidentDocument = null) {
     if (value != null) {
       this.innerValue = value;
-      this.urlPath = `api/v2/file/upload-document-procedure`;
+      console.log(value);
+      this.populate();      
       this.loadFiles();
     }
   }

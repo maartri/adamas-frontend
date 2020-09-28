@@ -9,3 +9,13 @@ ul{
 .doc-wrapper label{
     font-weight: 500;
 }
+nz-select{
+    width:100%;
+}
+label.chk{
+    position: absolute;
+    top: 1.5rem;
+}
+textarea{
+    height: 82px;
+}

@@ -71,7 +71,7 @@ export class AuthService implements ErrorHandler{
         //     this.global.logout();
         //     return Observable.empty();
         // }
-        this.GlobalS.eToast('Error', 'An error occured');
+        // this.GlobalS.eToast('Error', 'An error occured');
         return throwError(error);
     }
 

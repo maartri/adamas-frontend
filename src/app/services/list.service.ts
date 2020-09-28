@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 const list: string = "api/list"
+const docSign: string = "api/docusign"
 
 @Injectable()
 export class ListService {
@@ -11,6 +12,10 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+
+    // sendDOCSIGN(data: any): Observable<any>{
+    //     return this.auth.post(`${docSign}/create`, data);
+    // }
 
     getpayperiod(): Observable<any>{
         return this.auth.get(`${list}/payperiod`);
@@ -320,6 +325,14 @@ export class ListService {
 
     getdiscipline(): Observable<any>{
         return this.auth.get(`${list}/intake/discipline/list`)
+    }
+
+    getfileclassification(): Observable<any>{
+        return this.auth.get(`${list}/intake/file-classification/list`)
+    }
+
+    getdocumentcategory(): Observable<any>{
+        return this.auth.get(`${list}/intake/doc-category/list`)
     }
     
     gettemplatelist():Observable<any>{

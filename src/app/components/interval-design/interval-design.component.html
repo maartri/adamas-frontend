@@ -1,6 +1,6 @@
 <div class="id-container">
     <div nz-row nzGutter="16">
-
+        <!-- <button (click)="go()">asd</button> -->
         <ng-container [formGroup]="quoteDetailsGroup">
             <div nz-col nzSpan="6" formArrayName="timeSlots" *ngFor="let slot of quoteDetailsGroup.get('timeSlots')['controls']; let i = index;">
                 <div class="id-table" [formGroupName]="i">

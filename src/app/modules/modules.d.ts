@@ -147,7 +147,9 @@ declare namespace Dto {
             AnyProvider: boolean,
             BookingType?: string,
             Notes?: string,
-            PermanentBookings?: PermanentBookings[]
+            PermanentBookings?: PermanentBookings[],
+            RealDateBookings?:PermanentBookings[],
+            Summary?: string
         }
 
         export interface PermanentBookings{

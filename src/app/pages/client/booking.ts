@@ -1,8 +1,11 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
-import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService, ListService } from '@services/index';
+import { Component, OnInit, OnDestroy, Input,  } from '@angular/core'
+import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService, ListService, dayStrings, TYPE_MESSAGE } from '@services/index';
 
 import * as moment from 'moment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzMessageService } from 'ng-zorro-antd/message';
+
+
 import format from 'date-fns/format';
 
 import { forkJoin, Subject, Observable, EMPTY } from 'rxjs';
@@ -12,7 +15,10 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import differenceInDays from 'date-fns/differenceInDays';
 import getDay from 'date-fns/getDay';
 import addDays from 'date-fns/addDays';
-import getWeek from 'date-fns/getWeek'
+import getWeek from 'date-fns/getWeek';
+import parseISO from 'date-fns/parseISO'
+
+import { HttpRequest } from '@angular/common/http';
 
 const enum ImagePosition {
     LaundryService = '-81px -275px',
@@ -188,14 +194,15 @@ export class BookingClient implements OnInit, OnDestroy {
     publishedEndDate: Date;
     payPeriod: Date;
 
-    slots: Array<any>;
+    slots: Array<any> = [];
 
     constructor(
         private clientS: ClientService,
         private globalS: GlobalService,
         private settings: SettingsService,
         private listS: ListService,
-        private notification: NzNotificationService
+        private notification: NzNotificationService,
+        private message: NzMessageService
     ) {
 
     }
@@ -466,6 +473,7 @@ export class BookingClient implements OnInit, OnDestroy {
 
     buildDateFrames(timeSlots: Array<any>): Array<any>{
         var newArr: Array<any> = [];  
+        if(typeof this.slots === 'undefined') return [];
         for(var timeLen = 0 ; timeLen < timeSlots.length ; timeLen++){
           for(var day = 0; day < this.dayKeys.length ; day++){
             if(timeSlots[timeLen][this.dayKeys[day]].quantity > 0){
@@ -477,6 +485,8 @@ export class BookingClient implements OnInit, OnDestroy {
     }
 
     book() {
+        var bookType = this.once ? 'Normal' : this.permanent ? this.weekly : '';
+
         let booking: Dto.AddBooking = {
             BookType: this.bookType,
             StaffCode: !(this.aprovider) ? this.selectedStaff.accountNo : "",
@@ -487,28 +497,110 @@ export class BookingClient implements OnInit, OnDestroy {
             Duration: format(this.endTime, 'HH:mm'),
             Username: this.token['nameid'],
             AnyProvider: this.aprovider,
-            BookingType: this.once ? 'Normal' : this.permanent ? this.weekly : '',
+            BookingType: bookType,
             Notes: this.notes,
-            PermanentBookings: [...this.buildPermanentBookings(), ...this.gwapo()]
+            PermanentBookings: [...this.buildPermanentBookings(), ...this.realBookings()],
+            RealDateBookings: [...this.realBookings()],
+            Summary: this.getSummary(
+                bookType, 
+                moment(this.date).format('MMM DD,YYYY'), 
+                moment(this.publishedEndDate).format('MMM DD,YYYY'), 
+                this.buildPermanentBookings()
+            )
         }
 
-        // console.log(this.buildPermanentBookings())
-        // console.log(this.gwapo());
-        console.log(booking)
-        this.loadBooking = true;
+        if(this.slots.length == 0){
+            return this.globalS.createMessage(TYPE_MESSAGE.error, 'You have no slots added in step 1');
+        }
+        console.log(booking);
+
+        // this.loadBooking = true;
+        var id = this.globalS.loadingMessage('Processing booking...');
+        this.bookingModalOpen = false;
 
         this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            let resultRows = parseInt(data);
+            let resultRows = parseInt(data);            
             if (resultRows == 1) {
                 this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
             }
+
             this.resetStepper();
-            this.bookingModalOpen = false;
+
+            this.globalS.createMessage(TYPE_MESSAGE.success, 'Booking Successful');
+            this.message.remove(id);
+            
         }, (err) => {
             this.resetStepper();
-            this.globalS.eToast('Error', 'Booking Unsuccessful')
+            this.globalS.eToast('Error', err.error.message);
+            this.globalS.createMessage(TYPE_MESSAGE.error, 'Error Booking')
+            this.message.remove(id);
         });
 
+    }
+
+    gwapo(){
+        console.log(this.slots);
+    }
+
+    getSummary(bookType: string, startDate: any, endDate: any, permBookings: Dto.PermanentBookings[]): string{
+
+        if(bookType === 'Weekly'){
+            let permBooks = [...new Set(permBookings.map(x =>  {
+                return dayStrings[getDay(parseISO(x.Time))];
+            }))].join(', ');
+
+            return `
+A booking has been made Weekly from ${startDate} to ${endDate}:
+
+    Every ${permBooks}`
+        }
+
+        if(bookType === 'Fortnightly'){
+            let fstWeek = [...new Set(permBookings.map(x =>  {
+                if(x.Week == 1) return dayStrings[getDay(parseISO(x.Time))];
+            }))].filter(x => x).join(', ')
+
+            let secWeek = [...new Set(permBookings.map(x =>  {
+                if(x.Week == 2) return dayStrings[getDay(parseISO(x.Time))];
+            }))].filter(x => x).join(', ')
+            return `
+A booking has been made on a fortnight starting from ${startDate} to ${endDate}:
+
+    Every 1st Week: ${fstWeek}
+    Every 2nd Week: ${secWeek}
+            
+            `
+        }
+
+        if(bookType === 'FourWeekly'){
+            let fstWeek = [...new Set(permBookings.map(x =>  {
+                if(x.Week == 1) return dayStrings[getDay(parseISO(x.Time))];
+            }))].filter(x => x).join(', ')
+
+            let secWeek = [...new Set(permBookings.map(x =>  {
+                if(x.Week == 2) return dayStrings[getDay(parseISO(x.Time))];
+            }))].filter(x => x).join(', ')
+
+            let thiWeek = [...new Set(permBookings.map(x =>  {
+                if(x.Week == 3) return dayStrings[getDay(parseISO(x.Time))];
+            }))].filter(x => x).join(', ')
+
+            let forWeek = [...new Set(permBookings.map(x =>  {
+                if(x.Week == 4) return dayStrings[getDay(parseISO(x.Time))];
+            }))].filter(x => x).join(', ')
+
+
+            return `
+A four weekly booking has been made from date ${startDate} to ${endDate}:
+
+    Every 1st Week: ${fstWeek}
+    Every 2nd Week: ${secWeek}
+    Every 3rd Week: ${thiWeek}
+    Every 4th Week: ${forWeek}
+    `
+        
+        }
+        return '';
     }
 
     resetStepper() {
@@ -521,6 +613,7 @@ export class BookingClient implements OnInit, OnDestroy {
         this.loadBooking = false;
         this.selectedStaff = '';
         this.weekly = '';
+        this.slots = [];
 
         this.once = true;
         this.permanent = false
@@ -535,7 +628,7 @@ export class BookingClient implements OnInit, OnDestroy {
         return (differenceInCalendarDays(current, new Date()) < this._settings?.BOOKINGLEADTIME()) || this.publishedEndDate <= current;
     };
 
-    gwapo(): Array<Dto.PermanentBookings>{
+    realBookings(): Array<Dto.PermanentBookings>{
         // var sss = this.globalS.DIFFERENCE_DATE(this.publishedEndDate, this.date);
         // console.log(sss);
 
@@ -547,6 +640,7 @@ export class BookingClient implements OnInit, OnDestroy {
 
         var payPeriod = this.globalS.CONVERTSTRING_TO_DATETIME(this.payPeriod);
         var list: Array<Dto.PermanentBookings> = [];
+        if(typeof this.slots === 'undefined') return [];
 
         // Weekly
         if(this.slots.length == 1){
@@ -571,10 +665,10 @@ export class BookingClient implements OnInit, OnDestroy {
         // Fortnight
         if(this.slots.length  == 2 ){
             while(currDate < this.publishedEndDate){
-                console.log(payPeriod)
-                console.log(currDate);
+                // console.log(payPeriod)
+                // console.log(currDate);
                 var noOfWeekSincePayPeriod = this.globalS.CALCULATE_WHAT_WEEK_FORTNIGHT(payPeriod, currDate);
-                console.log(noOfWeekSincePayPeriod);
+                // console.log(noOfWeekSincePayPeriod);
                 var currDay = getDay(currDate);
     
                 for(var a = 0 ; a < bbb.length; a++){
@@ -612,9 +706,6 @@ export class BookingClient implements OnInit, OnDestroy {
                 currDate = addDays(currDate, 1);
             }
         }
-
-        
-
         return list;
     }
 }

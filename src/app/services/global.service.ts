@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
 
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
@@ -22,6 +23,13 @@ import differenceInWeeks from 'date-fns/differenceInWeeks'
 const helper = new JwtHelperService();
 
 import { FormGroup} from '@angular/forms';
+
+
+export enum TYPE_MESSAGE {
+    warning = 'warning',
+    success = 'success',
+    error = 'error'
+}
 
 export const roles = {
     provider: 'SERVICE PROVIDER',
@@ -67,6 +75,8 @@ export const fundingDropDowns = {
 }
 
 export const dateFormat = "dd/MM/yyyy";
+export const dayStrings = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
 export const states = ['AUSTRALIAN CAPITAL TERRITORY', 'NEW SOUTH WALES', 'NORTHERN TERRITORY', 'QUEENSLAND', 'SOUTH AUSTRALIA', 'TASMANIA', 'VICTORIA', 'WESTERN AUSTRALIA']
 export const cycles = ['1st Monday - CYCLE 1', '1st Tuesday - CYCLE 1', '1st Wednesday - CYCLE 1', '1st Thursday - CYCLE 1', '1st Friday - CYCLE 1']
 export const billunit = ['HOUR', 'SERVICE']
@@ -94,7 +104,8 @@ export class GlobalService {
     constructor(
         private router: Router,
         private toastr: ToastrService,
-        private notification: NzNotificationService
+        private notification: NzNotificationService,
+        private message: NzMessageService
     ) {
 
     }
@@ -385,6 +396,14 @@ export class GlobalService {
         this.router.navigate(['']);
     }
 
+    createMessage(type: TYPE_MESSAGE, message: string){
+        this.message.create(type, message);
+    }
+
+    loadingMessage(message: string = 'Action in progress..'): string{
+        return this.message.loading(message, { nzDuration: 0 }).messageId;
+    }
+
     sToast(title: string = 'Success', details: string) {
         this.notification.success(title, details);
         //this.toastr.success(details, title);
@@ -637,6 +656,12 @@ export class GlobalService {
         if(diffWeeks % 2 == 1){
             return 2;
         }
+    }
+
+    removeExtension(filename: string){
+        var lastDotPosition = filename.lastIndexOf(".");
+        if (lastDotPosition === -1) return filename;
+        else return filename.substr(0, lastDotPosition);
     }
 
     CALCULATE_WHAT_WEEK_FOURWEEKLY(payperiod: Date, dateToBeCalculated: Date){

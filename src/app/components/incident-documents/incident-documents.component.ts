@@ -198,7 +198,8 @@ export class IncidentDocumentsComponent implements OnInit {
       ReminderDate: reminderDate,
       PublishToApp: publishToApp,
       ReminderText: reminderText,
-      Notes: notes
+      Notes: notes,
+      SubId: this.innerValue.incidentId
     }))
 
     const req = new HttpRequest('POST', this.urlPath, formData, {
@@ -206,20 +207,16 @@ export class IncidentDocumentsComponent implements OnInit {
       withCredentials: true
     });
 
+    var id = this.globalS.loadingMessage(`Uploading file ${this.file.name}`)
     this.http.request(req).pipe(filter(e => e instanceof HttpResponse)).subscribe(
       (event: HttpEvent<any>) => {
-        console.log(event);
-        // if (event.type === HttpEventType.UploadProgress) {
-        //   if (event.total! > 0) {
-        //     (event as any).percent = (event.loaded / event.total!) * 100;
-        //   }
-        //   item.onProgress!(event, item.file!);
-        // } else if (event instanceof HttpResponse) {
-        //   item.onSuccess!(event.body, item.file!, event);
-        // }
+        this.msg.remove(id);
+        this.globalS.sToast('Success','Document uploaded');
       },
       err => {
-        // item.onError!(err, item.file!);
+        console.log(err);
+        this.globalS.eToast('Error',err.error.message);
+        this.msg.remove(id);
       }
     );
     

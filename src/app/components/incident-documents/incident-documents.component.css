@@ -1,5 +1,6 @@
 ul{
     list-style: none;
+    padding:1rem;
 }
 .doc-wrapper{
     font-size:11px;
@@ -18,4 +19,20 @@ label.chk{
 }
 textarea{
     height: 82px;
+}
+h4{
+    font-size: 13px;
+    color: #3c94db;
+}
+ul li {
+    border-bottom: 1px solid #e7e7e7;
+    margin-top: 10px;
+}
+ul li:last-child{
+    border:none;
+}
+.overflow-list-incident{
+    overflow: auto;
+    height: 33rem;
+    border: 1px solid #e3e3e3;
 }

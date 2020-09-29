@@ -57,7 +57,7 @@ export class IncidentDocumentsComponent implements OnInit {
 
   loadedFiles: Array<any> = [];
   token: any;
-  loadDocument: boolean = false;
+  loadDocument: boolean;
   modalInfoOpen: boolean =  false;
 
   innerValue: IncidentDocument;

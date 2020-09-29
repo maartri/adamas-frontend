@@ -512,15 +512,17 @@
                         <div nz-col nzSpan="24">
                             <button class="botton success" (click)="showNoteModal()">Add Note</button>
                             <div nz-row class="form-group pad-15" [formGroup]="incidentForm">
-                                <div nz-row nzGutter="32" formArrayName="incidentNotes" *ngFor="let item of incidentForm.get('incidentNotes')['controls']; let i = index;" style="margin-bottom:10px">
-                                    <ng-container [formGroupName]="i">
-                                        <div class="note-list">
-                                            <h4>{{ getDate(item.controls.detailDate.value) }} <span class="time">{{ getTime(item.controls.detailDate.value) }}</span></h4>
-                                            <div class="creator">Created By: {{ item.controls.creator.value || '-' }}</div>
-                                            <div>{{ item.controls.detail.value }}</div>
-                                        </div>
-                                    </ng-container>
-                                </div>                                
+                                <div class="overflow-list">
+                                    <div formArrayName="incidentNotes" *ngFor="let item of incidentForm.get('incidentNotes')['controls']; let i = index;">
+                                        <ng-container [formGroupName]="i">
+                                            <div class="note-list">
+                                                <h4>{{ getDate(item.controls.detailDate.value) }} <span class="time">{{ getTime(item.controls.detailDate.value) }}</span></h4>
+                                                <div class="creator">Created By: {{ item.controls.creator.value || '-' }}</div>
+                                                <div>{{ item.controls.detail.value }}</div>
+                                            </div>
+                                        </ng-container>
+                                    </div>   
+                                </div>                             
                             </div>
                             <div nz-row class="form-group pad-15">
                               
@@ -563,15 +565,15 @@
         </div>
         <div *nzModalFooter>
             <ng-container>
+                <button nz-button nzType="primary" (click)="save()" *ngIf="current > 0">
+                    <span>Save</span>
+                </button>
                 <button nz-button nzType="default" (click)="pre()" *ngIf="(current > 0 && operation?.process == 'ADD') || (current > 1 && operation?.process == 'UPDATE')">
                     <span>Previous</span>
                 </button>
                 <!-- [disabled]="!nextRequired" -->
                 <button nz-button nzType="default" (click)="next()" *ngIf="current < 9" >
                     <span>Next</span>
-                </button>
-                <button nz-button nzType="primary" (click)="save()" *ngIf="current > 0">
-                    <span>Save</span>
                 </button>
             </ng-container>
         </div>

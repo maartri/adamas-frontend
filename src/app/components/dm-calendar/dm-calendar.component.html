@@ -32,7 +32,7 @@
                             <span *ngIf="data?.key.indexOf('BOOKED') > -1">UNASSIGNED BOOKINGS</span>
                             <span *ngIf="!(data?.key.indexOf('BOOKED') > -1)">{{ data?.key }}</span>
                         </div>
-                        <div style="font-size:10px;color:#16c516">{{ data?.value[0].StaffCategory}}</div>
+                        <div style="font-size:10px;color:#16c516">{{ data?.value[0].staffCategory}}</div>
                     </div>
                     <ng-container *ngIf="i > 0">
                         <ng-container *ngFor="let value of data.value | dmz: day ">
@@ -46,13 +46,13 @@
                                     </i></div>
                                 <div class="service-logo" [style.background-position]="getPositionImg(value)"></div>
 
-                                <strong>{{ value.StartTime}}-{{ value.EndTime }}</strong>
+                                <strong>{{ value.startTime}}-{{ value.endTime }}</strong>
 
                                 <i class="material-icons option showOption" option-click
                                     (mousedownEmit)="mouseEmitter(value)" (click)="optionEmitter(value)"> more_horiz
                                 </i>
 
-                                <div class="details">{{ value.Recipient}} * {{ value.Activity}}</div>
+                                <div class="details">{{ value.recipient}} * {{ value.activity}}</div>
                             </div>
                             <div class="data total" *ngIf="value.isLast && !value.isNone">
                                 <span>Total Hours: {{ value.total | number: '1.2-2'}} </span>
@@ -63,11 +63,7 @@
             </ng-container>
         </div>
     </ng-container>
-    <!-- <div class="col-md-12 no-data" *ngIf="loading">
-        <span class="spinner spinner-md">
-            Loading...
-        </span>
-    </div> -->
+
     <div class="col-md-12 spinner" *ngIf="loading">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
     </div>

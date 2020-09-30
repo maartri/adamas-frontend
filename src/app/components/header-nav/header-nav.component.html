@@ -1,11 +1,11 @@
 <div style="position:relative" [class.admin]="isAdmin">
-    <app-breadcrumbs></app-breadcrumbs>
+    <app-breadcrumbs *ngIf="!HIDE_CRUMBS"></app-breadcrumbs>
     <div class="menu-button">
         <div class="nz-avatar-menu" click-outside (clickOutside)="onClickOutside($event)">
             <nz-avatar (click)="isVisible = true" nzIcon="user"></nz-avatar>
             <div *ngIf="isVisible" class="dropdown">
                 <ul>
-                    <li *ngIf="ifClientManager" (click)="toClientMembers()">Client Members</li>
+                    <!-- <li *ngIf="ifClientManager" (click)="toClientMembers()">Client Members</li> -->
                     <li>Edit Password</li>
                     <li (click)="logout()"><i nz-icon nzType="logout" nzTheme="outline"></i>Logout</li>
                 </ul>

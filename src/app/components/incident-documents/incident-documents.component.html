@@ -1,0 +1,148 @@
+<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
+    <div nz-col nzSpan="8">
+        <nz-upload nzType="drag" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes" [nzBeforeUpload]="beforeUpload"
+             [nzAction]="urlPath" (nzChange)="handleChange($event)" nzListType="picture"
+            [(nzFileList)]="fileList2">
+
+            <p class="ant-upload-drag-icon">
+                <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+            <p class="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+            </p>
+        </nz-upload>
+    </div>
+    <div nz-col nzSpan="16">
+        <nz-spin *ngIf="loadDocument" nzSimple></nz-spin>
+        <ul class="overflow-list-incident">
+            <li *ngFor="let file of loadedFiles;let i = index">            
+                <div>
+                    <h4>{{ file.filename }}</h4>
+                    <div nz-row nzGutter="32" class="doc-wrapper">
+                        <div nz-col nzSpan="8">
+                            <label for="">Created</label> {{ file.created }}
+                        </div>
+                        <div div nz-col nzSpan="8">
+                            <label for="">Modified</label> {{ file.modified }}
+                        </div>
+                    </div>
+                    <div nz-row nzGutter="32" class="doc-wrapper">
+                        <div nz-col nzSpan="8">
+                            <label for="">Program</label> {{ file.program }}
+                        </div>
+                        <div div nz-col nzSpan="8">
+                            <label for="">Discipline</label> {{ file.discipline }}
+                        </div>
+                        <div div nz-col nzSpan="8">
+                            <label for="">Care Domain</label> {{ file.careDomain }}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <nz-empty *ngIf="loadDocument == false && loadedFiles?.length == 0"></nz-empty>
+    </div>
+</div>
+
+<!-- <ng-template #iconTpl>
+    <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+</ng-template> -->
+
+<nz-modal [(nzVisible)]="modalInfoOpen" nzTitle="Add New Document" (nzOnCancel)="handleCancel()" nzWidth="800" [nzStyle]="{ top: '20px' }">
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="10" [formGroup]="incidentForm">
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Discipline</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="discipline" nzPlaceHolder=""
+                            [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of listDiscipline" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Program</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of listPrograms" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Care Domain</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="careDomain" nzPlaceHolder=""
+                            [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of listCareDomain" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>File Classification</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="classification" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of listClassification" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Document Category</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <nz-select nzAllowClear formControlName="category" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of listCategories" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>            
+        </div>
+        <div nz-col nzSpan="14" [formGroup]="incidentForm">
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Name</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <input nz-input formControlName="name" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-row nzGutter="32" >
+                <div nz-col nzSpan="12" class="form-group">
+                    <label for="">Reminder Date</label>
+                    <nz-date-picker formControlName="reminderDate" [nzFormat]="dateFormat"></nz-date-picker>
+                </div>
+                <div nz-col nzSpan="12" class="form-group">
+                    <label formControlName="publishToApp" class="chk" nz-checkbox>Publish To Mobile App</label>
+                </div>
+            </div>
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Reminder Text</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <textarea rows="4" nz-input formControlName="reminderText"></textarea>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>  
+            <div nz-row>
+                <nz-form-item>
+                    <nz-form-label>Notes</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <textarea rows="4" nz-input formControlName="notes"></textarea>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="customReq()">Save</button>
+    </div>
+</nz-modal>

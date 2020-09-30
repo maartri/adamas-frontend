@@ -29,6 +29,7 @@ export class BreadcrumbsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.globalS.decode());
     const { role } = this.globalS.decode();
     //if (role == roles.admin) {
       this.isAdmin = true;

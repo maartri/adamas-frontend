@@ -155,7 +155,8 @@ export class PackageProvider implements OnInit, OnDestroy {
             delay(200),
             takeUntil(this.unsubscribe$),
             switchMap((data: any) => {
-               
+                this.loading = false;
+                
                 this.listOfData = data.map(x => {
                     return {
                         shiftbookNo: x.shiftbookNo,
@@ -182,20 +183,17 @@ export class PackageProvider implements OnInit, OnDestroy {
                         status: 0
                     }
                 });
+
                 this.calculateTotalApprovedShifts(this.listOfData);
-
-                this.loading = false;
-
                 var shiftsList = [];
-
+                
                 this.listOfData.forEach(x => {
                     shiftsList.push(x.shiftbookNo)
-                })
+                });
 
                 return this.timeS.getjobstatus(shiftsList);
 
             })).subscribe(data => {
-                // console.log(data);
 
                 this.listOfData.forEach(x => {
                     data.forEach(b => {
@@ -214,16 +212,21 @@ export class PackageProvider implements OnInit, OnDestroy {
 
     calculateTotalApprovedShifts(timesheets: Array<any>) {
         const approved = timesheets.filter(data => data.approved);
-
         var sum = 0;
         approved.forEach(e => {
-            const hours = parseInt(format(parse(e.duration, 'HH:mm', new Date()), 'HH')) * 60;
-            const minutes = parseInt(format(parse(e.duration, 'HH:mm', new Date()), 'mm'));
-            sum = sum + hours + minutes;
-        })
+            // checks if duration is valid
+            var duration = (e.duration != null && typeof e.duration != "undefined") ? e.duration : "0:00";
+
+            const hours = parseInt(format(parse(duration, 'HH:mm', new Date()), 'HH')) * 60;
+            const minutes = parseInt(format(parse(duration, 'HH:mm', new Date()), 'mm'));
+
+            sum = sum + hours + minutes;           
+        });
 
         this.totalTime = sum / 60;
+
         this.totalHoursMinutes = Math.floor(sum / 60) + ' hrs — ' + sum % 60 + 'min';
+
     }
 
 

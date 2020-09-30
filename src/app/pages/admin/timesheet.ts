@@ -304,15 +304,23 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         this.fixStartTimeDefault();
 
-        this.timesheetForm.get('time.startTime').valueChanges.pipe(
+        this.timesheetForm.get('sleepOverTime').valueChanges.pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(d => {
+            const { serviceType, sleepOverTime } = this.timesheetForm.value;
+            if(serviceType === 'SLEEPOVER'){
+                this.defaultEndTime = sleepOverTime;
+            }
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         });
 
         this.timesheetForm.get('time.startTime').valueChanges.pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(d => {
+            const { serviceType, sleepOverTime } = this.timesheetForm.value;
+            if(serviceType === 'SLEEPOVER'){
+                this.defaultEndTime = sleepOverTime;
+            }
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         });
 
@@ -438,7 +446,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             })
         ).subscribe(d => {
             if (d.length > 1) return false;
-            this.rosterGroup = (d[0].RosterGroup).toUpperCase();
+            this.rosterGroup = (d[0].rosterGroup).toUpperCase();
             this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
 
             this.timesheetForm.patchValue({
@@ -1090,9 +1098,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
-        const { serviceType } = this.timesheetForm.value;
-
-        console.log(this.selected.option)
+        const { serviceType, date, time } = this.timesheetForm.value;
 
         if (!program) return EMPTY;
         console.log(this.timesheetForm.value)
@@ -1103,7 +1109,11 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 program,
                 recipient: this.GETRECIPIENT(this.selected.option),
                 mainGroup: serviceType,
-                viewType: this.viewType
+                viewType: this.viewType,
+                date: format(date, 'yyyy/MM/dd'),
+                startTime: format(this.defaultStartTime,'hh:mm'),
+                endTime: format(this.defaultEndTime,'hh:mm'),
+                duration: this.durationObject?.duration
             });
         }
         else {
@@ -1141,9 +1151,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         return this.listS.getlist(sql);
     }
 
-
     // Add Timesheet
-
     current = 0;
     nextDisabled: boolean = false;
     programsList: Array<any> = [];
@@ -1152,8 +1160,36 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     analysisCodeList: Array<any> = []
     
     showRecipient(): boolean  {
-        const { serviceType, isMultipleRecipient } = this.timesheetForm.value;            
-        return ((serviceType !== 'ADMINISTRATION' && serviceType !== 'ALLOWANCE NON-CHARGEABLE') && !isMultipleRecipient);
+        const { serviceType, isMultipleRecipient, isTravelTimeChargeable } = this.timesheetForm.value;
+        console.log(serviceType + '' + isTravelTimeChargeable)
+
+        if(serviceType === 'TRAVEL TIME' && isTravelTimeChargeable){
+            return true;
+        }       
+
+
+        if(((serviceType !== 'ADMINISTRATION' && serviceType !== 'ALLOWANCE NON-CHARGEABLE' && serviceType !=='TRAVEL TIME') && !isMultipleRecipient)){
+            return true;
+        }
+
+        return false;
+    }
+
+    get showTime(): boolean {
+        const { serviceType } = this.timesheetForm.value;
+        console.log(serviceType);
+        if(serviceType === 'ALLOWANCE CHARGEABLE' || serviceType === 'ALLOWANCE NON-CHARGEABLE')
+            return false;
+
+        return true;
+    }
+
+    get showEndTime(): boolean{
+        const { serviceType } = this.timesheetForm.value;
+        if(serviceType === 'SLEEPOVER'){
+            return false;
+        }
+        return true;
     }
 
     canProceed() {
@@ -1265,10 +1301,19 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     get nextCondition() {
+        // console.log(this.rosterGroup)
         if (this.current == 2 && !this.ifRosterGroupHasTimePayBills(this.rosterGroup)) {
             return false; 
         }
+        if(this.current == 3 && this.rosterGroup == 'ADMINISTRATION'){
+            return false;
+        }
         return this.current < 4;
+    }
+
+
+    get showDone(){
+        return this.current >= 4 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3);
     }
 
     get isFormValid(){
@@ -1319,11 +1364,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        console.log(inputs);
-
         this.timeS.posttimesheet(inputs).subscribe(data => {
             this.globalS.sToast('Success', 'Timesheet has been added');
             this.addTimesheetVisible = false;
+            this.picked(this.selected);
         });
     }
 
@@ -1336,7 +1380,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (tgroup.isMultipleRecipient) {
                 return "!MULTIPLE"
             }
-            return tgroup.recipientCode;            
+            return tgroup.recipientCode;
         }
 
         return tgroup.recipientCode;

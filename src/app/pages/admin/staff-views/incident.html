@@ -21,7 +21,7 @@
                     <td>{{ data.description }}</td>
                     <td>{{ data.assigned }}</td>
                     <td>
-                        <a (click)="showEditModal(i)">Update</a>
+                        <a (click)="showEditModal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
@@ -32,8 +32,9 @@
     </div>
 </div>
 
+<app-incident-post [open]="incidentOpen" [operation]="operation" (reload)="reload($event)" [(ngModel)]="incidentRecipient"></app-incident-post>
 
-<nz-modal [nzWidth]="1200" [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="'Add Competency'" (nzOnCancel)="handleCancel()">
+<!-- <nz-modal [nzWidth]="1200" [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="'Add Incident'" (nzOnCancel)="handleCancel()">
     <div class="flexy">
 
         <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
@@ -376,4 +377,4 @@
             </button>
         </ng-container>
     </div>
-</nz-modal>
+</nz-modal> -->

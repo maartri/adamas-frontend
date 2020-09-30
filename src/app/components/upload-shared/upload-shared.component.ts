@@ -30,7 +30,7 @@ const UPLOADSHARED_VALUE_ACCESSOR: any = {
 
 export class UploadSharedComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
-  @Output() uploadEvent = new EventEmitter();
+  @Output() reload = new EventEmitter();
 
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
@@ -134,11 +134,15 @@ export class UploadSharedComponent implements OnInit, OnDestroy, ControlValueAcc
           this.uploading = false;
           this.fileList = [];
           this.msg.success('Upload success');
-          this.uploadEvent.emit(true);
+
+          this.reload.emit(true);
+
           this.handleCancel();
         },(err: any) => {
           this.uploading = false;
-          this.uploadEvent.emit(false);
+          
+          this.reload.emit(false);
+
           this.msg.error('Upload failed');
         }, () => {
           this.cd.detectChanges();

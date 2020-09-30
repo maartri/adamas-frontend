@@ -116,6 +116,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                         x.detail = x.detailOriginal
                     }
                 });
+                console.log(list);
                 this.tableData = list;
             }
             

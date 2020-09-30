@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
-
+import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService } from '@services/index';
 @Component({
     styles: [`
 
@@ -10,13 +10,16 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 
 export class DocumentProvider implements OnInit, OnDestroy {
     file: any;
-    constructor() {
+    constructor(
+        private globalS: GlobalService
+    ) {
 
     }
 
     ngOnInit() {
         this.file = {
-            view: 'staff'
+            view: 'staff',
+            token: this.globalS.decode()
         }
     }
 

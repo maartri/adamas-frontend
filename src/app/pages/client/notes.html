@@ -63,9 +63,9 @@
                                 </tr>
                                 <tr *ngFor="let val of data.value" [class.even]="isEven(i)">
                                     <td></td>
-                                    <td class="align-left">{{ val.StartTime }}</td>
-                                    <td class="align-left">{{ val.ServiceType }}</td>
-                                    <td class="align-left">{{ val.Note || '-' }}</td>
+                                    <td class="align-left">{{ val.startTime }}</td>
+                                    <td class="align-left">{{ val.serviceType }}</td>
+                                    <td class="align-left">{{ val.note || '-' }}</td>
                                 </tr>
                             </ng-container>
                         </tbody>

@@ -11,13 +11,13 @@
                         <div nz-col nzSpan="12">
                            <div class="form-group">
                                 <label for="">Start Date</label>
-                                <nz-date-picker formControlName="commencementDate"></nz-date-picker>
+                                <nz-date-picker formControlName="commencementDate" [nzFormat]="dateFormat"></nz-date-picker>
                            </div>
                         </div>
                         <div nz-col nzSpan="12">
                            <div class="form-group">
                                 <label for="">End Date</label>
-                                <nz-date-picker formControlName="terminationDate"></nz-date-picker>
+                                <nz-date-picker formControlName="terminationDate" [nzFormat]="dateFormat"></nz-date-picker>
                            </div>
                         </div>
                     </div>
@@ -52,13 +52,13 @@
                             <div nz-col nzSpan="12">
                                 <div class="form-group">
                                     <label for="">Weighting</label>
-                                    <input type="text" nz-input formControlName="jobWeighting">
+                                    <nz-input-number formControlName="jobWeighting"></nz-input-number>
                                 </div>
                             </div>
                             <div nz-col nzSpan="12">
                                 <div class="form-group">
                                     <label for="">FTE</label>
-                                    <input type="text" nz-input formControlName="jobFTE">
+                                    <nz-input-number formControlName="jobFTE"></nz-input-number>
                                 </div>
                             </div>
                         </div>
@@ -75,19 +75,19 @@
                             <div nz-col nzSpan="4">
                                 <div class="form-group">
                                     <label for="">Staff No</label>
-                                    <input type="text" nz-input formControlName="stF_CODE">
+                                    <input type="text" maxlength="15" nz-input formControlName="stf_Code">
                                 </div>
                             </div>
                             <div nz-col nzSpan="4">
                                 <div class="form-group">
                                     <label for="">Award Level</label>
-                                    <input type="text" nz-input formControlName="awardLevel">
+                                    <input type="text" maxlength="10" nz-input formControlName="awardLevel">
                                 </div>
                             </div>
                             <div nz-col nzSpan="4">
                                 <div class="form-group">
                                     <label for="">Party Group</label>
-                                    <input type="text" nz-input formControlName="payGroup">
+                                    <input type="text" nz-input maxlength="10" formControlName="payGroup">
                                 </div>
                             </div>
                             <div nz-col nzSpan="4" nzOffset="4">
@@ -221,7 +221,7 @@
             </div>
         </div>
 
-        <div nz-row [nzGutter]="8" class="card-container">
+        <!-- <div nz-row [nzGutter]="8" class="card-container" >
             <div nz-col [nzSpan]="24">
                 <nz-card nzTitle="Current Leave Details">
                     <div nz-row>
@@ -229,7 +229,7 @@
                     </div>
                 </nz-card>
             </div>           
-        </div>
+        </div> -->
 
 
     </div>

@@ -1,0 +1,76 @@
+
+.check-oneline{
+    display:flex;
+}
+.check-oneline label:first-child{
+    flex:1;
+}
+.flexy{
+    height: 33rem;
+}
+textarea{
+    max-height:4rem;
+}
+.options > div{
+    margin-bottom:13px;
+}
+.form-group label{
+    font-size:13px;
+}
+.staff-wrapper{
+    height: 10rem;
+    width: 100%;
+    overflow: auto;
+    padding: .5rem 1rem;
+    border: 1px solid #e9e9e9;
+    border-radius: 3px;
+}
+.btn-staff{
+    float:right;
+    margin-bottom: 10px;
+}
+.new-relationship span:first-child{
+    display:inline-block;
+    width:14rem;
+}
+.capitalize{
+    text-transform: uppercase;
+}
+nz-select.full-width{
+    width:100%;
+}
+label.chk{
+    position: absolute;
+    top: 1.5rem;
+}
+.overflow-list{
+    overflow: auto;
+    height: 8rem;
+    border: 1px solid #e3e3e3;
+}
+span.time{
+    font-size: 12px;
+    line-height: 0;
+    padding: 6px 0;
+}
+.note-list{
+    border-bottom: 1px solid #e5e5e5;
+    padding: 10px;
+}
+.creator{
+    font-weight: 500;
+    color: #ff6c6c;
+    text-transform: uppercase;
+    font-size:11px;
+}
+.notif-wrapper{
+    min-height: 10rem;
+    border: 1px solid #e7e5e5;
+    padding: 10px;
+    margin-bottom: 1rem;
+}
+.overflow-list{
+    overflow: auto;
+    height: 30rem;
+    border: 1px solid #e3e3e3;
+}

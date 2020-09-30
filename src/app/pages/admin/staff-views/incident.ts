@@ -23,18 +23,6 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .options > div{
             margin-bottom:13px;
         }
-        .check-oneline{
-            display:flex;
-        }
-        .check-oneline label:first-child{
-            flex:1;
-        }
-        .flexy{
-            max-height: 33rem;
-        }
-        textarea{
-            max-height:4rem;
-        }
     `],
     templateUrl: './incident.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -49,10 +37,14 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
     loading: boolean = false;
     postLoading: boolean = false;
 
+    incidentOpen: boolean = false;
+
     current: number = 0;
-    modalOpen: boolean = false;
 
     incidentTypeList: Array<any> = []
+    incidentRecipient: any;
+    operation: any; 
+
 
     constructor(
         private timeS: TimeSheetService,
@@ -96,13 +88,6 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    handleCancel(){
-        this.modalOpen = false;
-        this.incidentForm.reset();
-        this.user = {};
-        this.current = 0;
-    }
-
     buildForm() {
         this.incidentForm = this.formBuilder.group({
             incidentType: ''
@@ -117,40 +102,49 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
             this.loading = false;
             this.cd.detectChanges();
         });
+
+        this.incidentRecipient = this.user;
     }
 
     trackByFn(index, item) {
         return item.id;
+    }  
+
+    showAddModal() {        
+        const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
+
+        this.operation = {
+            process: 'ADD'
+        }        
+
+        this.incidentOpen = !this.incidentOpen;
     }
 
-    pre(): void {
-        this.current -= 1;
-    }
+    showEditModal(data: any) {
+        const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
 
-    next(): void {
-        this.current += 1;
-    }
-
-    showAddModal() {
-        this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
-            this.incidentTypeList = data;
-        });
-
-        this.modalOpen = true;
-    }
-
-    get nextRequired() {
-        const { incidentType  } = this.incidentForm.value;
-        
-        if (this.current == 0 && this.globalS.isEmpty(incidentType)) {
-          return false;
+        var newPass = {
+            agencyDefinedGroup: agencyDefinedGroup,
+            code: code,
+            id: id,
+            sysmgr: sysmgr,
+            view: view,
+            operation: 'UPDATE',
+            recordNo: data.recordNumber
         }
-    
-        return true;
-      }
 
-    showEditModal(index: number) {
+        this.operation = {
+            process: 'UPDATE'
+        }
+
+        console.log(newPass);
         
+        this.incidentRecipient = newPass;
+        this.incidentOpen = !this.incidentOpen;
+    }
+    
+    reload(data: any){
+        this.search(this.user);
     }
 
     delete(data: any) {

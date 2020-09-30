@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
-import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService } from '@services/index';
+import { ClientService, GlobalService, StaffService, TimeSheetService, SettingsService, dateFormat } from '@services/index';
 
 import * as moment from 'moment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -147,6 +147,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
 
     time = new Date(1990, 1, 1, 9, 0, 0);
 
+    dateFormat: string = dateFormat;
+
     startTime: any = new Date(1990, 1, 1, 9, 0, 0);
     endTime: any = new Date(1990, 1, 1, 10, 0, 0);
     date = new Date();
@@ -194,8 +196,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
 
     ngOnInit() {
         this._settings = this.settings;
-        this.user = this.inputUser || this.globalS.decode().code;
-        this.token = this.globalS.decode();
+        this.user = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode().code;
+        this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode();
         this.date = addDays(this.date, this._settings.BOOKINGLEADTIME());
     }
 
@@ -276,7 +278,7 @@ export class BookingClientManager implements OnInit, OnDestroy {
         if (this.cprovider) {
             this.selectedInputParams = {
                 RecipientCode: this.user,
-                User: this.token['nameid'],
+                User: this.token['user'],
                 BookDate: moment(this.date).format('YYYY/MM/DD'),
                 StartTime: this.startTime,
                 EndTime: this.endTime,

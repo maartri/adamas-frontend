@@ -9,15 +9,27 @@ import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
 
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzMessageService } from 'ng-zorro-antd/message';
+
+import parseISO from 'date-fns/parseISO';
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
+import isValid from 'date-fns/isValid'
+import getHours from 'date-fns/getHours'
+import getMinutes from 'date-fns/getMinutes'
+import differenceInDays from 'date-fns/differenceInDays'
+import differenceInWeeks from 'date-fns/differenceInWeeks'
 
 const helper = new JwtHelperService();
 
 import { FormGroup} from '@angular/forms';
 
-import format from 'date-fns/format';
-import isValid from 'date-fns/isValid'
-import getHours from 'date-fns/getHours'
-import getMinutes from 'date-fns/getMinutes'
+
+export enum TYPE_MESSAGE {
+    warning = 'warning',
+    success = 'success',
+    error = 'error'
+}
 
 export const roles = {
     provider: 'SERVICE PROVIDER',
@@ -62,6 +74,9 @@ export const fundingDropDowns = {
     cycle: ['CYCLE 1', 'CYCLE 2', 'CYCLE 3', 'CYCLE 4', 'CYCLE 5', 'CYCLE 6', 'CYCLE 7', 'CYCLE 8', 'CYCLE 9', 'CYCLE 10']
 }
 
+export const dateFormat = "dd/MM/yyyy";
+export const dayStrings = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
 export const states = ['AUSTRALIAN CAPITAL TERRITORY', 'NEW SOUTH WALES', 'NORTHERN TERRITORY', 'QUEENSLAND', 'SOUTH AUSTRALIA', 'TASMANIA', 'VICTORIA', 'WESTERN AUSTRALIA']
 export const cycles = ['1st Monday - CYCLE 1', '1st Tuesday - CYCLE 1', '1st Wednesday - CYCLE 1', '1st Thursday - CYCLE 1', '1st Friday - CYCLE 1']
 export const billunit = ['HOUR', 'SERVICE']
@@ -70,8 +85,8 @@ export const status = ['WAIT LIST', 'ON HOLD', 'ACTIVE', 'INACTIVE']
 export const achievementIndex = ['(1) NOT ACHIEVED', '(2) PARTIALLY ACHIEVED', '(3) MOSTLY ACHIEVED', '(4) FULLY ACHIEVED', '(5) ONGOING', '(6) FUNDING NOT APPROVED']
 export const caldStatuses = ['CALD BACKGROUND', 'NOT CALD BACKGROUND']
 export const titles = ["Mr", "Ms", "Mrs", "Dr"]
-export const types = ['', 'BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
-export const gender = ['', 'MALE', 'FEMALE', 'NOT STATED']
+export const types = ['BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
+export const gender = ['MALE', 'FEMALE', 'NOT STATED']
 export const months = moment.months()
 export const recurringInt = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
 export const recurringStr = ['Day/s', 'Week/s', 'Month/s', 'Year/s']
@@ -89,7 +104,8 @@ export class GlobalService {
     constructor(
         private router: Router,
         private toastr: ToastrService,
-        private notification: NzNotificationService
+        private notification: NzNotificationService,
+        private message: NzMessageService
     ) {
 
     }
@@ -221,10 +237,11 @@ export class GlobalService {
     }
 
     
-    GETPICKEDMEMBERDATA(data: any){
+    GETPICKEDMEMBERDATA(data: any, recipientDocFolder: string = null){
         return {
             code: data.accountNo,
-            uniqueID: data.uniqueID
+            uniqueID: data.uniqueID,
+            recipientDocFolder: recipientDocFolder
         } 
     }
 
@@ -311,7 +328,7 @@ export class GlobalService {
             }
         }
         return -1;
-    }
+    }    
 
     IsRTF2TextRequired(escaped: string) {
         return (((escaped.match(/\\/g) || []).length > 5 && (escaped.match(/{/g) || []).length > 0 && (escaped.match(/}/g) || []).length > 0));  
@@ -377,6 +394,14 @@ export class GlobalService {
     logout() {
         this.clearTokens();
         this.router.navigate(['']);
+    }
+
+    createMessage(type: TYPE_MESSAGE, message: string){
+        this.message.create(type, message);
+    }
+
+    loadingMessage(message: string = 'Action in progress..'): string{
+        return this.message.loading(message, { nzDuration: 0 }).messageId;
     }
 
     sToast(title: string = 'Success', details: string) {
@@ -482,12 +507,16 @@ export class GlobalService {
     }
 
     computeTime(_start: any, _end: any): Dto.DateTimeVariables {
-
+        
         const minutesInAnHour = 60;
 
         const start = moment(_start, ['HH:mm']);
         const end = moment(_end, ['HH:mm']);
         const invalid = 'Invalid Time'
+
+        if (typeof _start === "undefined" || typeof _end === "undefined") {
+            return { durationStr: invalid };
+        }
 
         if (start.hour() > end.hour()) return { durationStr: invalid }
         if (start.hour() === end.hour() && start.minute() >= end.minute()) return { durationStr: invalid }
@@ -580,4 +609,91 @@ export class GlobalService {
     }
 
 
+
+    // DATE CALCULATIONS
+
+    SAMPLE_START_DATE_ZEROHOURSMINUTES(date: Date): Date{
+        return new Date(2020,8,21, 0, 0);
+    }
+
+    SAMPLE_END_DATE_MAXHOURSMINUTES(date: Date): Date{
+        return new Date(2020,9,19, 23, 59);
+    }
+
+    START_DATE_ZEROHOURSMINUTES(date: Date): Date{
+        return new Date(date.getFullYear(),date.getMonth(),date.getDate(), 0, 0);
+    }
+
+    END_DATE_MAXHOURSMINUTES(date: Date): Date{
+        return new Date(date.getFullYear(),date.getMonth(),date.getDate(), 23, 59);
+    }
+
+    DIFFERENCE_DATE(laterDate: Date, earlierDate: Date){
+        var _laterDate = this.END_DATE_MAXHOURSMINUTES(laterDate);
+        var _earlierDate = this.START_DATE_ZEROHOURSMINUTES(earlierDate);
+        
+        return differenceInDays(_laterDate, _earlierDate);
+    }
+
+    CONVERTSTRING_TO_DATETIME(data: any): Date | null{
+        if(data == null) return null;
+    
+        var _date = format(parseISO(data),"yyyy-MM-dd'T'HH:mm:ss");
+        return parse(_date,"yyyy-MM-dd'T'HH:mm:ss", new Date());
+    }
+
+    CALCULATE_WHAT_WEEK_FORTNIGHT(payperiod: Date, dateToBeCalculated: Date){
+
+        var _laterDate = this.END_DATE_MAXHOURSMINUTES(dateToBeCalculated);
+        var _earlierDate = this.START_DATE_ZEROHOURSMINUTES(payperiod);
+
+        var diffWeeks = differenceInWeeks(_laterDate, _earlierDate);
+
+        if(diffWeeks == 0 || diffWeeks % 2 == 0){
+            return 1;
+        } 
+
+        if(diffWeeks % 2 == 1){
+            return 2;
+        }
+    }
+
+    removeExtension(filename: string){
+        var lastDotPosition = filename.lastIndexOf(".");
+        if (lastDotPosition === -1) return filename;
+        else return filename.substr(0, lastDotPosition);
+    }
+
+    CALCULATE_WHAT_WEEK_FOURWEEKLY(payperiod: Date, dateToBeCalculated: Date){
+
+        var _laterDate = this.END_DATE_MAXHOURSMINUTES(dateToBeCalculated);
+        var _earlierDate = this.START_DATE_ZEROHOURSMINUTES(payperiod);
+        
+        var diffWeeks = differenceInWeeks(_laterDate, _earlierDate);
+        
+        if(diffWeeks % 4 == 1){
+            return 2;
+        }
+
+        if(diffWeeks % 4 == 2){
+            return 3;
+        }
+
+        if(diffWeeks % 4 == 3){
+            return 4;
+        }
+
+        if(diffWeeks % 4 == 0){
+            return 1;
+        }
+    }
+
+    APPEND_DATE_TIME_ON_DIFFERENT_DATETIMES(forDate: Date, forTime: Date): Date{
+        var _date = format(forDate,"yyyy-MM-dd");
+        var _time = format(forTime,"HH:mm");
+
+        return parseISO(`${_date}T${_time}:00`);
+    }
+
+    // DATE CALCULATIONS -  END
 }

@@ -8,7 +8,7 @@ import { GlobalService } from '@services/index';
     styles: [`
 .logo {
     height: 2rem;
-    background: url(../../../assets/logo/image2.png) no-repeat;
+    background: url(./assets/logo/image2.png) no-repeat;
     background-size: 64%;
     margin: 9px 17px;
     width: 10rem;

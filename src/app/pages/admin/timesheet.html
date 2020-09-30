@@ -171,34 +171,14 @@
                 <nz-step nzTitle="Pay Details"></nz-step>
                 <!-- <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Time"></nz-step> -->
                 <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Pay"></nz-step>
-                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)"nzTitle="Bills"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup) && rosterGroup != 'ADMINISTRATION' "nzTitle="Bills"></nz-step>
             </nz-steps>
     
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
  
             <div class="steps-content">
                 <div *ngIf="current == 0" [formGroup]="timesheetForm">
-                    <div nz-row nzGutter="8">
-                        <div nz-col nzSpan="6">
-                            <div class="form-group">
-                                <label for="">Start Time</label>
-                                <nz-time-picker [(ngModel)]="defaultStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
-                            </div>
-                        </div>
-                        <div nz-col nzSpan="6">
-                            <div class="form-group">
-                                <label for="">End Time</label>
-                                <nz-time-picker [(ngModel)]="defaultEndTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
-                            </div>
-                        </div>
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <label for="">Duration</label>
-                                <nz-alert *ngIf="durationObject?.error" nzType="error" [nzMessage]="durationObject?.durationStr"></nz-alert>
-                                <nz-alert *ngIf="!durationObject?.error" nzType="success" [nzMessage]="durationObject?.durationStr"></nz-alert>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div nz-row>
                         <div class="form-group">
                             <label for="">Date</label>
@@ -213,6 +193,7 @@
                             </nz-select>
                         </div>
                     </div>
+                   
                     <div nz-row *ngIf="multipleRecipientShow">
                         <label for="">Multiple Recipients</label>
                         <nz-switch nzSize="small" formControlName="isMultipleRecipient"></nz-switch>
@@ -228,6 +209,27 @@
                         <!-- <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker> -->
                         <!-- <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch> -->
                     </div>
+                    <div nz-row nzGutter="8" style="margin-top:1rem" *ngIf="showTime">
+                        <div nz-col nzSpan="6">
+                            <div class="form-group">
+                                <label for="">Start Time</label>
+                                <nz-time-picker [(ngModel)]="defaultStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="6">
+                            <div class="form-group" *ngIf="showEndTime">
+                                <label for="">End Time</label>
+                                <nz-time-picker [(ngModel)]="defaultEndTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Duration</label>
+                                <nz-alert *ngIf="durationObject?.error" nzType="error" [nzMessage]="durationObject?.durationStr"></nz-alert>
+                                <nz-alert *ngIf="!durationObject?.error" nzType="success" [nzMessage]="durationObject?.durationStr"></nz-alert>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div *ngIf="current == 1" [formGroup]="timesheetForm">
                     <div class="form-group" *ngIf="showRecipient() && selected?.option === 0">
@@ -241,7 +243,7 @@
                     <div class="form-group">
                         <label for="">Program</label>
                         <nz-select nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of programsList" [nzValue]="list.ProgName" [nzLabel]="list.ProgName"></nz-option>
+                            <nz-option *ngFor="let list of programsList" [nzValue]="list.progName" [nzLabel]="list.progName"></nz-option>
                         </nz-select>
                     </div>
                     <div class="form-group">
@@ -265,7 +267,7 @@
                         <label for="">Pay Type</label>
                         <nz-select formControlName="payType"
                             [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of payTypeList" [nzValue]="list.Title" [nzLabel]="list.Title">
+                            <nz-option *ngFor="let list of payTypeList" [nzValue]="list.title" [nzLabel]="list.title">
                             </nz-option>
                         </nz-select>
                     </div>
@@ -382,7 +384,7 @@
         <button nz-button nzType="default" (click)="next()" *ngIf="nextCondition" [disabled]="nextDisabled">
             <span>Next</span>
         </button>
-        <button nz-button nzType="primary" (click)="done()" [disabled]="!isFormValid" *ngIf="current >= 4">
+        <button nz-button nzType="primary" (click)="done()" [disabled]="!isFormValid" *ngIf="showDone">
             <span>Done</span>
         </button>
         <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>

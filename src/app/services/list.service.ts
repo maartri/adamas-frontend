@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 const list: string = "api/list"
+const docSign: string = "api/docusign"
 
 @Injectable()
 export class ListService {
@@ -12,12 +13,36 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    // sendDOCSIGN(data: any): Observable<any>{
+    //     return this.auth.post(`${docSign}/create`, data);
+    // }
+
+    getpayperiod(): Observable<any>{
+        return this.auth.get(`${list}/payperiod`);
+    }
+
+    getrosterpublishedenddate():Observable<any>{
+        return this.auth.get(`${list}/rosterpublished-end-date`);
+    }
+
+    getcategoryincident(): Observable<any>{
+        return this.auth.get(`${list}/category-incident-note`);
+    }
+
+    getservicetypeincident(data: any): Observable<any>{
+        return this.auth.get(`${list}/servicetype/incident/recipient/list`, data);
+    }
+    
+    getprogramsincident(id: string):Observable<any>{
+        return this.auth.get(`${list}/programs/incident/recipient/list/${id}`);
+    }    
+
     getstaffrecordview(user: string): Observable<any>{
         return this.auth.get(`${list}/staff-record-view/${user}`);
     }
     
     getserviceactivityall(data: any) {
-        return this.auth.get(`${list}/activities/all/`, data);
+        return this.auth.post(`${list}/activities/all`, data);
     }
     getserviceprogramactivity(data: any) {
         return this.auth.get(`${list}/activities/program/`, data);
@@ -80,7 +105,7 @@ export class ListService {
         return this.auth.get(`${list}/incidenttype`);
     }
     Getrptiplantypes(): Observable<any>{
-        return this.auth.get(`${list}/planttype`);
+        return this.auth.get(`${list}/planitype`);
     }
     GetrptLoanItems(): Observable<any>{
         return this.auth.get(`${list}/loanitems`);
@@ -304,6 +329,14 @@ export class ListService {
     getdiscipline(): Observable<any>{
         return this.auth.get(`${list}/intake/discipline/list`)
     }
+
+    getfileclassification(): Observable<any>{
+        return this.auth.get(`${list}/intake/file-classification/list`)
+    }
+
+    getdocumentcategory(): Observable<any>{
+        return this.auth.get(`${list}/intake/doc-category/list`)
+    }
     
     gettemplatelist():Observable<any>{
         return this.auth.get(`${list}/intake/template/list`)
@@ -450,7 +483,33 @@ export class ListService {
     getrecipientpreference(personID: string):Observable<any>{
         return this.auth.get(`${list}/group/recipient-preference/${personID}`)
     }
+    
+    GetCopetencyGroup(): Observable<any>{        
+        return this.auth.get(`${list}/Copetency-Group`)
+    }
+    Getrpttrainingtype(): Observable<any>{        
+        return this.auth.get(`${list}/trainingtype`)
+    }
+    Getrpttraccsuser(): Observable<any>{        
+        return this.auth.get(`${list}/traccsuser`)
+    }
+    
+    Getrptmdstype(): Observable<any>{        
+        return this.auth.get(`${list}/mdstype`)
+    }
+    Getrptagencyid(): Observable<any>{        
+        return this.auth.get(`${list}/agencyid`)
+    }
+    Getrptpaytype(): Observable<any>{        
+        return this.auth.get(`${list}/paytype`)
+    }
+    Getrptactivity(): Observable<any>{        
+        return this.auth.get(`${list}/activity`)
+    }
+    Getrptsettings_vehicles(): Observable<any>{        
+        return this.auth.get(`${list}/settings_vehicles`)
+    }
 
 
 
-}
+} //  

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { GlobalService, LoginService, roles, ShareService } from '@services/index';
 import { Router } from '@angular/router'
 
@@ -8,6 +8,7 @@ import { Router } from '@angular/router'
   styleUrls: ['./header-nav.component.css']
 })
 export class HeaderNavComponent implements OnInit {
+  @Input() HIDE_CRUMBS: boolean = false;
 
   isVisible: boolean = false;
   isAdmin: boolean = false;

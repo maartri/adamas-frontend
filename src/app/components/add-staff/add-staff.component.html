@@ -1,0 +1,248 @@
+<nz-modal [nzWidth]="1200" [nzStyle]="{ top: '20px' }" [(nzVisible)]="open" [nzTitle]="'Add Staff'" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+
+        <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+            <nz-step class="mini" nzTitle="Type & Personal Details" nzDescription=""></nz-step>
+            <!-- <nz-step class="mini" nzTitle="Personal Details" nzDescription=""></nz-step> -->
+            <nz-step class="mini" nzTitle="Address Details" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Contact Details" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step>
+        </nz-steps>
+
+        <nz-divider class="full-height" nzType="vertical"></nz-divider>
+
+        <div class="steps-content" >
+            
+            <div nz-row *ngIf="current == 0" [formGroup]="staffForm" nzGutter="8">
+
+                <div nz-col nzSpan="8">
+                    <div class="form-group">
+                        <label for="">Type</label>
+                        <nz-select class="nzselect-min" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select a Program" >
+                            <nz-option *ngFor="let d of typesArr" [nzLabel]="d" [nzValue]="d"></nz-option>
+                        </nz-select>
+                    </div>
+    
+                    <ng-container *ngIf="staffForm.get('type').value === 'BROKERAGE ORGANISATION' || staffForm.get('type').value === 'SUNDRY BROKERAGE SUPPLIER'">
+                        <nz-radio-group formControlName="orgType">
+                            <label nz-radio [ngStyle]="style" nzValue="Individual">Individual</label>
+                            <label nz-radio [ngStyle]="style" nzValue="Organisation">Organisation</label>
+                        </nz-radio-group>
+                    </ng-container>
+                </div>
+                
+                <div nz-col nzSpan="16">
+                    <ng-container *ngIf="!(staffForm.get('orgType').value === 'Organisation') && staffForm.get('type').value != null" [formGroup]="staffForm">
+                        <div nz-row nzGutter="24">
+                            <div nz-col nzSpan="8">
+                                <div class="form-group">
+                                    <label for="">Gender</label>
+                                    <nz-select formControlName="gender" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                        <nz-option *ngFor="let d of genderArr" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">Birthdate</label>
+                                    <nz-date-picker formControlName="birthDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                </div>
+                            </div>
+                        </div>
+                        <div nz-row nzGutter="24">
+                            <div nz-col nzSpan="8">
+                                <div class="form-group">
+                                    <label for="">Surname</label>
+                                    <input type="text" formControlName="surnameOrg" class="text-upper" nz-input>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="8">
+                                <div class="form-group">
+                                    <label for="">Firstname</label>
+                                    <input type="text" formControlName="firstName" class="text-upper" nz-input>
+                                </div>
+                            </div>
+                        </div>
+                        <div nz-row style="margin-top:1rem;">
+                            <div nz-col nzSpan="24">
+                                <div class="form-group">
+                                    <label for="">Account Name</label>
+                                    <input type="text" formControlName="accountNo" class="text-upper" nz-input />
+                                </div>
+                                <nz-alert *ngIf="accountTaken == false" nzType="success" nzMessage="Account Valid"></nz-alert>
+                                <nz-alert *ngIf="accountTaken" nzType="error" nzMessage="Account Taken"></nz-alert>
+                            </div>
+                        </div>
+                    </ng-container>
+    
+                    <ng-container *ngIf="(staffForm.get('orgType').value === 'Organisation') && staffForm.get('type').value != null" [formGroup]="staffForm">
+                        <div nz-row nzGutter="24">
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">Organisation Name</label>
+                                    <input type="text" formControlName="surnameOrg" class="text-upper" nz-input>                                
+                                </div>
+                                <nz-alert *ngIf="accountTaken == false" nzType="success" nzMessage="Account Valid"></nz-alert>
+                                <nz-alert *ngIf="accountTaken" nzType="error" nzMessage="Account Taken"></nz-alert>
+                            </div>
+                        </div>                   
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- <div *ngIf="current == 1">
+               
+                    <ng-container *ngIf="!(staffForm.get('orgType').value === 'Organisation' && staffForm.get('type').value != null )" [formGroup]="staffForm">
+                        <div nz-row nzGutter="24">
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">Gender</label>
+                                    <nz-select formControlName="gender" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                        <nz-option *ngFor="let d of genderArr" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">Birthdate</label>
+                                    <nz-date-picker formControlName="birthDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                </div>
+                            </div>
+                        </div>
+                        <div nz-row nzGutter="24">
+                            <div nz-col nzSpan="6">
+                                <div class="form-group">
+                                    <label for="">Surname</label>
+                                    <input type="text" formControlName="surnameOrg" class="text-upper" nz-input>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="6">
+                                <div class="form-group">
+                                    <label for="">Firstname</label>
+                                    <input type="text" formControlName="firstName" class="text-upper" nz-input>
+                                </div>
+                            </div>
+                        </div>
+                        <div nz-row style="margin-top:1rem;">
+                            <div nz-col nzSpan="12">
+                                <div class="form-group">
+                                    <label for="">Account Name</label>
+                                    <input type="text" formControlName="accountNo" class="text-upper" nz-input>
+                                </div>
+                                <nz-alert *ngIf="accountTaken == false" nzType="success" nzMessage="Account Valid"></nz-alert>
+                                <nz-alert *ngIf="accountTaken" nzType="error" nzMessage="Account Taken"></nz-alert>
+                            </div>
+                        </div>
+                    </ng-container>
+    
+                    <ng-container *ngIf="(staffForm.get('orgType').value === 'Organisation' && staffForm.get('type').value != null )" [formGroup]="staffForm">
+                        <div nz-row nzGutter="24">
+                            <div nz-col nzSpan="6">
+                                <div class="form-group">
+                                    <label for="">Organisation Name</label>
+                                    <input type="text" formControlName="surnameOrg" class="text-upper" nz-input>                                
+                                </div>
+                                <nz-alert *ngIf="accountTaken == false" nzType="success" nzMessage="Account Valid"></nz-alert>
+                                <nz-alert *ngIf="accountTaken" nzType="error" nzMessage="Account Taken"></nz-alert>
+                            </div>
+                        </div>                   
+                    </ng-container>
+       
+            </div> -->
+
+            <div *ngIf="current == 1" [formGroup]="staffForm">
+
+               <div class="width-55">
+                    <button class="botton success title" (click)="addAddress()"><i nz-icon nzType="plus" nzTheme="outline"></i> Add Addresses</button>
+
+                    <div nz-row class="list-group" nzGutter="24" formArrayName="addressForm" *ngFor="let staff of staffForm.get('addressForm')['controls']; let i = index;">
+                        <ng-container [formGroupName]="i">
+                            <div nz-col class="form-group" nzSpan="24">
+                                <input type="text" formControlName="address1" placeholder="Address" nz-input>
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <nz-select style="width:100%" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Type" >
+                                    <nz-option *ngFor="let d of addressType" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                </nz-select>
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <suburb formControlName="suburb"></suburb>
+                            </div>
+                        </ng-container>                        
+                    </div>
+               </div>
+
+            </div>
+
+            <div *ngIf="current == 2" [formGroup]="staffForm">
+
+                <div class="width-55">
+                    <button class="botton success title" (click)="addContact()"><i nz-icon nzType="plus" nzTheme="outline"></i> Add Contacts</button>
+
+                    <div nz-row class="list-group" nzGutter="24" formArrayName="contactForm" *ngFor="let staff of staffForm.get('contactForm')['controls']; let i = index;">            
+                        <ng-container [formGroupName]="i">
+                            <div nz-col nzSpan="12">
+                                <nz-select style="width:100%" formControlName="contacttype" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Type" >
+                                    <nz-option *ngFor="let d of contactType" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                </nz-select>
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <input type="text" formControlName="contact" placeholder="Details" nz-input>
+                            </div>     
+                        </ng-container>                             
+                    </div>
+               </div>
+
+            </div>
+
+            <div *ngIf="current == 3" [formGroup]="staffForm">
+
+                <div nz-row>
+                    <div nz-col nzSpan="8">
+                     
+                            <div class="form-group">
+                                <label for="">Commencement Date</label>
+                                <nz-date-picker formControlName="commencementDate" [nzFormat]="dateFormat"></nz-date-picker>
+                            </div>
+            
+                            <div class="form-group">
+                                <label for="">Branch</label>
+                                <nz-select style="width:100%" formControlName="branch" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                    <nz-option *ngFor="let d of branchesArr" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                </nz-select>
+                            </div>
+            
+                            <div class="form-group">
+                                <label for="">Job Category</label>
+                                <nz-select style="width:100%" formControlName="jobCategory" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                    <nz-option *ngFor="let d of jobCategoryArr" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                </nz-select>
+                            </div>
+            
+                            <div class="form-group">
+                                <label for="">Coordinator/Manager</label>
+                                <nz-select style="width:100%" formControlName="manager" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                    <nz-option *ngFor="let d of managerArr" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                </nz-select>
+                            </div>
+                     
+                    </div>
+                </div>                
+            </div>
+        </div>
+
+    </div>
+    <div *nzModalFooter>
+        <ng-container>
+            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                <span>Previous</span>
+            </button>
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!nextRequired">
+                <span>Next</span>
+            </button>
+            <button nz-button nzType="primary" (click)="save()" *ngIf="current == 3" >
+                <span>Done</span>
+            </button>
+        </ng-container>
+    </div>
+</nz-modal>

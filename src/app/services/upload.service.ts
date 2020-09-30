@@ -22,6 +22,10 @@ export class UploadService {
       return this.http.post(`${upload}/profile`, data);
    }
 
+   postdocumentstafftemplate(data: any): Observable<any> {
+      return this.http.post(`${upload}/document-staff/template`, data);
+   }
+
    postdocumenttemplate(data: any): Observable<any> {
       return this.http.post(`${upload}/document/template`, data);
    }
@@ -93,5 +97,10 @@ export class UploadService {
    downloadFileDocuments(data: any): Observable<any> {
       return this.http.post(`${fileV2}/download`, data, { responseType: 'blob', reportProgress: true });
    }
+
+   downloadFileDocumentInProjectDirectory(data: any): Observable<any> {
+      return this.http.post(`${fileV2}/download-document`, data, { responseType: 'blob', reportProgress: true });
+   }
+
 
 }

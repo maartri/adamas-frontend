@@ -12,7 +12,7 @@ import { filter, switchMap } from 'rxjs/operators';
         `
     .logo {
         height: 2rem;
-        background: url(../../../assets/logo/image2.png) no-repeat;
+        background: url(./assets/logo/image2.png) no-repeat;
         background-size: 64%;
         margin: 7px 24px;
         width: 10rem;
@@ -139,13 +139,14 @@ export class HomeClientManager implements OnInit {
     
     isCollapsed = false;
     isVisible: boolean = false;
-    hide: boolean = true;
+    hideAccess: boolean = true;
 
     _settings: SettingsService;
     changeRoute = new Subject<string>();
     currRoute: string;
 
     pickedUser: any;
+
 
     constructor(
         private globalS: GlobalService,
@@ -213,6 +214,12 @@ export class HomeClientManager implements OnInit {
           }
           breadcrumbs.push({ label: routeURL, url: url })
           return this.createBreadCrumb(child, url, breadcrumbs);
+        }
+    }
+
+    MEMBER_LENGTH(memLength: number){
+        if(memLength > 0){
+            this.hideAccess = false;
         }
     }
 

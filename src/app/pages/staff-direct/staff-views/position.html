@@ -1,0 +1,77 @@
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Position</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="isLoading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Position ID</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td>{{data.position}}</td>
+                    <td>{{data.startDate | date: 'd/MM/y'}}</td>
+                    <td>{{data.endDate | date: 'd/MM/y'}}</td>
+                    <td>{{data.positionID}}</td>
+                    <td>{{data.notes}}</td>
+                    <td>
+                        <a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+
+<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()">
+    <div nz-row [formGroup]="inputForm" nz-form [nzLayout]="'horizontal'">
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="6" >Date Range</nz-form-label>
+                <nz-form-control [nzSpan]="14" nzErrorTip="Date range is required">
+                    <nz-range-picker [nzFormat]="dateFormat" formControlName="dates">
+                    </nz-range-picker>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="6" nzRequired >Position</nz-form-label>
+                <nz-form-control [nzSpan]="14" nzErrorTip="Required Field">
+                    <nz-select formControlName="position" nzAllowClear nzPlaceHolder=""
+                        [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let list of lists" [nzValue]="list" [nzLabel]="list"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="6">Position ID</nz-form-label>
+                <nz-form-control [nzSpan]="14" nzErrorTip="Required Field">
+                    <input nz-input type="text" formControlName="positionID">
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="6">Notes</nz-form-label>
+                <nz-form-control [nzSpan]="14" nzErrorTip="Required Field">
+                    <textarea rows="4" nz-input formControlName="notes"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="save()" [nzLoading]="isLoading">Save</button>
+    </div>
+</nz-modal>

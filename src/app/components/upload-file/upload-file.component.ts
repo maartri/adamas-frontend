@@ -12,20 +12,19 @@ import * as _ from 'lodash';
 const noop = () => {
 };
 
-const UPLOADFILE_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  multi: true,
-  useExisting: forwardRef(() => UploadFileComponent),
-};
-
 @Component({
   selector: 'app-upload-file',
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
   providers: [
-    UPLOADFILE_VALUE_ACCESSOR
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: forwardRef(() => UploadFileComponent),
+    }
   ]
 })
+
 export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   private onTouchedCallback: () => void = noop;
@@ -66,15 +65,19 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
 
   ngOnInit() {
     this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
+    console.log(this.token);
   }
 
   loadFiles() {
     this.loadDocument = true;
-    this.uploadS.getFileDocuments(this.token.code, this.innerValue.view)
+
+    if(!this.globalS.isEmpty(this.token.code) && typeof this.token.code !== 'undefined'){
+      this.uploadS.getFileDocuments(this.token.code, this.innerValue.view)
       .subscribe(data => {
         this.loadedFiles = data;
         this.loadDocument = false;
       });
+    }
   }
 
   ngOnDestroy() {
@@ -82,9 +85,13 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   }
 
   customReq = (item: UploadXHRArgs) => {
-
+    console.log(item);
     const formData = new FormData();
     formData.append('file', item.file as any);
+    formData.append('data', JSON.stringify({
+      PersonID: this.token.uniqueID,
+      DocPath: this.token.recipientDocFolder
+    }))
 
     const req = new HttpRequest('POST', item.action!, formData, {
       reportProgress: true,
@@ -106,6 +113,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
         item.onError!(err, item.file!);
       }
     );
+    
   };
 
   deleteDocument(index: number) {
@@ -126,8 +134,9 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   downloadDocument(index: number) {
     const { docID, filename, type, originalLocation } = this.loadedFiles[index];
 
-    this.uploadS.downloadFileDocuments({
-      PersonID: this.token.uniqueID,
+    console.log(this.loadedFiles[index])
+    this.uploadS.downloadFileDocumentInProjectDirectory({
+      PersonID: this.token.id,
       Extension: type,
       FileName: filename,
       DocPath: originalLocation
@@ -147,10 +156,10 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
-    console.log(value);
     if (value != null) {
       this.innerValue = value;
-      this.urlPath = `api/v2/file/${this.token.uniqueID}`;
+      this.token = value.token;
+      this.urlPath = `api/v2/file/upload-document-procedure`;
 
       this.loadFiles();
       // this.pathForm(this.innerValue);

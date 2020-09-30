@@ -109,22 +109,11 @@ export class NotesClient implements OnInit {
             if (this.viewNo == 2)
                 this.dateChangeEvent.next(this.dateRange);
         });
-
-        // this.dateStream.pipe(
-        //     debounceTime(100),
-        //     switchMap((x: any) => {
-        //         this.tableData = []
-        //         this.loading = true;
-        //         return this.getShiftNotes();
-        //     }))
-        //     .subscribe(data => {
-        //         this.loading = false;
-        //         this.tableData = data;
-        //     })
     }
 
     ngOnInit() {
-        var token = this.globalS.decode();
+        var token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
+
         this.accountNo = token.code;
         this.token = token;        
 

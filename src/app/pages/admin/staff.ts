@@ -101,11 +101,11 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
 
         // this.user = {
-        //     agencyDefinedGroup: "ARUNDEL",
-        //     code: "2CDC STEPH",
-        //     id: "T0100005506",
+        //     agencyDefinedGroup: undefined,
+        //     code: "AASTAFF HELP",
+        //     id: "S0100005616",
         //     sysmgr: true,
-        //     view: "recipient"
+        //     view: "staff"
         // }
 
         this.user = {
@@ -115,6 +115,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
             agencyDefinedGroup: event.agencyDefinedGroup,
             sysmgr: event.sysmgr
         }
+
+        console.log(this.user);
 
         this.sharedS.emitChange(this.user);
         this.cd.detectChanges();
@@ -136,6 +138,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         const { user } = this.globalS.decode();
+
+
 
         this.listS.getstaffrecordview(user).subscribe(data => {
             this.userview = data;
@@ -166,6 +170,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
             unallocMaster: false,
             deletePending: false
         });
+
+        // this.listChange({});
     }
 
     ngOnDestroy(): void {

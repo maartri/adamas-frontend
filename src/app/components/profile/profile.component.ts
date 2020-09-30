@@ -117,7 +117,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   ngOnInit() {
-
     const { role, user } = this.globalS.decode();
 
     if(user && role == 'ADMIN USER'){

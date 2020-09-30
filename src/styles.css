@@ -129,7 +129,7 @@ nz-breadcrumb{
     cursor:pointer;
     outline:none;
     transition: background-color 0.5s ease;
-    padding: 3px 7px;
+    padding: 5px 7px;
     border-radius: 3px;
 }
 .botton:disabled{
@@ -235,3 +235,14 @@ th.action{
     margin-bottom: 8px;
     display: inline-block;
   }
+
+  .nzselect-min{
+      min-width: 15rem;
+  }
+
+  .margin-btm-10{
+    margin-bottom:10px;
+}
+.pad-15{
+    padding:15px;
+}

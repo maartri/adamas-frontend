@@ -3,7 +3,24 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './pages/login/login.component';
 
-import {  ProfilePage } from '@components/index';
+import {  
+  ProfilePage
+} from '@components/index';
+
+import {
+   MembersComponent
+} from './components/members/members.component'
+
+import { HomeClientManager } from './pages/client-manager/home';
+import { ProfileClientManager } from './pages/client-manager/profile';
+import { BookingClientManager } from './pages/client-manager/booking';
+import { CalendarClientManager } from './pages/client-manager/calendar';
+import { DocumentClientManager } from './pages/client-manager/document';
+import { HistoryClientManager } from './pages/client-manager/history';
+import { NotesClientManager } from './pages/client-manager/notes';
+import { PackageClientManager } from './pages/client-manager/package';
+import { PreferencesClientManager } from './pages/client-manager/preferences';
+import { ShiftClientManager } from './pages/client-manager/shift';
 
 // Docusign
 import {  DocusignComponent } from './pages/docusign/docusign';
@@ -11,6 +28,7 @@ import {  DocusignComponent } from './pages/docusign/docusign';
 import {
   UnauthorizedComponent
 } from './pages/unauthorized/unauthorized';
+
 
 import {
   HomeClient,
@@ -160,6 +178,56 @@ const routes: Routes = [
         path: 'calendar',
         component: CalendarClient,
         canActivate: [RouteGuard],
+      },
+      {
+        path: 'members',
+        component: MembersComponent
+      },
+      {
+        path: 'unauthorized',
+        component: UnauthorizedComponent
+      }
+    ]
+  },
+  {
+    path: 'client-manager',
+    component: HomeClientManager,
+    children: [
+      {
+        path: 'profile',
+        component: ProfileClientManager
+      },
+      {
+        path: 'notes',
+        component: NotesClientManager
+      },
+      {
+        path: 'history',
+        component: HistoryClientManager
+      },
+      {
+        path: 'booking',
+        component: BookingClientManager
+      },
+      {
+        path: 'document',
+        component: DocumentClientManager
+      },
+      {
+        path: 'package',
+        component: PackageClientManager
+      },
+      {
+        path: 'preferences',
+        component: PreferencesClientManager
+      },
+      {
+        path: 'manage-services',
+        component: ShiftClientManager
+      },
+      {
+        path: 'calendar',
+        component: CalendarClientManager
       },
       {
         path: 'unauthorized',
@@ -505,5 +573,17 @@ export const PAGE_COMPONENTS = [
   IntakeStaff,
 
   ExtraComponent,
-  UnauthorizedComponent
+  UnauthorizedComponent,
+
+  // Client Manager
+  HomeClientManager,
+  ProfileClientManager,
+  BookingClientManager,
+  CalendarClientManager,
+  DocumentClientManager,
+  HistoryClientManager,
+  NotesClientManager,
+  PackageClientManager,
+  PreferencesClientManager,
+  ShiftClientManager
 ]

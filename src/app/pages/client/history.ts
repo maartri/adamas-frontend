@@ -155,7 +155,7 @@ export class HistoryClient implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit() {    
-        this.accountNo = this.id || this.globalS.decode().code;
+        this.accountNo = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode().code;
         this.dateRange[0] = startOfMonth(new Date());
         this.dateRange[1] = lastDayOfMonth(new Date());
 

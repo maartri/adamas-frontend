@@ -46,7 +46,7 @@
 
         <nz-divider class="full-height" nzType="vertical"></nz-divider>
 
-        <div class="steps-content" [formGroup]="inputForm">
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
             <div *ngIf="current == 0">
                 <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="competency" nzShowSearch nzAllowClear nzPlaceHolder="Select a competency" >
                     <nz-option *ngFor="let d of competencies" [nzLabel]="d" [nzValue]="d"></nz-option>

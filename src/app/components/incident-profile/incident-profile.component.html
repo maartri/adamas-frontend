@@ -1,0 +1,116 @@
+<div>
+    <div nz-row nzGutter="32">
+        <div nz-col nzSpan="24">
+            <h4>Subject Details</h4>
+            <div class="pad-15">
+                <div nz-row nzGutter="8" [formGroup]="userForm">
+                    <div nz-col nzSpan="12">
+                        <div class="form-group-inline">
+                            <label for="">Subject Name</label>
+                            <div><input type="text" formControlName="subjectName" nz-input></div>
+                        </div>
+                        <div class="form-group-inline">
+                            <label for="">Supervisor Name</label>
+                            <div><input type="text" nz-input></div>
+                        </div>
+                        <div class="form-group-inline">
+                            <label for="">Birthdate</label>
+                            <div><nz-date-picker formControlName="dob"></nz-date-picker>   </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <div class="form-group-inline">
+                            <label for="">Current Address</label>
+                            <div><input type="text" formControlName="primaryAddress" nz-input></div>
+                        </div>
+                        <div class="form-group-inline">
+                            <label for="">Phone</label>
+                            <div><input type="text" formControlName="primaryPhone" nz-input></div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="pad-15">
+            <label for="">Gender</label>
+            <div>
+                <nz-radio-group>
+                    <label nz-radio nzValue="A">Male</label>
+                    <label nz-radio nzValue="B">Female</label>
+                </nz-radio-group>
+            </div>
+        </div>
+        <div nz-col nzSpan="12">
+            <label for="">Organisation</label>
+            <div class="pad-15">
+                <nz-radio-group>
+                    <div nz-row>
+                        <div nz-col nzSpan="12">
+                            <div>
+                                <label nz-radio nzValue="A">Aged Care Funded</label>
+                            </div>
+                            <div>
+                                <label nz-radio nzValue="B">Member of Community</label>
+                            </div>
+                            <div>
+                                <label nz-radio nzValue="C">Block Funded</label>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="12">
+                            <div>
+                                <label nz-radio nzValue="A">Agency Staff</label>
+                            </div>
+                            <div>
+                                <label nz-radio nzValue="B">NDIS Participant</label>
+                            </div>
+                        </div>
+                    </div>
+                </nz-radio-group>
+            </div>
+        </div>
+    </div>
+
+
+    <div nz-row nzGutter="32">
+        <div nz-col nzSpan="24">
+            <h4>Step 1: When did the incident occur?</h4>
+            <div class="pad-15">
+                <div nz-row nzGutter="16">
+                    <div nz-col nzSpan="12">
+                        <div class="form-group">
+                            <label for="">Date of Incident</label>
+                            <nz-date-picker [(ngModel)]="date"></nz-date-picker>   
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <div class="form-group">
+                            <label for="">Time of Incident</label>
+                            <div nz-row nzGutter="16">
+                                <div nz-col nzSpan="9">
+                                    <nz-time-picker [nzPlaceHolder]="'Start Time'" nzFormat="HH:mm"></nz-time-picker>
+                                </div>
+                                <div nz-col nzSpan="9">
+                                    <nz-time-picker [nzPlaceHolder]="'End Time'" nzFormat="HH:mm"></nz-time-picker>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div nz-row nzGutter="16">
+                    <div nz-col nzSpan="24">
+                        <div class="form-group">
+                            <label for="">Reported By</label>
+                            <nz-select nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false">
+                                <nz-option >
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

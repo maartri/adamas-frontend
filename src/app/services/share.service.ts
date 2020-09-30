@@ -6,12 +6,14 @@ export class ShareService {
     private emitChangeSource = new Subject<any>();
     private emitOnSearchList = new BehaviorSubject(false);
     private emitRouteChangeSource = new Subject<any>();
+    private emitMemberPicked = new Subject<any>();
 
     private pickedObject: any;
 
     changeEmitted$ = this.emitChangeSource.asObservable();
     emitRouteChangeSource$ = this.emitRouteChangeSource.asObservable();
     emitOnSearchList$ = this.emitOnSearchList.asObservable();
+    emitMemberPicked$ = this.emitMemberPicked.asObservable();
 
     emitChange(change: any) {
         this.pickedObject = change;
@@ -32,5 +34,9 @@ export class ShareService {
             changeRoute: changeRoute
         }
         this.emitRouteChangeSource.next(route);
+    }
+
+    emitMemberPickedChange(change: any){        
+        this.emitMemberPicked.next(change);
     }
 }

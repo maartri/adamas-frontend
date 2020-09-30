@@ -65,7 +65,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   }
 
   ngOnInit() {
-    this.token = this.globalS.decode();
+    this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
   }
 
   loadFiles() {

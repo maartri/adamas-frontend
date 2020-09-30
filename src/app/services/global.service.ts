@@ -124,10 +124,12 @@ export class GlobalService {
             this.router.navigate(['provider']);
         if (data.role === roles.admin)
             this.router.navigate(['admin']);
-        if (data.role === roles.client || data.role === roles.manager)
+        if (data.role === roles.client)
             this.router.navigate(['client']);
         if (data.role === roles.portal)
             this.router.navigate(['portal']);
+        if (data.role === roles.manager)
+            this.router.navigate(['client-manager']);
     }
 
     get settings(): string {
@@ -162,12 +164,28 @@ export class GlobalService {
         localStorage.setItem('member', data);
     }
 
+    get pickedMemberUser(): string {
+        return localStorage.getItem('picked_member_user');
+    }
+
+    set pickedMemberUser(data: string) {
+        localStorage.setItem('picked_member_user', data);
+    }
+
+    get pickedMember(): string {
+        return JSON.parse(localStorage.getItem('picked_member'));
+    }
+
+    set pickedMember(data: string) {
+        localStorage.setItem('picked_member', JSON.stringify(data));
+    }
+
     get packageStatement(): string {
-        return localStorage.getItem('package_statement');
+        return JSON.parse(localStorage.getItem('package_statement'));
     }
 
     set packageStatement(data: string) {
-        localStorage.setItem('package_statement', data);
+        localStorage.setItem('package_statement', JSON.stringify(data));
     }
 
     get token(): string {
@@ -191,7 +209,30 @@ export class GlobalService {
     }
 
     set userSettings(data: any) {
-        localStorage.setItem('settings', JSON.stringify(data));
+        localStorage.setItem('original_settings', JSON.stringify(data));
+    }
+
+    get originalSettings() {
+        return JSON.parse(localStorage.getItem('settings'));
+    }
+
+    set originalSettings(data: any) {
+        localStorage.setItem('original_settings', JSON.stringify(data));
+    }
+
+    
+    GETPICKEDMEMBERDATA(data: any){
+        return {
+            code: data.accountNo,
+            uniqueID: data.uniqueID
+        } 
+    }
+
+    GETPICKEDMEMBERROLEANDUSER(){
+        return{
+            user: this.pickedMemberUser,
+            role: 'PORTAL CLIENT'
+        }
     }
 
     isRecipients999() {

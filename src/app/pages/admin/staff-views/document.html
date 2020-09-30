@@ -1,6 +1,7 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add Document</button>
+        <app-upload-shared [(ngModel)]="user"></app-upload-shared>
         <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
@@ -29,7 +30,11 @@
                     <td>{{ data.modified | date: 'd/M/yyyy'  }}</td>
                     <td>{{ data.filename }}</td>
                     <td>{{ data.type }}</td>
-                    <td>{{ data.originalLocation }}</td>
+                    <td>
+                        <div class="limit-width">
+                            {{ data.originalLocation }}
+                        </div>
+                    </td>
                     <td>
                         <a (click)="showEditModal(i)">Download</a>
                         <nz-divider nzType="vertical"></nz-divider>

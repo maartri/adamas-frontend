@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { GlobalService, LoginService, roles } from '@services/index';
+import { GlobalService, LoginService, roles, ShareService } from '@services/index';
+import { Router } from '@angular/router'
+
 @Component({
   selector: 'app-header-nav',
   templateUrl: './header-nav.component.html',
@@ -10,10 +12,21 @@ export class HeaderNavComponent implements OnInit {
   isVisible: boolean = false;
   isAdmin: boolean = false;
 
+  tempRole: string;
+  ifClientManager: boolean = false;
+  
+  pickedUser: any;
+
   constructor(
     private globalS: GlobalService,
-    private loginS: LoginService
-  ) { }
+    private loginS: LoginService,
+    private sharedS: ShareService,
+    private router: Router,
+  ) { 
+    // this.sharedS.emitMemberPicked$.subscribe(data => {
+    //   console.log(data)
+    // });
+  }
 
   ngOnInit(): void {
     const token = this.globalS.decode();
@@ -21,6 +34,15 @@ export class HeaderNavComponent implements OnInit {
       this.isAdmin = true;
     //}
 
+    this.tempRole = this.globalS.isRole();
+
+    if (this.tempRole == roles.admin) {
+    }
+    else if (this.tempRole == roles.manager) {
+        this.ifClientManager = this.tempRole == roles.manager ? true : false;
+    }
+    else if (this.tempRole == roles.provider) {
+    }
   }
 
   logout() {
@@ -35,6 +57,13 @@ export class HeaderNavComponent implements OnInit {
   onClickOutside(event: Object) {
     if (event && event['value'] === true) {
       this.isVisible = false;
+    }
+  }
+
+  toClientMembers() {
+    var tempRole = this.globalS.isRole();
+    if (tempRole == roles.manager) {
+        this.router.navigate(['client/members']);
     }
   }
 

@@ -823,51 +823,132 @@
                             </div>  
                         </nz-tab>
                         <nz-tab  nzTitle="Register's Criteria" >
-                            <div nz-row [formGroup]="inputForm">                                                        
+                            <div nz-row>
+                                <div nz-col nzSpan="24">
+                                    <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
+                                    <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" ></nz-date-picker>
+                                     <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date"></nz-date-picker>                                 
+                                </div>
+                            </div>
+                            <div nz-row [formGroup]="inputForm">
+                                    
                                     <div nz-col nzSpan="8">
                                         <div class="form-group">
-                                            <label><i nz-icon nzType="bank" nzTheme="outline"></i> Funders </label>
-                                            <label class="checks" nz-checkbox formControlName="allFunders">All Funders</label>
-                                            <nz-select formControlName="fundersArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allFunders">
-                                                <nz-option *ngFor="let option of fundersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>
+                                            <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
+                                            <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
+                                                <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>                                            
+                                        </div>
+                                    </div> 
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label><i nz-icon nzType="solution" nzTheme="outline"></i> Programs </label>
+                                            <label class="checks" nz-checkbox formControlName="allPrograms">All Programs</label>
+                                            <nz-select formControlName="programsArr" nzMode="multiple" [nzDisabled]="inputForm.value.allPrograms">
+                                                <nz-option *ngFor="let option of programsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                             </nz-select>
                                             
                                         </div>
-                                    </div>                                
-                                        <div nz-col nzSpan="8">
-                                            <div class="form-group" >
-                                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i>Svc Providers</label>
-                                                <label class="checks" nz-checkbox formControlName="allSvcProviders">All Svc Providers</label>
-                                                <nz-select formControlName="svcprovidersArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allSvcProviders">
-                                                    <nz-option *ngFor="let option of svcprovidersArr" [nzLabel]="option" [nzValue]="option" ></nz-option>
-                                                </nz-select>                                                                   
-                                            </div>
-                                        </div>
-                                                                                                
+                                    </div> 
                                     <div nz-col nzSpan="8">
                                         <div class="form-group">
-                                            <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Outlets</label>
-                                            <label class="checks" nz-checkbox formControlName="allOutlets">All Outlets</label>
-                                            
-                                            <nz-select formControlName="outletsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allOutlets">
-                                                <nz-option *ngFor="let option of outletsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                            </nz-select>
-                                            
+                                            <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Categories </label>
+                                            <label class="checks" nz-checkbox formControlName="allServiceRegion">All Categories</label>                                        
+                                            <nz-select formControlName="serviceRegionsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allServiceRegion">
+                                                <nz-option *ngFor="let option of serviceRegionsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                            </nz-select>                                        
                                         </div>
                                     </div>
                                      
-                                    <div nz-row [formGroup]="inputForm">
-                                        <div nz-col nzSpan="8">
-                                            <div class="form-group">
-                                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> State </label>
-                                                <label class="checks" nz-checkbox formControlName="allState">All State</label>
-                                                <nz-select formControlName="statesArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allState">
-                                                    <nz-option *ngFor="let option of statesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                                </nz-select>
-                                                
-                                            </div>
-                                        </div> 
-                                    </div>                              
+                           </div>
+                            <div nz-row [formGroup]="inputForm">
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Service Types</label>
+                                        <label class="checks" nz-checkbox formControlName="allSvctypes"  >All Services</label>                                        
+                                        <nz-select formControlName="svcTypeArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allSvctypes" >
+                                            <nz-option *ngFor="let option of svcTypeArr" [nzLabel]="option" [nzValue]="option"  ></nz-option>
+                                        </nz-select>                                        
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8"> 
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Incident Types</label>
+                                        <label class="checks" nz-checkbox formControlName="allIncidents"  >All Incidents</label>                                        
+                                        <nz-select formControlName="incidentArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allIncidents" >
+                                            <nz-option *ngFor="let option of incidentArr" [nzLabel]="option" [nzValue]="option"  ></nz-option>
+                                        </nz-select>                                        
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff  </label>
+                                        <label class="checks" nz-checkbox formControlName="allStaff">All Staff </label>
+                                        <nz-select formControlName="staffArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaff">
+                                            <nz-option *ngFor="let option of staffArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>
+                            </div>
+                            <div nz-row [formGroup]="inputForm">
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Recipients  </label>
+                                        <label class="checks" nz-checkbox formControlName="allRecipients">All Recipients </label>
+                                        <nz-select formControlName="recipientArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allRecipients">
+                                            <nz-option *ngFor="let option of recipientArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>     
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Items  </label>
+                                        <label class="checks" nz-checkbox formControlName="allItems">All Items </label>
+                                        <nz-select formControlName="itemArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allItems">
+                                            <nz-option *ngFor="let option of itemArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Plan Types  </label>
+                                        <label class="checks" nz-checkbox formControlName="allPlans">All Plans </label>
+                                        <nz-select formControlName="planArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allPlans">
+                                            <nz-option *ngFor="let option of planArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>                                    
+                            </div> 
+                            <div nz-row [formGroup]="inputForm">
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Care Domain  </label>
+                                        <label class="checks" nz-checkbox formControlName="allCareDomains">All Domains </label>
+                                        <nz-select formControlName="caredomainArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allCareDomains">
+                                            <nz-option *ngFor="let option of caredomainArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Case Notes  </label>
+                                        <label class="checks" nz-checkbox formControlName="allCaseNotes">All Case Notes </label>
+                                        <nz-select formControlName="casenotesArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allCaseNotes">
+                                            <nz-option *ngFor="let option of casenotesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Disciplines  </label>
+                                        <label class="checks" nz-checkbox formControlName="allDisciplines">All Disciplines </label>
+                                        <nz-select formControlName="disiplineArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allDisciplines">
+                                            <nz-option *ngFor="let option of disiplineArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>                                    
+                                    </div>
+                                </div>
+                                
                             </div>
                                   
                         </nz-tab>
@@ -954,15 +1035,7 @@
                             </div>
                             <div nz-row [formGroup]="inputForm">    
                                 
-                                <div nz-col nzSpan="8">
-                                    <div class="form-group">
-                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff  </label>
-                                        <label class="checks" nz-checkbox formControlName="allStaff">All Staff </label>
-                                        <nz-select formControlName="staffArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaff">
-                                            <nz-option *ngFor="let option of staffArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                        </nz-select>                                    
-                                    </div>
-                                </div>
+                                
                                 <div nz-col nzSpan="8">
                                     <div class="form-group">
                                         <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Service Regions</label>
@@ -973,10 +1046,49 @@
                                     </div>
                                 </div> 
                                 <div nz-col nzSpan="8">
-                                    
-    
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> State </label>
+                                        <label class="checks" nz-checkbox formControlName="allState">All State</label>
+                                        <nz-select formControlName="statesArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allState">
+                                            <nz-option *ngFor="let option of statesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>
+                                        
+                                    </div>
                                 </div>                                                                          
                             </div> 
+                            <div nz-row [formGroup]="inputForm">
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="bank" nzTheme="outline"></i> Funders </label>
+                                        <label class="checks" nz-checkbox formControlName="allFunders">All Funders</label>
+                                        <nz-select formControlName="fundersArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allFunders">
+                                            <nz-option *ngFor="let option of fundersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>
+                                        
+                                    </div>
+                                </div>                                
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group" >
+                                            <label><i nz-icon nzType="apartment" nzTheme="outline"></i>Svc Providers</label>
+                                            <label class="checks" nz-checkbox formControlName="allSvcProviders">All Svc Providers</label>
+                                            <nz-select formControlName="svcprovidersArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allSvcProviders">
+                                                <nz-option *ngFor="let option of svcprovidersArr" [nzLabel]="option" [nzValue]="option" ></nz-option>
+                                            </nz-select>                                                                   
+                                        </div>
+                                    </div>
+                                                                                            
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Outlets</label>
+                                        <label class="checks" nz-checkbox formControlName="allOutlets">All Outlets</label>
+                                        
+                                        <nz-select formControlName="outletsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allOutlets">
+                                            <nz-option *ngFor="let option of outletsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        </nz-select>
+                                        
+                                    </div>
+                                </div>
+                            </div>
                         </nz-tab>
     
                         

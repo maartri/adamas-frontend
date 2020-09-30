@@ -1,0 +1,38 @@
+<div nz-row nzGutter="32">
+    <div nz-col nzSpan="10">
+        <h2>Your Preferences</h2>
+        <ul class="main-list">
+            <ng-container *ngFor="let list of lists">
+                <li *ngIf="ifShow(list)">
+                    <h4 for="">{{ list.groupName }}</h4>
+                    <ul style="margin-left:2rem">
+                        <ng-container *ngFor="let clist of list.competenciesList">
+                            <li>
+                                <div class="list" *ngIf="clist.selected">
+                                    <label nz-checkbox [(ngModel)]="clist.selected">{{ clist.description }}</label>
+                                </div>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </li>
+            </ng-container>
+        </ul>
+        <button nz-button nzType="primary" (click)="postpreference()"><i nz-icon nzType="download"></i>Save Preferences</button>
+    </div>
+
+    <div nz-col nzSpan="14">
+        <h2>List of Preferences</h2>
+        <ul class="main-list">
+            <li *ngFor="let list of lists">
+                <div>
+                    <h4>{{ list.groupName}}</h4>
+                    <ul style="margin-left:2rem">
+                        <li *ngFor="let competency of list.competenciesList">
+                            <label nz-checkbox [(ngModel)]="competency.selected">{{ competency.description }}</label>                            
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

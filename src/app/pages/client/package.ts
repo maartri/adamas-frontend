@@ -163,7 +163,7 @@ export class PackageClient implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.client = this.id || this.globalS.decode().code;
+        this.client = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode().code;
 
         this.clientS.getprofile(this.client).subscribe(data => {
             this.user = data;

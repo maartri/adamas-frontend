@@ -77,11 +77,14 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.cd.reattach();
 
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
-        this.buildForm();
-
-        this.populateDropDowns(); 
-    }
+        if(this.user){
+            this.search(this.user);
+            this.buildForm();
+            this.populateDropDowns(); 
+            return;
+        }
+        this.router.navigate(['/admin/staff/personal']);
+   }
 
     ngOnDestroy(): void {
         this.unsubscribe.next();

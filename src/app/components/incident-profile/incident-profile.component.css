@@ -1,0 +1,24 @@
+nz-select{
+    width:12rem;
+}
+
+nz-form-label.ant-form-item-label{
+    line-height: 40px;
+}
+nz-radio-group{
+    width:100%;
+}
+nz-form-item.ant-form-item{
+    margin: 0 0 10px;
+}
+.form-group-inline{
+    display: flex;
+    align-items: center;
+    margin-bottom:10px;
+}
+.form-group-inline label{
+    flex: 1.3;
+}
+.form-group-inline > div{
+    flex: 2;
+}

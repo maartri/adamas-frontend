@@ -74,6 +74,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'hr-note')) {
                 this.cd.reattach();
+                console.log(data);
                 this.user = data;
                 this.search(this.user);
             }
@@ -82,8 +83,12 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
-        this.buildForm();
+        if(this.user){
+            this.search(this.user);
+            this.buildForm();
+            return;
+        }
+        this.router.navigate(['/admin/staff/personal'])
     }
 
     ngOnDestroy(): void {

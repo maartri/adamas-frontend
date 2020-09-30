@@ -1,0 +1,78 @@
+<div class="col-md-12">
+    <div class="tabs-vertical">
+
+        <nz-tabset>
+
+            <nz-tab nzTitle="OP Notes" (nzClick)="view.next(1)">
+                <div nz-col nzSpan="24">
+
+                    <nz-form-item>
+                        <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
+                            <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="OPDateRange"
+                                (ngModelChange)="OPdateChangeEvent.next($event)"></nz-range-picker>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-table #filterTable [nzData]="tableData" nzSize="small" [nzFrontPagination]="false">
+                        <thead (nzSortChange)="sort($event)" nzSingleSort>
+                            <tr>
+                                <th nzShowSort nzSortKey="detail">Details</th>
+                                <th nzShowSort nzSortKey="detailDate">Date</th>
+                                <th nzShowSort nzSortKey="creator">Creator</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of tableData">
+                                <td>{{ data.detail || '-' | uppercase }}</td>
+                                <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
+                                <td>{{ data.creator || '-' | uppercase }}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+
+
+            <nz-tab nzTitle="Shift Notes" (nzClick)="view.next(2)">
+                <div nz-col nzSpan="24">
+
+                    <nz-form-item>
+                        <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
+                            <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="dateRange"
+                                (ngModelChange)="dateChangeEvent.next($event)"></nz-range-picker>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-table #rowSelectionTable [nzData]="tableData" [nzLoading]="loading" nzSize="small"
+                        [nzFrontPagination]="false" [nzShowPagination]="false">
+                        <thead>
+                            <tr>
+                                <th nzWidth="150px">Date</th>
+                                <th nzWidth="150px">Start Time</th>
+                                <th nzWidth="150px">Service Type</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let data of rowSelectionTable.data; let i = index">
+                                <tr [class.even]="isEven(i)">
+                                    <td class="left"><span class="date">{{ data.key  }}</span></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr *ngFor="let val of data.value" [class.even]="isEven(i)">
+                                    <td></td>
+                                    <td class="align-left">{{ val.StartTime }}</td>
+                                    <td class="align-left">{{ val.ServiceType }}</td>
+                                    <td class="align-left">{{ val.Note || '-' }}</td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+        </nz-tabset>
+
+    </div>
+</div>

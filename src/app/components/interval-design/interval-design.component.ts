@@ -118,6 +118,7 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
 
     this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {     
       this.innerValue = data;
+      console.log(this.innerValue)
       this.onChangeCallback(this.innerValue);      
       this.cd.markForCheck();
     });
@@ -212,6 +213,13 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
       }
 
       this.innerValue = value;
+
+      this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {     
+        this.innerValue = data;
+        console.log(this.innerValue)
+        this.onChangeCallback(this.innerValue);      
+        this.cd.markForCheck();
+      });
       // this.onChangeCallback(this.quoteDetailsGroup.get('timeSlots').value)
     }    
   }

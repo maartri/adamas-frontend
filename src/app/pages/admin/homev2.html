@@ -12,10 +12,167 @@
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/reports"><i nz-icon class="material-icons"> poll </i> Reports</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/budget"><i nz-icon class="material-icons"> show_chart </i> Analyse & Budget</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected"><i nz-icon class="material-icons"> search </i> At A Glance</li>
-
-            <li *ngIf="!ISTAFF_BYPASS" nz-submenu nzTitle="Configuration" nzIcon="mail">
-                <i nz-icon class="material-icons"> settings_applications </i> Settings
+            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/configuration"><i nz-icon class="material-icons"> settings_applications </i> Configuration</li>
+            <!-- <li nz-submenu nzTitle="Configuration" nzIcon="setting">
+                <ul class="items">
+                    <li nz-submenu nzTitle="General Setup">
+                        <ul class="items fix-to-top">
+                            <li nz-menu-item>Companies</li>
+                            <li nz-menu-item>Branches</li>
+                            <li nz-menu-item>Funding Regions</li>
+                            <li nz-menu-item>CDC Claim Rates</li>
+                            <li nz-menu-item>CDC Target Groups</li>
+                            <li nz-menu-item>Package Purpose Statement</li>
+                            <li nz-menu-item>Activity Budget Groups</li>
+                            <li nz-menu-item>Budgets</li>
+                            <li nz-menu-item>User Details</li>
+                            <li nz-menu-item>Program Coordinators</li>
+                            <li nz-menu-item>Contact Groups</li>
+                            <li nz-menu-item>Contact Types</li>
+                            <li nz-menu-item>Address Types</li>
+                            <li nz-menu-item>Transport & Medical ...</li>
+                            <li nz-menu-item>Phone/Email Types</li>
+                            <li nz-menu-item>Occupations</li>
+                            <li nz-menu-item>Religions</li>
+                            <li nz-menu-item>Financial class</li>
+                            <li nz-menu-item>Postcodes</li>
+                            <li nz-menu-item>Holidays</li>
+                        </ul>
+                    </li>
+                    <li nz-menu-item>System Administration</li>
+                    <li nz-menu-item>Document Management</li>
+                    <li nz-menu-item>Incidents</li>
+                    <li nz-submenu nzTitle="Recipients" (nzOpenChange)="change($event)">
+                        <ul class="items recipient">
+                            <li nz-menu-item>Recipient Category</li>
+                            <li nz-menu-item>Recipient Groups</li>
+                            <li nz-menu-item>Recipient Minor Group</li>
+                            <li nz-menu-item>Recipient Billing Cycles</li>
+                            <li nz-menu-item>Debtor Terms</li>
+                            <li nz-menu-item>Recipient Goals</li>
+                            <li nz-menu-item>Recipient Consents</li>
+                            <li nz-menu-item>Plan Types</li>
+                            <li nz-menu-item>Clinical Note Categories</li>
+                            <li nz-menu-item>Case Note Categories</li>
+                            <li nz-menu-item>OP Notes Categories</li>
+                            <li nz-menu-item>Care Domains</li>
+                            <li nz-menu-item>Discharge Reasons</li>
+                            <li nz-menu-item>Referral Reasons/Presenting Issues</li>
+                            <li nz-menu-item>Recipient User Defined Reminders/Reviews/Alerts</li>
+                            <li nz-menu-item>Recipient Preferences</li>
+                            <li nz-menu-item>Mobility Codes</li>
+                            <li nz-menu-item>Tasks</li>
+                            <li nz-submenu nzTitle="Others" (nzOpenChange)="change($event)">
+                                <ul class="items others">
+                                    <li nz-menu-item>Health Conditions</li>
+                                    <li nz-menu-item>Medications</li>
+                                    <li nz-menu-item>Nursing Diagnosis</li>
+                                    <li nz-menu-item>Medical Diagnosis</li>
+                                    <li nz-menu-item>Medical Procedures</li>
+                                    <li nz-menu-item>Clinical Reminders</li>
+                                    <li nz-menu-item>Clinical Alerts</li>
+                                    <li nz-menu-item>Admitting Priorities</li>
+                                    <li nz-menu-item>Service Note Categories</li>
+                                    <li nz-menu-item>Referral Sources</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li nz-menu-item>Staff</li>
+                    <li nz-menu-item>Equipment</li>
+                    <li nz-menu-item>Activities/Items/Services</li>
+                    <li nz-menu-item>Pay Types</li>
+                    <li nz-menu-item>Funding Sources</li>
+                    <li nz-menu-item>Programs/Packages</li>
+                    <li nz-menu-item>Vehicles</li>
+                    <li nz-menu-item>Centres/Facilities/Outlets</li>
+                    <li nz-menu-item>Activity Groups</li>
+                </ul>
+            </li> -->
+            <!-- <li nz-submenu (nzOpenChange)="change($event)" nzTitle="Publish & Print Rosters" nzIcon="appstore">
+                <ul>
+                    <li nz-menu-item>Option 5</li>
+                    <li nz-menu-item>Option 6</li>
+                    <li nz-submenu nzTitle="Submenu">
+                        <ul>
+                            <li nz-menu-item>Option 7</li>
+                            <li nz-menu-item>Option 8</li>
+                        </ul>
+                    </li>
+                </ul>
             </li>
+            <li nz-submenu nzTitle="Timesheet Processing" nzIcon="setting">
+                <ul>
+                    <li nz-menu-item>Option 9</li>
+                    <li nz-menu-item>Option 10</li>
+                    <li nz-menu-item>Option 11</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="Billing" nzIcon="mail">
+                <ul>
+                    <li nz-menu-group nzTitle="Item 1">
+                        <ul>
+                            <li nz-menu-item>asdasd</li>
+                            <li nz-menu-item>sdasd</li>
+                        </ul>
+                    </li>
+                    <li nz-menu-group nzTitle="Item 2">
+                        <ul>
+                            <li nz-menu-item>Option 3</li>
+                            <li nz-menu-item>Option 4</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="CDC Claims" nzIcon="mail">
+                <ul>
+                    <li nz-menu-group nzTitle="Item 1">
+                        <ul>
+                            <li nz-menu-item>asdasd</li>
+                            <li nz-menu-item>sdasd</li>
+                        </ul>
+                    </li>
+                    <li nz-menu-group nzTitle="Item 2">
+                        <ul>
+                            <li nz-menu-item>Option 3</li>
+                            <li nz-menu-item>Option 4</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="NDIA Claims" nzIcon="mail">
+                <ul>
+                    <li nz-menu-group nzTitle="Item 1">
+                        <ul>
+                            <li nz-menu-item>asdasd</li>
+                            <li nz-menu-item>sdasd</li>
+                        </ul>
+                    </li>
+                    <li nz-menu-group nzTitle="Item 2">
+                        <ul>
+                            <li nz-menu-item>Option 3</li>
+                            <li nz-menu-item>Option 4</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="Other Datasets" nzIcon="mail">
+                <ul class="items">
+                    <li nz-menu-item>CTP MDS</li>
+                    <li nz-menu-item>ICTD MDS</li>
+                    <li nz-menu-item>HAS Reports</li>
+                    <li nz-menu-item>CSTDA MDS</li>
+                </ul>
+            </li>
+            <li nz-menu-item><i nz-icon nzType="account-book" nzTheme="outline"></i> Accounting</li>
+            <li nz-submenu nzTitle="Others" nzIcon="mail">
+                <ul class="items">
+                    <li nz-menu-item>HACC Upload</li>
+                    <li nz-menu-item>DEX Upload</li>
+                    <li nz-menu-item>Price Updates</li>
+                </ul>
+            </li>  -->
+            
 
         </ul>
     </nz-sider>

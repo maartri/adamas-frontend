@@ -350,6 +350,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           primaryPhone: this.getPrimaryContact(data[1])
         })
       });
+
+      this.searchStaff();
     }
   }
 
@@ -758,8 +760,6 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           IncidentNotes: incidentNotes,
           NewRelationship: this.listNewPeople
     };
-   
-    console.log(im_master);
     
     if(this.operation.process === Mode.UPDATE){
       this.timeS.updateincident(im_master).subscribe(data =>{

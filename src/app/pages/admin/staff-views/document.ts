@@ -135,7 +135,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         // if(doc.exists){
             this.fileObject = {
                 file: doc.name,
-                newFile: `${doc.name}-${this.user.id}`,
+                newFile: `${doc.name}`,
                 path: doc.template
             };
             return;
@@ -181,19 +181,23 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     }
 
     save(){
-        this.uploadS.postdocumenttemplate({
+
+        var inp = {
             User: this.globalS.decode().user,
             PersonID: this.user.id,
             OriginalFileName: this.fileObject.file,
             NewFileName: this.fileObject.newFile,
             Path:  this.fileObject.path
-        }).subscribe(data => {
+        };
+
+
+        this.uploadS.postdocumentstafftemplate(inp).subscribe(data => {
             this.globalS.sToast('Success','Document has been added');
             this.search();
         }, (err) =>{
             console.log(err);
             this.globalS.eToast('Error', err.error.message);
-        })
+        });
     }
 
     pre(): void {

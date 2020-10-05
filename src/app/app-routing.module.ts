@@ -151,6 +151,7 @@ import{ FundingRegionsComponent } from './pages/admin/configuration/genrel-setup
 import { ClaimratesComponent } from '@admin/configuration/genrel-setup/claimrates.component';
 import { TargetgroupsComponent } from '@admin/configuration/genrel-setup/targetgroups.component';
 import { PurposestatementComponent } from '@admin/configuration/genrel-setup/purposestatement.component';
+import { BudgetgroupsComponent } from '@admin/configuration/genrel-setup/budgetgroups.component';
 const routes: Routes = [
   {
     path: '',
@@ -435,6 +436,10 @@ const routes: Routes = [
         component:PurposestatementComponent
       },
       {
+        path:"budget-groups",
+        component:BudgetgroupsComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -668,7 +673,7 @@ export const PAGE_COMPONENTS = [
   ClaimratesComponent,
   TargetgroupsComponent,
   PurposestatementComponent,
-
+  BudgetgroupsComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

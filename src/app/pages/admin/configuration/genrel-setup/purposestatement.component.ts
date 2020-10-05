@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GlobalService } from '@services/global.service';
+import { ListService } from '@services/list.service';
 
 @Component({
   selector: 'app-purposestatement',
@@ -9,7 +10,7 @@ import { GlobalService } from '@services/global.service';
 })
 export class PurposestatementComponent implements OnInit {
 
-  tableData: Array<any>;
+    tableData: Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
@@ -20,12 +21,17 @@ export class PurposestatementComponent implements OnInit {
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
-      private formBuilder: FormBuilder
-    ){}
+      private formBuilder: FormBuilder,
+      private listS: ListService,
+      ){}
     
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{ name:"this is  a test package purpose statement 1"},{name:"this is  a test package purpose statement 2"},{name:"this is  a test package purpose statement 3"}];
+
+      this.listS.getfundingpackagepurposelist().subscribe(data => this.tableData = data);
+        
+      // this.tableData = [{ name:"this is  a test package purpose statement 1"},{name:"this is  a test package purpose statement 2"},{name:"this is  a test package purpose statement 3"}];
+      
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -69,7 +75,7 @@ export class PurposestatementComponent implements OnInit {
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
-        purpose: '',
+        porpose: '',
       });
     }
 

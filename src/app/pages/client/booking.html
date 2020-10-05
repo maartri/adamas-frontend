@@ -114,7 +114,7 @@
                 <div nz-row>
                     <div nz-col nzSpan="12" nzGutter="32">
                         <nz-radio-group [(ngModel)]="selectedStaff" nzName="radiogroup" style="width:100%">
-                            <ul>                        
+                            <ul style="list-style: none; overflow: auto; height: 25rem;">                        
                                 <li *ngFor="let staff of results;let i=index">
                                     <nz-avatar [nzShape]="'square'" [nzSize]="'large'" [nzIcon]="'user'"></nz-avatar>
                                     <h3>{{staff.accountNo}}</h3>
@@ -125,9 +125,9 @@
                             </ul>
                         </nz-radio-group>
                     </div>
-                    <div nz-col nzSpan="12">
+                    <!-- <div nz-col nzSpan="12">
                         #
-                    </div>
+                    </div> -->
                 </div>
 
             </div>

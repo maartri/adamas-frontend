@@ -111,9 +111,11 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
     }  
 
     showAddModal() {        
-        // this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
-        //     this.incidentTypeList = data;
-        // });
+        const { agencyDefinedGroup, code, id, sysmgr, view } = this.user;
+
+        this.operation = {
+            process: 'ADD'
+        }        
 
         this.incidentOpen = !this.incidentOpen;
     }

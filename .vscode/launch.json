@@ -5,11 +5,28 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach to Chrome",
+            "port": 4400,
+            "request": "attach",
             "type": "pwa-chrome",
-            "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}"
+        },
+       
+      
+        {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "pwa-chrome",
+            "url": "http://localhost:4400/",
+            "trace": true,
+            "runtimeArgs": [
+                "--new windwow",
+                "--user-data-dir=C:/windows",
+                "--remote-debugging-port:4400"
+            ],
+            "webRoot": "${workspaceFolder}/src",
+            "sourceMaps": true
         }
+        
     ]
 }

@@ -22,6 +22,10 @@ export class UploadService {
       return this.http.post(`${upload}/profile`, data);
    }
 
+   postdocumentstafftemplate(data: any): Observable<any> {
+      return this.http.post(`${upload}/document-staff/template`, data);
+   }
+
    postdocumenttemplate(data: any): Observable<any> {
       return this.http.post(`${upload}/document/template`, data);
    }

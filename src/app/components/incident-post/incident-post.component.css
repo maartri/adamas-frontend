@@ -6,7 +6,7 @@
     flex:1;
 }
 .flexy{
-    max-height: 33rem;
+    height: 33rem;
 }
 textarea{
     max-height:4rem;
@@ -68,4 +68,9 @@ span.time{
     border: 1px solid #e7e5e5;
     padding: 10px;
     margin-bottom: 1rem;
+}
+.overflow-list{
+    overflow: auto;
+    height: 30rem;
+    border: 1px solid #e3e3e3;
 }

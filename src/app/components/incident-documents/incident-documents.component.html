@@ -15,10 +15,10 @@
     </div>
     <div nz-col nzSpan="16">
         <nz-spin *ngIf="loadDocument" nzSimple></nz-spin>
-        <ul>
+        <ul class="overflow-list-incident">
             <li *ngFor="let file of loadedFiles;let i = index">            
                 <div>
-                    <h4>{{ file.documentName }} - {{ file.filename }}</h4>
+                    <h4>{{ file.filename }}</h4>
                     <div nz-row nzGutter="32" class="doc-wrapper">
                         <div nz-col nzSpan="8">
                             <label for="">Created</label> {{ file.created }}
@@ -41,7 +41,7 @@
                 </div>
             </li>
         </ul>
-        <nz-empty *ngIf="!loadDocument && loadedFiles?.length == 0"></nz-empty>
+        <nz-empty *ngIf="loadDocument == false && loadedFiles?.length == 0"></nz-empty>
     </div>
 </div>
 

@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { GlobalService } from '@services/global.service';
-
+import { TimeSheetService, GlobalService, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { SwitchService } from '@services/switch.service';
+import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-branches',
@@ -20,30 +21,31 @@ export class BranchesComponent implements OnInit {
     showtabrecpcriteria = false;
     show =false ;
     showoption = true;
-  tableData: Array<any>;
-  loading: boolean = false;
-  modalOpen: boolean = false;
-  current: number = 0;
-  inputForm: FormGroup;
-  postLoading: boolean = false;
-  isUpdate: boolean = false;
-  workStartHour: Array<any>;
-  workFinsihHour: Array<any>;
-  constructor(
+    tableData: Array<any>;
+    loading: boolean = false;
+    modalOpen: boolean = false;
+    current: number = 0;
+    inputForm: FormGroup;
+    postLoading: boolean = false;
+    isUpdate: boolean = false;
+    workStartHour: Array<any>;
+    workFinsihHour: Array<any>;
+    constructor(
     private globalS: GlobalService,
+    private listS: ListService,
+    private switchS: SwitchService,
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder) { }
     
     ngOnInit(): void {
-      this.buildForm();
+      this.buildForm();      
+      this.switchS.getData(1).subscribe(data => this.tableData = data);
+
       
-      this.tableData = [{ name:"ADAMAS"},{name:"ASHMORE"}];
       this.workStartHour = [{ name:"ADAMAS"},{name:"ASHMORE"}];
       this.workFinsihHour = [{ name:"ADAMAS"},{name:"ASHMORE"}]
       this.loading = false;
-      
       this.cd.detectChanges();
-      
     }
     
     showAddModal() {

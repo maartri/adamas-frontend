@@ -515,6 +515,7 @@ export class BookingClient implements OnInit, OnDestroy {
         console.log(booking);
 
         // this.loadBooking = true;
+
         var id = this.globalS.loadingMessage('Processing booking...');
         this.bookingModalOpen = false;
 

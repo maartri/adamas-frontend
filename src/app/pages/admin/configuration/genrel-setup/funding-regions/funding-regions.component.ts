@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GlobalService } from '@services/global.service';
+import { SwitchService } from '@services/switch.service';
 
 @Component({
   selector: 'app-funding-regions',
@@ -20,11 +21,13 @@ export class FundingRegionsComponent implements OnInit {
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
+      private switchS:SwitchService,
       private formBuilder: FormBuilder
     ){}
     
     ngOnInit(): void {
       this.buildForm();
+      this.switchS.getData(2).subscribe(data => this.tableData = data);
       this.tableData = [{ name:"CENTRAL"},{name:"NORTH"},{name:"SOUTH"}];
       this.loading = false;
       this.cd.detectChanges();

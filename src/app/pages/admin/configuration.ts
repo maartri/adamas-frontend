@@ -60,8 +60,7 @@ export class ConfigurationAdmin   {
     show =false ;
     showoption = true;
     tryDoctype: any;
-
-
+    
     constructor(private router: Router)
     {
         
@@ -87,8 +86,11 @@ export class ConfigurationAdmin   {
         if(index == 3){
             this.router.navigate(['/admin/target-groups'])
         }
-        if(index = 4 ){
+        if(index == 4 ){
             this.router.navigate(['/admin/purpose-statement']);
+        }
+        if(index == 5){
+            this.router.navigate(['/admin/budget-groups']);
         }
     }  
 }

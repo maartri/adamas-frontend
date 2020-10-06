@@ -6,7 +6,14 @@ import { ListService } from '@services/list.service';
 @Component({
   selector: 'app-budgets',
   templateUrl: './budgets.component.html',
-  styles: []
+  styles: [`
+  .mrg-btm{
+      margin-bottom:7px !important;
+  }
+  nz-divider{
+    margin:5px !important;
+  }
+`],
 })
 export class BudgetsComponent implements OnInit {
 
@@ -104,6 +111,12 @@ export class BudgetsComponent implements OnInit {
       staff:null,
       recepient:null,
       coordinator:null,
+      hours:null,
+      total:'',
+      older:'',
+      younger:'',
+      dollar:'',
+      packages:'',
     });
   }
 

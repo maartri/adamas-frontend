@@ -44,7 +44,7 @@
     </div>
 </div>
 
-<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="'Add/Change Budget'" (nzOnCancel)="handleCancel()">
+<nz-modal [nzWidth]="800" [(nzVisible)]="modalOpen" [nzTitle]="'Add/Change Budget'" (nzOnCancel)="handleCancel()">
     <div class="flexy"> 
         <form nz-form [formGroup]="inputForm">
         <div nz-row nzGutter="24" class="mrg-btm" >
@@ -53,7 +53,7 @@
                 <input nz-input placeholder="Name"  formControlName="title" />
                 </div>
                 <div nz-col nzSpan="24" class="mrg-btm">
-                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="Type" nzPlaceHolder="type" nzShowSearch nzAllowClear style="width:100%;">
+                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="type" nzShowSearch nzAllowClear style="width:100%;">
                     <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
                 </nz-select>
                 </div>
@@ -166,11 +166,48 @@
                         <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
                     </nz-select>
                 </div>
+                <nz-divider></nz-divider>
+                <div nz-col nzSpan="24">
+                    <div nz-col nzSpan="4">
+                        <label>Annual Budget</label>
+                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="hours" nzPlaceHolder="HOURS" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        </nz-select>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <label>Total</label>
+                        <input nz-input placeholder="Total"  formControlName="total" />
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <label>Older</label>
+                        <input nz-input placeholder="Older"  formControlName="older" />
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <label>Younger</label>
+                        <input nz-input placeholder="Younger"  formControlName="younger" />
+                    </div>
+                </div>
+                <div nz-col nzSpan="24">
+                    <div nz-col nzSpan="4">
+                        <label nzFor="Dollar">Dollar:</label>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <input nz-input placeholder="Dollar"  formControlName="dollar" />
+                    </div>
+                </div>
+                <div nz-col nzSpan="24">
+                    <div nz-col nzSpan="4">
+                        <label nzFor="Packages">Packages:</label>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <input nz-input placeholder="Packages"  formControlName="packages" />
+                    </div>
+                </div>
         </div>        
         <div *nzModalFooter>
             <ng-container>
                 <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
-                    <span>Done</span>
+                    <span>SAVE</span>
                 </button>
             </ng-container>
         </div>

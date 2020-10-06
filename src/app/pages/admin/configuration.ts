@@ -92,6 +92,9 @@ export class ConfigurationAdmin   {
         if(index == 5){
             this.router.navigate(['/admin/budget-groups']);
         }
+        if(index == 6){
+            this.router.navigate(['/admin/budgets']);
+        }
     }  
 }
 //ConfigurationAdmin 

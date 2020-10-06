@@ -1,0 +1,179 @@
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Budget</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Name</th>
+                    <th class="left">Branch</th>
+                    <th class="left">Source</th>
+                    <th class="left">Funding Source</th>
+                    <th class="left">Care Domains</th>
+                    <th class="left">Budget Group</th>
+                    <th class="left">Programe</th>
+                    <th class="left">DataSet Code</th>
+                    <th class="left">Activity</th>
+                    <th class="left">Staff Team</th>
+                    <th class="left">Staff Category</th>
+                    <th class="left">Staff</th>
+                    <th class="left">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td><a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Budget ?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+
+<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="'Add/Change Budget'" (nzOnCancel)="handleCancel()">
+    <div class="flexy"> 
+        <form nz-form [formGroup]="inputForm">
+        <div nz-row nzGutter="24" class="mrg-btm" >
+            
+                <div nz-col nzSpan="24" class="mrg-btm">
+                <input nz-input placeholder="Name"  formControlName="title" />
+                </div>
+                <div nz-col nzSpan="24" class="mrg-btm">
+                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="Type" nzPlaceHolder="type" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                </nz-select>
+                </div>
+                <div nz-col nzSpan="9" class="mrg-btm">
+                    <nz-date-picker [nzPlaceHolder]="'Start'" formControlName="start" [nzFormat]="dateFormat"></nz-date-picker>
+                </div>
+                <div nz-col nzSpan="9" class="mrg-btm">
+                    <nz-date-picker [nzPlaceHolder]="'End'" formControlName="end" [nzFormat]="dateFormat"></nz-date-picker>
+                </div>
+                <div nz-col nzSpan="6" class="mrg-btm">
+                    <label nz-checkbox  [ngModel]="" >Undated</label>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Branch" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="care" nzPlaceHolder="Care Domain" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cost" nzPlaceHolder="Cost Center" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="outlet" nzPlaceHolder="DS Outlet" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="region" nzPlaceHolder="Funding Region" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="ftype" nzPlaceHolder="Funding Type" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="prgrm" nzPlaceHolder="Programe" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="bcode" nzPlaceHolder="Service Budget Code" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="dicipline" nzPlaceHolder="Service Dicipline" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="sregion" nzPlaceHolder="Service Region" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="mds" nzPlaceHolder="Service Type MDS" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="mds" nzPlaceHolder="Service Type MDS" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="tracss" nzPlaceHolder="Service Type TRACCS" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="spid" nzPlaceHolder="SPID" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="State" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="team" nzPlaceHolder="Staff Team" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cat" nzPlaceHolder="Staff Category" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="staff" nzPlaceHolder="Staff" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="recepient" nzPlaceHolder="Recepient" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="8" class="mrg-btm">
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="coordinator" nzPlaceHolder="Coordinator" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+        </div>        
+        <div *nzModalFooter>
+            <ng-container>
+                <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
+                    <span>Done</span>
+                </button>
+            </ng-container>
+        </div>
+        </form>
+    </div>
+</nz-modal>

@@ -42,7 +42,7 @@ export class ListService {
     }
     
     getserviceactivityall(data: any) {
-        return this.auth.post(`${list}/activities/all`, data);
+        return this.auth.get(`${list}/activities/all`, data);
     }
     getserviceprogramactivity(data: any) {
         return this.auth.get(`${list}/activities/program/`, data);

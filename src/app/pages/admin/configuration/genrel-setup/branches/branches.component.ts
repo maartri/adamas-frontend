@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { TimeSheetService, GlobalService, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, ClientService, StaffService,ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 
@@ -32,10 +32,11 @@ export class BranchesComponent implements OnInit {
     workFinsihHour: Array<any>;
     constructor(
     private globalS: GlobalService,
-    private listS: ListService,
+    private listS: ListService,    
     private switchS: SwitchService,
     private cd: ChangeDetectorRef,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private menuS: MenuService) { }
     
     ngOnInit(): void {
       this.buildForm();      
@@ -78,9 +79,18 @@ export class BranchesComponent implements OnInit {
     }
     save() {
       this.postLoading = true;
-      this.globalS.sToast('Success', 'Changes saved');
-      this.handleCancel();
-      this.resetModal();
+      
+      this.addBranch().subscribe(data => {
+        console.log(data)
+        if (data)
+        this.globalS.sToast('Success', 'Changes saved');
+        else
+        this.globalS.sToast('Unsuccess', 'Changes not saved' + data);
+        this.handleCancel();
+        this.resetModal();
+    });
+
+      
     }
     
     delete(data: any) {
@@ -111,5 +121,13 @@ export class BranchesComponent implements OnInit {
       });
     }
     
+    addBranch(){
+      let sql;
+     
+          sql = `Insert into  DataDomain([Name],[type])
+              Values ('ACTIVE', 'WAITING LIST') `
+    
+      return this.menuS.addDomain(sql);
+    }
   }
   

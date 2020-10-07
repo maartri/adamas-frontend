@@ -40,7 +40,7 @@ export class BranchesComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();      
-      this.switchS.getData(1).subscribe(data => this.tableData = data);
+      // this.switchS.getData(1).subscribe(data => this.tableData = data);
 
       
       this.workStartHour = [{ name:"ADAMAS"},{name:"ASHMORE"}];
@@ -78,9 +78,8 @@ export class BranchesComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      this.postLoading = true;
-      
-      this.addBranch().subscribe(data => {
+        this.postLoading = true;
+        this.addBranch().subscribe(data => {
         console.log(data)
         if (data)
         this.globalS.sToast('Success', 'Changes saved');
@@ -125,8 +124,7 @@ export class BranchesComponent implements OnInit {
       let sql;
      
           sql = `Insert into  DataDomain([Name],[type])
-              Values ('ACTIVE', 'WAITING LIST') `
-    
+              Values ('ACTIVE', 'WAITING LIST') `  
       return this.menuS.addDomain(sql);
     }
   }

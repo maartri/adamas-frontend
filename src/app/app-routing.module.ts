@@ -153,6 +153,9 @@ import { TargetgroupsComponent } from '@admin/configuration/genrel-setup/targetg
 import { PurposestatementComponent } from '@admin/configuration/genrel-setup/purposestatement.component';
 import { BudgetgroupsComponent } from '@admin/configuration/genrel-setup/budgetgroups.component';
 import { BudgetsComponent } from '@admin/configuration/genrel-setup/budgets.component';
+import { ContactgroupsComponent } from '@admin/configuration/genrel-setup/contactgroups.component';
+import { ContacttypesComponent } from '@admin/configuration/genrel-setup/contacttypes.component';
+import { AddresstypesComponent } from '@admin/configuration/genrel-setup/addresstypes.component';
 const routes: Routes = [
   {
     path: '',
@@ -445,6 +448,18 @@ const routes: Routes = [
         component:BudgetsComponent
       },
       {
+        path:"contact-groups",
+        component:ContactgroupsComponent,
+      },
+      {
+        path:"contact-types",
+        component:ContacttypesComponent,
+      },
+      {
+        path:"address-types",
+        component:AddresstypesComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -680,6 +695,9 @@ export const PAGE_COMPONENTS = [
   PurposestatementComponent,
   BudgetgroupsComponent,
   BudgetsComponent,
+  ContactgroupsComponent,
+  ContacttypesComponent,
+  AddresstypesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

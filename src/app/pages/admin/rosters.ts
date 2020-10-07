@@ -170,6 +170,12 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     rosterGroup: string;
     rosterForm: FormGroup;
     viewType: any;
+    ForceAll:Boolean=true;
+    subGroup:String="";
+    RosterDate:String="";
+    StartTime:String="";
+    EndTime:String=""
+    Duration:String="5";
 
     calendarOptions: CalendarOptions = {
         initialView: 'timeGridMonth',
@@ -668,13 +674,22 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (!program) return EMPTY;
         console.log(this.rosterForm.value)
 
+        
         if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
             // const { recipientCode, debtor } = this.rosterForm.value;
             return this.listS.getserviceactivityall({
-                program,
                 recipient: this.GETRECIPIENT(this.selected.option),
+                program,
+                ForceAll: this.ForceAll,
                 mainGroup: serviceType,
-                viewType: this.viewType
+                subGroup: this.subGroup,
+                viewType: this.viewType,
+                Date:this.RosterDate,
+                StartTime:this.StartTime,
+                EndTime : this.EndTime,
+                Duration: this.Duration
+
+
             });
         }
         else {
@@ -1019,27 +1034,47 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             }
         });
 
-        this.rosterForm.get('program').valueChanges.pipe(
+        // this.rosterForm.get('program').valueChanges.pipe(
+        //     distinctUntilChanged(),
+        //     switchMap(x => {
+        //         this.serviceActivityList = [];
+        //         this.rosterForm.patchValue({
+        //             serviceActivity: null
+        //         });
+        //         return this.GETSERVICEACTIVITY(x)
+        //     })
+        // ).subscribe((d: Array<any>) => {
+
+        //     this.serviceActivityList = d;
+
+        //     if(d && d.length == 1){
+        //         this.rosterForm.patchValue({
+        //             serviceActivity: d[0].activity
+        //         });
+        //     }
+        // });
+ this.rosterForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
                 this.serviceActivityList = [];
                 this.rosterForm.patchValue({
                     serviceActivity: null
+                    
                 });
+                console.log("Print Program" + x);
                 return this.GETSERVICEACTIVITY(x)
             })
         ).subscribe((d: Array<any>) => {
 
             this.serviceActivityList = d;
-
+            
             if(d && d.length == 1){
                 this.rosterForm.patchValue({
                     serviceActivity: d[0].activity
                 });
             }
         });
-
-        this.rosterForm.get('serviceActivity').valueChanges.pipe(
+        this.rosterForm.get('serviceactivity').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
                 if (!x) {

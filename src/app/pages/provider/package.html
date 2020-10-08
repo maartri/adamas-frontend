@@ -7,7 +7,7 @@
             <nz-descriptions-item nzTitle="Total Time"><b>{{ totalTime | number : '1.2-2' }} ({{ totalHoursMinutes }})</b></nz-descriptions-item>
         </nz-descriptions>
     </div>
-    <div nz-row style="margin-top:1rem">
+    <div nz-row>
         <nz-table #fixedTable nzSize="small" [nzLoading]="loading" [nzData]="listOfData" [nzScroll]="{ x: '1800px', y: '350px' }" (nzPageIndexChange)="nzPageIndexChange($event)">
             <thead>
                 <tr>
@@ -47,8 +47,8 @@
                     <td>{{ data.activity }}</td>
                     <td>{{ data.note }}</td>
                     <td nzRight="0px">
+
                         <div class="btns">
-                            
                             <ng-container *ngIf="data.rosterType == 9">
                                 <div class="tclaim">
                                     <span><b>Travel Claim</b></span>
@@ -74,7 +74,7 @@
                             </ng-container>
                                 
                             <!-- <button nz-button class="options" nzType="primary" [nzSize]="'small'"><i nz-icon nzType="setting" nzTheme="outline"></i></button> -->
-                            <app-action [data]="data" [settings]="settings"></app-action>
+                            <app-action [data]="data" [settings]="settings" (results)="results($event)"></app-action>
                         </div>
                     </td>
                 </tr>

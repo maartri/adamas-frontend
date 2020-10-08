@@ -109,7 +109,7 @@ export class PackageProvider implements OnInit, OnDestroy {
 
     totalTime: any;
     totalHoursMinutes: any;
-
+    
     constructor(
         private globalS: GlobalService,
         private staffS: StaffService,
@@ -235,8 +235,11 @@ export class PackageProvider implements OnInit, OnDestroy {
     }
 
     submitBtnClick(index: number) {
-        const { shiftbookNo, claimStart, claimEnd, activityTime, submitted } = this.listOfData[index];
-        let data = this.listOfData[index];
+
+        const pageIndex = this.indexPage + index;
+
+        const { shiftbookNo, claimStart, claimEnd, activityTime, submitted } = this.listOfData[pageIndex];
+        let data = this.listOfData[pageIndex];
 
         if (!submitted) {
             let variation: Dto.ClaimVariation = {
@@ -274,6 +277,25 @@ export class PackageProvider implements OnInit, OnDestroy {
             });
 
         }
+    }
+
+    results(result: any){
+        console.log(result);
+
+        const indexRecord = this.listOfData.findIndex(x => x.shiftbookNo == result.recordNo);
+  
+        if(indexRecord < 0) return;
+        var tableValue = this.listOfData[indexRecord];
+
+        if(result.type == 'claim'){
+            tableValue.submitted = true;
+        }
+
+        if(result.type == 'rnote'){
+            console.log(result);
+            tableValue.note = result.output;
+        }
+    
     }
 
     submitAllBtnClick(submit: boolean) {

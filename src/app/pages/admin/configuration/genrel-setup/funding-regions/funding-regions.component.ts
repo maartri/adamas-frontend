@@ -17,6 +17,7 @@ export class FundingRegionsComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
+    title:string = "Add Funding Regions"
     
     constructor(
       private globalS: GlobalService,
@@ -25,14 +26,17 @@ export class FundingRegionsComponent implements OnInit {
       private formBuilder: FormBuilder
     ){}
     
+    loadTitle()
+    {
+      debugger;
+      return this.title;
+    }
     ngOnInit(): void {
       this.buildForm();
-      this.switchS.getData(2).subscribe(data => this.tableData = data);
       this.tableData = [{ name:"CENTRAL"},{name:"NORTH"},{name:"SOUTH"}];
       this.loading = false;
       this.cd.detectChanges();
     }
-    
     showAddModal() {
       this.resetModal();
       this.modalOpen = true;
@@ -45,9 +49,17 @@ export class FundingRegionsComponent implements OnInit {
     }
     
     showEditModal(index: any) {
+      debugger;
+      this.title = "edit"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+        const { 
+            name
+         } = this.tableData[index];
+        this.inputForm.patchValue({
+          fundregions: name,
+        });
     }
     
     handleCancel() {
@@ -61,6 +73,10 @@ export class FundingRegionsComponent implements OnInit {
       this.current += 1;
     }
     save() {
+      // var temp=this.inputForm.controls["fundregions"].value
+      //  var input=this.inputForm.value
+      //  var temp = input.fundregions
+      // debugger;
       this.postLoading = true;
       this.globalS.sToast('Success', 'Changes saved');
       this.handleCancel();
@@ -71,8 +87,9 @@ export class FundingRegionsComponent implements OnInit {
       this.globalS.sToast('Success', 'Data Deleted!');
     }
     buildForm() {
+      
       this.inputForm = this.formBuilder.group({
-        fundregions: '',
+        fundregions: 'abc',
       });
     }
 

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { TimeSheetService, GlobalService, ClientService, StaffService,ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-branches',
@@ -12,6 +13,8 @@ import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 })
 export class BranchesComponent implements OnInit {
   
+  private unsubscribe: Subject<void> = new Subject();
+  branchList: Array<any>;
   tabset = false;
     isVisibleTop =false;
     showtabother = false;
@@ -41,7 +44,7 @@ export class BranchesComponent implements OnInit {
     ngOnInit(): void {
       this.buildForm();      
       this.switchS.getData(1).subscribe(data => this.tableData = data);
-
+      this.loadBranches();
       
       this.workStartHour = [{ name:"ADAMAS"},{name:"ASHMORE"}];
       this.workFinsihHour = [{ name:"ADAMAS"},{name:"ASHMORE"}]
@@ -80,16 +83,42 @@ export class BranchesComponent implements OnInit {
     save() {
       this.postLoading = true;
       
-      this.addBranch().subscribe(data => {
-        console.log(data)
-        if (data)
-        this.globalS.sToast('Success', 'Changes saved');
-        else
-        this.globalS.sToast('Unsuccess', 'Changes not saved' + data);
-        this.handleCancel();
-        this.resetModal();
-    });
+      const group = this.inputForm;
 
+         this.menuS.AddBranch({
+            name: group.get('name').value,
+            glRevene: group.get('glRevene').value,
+            glCost: group.get('glCost').value,
+            centerName: group.get('centerName').value,
+            addrLine1: group.get('addrLine1').value,
+            addrLine2: group.get('addrLine2').value,
+            Phone: group.get('Phone').value,
+            startHour: group.get('startHour').value,
+            finishHour: group.get('finishHour').value,
+            earlyStart: group.get('earlyStart').value,
+            lateStart: group.get('lateStart').value,
+            earlyFinish: group.get('earlyFinish').value,
+            lateFinish : group.get('lateFinish').value,
+            overstay: group.get('overstay').value,
+            understay: group.get('understay').value,
+            t2earlyStart: group.get('t2earlyStart').value,
+            t2lateStart: group.get('t2lateStart').value,
+            t2earlyFinish: group.get('t2earlyFinish').value,
+            t2lateFinish: group.get('t2lateFinish').value,
+            t2overstay: group.get('t2overstay').value,
+            t2understay: group.get('t2understay').value
+          }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+                this.globalS.sToast('Success', 'Saved successful');     
+            else
+                this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+
+            this.postLoading = false;
+            this.handleCancel();
+            this.resetModal();
+        });;
+        
+     
       
     }
     
@@ -104,6 +133,7 @@ export class BranchesComponent implements OnInit {
         centerName:'',
         addrLine1:'',
         addrLine2:'',
+        Phone:'',
         startHour:'',
         finishHour:'',
         earlyStart:'',
@@ -120,14 +150,14 @@ export class BranchesComponent implements OnInit {
         t2understay:'',
       });
     }
+
+    loadBranches(){
+      this.menuS.getlistbranches().subscribe(data => {
+        this.branchList = data;
+    });
+  }
     
-    addBranch(){
-      let sql;
-     
-          sql = `Insert into  DataDomain([Name],[type])
-              Values ('ACTIVE', 'WAITING LIST') `
-    
-      return this.menuS.addDomain(sql);
-    }
+   
+
   }
   

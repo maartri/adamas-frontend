@@ -365,6 +365,30 @@ declare namespace Dto {
             Id: string
         }
     
+        export interface Branch {
+        name: string,
+        glRevene: string,
+        glCost: string,
+        centerName: string,
+        addrLine1: string,
+        addrLine2: string,
+        Phone: string,
+        startHour: string,
+        finishHour: string,
+        earlyStart: string,
+        lateStart: string,
+        earlyFinish: string,
+        lateFinish: string,
+        overstay: string,
+        understay: string,
+        t2earlyStart: string,
+        t2lateStart: string,
+        t2earlyFinish: string,
+        t2lateFinish: string,
+        t2overstay: string,
+        t2understay: string
+        }
+
         export interface OutputEmit {
             data: any,
             method: string
@@ -680,8 +704,8 @@ declare namespace Dto {
             banches?: string,
             regions?: string,
             managers?: string,
-            startdate?:string,
-            enddate?:string 
+            startdate?: String,
+            enddate?: String 
         }
     
         export interface User{

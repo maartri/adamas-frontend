@@ -79,7 +79,7 @@ export class UploadService {
       return this.http.request(req);
    }
 
-   uploadProfilePicture(file: FormData) {
+   uploadProfilePicture(file: any) {
       return this.auth.uploadFile(`${upload}/profile`, file);
    }
 

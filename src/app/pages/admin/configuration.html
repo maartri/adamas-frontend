@@ -1,0 +1,914 @@
+<div >
+    <div nz-layout>
+        <div >
+            <div nz-col nzSpan="24">
+                <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'" >            
+                    <nz-tab nzTitle="General Setup">                     
+                            <div nz row>
+                                <div nz-col [nzSpan]="24">
+                                    <div nz-col [nzSpan]="8">
+                                        <ul nz-menu nzMode="horizontal">
+                                            <li nz-menu-item >
+                                                <i nz-icon nzType="user"></i>
+                                                <strong>General</strong> 
+                                                <div>
+                                                    <button nz-button nzType="default" disabled id="btn-Systm-Companies" >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Companies
+                                                        </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)="view(0)" id="btn-Systm-Branches">
+                                                        <i nz-icon nzType="read"></i>
+                                                        Branches
+                                                        </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default"  (click)="view(1)" id="btn-Systm-FundingRegions">
+                                                        <i nz-icon nzType="read"></i>
+                                                        Funding Regions
+                                                        </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default"  (click)="view(2)" id="btn-Systm-CDClaimRates"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        CDC Claim Rates
+                                                        </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default"  (click)="view(3)" id="btn-Systm-CDCTargetGroups"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        CDC Target Groups
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)="view(4)"  id="btn-Systm-PackagePurposeStatement"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Package Purpose Statement
+                                                    </button>
+                                                </div>
+                                                
+                                                <div>
+                                                    <button nz-button nzType="default" (click)="view(5)"  id="btn-Systm-ActivityBudgetGroups"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Activity Budget Groups
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)="view(6)" id="btn-Systm-Budgets"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Budgets
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)="view(7)" disabled id="btn-Systm-user-details"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        User Details
+                                                    </button>
+                                                </div>                                                                        
+                                                <div>
+                                                    <button nz-button nzType="default" (click)="view(8)" id="btn-Systm-ContactGroups"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Contact Groups
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)="view(9)" id="btn-Systm-ContactTypes"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Contact Types
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)=view(10) id="btn-Systm-AddressTypes">
+                                                        <i nz-icon nzType="read"></i>
+                                                         Address Types
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)=view(11) id="btn-Systm-PhoneEmailTypes"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Phone/Email Types
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)=view(12) id="btn-Systm-Occupations"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Occupations
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" (click)=view(13) id="btn-Systm-Religions"    >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Religions
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" disabled id="btn-system-Postcodes"   >
+                                                        <i nz-icon nzType="read"></i>
+                                                        Postcodes
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button nz-button nzType="default" disabled id="btn-system-Holidays">
+                                                        <i nz-icon nzType="read"></i>
+                                                        Holidays
+                                                    </button>
+                                                </div>
+                                            </li>                
+                                        </ul>
+                                    </div>
+                                    <div nz-col [nzSpan]="8">
+                                        <ul nz-menu nzMode="horizontal" >
+                                            <li nz-menu-item  >
+                                                <i nz-icon nzType="user"></i>
+                                                <strong>Transport & Medical Contacts</strong>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" disabled id="btn-r-refferallist"     >
+                                                    <i nz-icon nzType="read"></i>
+                                                    Medical Contacts
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" disabled id="btn-r-refferallist"    >
+                                                    <i nz-icon nzType="read"></i>
+                                                    Destination Address
+                                                </button> 
+                                                </div>                                                                                                                                          
+                                            </li>                  
+                                        </ul>
+                                    </div>
+                                    <div nz-col [nzSpan]="8">
+                                        <ul nz-menu nzMode="horizontal" >
+                                            <!-- <li nz-menu-item  >
+                                                <i nz-icon nzType="user"></i>
+                                                <strong>Transport & Medical Contacts</strong>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" disabled id="btn-r-refferallist"     >
+                                                    <i nz-icon nzType="read"></i>
+                                                    Medical Contacts
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" disabled id="btn-r-refferallist"    >
+                                                    <i nz-icon nzType="read"></i>
+                                                    Destination Address
+                                                </button> 
+                                                </div>                                                                                                                                          
+                                            </li>                   -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>                             
+                    </nz-tab>
+                    <nz-tab nzTitle="System Administration"  >
+                        <div nz-row >
+                            <div nz-col [nzSpan]="12">
+                                <ul nz-menu nzMode="horizontal" >
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>General</strong>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-Regis-incidentregister"   >
+                                            <i nz-icon nzType="read"></i>
+                                            System Numbers
+                                        </button> 
+                                        </div>                                                                                                           
+                                    </li>                  
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="12">
+                                <ul nz-menu nzMode="horizontal" >
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>Utilites</strong>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-registraion-detail"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Registration Details
+                                        </button> 
+                                        </div>   
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-desktop-logged"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Logged On Desktop Users
+                                        </button> 
+                                        </div>   
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-mobile-logged"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Logged On Mobile Users
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-webkiosk-logged"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Logged On Webkiosk Users
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-purge-audit-trail"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Purge Audit Trail
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-purge-audit-trail"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Delete Old Roaster Histories
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-roaster-histories"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Delete Old Roaster Histories
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-purge-alert-audit"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Purge Alerts Audit
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-purge-attendance-log"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Purge Attendance Log
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-purge-attendance-log"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Purge Attendance Log
+                                        </button> 
+                                        </div>                                              
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-clear-roaster-lock"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Clear Roaster Locks
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-default-list"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Create Default Activities
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-reset-default-list"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Reset Default List
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-db-mangr"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Database Manager
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-db-mangr"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Dignostics
+                                        </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" disabled id="btn-mta-log"   >
+                                            <i nz-icon nzType="read"></i>
+                                            Reset MTA Log File
+                                        </button> 
+                                        </div>
+                                    </li>     
+                                                 
+                                </ul>
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Document Management"   >
+                        <div nz-row >
+                            <div nz-col [nzSpan]="24">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>General</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-add-change-template"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Add/Change Template
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-filling-classification"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Add/Change Filling Classifiation
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-filling-classification"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Add/Change Filling Classifiation
+                                                </button>
+                                        </div>                                                                  
+                                    </li>                  
+                                </ul>
+                            </div>
+                            </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Incidents">
+                        <div nz-row >
+                            <div nz-col [nzSpan]="24">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>General</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-distribution-list"   >
+                                                <i nz-icon nzType="read"></i>
+                                                   Add/change Distribution List
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-inital-list"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Add/change Initail List
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-ongoing-action"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Add/change Ongoing Actions
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-staff-initial-list"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Add/change Initail List
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-incident-trigger"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Add/change Incident Triggers
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-staff-incident-type"  >
+                                                <i nz-icon nzType="read"></i>
+                                                Add/change Incident Types
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-incident-sub-cat"  >
+                                                <i nz-icon nzType="read"></i>
+                                                 Incident Sub Categories
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-incident-loc_cat"  >
+                                                <i nz-icon nzType="read"></i>
+                                                 Incident Location Categories
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-reciepient-incident-note_cat"  >
+                                                <i nz-icon nzType="read"></i>
+                                                 Reciepient Incident  Note Categories
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-staff-incident-note_cat"  >
+                                                <i nz-icon nzType="read"></i>
+                                                 Staff Incident Note Categories
+                                                </button>
+                                        </div>          
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Recipient">
+                        <div nz-row >
+                            <div nz-col [nzSpan]="12">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>General</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-cat"   >
+                                                <i nz-icon nzType="read"></i>
+                                                   Recipient Category
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-groups"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Groups
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-group"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Minor Group
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-billing-cycle"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Billing Cycles
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-debtor-term"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Debtor Terms
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-consents"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Consents
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-plan-types"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Plan Types
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-plan-types"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Plan Types
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-clinical-note-cat"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Clinical Note Categories
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-case-notes_cat"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Case Notes Categories
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-op-notes_cat"   >
+                                                <i nz-icon nzType="read"></i>
+                                                OP Notes Categories
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-care-domains"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Care Domains
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-discharge-reasons"  >
+                                                <i nz-icon nzType="read"></i>
+                                                 Discharge Reasons
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-refferal-reasons-presenting"  >
+                                                <i nz-icon nzType="read"></i>
+                                                 Refferal Reasons/Presenting Issues
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-user-def-reminders"  >
+                                                <i nz-icon nzType="read"></i>
+                                                 Recipient User Defined Reminders/Review/Alerts
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-reci-prefrence"  >
+                                                <i nz-icon nzType="read"></i>
+                                                 Recipient Prefrences
+                                                </button>
+                                        </div>          
+                                    </li>                  
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="12">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <!-- <i nz-icon nzType="user"></i> -->
+                                        <strong></strong> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-cat"   >
+                                                <i nz-icon nzType="read"></i>
+                                                   Mobility Codes
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-groups"    >
+                                                <i nz-icon nzType="read"></i>
+                                                    Tasks
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-group"    >
+                                                <i nz-icon nzType="read"></i>
+                                                    Health Conditions
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-billing-cycle"    >
+                                                <i nz-icon nzType="read"></i>
+                                                    Medications
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-debtor-term"    >
+                                                <i nz-icon nzType="read"></i>
+                                                    Nursing Dignosis
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-debtor-term"    >
+                                                <i nz-icon nzType="read"></i>
+                                                    Medical Dignosis
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-recipient-consents"    >
+                                                <i nz-icon nzType="read"></i>
+                                                    Medial Procedures
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-plan-types"    >
+                                                <i nz-icon nzType="read"></i>
+                                                    Clinical Reminders
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-plan-types"    >
+                                                <i nz-icon nzType="read"></i>
+                                                    Clinical Alerts
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-clinical-note-cat"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Admitting Priorities
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-case-notes_cat"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Service Notes Categories
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-op-notes_cat"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Referral Sources
+                                                </button>
+                                        </div>        
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Staff"   >
+                        <!-- <div nz-row >
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>PROGRAM & Activity REPORTS </strong> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramActivitySpread"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Program Activity Spread
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramStaffUtilized"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Program Staff Utilised
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramRecipientServiced"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Program Recipient Serviced
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramBillingReport"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Program Billing Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramBillingReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Program Recipient Budget(IND PKG)
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-BudgetAuditReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Program Budget Audit Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-ProgramSummaryRpt"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Program Summary Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramBillingReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Activity Recipient Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramBillingReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Activity Staff Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ActivityGroupRpt"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Activity Group Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramBillingReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Dataset Activity Analysis Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramBillingReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Unbilled Items Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramBillingReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Funding Audit Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramBillingReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Dataset Activity Summary Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabledid="btn-FORPT-ProgramBillingReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Dataset RecipientUnit Cost Report
+                                                </button>
+                                        </div>                                                                        
+                                    </li>                  
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>STAFF REPORTS </strong>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffActivityRpt"     >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Pays
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffActivityRpt"     >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Program Pay Type
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffActivityRpt"     >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Funder Payroll Type
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffActivityRpt"     >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Date Program
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffActivityRpt"     >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Allowances
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffActivityRpt"     >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Program Utilisation
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled  >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Clients Serviced
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffAdminRpt"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Admin Report
+                                                </button>
+                                        </div> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffActivityRpt"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Activity Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-DailyStaffHrs"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Daily Hours Report
+                                                </button>
+                                        </div> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled  >
+                                                <i nz-icon nzType="read"></i>
+                                                Award Staff Pay Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled  >
+                                                <i nz-icon nzType="read"></i>
+                                                Award Staff Program Pay Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-PayTypeProgram"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Pay Type Program Report
+                                                </button>
+                                        </div>                                                                                                  
+                                    </li>                  
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="8">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>RECIPIENT REPORTS </strong>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-RecipientserviceReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Service Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-StaffusageReport"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Staff Usage Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id = "btn-FORPT-PaytypeReport"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Pay Type Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-FORPT-ProgramUtilisation"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Program Utilisation 
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-UnsedFunding"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Unused Funding Report
+                                                </button>
+                                        </div>                                                                                                                                       
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div> -->
+                    
+                    </nz-tab>            
+                    <nz-tab nzTitle="Activities/Items/Services"   >
+                        <div nz-row >
+                            <div nz-col [nzSpan]="24">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>General </strong> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-services"   >
+                                                <i nz-icon nzType="read"></i>
+                                                 Services
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-item-consumable"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Items Consumables
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-item-menu-meals"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Menus/Meals
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-item-case-manag"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Case Management /Client Admin
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-staff-admin-activi"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Staff Admin Activities
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-staff-admin-activi"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Recipient Absences
+                                            </button>
+                                        </div>                                                                  
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div> 
+                    </nz-tab>
+                    <nz-tab nzTitle="Others"   >
+                        <div nz-row >
+                            <div nz-col [nzSpan]="24">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>General</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-other-equipmets"   >
+                                                <i nz-icon nzType="read"></i>
+                                                Equipment
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-pay-types"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Pay Types
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-funding-sources"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Funding Sources
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-prog-packg"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Program/Packges
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-vehicles"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Vehicles
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-center-faci-outlet"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Center / Facilities /Outlets
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" disabled id="btn-activity-groups"    >
+                                                <i nz-icon nzType="read"></i>
+                                                Activity Groups
+                                            </button>
+                                        </div>
+                                    </li>                  
+                                </ul>
+                            </div>
+                        </div> 
+                    </nz-tab>
+                </nz-tabset>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+        <div nz-row>
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        </div>
+    </nz-drawer> -->

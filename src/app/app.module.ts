@@ -46,7 +46,8 @@ import {
   ScriptService,
   ShareService,
   SettingsService,
-  VersionCheckService
+  VersionCheckService,
+  MenuService
 } from './services/index';
 
 import { IconsProviderModule } from './icons-provider.module';
@@ -62,6 +63,9 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 import { ComponentModule } from '@components/component.module'
 import { AgGridModule } from 'ag-grid-angular';
+import { BranchesComponent } from './pages/admin/configuration/genrel-setup/branches/branches.component';
+import { FundingRegionsComponent } from './pages/admin/configuration/genrel-setup/funding-regions/funding-regions.component';
+
 
 registerLocaleData(en);
 
@@ -80,7 +84,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   declarations: [
     AppComponent,
     LoginComponent,
-    PAGE_COMPONENTS
+    PAGE_COMPONENTS,
+    BranchesComponent,
+    FundingRegionsComponent,
   ],
   imports: [
     BrowserModule,
@@ -145,7 +151,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     ShareService,
     SettingsService,
     VersionCheckService,
-    CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe
+    CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe,
+    MenuService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

@@ -87,7 +87,9 @@ import {
   RostersAdmin,
   SessionsAdmin,
   StaffAdmin,
-  TimesheetAdmin
+  TimesheetAdmin,
+  ConfigurationAdmin,
+  
 } from '@admin/index'
 
 import {
@@ -106,7 +108,6 @@ import {
   StaffReminderAdmin,
   StaffTrainingAdmin
 } from './pages/admin/staff-views/index';
-
 
 import {
   RecipientCasenoteAdmin,
@@ -142,6 +143,22 @@ import {
 
 import { ExtraComponent } from './pages/extra/extra';
 
+//branches
+import {  BranchesComponent  } from './pages/admin/configuration/genrel-setup/branches/branches.component';
+//funding regions
+import{ FundingRegionsComponent } from './pages/admin/configuration/genrel-setup/funding-regions/funding-regions.component';
+//clain rates
+import { ClaimratesComponent } from '@admin/configuration/genrel-setup/claimrates.component';
+import { TargetgroupsComponent } from '@admin/configuration/genrel-setup/targetgroups.component';
+import { PurposestatementComponent } from '@admin/configuration/genrel-setup/purposestatement.component';
+import { BudgetgroupsComponent } from '@admin/configuration/genrel-setup/budgetgroups.component';
+import { BudgetsComponent } from '@admin/configuration/genrel-setup/budgets.component';
+import { ContactgroupsComponent } from '@admin/configuration/genrel-setup/contactgroups.component';
+import { ContacttypesComponent } from '@admin/configuration/genrel-setup/contacttypes.component';
+import { AddresstypesComponent } from '@admin/configuration/genrel-setup/addresstypes.component';
+import { OccupationComponent } from '@admin/configuration/genrel-setup/occupation.component';
+import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
+import { PhoneemailtypesComponent } from '@admin/configuration/genrel-setup/phoneemailtypes.component';
 const routes: Routes = [
   {
     path: '',
@@ -402,6 +419,62 @@ const routes: Routes = [
         component: ReportsAdmin
       },
       {
+        path: 'configuration',
+        component: ConfigurationAdmin
+      },
+      {
+          path: 'branches',
+          component: BranchesComponent
+      },
+      {
+        path: 'funding-region',
+        component: FundingRegionsComponent
+      },
+      {
+        path:"claim-rates",
+        component:ClaimratesComponent
+      },
+      {
+        path:"target-groups",
+        component:TargetgroupsComponent
+      },
+      {
+        path:"purpose-statement",
+        component:PurposestatementComponent
+      },
+      {
+        path:"budget-groups",
+        component:BudgetgroupsComponent
+      },
+      {
+        path:"budgets",
+        component:BudgetsComponent
+      },
+      {
+        path:"contact-groups",
+        component:ContactgroupsComponent,
+      },
+      {
+        path:"contact-types",
+        component:ContacttypesComponent,
+      },
+      {
+        path:"address-types",
+        component:AddresstypesComponent,
+      },
+      {
+        path:"religions",
+        component:ReligionComponent,
+      },
+      {
+        path:"occupations",
+        component:OccupationComponent,
+      },
+      {
+        path:"phone-email-types",
+        component:PhoneemailtypesComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -624,10 +697,26 @@ export const PAGE_COMPONENTS = [
   SessionsAdmin,
   StaffAdmin,
   TimesheetAdmin,
+  ConfigurationAdmin,
 
   // Components
   ProfilePage,
 
+  //Configuration
+  BranchesComponent,
+  FundingRegionsComponent,
+  ClaimratesComponent,
+  TargetgroupsComponent,
+  PurposestatementComponent,
+  BudgetgroupsComponent,
+  BudgetsComponent,
+  ContactgroupsComponent,
+  ContacttypesComponent,
+  AddresstypesComponent,
+  ReligionComponent,
+  OccupationComponent,
+  PhoneemailtypesComponent,
+  
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

@@ -43,7 +43,6 @@ export class BranchesComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();      
-      this.switchS.getData(1).subscribe(data => this.tableData = data);
       this.loadBranches();
       
       this.workStartHour = [{ name:"ADAMAS"},{name:"ASHMORE"}];
@@ -116,10 +115,7 @@ export class BranchesComponent implements OnInit {
             this.postLoading = false;
             this.handleCancel();
             this.resetModal();
-        });;
-        
-     
-      
+        });; 
     }
     
     delete(data: any) {
@@ -154,10 +150,8 @@ export class BranchesComponent implements OnInit {
     loadBranches(){
       this.menuS.getlistbranches().subscribe(data => {
         this.branchList = data;
+        console.log(this.branchList);
     });
   }
-    
-   
-
   }
   

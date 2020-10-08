@@ -50,7 +50,7 @@ export class FundingRegionsComponent implements OnInit {
     
     showEditModal(index: any) {
       debugger;
-      this.title = "edit"
+      this.title = "edit Funding Regions"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
@@ -87,9 +87,8 @@ export class FundingRegionsComponent implements OnInit {
       this.globalS.sToast('Success', 'Data Deleted!');
     }
     buildForm() {
-      
       this.inputForm = this.formBuilder.group({
-        fundregions: 'abc',
+        fundregions: '',
       });
     }
 

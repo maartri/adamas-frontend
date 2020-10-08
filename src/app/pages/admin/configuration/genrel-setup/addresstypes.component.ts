@@ -17,11 +17,13 @@ export class AddresstypesComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
+    heading:string = "Add Address Type"
 
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
-      private formBuilder: FormBuilder
+      private formBuilder: FormBuilder,
+
     ){}
     
     ngOnInit(): void {
@@ -41,11 +43,22 @@ export class AddresstypesComponent implements OnInit {
       this.inputForm.reset();
       this.postLoading = false;
     }
-    
+    loadTitle(){
+      return this.heading;
+    }
     showEditModal(index: any) {
+      this.heading = "Edit Address Type"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+
+      const { 
+        name
+      } = this.tableData[index];
+        this.inputForm.patchValue({
+          title: name,
+     });
+
     }
     
     handleCancel() {

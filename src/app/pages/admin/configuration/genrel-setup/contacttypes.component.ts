@@ -17,7 +17,7 @@ export class ContacttypesComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
-
+    heading:string = "Add New Contact Type"
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
@@ -43,11 +43,24 @@ export class ContacttypesComponent implements OnInit {
     }
     
     showEditModal(index: any) {
+      this.heading  = "Edit Contact Type"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+      const { 
+        pgroup,
+        title,
+
+      } = this.tableData[index];
+        this.inputForm.patchValue({
+          title: title,
+          pgroup:pgroup,
+          
+     });
     }
-    
+    loadtitle(){
+      return this.heading
+    }
     handleCancel() {
       this.modalOpen = false;
     }

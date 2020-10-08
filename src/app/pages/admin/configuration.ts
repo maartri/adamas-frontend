@@ -104,6 +104,15 @@ export class ConfigurationAdmin   {
         if(index == 10){
             this.router.navigate(['/admin/address-types']);
         }
+        if(index == 11){
+            this.router.navigate(['/admin/phone-email-types']);
+        }
+        if(index == 12){
+            this.router.navigate(['/admin/occupations']);
+        }
+        if(index == 13){
+            this.router.navigate(['/admin/religions']);
+        }
     }  
 }
 //ConfigurationAdmin 

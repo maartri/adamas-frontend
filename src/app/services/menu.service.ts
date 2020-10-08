@@ -15,6 +15,13 @@ export class MenuService {
         public auth: AuthService
     ){ }
 
+    getlistbranches(): Observable<any>{
+        return this.auth.get(`${menu}/branches`)
+    }
+
+    AddBranch(brnch: Dto.Branch): Observable<any> {
+        return this.auth.put(`${menu}/addBranch`, brnch)
+    }
     addDomain(sqlString: string):Observable<any>{
         return this.auth.post(`${menu}/addDomain/`, { Sql: sqlString});
         

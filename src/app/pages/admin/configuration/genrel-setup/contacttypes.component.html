@@ -1,0 +1,53 @@
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Contact Type</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Contact Group</th>
+                    <th class="left">Name Title</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                <td class="left">{{ data.pgroup  }} </td>
+                <td class="left">{{ data.title  }} </td>
+                <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete branch ?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+<nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="'Add New Contact Type'" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+    <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+        <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
+    </nz-steps>
+    <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    <label for="CDC Item">Contact Group:</label>
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="pgroup" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-row nzGutter="24" class="mrg-btm">
+                        <label for="Title">Name/Title:</label>
+                        <input nz-input placeholder=""  formControlName="title" />
+                </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+                <ng-container>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" *ngIf="current === 0">
+                        <span>Done</span>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+</nz-modal>

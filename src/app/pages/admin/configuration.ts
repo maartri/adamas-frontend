@@ -95,6 +95,15 @@ export class ConfigurationAdmin   {
         if(index == 6){
             this.router.navigate(['/admin/budgets']);
         }
+        if(index == 8){
+            this.router.navigate(['/admin/contact-groups']);
+        }
+        if(index == 9){
+            this.router.navigate(['/admin/contact-types']);
+        }
+        if(index == 10){
+            this.router.navigate(['/admin/address-types']);
+        }
     }  
 }
 //ConfigurationAdmin 

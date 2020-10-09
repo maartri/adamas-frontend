@@ -1,11 +1,28 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
-import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, incidentSeverity, incidentTypes, leaveTypes } from '@services/index';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import parseISO from 'date-fns/parseISO';
 import * as moment from 'moment';
+
+const defaultOptions: any = {
+  notes: '',
+  rosterNoteDetails: '',
+
+  startKM: '',
+  endKM: '',
+  agencyVehicle: false,
+  chargeClient: false,
+  travelType: true,
+
+  incidentDetails: '',
+  incidentType: null,
+  incidentSeverity: null,
+  incidentLocation: null,
+  noRecipient: false
+}
 
 @Component({
   selector: 'app-action',
@@ -13,11 +30,14 @@ import * as moment from 'moment';
   styleUrls: ['./action.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class ActionComponent implements OnInit {
 
   @Input() data: any;
   @Input() settings: any;
   @Input() status: number;
+
+  @Output() results = new EventEmitter<any>();
 
   private unsubscribe: Subject<void> = new Subject();
 
@@ -40,30 +60,42 @@ export class ActionComponent implements OnInit {
   startTime: Date;
   endTime: Date;
 
+  incidentTypes: Array<string> = incidentTypes;
+  incidentSeverity: Array<string> = incidentSeverity;
+  leaveTypes: Array<string> = leaveTypes;
+  incidentLocation: any;
+
+  travelDefault: Dto.TravelDefaults;
+
   constructor(
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
     private timeS: TimeSheetService,
     private staffS: StaffService,
     private cd: ChangeDetectorRef
-  ) { }
+  ) { 
+
+    this.incidentLocation = this.getIncidentLocation();
+  }
 
   ngOnInit(): void {
     this.token = this.globalS.decode();
     this.buildForm();
 
-    console.log(this.settings);
-    
+    // console.log(this.data);
+
     this.startTime = this.CONVERT_TO_TIME(this.data.activityTime.start_time);
     this.endTime = this.CONVERT_TO_TIME(this.data.activityTime.end_Time);
 
     this.computeTime();
   }
 
+  getIncidentLocation() {
+      return this.timeS.getincidentlocation();
+  }
+
   buildForm(){
-    this.optionForm = this.formBuilder.group({
-      notes: new FormControl('')
-    })
+    this.optionForm = this.formBuilder.group(defaultOptions);
   }
   
   clickEvent(index: number) {
@@ -81,6 +113,12 @@ export class ActionComponent implements OnInit {
     }
 
     if (index == 4) {
+      const defaults = this.settings.tA_TRAVELDEFAULT;
+      console.log(defaults);
+
+      var non_charge = defaults.indexOf("CHARGEABLE") > -1 && defaults.indexOf("NON") > -1 ? false : true;
+      var travel = defaults.indexOf("WITHIN") > -1 ? true : false;
+
       this.travelClaimOpen = true;
     }
 
@@ -116,6 +154,8 @@ export class ActionComponent implements OnInit {
     this.travelClaimOpen = false;
     this.rosterNoteOpen = false;
     this.recordIncidentOpen = false;
+
+    this.optionForm.reset(defaultOptions);
   }
 
   computeTime() {
@@ -135,22 +175,30 @@ export class ActionComponent implements OnInit {
         ClaimedStart: this.data.activityTime.start_time
     }
 
-    console.log(claim)
-
     this.staffS.postclaimvariation(claim)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           if (data) {
               this.globalS.sToast('Claim Updated', 'Success');
+              this.results.emit({
+                type: 'claim',
+                recordNo: this.data.shiftbookNo,
+                output: true
+              });
               return false;
           }
           this.globalS.eToast('Update Error', 'Error');
-      });
+      }, () => {},() => this.claimVariationOpen = false);
   }
 
 
 
   handleOk() {
     
+  }
+
+  detectChanges(): void{
+    this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 
   saveNote(whatNote: number) {
@@ -166,9 +214,105 @@ export class ActionComponent implements OnInit {
 
     this.timeS.addclientnote(iParameters)
       .subscribe(data => {
-        this.globalS.sToast('Success','Note Added!')
-      });
+        this.globalS.sToast('Success',`${iParameters.NoteType} Added!`);
+        this.notesIsOpen = false
+        this.handleCancel();
+        
+
+        this.detectChanges();
+      }, () => {}, () => this.notesIsOpen = false);
     
+  }
+
+  saveRosterNote(){
+
+    const { rosterNoteDetails } = this.optionForm.getRawValue();
+
+    this.timeS.updaterosternote({
+      Id: this.data.shiftbookNo,
+      Note: rosterNoteDetails
+    }).pipe(takeUntil(this.unsubscribe))
+    .subscribe(res => {
+        if (res) {
+
+            this.results.emit({
+              type: 'rnote',
+              recordNo: this.data.shiftbookNo,
+              output: rosterNoteDetails
+            });
+
+            this.handleCancel();
+            this.globalS.sToast('Success', 'Roster Note Updated');
+        }
+    });
+  }
+
+  saveTravelClaim(){
+    const { startKM, endKM, agencyVehicle, chargeClient, travelType, notes } = this.optionForm.getRawValue();
+
+    if(startKM >= endKM){
+      this.globalS.eToast('Error', 'StartKM should be lower than EndKM')
+      return;
+    }
+
+    if(this.globalS.isEmpty(startKM) || this.globalS.isEmpty(endKM) || this.globalS.isEmpty(notes)){
+      this.globalS.eToast('Error', 'Missing Inputs');
+      return false;
+    }
+
+    let travel: Dto.TravelClaim = {
+        RecordNo: this.data.shiftbookNo,
+        User: this.token.user,
+        Distance: (endKM - startKM).toString(),
+        TravelType: travelType ? "TRAVEL WITHIN" : "TRAVEL BETWEEN",
+        ChargeType: chargeClient ? "Chargeable" : "",
+        StartKm: (startKM).toString(),
+        EndKm: (endKM).toString(),
+        Notes: notes
+    };
+
+    // console.log(travel);
+
+    this.staffS.posttravelclaim(travel).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data.result) {
+            this.globalS.sToast('Success', 'Travel Claim Filed');
+            return;
+        }
+    }, (error) => {
+        this.globalS.eToast('Error', 'Unable to save travel claim due to missing defaults')
+    });
+
+  }
+
+  saveRecordIncident(){
+
+    const { incidentDetails, incidentType, incidentSeverity, incidentLocation, noRecipient } = this.optionForm.getRawValue();
+
+    let recordIncident: Dto.RecordIncident = {
+        PersonId: this.data.recipient,
+        IncidentType: incidentType,
+        IncidentSeverity: incidentSeverity,
+        Note: incidentDetails,
+        Location: incidentLocation,
+        NoRecipient: noRecipient,
+
+        RecipientCode: this.data.recipient,
+        Program: this.data.program,
+        Service: this.data.activity,
+        Staff: this.token.code,
+        OperatorId: this.token.nameid
+    }
+
+    console.log(recordIncident);
+
+    this.timeS.addrecordincident(recordIncident)
+    .pipe(takeUntil(this.unsubscribe))
+    .subscribe(data => {
+        if (data) {
+            this.globalS.sToast('Sucess', 'Record Incident added')
+        }
+    });
+
   }
 
 

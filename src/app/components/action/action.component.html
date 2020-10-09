@@ -28,11 +28,11 @@
         <div nz-row [formGroup]="optionForm">
             <div nz-col nzSpan="12" class="form-group">
                 <label for="">Job ID</label>
-                <span>sd</span>
+                <p>{{ data.shiftbookNo }}</p>
             </div>
             <div nz-col nzSpan="12" class="form-group">
                 <label for="">Recipient/Location</label>
-                <span>sd</span>
+                <p>{{ data.recipient }}</p>
             </div>
             <div nz-col nzSpan="24" class="form-group">
                 <label for="">Details</label>
@@ -101,32 +101,70 @@
 
 <!-- FOR TRAVEL CLAIM -->
  <nz-modal [(nzVisible)]="travelClaimOpen" nzTitle="Travel Claim" (nzOnCancel)="handleCancel()">
-    <div>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
+    <div nz-row nzGutter="16">
+        <div nz-row [formGroup]="optionForm">
+           <div class="tclaims">
+                <i nz-icon nzType="environment" nzTheme="outline"></i>
+                <span [class.highlight]="!(optionForm?.get('travelType').value)">Travel Between</span>
+                <nz-switch nzSize="small" formControlName="travelType"></nz-switch>
+                <span [class.highlight]="(optionForm?.get('travelType').value)">Travel Within</span>
+           </div>
+           <div class="tclaims">
+                <i nz-icon nzType="dollar" nzTheme="outline"></i>
+                <span [class.highlight]="!(optionForm?.get('chargeClient').value)">Don't Charge Client</span>
+                <nz-switch nzSize="small" formControlName="chargeClient"></nz-switch>
+                <span [class.highlight]="(optionForm?.get('chargeClient').value)">Charge Client</span>
+           </div>
+           <div class="tclaims">
+                <i nz-icon nzType="car" nzTheme="outline"></i>
+                <span [class.highlight]="!(optionForm?.get('agencyVehicle').value)">Owned Vehicle</span>
+                <nz-switch nzSize="small" formControlName="agencyVehicle"></nz-switch>
+                <span [class.highlight]="(optionForm?.get('agencyVehicle').value)">Agency Vehicle</span>
+           </div>
+        </div>
+        <div nz-row nzType="flex"  nzJustify="center" style="margin-top:1rem" [formGroup]="optionForm">    
+            <div nz-col nzSpan="4">
+                <div class="form-group">
+                    <label for="">Start KM</label>
+                    <nz-input-number formControlName="startKM" [nzMin]="0"></nz-input-number>
+                </div>
+            </div>
+            <div nz-col nzSpan="4" nzOffset="2">
+                <div class="form-group">
+                    <label for="">End KM</label>
+                    <nz-input-number formControlName="endKM" [nzMin]="0" ></nz-input-number>
+                </div>
+            </div>
+        </div>
+        <div nz-row nzGutter="32" style="margin-top:1rem" [formGroup]="optionForm">
+            <div nz-col nzOffset="1" nzSpan="22">
+                <div class="form-group">
+                    <label for="">Notes</label>
+                    <textarea nz-input rows="4" style="width:100%" formControlName="notes" ></textarea>
+                </div>
+            </div>
+        </div>
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>
+        <button nz-button nzType="primary" (click)="saveTravelClaim()" [nzLoading]="isConfirmLoading">Save Travel Claim</button>
     </div>
 </nz-modal>
 
 
 <!-- FOR ROSTER NOTES -->
 <nz-modal [(nzVisible)]="rosterNoteOpen" nzTitle="Roster Note" (nzOnCancel)="handleCancel()">
-    <div>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="24">
+            <div class="form-group" [formGroup]="optionForm">
+                <label for="">Roster Note</label>
+                <textarea nz-input rows="4" formControlName="rosterNoteDetails" ></textarea>
+            </div>
+        </div>
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>
+        <button nz-button nzType="primary" (click)="saveRosterNote()" [nzLoading]="isConfirmLoading">Ok</button>
     </div>
 </nz-modal>
 
@@ -134,15 +172,52 @@
 
 <!-- FOR RECORD INCIDENT -->
 <nz-modal [(nzVisible)]="recordIncidentOpen" nzTitle="Record Incident" (nzOnCancel)="handleCancel()">
-    <div>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
-        <p>Modal Content</p>
+    <div [formGroup]="optionForm">
+       <div nz-row nzGutter="16">
+            <div nz-col nzSpan="12">
+                <div class="form-group">
+                    <label for="">Incident Type</label>
+                    <nz-select formControlName="incidentType" nzAllowClear nzPlaceHolder="">
+                        <nz-option *ngFor="let data of incidentTypes" [nzValue]="data" [nzLabel]="data"></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-col nzSpan="12">
+                <div class="form-group">
+                    <label for="">Incident Severity</label>
+                    <nz-select formControlName="incidentSeverity" nzAllowClear nzPlaceHolder="">
+                        <nz-option *ngFor="let data of incidentSeverity" [nzValue]="data" [nzLabel]="data"></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+       </div>
+       <div nz-row nzGutter="16">
+            <div nz-col nzSpan="12">
+                <div class="form-group">
+                    <label for="">Incident Location</label>
+                    <nz-select formControlName="incidentLocation" nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false"> 
+                        <nz-option *ngFor="let data of incidentLocation | async" [nzValue]="data" [nzLabel]="data"></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-col nzSpan="12">
+                <div class="form-group">
+                    <label for="">No Recipient Involved</label>
+                    <label nz-checkbox formControlName="noRecipient" style="margin-top: 5px;" ></label>
+                </div>
+            </div>
+       </div>
+       <div nz-row nzGutter="16">
+            <div nz-col nzSpan="24">
+                <div class="form-group">
+                    <label for="">Incident Detail</label>
+                    <textarea nz-input rows="4" formControlName="incidentDetails" ></textarea>
+                </div>
+            </div>
+       </div>
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>
+        <button nz-button nzType="primary" (click)="saveRecordIncident()" [nzLoading]="isConfirmLoading">Ok</button>
     </div>
 </nz-modal>

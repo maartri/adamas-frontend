@@ -99,6 +99,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   showAvatar: boolean;
   staffrecordview: string; 
+  token: any
 
   constructor(
     private globalS: GlobalService,
@@ -130,6 +131,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     if (role == roles.client) {
       this.showMailManagerBtn = true;
     }
+
+    this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
 
     
     this.buildForms();
@@ -1068,6 +1071,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   private imgBlobData: any;
   imgBLOB(file: any) {
+    console.log(file);
     this.imgBlobData = file;
   }
 
@@ -1075,7 +1079,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   uploadPicture() {
 
     this.loadPhoto = true;
-    this.uploadS.uploadProfilePicture(this.imgBlobData.formData)
+
+
+    var uploadParams = this.imgBlobData.formData
+
+    this.uploadS.uploadProfilePicture(uploadParams)
       .subscribe(blob => {
         this.defaultURL = 'data:image/png;base64,' + blob.image;
 

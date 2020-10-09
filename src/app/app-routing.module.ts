@@ -156,9 +156,10 @@ import { BudgetsComponent } from '@admin/configuration/genrel-setup/budgets.comp
 import { ContactgroupsComponent } from '@admin/configuration/genrel-setup/contactgroups.component';
 import { ContacttypesComponent } from '@admin/configuration/genrel-setup/contacttypes.component';
 import { AddresstypesComponent } from '@admin/configuration/genrel-setup/addresstypes.component';
-import { OccupationComponent } from '@admin/configuration/genrel-setup/occupation.component';
-import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
-import { PhoneemailtypesComponent } from '@admin/configuration/genrel-setup/phoneemailtypes.component';
+// import { OccupationComponent } from '@admin/configuration/genrel-setup/occupation.component';
+// import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
+// import { PhoneemailtypesComponent } from '@admin/configuration/genrel-setup/phoneemailtypes.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -462,18 +463,18 @@ const routes: Routes = [
         path:"address-types",
         component:AddresstypesComponent,
       },
-      {
-        path:"religions",
-        component:ReligionComponent,
-      },
-      {
-        path:"occupations",
-        component:OccupationComponent,
-      },
-      {
-        path:"phone-email-types",
-        component:PhoneemailtypesComponent,
-      },
+      // {
+      //   path:"religions",
+      //   component:ReligionComponent,
+      // },
+      // {
+      //   path:"occupations",
+      //   component:OccupationComponent,
+      // },
+      // {
+      //   path:"phone-email-types",
+      //   component:PhoneemailtypesComponent,
+      // },
       {
         path: 'rosters',
         component: RostersAdmin
@@ -713,9 +714,9 @@ export const PAGE_COMPONENTS = [
   ContactgroupsComponent,
   ContacttypesComponent,
   AddresstypesComponent,
-  ReligionComponent,
-  OccupationComponent,
-  PhoneemailtypesComponent,
+  // ReligionComponent,
+  // OccupationComponent,
+  // PhoneemailtypesComponent,
   
   // Staff Views
   StaffAttendanceAdmin,

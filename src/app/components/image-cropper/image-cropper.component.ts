@@ -30,6 +30,7 @@ export class ImageCropperComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit(): void {
     //this.initCropper();
+    // console.log(this.id);
   }
 
   ngOnChanges(changes: SimpleChanges) {

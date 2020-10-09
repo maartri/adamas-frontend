@@ -1,20 +1,46 @@
-    ul{
-        padding:0;
-        margin:0;
-        list-style: none;
-    }
-    li{
-        padding:4px 10px;
-        cursor: pointer;
-        transition: 0.1s;
-    }
-    div.ant-popover-inner-content{
-        padding:0;
-    }
-    li:hover{
-        font-weight: 500;
-        color:#0d76c2;
-    }
-    textarea{
-        resize: none;
-    }
+ul{
+    padding:0;
+    margin:0;
+    list-style: none;
+}
+li{
+    padding:4px 10px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+div.ant-popover-inner-content{
+    padding:0;
+}
+li:hover{
+    font-weight: 500;
+    color:#0d76c2;
+}
+textarea{
+    resize: none;
+}
+div.form-group label{
+    font-weight: 500;
+    color:#565c74;
+}
+nz-select{
+    width:100%;
+}
+
+.tclaims{
+    display:flex;
+    line-height:12px;
+    margin-bottom:10px;
+}
+.tclaims > span{
+    flex:3;
+}
+.tclaims > *:first-child{
+    flex:1;
+}
+.tclaims nz-switch{
+    flex:2;
+}
+.highlight{    
+    color: #188ffd;
+    font-weight: 500;
+}

@@ -1058,7 +1058,7 @@
 
 <nz-modal [(nzVisible)]="changeProfilePictureModal" nzTitle="Update Profile Picture" (nzOnCancel)="handleCancel()">
     <div *ngIf="changeProfilePictureModal">
-        <app-image-cropper [src]="src" [role]="innerValue.view" [id]="innerValue.id" (imgBLOB)="imgBLOB($event)"></app-image-cropper>
+        <app-image-cropper [src]="src" [role]="innerValue.view" [id]="user.uniqueID" (imgBLOB)="imgBLOB($event)"></app-image-cropper>
         <input type="file" id="file" (change)="uploadChange($event)">
         <div><label for="file" class="upload-pic">Browse Directory</label></div>
     </div>

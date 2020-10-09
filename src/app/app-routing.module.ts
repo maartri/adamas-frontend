@@ -156,9 +156,12 @@ import { BudgetsComponent } from '@admin/configuration/genrel-setup/budgets.comp
 import { ContactgroupsComponent } from '@admin/configuration/genrel-setup/contactgroups.component';
 import { ContacttypesComponent } from '@admin/configuration/genrel-setup/contacttypes.component';
 import { AddresstypesComponent } from '@admin/configuration/genrel-setup/addresstypes.component';
-// import { OccupationComponent } from '@admin/configuration/genrel-setup/occupation.component';
-// import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
-// import { PhoneemailtypesComponent } from '@admin/configuration/genrel-setup/phoneemailtypes.component';
+import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
+import { OccupationComponent } from '@admin/configuration/genrel-setup/occupation.component';
+import { PhoneemailtypesComponent } from '@admin/configuration/genrel-setup/phoneemailtypes.component';
+import { FinancialclassComponent } from '@admin/configuration/genrel-setup/financialclass.component';
+import { PostcodesComponent } from '@admin/configuration/genrel-setup/postcodes.component';
+import { HolidaysComponent } from '@admin/configuration/genrel-setup/holidays.component';
 
 const routes: Routes = [
   {
@@ -463,18 +466,30 @@ const routes: Routes = [
         path:"address-types",
         component:AddresstypesComponent,
       },
-      // {
-      //   path:"religions",
-      //   component:ReligionComponent,
-      // },
-      // {
-      //   path:"occupations",
-      //   component:OccupationComponent,
-      // },
-      // {
-      //   path:"phone-email-types",
-      //   component:PhoneemailtypesComponent,
-      // },
+      {
+        path:"religions",
+        component:ReligionComponent,
+      },
+      {
+        path:"occupations",
+        component:OccupationComponent,
+      },
+      {
+        path:"phone-email-types",
+        component:PhoneemailtypesComponent,
+      },
+      {
+        path:"financial-class",
+        component:FinancialclassComponent,
+      },
+      {
+        path:"postcodes",
+        component:PostcodesComponent,
+      },
+      {
+        path:"holidays",
+        component:HolidaysComponent,
+      },
       {
         path: 'rosters',
         component: RostersAdmin
@@ -714,10 +729,12 @@ export const PAGE_COMPONENTS = [
   ContactgroupsComponent,
   ContacttypesComponent,
   AddresstypesComponent,
-  // ReligionComponent,
-  // OccupationComponent,
-  // PhoneemailtypesComponent,
-  
+  ReligionComponent,
+  OccupationComponent,
+  PhoneemailtypesComponent,
+  FinancialclassComponent, 
+  PostcodesComponent,
+  HolidaysComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

@@ -4,20 +4,21 @@ import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 
 @Component({
-  selector: 'app-postcodes',
-  templateUrl: './postcodes.component.html',
+  selector: 'app-medicalcontact',
+  templateUrl: './medicalcontact.component.html',
   styles: []
 })
-export class PostcodesComponent implements OnInit {
+export class MedicalcontactComponent implements OnInit {
 
     tableData: Array<any>;
     loading: boolean = false;
+    dateFormat: string = 'dd/MM/yyyy';
     modalOpen: boolean = false;
     current: number = 0;
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
-    title:string = "Add New Postcode"
+    title:string = "Add New Medical Contact Details"
     
     constructor(
       private globalS: GlobalService,
@@ -33,7 +34,7 @@ export class PostcodesComponent implements OnInit {
     }
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{postcode:"213",suburb:"beechtrr",state:"wa"}];
+      this.tableData = [{type:"213",name:"beechtrr",address1:"wa",address2:"wa",phone1:"wa",phone2:"wa",fax:"wa",mobile:"wa",email:"wa",date:"wa",}];
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -50,32 +51,41 @@ export class PostcodesComponent implements OnInit {
     
     showEditModal(index: any) {
       // debugger;
-      this.title = "Edit Postcodes"
+      this.title = "Medical Contact Detail"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+
         const { 
-          postcode,
+          type,
+          name,
+          address1,
+          address2,
           suburb,
-          state,
+          phone1,
+          phone2,
+          fax,
+          mobile,
+          date,
          } = this.tableData[index];
         this.inputForm.patchValue({
-          postcode: postcode,
-          suburb:suburb,
-          state:state,
+          type:type,
+          name:name,
+          address1: address1,
+          address2: address2,
+          suburb: suburb,
+          phone1:phone1,
+          phone2:phone2,
+          fax:fax,
+          mobile:mobile,
+          date:date,
         });
+    
     }
     
     handleCancel() {
       this.modalOpen = false;
     }
-    // pre(): void {
-    //   this.current -= 1;
-    // }
-    
-    // next(): void {
-    //   this.current += 1;
-    // }
     save() {
       // var temp=this.inputForm.controls["fundregions"].value
       //  var input=this.inputForm.value

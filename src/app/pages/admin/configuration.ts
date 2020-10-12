@@ -122,6 +122,9 @@ export class ConfigurationAdmin   {
         if(index == 16){
             this.router.navigate(['/admin/holidays']);
         }
+        if(index == 17){
+            this.router.navigate(['/admin/medical-contact']);
+        }
     }  
 }
 //ConfigurationAdmin 

@@ -1,0 +1,58 @@
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add postcode</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                <td class="left">{{ data.suburb +" "+ data.state +" "+ data.postcode }} </td>
+                        <td><a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Financial Class ?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+
+<nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+    <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+        <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
+    </nz-steps>
+    <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <label nzFor="SubRub">Subrub</label>
+                        <input nz-input placeholder=""  formControlName="suburb" required />
+                    </div>
+                    <div nz-col nzSpan="12" class="mrg-btm">
+                        <label nzFor="Postcode">Postcode</label>
+                        <input nz-input placeholder=""  formControlName="postcode" required />
+                    </div>
+                    <div nz-col nzSpan="12" class="mrg-btm">
+                        <label nzFor="State">State</label>
+                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" placeholder="State" nzShowSearch nzAllowClear style="width:100%;" required>
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        </nz-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+                <ng-container>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!inputForm.get('suburb').value"  (click)="save()" *ngIf="current === 0">
+                        <span>Save</span>
+                    </button>
+                </ng-container>
+        </div>
+        </div>
+</nz-modal>

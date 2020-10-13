@@ -113,6 +113,18 @@ export class ConfigurationAdmin   {
         if(index == 13){
             this.router.navigate(['/admin/religions']);
         }
+        if(index == 14){
+            this.router.navigate(['/admin/financial-class']);
+        }
+        if(index == 15){
+            this.router.navigate(['/admin/postcodes']);
+        }
+        if(index == 16){
+            this.router.navigate(['/admin/holidays']);
+        }
+        if(index == 17){
+            this.router.navigate(['/admin/medical-contact']);
+        }
     }  
 }
 //ConfigurationAdmin 

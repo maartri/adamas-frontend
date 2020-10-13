@@ -159,6 +159,10 @@ import { AddresstypesComponent } from '@admin/configuration/genrel-setup/address
 import { OccupationComponent } from '@admin/configuration/genrel-setup/occupation.component';
 import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
 import { PhoneemailtypesComponent } from '@admin/configuration/genrel-setup/phoneemailtypes.component';
+import { FinancialclassComponent } from '@admin/configuration/genrel-setup/financialclass.component';
+import { PostcodesComponent } from '@admin/configuration/genrel-setup/postcodes.component';
+import { HolidaysComponent } from '@admin/configuration/genrel-setup/holidays.component';
+import { MedicalcontactComponent } from '@admin/configuration/genrel-setup/medicalcontact.component';
 
 const routes: Routes = [
   {
@@ -476,6 +480,22 @@ const routes: Routes = [
         component:PhoneemailtypesComponent,
       },
       {
+        path:"financial-class",
+        component:FinancialclassComponent,
+      },
+      {
+        path:"postcodes",
+        component:PostcodesComponent,
+      },
+      {
+        path:"holidays",
+        component:HolidaysComponent,
+      },
+      {
+        path:"medical-contact",
+        component:MedicalcontactComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -718,6 +738,10 @@ export const PAGE_COMPONENTS = [
   OccupationComponent,
   PhoneemailtypesComponent,
   
+  FinancialclassComponent, 
+  PostcodesComponent,
+  HolidaysComponent,
+  MedicalcontactComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

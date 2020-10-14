@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { GlobalService, StaffService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, StaffService, ShareService, leaveTypes, ListService } from '@services/index';
 import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
 
 @Component({
@@ -78,7 +78,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     selectedValue: any;
 
-    status: any
+    status: any = null;
     statusTab = new Subject<any>();
 
     listChange(event: any) {
@@ -95,7 +95,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             //this.view(6);
             this.isFirstLoad = true;
         }
-        
+        console.log(event);
         // this.user = {
         //     agencyDefinedGroup: "GRAFTON",
         //     code: "ABERKIRDO TYBI",
@@ -113,6 +113,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         }
 
         this.sharedS.emitChange(this.user);
+
+        this.listS.getstatusofwizard(this.user.id)
+            .subscribe(data => {
+                this.status = data;
+            });
+
         this.cd.detectChanges();
     }
 
@@ -120,7 +126,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         private router: Router,
         private activeRoute: ActivatedRoute,
         private sharedS: ShareService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private listS: ListService
     ) {
 
     }

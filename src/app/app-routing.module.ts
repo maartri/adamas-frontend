@@ -156,8 +156,8 @@ import { BudgetsComponent } from '@admin/configuration/genrel-setup/budgets.comp
 import { ContactgroupsComponent } from '@admin/configuration/genrel-setup/contactgroups.component';
 import { ContacttypesComponent } from '@admin/configuration/genrel-setup/contacttypes.component';
 import { AddresstypesComponent } from '@admin/configuration/genrel-setup/addresstypes.component';
-import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
 import { OccupationComponent } from '@admin/configuration/genrel-setup/occupation.component';
+import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
 import { PhoneemailtypesComponent } from '@admin/configuration/genrel-setup/phoneemailtypes.component';
 import { FinancialclassComponent } from '@admin/configuration/genrel-setup/financialclass.component';
 import { PostcodesComponent } from '@admin/configuration/genrel-setup/postcodes.component';
@@ -742,6 +742,7 @@ export const PAGE_COMPONENTS = [
   ReligionComponent,
   OccupationComponent,
   PhoneemailtypesComponent,
+  
   FinancialclassComponent, 
   PostcodesComponent,
   HolidaysComponent,

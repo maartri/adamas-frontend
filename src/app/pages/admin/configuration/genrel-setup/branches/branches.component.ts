@@ -13,9 +13,9 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class BranchesComponent implements OnInit {
   
-  private unsubscribe: Subject<void> = new Subject();
-  branchList: Array<any>;
-  tabset = false;
+    private unsubscribe: Subject<void> = new Subject();
+    branchList: Array<any>;
+    tabset = false;
     isVisibleTop =false;
     showtabother = false;
     showtabRostcriteria= false;
@@ -47,8 +47,8 @@ export class BranchesComponent implements OnInit {
       
       this.workStartHour = [{ name:"ADAMAS"},{name:"ASHMORE"}];
       this.workFinsihHour = [{ name:"ADAMAS"},{name:"ASHMORE"}]
-      this.loading = false;
-      this.cd.detectChanges();
+      // this.loading = false;
+      // this.cd.detectChanges();
     }
     
     showAddModal() {
@@ -66,7 +66,52 @@ export class BranchesComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-      
+      const { 
+        name,
+        // glRevene,
+        // glCost,
+        // centerName,
+        // addrLine1,
+        // addrLine2,
+        // Phone,
+        // startHour,
+        // finishHour,
+        // earlyStart,
+        // lateStart,
+        // earlyFinish,
+        // lateFinish,
+        // overstay,
+        // understay,
+        // t2earlyStart,
+        // t2lateStart,
+        // t2earlyFinish,
+        // t2lateFinish,
+        // t2overstay,
+        // t2understay,
+    }= this.tableData[index]
+      this.inputForm.patchValue({
+        name:name ,
+        // glRevene:glRevene,
+        // glCost:glCost,
+        // centerName:centerName,
+        // addrLine1:addrLine1,
+        // addrLine2:addrLine2,
+        // Phone:Phone,
+        // startHour:startHour,
+        // finishHour:finishHour,
+        // earlyStart:earlyStart,
+        // lateStart:lateStart,
+        // earlyFinish:earlyFinish,
+        // lateFinish:lateFinish,
+        // overstay:overstay,
+        // understay:understay,
+        // t2earlyStart:t2earlyStart,
+        // t2lateStart:t2lateStart,
+        // t2earlyFinish:t2earlyFinish,
+        // t2lateFinish:t2lateFinish,
+        // t2overstay:t2overstay,
+        // t2understay:t2understay,
+      })      
     }
     
     handleCancel() {
@@ -112,9 +157,9 @@ export class BranchesComponent implements OnInit {
             else
                 this.globalS.sToast('Unsuccess', 'Data not saved' + data);
 
-            this.postLoading = false;
             this.handleCancel();
             this.resetModal();
+            this.loadBranches();
         });; 
     }
     
@@ -148,9 +193,11 @@ export class BranchesComponent implements OnInit {
     }
 
     loadBranches(){
-      this.menuS.getlistbranches().subscribe(data => {
+        this.loading = true;
+        this.menuS.getlistbranches().subscribe(data => {
         this.branchList = data;
-        console.log(this.branchList);
+        this.loading = false;
+        this.cd.detectChanges();
     });
   }
   }

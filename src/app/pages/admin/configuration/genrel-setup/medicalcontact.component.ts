@@ -34,7 +34,7 @@ export class MedicalcontactComponent implements OnInit {
     }
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{type:"213",name:"beechtrr",address1:"wa",address2:"wa",phone1:"wa",phone2:"wa",fax:"wa",mobile:"wa",email:"wa",date:"wa",}];
+      this.tableData = [{type:"GF",name:"mr beechtrr",address1:"TEST1",address2:"TEST2",phone1:"test3",phone2:"wa",fax:"wa",mobile:"wa",email:"wa@mIL.COM",date:"10-13-2020",}];
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -51,7 +51,7 @@ export class MedicalcontactComponent implements OnInit {
     
     showEditModal(index: any) {
       // debugger;
-      this.title = "Medical Contact Detail"
+      this.title = "Edit Medical Contact Detail"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
@@ -66,6 +66,7 @@ export class MedicalcontactComponent implements OnInit {
           phone2,
           fax,
           mobile,
+          email,
           date,
          } = this.tableData[index];
         this.inputForm.patchValue({
@@ -78,6 +79,7 @@ export class MedicalcontactComponent implements OnInit {
           phone2:phone2,
           fax:fax,
           mobile:mobile,
+          email:email,
           date:date,
         });
     
@@ -102,9 +104,17 @@ export class MedicalcontactComponent implements OnInit {
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
-        postcode:'',
-        suburb:'',
-        state:'',
+          type:'',
+          name:'',
+          address1:'',
+          address2:'',
+          suburb:'',
+          phone1:'',
+          phone2:'',
+          fax:'',
+          mobile:'',
+          email:'',
+          date:'',
       });
     }
 

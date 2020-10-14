@@ -1,1 +1,97 @@
-<p>destinationaddress works!</p>
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Destination Address</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Name</th>
+                    <th class="left">Type</th>
+                    <th class="left">Address</th>
+                    <th class="left">Phone</th>
+                    <th class="left">Fax</th>
+                    <th class="left">Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                <td class="left">{{ data.name }} </td>
+                <td class="left">{{ data.type }} </td>
+                <td class="left">{{ data.address1 }} </td>
+                <td class="left">{{ data.phone1 }} </td>
+                <td class="left">{{ data.fax }} </td>
+                <td class="left">{{ data.date }} </td>
+                        <td><a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure Delete Destination Address?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+
+<nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+    <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+        <nz-step class="mini" nzTitle="Genral Details" nzDescription=""></nz-step>
+    </nz-steps>
+    <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <!-- <label nzFor="Name">Name:</label> -->
+                        <input nz-input placeholder="Name"  formControlName="name" required />
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <!-- <label nzFor="Address 1">Address 1:</label> -->
+                        <input nz-input placeholder="Agency ID"  formControlName="address1" required />
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <!-- <label nzFor="Address 2">Address 2:</label> -->
+                        <input nz-input placeholder="Address 2"  formControlName="address2" required />
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <!-- <label nzFor="Suburb">Suburb:</label> -->
+                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="suburb" nzPlaceHolder="Suburb" nzShowSearch nzAllowClear style="width:100%;" required>
+                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        </nz-select>
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <!-- <label nzFor="Phone 1">Phone 1:</label> -->
+                        <input nz-input placeholder="Phone 1"  formControlName="phone1" required />
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <!-- <label nzFor="Phone 2">Phone 2:</label> -->
+                        <input nz-input placeholder="Phone 2"  formControlName="phone2" required />
+                    </div>
+                    <div nz-col nzSpan="12" class="mrg-btm">
+                        <!-- <label nzFor="Mobile">Mobile:</label> -->
+                        <input nz-input placeholder="Mobile"  formControlName="mobile" required />
+                    </div>
+                    <div nz-col nzSpan="12" class="mrg-btm">
+                        <!-- <label nzFor="Fax">Fax:</label> -->
+                        <input nz-input placeholder="Fax"  formControlName="fax" required />
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <!-- <label nzFor="Email">Email:</label> -->
+                        <input nz-input placeholder="Email"  formControlName="email" required />
+                    </div>
+                    <div nz-col nzSpan="8" class="mrg-btm">
+                        <!-- <label nzFor="Postcode">End Date</label> -->
+                        <nz-date-picker formControlName="date" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+                <ng-container>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!inputForm.get('name').value"  (click)="save()" *ngIf="current === 0">
+                        <span>Save</span>
+                    </button>
+                </ng-container>
+        </div>
+        </div>
+</nz-modal>

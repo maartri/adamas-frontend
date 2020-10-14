@@ -125,6 +125,12 @@ export class ConfigurationAdmin   {
         if(index == 17){
             this.router.navigate(['/admin/medical-contact']);
         }
+        if(index == 18){
+            this.router.navigate(['/admin/destination-address']);
+        }
+        if(index == 19){
+            // this.router.navigate(['/admin/destination-address']);
+        }
     }  
 }
 //ConfigurationAdmin 

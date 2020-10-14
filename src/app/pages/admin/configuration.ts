@@ -129,7 +129,7 @@ export class ConfigurationAdmin   {
             this.router.navigate(['/admin/destination-address']);
         }
         if(index == 19){
-            // this.router.navigate(['/admin/destination-address']);
+            this.router.navigate(['/admin/program-coordinates']);
         }
     }  
 }

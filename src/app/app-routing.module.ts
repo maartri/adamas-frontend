@@ -164,6 +164,7 @@ import { PostcodesComponent } from '@admin/configuration/genrel-setup/postcodes.
 import { HolidaysComponent } from '@admin/configuration/genrel-setup/holidays.component';
 import { MedicalcontactComponent } from '@admin/configuration/genrel-setup/medicalcontact.component';
 import { DestinationaddressComponent } from '@admin/configuration/genrel-setup/destinationaddress.component';
+import { ProgramcoordinatesComponent } from '@admin/configuration/genrel-setup/programcoordinates.component';
 
 const routes: Routes = [
   {
@@ -501,6 +502,10 @@ const routes: Routes = [
         component:DestinationaddressComponent,
       },
       {
+        path:"program-coordinates",
+        component:ProgramcoordinatesComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -742,12 +747,12 @@ export const PAGE_COMPONENTS = [
   ReligionComponent,
   OccupationComponent,
   PhoneemailtypesComponent,
-  
   FinancialclassComponent, 
   PostcodesComponent,
   HolidaysComponent,
   MedicalcontactComponent,
   DestinationaddressComponent,
+  ProgramcoordinatesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

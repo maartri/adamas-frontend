@@ -9,7 +9,7 @@ import { GlobalService } from '@services/global.service';
   styles: []
 })
 export class ContacttypesComponent implements OnInit {
-
+  
   tableData: Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;

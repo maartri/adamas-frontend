@@ -134,6 +134,12 @@ export class ConfigurationAdmin   {
         if(index == 20){
             this.router.navigate(['/admin/distribution-list']);
         }
+        if(index == 21){
+            this.router.navigate(['/admin/initial-actions']);
+        }
+        if(index == 22){
+            this.router.navigate(['/admin/ongoing-actions']);
+        }
     }  
 }
 //ConfigurationAdmin 

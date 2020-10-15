@@ -178,7 +178,7 @@
                                 </div>
                             </div>                             
                     </nz-tab>
-                    <nz-tab nzTitle="System Administration"  >
+                    <nz-tab nzTitle="System Administration" disabled>
                         <div nz-row >
                             <div nz-col [nzSpan]="12">
                                 <ul nz-menu nzMode="horizontal" >
@@ -301,7 +301,7 @@
                             </div>
                         </div>
                     </nz-tab>
-                    <nz-tab nzTitle="Document Management"   >
+                    <nz-tab nzTitle="Document Management"  disabled>
                         <div nz-row >
                             <div nz-col [nzSpan]="24">
                                 <ul nz-menu nzMode="horizontal">
@@ -339,13 +339,13 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>General</strong> 
                                         <div>
-                                            <button nz-button nzType="default" disabled id="btn-inital-list"    >
+                                            <button nz-button nzType="default" (click)="view(21)" id="btn-inital-list"    >
                                                 <i nz-icon nzType="read"></i>
-                                                Add/change Initail List
+                                                Add/change Initail Actions
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled id="btn-ongoing-action"    >
+                                            <button nz-button nzType="default" (click)="view(22)" id="btn-ongoing-action"    >
                                                 <i nz-icon nzType="read"></i>
                                                 Add/change Ongoing Actions
                                                 </button>

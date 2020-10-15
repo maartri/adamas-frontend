@@ -166,6 +166,8 @@ import { MedicalcontactComponent } from '@admin/configuration/genrel-setup/medic
 import { DestinationaddressComponent } from '@admin/configuration/genrel-setup/destinationaddress.component';
 import { ProgramcoordinatesComponent } from '@admin/configuration/genrel-setup/programcoordinates.component';
 import { DistributionlistComponent } from '@admin/configuration/genrel-setup/distributionlist.component';
+import { InitialactionsComponent } from '@admin/configuration/incidents/initialactions.component';
+import { OngoingactionsComponent } from '@admin/configuration/incidents/ongoingactions.component';
 
 const routes: Routes = [
   {
@@ -511,6 +513,14 @@ const routes: Routes = [
         component:DistributionlistComponent,
       },
       {
+        path:"initial-actions",
+        component:InitialactionsComponent,
+      },
+      {
+        path:"ongoing-actions",
+        component:OngoingactionsComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -759,6 +769,8 @@ export const PAGE_COMPONENTS = [
   DestinationaddressComponent,
   ProgramcoordinatesComponent,
   DistributionlistComponent,
+  InitialactionsComponent,
+  OngoingactionsComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

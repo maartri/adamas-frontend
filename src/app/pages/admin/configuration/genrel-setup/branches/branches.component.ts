@@ -40,12 +40,13 @@ export class BranchesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private menuS: MenuService) { }
+
     
     ngOnInit(): void {
       this.buildForm();      
       this.loadBranches();
       
-      this.workStartHour = [{ name:"ADAMAS"},{name:"ASHMORE"}];
+      this.workStartHour = ["00:15","00:30"];
       this.workFinsihHour = [{ name:"ADAMAS"},{name:"ASHMORE"}]
       // this.loading = false;
       // this.cd.detectChanges();

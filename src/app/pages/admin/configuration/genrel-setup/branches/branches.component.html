@@ -62,8 +62,8 @@
                     <div nz-col nzSpan="12">
                         <div class="form-group">
                             <label for="">Work Hour Start</label>
-                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="startHour" nzShowSearch nzAllowClear style="width:100%;">
-                                <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="competency" nzShowSearch nzAllowClear nzPlaceHolder="Select a competency" >
+                                <nz-option *ngFor="let d of workStartHour" [nzLabel]="d" [nzValue]="d"></nz-option>
                             </nz-select>
                         </div>
                     </div>

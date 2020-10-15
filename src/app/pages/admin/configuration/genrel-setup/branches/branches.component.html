@@ -13,7 +13,7 @@
                 <tr *ngFor="let data of branchList;let i = index;">
                 <td class="left">{{ data.description  }}</td>
                     <td>
-                        <a (click)="showEditModal(data.recordNumber)">Update</a>
+                        <a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete branch ?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
@@ -53,7 +53,7 @@
                         <input nz-input placeholder="Address Line 2"  formControlName="addrLine2" />
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
-                        <input nz-input placeholder="Phone"  formControlName="addrLine2" />
+                        <input nz-input placeholder="Phone"  formControlName="Phone" />
                     </div>
                 </div>
             </div>

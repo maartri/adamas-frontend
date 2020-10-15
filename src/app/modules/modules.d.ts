@@ -366,6 +366,7 @@ declare namespace Dto {
         }
     
         export interface Branch {
+        recordNumber:number,
         name: string,
         glRevene: string,
         glCost: string,

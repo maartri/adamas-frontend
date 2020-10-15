@@ -167,6 +167,8 @@ export class BranchesComponent implements OnInit {
         });
       }else{
           const group = this.inputForm;
+          console.log(group.get('recordNumber').value);
+          // return false;
           this.menuS.UpdateBranch({
           name: group.get('name').value,
           glRevene: group.get('glRevene').value,
@@ -195,7 +197,7 @@ export class BranchesComponent implements OnInit {
           this.globalS.sToast('Success', 'Update successful');     
           else
           this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-          
+
           this.loadBranches();
           this.handleCancel();
           this.resetModal();    

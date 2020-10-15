@@ -1,0 +1,97 @@
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Distribution List</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Recepient</th>
+                    <th class="left">Activity</th>
+                    <th class="left">Location</th>
+                    <th class="left">Program</th>
+                    <th class="left">Start</th>
+                    <th class="left">Sevritys</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                <td class="left">{{ data.code  }} </td>
+                <td class="left">{{ data.name  }} </td>
+                <td class="left">{{ data.name  }} </td>
+                <td class="left">{{ data.name  }} </td>
+                <td class="left">{{ data.name  }} </td>
+                <td class="left">{{ data.name  }} </td>
+
+                <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete programe coordinate ?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="loadtitle()" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+    <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+        <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
+    </nz-steps>
+    <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <div nz-row nzGutter="24" class="">
+                    <label for="CDC Item" col nzSpan="6">List Type:</label>
+                    <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="ltype" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-row nzGutter="24" class="">
+                    <label for="CDC Item" col nzSpan="6" >Staff:</label>
+                    <nz-select col nzSpan="14" [nzDropdownMatchSelectWidth]="false" formControlName="staff" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-row nzGutter="24" class="">
+                    <label for="CDC Item" nzSpan="6" >Service:</label>
+                    <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="service" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-row nzGutter="24" class="">
+                    <label for="CDC Item" nzSpan="6" >Default Assignee:</label>
+                        <label nz-checkbox nzSpan="14"   [ngModel]="" formControlName="assignee">Name will apear as default assignee for incidents links to the above services</label>
+                </div>
+                <div nz-row nzGutter="24" class="">
+                    <label for="CDC Item" nzSpan="6" >Location:</label>
+                    <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="location" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-row nzGutter="24" class="">
+                    <label for="CDC Item" nzSpan="6" >Recepient:</label>
+                    <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="recepient" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-row nzGutter="24" class="">
+                    <label for="CDC Item" nzSpan="6" >Saverity:</label>
+                    <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="saverity" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-row nzGutter="24" class="">
+                    <label for="CDC Item" nzSpan="6" >Mandatory Notification:</label>
+                    <label nz-checkbox nzSpan="14"   [ngModel]="" formControlName="mandatory">staff will mandatorially receive and incident notification wihout user choice</label>
+                    
+                </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+                <ng-container>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]= "!inputForm.get('ltype').value || !inputForm.get('staff').value" (click)="save()" *ngIf="current === 0">
+                        <span>Save</span>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+</nz-modal>

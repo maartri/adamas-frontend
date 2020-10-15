@@ -131,6 +131,9 @@ export class ConfigurationAdmin   {
         if(index == 19){
             this.router.navigate(['/admin/program-coordinates']);
         }
+        if(index == 20){
+            this.router.navigate(['/admin/distribution-list']);
+        }
     }  
 }
 //ConfigurationAdmin 

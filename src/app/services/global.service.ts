@@ -303,7 +303,6 @@ export class GlobalService {
     }
 
     serialize(obj: any): any {
-
         if (obj == null)
             return {};
 

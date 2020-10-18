@@ -1,7 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ListService } from '@services/list.service';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
+import { Observable, of, from, Subject, EMPTY } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-funding-regions',
@@ -17,18 +20,21 @@ export class FundingRegionsComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
+    modalVariables: any;
+    inputVariables:any;
     title:string = "Add Funding Regions"
-    
+    private unsubscribe: Subject<void> = new Subject();
+
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
       private switchS:SwitchService,
+      private listS:ListService,
       private formBuilder: FormBuilder
     ){}
     
     loadTitle()
     {
-      debugger;
       return this.title;
     }
     ngOnInit(): void {
@@ -36,6 +42,17 @@ export class FundingRegionsComponent implements OnInit {
       this.tableData = [{ name:"CENTRAL"},{name:"NORTH"},{name:"SOUTH"}];
       this.loading = false;
       this.cd.detectChanges();
+      this.loadData();
+    }
+
+    loadData(){
+      let sql ="select Description as name from DataDomains where Domain='FUNDREGION' ";
+      this.loading = true;
+       sql
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        this.loading = false;
+      });
     }
     showAddModal() {
       this.resetModal();
@@ -73,14 +90,32 @@ export class FundingRegionsComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      // var temp=this.inputForm.controls["fundregions"].value
-      //  var input=this.inputForm.value
-      //  var temp = input.fundregions
-      // debugger;
-      this.postLoading = true;
-      this.globalS.sToast('Success', 'Changes saved');
-      this.handleCancel();
-      this.resetModal();
+      
+        this.postLoading = true;     
+          const group = this.inputForm;         
+         
+          this.switchS.addData(  
+              this.modalVariables={
+                  title: 'Funding Regions'
+              }, 
+               this.inputVariables = {
+                display: group.get('fundregions').value,
+                domain: 'FUNDREGION',         
+               
+              }
+         
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          });
+        
+     
     }
     
     delete(data: any) {

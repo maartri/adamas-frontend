@@ -787,10 +787,11 @@ export class SwitchService {
             case 'Funding Regions':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        Description: inputVariables.display,
                         domain: 'FUNDREGION',
                         dataset: 'USER',
                         embedded: 0,
+                        HACCCODe:1,
                         user1: '',
                         user2: '',
                         endDate: null

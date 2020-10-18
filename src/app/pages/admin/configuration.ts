@@ -140,6 +140,15 @@ export class ConfigurationAdmin   {
         if(index == 22){
             this.router.navigate(['/admin/ongoing-actions']);
         }
+        if(index == 23){
+            this.router.navigate(['/admin/incident-sub-category']);
+        }
+        if(index == 24){
+            this.router.navigate(['/admin/incident-trigger']);
+        }
+        if(index == 25){
+            this.router.navigate(['/admin/incident-types']);
+        }
     }  
 }
 //ConfigurationAdmin 

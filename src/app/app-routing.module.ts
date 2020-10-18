@@ -168,6 +168,9 @@ import { ProgramcoordinatesComponent } from '@admin/configuration/genrel-setup/p
 import { DistributionlistComponent } from '@admin/configuration/genrel-setup/distributionlist.component';
 import { InitialactionsComponent } from '@admin/configuration/incidents/initialactions.component';
 import { OngoingactionsComponent } from '@admin/configuration/incidents/ongoingactions.component';
+import { IncidenttriggersComponent } from '@admin/configuration/incidents/incidenttriggers.component';
+import { IncidenttypesComponent } from '@admin/configuration/incidents/incidenttypes.component';
+import { IncidentsubcatComponent } from '@admin/configuration/incidents/incidentsubcat.component';
 
 const routes: Routes = [
   {
@@ -521,6 +524,18 @@ const routes: Routes = [
         component:OngoingactionsComponent,
       },
       {
+        path:"incident-trigger",
+        component:IncidenttriggersComponent,
+      },
+      {
+        path:"incident-types",
+        component:IncidenttypesComponent,
+      },
+      {
+        path:"incident-sub-category",
+        component:IncidentsubcatComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -771,6 +786,9 @@ export const PAGE_COMPONENTS = [
   DistributionlistComponent,
   InitialactionsComponent,
   OngoingactionsComponent,
+  IncidenttriggersComponent,
+  IncidenttypesComponent,
+  IncidentsubcatComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

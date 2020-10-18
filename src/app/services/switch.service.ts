@@ -712,7 +712,6 @@ export class SwitchService {
     }
 
 
-
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     populateData(modalVariables: Dto.ModalVariables, inputVariables: any): Observable<any> {
@@ -778,7 +777,7 @@ export class SwitchService {
 
 
     addData(modalVariables: Dto.ModalVariables, inputVariables: any) {
-        console.log(inputVariables)
+        console.log(inputVariables);
         this.anyVariable = {}
         switch (modalVariables.title) {
             case 'Medical Contacts':

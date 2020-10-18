@@ -46,7 +46,7 @@ export class BranchesComponent implements OnInit {
       this.buildForm();      
       this.loadBranches();
       
-      this.workStartHour = ["00:15","00:30"];
+      this.workStartHour = ["00:15","00:30","00:45","01:00","01:15","01:30","01:45","2:00","02:15","02:30","02:45","3:00",];
       this.workFinsihHour = [{ name:"ADAMAS"},{name:"ASHMORE"}]
       // this.loading = false;
       // this.cd.detectChanges();

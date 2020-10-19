@@ -16,6 +16,7 @@ export class BudgetgroupsComponent implements OnInit {
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
+  title:string = "Add Activity Budget Group"
   
   constructor(
     private globalS: GlobalService,
@@ -30,7 +31,9 @@ export class BudgetgroupsComponent implements OnInit {
     this.loading = false;
     this.cd.detectChanges();
   }
-  
+  loadTitle(){
+    return this.title;
+  }
   showAddModal() {
     this.resetModal();
     this.modalOpen = true;
@@ -43,9 +46,16 @@ export class BudgetgroupsComponent implements OnInit {
   }
   
   showEditModal(index: any) {
+    this.title = "Edit Activity Budget Group";
     this.isUpdate = true;
     this.current = 0;
     this.modalOpen = true;
+    const { 
+      name,
+     } = this.tableData[index];
+    this.inputForm.patchValue({
+      name: name,
+    });
   }
   
   handleCancel() {
@@ -70,7 +80,7 @@ export class BudgetgroupsComponent implements OnInit {
   }
   buildForm() {
     this.inputForm = this.formBuilder.group({
-      title: '',
+      name: '',
     });
   }
 }

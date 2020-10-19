@@ -22,11 +22,12 @@ export class MenuService {
     AddBranch(brnch: Dto.Branch): Observable<any> {
         return this.auth.put(`${menu}/addBranch`, brnch)
     }
-    UpdateBranch(brnch: Dto.Branch): Observable<any> {
-        return this.auth.put(`${menu}/updateBranch`,brnch)
+UpdateBranch(brnch: Dto.Branch): Observable<any> {
+        return this.auth.put(`${menu}/UpdateBranch`, brnch)
     }
-    addDomain(sqlString: string):Observable<any>{
-        return this.auth.post(`${menu}/addDomain/`, { Sql: sqlString});
+ 
+    updatUDomain(sqlString: string):Observable<any>{
+        return this.auth.post(`${menu}/updateDomain/`, { Sql: sqlString});
         
     }
 

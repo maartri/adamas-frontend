@@ -16,7 +16,7 @@ export class TargetgroupsComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
-    
+    title :string = "Add CDC Target Groups";
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
@@ -29,7 +29,9 @@ export class TargetgroupsComponent implements OnInit {
       this.loading = false;
       this.cd.detectChanges();
     }
-    
+    loadTitle(){
+      return this.title
+    }
     showAddModal() {
       this.resetModal();
       this.modalOpen = true;
@@ -42,9 +44,17 @@ export class TargetgroupsComponent implements OnInit {
     }
     
     showEditModal(index: any) {
+      this.title = "Edit CDC Target Groups"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+      const { 
+        name,
+       } = this.tableData[index];
+      this.inputForm.patchValue({
+        name: name,
+      });
+      
     }
     
     handleCancel() {
@@ -69,7 +79,7 @@ export class TargetgroupsComponent implements OnInit {
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
-        title: '',
+        name: '',
       });
     }
 

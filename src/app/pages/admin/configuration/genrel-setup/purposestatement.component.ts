@@ -6,7 +6,11 @@ import { ListService } from '@services/list.service';
 @Component({
   selector: 'app-purposestatement',
   templateUrl: './purposestatement.component.html',
-  styles: []
+  styles: [`
+  textarea{
+     resize:none;
+  }
+`],
 })
 export class PurposestatementComponent implements OnInit {
 
@@ -17,6 +21,7 @@ export class PurposestatementComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
+    title:string = "Add Package Purpose Statement";
     
     constructor(
       private globalS: GlobalService,
@@ -28,9 +33,9 @@ export class PurposestatementComponent implements OnInit {
     ngOnInit(): void {
       this.buildForm();
 
-      this.listS.getfundingpackagepurposelist().subscribe(data => this.tableData = data);
+      // this.listS.getfundingpackagepurposelist().subscribe(data => this.tableData = data);
         
-      // this.tableData = [{ name:"this is  a test package purpose statement 1"},{name:"this is  a test package purpose statement 2"},{name:"this is  a test package purpose statement 3"}];
+      this.tableData = [{ name:"this is  a test package purpose statement 1"},{name:"this is  a test package purpose statement 2"},{name:"this is  a test package purpose statement 3"}];
       
       this.loading = false;
       this.cd.detectChanges();
@@ -46,11 +51,21 @@ export class PurposestatementComponent implements OnInit {
       this.inputForm.reset();
       this.postLoading = false;
     }
-    
+    loadTitle(){
+      this.title;
+    }
     showEditModal(index: any) {
+      this.title = "Edit Package Purpose Statement"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+
+      const { 
+        name,
+       } = this.tableData[index];
+      this.inputForm.patchValue({
+        porpose: name,
+      });
     }
     
     handleCancel() {

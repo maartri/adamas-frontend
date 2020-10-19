@@ -10,7 +10,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                <td class="left">{{ data.description  }} </td>
+                <td class="left">{{ data.name  }} </td>
                         <td><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Funding Region ?"

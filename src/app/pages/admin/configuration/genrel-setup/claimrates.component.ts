@@ -16,7 +16,7 @@ export class ClaimratesComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
-
+    title:string = "Add New Package Claim Rates"
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
@@ -34,7 +34,10 @@ export class ClaimratesComponent implements OnInit {
       this.resetModal();
       this.modalOpen = true;
     }
-    
+    loadTitle()
+    {
+      return this.title;
+    }
     resetModal() {
       this.current = 0;
       this.inputForm.reset();
@@ -42,9 +45,18 @@ export class ClaimratesComponent implements OnInit {
     }
     
     showEditModal(index: any) {
+      this.title = "Edit New Package Claim Rates"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+      const { 
+        item,
+        rate
+       } = this.tableData[index];
+      this.inputForm.patchValue({
+        item: item,
+        rate:rate,
+      });
     }
     
     handleCancel() {
@@ -71,6 +83,7 @@ export class ClaimratesComponent implements OnInit {
       this.inputForm = this.formBuilder.group({
         item: '',
         rate: '',
+        recordNumber:null
       });
     }
 }

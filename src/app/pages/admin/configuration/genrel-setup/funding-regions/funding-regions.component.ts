@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ListService } from '@services/list.service';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
@@ -10,35 +11,49 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./funding-regions.component.css']
 })
 export class FundingRegionsComponent implements OnInit {
-    
-    private unsubscribe: Subject<void> = new Subject();
-    tableData: Array<any>;
-    fundinglist: Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    inputForm: FormGroup;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    title:string = "Add Funding Regions"
-    
-    constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private switchS:SwitchService,
-      private formBuilder: FormBuilder
+  
+  tableData: Array<any>;
+  fundinglist: Array<any>;
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  inputForm: FormGroup;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  modalVariables: any;
+  inputVariables:any;
+  title:string = "Add Funding Regions"
+  private unsubscribe: Subject<void> = new Subject();
+  
+  constructor(
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private switchS:SwitchService,
+    private listS:ListService,
+    private formBuilder: FormBuilder
     ){}
     
     loadTitle()
     {
-      // debugger;
       return this.title;
     }
     ngOnInit(): void {
       this.buildForm();
-      this.search();
+      // this.search();
       this.loading = false;
       this.cd.detectChanges();
+      this.loadData();
+    }
+    
+    loadData(){
+      let sql ="select Description as name,recordNumber from DataDomains where Domain='FUNDREGION' ";
+      this.loading = true;
+      sql
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        console.log(this.tableData);
+        this.loading = false;
+      });
     }
     showAddModal() {
       this.resetModal();
@@ -57,14 +72,14 @@ export class FundingRegionsComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-        const { 
-          description,
-          recordNumber
-         } = this.tableData[index];
-        this.inputForm.patchValue({
-          description: description,
-          recordNumber:recordNumber,
-        });
+      const { 
+        name,
+        recordNumber
+      } = this.tableData[index];
+      this.inputForm.patchValue({
+        description: name,
+        recordNumber:recordNumber,
+      });
     }
     
     handleCancel() {
@@ -78,42 +93,84 @@ export class FundingRegionsComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      
-      // var temp=this.inputForm.controls["fundregions"].value
-      //  var input=this.inputForm.value
-      //  var temp = input.fundregions
-      // if(!this.isUpdate){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      if(!this.isUpdate){         
+        this.switchS.addData(  
+          this.modalVariables={
+            title: 'Funding Regions'
+          }, 
+          this.inputVariables = {
+            display: group.get('description').value,
+            domain: 'FUNDREGION',         
+            
+          }
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          });
+        }else{
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.switchS.updateData(  
+            this.modalVariables={
+              title: 'Funding Regions'
+            }, 
+            this.inputVariables = {
+              display: group.get('description').value,
+              primaryId:group.get('recordNumber').value,
+              domain: 'FUNDREGION',
+            }
+            
+            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              this.loadData();
+              this.postLoading = false;          
+              this.handleCancel();
+              this.resetModal();
+            });
+          }
+          
+        }
         
-      //   const group = this.inputForm;
-      // this.switchS.addData({}).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      //     if (data) 
-      //     this.globalS.sToast('Success', 'Saved successful');     
-      //     else
-      //     this.globalS.sToast('Unsuccess', 'Data not saved' + data)
-      // )};
-      
-      this.postLoading = true;
-      this.globalS.sToast('Success', 'Changes saved');
-      this.handleCancel();
-      this.resetModal();
-    }
-    
-    delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
-    }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        description: '',
-        recordNumber:null,
-      });
-    }
-
-    search(){
-      this.loading = true;
-      this.switchS.getData(2).subscribe(data => {
-        this.tableData = data.list;
-        this.cd.detectChanges();
-      });
-    }
-
-}
+        delete(data: any) {
+          this.postLoading = true;     
+          const group = this.inputForm;
+          console.log(data.recordNumber);
+          let sql ="delete from DataDomains where Domain='FUNDREGION' and recordNumber = '"+data.recordNumber+"'";
+         console.log(sql); 
+          this.listS.deleteSql(sql)
+            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) {
+                this.globalS.sToast('Success', 'Data Deleted!');
+                this.loadData();
+                return;
+            }
+            });
+          }
+          buildForm() {
+            this.inputForm = this.formBuilder.group({
+              description: '',
+              recordNumber:0,
+            });
+          }
+          
+          search(){
+            this.loading = true;
+            this.switchS.getData(2).subscribe(data => {
+              this.tableData = data.list;
+              this.cd.detectChanges();
+            });
+          }
+          
+        }
+        

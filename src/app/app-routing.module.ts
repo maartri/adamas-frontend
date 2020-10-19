@@ -171,6 +171,9 @@ import { OngoingactionsComponent } from '@admin/configuration/incidents/ongoinga
 import { IncidenttriggersComponent } from '@admin/configuration/incidents/incidenttriggers.component';
 import { IncidenttypesComponent } from '@admin/configuration/incidents/incidenttypes.component';
 import { IncidentsubcatComponent } from '@admin/configuration/incidents/incidentsubcat.component';
+import { IncidentnotecategoryComponent } from '@admin/configuration/incidents/incidentnotecategory.component';
+import { LocationCategoriesComponent } from '@admin/configuration/incidents/location-categories.component';
+import { StaffincidentnotecategoryComponent } from '@admin/configuration/incidents/staffincidentnotecategory.component';
 
 const routes: Routes = [
   {
@@ -536,6 +539,18 @@ const routes: Routes = [
         component:IncidentsubcatComponent
       },
       {
+        path:"incident-location-categories",
+        component:LocationCategoriesComponent
+      },
+      {
+        path:"recipient-incident-note-category",
+        component:IncidentnotecategoryComponent
+      },
+      {
+        path:"staff-incident-note-category",
+        component:StaffincidentnotecategoryComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -789,6 +804,9 @@ export const PAGE_COMPONENTS = [
   IncidenttriggersComponent,
   IncidenttypesComponent,
   IncidentsubcatComponent,
+  StaffincidentnotecategoryComponent,
+  IncidentnotecategoryComponent,
+  LocationCategoriesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

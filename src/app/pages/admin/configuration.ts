@@ -149,6 +149,16 @@ export class ConfigurationAdmin   {
         if(index == 25){
             this.router.navigate(['/admin/incident-types']);
         }
+        if(index == 26){
+            this.router.navigate(['/admin/incident-location-categories']);
+        }
+        if(index == 27){
+            this.router.navigate(['/admin/recipient-incident-note-category']);
+        }
+        if(index == 28){
+            this.router.navigate(['/admin/staff-incident-note-category']);
+        }
+
     }  
 }
 //ConfigurationAdmin 

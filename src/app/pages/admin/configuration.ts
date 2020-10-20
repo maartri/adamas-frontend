@@ -158,6 +158,9 @@ export class ConfigurationAdmin   {
         if(index == 28){
             this.router.navigate(['/admin/staff-incident-note-category']);
         }
+        if(index == 29){
+            this.router.navigate(['/admin/filling-classification']);
+        }
 
     }  
 }

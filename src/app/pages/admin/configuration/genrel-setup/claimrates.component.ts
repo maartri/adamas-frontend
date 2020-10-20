@@ -10,6 +10,7 @@ import { GlobalService } from '@services/global.service';
 export class ClaimratesComponent implements OnInit {
 
     tableData: Array<any>;
+    items:Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
@@ -25,7 +26,9 @@ export class ClaimratesComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{ name:"CENTRAL",rate:"12"},{name:"NORTH",rate:"22"},{name:"SOUTH",rate:"35"}];
+      this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
+      this.tableData = [{ name:"LEVEL 1",rate:"12"},{name:"LEVEL 2",rate:"22"},{name:"LEVEL 3",rate:"30"},{name:"LEVEL 4",rate:"40"},{name:"DEMENTIA/CONGNITION VET 1",rate:"50"},{name:"DEMENTIA/CONGNITION VET 2",rate:"20"},{name:"DEMENTIA/CONGNITION VET 3",rate:"118"},{name:"DEMENTIA/CONGNITION VET 4",rate:"19"},{name:"OXYGEN",rate:"8"}];
+     
       this.loading = false;
       this.cd.detectChanges();
     }

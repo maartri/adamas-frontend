@@ -2,7 +2,9 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
-
+import { ListService } from '@services/list.service';
+import { Observable, of, from, Subject, EMPTY } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-initialactions',
   templateUrl: './initialactions.component.html',
@@ -17,23 +19,35 @@ export class InitialactionsComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
+    modalVariables: any;
+    inputVariables:any;
     title:string = "Add Initial Action"
+    private unsubscribe: Subject<void> = new Subject();
     
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
       private switchS:SwitchService,
+      private listS  : ListService,
       private formBuilder: FormBuilder
     ){}
-    
+    loadData(){
+      let sql ="select description as name,recordNumber from DataDomains where Domain='IMActionInit' ";
+      this.loading = true;
+      sql
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        console.log(this.tableData);
+        this.loading = false;
+      });
+    }
     loadTitle()
     {
-      // debugger;
       return this.title;
     }
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{ name:"ACTION A"},{name:"ACTION B"},{name:"ACTION C"}];
+      this.loadData();
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -55,10 +69,12 @@ export class InitialactionsComponent implements OnInit {
       this.current = 0;
       this.modalOpen = true;
         const { 
-            name
+            name,
+            recordNumber
          } = this.tableData[index];
         this.inputForm.patchValue({
           name: name,
+          recordNumber:recordNumber,
         });
     }
     
@@ -73,15 +89,54 @@ export class InitialactionsComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      // var temp=this.inputForm.controls["fundregions"].value
-      //  var input=this.inputForm.value
-      //  var temp = input.fundregions
-      // debugger;
-      this.postLoading = true;
-      this.globalS.sToast('Success', 'Changes saved');
-      this.handleCancel();
-      this.resetModal();
-    }
+      this.postLoading = true;     
+      const group = this.inputForm;
+      if(!this.isUpdate){         
+        this.switchS.addData(  
+          this.modalVariables={
+            title: 'Initial Actions'
+          }, 
+          this.inputVariables = {
+            display: group.get('name').value,
+            domain: 'IMActionInit',         
+            
+          }
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          });
+        }else{
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.switchS.updateData(  
+            this.modalVariables={
+              title: 'Initial Actions'
+            }, 
+            this.inputVariables = {
+              display: group.get('name').value,
+              primaryId:group.get('recordNumber').value,
+              domain: 'IMActionInit',
+            }
+            
+            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              this.loadData();
+              this.postLoading = false;          
+              this.handleCancel();
+              this.resetModal();
+            });
+          }
+          
+        }
     
     delete(data: any) {
       this.globalS.sToast('Success', 'Data Deleted!');
@@ -89,6 +144,7 @@ export class InitialactionsComponent implements OnInit {
     buildForm() {
       this.inputForm = this.formBuilder.group({
         name: '',
+        recordNumber:null,
       });
     }
 

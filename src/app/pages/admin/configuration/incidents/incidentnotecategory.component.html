@@ -1,6 +1,6 @@
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add recipent Incident Note Category</button>
+        <button class="botton success" (click)="showAddModal()">Add recipient Incident Note Category</button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
@@ -13,7 +13,7 @@
                 <td class="left">{{ data.name  }} </td>
                         <td><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete recipent note category ?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete recipient note category ?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
                 </tr>
             </tbody>

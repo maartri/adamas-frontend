@@ -1,6 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-
+import { SwitchService } from '@services/switch.service';
+import {ListService} from '@services/list.service';
+import { Observable, of, from, Subject, EMPTY } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { TimeSheetService, GlobalService,incidentTypes} from '@services/index';
 @Component({
   selector: 'app-incidentsubcat',
@@ -10,27 +13,47 @@ import { TimeSheetService, GlobalService,incidentTypes} from '@services/index';
 export class IncidentsubcatComponent implements OnInit {
 
   tableData: Array<any>;
+  IncidentTypesArr:Array<any>;
   loading: boolean = false;
   modalOpen: boolean = false;
   current: number = 0;
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  IncidentTypesArr: Array<string> = incidentTypes;
+  modalVariables:any;
+  inputVariables:any;
   heading:string = "Add New Incident Sub Category";
+  private unsubscribe: Subject<void> = new Subject();
+  
   constructor(
     private globalS: GlobalService,
+    private listS:ListService,
+    private switchS:SwitchService,
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder
   ){}
   
   ngOnInit(): void {
     this.buildForm();
-    this.tableData = [{ incident_type:"BEHAVIOURAL",name:"test 1"},{ incident_type:"MEDICAL",name:"test 2"},{ incident_type:"OTHER",name:"test 3"}];
+    this.loadData();
     this.loading = false;
     this.cd.detectChanges();
   }
-  
+  loadData(){
+    let sql ="select Description as name,recordNumber from DataDomains where Domain='INCIDENTSUBGROUP' ";
+    this.loading = true;
+    this.listS.getlist(sql).subscribe(data => {
+      this.tableData = data;
+      this.loading = false;
+    });
+
+    let sql2 ="select Description as name,recordNumber from DataDomains where Domain='INCIDENT TYPE' ";
+    this.loading = true;
+    this.listS.getlist(sql2).subscribe(data => {
+      this.IncidentTypesArr = data;
+      this.loading = false;
+    });
+  }
   showAddModal() {
     this.resetModal();
     this.modalOpen = true;
@@ -50,12 +73,13 @@ export class IncidentsubcatComponent implements OnInit {
     const { 
       incident_type,
       name,
+      recordNumber,
 
     } = this.tableData[index];
       this.inputForm.patchValue({
         name: name,
         incident_type:incident_type,
-        
+        recordNumber:recordNumber
    });
   }
   loadtitle(){
@@ -72,11 +96,53 @@ export class IncidentsubcatComponent implements OnInit {
     this.current += 1;
   }
   save() {
-    this.postLoading = true;
-    this.globalS.sToast('Success', 'Changes saved');
-    this.handleCancel();
-    this.resetModal();
-  }
+    this.postLoading = true;     
+    const group = this.inputForm;
+    if(!this.isUpdate){         
+      this.switchS.addData(  
+        this.modalVariables={
+          title: 'Incident Sub Categories'
+        }, 
+        this.inputVariables = {
+          display: group.get('name').value,
+          domain: 'INCIDENTSUBGROUP', 
+        }
+        ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal();
+        });
+      }else{
+        this.postLoading = true;     
+        const group = this.inputForm;
+        this.switchS.updateData(  
+          this.modalVariables={
+            title: 'Incident Sub Categories'
+          }, 
+          this.inputVariables = {
+            display: group.get('name').value,
+            primaryId:group.get('recordNumber').value,
+            domain: 'INCIDENTSUBGROUP',
+          }
+          
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Updated successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          });
+        }
+        
+      }
   
   delete(data: any) {
     this.globalS.sToast('Success', 'Data Deleted!');
@@ -85,6 +151,7 @@ export class IncidentsubcatComponent implements OnInit {
     this.inputForm = this.formBuilder.group({
       incident_type:'',
       name:'',
+      recordNumber:null
     });
   }
 

@@ -1033,6 +1033,20 @@ export class SwitchService {
                     table: 'DataDomains'
                 }
                 break;
+            case 'Incident Sub Categories':
+                this.anyVariable = {
+                    variables: {
+                        description: inputVariables.display,
+                        domain: 'INCIDENTSUBGROUP',
+                        dataset: 'USER',
+                        embedded: 0,
+                        user1: '',
+                        user2: '',
+                        endDate: null,
+                    },
+                    table: 'DataDomains'
+                }
+            break;
             case 'Recipient Incident Note Categories':
                 this.anyVariable = {
                     variables: {

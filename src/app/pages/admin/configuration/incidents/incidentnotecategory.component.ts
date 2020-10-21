@@ -21,7 +21,7 @@ export class IncidentnotecategoryComponent implements OnInit {
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  title:string = "Add Recipent Incident Note Category";
+  title:string = "Add Recipient Incident Note Category";
   private unsubscribe: Subject<void> = new Subject();
   
   constructor(
@@ -64,7 +64,7 @@ export class IncidentnotecategoryComponent implements OnInit {
   
   showEditModal(index: any) {
     // debugger;
-    this.title = "Edit Recipent Incident Note Category"
+    this.title = "Edit Recipient Incident Note Category"
     this.isUpdate = true;
     this.current = 0;
     this.modalOpen = true;

@@ -161,6 +161,9 @@ export class ConfigurationAdmin   {
         if(index == 29){
             this.router.navigate(['/admin/filling-classification']);
         }
+        if(index = 30){
+            this.router.navigate(['/admin/document-categories']);
+        }
 
     }  
 }

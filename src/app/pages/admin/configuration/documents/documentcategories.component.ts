@@ -3,16 +3,15 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { GlobalService, ListService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-fillingclassification',
-  templateUrl: './fillingclassification.component.html',
+  selector: 'app-documentcategories',
+  templateUrl: './documentcategories.component.html',
   styles: []
 })
-export class FillingclassificationComponent implements OnInit {
+export class DocumentcategoriesComponent implements OnInit {
 
-    tableData: Array<any>;
+  tableData: Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
@@ -21,7 +20,7 @@ export class FillingclassificationComponent implements OnInit {
     isUpdate: boolean = false;
     modalVariables:any;
     inputVariables:any;
-    title:string = "Add Filling Classification"
+    title:string = "Add Document Categories"
     private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,
@@ -48,7 +47,7 @@ export class FillingclassificationComponent implements OnInit {
     // }
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{name:"LETTER"},{name:'NDIA'},{name:'STAFF FILE'}];
+      this.tableData = [{name:"CARPLANE"},{name:'ONE'},{name:'DOCUMENT CATEGORIES'}];
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -65,7 +64,7 @@ export class FillingclassificationComponent implements OnInit {
     
     showEditModal(index: any) {
       // debugger;
-      this.title = "Edit Filling Classification"
+      this.title = "Edit Document Categories"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;

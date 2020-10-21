@@ -175,6 +175,7 @@ import { IncidentnotecategoryComponent } from '@admin/configuration/incidents/in
 import { LocationCategoriesComponent } from '@admin/configuration/incidents/location-categories.component';
 import { StaffincidentnotecategoryComponent } from '@admin/configuration/incidents/staffincidentnotecategory.component';
 import { FillingclassificationComponent } from '@admin/configuration/documents/fillingclassification.component';
+import { DocumentcategoriesComponent } from '@admin/configuration/documents/documentcategories.component';
 
 const routes: Routes = [
   {
@@ -556,6 +557,10 @@ const routes: Routes = [
         component:FillingclassificationComponent
       },
       {
+        path:"document-categories",
+        component:DocumentcategoriesComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -813,6 +818,7 @@ export const PAGE_COMPONENTS = [
   IncidentnotecategoryComponent,
   LocationCategoriesComponent,
   FillingclassificationComponent,
+  DocumentcategoriesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

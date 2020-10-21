@@ -20,7 +20,7 @@ export class DocumentcategoriesComponent implements OnInit {
     isUpdate: boolean = false;
     modalVariables:any;
     inputVariables:any;
-    title:string = "Add Document Categories"
+    title:string = "Add Document Categor"
     private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,

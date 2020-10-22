@@ -11,7 +11,6 @@
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
                 <td class="left">{{ data.name  }} </td>
-                        
                 <td><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Document Category?"

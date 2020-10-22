@@ -36,19 +36,10 @@ export class FillingclassificationComponent implements OnInit {
       // debugger;
       return this.title;
     }
-    // loadData(){
-    //   let sql ="select Description as name,recordNumber from DataDomains where Domain='FILECLASS' ";
-    //   this.loading = true;
-    //   sql
-    //   this.listS.getlist(sql).subscribe(data => {
-    //     this.tableData = data;
-    //     console.log(this.tableData);
-    //     this.loading = false;
-    //   });
-    // }
+    
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{name:"LETTER"},{name:'NDIA'},{name:'STAFF FILE'}];
+      this.loadData();
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -89,68 +80,66 @@ export class FillingclassificationComponent implements OnInit {
     next(): void {
       this.current += 1;
     }
-    save() {
-      // var temp=this.inputForm.controls["fundregions"].value
-      //  var input=this.inputForm.value
-      //  var temp = input.fundregions
-      // debugger;
-      this.postLoading = true;
-      this.globalS.sToast('Success', 'Changes saved');
-      this.handleCancel();
-      this.resetModal();
+    loadData(){
+      let sql ="select Description as name,recordNumber from DataDomains where Domain='FILECLASS' ";
+      this.loading = true;
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        this.loading = false;
+      });
     }
-    // save() {
-    //   this.postLoading = true;     
-    //   const group = this.inputForm;
-    //   if(!this.isUpdate){         
-    //     this.switchS.addData(  
-    //       this.modalVariables={
-    //         title: 'Incident Types'
-    //       }, 
-    //       this.inputVariables = {
-    //         display: group.get('name').value,
-    //         domain: 'INCIDENT TYPE',         
+    save() {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      if(!this.isUpdate){         
+        this.switchS.addData(  
+          this.modalVariables={
+            title: 'Filing Classification'
+          }, 
+          this.inputVariables = {
+            display: group.get('name').value,
+            domain: 'FILECLASS',         
             
-    //       }
-    //       ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-    //         if (data) 
-    //         this.globalS.sToast('Success', 'Saved successful');     
-    //         else
-    //         this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-    //         this.loadData();
-    //         this.postLoading = false;          
-    //         this.handleCancel();
-    //         this.resetModal();
-    //       });
-    //     }else{
-    //       this.postLoading = true;     
-    //       const group = this.inputForm;
-    //       this.switchS.updateData(  
-    //         this.modalVariables={
-    //           title: 'Incident Types'
-    //         }, 
-    //         this.inputVariables = {
-    //           display: group.get('name').value,
-    //           primaryId:group.get('recordNumber').value,
-    //           domain: 'INCIDENT TYPE',
-    //         }
+          }
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          });
+        }else{
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.switchS.updateData(  
+            this.modalVariables={
+              title: 'Filing Classification'
+            }, 
+            this.inputVariables = {
+              display: group.get('name').value,
+              primaryId:group.get('recordNumber').value,
+              domain: 'FILECLASS',
+            }
             
-    //         ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-    //           if (data) 
-    //           this.globalS.sToast('Success', 'Updated successful');     
-    //           else
-    //           this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-    //           this.loadData();
-    //           this.postLoading = false;          
-    //           this.handleCancel();
-    //           this.resetModal();
-    //         });
-    //       }
+            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              this.loadData();
+              this.postLoading = false;          
+              this.handleCancel();
+              this.resetModal();
+            });
+          }
           
-    //   }
+        }
     
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.globalS.sToast('Success', 'Sorry At this movement you can not perform this action!');
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({

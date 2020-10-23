@@ -38,7 +38,7 @@ export class IncidentnotecategoryComponent implements OnInit {
     return this.title;
   }
   loadData(){
-    let sql ="select Description as name,recordNumber from DataDomains where Domain='IMLocation' ";
+    let sql ="select Description as name,recordNumber from DataDomains where Domain='RECIMNTECAT' ";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
       this.tableData = data;
@@ -68,7 +68,7 @@ export class IncidentnotecategoryComponent implements OnInit {
     this.isUpdate = true;
     this.current = 0;
     this.modalOpen = true;
-      const { 
+      const {
           name,
           recordNumber,
        } = this.tableData[index];

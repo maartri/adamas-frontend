@@ -40,7 +40,7 @@ export class IncidentsubcatComponent implements OnInit {
     this.cd.detectChanges();
   }
   loadData(){
-    let sql ="select Description as name,recordNumber from DataDomains where Domain='INCIDENTSUBGROUP' ";
+    let sql ="select Description as name,recordNumber,HACCCODE as incident_type from DataDomains where Domain='INCIDENTSUBGROUP' ";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
       this.tableData = data;

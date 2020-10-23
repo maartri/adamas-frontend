@@ -39,7 +39,7 @@ export class FundingRegionsComponent implements OnInit {
     }
     ngOnInit(): void {
       this.buildForm();
-      // this.search();
+      this.loadData();
       this.loading = false;
       this.cd.detectChanges();
       this.loadData();
@@ -48,10 +48,8 @@ export class FundingRegionsComponent implements OnInit {
     loadData(){
       let sql ="select Description as name,recordNumber from DataDomains where Domain='FUNDREGION' ";
       this.loading = true;
-      sql
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
-        console.log(this.tableData);
         this.loading = false;
       });
     }
@@ -138,16 +136,15 @@ export class FundingRegionsComponent implements OnInit {
               this.handleCancel();
               this.resetModal();
             });
-          }
-          
+          } 
         }
         
         delete(data: any) {
           this.postLoading = true;     
+
           const group = this.inputForm;
           console.log(data.recordNumber);
           let sql ="delete from DataDomains where Domain='FUNDREGION' and recordNumber = '"+data.recordNumber+"'";
-         console.log(sql); 
           this.listS.deleteSql(sql)
             .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
               if (data) {

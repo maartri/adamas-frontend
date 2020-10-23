@@ -786,7 +786,7 @@ export class SwitchService {
             case 'Funding Regions':
                 this.anyVariable = {
                     variables: {
-                        Description: inputVariables.display,
+                        Description: (inputVariables.display).toUpperCase(),
                         domain: 'FUNDREGION',
                         dataset: 'USER',
                         embedded: 0,
@@ -812,7 +812,7 @@ export class SwitchService {
             case 'CDC Target Groups':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'CDCTARGETGROUPS',
                         dataset: 'USER',
                         embedded: 0,
@@ -826,7 +826,7 @@ export class SwitchService {
             case 'Package Purpose Statements':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'PKGPURPOSE',
                         dataset: 'USER',
                         embedded: 0,
@@ -840,7 +840,7 @@ export class SwitchService {
             case 'Activity Budget Groups':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'BUDGETGROUP',
                         dataset: 'USER',
                         embedded: 0,
@@ -854,7 +854,7 @@ export class SwitchService {
             case 'Contact Group':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'CONTACTGROUP',
                         dataset: 'USER',
                         embedded: 0,
@@ -868,7 +868,7 @@ export class SwitchService {
             case 'Address Types':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'ADDRESSTYPE',
                         dataset: 'USER',
                         embedded: 0,
@@ -938,7 +938,7 @@ export class SwitchService {
             case 'Filing Classification':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'FILECLASS',
                         dataset: 'USER',
                         embedded: 0,
@@ -952,7 +952,7 @@ export class SwitchService {
             case 'Document Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'DOCCAT',
                         dataset: 'USER',
                         embedded: 0,
@@ -966,7 +966,7 @@ export class SwitchService {
             case 'Initial Actions':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'IMActionInit',
                         dataset: 'USER',
                         embedded: 0,
@@ -980,7 +980,7 @@ export class SwitchService {
             case 'Ongoing Actions':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'IMActionOn',
                         dataset: 'USER',
                         embedded: 0,
@@ -994,7 +994,7 @@ export class SwitchService {
             case 'Incident Triggers':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'IMTriggers',
                         dataset: 'USER',
                         embedded: 0,
@@ -1008,7 +1008,7 @@ export class SwitchService {
             case 'Incident Types':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'INCIDENT TYPE',
                         dataset: 'USER',
                         embedded: 0,
@@ -1022,7 +1022,7 @@ export class SwitchService {
             case 'Incident Location Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'IMLocation',
                         dataset: 'USER',
                         embedded: 0,
@@ -1036,7 +1036,7 @@ export class SwitchService {
             case 'Incident Sub Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'INCIDENTSUBGROUP',
                         dataset: 'USER',
                         embedded: 0,
@@ -1050,7 +1050,7 @@ export class SwitchService {
             case 'Recipient Incident Note Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'RECIMNTECAT',
                         dataset: 'USER',
                         embedded: 0,

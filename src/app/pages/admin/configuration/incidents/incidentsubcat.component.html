@@ -33,7 +33,7 @@
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <label for="CDC Item">Incident Type:</label>
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="incident_type" nzShowSearch nzAllowClear style="width:100%;">
-                    <nz-option *ngFor="let type of IncidentTypesArr" [nzValue]="type.recordNumber" [nzLabel]="type.name"></nz-option> 
+                    <nz-option *ngFor="let type of IncidentTypesArr" [nzValue]="type.name" [nzLabel]="type.name"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-row nzGutter="24" class="mrg-btm">

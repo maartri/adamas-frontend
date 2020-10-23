@@ -146,7 +146,7 @@ export class FundingRegionsComponent implements OnInit {
           console.log(data.recordNumber);
           let sql ="delete from DataDomains where Domain='FUNDREGION' and recordNumber = '"+data.recordNumber+"'";
           this.listS.deleteSql(sql)
-            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {x
+            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
               if (data) {
                 this.globalS.sToast('Success', 'Data Deleted!');
                 this.loadData();

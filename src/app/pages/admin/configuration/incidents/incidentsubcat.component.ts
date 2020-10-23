@@ -105,7 +105,6 @@ export class IncidentsubcatComponent implements OnInit {
         }, 
         this.inputVariables = {
           display: group.get('name').value,
-          HACCCODe: group.get().value,
           domain: 'INCIDENTSUBGROUP', 
         }
         ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {

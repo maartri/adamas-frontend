@@ -8,7 +8,7 @@ import {
 } from '@components/index';
 
 import {
-   MembersComponent
+  MembersComponent
 } from './components/members/members.component'
 
 import { HomeClientManager } from './pages/client-manager/home';
@@ -176,6 +176,10 @@ import { LocationCategoriesComponent } from '@admin/configuration/incidents/loca
 import { StaffincidentnotecategoryComponent } from '@admin/configuration/incidents/staffincidentnotecategory.component';
 import { FillingclassificationComponent } from '@admin/configuration/documents/fillingclassification.component';
 import { DocumentcategoriesComponent } from '@admin/configuration/documents/documentcategories.component';
+import { RecipientsCategoryComponent } from '@admin/configuration/recipients/recipients-category.component';
+import { RecipientsGroupComponent } from '@admin/configuration/recipients/recipients-group.component';
+import { RecipientsMinorGroupComponent } from '@admin/configuration/recipients/recipients-minor-group.component';
+import { RecipientsBillingCyclesComponent } from '@admin/configuration/recipients/recipients-billing-cycles.component';
 
 const routes: Routes = [
   {
@@ -441,8 +445,8 @@ const routes: Routes = [
         component: ConfigurationAdmin
       },
       {
-          path: 'branches',
-          component: BranchesComponent
+        path: 'branches',
+        component: BranchesComponent
       },
       {
         path: 'funding-region',
@@ -559,6 +563,22 @@ const routes: Routes = [
       {
         path:"document-categories",
         component:DocumentcategoriesComponent,
+      },
+      {
+        path:"recipients-categories",
+        component:RecipientsCategoryComponent
+      },
+      {
+        path:"recipients-groups",
+        component:RecipientsGroupComponent
+      },
+      {
+        path:"recipients-minor-group",
+        component:RecipientsMinorGroupComponent
+      },
+      {
+        path:"recipients-billing-cycles",
+        component:RecipientsBillingCyclesComponent,
       },
       {
         path: 'rosters',
@@ -748,7 +768,7 @@ const routes: Routes = [
 export class AppRoutingModule { }
 
 export const PAGE_COMPONENTS = [
-
+  
   // Importing Client
   HomeClient,
   NotesClient,
@@ -760,7 +780,7 @@ export const PAGE_COMPONENTS = [
   ShiftClient,
   CalendarClient,
   ProfileClient,
-
+  
   // Importing Providers
   ProfileProvider,
   HomeProvider,
@@ -769,7 +789,7 @@ export const PAGE_COMPONENTS = [
   HistoryProvider,
   LeaveProvider,
   PackageProvider,
-
+  
   // Importing Admin
   AttendanceAdmin,
   DayManagerAdmin,
@@ -784,10 +804,10 @@ export const PAGE_COMPONENTS = [
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
-
+  
   // Components
   ProfilePage,
-
+  
   //Configuration
   BranchesComponent,
   FundingRegionsComponent,
@@ -819,6 +839,10 @@ export const PAGE_COMPONENTS = [
   LocationCategoriesComponent,
   FillingclassificationComponent,
   DocumentcategoriesComponent,
+  RecipientsCategoryComponent,
+  RecipientsGroupComponent,
+  RecipientsMinorGroupComponent,
+  RecipientsBillingCyclesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,
@@ -834,7 +858,7 @@ export const PAGE_COMPONENTS = [
   StaffPositionAdmin,
   StaffReminderAdmin,
   StaffTrainingAdmin,
-
+  
   // Recipient Views
   RecipientCasenoteAdmin,
   RecipientContactsAdmin,
@@ -847,7 +871,7 @@ export const PAGE_COMPONENTS = [
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
   RecipientRemindersAdmin,
-
+  
   // Intake Views
   IntakeAlerts,
   IntakeBranches,
@@ -858,10 +882,10 @@ export const PAGE_COMPONENTS = [
   IntakePlans,
   IntakeServices,
   IntakeStaff,
-
+  
   ExtraComponent,
   UnauthorizedComponent,
-
+  
   // Client Manager
   HomeClientManager,
   ProfileClientManager,
@@ -873,11 +897,11 @@ export const PAGE_COMPONENTS = [
   PackageClientManager,
   PreferencesClientManager,
   ShiftClientManager,
-
+  
   //Staff Redirect
   HomeStaffRedirect,
   StaffRedirect,
-
+  
   StaffPersonalAdminRedirect,
   StaffContactAdminRedirect,
   StaffPayAdminRedirect,

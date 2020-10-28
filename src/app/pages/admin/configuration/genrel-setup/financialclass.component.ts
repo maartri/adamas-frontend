@@ -1,7 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { ListService } from '@services/list.service';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-financialclass',
@@ -14,15 +18,19 @@ export class FinancialclassComponent implements OnInit {
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
+    modalVariables:any;
+    inputVariables:any;
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
     title:string = "Add Financial Class"
+    private unsubscribe: Subject<void> = new Subject();
     
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
       private switchS:SwitchService,
+      private listS:ListService,
       private formBuilder: FormBuilder
     ){}
     
@@ -33,11 +41,13 @@ export class FinancialclassComponent implements OnInit {
     }
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{ description:"Employeed 10000"},{description:"Employeed 20000"},{description:"Un Employeed"}];
+      this.loadData();
+      // this.tableData = [{ description:"Employeed 10000"},{description:"Employeed 20000"},{description:"Un Employeed"}];
       this.loading = false;
       this.cd.detectChanges();
     }
     showAddModal() {
+      this.title = "Add Financial Class"
       this.resetModal();
       this.modalOpen = true;
     }
@@ -55,10 +65,12 @@ export class FinancialclassComponent implements OnInit {
       this.current = 0;
       this.modalOpen = true;
         const { 
-          description
+          name,
+          recordNumber
          } = this.tableData[index];
         this.inputForm.patchValue({
-          fclass: description,
+          fclass: name,
+          recordNumber:recordNumber
         });
     }
     
@@ -73,15 +85,61 @@ export class FinancialclassComponent implements OnInit {
     //   this.current += 1;
     // }
     save() {
-      // var temp=this.inputForm.controls["fundregions"].value
-      //  var input=this.inputForm.value
-      //  var temp = input.fundregions
-      // debugger;
-      this.postLoading = true;
-      this.globalS.sToast('Success', 'Changes saved');
-      this.handleCancel();
-      this.resetModal();
-    }
+      this.postLoading = true;     
+      const group = this.inputForm;
+      if(!this.isUpdate){         
+        this.switchS.addData(  
+          this.modalVariables={
+            title: 'Financial Classification'
+          }, 
+          this.inputVariables = {
+            display: group.get('fclass').value,
+            domain: 'FINANCIALCLASS', 
+          }
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          });
+        }else{
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.switchS.updateData(  
+            this.modalVariables={
+              title: 'Financial Classification'
+            }, 
+            this.inputVariables = {
+              display: group.get('fclass').value,
+              primaryId:group.get('recordNumber').value,
+              domain: 'FINANCIALCLASS',
+            }
+            
+            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              this.loadData();
+              this.postLoading = false;          
+              this.handleCancel();
+              this.resetModal();
+            });
+          }
+          
+        }
+        loadData(){
+          let sql ="select Description as name,recordNumber from DataDomains where Domain='FINANCIALCLASS'";
+          this.loading = true;
+          this.listS.getlist(sql).subscribe(data => {
+            this.tableData = data;
+            this.loading = false;
+          });
+        }
     
     delete(data: any) {
       this.globalS.sToast('Success', 'Data Deleted!');
@@ -89,6 +147,7 @@ export class FinancialclassComponent implements OnInit {
     buildForm() {
       this.inputForm = this.formBuilder.group({
         fclass: '',
+        recordNumber:null
       });
     }
 

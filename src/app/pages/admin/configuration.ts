@@ -164,6 +164,21 @@ export class ConfigurationAdmin   {
         if(index == 30){
             this.router.navigate(['/admin/document-categories']);
         }
+        if(index == 31){
+            // this.router.navigate(['/admin/document-categories']);
+        }
+        if(index == 32){
+            this.router.navigate(['/admin/recipients-categories']);
+        }
+        if(index == 33){
+            this.router.navigate(['/admin/recipients-groups']);
+        }
+        if(index == 34){
+            this.router.navigate(['/admin/recipients-minor-group']);
+        }
+        if(index == 35){
+            this.router.navigate(['/admin/recipients-billing-cycles']);
+        }
 
     }  
 }

@@ -30,9 +30,12 @@ export class RecipientsCategoryComponent implements OnInit {
     private switchS:SwitchService,
     private listS:ListService,
     private formBuilder: FormBuilder
-    ){}
+    ){
+      cd.detach();
+    }
     
     ngOnInit(): void {
+      this.cd.reattach();
       this.buildForm();
       this.loadData();
       // this.tableData = [{name:"Test 1"},{name:"Test 2"},{name:"Test 3"}];
@@ -78,6 +81,15 @@ export class RecipientsCategoryComponent implements OnInit {
     
     next(): void {
       this.current += 1;
+    }
+    loadData(){
+      let sql ="select Description as name,recordNumber from DataDomains where Domain='GROUPAGENCY'";
+      this.loading = true;
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        // console.log(this.tableData);
+        this.loading = false;
+      });
     }
     save() {
       
@@ -128,15 +140,7 @@ export class RecipientsCategoryComponent implements OnInit {
             });
           }
         }
-        loadData(){
-          let sql ="select Description as name,recordNumber from DataDomains where Domain='GROUPAGENCY'";
-          this.loading = true;
-          this.listS.getlist(sql).subscribe(data => {
-            this.tableData = data;
-            // console.log(this.tableData);
-            this.loading = false;
-          });
-        }
+     
     delete(data: any) {
       this.globalS.sToast('Success', 'Data Deleted!');
     }

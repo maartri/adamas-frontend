@@ -179,6 +179,21 @@ export class ConfigurationAdmin   {
         if(index == 35){
             this.router.navigate(['/admin/recipients-billing-cycles']);
         }
+        if(index == 36){
+            this.router.navigate(['/admin/debtor-terms']);
+        }
+        if(index == 37){
+            this.router.navigate(['/admin/recipient-goals']);
+        }
+        if(index == 38){
+            this.router.navigate(['/admin/consent-types']);
+        }
+        if(index == 39){
+            this.router.navigate(['/admin/care-plan-types']);
+        }
+        if(index == 40){
+            this.router.navigate(['/admin/clicnical-notes-groups']);
+        }
 
     }  
 }

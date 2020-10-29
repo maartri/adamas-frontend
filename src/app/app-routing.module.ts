@@ -180,6 +180,11 @@ import { RecipientsCategoryComponent } from '@admin/configuration/recipients/rec
 import { RecipientsGroupComponent } from '@admin/configuration/recipients/recipients-group.component';
 import { RecipientsMinorGroupComponent } from '@admin/configuration/recipients/recipients-minor-group.component';
 import { RecipientsBillingCyclesComponent } from '@admin/configuration/recipients/recipients-billing-cycles.component';
+import { DebtorTermsComponent } from '@admin/configuration/recipients/debtor-terms.component';
+import { RecipientGoalsComponent } from '@admin/configuration/recipients/recipient-goals.component';
+import { ConsentTypesComponent } from '@admin/configuration/recipients/consent-types.component';
+import { CarePlanTypesComponent } from '@admin/configuration/recipients/care-plan-types.component';
+import { ClinicalNotesGroupsComponent } from '@admin/configuration/recipients/clinical-notes-groups.component';
 
 const routes: Routes = [
   {
@@ -581,6 +586,26 @@ const routes: Routes = [
         component:RecipientsBillingCyclesComponent,
       },
       {
+        path:"debtor-terms",
+        component:DebtorTermsComponent
+      },
+      {
+        path:"recipient-goals",
+        component:RecipientGoalsComponent
+      },
+      {
+        path:"consent-types",
+        component:ConsentTypesComponent
+      },
+      {
+        path:"care-plan-types",
+        component:CarePlanTypesComponent
+      },
+      {
+        path:"clicnical-notes-groups",
+        component:ClinicalNotesGroupsComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -843,6 +868,11 @@ export const PAGE_COMPONENTS = [
   RecipientsGroupComponent,
   RecipientsMinorGroupComponent,
   RecipientsBillingCyclesComponent,
+  DebtorTermsComponent,
+  RecipientGoalsComponent,
+  ConsentTypesComponent,
+  CarePlanTypesComponent,
+  ClinicalNotesGroupsComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

@@ -194,6 +194,18 @@ export class ConfigurationAdmin   {
         if(index == 40){
             this.router.navigate(['/admin/clicnical-notes-groups']);
         }
+        if(index == 41){
+            this.router.navigate(['/admin/case-notes-categories']);
+        }
+        if(index == 42){
+            this.router.navigate(['/admin/op-notes-categories']);
+        }
+        if(index == 43){
+            this.router.navigate(['/admin/care-domains']);
+        }
+        if(index == 44){
+            this.router.navigate(['/admin/discharge-reasons']);
+        }
 
     }  
 }

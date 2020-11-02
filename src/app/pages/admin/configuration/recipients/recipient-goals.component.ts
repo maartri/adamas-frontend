@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { GlobalService, ListService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recipient-goals',
@@ -42,8 +43,8 @@ export class RecipientGoalsComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
-      // this.loadData();
-      this.tableData = [{name:"test goals a"},{name:"test goals b"},{name:"test goals c"}];
+      this.loadData();
+      // this.tableData = [{name:"test goals a"},{name:"test goals b"},{name:"test goals c"}];
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -86,7 +87,7 @@ export class RecipientGoalsComponent implements OnInit {
       this.current += 1;
     }
     loadData(){
-      let sql ="select Description as name,recordNumber from DataDomains where Domain='FILECLASS' ";
+      let sql ="select Description as name,recordNumber from DataDomains where Domain='GOALOFCARE' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -97,49 +98,50 @@ export class RecipientGoalsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        // this.switchS.addData(  
-        //   this.modalVariables={
-        //     title: 'Filing Classification'
-        //   }, 
-        //   this.inputVariables = {
-        //     display: group.get('name').value,
-        //     domain: 'FILECLASS',         
+        this.switchS.addData(  
+          this.modalVariables={
+            title: 'Recipient Goals'
+          }, 
+          this.inputVariables = {
+            display: group.get('name').value,
+            domain: 'GOALOFCARE',         
             
-        //   }
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Saved successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-        //     this.loadData();
+          }
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+            this.loadData();
             this.postLoading = false;          
             this.handleCancel();
             this.resetModal();
-          // });
+           });
         }else{
           this.postLoading = true;     
-          // const group = this.inputForm;
-          // this.switchS.updateData(  
-          //   this.modalVariables={
-          //     title: 'Filing Classification'
-          //   }, 
-          //   this.inputVariables = {
-          //     display: group.get('name').value,
-          //     primaryId:group.get('recordNumber').value,
-          //     domain: 'FILECLASS',
-          //   }
+          const group = this.inputForm;
+          this.switchS.updateData(  
+            this.modalVariables={
+              title: 'Recipient Goals'
+            }, 
+            this.inputVariables = {
+              display: group.get('name').value,
+              primaryId:group.get('recordNumber').value,
+              domain: 'GOALOFCARE',
+            }
             
-          //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          //     if (data) 
-          //     this.globalS.sToast('Success', 'Updated successful');     
-          //     else
-          //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-          //     this.loadData();
+            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              this.loadData();
           
               this.postLoading = false;          
               this.handleCancel();
               this.resetModal();
-            // });
+              this.isUpdate =false;
+             });
           }
           
         }

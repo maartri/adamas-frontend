@@ -6,11 +6,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-clinical-notes-groups',
-  templateUrl: './clinical-notes-groups.component.html',
+  selector: 'app-case-note-categories',
+  templateUrl: './case-note-categories.component.html',
   styles: []
 })
-export class ClinicalNotesGroupsComponent implements OnInit {
+export class CaseNoteCategoriesComponent implements OnInit {
 
   tableData: Array<any>;
     loading: boolean = false;
@@ -21,7 +21,7 @@ export class ClinicalNotesGroupsComponent implements OnInit {
     isUpdate: boolean = false;
     modalVariables:any;
     inputVariables:any;
-    title:string = "Add Clinical Notes Groups"
+    title:string = "Add Case Notes Groups"
     private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,
@@ -39,13 +39,13 @@ export class ClinicalNotesGroupsComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
-      this.loadData();
-      // this.tableData = [{name:"test Clinical Notes Groups a"},{name:"test Clinical Notes Groups b"},{name:"test Clinical Notes Groups c"}];
+      // this.loadData();
+      this.tableData = [{name:"test case Notes Groups a"},{name:"test case Notes Groups b"},{name:"test case Notes Groups c"}];
       this.loading = false;
       this.cd.detectChanges();
     }
     showAddModal() {
-      this.title = "Add Clinical Notes Groups"
+      this.title = "Add Case Notes Groups"
       this.resetModal();
       this.modalOpen = true;
     }
@@ -58,7 +58,7 @@ export class ClinicalNotesGroupsComponent implements OnInit {
     
     showEditModal(index: any) {
       // debugger;
-      this.title = "Edit Clinical Notes Groups"
+      this.title = "Edit Case Notes Groups"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
@@ -83,7 +83,7 @@ export class ClinicalNotesGroupsComponent implements OnInit {
       this.current += 1;
     }
     loadData(){
-      let sql ="select Description as name,recordNumber from DataDomains where Domain='CLINNOTEGROUPS' ";
+      let sql ="select Description as name,recordNumber from DataDomains where Domain='CASENOTEGROUPS' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -94,49 +94,49 @@ export class ClinicalNotesGroupsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        this.switchS.addData(  
-          this.modalVariables={
-            title: 'Clinical Note Categories'
-          }, 
-          this.inputVariables = {
-            display: group.get('name').value,
-            domain: 'CLINNOTEGROUPS',         
+        // this.switchS.addData(  
+        //   this.modalVariables={
+        //     title: 'Case Notes Categories'
+        //   }, 
+        //   this.inputVariables = {
+        //     display: group.get('name').value,
+        //     domain: 'CASENOTEGROUPS',         
             
-          }
-          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) 
-            this.globalS.sToast('Success', 'Saved successful');     
-            else
-            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-            this.loadData();
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-           });
+        //   }
+        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        //     if (data) 
+        //     this.globalS.sToast('Success', 'Saved successful');     
+        //     else
+        //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+        //     this.loadData();
+        //     this.postLoading = false;          
+        //     this.handleCancel();
+        //     this.resetModal();
+        //    });
         }else{
-          this.postLoading = true;     
-          const group = this.inputForm;
-          this.switchS.updateData(  
-            this.modalVariables={
-              title: 'Clinical Note Categories'
-            }, 
-            this.inputVariables = {
-              display: group.get('name').value,
-              primaryId:group.get('recordNumber').value,
-              domain: 'CLINNOTEGROUPS',
-            }
+          // this.postLoading = true;     
+          // const group = this.inputForm;
+          // this.switchS.updateData(  
+          //   this.modalVariables={
+          //     title: 'Case Notes Categories'
+          //   }, 
+          //   this.inputVariables = {
+          //     display: group.get('name').value,
+          //     primaryId:group.get('recordNumber').value,
+          //     domain: 'CASENOTEGROUPS',
+          //   }
             
-            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) 
-              this.globalS.sToast('Success', 'Updated successful');     
-              else
-              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              this.loadData();
-              this.postLoading = false;          
-              this.isUpdate = false;
-              this.handleCancel();
-              this.resetModal();
-             });
+          //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          //     if (data) 
+          //     this.globalS.sToast('Success', 'Updated successful');     
+          //     else
+          //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+          //     this.loadData();
+          //     this.postLoading = false;          
+          //     this.isUpdate = false;
+          //     this.handleCancel();
+          //     this.resetModal();
+          //    });
           }
           
         }

@@ -185,6 +185,10 @@ import { RecipientGoalsComponent } from '@admin/configuration/recipients/recipie
 import { ConsentTypesComponent } from '@admin/configuration/recipients/consent-types.component';
 import { CarePlanTypesComponent } from '@admin/configuration/recipients/care-plan-types.component';
 import { ClinicalNotesGroupsComponent } from '@admin/configuration/recipients/clinical-notes-groups.component';
+import { CaseNoteCategoriesComponent } from '@admin/configuration/recipients/case-note-categories.component';
+import { OpNoteCategoriesComponent } from '@admin/configuration/recipients/op-note-categories.component';
+import { CareDomainsComponent } from '@admin/configuration/recipients/care-domains.component';
+import { DischargeReasonsComponent } from '@admin/configuration/recipients/discharge-reasons.component';
 
 const routes: Routes = [
   {
@@ -606,6 +610,22 @@ const routes: Routes = [
         component:ClinicalNotesGroupsComponent
       },
       {
+        path:"case-notes-categories",
+        component:CaseNoteCategoriesComponent
+      },
+      {
+        path:"op-notes-categories",
+        component:OpNoteCategoriesComponent
+      },
+      {
+        path:"care-domains",
+        component:CareDomainsComponent
+      },
+      {
+        path:"discharge-reasons",
+        component:DischargeReasonsComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -873,6 +893,10 @@ export const PAGE_COMPONENTS = [
   ConsentTypesComponent,
   CarePlanTypesComponent,
   ClinicalNotesGroupsComponent,
+  CaseNoteCategoriesComponent,
+  OpNoteCategoriesComponent,
+  CareDomainsComponent,
+  DischargeReasonsComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

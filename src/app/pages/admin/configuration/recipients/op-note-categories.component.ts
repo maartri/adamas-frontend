@@ -3,14 +3,13 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { GlobalService, ListService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-clinical-notes-groups',
-  templateUrl: './clinical-notes-groups.component.html',
+  selector: 'app-op-note-categories',
+  templateUrl: './op-note-categories.component.html',
   styles: []
 })
-export class ClinicalNotesGroupsComponent implements OnInit {
+export class OpNoteCategoriesComponent implements OnInit {
 
   tableData: Array<any>;
     loading: boolean = false;
@@ -21,7 +20,7 @@ export class ClinicalNotesGroupsComponent implements OnInit {
     isUpdate: boolean = false;
     modalVariables:any;
     inputVariables:any;
-    title:string = "Add Clinical Notes Groups"
+    title:string = "Add OP Notes Groups"
     private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,
@@ -39,13 +38,13 @@ export class ClinicalNotesGroupsComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
-      this.loadData();
-      // this.tableData = [{name:"test Clinical Notes Groups a"},{name:"test Clinical Notes Groups b"},{name:"test Clinical Notes Groups c"}];
+      // this.loadData();
+      this.tableData = [{name:"test OP Notes Groups a"},{name:"test OP Notes Groups b"},{name:"test OP Notes Groups c"}];
       this.loading = false;
       this.cd.detectChanges();
     }
     showAddModal() {
-      this.title = "Add Clinical Notes Groups"
+      this.title = "Add OP Notes Groups"
       this.resetModal();
       this.modalOpen = true;
     }
@@ -58,7 +57,7 @@ export class ClinicalNotesGroupsComponent implements OnInit {
     
     showEditModal(index: any) {
       // debugger;
-      this.title = "Edit Clinical Notes Groups"
+      this.title = "Edit OP Notes Groups"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
@@ -83,7 +82,7 @@ export class ClinicalNotesGroupsComponent implements OnInit {
       this.current += 1;
     }
     loadData(){
-      let sql ="select Description as name,recordNumber from DataDomains where Domain='CLINNOTEGROUPS' ";
+      let sql ="select Description as name,recordNumber from DataDomains where Domain='RECIPOPNOTEGROUPS' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -94,49 +93,49 @@ export class ClinicalNotesGroupsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        this.switchS.addData(  
-          this.modalVariables={
-            title: 'Clinical Note Categories'
-          }, 
-          this.inputVariables = {
-            display: group.get('name').value,
-            domain: 'CLINNOTEGROUPS',         
+        // this.switchS.addData(  
+        //   this.modalVariables={
+        //     title: 'OP Notes Categories'
+        //   }, 
+        //   this.inputVariables = {
+        //     display: group.get('name').value,
+        //     domain: 'RECIPOPNOTEGROUPS',         
             
-          }
-          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) 
-            this.globalS.sToast('Success', 'Saved successful');     
-            else
-            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-            this.loadData();
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-           });
+        //   }
+        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        //     if (data) 
+        //     this.globalS.sToast('Success', 'Saved successful');     
+        //     else
+        //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+        //     this.loadData();
+        //     this.postLoading = false;          
+        //     this.handleCancel();
+        //     this.resetModal();
+        //    });
         }else{
-          this.postLoading = true;     
-          const group = this.inputForm;
-          this.switchS.updateData(  
-            this.modalVariables={
-              title: 'Clinical Note Categories'
-            }, 
-            this.inputVariables = {
-              display: group.get('name').value,
-              primaryId:group.get('recordNumber').value,
-              domain: 'CLINNOTEGROUPS',
-            }
+          // this.postLoading = true;     
+          // const group = this.inputForm;
+          // this.switchS.updateData(  
+          //   this.modalVariables={
+          //     title: 'OP Notes Categories'
+          //   }, 
+          //   this.inputVariables = {
+          //     display: group.get('name').value,
+          //     primaryId:group.get('recordNumber').value,
+          //     domain: 'RECIPOPNOTEGROUPS',
+          //   }
             
-            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) 
-              this.globalS.sToast('Success', 'Updated successful');     
-              else
-              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              this.loadData();
-              this.postLoading = false;          
-              this.isUpdate = false;
-              this.handleCancel();
-              this.resetModal();
-             });
+          //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          //     if (data) 
+          //     this.globalS.sToast('Success', 'Updated successful');     
+          //     else
+          //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+          //     this.loadData();
+          //     this.postLoading = false;          
+          //     this.isUpdate = false;
+          //     this.handleCancel();
+          //     this.resetModal();
+          //    });
           }
           
         }

@@ -1134,7 +1134,7 @@ export class SwitchService {
             case 'Debtor Terms':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'DEBTORTERMS',
                         dataset: 'USER',
                         embedded: 0,
@@ -1148,7 +1148,7 @@ export class SwitchService {
             case 'Recipient Goals':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'GOALOFCARE',
                         dataset: 'USER',
                         embedded: 0,
@@ -1162,7 +1162,7 @@ export class SwitchService {
             case 'Recipient Consents':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'RECIPIENTCONSENTS',
                         dataset: 'USER',
                         embedded: 0,
@@ -1176,7 +1176,7 @@ export class SwitchService {
             case 'Plan Types':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'CAREPLANTYPES',
                         dataset: 'USER',
                         embedded: 0,
@@ -1190,7 +1190,7 @@ export class SwitchService {
             case 'Clinical Note Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'CLINNOTEGROUPS',
                         dataset: 'USER',
                         embedded: 0,
@@ -1204,7 +1204,7 @@ export class SwitchService {
             case 'Case Notes Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'CASENOTEGROUPS',
                         dataset: 'USER',
                         embedded: 0,
@@ -1218,7 +1218,7 @@ export class SwitchService {
             case 'OP Notes Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'RECIPOPNOTEGROUPS',
                         dataset: 'USER',
                         embedded: 0,

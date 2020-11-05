@@ -189,6 +189,9 @@ import { CaseNoteCategoriesComponent } from '@admin/configuration/recipients/cas
 import { OpNoteCategoriesComponent } from '@admin/configuration/recipients/op-note-categories.component';
 import { CareDomainsComponent } from '@admin/configuration/recipients/care-domains.component';
 import { DischargeReasonsComponent } from '@admin/configuration/recipients/discharge-reasons.component';
+import { RefferalReasonsComponent } from '@admin/configuration/recipients/refferal-reasons.component';
+import { UserDefinedRemindersComponent } from '@admin/configuration/recipients/user-defined-reminders.component';
+import { RecipientPrefrencesComponent } from '@admin/configuration/recipients/recipient-prefrences.component';
 
 const routes: Routes = [
   {
@@ -626,6 +629,18 @@ const routes: Routes = [
         component:DischargeReasonsComponent
       },
       {
+        path:"refferal-reasons",
+        component:RefferalReasonsComponent
+      },
+      {
+        path:"user-define-reminders",
+        component:UserDefinedRemindersComponent
+      },
+      {
+        path:"recipient-prefrences",
+        component:RecipientPrefrencesComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -897,6 +912,9 @@ export const PAGE_COMPONENTS = [
   OpNoteCategoriesComponent,
   CareDomainsComponent,
   DischargeReasonsComponent,
+  RefferalReasonsComponent,
+  UserDefinedRemindersComponent,
+  RecipientPrefrencesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

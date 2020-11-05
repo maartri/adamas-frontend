@@ -1232,7 +1232,7 @@ export class SwitchService {
             case 'Care Domains':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'CAREDOMAIN',
                         dataset: 'USER',
                         embedded: 0,
@@ -1246,7 +1246,7 @@ export class SwitchService {
             case 'Discharge Reasons':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'REASONCESSSERVICE',
                         dataset: 'USER',
                         embedded: 0,
@@ -1260,7 +1260,7 @@ export class SwitchService {
             case 'Referral Reasons/Presenting Issues':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'REFERRALREASON',
                         dataset: 'USER',
                         embedded: 0,
@@ -1274,7 +1274,7 @@ export class SwitchService {
             case 'Recipient User Defined Reminders/Reviews/Alerts':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'RECIPIENTALERT',
                         dataset: 'USER',
                         embedded: 0,
@@ -1288,7 +1288,7 @@ export class SwitchService {
             case 'Recipient Preferences':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'RECIPPREF',
                         dataset: 'USER',
                         embedded: 0,

@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { GlobalService, ListService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-discharge-reasons',
@@ -38,8 +39,8 @@ export class DischargeReasonsComponent implements OnInit {
   
   ngOnInit(): void {
     this.buildForm();
-    // this.loadData();
-    this.tableData = [{name:"test Discharge Reasons a"},{name:"test Discharge Reasons b"},{name:"test Discharge Reasons c"}];
+    this.loadData();
+    // this.tableData = [{name:"test Discharge Reasons a"},{name:"test Discharge Reasons b"},{name:"test Discharge Reasons c"}];
     this.loading = false;
     this.cd.detectChanges();
   }
@@ -93,49 +94,49 @@ export class DischargeReasonsComponent implements OnInit {
     this.postLoading = true;     
     const group = this.inputForm;
     if(!this.isUpdate){         
-      // this.switchS.addData(  
-      //   this.modalVariables={
-      //     title: 'Discharge Reasons'
-      //   }, 
-      //   this.inputVariables = {
-      //     display: group.get('name').value,
-      //     domain: 'REASONCESSSERVICE',         
+      this.switchS.addData(  
+        this.modalVariables={
+          title: 'Discharge Reasons'
+        }, 
+        this.inputVariables = {
+          display: group.get('name').value,
+          domain: 'REASONCESSSERVICE',         
           
-      //   }
-      //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      //     if (data) 
-      //     this.globalS.sToast('Success', 'Saved successful');     
-      //     else
-      //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-      //     this.loadData();
-      //     this.postLoading = false;          
-      //     this.handleCancel();
-      //     this.resetModal();
-      //    });
+        }
+        ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal();
+         });
       }else{
-        // this.postLoading = true;     
-        // const group = this.inputForm;
-        // this.switchS.updateData(  
-        //   this.modalVariables={
-        //     title: 'Discharge Reasons'
-        //   }, 
-        //   this.inputVariables = {
-        //     display: group.get('name').value,
-        //     primaryId:group.get('recordNumber').value,
-        //     domain: 'REASONCESSSERVICE',
-        //   }
+        this.postLoading = true;     
+        const group = this.inputForm;
+        this.switchS.updateData(  
+          this.modalVariables={
+            title: 'Discharge Reasons'
+          }, 
+          this.inputVariables = {
+            display: group.get('name').value,
+            primaryId:group.get('recordNumber').value,
+            domain: 'REASONCESSSERVICE',
+          }
           
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Updated successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-        //     this.loadData();
-        //     this.postLoading = false;          
-        //     this.isUpdate = false;
-        //     this.handleCancel();
-        //     this.resetModal();
-        //    });
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Updated successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.isUpdate = false;
+            this.handleCancel();
+            this.resetModal();
+           });
         }
         
       }

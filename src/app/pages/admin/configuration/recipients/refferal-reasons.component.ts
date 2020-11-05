@@ -6,11 +6,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-case-note-categories',
-  templateUrl: './case-note-categories.component.html',
+  selector: 'app-refferal-reasons',
+  templateUrl: './refferal-reasons.component.html',
   styles: []
 })
-export class CaseNoteCategoriesComponent implements OnInit {
+export class RefferalReasonsComponent implements OnInit {
 
   tableData: Array<any>;
     loading: boolean = false;
@@ -21,7 +21,7 @@ export class CaseNoteCategoriesComponent implements OnInit {
     isUpdate: boolean = false;
     modalVariables:any;
     inputVariables:any;
-    title:string = "Add Case Notes Groups"
+    title:string = "Add Refferal Reasons/Presenting Issues"
     private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,
@@ -40,12 +40,12 @@ export class CaseNoteCategoriesComponent implements OnInit {
     ngOnInit(): void {
       this.buildForm();
       this.loadData();
-      // this.tableData = [{name:"test case Notes Groups a"},{name:"test case Notes Groups b"},{name:"test case Notes Groups c"}];
+      // this.tableData = [{name:"test Refferal Reasons/Presenting Issues a"},{name:"test Refferal Reasons/Presenting Issues b"},{name:"test Refferal Reasons/Presenting Issues c"}];
       this.loading = false;
       this.cd.detectChanges();
     }
     showAddModal() {
-      this.title = "Add Case Notes Groups"
+      this.title = "Add Refferal Reasons/Presenting Issues"
       this.resetModal();
       this.modalOpen = true;
     }
@@ -58,7 +58,7 @@ export class CaseNoteCategoriesComponent implements OnInit {
     
     showEditModal(index: any) {
       // debugger;
-      this.title = "Edit Case Notes Groups"
+      this.title = "Edit Refferal Reasons/Presenting Issues"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
@@ -83,7 +83,7 @@ export class CaseNoteCategoriesComponent implements OnInit {
       this.current += 1;
     }
     loadData(){
-      let sql ="select Description as name,recordNumber from DataDomains where Domain='CASENOTEGROUPS' ";
+      let sql ="select Description as name,recordNumber from DataDomains where Domain='REFERRALREASON' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -96,11 +96,11 @@ export class CaseNoteCategoriesComponent implements OnInit {
       if(!this.isUpdate){         
         this.switchS.addData(  
           this.modalVariables={
-            title: 'Case Notes Categories'
+            title: 'Referral Reasons/Presenting Issues'
           }, 
           this.inputVariables = {
             display: group.get('name').value,
-            domain: 'CASENOTEGROUPS',         
+            domain: 'REFERRALREASON',         
             
           }
           ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -118,12 +118,12 @@ export class CaseNoteCategoriesComponent implements OnInit {
           const group = this.inputForm;
           this.switchS.updateData(  
             this.modalVariables={
-              title: 'Case Notes Categories'
+              title: 'Referral Reasons/Presenting Issues'
             }, 
             this.inputVariables = {
               display: group.get('name').value,
               primaryId:group.get('recordNumber').value,
-              domain: 'CASENOTEGROUPS',
+              domain: 'REFERRALREASON',
             }
             
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -138,7 +138,6 @@ export class CaseNoteCategoriesComponent implements OnInit {
               this.resetModal();
              });
           }
-          
         }
     
     delete(data: any) {
@@ -150,5 +149,4 @@ export class CaseNoteCategoriesComponent implements OnInit {
         recordNumber:null,
       });
     }
-
 }

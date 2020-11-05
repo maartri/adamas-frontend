@@ -206,6 +206,15 @@ export class ConfigurationAdmin   {
         if(index == 44){
             this.router.navigate(['/admin/discharge-reasons']);
         }
+        if(index == 45){
+            this.router.navigate(['/admin/refferal-reasons'])
+        }
+        if(index == 46){
+            this.router.navigate(['/admin/user-define-reminders'])
+        }
+        if(index == 47){
+            this.router.navigate(['/admin/recipient-prefrences'])
+        }
 
     }  
 }

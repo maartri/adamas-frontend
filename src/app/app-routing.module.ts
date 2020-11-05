@@ -192,6 +192,10 @@ import { DischargeReasonsComponent } from '@admin/configuration/recipients/disch
 import { RefferalReasonsComponent } from '@admin/configuration/recipients/refferal-reasons.component';
 import { UserDefinedRemindersComponent } from '@admin/configuration/recipients/user-defined-reminders.component';
 import { RecipientPrefrencesComponent } from '@admin/configuration/recipients/recipient-prefrences.component';
+import { MobilityCodesComponent } from '@admin/recipient-views/mobility-codes.component';
+import { TasksComponent } from '@admin/recipient-views/tasks.component';
+import { HealthConditionsComponent } from '@admin/recipient-views/health-conditions.component';
+import { MedicationsComponent } from '@admin/recipient-views/medications.component';
 
 const routes: Routes = [
   {
@@ -641,6 +645,22 @@ const routes: Routes = [
         component:RecipientPrefrencesComponent
       },
       {
+        path:"mobility-codes",
+        component:MobilityCodesComponent
+      },
+      {
+        path:"tasks",
+        component:TasksComponent
+      },
+      {
+        path:"health-conditions",
+        component:HealthConditionsComponent,
+      },
+      {
+        path:"medications",
+        component:MedicationsComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -915,6 +935,10 @@ export const PAGE_COMPONENTS = [
   RefferalReasonsComponent,
   UserDefinedRemindersComponent,
   RecipientPrefrencesComponent,
+  MobilityCodesComponent,
+  TasksComponent,
+  HealthConditionsComponent,
+  MedicationsComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

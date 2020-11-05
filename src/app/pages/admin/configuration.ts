@@ -215,6 +215,18 @@ export class ConfigurationAdmin   {
         if(index == 47){
             this.router.navigate(['/admin/recipient-prefrences'])
         }
+        if(index == 48){
+            this.router.navigate(['/admin/mobility-codes'])
+        }
+        if(index == 49){
+            this.router.navigate(['/admin/tasks'])
+        }
+        if(index == 50){
+            this.router.navigate(['/admin/health-conditions'])
+        }
+        if(index == 51){
+            this.router.navigate(['/admin/medications'])
+        }
 
     }  
 }

@@ -1302,7 +1302,7 @@ export class SwitchService {
             case 'Mobility Codes':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'MOBILITY',
                         dataset: 'USER',
                         embedded: 0,
@@ -1316,7 +1316,7 @@ export class SwitchService {
             case 'Tasks':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'TASK',
                         dataset: 'USER',
                         embedded: 0,
@@ -1330,7 +1330,7 @@ export class SwitchService {
             case 'Health Conditions':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'HEALTH CONDITIONS',
                         dataset: 'USER',
                         embedded: 0,
@@ -1600,9 +1600,7 @@ export class SwitchService {
         return this.listS.postSql(this.anyVariable)
     }
 
-
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
     updateData(modalVariables: Dto.ModalVariables, inputVariables: any) {
         console.log({

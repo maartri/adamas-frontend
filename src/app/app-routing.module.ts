@@ -196,6 +196,17 @@ import { MobilityCodesComponent } from '@admin/recipient-views/mobility-codes.co
 import { TasksComponent } from '@admin/recipient-views/tasks.component';
 import { HealthConditionsComponent } from '@admin/recipient-views/health-conditions.component';
 import { MedicationsComponent } from '@admin/recipient-views/medications.component';
+import { NursingDignosisComponent } from '@admin/recipient-views/nursing-dignosis.component';
+import { MedicalDignosisComponent } from '@admin/recipient-views/medical-dignosis.component';
+import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
+import { ClinicalRemindersComponent } from '@admin/recipient-views/clinical-reminders.component';
+import { ClinicalAlertsComponent } from '@admin/recipient-views/clinical-alerts.component';
+import { AdmittingPrioritiesComponent } from '@admin/recipient-views/admitting-priorities.component';
+import { ServicenotecatComponent } from '@admin/recipient-views/servicenotecat.component';
+import { ReferralSourcesComponent } from '@admin/configuration/recipients/referral-sources.component';
+import { LifecycleEventsComponent } from '@admin/configuration/recipients/lifecycle-events.component';
+import { JobCategoryComponent } from '@admin/configuration/staff/job-category.component';
+import { AdminCategoryComponent } from '@admin/configuration/staff/admin-category.component';
 
 const routes: Routes = [
   {
@@ -661,6 +672,50 @@ const routes: Routes = [
         component:MedicationsComponent
       },
       {
+        path:"nursing-dignosis",
+        component:NursingDignosisComponent
+      },
+      {
+        path:"medical-dignosis",
+        component:MedicalDignosisComponent
+      },
+      {
+        path:"medical-procedures",
+        component:MedicalProceduresComponent
+      },
+      {
+        path:"clinical-reminders",
+        component:ClinicalRemindersComponent
+      },
+      {
+        path:"clinical-alerts",
+        component:ClinicalAlertsComponent
+      },
+      {
+        path:"admitting-priorities",
+        component:AdmittingPrioritiesComponent
+      },
+      {
+        path:"service-not-categories",
+        component:ServicenotecatComponent
+      },
+      {
+        path:"referral-sources",
+        component:ReferralSourcesComponent
+      },
+      {
+        path:"lifecycle-events",
+        component:LifecycleEventsComponent
+      },
+      {
+        path:"job-category",
+        component:JobCategoryComponent
+      },
+      {
+        path:"admin-category",
+        component:AdminCategoryComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -939,6 +994,17 @@ export const PAGE_COMPONENTS = [
   TasksComponent,
   HealthConditionsComponent,
   MedicationsComponent,
+  NursingDignosisComponent,
+  MedicalDignosisComponent,
+  MedicalProceduresComponent,
+  ClinicalRemindersComponent,
+  ClinicalAlertsComponent,
+  AdmittingPrioritiesComponent,
+  ServicenotecatComponent,
+  ReferralSourcesComponent,
+  LifecycleEventsComponent,
+  JobCategoryComponent,
+  AdminCategoryComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

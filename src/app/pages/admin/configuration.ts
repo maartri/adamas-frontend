@@ -227,6 +227,39 @@ export class ConfigurationAdmin   {
         if(index == 51){
             this.router.navigate(['/admin/medications'])
         }
+        if(index == 52){
+            this.router.navigate(['/admin/nursing-dignosis'])
+        }
+        if(index == 53){
+            this.router.navigate(['/admin/medical-dignosis'])
+        }
+        if(index == 54){
+            this.router.navigate(['/admin/medical-procedures'])
+        }
+        if(index == 55){
+            this.router.navigate(['/admin/clinical-reminders'])
+        }
+        if(index == 56){
+            this.router.navigate(['/admin/clinical-alerts'])
+        }
+        if(index == 57){
+            this.router.navigate(['/admin/admitting-priorities']);
+        }
+        if(index == 58){
+            this.router.navigate(['/admin/service-not-categories']);
+        }
+        if(index == 59){
+            this.router.navigate(['/admin/referral-sources']);
+        }
+        if(index == 60){
+            this.router.navigate(['/admin/lifecycle-events']);
+        }
+        if(index == 61){
+            this.router.navigate(['/admin/job-category']);
+        }
+        if(index == 62){
+            this.router.navigate(['/admin/admin-category']);
+        }
 
     }  
 }

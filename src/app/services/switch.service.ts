@@ -1344,7 +1344,7 @@ export class SwitchService {
             case 'Medications':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'MEDICATIONS',
                         dataset: 'USER',
                         embedded: 0,
@@ -1358,7 +1358,7 @@ export class SwitchService {
             case 'Clinical Reminders':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'CLINICALREMIND',
                         dataset: 'USER',
                         embedded: 0,
@@ -1372,7 +1372,7 @@ export class SwitchService {
             case 'Clinical Alerts':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'CLINICALALERT',
                         dataset: 'USER',
                         embedded: 0,
@@ -1386,7 +1386,7 @@ export class SwitchService {
             case 'Admitting Priorities':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'ADMITPRIORITIES',
                         dataset: 'USER',
                         embedded: 0,
@@ -1400,7 +1400,7 @@ export class SwitchService {
             case 'Service Note Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'SVCNOTECAT',
                         dataset: 'USER',
                         embedded: 0,
@@ -1411,10 +1411,24 @@ export class SwitchService {
                     table: 'DataDomains'
                 }
                 break;
+            case 'Lifecycle Events':
+                this.anyVariable = {
+                    variables: {
+                        description: (inputVariables.display).toUpperCase(),
+                        domain: 'LIFECYCLEEVENTS',
+                        dataset: 'USER',
+                        embedded: 0,
+                        user1: '',
+                        user2: '',
+                        endDate: null,
+                    },
+                    table: 'DataDomains'
+                }
+            break;
             case 'Referral Sources':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'REFERRAL SOURCE',
                         dataset: 'USER',
                         embedded: 0,
@@ -1428,7 +1442,7 @@ export class SwitchService {
             case 'Staff Job Category':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'STAFFGROUP',
                         dataset: 'USER',
                         embedded: 0,
@@ -1442,7 +1456,7 @@ export class SwitchService {
             case 'Admin Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'STAFFADMINCAT',
                         dataset: 'USER',
                         embedded: 0,
@@ -1651,6 +1665,7 @@ export class SwitchService {
             case'Clinical Alerts':
             case'Admitting Priorities':
             case'Service Note Categories':
+            case'Lifecycle Events':
             case'Referral Sources':
             case'Staff Job Category':
             case'Admin Categories':

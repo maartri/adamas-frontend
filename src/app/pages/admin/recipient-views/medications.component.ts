@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class MedicationsComponent implements OnInit {
 
-  tableData: Array<any>;
+    tableData: Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
@@ -39,8 +39,8 @@ export class MedicationsComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
-      // this.loadData();
-      this.tableData = [{name:"test Medications a"},{name:"test Medications b"},{name:"test Medications c"}];
+      this.loadData();
+      // this.tableData = [{name:"test Medications a"},{name:"test Medications b"},{name:"test Medications c"}];
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -94,51 +94,48 @@ export class MedicationsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        // this.switchS.addData(  
-        //   this.modalVariables={
-        //     title: 'Medications'
-        //   }, 
-        //   this.inputVariables = {
-        //     display: group.get('name').value,
-        //     domain: 'MEDICATIONS',         
-            
-        //   }
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Saved successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-        //     this.loadData();
-        //     this.postLoading = false;          
-        //     this.handleCancel();
-        //     this.resetModal();
-        //    });
-        }else{
-          // this.postLoading = true;     
-          // const group = this.inputForm;
-          // this.switchS.updateData(  
-          //   this.modalVariables={
-          //     title: 'Medications'
-          //   }, 
-          //   this.inputVariables = {
-          //     display: group.get('name').value,
-          //     primaryId:group.get('recordNumber').value,
-          //     domain: 'MEDICATIONS',
-          //   }
-            
-          //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          //     if (data) 
-          //     this.globalS.sToast('Success', 'Updated successful');     
-          //     else
-          //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-          //     this.loadData();
-          //     this.postLoading = false;          
-          //     this.isUpdate = false;
-          //     this.handleCancel();
-          //     this.resetModal();
-          //    });
+        this.switchS.addData(  
+          this.modalVariables={
+            title: 'Medications'
+          }, 
+          this.inputVariables = {
+            display: group.get('name').value,
+            domain: 'MEDICATIONS',         
           }
-          
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+           });
+        }else{
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.switchS.updateData(  
+            this.modalVariables={
+              title: 'Medications'
+            }, 
+            this.inputVariables = {
+              display: group.get('name').value,
+              primaryId:group.get('recordNumber').value,
+              domain: 'MEDICATIONS',
+            }
+            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              this.loadData();
+              this.postLoading = false;          
+              this.isUpdate = false;
+              this.handleCancel();
+              this.resetModal();
+             });
+          }
         }
     
     delete(data: any) {

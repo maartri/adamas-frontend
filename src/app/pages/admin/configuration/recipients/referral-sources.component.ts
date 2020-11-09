@@ -1,57 +1,55 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ListService } from '@services/list.service';
-import { GlobalService } from '@services/global.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { GlobalService, ListService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-claimrates',
-  templateUrl: './claimrates.component.html',
+  selector: 'app-referral-sources',
+  templateUrl: './referral-sources.component.html',
   styles: []
 })
-export class ClaimratesComponent implements OnInit {
+export class ReferralSourcesComponent implements OnInit {
 
-    tableData: Array<any>;
-    items:Array<any>;
+  tableData: Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
     inputForm: FormGroup;
-    modalVariables:any;
-    inputVariables:any;
     postLoading: boolean = false;
     isUpdate: boolean = false;
-    title:string = "Add New Package Claim Rates";
+    modalVariables:any;
+    inputVariables:any;
+    title:string = "Add Referral Sources"
     private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
-      private formBuilder: FormBuilder,
-      private listS: ListService,
       private switchS:SwitchService,
+      private listS:ListService,
+      private formBuilder: FormBuilder
     ){}
+    
+    loadTitle()
+    {
+      // debugger;
+      return this.title;
+    }
     
     ngOnInit(): void {
       this.buildForm();
-      this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
-      
       this.loadData();
-
+      // this.tableData = [{name:"test Referral Sources a"},{name:"test Referral Sources b"},{name:"test Referral Sources c"}];
       this.loading = false;
       this.cd.detectChanges();
     }
-    
     showAddModal() {
-      this.title = "Add New Package Claim Rates"
+      this.title = "Add Referral Sources"
       this.resetModal();
       this.modalOpen = true;
     }
-    loadTitle()
-    {
-      return this.title;
-    }
+    
     resetModal() {
       this.current = 0;
       this.inputForm.reset();
@@ -59,20 +57,19 @@ export class ClaimratesComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      this.title = "Edit New Package Claim Rates"
+      // debugger;
+      this.title = "Edit Referral Sources"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-      const { 
-        name,
-        rate,
-        recordNumber
-       } = this.tableData[index];
-      this.inputForm.patchValue({
-        item: name,
-        rate:rate,
-        recordNumber:recordNumber
-      });
+        const { 
+            name,
+            recordNumber,
+         } = this.tableData[index];
+        this.inputForm.patchValue({
+          name: name,
+          recordNumber:recordNumber,
+        });
     }
     
     handleCancel() {
@@ -85,18 +82,26 @@ export class ClaimratesComponent implements OnInit {
     next(): void {
       this.current += 1;
     }
+    loadData(){
+      let sql ="select Description as name,recordNumber from DataDomains where Domain='REFERRAL SOURCE' ";
+      this.loading = true;
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        this.loading = false;
+      });
+    }
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
         this.switchS.addData(  
           this.modalVariables={
-            title: 'CDC Claim Rates'
+            title: 'Referral Sources'
           }, 
           this.inputVariables = {
-            item: group.get('item').value,
-            rate: group.get('rate').value,
-            domain: 'PACKAGERATES', 
+            display: group.get('name').value,
+            domain: 'REFERRAL SOURCE',         
+            
           }
           ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data) 
@@ -107,20 +112,18 @@ export class ClaimratesComponent implements OnInit {
             this.postLoading = false;          
             this.handleCancel();
             this.resetModal();
-          });
+           });
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          // console.log(group.get('item').value);
           this.switchS.updateData(  
             this.modalVariables={
-              title: 'CDC Claim Rates'
+              title: 'Referral Sources'
             }, 
             this.inputVariables = {
-              item: group.get('item').value,
-              rate: group.get('rate').value,
-              recordNumber:group.get('recordNumber').value,
-              domain: 'PACKAGERATES',
+              display: group.get('name').value,
+              primaryId:group.get('recordNumber').value,
+              domain: 'REFERRAL SOURCE',
             }
             
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -130,32 +133,22 @@ export class ClaimratesComponent implements OnInit {
               this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
               this.postLoading = false;          
+              this.isUpdate = false;
               this.handleCancel();
               this.resetModal();
-            });
+             });
           }
-          
-        }
-        loadData(){
-          let sql ="select Description as name,User1 as rate,recordNumber from DataDomains where Domain='PACKAGERATES'";
-          this.loading = true;
-          this.listS.getlist(sql).subscribe(data => {
-            this.tableData = data;
-            console.log(data);
-            this.loading = false;
-          });
-
           
         }
     
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.globalS.sToast('Success', 'Sorry At this movement you can not perform this action!');
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
-        item: '',
-        rate: '',
-        recordNumber:null
+        name: '',
+        recordNumber:null,
       });
     }
+
 }

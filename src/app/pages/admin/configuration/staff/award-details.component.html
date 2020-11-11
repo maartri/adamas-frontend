@@ -1,0 +1,73 @@
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Add Award Details</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Code</th>
+                    <th class="left">Description</th>
+                    <th class="left">Category</th>
+                    <th class="left">Level</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                <td class="left">{{ data.code  }} </td>
+                <td class="left">{{ data.description}} </td>
+                <td class="left">{{ data.category}} </td>
+                <td class="left">{{ data.level}} </td>
+                <!-- <td class="left">{{ data.rate  }} </td> -->
+                <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure Award Details ?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+<nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+    <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+        <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
+    </nz-steps>
+    <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <div nz-row nzGutter="24" class="mrg-btm">
+                <div nz-col nzSpan="24" class="mrg-btm">
+                    <label for="CDC Item">Code:</label>
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="item" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="let itm of items" [nzValue]="itm.description" [nzLabel]="itm.description"></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="24" class="mrg-btm">
+                        <label for="Rate">Description:</label>
+                        <input nz-input placeholder=""  formControlName="description" />
+                </div>
+                
+                    <div nz-col nzSpan="12" class="mrg-btm">
+                    <label for="Rate">Category:</label>
+                    <input nz-input placeholder=""  formControlName="category" />
+                </div>
+                <div nz-col nzSpan="12" class="mrg-btm">
+                    <label for="Rate">Level:</label>
+                    <input nz-input placeholder=""  formControlName="level" />
+                </div>
+                               <div nz-col nzSpan="24" class="mrg-btm">
+                    <label for="Name">Notes:</label>
+                    <textarea rows="8" nz-input  formControlName="notes"></textarea>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+                <ng-container>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('description').value || !this.inputForm.get('item').value" (click)="save()" *ngIf="current === 0">
+                        <span>Save</span>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+</nz-modal>

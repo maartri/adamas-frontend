@@ -1470,7 +1470,7 @@ export class SwitchService {
             case 'User Groups':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'STAFFTYPE',
                         dataset: 'USER',
                         embedded: 0,
@@ -1484,7 +1484,7 @@ export class SwitchService {
             case 'Staff Positions':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'STAFFPOSITION',
                         dataset: 'USER',
                         embedded: 0,
@@ -1498,7 +1498,7 @@ export class SwitchService {
             case 'Award Levels':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'AWARDLEVEL',
                         dataset: 'USER',
                         embedded: 0,
@@ -1512,7 +1512,7 @@ export class SwitchService {
             case 'Competency Groups':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'COMPETENCYGROUP',
                         dataset: 'USER',
                         embedded: 0,
@@ -1526,7 +1526,7 @@ export class SwitchService {
             case 'HR Staff Notes Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'HRGROUPS',
                         dataset: 'USER',
                         embedded: 0,
@@ -1540,7 +1540,7 @@ export class SwitchService {
             case 'OP Staff Notes Categories':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.display,
+                        description: (inputVariables.display).toUpperCase(),
                         domain: 'OPGROUPS',
                         dataset: 'USER',
                         embedded: 0,

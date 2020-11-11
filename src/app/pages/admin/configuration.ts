@@ -260,6 +260,33 @@ export class ConfigurationAdmin   {
         if(index == 62){
             this.router.navigate(['/admin/admin-category']);
         }
+        if(index == 63){
+            this.router.navigate(['/admin/user-groups']);
+        }
+        if(index == 64){
+            this.router.navigate(['/admin/staff-positions']);
+        }
+        if(index == 65){
+            this.router.navigate(['/admin/staff-teams']);
+        }
+        if(index == 66){
+            this.router.navigate(['/admin/award-levels']);
+        }
+        if(index == 67){
+            this.router.navigate(['/admin/award-details']);
+        }
+        if(index == 68){
+            this.router.navigate(['/admin/competency-groups']);
+        }
+        if(index == 69){
+            // this.router.navigate(['/admin/competency-groups']);
+        }
+        if(index == 70){
+            this.router.navigate(['/admin/hr-notes-categories']);
+        }
+        if(index == 71){
+            this.router.navigate(['/admin/op-staff-notes']);
+        }
 
     }  
 }

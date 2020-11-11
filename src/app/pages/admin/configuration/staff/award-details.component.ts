@@ -5,11 +5,22 @@ import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-medical-procedures',
-  templateUrl: './medical-procedures.component.html',
-  styles: []
+  selector: 'app-award-details',
+  templateUrl: './award-details.component.html',
+  styles: [`
+  textarea{
+     resize:none;
+  },
+  table {
+    table-layout: fixed; 
+    width: 100%
+  },  
+  td{
+    word-wrap: break-word;
+  }
+`]
 })
-export class MedicalProceduresComponent implements OnInit {
+export class AwardDetailsComponent implements OnInit {
 
   tableData: Array<any>;
     items:Array<any>;
@@ -21,7 +32,7 @@ export class MedicalProceduresComponent implements OnInit {
     inputVariables:any;
     postLoading: boolean = false;
     isUpdate: boolean = false;
-    title:string = "Add New Medical Procedures";
+    title:string = "Add New Award Details";
     private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,
@@ -33,15 +44,15 @@ export class MedicalProceduresComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
-      this.items = ["Leprosy","Other Form of Leprosy","Bordline"]
-      this.tableData = [{name:"Leprosy",icdcode:'R.28'},{name:"Bordline",icdcode:'R.22'},{name:"Other Form of Leprosy",icdcode:'R.16'},{name:"Leprosy",icdcode:'R.5'}]
-      // this.loadData();
+      // this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
+      this.loadData();
+
       this.loading = false;
       this.cd.detectChanges();
     }
     
     showAddModal() {
-      this.title = "Add New Medical Procedures"
+      this.title = "Add New Award Details"
       this.resetModal();
       this.modalOpen = true;
     }
@@ -56,20 +67,24 @@ export class MedicalProceduresComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      this.title = "Edit New Medical Procedures"
+      this.title = "Edit New Award Details"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
       const { 
-        name,
-        icdcode,
-        usercode,
+        code,
+        description,
+        category,
+        level,
+        notes,
         recordNumber
        } = this.tableData[index];
-        this.inputForm.patchValue({
-        name: name,
-        icdcode:icdcode,
-        usercode:usercode,
+      this.inputForm.patchValue({
+        item: code,
+        description:description,
+        category:category,
+        level:level,
+        notes:notes,
         recordNumber:recordNumber
       });
     }
@@ -88,29 +103,29 @@ export class MedicalProceduresComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-      //   this.switchS.addData(  
-      //     this.modalVariables={
-      //       title: 'CDC Claim Rates'
-      //     }, 
-      //     this.inputVariables = {
-      //       item: group.get('item').value,
-      //       rate: group.get('rate').value,
-      //       domain: 'PACKAGERATES', 
-      //     }
-      //     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      //       if (data) 
-      //       this.globalS.sToast('Success', 'Saved successful');     
-      //       else
-      //       this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-      //       this.loadData();
-      //       this.postLoading = false;          
-      //       this.handleCancel();
-      //       this.resetModal();
-      //     });
-      }else{
-          // this.postLoading = true;     
-          // const group = this.inputForm;
-          // // console.log(group.get('item').value);
+        // this.switchS.addData(  
+        //   this.modalVariables={
+        //     title: 'CDC Claim Rates'
+        //   }, 
+        //   this.inputVariables = {
+        //     item: group.get('item').value,
+        //     rate: group.get('rate').value,
+        //     domain: 'PACKAGERATES', 
+        //   }
+        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        //     if (data) 
+        //     this.globalS.sToast('Success', 'Saved successful');     
+        //     else
+        //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+        //     this.loadData();
+        //     this.postLoading = false;          
+        //     this.handleCancel();
+        //     this.resetModal();
+        //   });
+        }else{
+          this.postLoading = true;     
+          const group = this.inputForm;
+          // console.log(group.get('item').value);
           // this.switchS.updateData(  
           //   this.modalVariables={
           //     title: 'CDC Claim Rates'
@@ -132,31 +147,34 @@ export class MedicalProceduresComponent implements OnInit {
           //     this.handleCancel();
           //     this.resetModal();
           //   });
-          }    
-      }
-      loadData(){
-          let sql ="select Description as name,User1 as rate,recordNumber from DataDomains where Domain='PACKAGERATES'";
+          }
+          
+        }
+        loadData(){
+          let sql ="SELECT RecordNo, Code, Description, Category, Level FROM AwardPos";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
-            // console.log(data);
             this.loading = false;
           });
-          // let sql2 = "Select RecordNumber, Description, Code FROM MProceduresTypes  ORDER BY Description";
-          // this.listS.getlist(sql2).subscribe(data => {
-            // this.items = data;
-            // console.log(data);
-          // });
-      }
-    
+
+          let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'AWARDLEVEL' ORDER BY Description";
+          this.listS.getlist(branch).subscribe(data => {
+            this.items = data;
+            this.loading = false;
+          });
+
+        }
     delete(data: any) {
       this.globalS.sToast('Success', 'Data Deleted!');
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
-        name: '',
-        icdcode: '',
-        usercode:'',
+        item: '',
+        description: '',
+        category: '',
+        level: '',
+        notes: '',
         recordNumber:null
       });
     }

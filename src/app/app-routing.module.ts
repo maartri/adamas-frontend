@@ -207,6 +207,14 @@ import { ReferralSourcesComponent } from '@admin/configuration/recipients/referr
 import { LifecycleEventsComponent } from '@admin/configuration/recipients/lifecycle-events.component';
 import { JobCategoryComponent } from '@admin/configuration/staff/job-category.component';
 import { AdminCategoryComponent } from '@admin/configuration/staff/admin-category.component';
+import { StaffUserGroupsComponent } from '@admin/configuration/staff/staff-user-groups.component';
+import { AwardLevelsComponent } from '@admin/configuration/staff/award-levels.component';
+import { StaffCompetencyGroupComponent } from '@admin/configuration/staff/staff-competency-group.component';
+import { StaffNotesCategoriesComponent } from '@admin/configuration/staff/staff-notes-categories.component';
+import { StaffPositionsComponent } from '@admin/configuration/staff/staff-positions.component';
+import { StaffTeamsComponent } from '@admin/configuration/staff/staff-teams.component';
+import { AwardDetailsComponent } from '@admin/configuration/staff/award-details.component';
+import { OpStaffNotesComponent } from '@admin/configuration/staff/op-staff-notes.component';
 
 const routes: Routes = [
   {
@@ -716,6 +724,42 @@ const routes: Routes = [
         component:AdminCategoryComponent
       },
       {
+        path:"admin-category",
+        component:AdminCategoryComponent
+      },
+      {
+        path:"user-groups",
+        component:StaffUserGroupsComponent
+      },
+      {
+        path:"award-levels",
+        component:AwardLevelsComponent,
+      },
+      {
+        path:"competency-groups",
+        component:StaffCompetencyGroupComponent
+      },
+      {
+        path:"hr-notes-categories",
+        component:StaffNotesCategoriesComponent
+      },
+      {
+        path:"staff-positions",
+        component:StaffPositionsComponent
+      },
+      {
+        path:"staff-teams",
+        component:StaffTeamsComponent
+      },
+      {
+        path:"award-details",
+        component:AwardDetailsComponent
+      },
+      {
+        path:"op-staff-notes",
+        component:OpStaffNotesComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1005,6 +1049,14 @@ export const PAGE_COMPONENTS = [
   LifecycleEventsComponent,
   JobCategoryComponent,
   AdminCategoryComponent,
+  StaffUserGroupsComponent,
+  AwardLevelsComponent,
+  StaffCompetencyGroupComponent,
+  StaffNotesCategoriesComponent,
+  StaffPositionsComponent,
+  StaffTeamsComponent,
+  AwardDetailsComponent,
+  OpStaffNotesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

@@ -7,6 +7,8 @@ import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
+import { ProfileInterface} from '@modules/modules';
+
 const noop = () => {
 };
 
@@ -32,7 +34,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
-  innerValue: Dto.ProfileInterface;
+  innerValue: ProfileInterface;
   kinsArray: Array<any> = [];
   kindetailsGroup: FormGroup;
   inputForm: FormGroup;  
@@ -119,7 +121,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
     this.unsubscribe.complete();
   }
 
-  searchKin(token: Dto.ProfileInterface){
+  searchKin(token: ProfileInterface){
     this.loading = true;
 
     if (token.view == view.recipient) {

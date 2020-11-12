@@ -10,7 +10,7 @@ import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 
 import * as moment from 'moment';
-
+import { User, NewRelationShip, ProfileInterface, IM_Master } from '@modules/modules';
 import { NzModalService } from 'ng-zorro-antd/modal';
 const noop = () => {
 };
@@ -81,11 +81,11 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
-  innerValue: Dto.User | any;
+  innerValue: User | any;
   user:any;
 
   listStaff: Array<any> = []
-  listNewPeople: Array<Dto.NewRelationShip> = [];
+  listNewPeople: Array<NewRelationShip> = [];
 
   selectedStaff: Array<any> = [];
 
@@ -311,7 +311,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     });
   }
 
-  pathForm(token: Dto.ProfileInterface) {
+  pathForm(token: ProfileInterface) {
 
     if (this.globalS.isEmpty(token))
       return;
@@ -710,7 +710,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       primaryPhone
     } = this.user;
 
-    var im_master: Dto.IM_Master = {
+    var im_master: IM_Master = {
           RecordNo: recordNo || 0,
           PersonId: this.innerValue.id,
           Type: incidentType,

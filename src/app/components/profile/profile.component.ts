@@ -11,6 +11,8 @@ import { forkJoin, Observable, EMPTY } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RemoveFirstLast } from '@pipes/pipes';
 
+import { ProfileInterface, PhoneFaxOther, NamesAndAddresses, Staffs, DropDowns, Recipients  } from '@modules/modules';
+
 declare var Dto: any;
 
 const noop = () => {
@@ -40,7 +42,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   private onChangeCallback: (_: any) => void = noop;
 
   showUpload: boolean = false;
-  innerValue: Dto.ProfileInterface;
+  innerValue: ProfileInterface;
 
   profileStaffModal: boolean = false;
   profileStaffOptionsModal: boolean = false;
@@ -90,7 +92,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   emailManagerNoEmailShowNotif: boolean = false;
 
   caseManagerDetails: any;
-  dropDowns: Dto.DropDowns;
+  dropDowns: DropDowns;
 
   _settings: SettingsService;
 
@@ -314,7 +316,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.emailManagerNoEmailShowNotif = this.globalS.isEmpty(this.caseManagerDetails) ? false : true; 
   }
 
-  pathForm(token: Dto.ProfileInterface) {
+  pathForm(token: ProfileInterface) {
 
     if (this.globalS.isEmpty(token))
       return;
@@ -521,12 +523,12 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     return year + '/' + month + '/' + day + ' ' + '00' + ':' + '00' + ':' + '00';
   }
 
-  formatContact(contactForm: FormGroup): Array<Dto.PhoneFaxOther> {
-    let temp: Array<Dto.PhoneFaxOther> = [];
+  formatContact(contactForm: FormGroup): Array<PhoneFaxOther> {
+    let temp: Array<PhoneFaxOther> = [];
 
     const { id, type, details, personId } = contactForm.value;
 
-    let pf: Dto.PhoneFaxOther = {
+    let pf: PhoneFaxOther = {
       RecordNumber: id,
       Type: type,
       Detail: details,
@@ -549,7 +551,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   saveNotes() {
     const notes = this.userForm.value;
     // console.log(notes);
-    let staff: Dto.Staffs = {
+    let staff: Staffs = {
       accountNo: this.user.accountNo,
       uniqueID: this.user.uniqueID,
       caldStatus: notes.caldStatus,
@@ -569,7 +571,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       let birthdate = this.formatDate(this.userForm);
 
       if (this.innerValue.view == 'staff') {
-        let user: Dto.Staffs = {
+        let user: Staffs = {
           accountNo: this.innerValue.name,
           firstName: data.firstName,
           middleNames: data.middleNames,
@@ -601,7 +603,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       }
 
       if (this.innerValue.view == 'recipient') {
-        let user: Dto.Recipients = {
+        let user: Recipients = {
           accountNo: this.innerValue.name,
           firstName: data.firstName,
           middleNames: data.middleNames,
@@ -626,16 +628,16 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
   }
 
-  formatAddress(addressForm: FormGroup): Array<Dto.NamesAndAddresses> {
+  formatAddress(addressForm: FormGroup): Array<NamesAndAddresses> {
     const { pcodesuburb, address, description, id, personId } = addressForm.value;
 
     let pcode = /(\d+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\d+)/g)[0].trim() : "";
     let suburb = /(\D+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\D+)/g)[0].trim() : ""
     let state = suburb && suburb.split(',').length > 1 ? suburb.split(',')[1].trim() : '';
 
-    let temp: Array<Dto.NamesAndAddresses> = [];
+    let temp: Array<NamesAndAddresses> = [];
 
-    let na: Dto.NamesAndAddresses = {
+    let na: NamesAndAddresses = {
       Suburb: suburb && suburb.split(',').length > 0 ? suburb.split(',')[0] : suburb,
       PostCode: pcode,
       Stat: state,
@@ -654,7 +656,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     let birthdate = this.formatDate(this.userForm);
 
     if (this.innerValue.view == 'staff') {
-      let user: Dto.Staffs = {
+      let user: Staffs = {
         accountNo: this.innerValue.name,
         firstName: data.firstName,
         middleNames: data.middleNames,
@@ -685,7 +687,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     if (this.innerValue.view == 'recipient') {
-      let user: Dto.Recipients = {
+      let user: Recipients = {
         accountNo: this.innerValue.name,
         firstName: data.firstName,
         middleNames: data.middleNames,

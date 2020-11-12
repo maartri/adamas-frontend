@@ -16,9 +16,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="itemGroup">
-                        <li formArrayName="programs" *ngFor="let program of itemGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of itemGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ itemGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ itemGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -36,7 +36,7 @@
                         </div>
                         <div nz-col nzSpan="8">
                             <div class="form-group">
-                                <nz-date-picker formControlName="date" (ngModelChange)="onChange($event)" [nzPlaceHolder]="Date"></nz-date-picker>
+                                <nz-date-picker formControlName="date" (ngModelChange)="onChange($event)" nzPlaceHolder="Date"></nz-date-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="8">
@@ -80,7 +80,7 @@
                 <div nz-row *ngIf="current == 2">
                     <div nz-col nzSpan="8">
                         <div class="form-group">
-                            <nz-date-picker  [nzPlaceHolder]="Date"></nz-date-picker>
+                            <nz-date-picker  nzPlaceHolder="Date"></nz-date-picker>
                         </div>
                     </div>
                 </div>
@@ -152,9 +152,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="adminGroup">
-                        <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ adminGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ adminGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -212,9 +212,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="adminGroup">
-                        <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ adminGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ adminGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -272,9 +272,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="adminGroup">
-                        <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ adminGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ adminGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -331,9 +331,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="suspendGroup">
-                        <li formArrayName="programs" *ngFor="let program of suspendGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of suspendGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ suspendGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ suspendGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -390,9 +390,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="dischargeGroup">
-                        <li formArrayName="programs" *ngFor="let program of dischargeGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of dischargeGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ dischargeGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ dischargeGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -449,9 +449,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="waitListGroup">
-                        <li formArrayName="programs" *ngFor="let program of waitListGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of waitListGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ waitListGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ waitListGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -509,9 +509,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="admitGroup">
-                        <li formArrayName="programs" *ngFor="let program of admitGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of admitGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ admitGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ admitGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -569,9 +569,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="assessGroup">
-                        <li formArrayName="programs" *ngFor="let program of assessGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of assessGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ assessGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ assessGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -629,9 +629,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="notProceedGroup">
-                        <li formArrayName="programs" *ngFor="let program of notProceedGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of notProceedGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ notProceedGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ notProceedGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>
@@ -689,9 +689,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="referOnGroup">
-                        <li formArrayName="programs" *ngFor="let program of referOnGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of referOnGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ referOnGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ referOnGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>                           
                         </li>
                     </ul>
@@ -749,9 +749,9 @@
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="referInGroup">
-                        <li formArrayName="programs" *ngFor="let program of referInGroup.get('programs').controls;let i = index">
+                        <li formArrayName="programs" *ngFor="let program of referInGroup.get('programs')['controls'];let i = index">
                             <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ referInGroup.controls.programs.controls[i].value.program }}</label>
+                                <label nz-checkbox formControlName="checked"> {{ referInGroup.get('programs')['controls'][i].value.program }}</label>
                             </div>
                            
                         </li>

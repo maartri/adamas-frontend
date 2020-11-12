@@ -20,6 +20,8 @@ import parseISO from 'date-fns/parseISO'
 
 import { HttpRequest } from '@angular/common/http';
 
+import { PermanentBookings, AddBooking } from '@modules/modules';
+
 const enum ImagePosition {
     LaundryService = '-81px -275px',
     PersonalCare = "-247px -276px ",
@@ -402,15 +404,15 @@ export class BookingClient implements OnInit, OnDestroy {
         this.bookingModalOpen = true;
     }
 
-    buildPermanentBookings(): Array<Dto.PermanentBookings>{
+    buildPermanentBookings(): Array<PermanentBookings>{
 
         if(typeof this.slots === 'undefined') return [];
 
         const originalLen = this.slots.length;
         var objWithQuantity = this.buildDateFrames(this.slots);
 
-        var filtered: Array<Dto.PermanentBookings> = objWithQuantity.map(x => {
-            var obj: Dto.PermanentBookings =  {                
+        var filtered: Array<PermanentBookings> = objWithQuantity.map(x => {
+            var obj: PermanentBookings =  {                
                 Quantity: x.quantity,
                 Time: format(x.time,"yyyy-MM-dd'T'HH:mm:ss"),
                 Week: x.week,
@@ -419,7 +421,7 @@ export class BookingClient implements OnInit, OnDestroy {
             return obj;
         });
 
-        var newDates: Array<Dto.PermanentBookings> = []
+        var newDates: Array<PermanentBookings> = []
         
         if(originalLen == 1 && objWithQuantity.length > 0){
             var newArr = [];
@@ -427,7 +429,7 @@ export class BookingClient implements OnInit, OnDestroy {
             for( var a = 0 ; a < 3 ; a++){
                 var arr = objWithQuantity.map(x => {
 
-                    var obj: Dto.PermanentBookings =  {
+                    var obj: PermanentBookings =  {
                         Quantity: x.quantity,
                         Time: format(addDays(x.time, (7*counter)),"yyyy-MM-dd'T'HH:mm:ss"),                        
                         Week: x.week,
@@ -442,8 +444,8 @@ export class BookingClient implements OnInit, OnDestroy {
         }
 
         if(originalLen == 2 && objWithQuantity.length > 0){
-            var fortnightArr: Array<Dto.PermanentBookings> = objWithQuantity.map(x => {
-                var obj: Dto.PermanentBookings =  {                
+            var fortnightArr: Array<PermanentBookings> = objWithQuantity.map(x => {
+                var obj: PermanentBookings =  {                
                     Quantity: x.quantity,
                     Time: format(addDays(x.time, 14),"yyyy-MM-dd'T'HH:mm:ss"),
                     Week: x.week,
@@ -457,7 +459,7 @@ export class BookingClient implements OnInit, OnDestroy {
         if(originalLen == 4 && objWithQuantity.length > 0){
             var fourWeekly = objWithQuantity.map(x => {
 
-                var obj: Dto.PermanentBookings =  {                
+                var obj: PermanentBookings =  {                
                     Quantity: x.quantity,
                     Time: format(x.time,"yyyy-MM-dd'T'HH:mm:ss"),
                     Week: x.week,
@@ -487,7 +489,7 @@ export class BookingClient implements OnInit, OnDestroy {
     book() {
         var bookType = this.once ? 'Normal' : this.permanent ? this.weekly : '';
 
-        let booking: Dto.AddBooking = {
+        let booking: AddBooking = {
             BookType: this.bookType,
             StaffCode: !(this.aprovider) ? this.selectedStaff.accountNo : "",
             Service: this.selectedService,
@@ -543,7 +545,7 @@ export class BookingClient implements OnInit, OnDestroy {
         console.log(this.slots);
     }
 
-    getSummary(bookType: string, startDate: any, endDate: any, permBookings: Dto.PermanentBookings[]): string{
+    getSummary(bookType: string, startDate: any, endDate: any, permBookings: PermanentBookings[]): string{
 
         if(bookType === 'Weekly'){
             let permBooks = [...new Set(permBookings.map(x =>  {
@@ -629,7 +631,7 @@ A four weekly booking has been made from date ${startDate} to ${endDate}:
         return (differenceInCalendarDays(current, new Date()) < this._settings?.BOOKINGLEADTIME()) || this.publishedEndDate <= current;
     };
 
-    realBookings(): Array<Dto.PermanentBookings>{
+    realBookings(): Array<PermanentBookings>{
         // var sss = this.globalS.DIFFERENCE_DATE(this.publishedEndDate, this.date);
         // console.log(sss);
 
@@ -640,7 +642,7 @@ A four weekly booking has been made from date ${startDate} to ${endDate}:
         var currDate = this.date;
 
         var payPeriod = this.globalS.CONVERTSTRING_TO_DATETIME(this.payPeriod);
-        var list: Array<Dto.PermanentBookings> = [];
+        var list: Array<PermanentBookings> = [];
         if(typeof this.slots === 'undefined') return [];
 
         // Weekly

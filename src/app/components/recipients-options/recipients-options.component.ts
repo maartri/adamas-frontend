@@ -67,6 +67,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges {
   referOnOpen: boolean = false;
   referInOpen: boolean = false;
 
+  inputValue: any;
+  radioValue: any;
+  checked: any;
+
   constructor(
     private listS: ListService,
     private fb: FormBuilder,
@@ -513,6 +517,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges {
 
   haha(data: any){
     console.log(data);
+  }
+
+  onChange(data: any){
+    
   }
 
 }

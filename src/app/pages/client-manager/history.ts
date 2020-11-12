@@ -11,6 +11,8 @@ import startOfMonth from 'date-fns/startOfMonth';
 import lastDayOfMonth from 'date-fns/lastDayOfMonth';
 import format from 'date-fns/format';
 
+import { GetTimesheet } from '@modules/modules';
+
 export interface VirtualDataInterface {
     index: number;
     name: string;
@@ -178,7 +180,7 @@ export class HistoryClientManager implements OnInit, OnDestroy, AfterViewInit {
         this.destroy$.complete();
     }
 
-    getTimeSheet(data: Dto.GetTimesheet) {
+    getTimeSheet(data: GetTimesheet) {
         this.timesheets = [];
         return this.timeS.gettimesheets({
             AccountNo: data.AccountNo,

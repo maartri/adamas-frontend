@@ -8,6 +8,8 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { GlobalService, StaffService, leaveTypes } from '@services/index';
 
+import { LeaveEntry } from '@modules/modules';
+
 @Component({
     styles: [`
         nz-select {
@@ -75,7 +77,7 @@ export class LeaveProvider implements OnInit, OnDestroy {
                 date: `${format(this.leaveForm.get('dates').value[0], 'MMM dd,yyyy')} - ${format(this.leaveForm.get('dates').value[1], 'MMM dd,yyyy')}`
             };
 
-        let leave: Dto.LeaveEntry = {
+        let leave: LeaveEntry = {
             StaffCode: this.globalS.decode().uniqueID,
             StartDate: format(this.leaveForm.get('dates').value[0], 'yyyy-MM-dd'),
             EndDate: format(this.leaveForm.get('dates').value[1], 'yyyy-MM-dd'),

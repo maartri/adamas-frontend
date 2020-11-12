@@ -4,6 +4,8 @@ import { mergeMap } from 'rxjs/operators';
 import { Injectable, Injector } from '@angular/core';
 import { ListService } from '@services/index';
 
+import { ModalVariables } from '@modules/modules';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -11,7 +13,7 @@ export class SwitchService {
 
     anyVariable: any;
 
-    modalVariables: Dto.ModalVariables;
+    modalVariables: ModalVariables;
     sqlCommand: string;
     listS: any;
 
@@ -714,7 +716,7 @@ export class SwitchService {
 
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    populateData(modalVariables: Dto.ModalVariables, inputVariables: any): Observable<any> {
+    populateData(modalVariables: ModalVariables, inputVariables: any): Observable<any> {
         var data = null;
         switch (modalVariables.title) {
             case 'CDC Claim Rates':
@@ -776,7 +778,7 @@ export class SwitchService {
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-    addData(modalVariables: Dto.ModalVariables, inputVariables: any) {
+    addData(modalVariables: ModalVariables, inputVariables: any) {
         console.log(inputVariables);
         this.anyVariable = {}
         switch (modalVariables.title) {
@@ -1616,7 +1618,7 @@ export class SwitchService {
 
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    updateData(modalVariables: Dto.ModalVariables, inputVariables: any) {
+    updateData(modalVariables: ModalVariables, inputVariables: any) {
         console.log({
             modalVariables,
             inputVariables

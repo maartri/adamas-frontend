@@ -3,6 +3,8 @@ import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
+import { FileForm } from '@modules/modules';
+
 const upload: string = "api/upload";
 const fileV2: string = "api/v2/file";
 
@@ -50,7 +52,7 @@ export class UploadService {
       return this.http.post(`${upload}/download/document`, data, { responseType: 'blob', reportProgress: true })
    }
 
-   delete(personID: string, file: Dto.FileForm): Observable<any> {
+   delete(personID: string, file: FileForm): Observable<any> {
       return this.auth.delete(`${upload}/delete/document/${personID}`, file)
    }
 
@@ -90,7 +92,7 @@ export class UploadService {
       return this.auth.get(`${fileV2}/${name}/${view}`)
    }
 
-   deleteFileDocuments(name: string, file: Dto.FileForm): Observable<any>{
+   deleteFileDocuments(name: string, file: FileForm): Observable<any>{
       return this.auth.delete(`${fileV2}/${name}`, file);
    }
 

@@ -19,6 +19,7 @@ import getHours from 'date-fns/getHours'
 import getMinutes from 'date-fns/getMinutes'
 import differenceInDays from 'date-fns/differenceInDays'
 import differenceInWeeks from 'date-fns/differenceInWeeks'
+import { Jwt, DateTimeVariables } from '@modules/modules';
 
 const helper = new JwtHelperService();
 
@@ -125,7 +126,7 @@ export class GlobalService {
 
         let _temp = this.decode(token);
 
-        let data: Dto.Jwt = {
+        let data: Jwt = {
             aud: _temp.aud,
             code: _temp.code,
             exp: _temp.exp,
@@ -505,7 +506,7 @@ export class GlobalService {
         return `_${Math.random().toString(36).substr(2, 9)}`;
     }
 
-    computeTime(_start: any, _end: any): Dto.DateTimeVariables {
+    computeTime(_start: any, _end: any): DateTimeVariables {
         
         const minutesInAnHour = 60;
 
@@ -536,7 +537,7 @@ export class GlobalService {
         }
     }
 
-    computeTimeDATE_FNS(_start: any, _end: any): Dto.DateTimeVariables {
+    computeTimeDATE_FNS(_start: any, _end: any): DateTimeVariables {
         
         const minutesInAnHour = 60;
         const invalid = 'Invalid Time';

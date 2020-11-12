@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
+import { CallDeceaseProcedure, CallReferralOutProcedure } from '@modules/modules';
+
 const list: string = "api/list"
 const docSign: string = "api/docusign"
 
@@ -175,7 +177,7 @@ export class ListService {
         return this.auth.post(`${list}/discharge`, data)
     }
 
-    postdeath(data: Dto.CallDeceaseProcedure): Observable<any>{
+    postdeath(data: CallDeceaseProcedure): Observable<any>{
         return this.auth.post(`${list}/death`, data)
     }
 
@@ -195,7 +197,7 @@ export class ListService {
         return this.auth.post(`${list}/referral-in`, data)
     }
 
-    postreferralout(data: Dto.CallReferralOutProcedure): Observable<any>{
+    postreferralout(data: CallReferralOutProcedure): Observable<any>{
         return this.auth.post(`${list}/referral-out`, data);
     }
 

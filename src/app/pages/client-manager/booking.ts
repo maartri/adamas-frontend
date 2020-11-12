@@ -14,6 +14,8 @@ import parseISO from 'date-fns/parseISO'
 import format from 'date-fns/format';
 import isAfter from 'date-fns/isAfter'
 
+import { PermanentBookings, AddBooking  } from '@modules/modules';
+
 import { forkJoin, Subject, Observable, EMPTY } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged, switchMap, mergeMap } from 'rxjs/operators';
 
@@ -431,7 +433,7 @@ export class BookingClientManager implements OnInit, OnDestroy {
     }
 
     // book() {
-    //     let booking: Dto.AddBooking = {
+    //     let booking: AddBooking = {
     //         BookType: this.bookType,
     //         StaffCode: !(this.aprovider) ? this.selectedStaff.accountNo : "",
     //         Service: this.selectedService,
@@ -465,7 +467,7 @@ export class BookingClientManager implements OnInit, OnDestroy {
     createBookingObject(){
         var bookType = this.once ? 'Normal' : this.permanent ? this.weekly : '';
 
-        let booking: Dto.AddBooking = {
+        let booking: AddBooking = {
             BookType: this.bookType,
             StaffCode: !(this.aprovider) ? this.selectedStaff.accountNo : "",
             Service: this.selectedService,
@@ -520,7 +522,7 @@ export class BookingClientManager implements OnInit, OnDestroy {
 
     }
 
-    getSummary(bookType: string, startDate: any, endDate: any, permBookings: Dto.PermanentBookings[]): string{
+    getSummary(bookType: string, startDate: any, endDate: any, permBookings: PermanentBookings[]): string{
 
         if(bookType === 'Weekly'){
             let permBooks = [...new Set(permBookings.map(x =>  {
@@ -616,7 +618,7 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
         return newArr;
     }
 
-    realBookings(): Array<Dto.PermanentBookings>{
+    realBookings(): Array<PermanentBookings>{
 
         if(!this.hideDateInPermanentBookings) return [];
         // var sss = this.globalS.DIFFERENCE_DATE(this.publishedEndDate, this.date);
@@ -630,7 +632,7 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
 
         var payPeriod = this.globalS.CONVERTSTRING_TO_DATETIME(this.payPeriod);
         console.log(this.payPeriod)
-        var list: Array<Dto.PermanentBookings> = [];
+        var list: Array<PermanentBookings> = [];
         if(typeof this.slots === 'undefined') return [];
 
         // Weekly
@@ -702,15 +704,15 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
         return !isAfter(this.date,this.publishedEndDate);
     }
 
-    buildPermanentBookings(): Array<Dto.PermanentBookings>{
+    buildPermanentBookings(): Array<PermanentBookings>{
 
         if(typeof this.slots === 'undefined') return [];
 
         const originalLen = this.slots.length;
         var objWithQuantity = this.buildDateFrames(this.slots);
 
-        var filtered: Array<Dto.PermanentBookings> = objWithQuantity.map(x => {
-            var obj: Dto.PermanentBookings =  {                
+        var filtered: Array<PermanentBookings> = objWithQuantity.map(x => {
+            var obj: PermanentBookings =  {                
                 Quantity: x.quantity,
                 Time: format(x.time,"yyyy-MM-dd'T'HH:mm:ss"),
                 Week: x.week,
@@ -719,7 +721,7 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
             return obj;
         });
 
-        var newDates: Array<Dto.PermanentBookings> = []
+        var newDates: Array<PermanentBookings> = []
         
         if(originalLen == 1 && objWithQuantity.length > 0){
             var newArr = [];
@@ -727,7 +729,7 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
             for( var a = 0 ; a < 3 ; a++){
                 var arr = objWithQuantity.map(x => {
 
-                    var obj: Dto.PermanentBookings =  {
+                    var obj: PermanentBookings =  {
                         Quantity: x.quantity,
                         Time: format(addDays(x.time, (7*counter)),"yyyy-MM-dd'T'HH:mm:ss"),                        
                         Week: x.week,
@@ -742,8 +744,8 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
         }
 
         if(originalLen == 2 && objWithQuantity.length > 0){
-            var fortnightArr: Array<Dto.PermanentBookings> = objWithQuantity.map(x => {
-                var obj: Dto.PermanentBookings =  {                
+            var fortnightArr: Array<PermanentBookings> = objWithQuantity.map(x => {
+                var obj: PermanentBookings =  {                
                     Quantity: x.quantity,
                     Time: format(addDays(x.time, 14),"yyyy-MM-dd'T'HH:mm:ss"),
                     Week: x.week,
@@ -757,7 +759,7 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
         if(originalLen == 4 && objWithQuantity.length > 0){
             var fourWeekly = objWithQuantity.map(x => {
 
-                var obj: Dto.PermanentBookings =  {                
+                var obj: PermanentBookings =  {                
                     Quantity: x.quantity,
                     Time: format(x.time,"yyyy-MM-dd'T'HH:mm:ss"),
                     Week: x.week,

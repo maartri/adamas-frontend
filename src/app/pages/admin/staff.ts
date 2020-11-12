@@ -6,6 +6,8 @@ import { GlobalService, StaffService, ShareService, leaveTypes, ListService, Tim
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY } from 'rxjs';
 
+import { ApplicationUser } from '@modules/modules';
+
 interface Person {
     key: string;
     name: string;
@@ -88,7 +90,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     userview: UserView;
 
-    userByPass: Dto.ApplicationUser;
+    userByPass: ApplicationUser;
 
     listChange(event: any) {
 

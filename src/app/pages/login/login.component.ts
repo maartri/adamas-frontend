@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { LoginService, GlobalService } from '@services/index';
 import { SettingsService } from '@services/settings.service';
+import { ApplicationUser } from '@modules/modules';
 
 import {
   Router
@@ -48,7 +49,7 @@ export class LoginComponent implements OnInit {
   login() {
     if (!this.loginForm.valid) return;
     this.loading = true;
-    let user: Dto.ApplicationUser = {
+    let user: ApplicationUser = {
       Username: this.loginForm.get('userName').value,
       Password: this.loginForm.get('password').value
     }

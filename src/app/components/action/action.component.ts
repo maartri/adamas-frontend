@@ -7,6 +7,8 @@ import { takeUntil } from 'rxjs/operators';
 import parseISO from 'date-fns/parseISO';
 import * as moment from 'moment';
 
+import { TravelDefaults, ClaimVariation, TravelClaim, RecordIncident } from '@modules/modules';
+
 const defaultOptions: any = {
   notes: '',
   rosterNoteDetails: '',
@@ -65,7 +67,7 @@ export class ActionComponent implements OnInit {
   leaveTypes: Array<string> = leaveTypes;
   incidentLocation: any;
 
-  travelDefault: Dto.TravelDefaults;
+  travelDefault: TravelDefaults;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -167,7 +169,7 @@ export class ActionComponent implements OnInit {
 
   claimVariation(){
 
-    let claim: Dto.ClaimVariation = {
+    let claim: ClaimVariation = {
         RecordNo: this.data.shiftbookNo,
         ClaimedBy: this.token.nameid,
         ClaimedDate: moment().format('YYYY-MM-DDTHH:mm:ss'),
@@ -260,7 +262,7 @@ export class ActionComponent implements OnInit {
       return false;
     }
 
-    let travel: Dto.TravelClaim = {
+    let travel: TravelClaim = {
         RecordNo: this.data.shiftbookNo,
         User: this.token.user,
         Distance: (endKM - startKM).toString(),
@@ -288,7 +290,7 @@ export class ActionComponent implements OnInit {
 
     const { incidentDetails, incidentType, incidentSeverity, incidentLocation, noRecipient } = this.optionForm.getRawValue();
 
-    let recordIncident: Dto.RecordIncident = {
+    let recordIncident: RecordIncident = {
         PersonId: this.data.recipient,
         IncidentType: incidentType,
         IncidentSeverity: incidentSeverity,

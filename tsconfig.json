@@ -45,6 +45,9 @@
       ],
       "@intakes/*": [
         "./src/app/pages/admin/recipient-views/intake-views/*"
+      ],
+      "@modules/*": [
+        "./src/app/modules/*"
       ]
     }
   },

@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import { HttpParams } from '@angular/common/http';
 import { URL } from '@constants/constant';
 
+import { WorkerInput,  GetPackage, ApproveService, QualifiedStaff, SuburbIn, ProgramActive, AddBooking, RecordIncident, NamesAndAddresses, PhoneFaxOther, Recipients} from '@modules/modules';
+
 const client: string = `api/client`;
 const global: string = `api/global`
 
@@ -94,11 +96,11 @@ export class ClientService {
         return this.auth.get(`${client}/note/opnote/${id}`);
     }
 
-    getrostermaster(worker: Dto.WorkerInput): Observable<any> {
+    getrostermaster(worker: WorkerInput): Observable<any> {
         return this.auth.get(`${client}/roster/master`, worker);
     }
 
-    getrosterworker(worker: Dto.WorkerInput): Observable<any> {
+    getrosterworker(worker: WorkerInput): Observable<any> {
         return this.auth.get(`${client}/roster/worker`, worker);
     }
 
@@ -134,27 +136,27 @@ export class ClientService {
         return this.auth.get(`${global}/managers`)
     }
 
-    getsuburb(suburb: Dto.SuburbIn): Observable<any> {
+    getsuburb(suburb: SuburbIn): Observable<any> {
         return this.auth.get(`${global}/suburb`, suburb)
     }
 
-    getactiveprogram(program: Dto.ProgramActive): Observable<any> {
+    getactiveprogram(program: ProgramActive): Observable<any> {
         return this.auth.get(`${client}/program/active`, program)
     }
 
-    getpackages(getpackage: Dto.GetPackage): Observable<any> {
+    getpackages(getpackage: GetPackage): Observable<any> {
         return this.auth.get(`${client}/package`, getpackage)
     }
 
-    getbalances(getpackage: Dto.GetPackage): Observable<any> {
+    getbalances(getpackage: GetPackage): Observable<any> {
         return this.auth.get(`${client}/balances`, getpackage);
     }
 
-    getapprovedservices(service: Dto.ApproveService): Observable<any> {
+    getapprovedservices(service: ApproveService): Observable<any> {
         return this.auth.get(`${client}/approvedservices`, service);
     }
 
-    getqualifiedstaff(staff: Dto.QualifiedStaff): Observable<any> {
+    getqualifiedstaff(staff: QualifiedStaff): Observable<any> {
         return this.auth.get(`${client}/qualifiedstaff`, staff);
     }
 
@@ -234,35 +236,35 @@ export class ClientService {
 
     //tabs end  ----------------------------------------------------------------------------------------------
 
-    addbooking(book: Dto.AddBooking): Observable<any> {
+    addbooking(book: AddBooking): Observable<any> {
         return this.auth.post(`${client}/booking`, book);
     }
 
-    addcontact(contact: Array<Dto.PhoneFaxOther>): Observable<any> {
+    addcontact(contact: Array<PhoneFaxOther>): Observable<any> {
         return this.auth.post(`${client}/user/contact`, contact);
     }
 
-    addaddress(address: Array<Dto.NamesAndAddresses>): Observable<any> {
+    addaddress(address: Array<NamesAndAddresses>): Observable<any> {
         return this.auth.post(`${client}/user/address`, address);
     }
 
-    updateusername(user: Dto.Recipients): Observable<any> {
+    updateusername(user: Recipients): Observable<any> {
         return this.auth.put(`${client}/user/name`, user)
     }
 
-    updateuseraddress(address: Array<Dto.NamesAndAddresses>): Observable<any> {
+    updateuseraddress(address: Array<NamesAndAddresses>): Observable<any> {
         return this.auth.put(`${client}/user/address`, address)
     }
 
-    updateusercontact(contact: Array<Dto.PhoneFaxOther>): Observable<any> {
+    updateusercontact(contact: Array<PhoneFaxOther>): Observable<any> {
         return this.auth.put(`${client}/user/contact`, contact)
     }
 
-    deletecontact(contact: Dto.PhoneFaxOther): Observable<any> {
+    deletecontact(contact: PhoneFaxOther): Observable<any> {
         return this.auth.delete(`${client}/user/contact`, contact);
     }
 
-    deleteaddress(address: Dto.NamesAndAddresses): Observable<any> {
+    deleteaddress(address: NamesAndAddresses): Observable<any> {
         return this.auth.delete(`${client}/user/address`, address);
     }
 

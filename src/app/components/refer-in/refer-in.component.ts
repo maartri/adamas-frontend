@@ -5,7 +5,7 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ChangeDe
   templateUrl: './refer-in.component.html',
   styleUrls: ['./refer-in.component.css']
 })
-export class ReferInComponent implements OnInit {
+export class ReferInComponent implements OnInit, OnChanges {
 
   @Input() open: any;
 

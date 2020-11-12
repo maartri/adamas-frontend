@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { GlobalService, StaffService, ShareService, leaveTypes, ListService } from '@services/index';
 import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
-
+import { RECIPIENT_OPTION } from '../../modules/modules';
 @Component({
     styles: [`
         nz-tabset{
@@ -80,6 +80,11 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     status: any = null;
     statusTab = new Subject<any>();
+
+    recipientOptionOpen: any;
+    recipientOption: string;
+    
+    RECIPIENT_OPTION = RECIPIENT_OPTION;
 
     listChange(event: any) {
 
@@ -204,7 +209,71 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.openReferInModal = {};
     }
 
-    clicky(){
-        console.log('sdd')
+    clicky(index: number){
+
+        if(index == 0){
+            this.recipientOption =  this.RECIPIENT_OPTION.REFER_IN;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 1){
+            this.recipientOption =  this.RECIPIENT_OPTION.REFER_ON;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 2){
+            this.recipientOption =  this.RECIPIENT_OPTION.NOT_PROCEED;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 3){
+            this.recipientOption =  this.RECIPIENT_OPTION.ASSESS;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 4){
+            this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 5){
+            this.recipientOption =  this.RECIPIENT_OPTION.WAIT_LIST;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 6){
+            this.recipientOption =  this.RECIPIENT_OPTION.DISCHARGE;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 6){
+            this.recipientOption =  this.RECIPIENT_OPTION.DISCHARGE;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 7){
+            this.recipientOption =  this.RECIPIENT_OPTION.SUSPEND;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 8){
+            this.recipientOption =  this.RECIPIENT_OPTION.REINSTATE;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 9){
+            this.recipientOption =  this.RECIPIENT_OPTION.DECEASE;
+            this.recipientOptionOpen = { };
+        }
+
+        if(index == 10){
+            this.recipientOption =  this.RECIPIENT_OPTION.ADMIN;
+            this.recipientOptionOpen = { };
+        }
+        
+        if(index == 11){
+            this.recipientOption =  this.RECIPIENT_OPTION.ITEM;
+            this.recipientOptionOpen = { };
+        }
     }
 }

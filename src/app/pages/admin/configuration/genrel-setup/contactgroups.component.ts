@@ -126,7 +126,6 @@ export class ContactgroupsComponent implements OnInit {
               this.resetModal();
             });
           }
-          
         }
         loadData(){
           let sql ="select Description as name,recordNumber from DataDomains where Domain='CONTACTGROUP' ";

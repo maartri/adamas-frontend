@@ -144,6 +144,8 @@ export class ClaimratesComponent implements OnInit {
             console.log(data);
             this.loading = false;
           });
+
+          
         }
     
     delete(data: any) {

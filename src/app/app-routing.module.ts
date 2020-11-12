@@ -8,7 +8,7 @@ import {
 } from '@components/index';
 
 import {
-   MembersComponent
+  MembersComponent
 } from './components/members/members.component'
 
 import { HomeClientManager } from './pages/client-manager/home';
@@ -176,6 +176,45 @@ import { LocationCategoriesComponent } from '@admin/configuration/incidents/loca
 import { StaffincidentnotecategoryComponent } from '@admin/configuration/incidents/staffincidentnotecategory.component';
 import { FillingclassificationComponent } from '@admin/configuration/documents/fillingclassification.component';
 import { DocumentcategoriesComponent } from '@admin/configuration/documents/documentcategories.component';
+import { RecipientsCategoryComponent } from '@admin/configuration/recipients/recipients-category.component';
+import { RecipientsGroupComponent } from '@admin/configuration/recipients/recipients-group.component';
+import { RecipientsMinorGroupComponent } from '@admin/configuration/recipients/recipients-minor-group.component';
+import { RecipientsBillingCyclesComponent } from '@admin/configuration/recipients/recipients-billing-cycles.component';
+import { DebtorTermsComponent } from '@admin/configuration/recipients/debtor-terms.component';
+import { RecipientGoalsComponent } from '@admin/configuration/recipients/recipient-goals.component';
+import { ConsentTypesComponent } from '@admin/configuration/recipients/consent-types.component';
+import { CarePlanTypesComponent } from '@admin/configuration/recipients/care-plan-types.component';
+import { ClinicalNotesGroupsComponent } from '@admin/configuration/recipients/clinical-notes-groups.component';
+import { CaseNoteCategoriesComponent } from '@admin/configuration/recipients/case-note-categories.component';
+import { OpNoteCategoriesComponent } from '@admin/configuration/recipients/op-note-categories.component';
+import { CareDomainsComponent } from '@admin/configuration/recipients/care-domains.component';
+import { DischargeReasonsComponent } from '@admin/configuration/recipients/discharge-reasons.component';
+import { RefferalReasonsComponent } from '@admin/configuration/recipients/refferal-reasons.component';
+import { UserDefinedRemindersComponent } from '@admin/configuration/recipients/user-defined-reminders.component';
+import { RecipientPrefrencesComponent } from '@admin/configuration/recipients/recipient-prefrences.component';
+import { MobilityCodesComponent } from '@admin/recipient-views/mobility-codes.component';
+import { TasksComponent } from '@admin/recipient-views/tasks.component';
+import { HealthConditionsComponent } from '@admin/recipient-views/health-conditions.component';
+import { MedicationsComponent } from '@admin/recipient-views/medications.component';
+import { NursingDignosisComponent } from '@admin/recipient-views/nursing-dignosis.component';
+import { MedicalDignosisComponent } from '@admin/recipient-views/medical-dignosis.component';
+import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
+import { ClinicalRemindersComponent } from '@admin/recipient-views/clinical-reminders.component';
+import { ClinicalAlertsComponent } from '@admin/recipient-views/clinical-alerts.component';
+import { AdmittingPrioritiesComponent } from '@admin/recipient-views/admitting-priorities.component';
+import { ServicenotecatComponent } from '@admin/recipient-views/servicenotecat.component';
+import { ReferralSourcesComponent } from '@admin/configuration/recipients/referral-sources.component';
+import { LifecycleEventsComponent } from '@admin/configuration/recipients/lifecycle-events.component';
+import { JobCategoryComponent } from '@admin/configuration/staff/job-category.component';
+import { AdminCategoryComponent } from '@admin/configuration/staff/admin-category.component';
+import { StaffUserGroupsComponent } from '@admin/configuration/staff/staff-user-groups.component';
+import { AwardLevelsComponent } from '@admin/configuration/staff/award-levels.component';
+import { StaffCompetencyGroupComponent } from '@admin/configuration/staff/staff-competency-group.component';
+import { StaffNotesCategoriesComponent } from '@admin/configuration/staff/staff-notes-categories.component';
+import { StaffPositionsComponent } from '@admin/configuration/staff/staff-positions.component';
+import { StaffTeamsComponent } from '@admin/configuration/staff/staff-teams.component';
+import { AwardDetailsComponent } from '@admin/configuration/staff/award-details.component';
+import { OpStaffNotesComponent } from '@admin/configuration/staff/op-staff-notes.component';
 
 const routes: Routes = [
   {
@@ -441,8 +480,8 @@ const routes: Routes = [
         component: ConfigurationAdmin
       },
       {
-          path: 'branches',
-          component: BranchesComponent
+        path: 'branches',
+        component: BranchesComponent
       },
       {
         path: 'funding-region',
@@ -559,6 +598,166 @@ const routes: Routes = [
       {
         path:"document-categories",
         component:DocumentcategoriesComponent,
+      },
+      {
+        path:"recipients-categories",
+        component:RecipientsCategoryComponent
+      },
+      {
+        path:"recipients-groups",
+        component:RecipientsGroupComponent
+      },
+      {
+        path:"recipients-minor-group",
+        component:RecipientsMinorGroupComponent
+      },
+      {
+        path:"recipients-billing-cycles",
+        component:RecipientsBillingCyclesComponent,
+      },
+      {
+        path:"debtor-terms",
+        component:DebtorTermsComponent
+      },
+      {
+        path:"recipient-goals",
+        component:RecipientGoalsComponent
+      },
+      {
+        path:"consent-types",
+        component:ConsentTypesComponent
+      },
+      {
+        path:"care-plan-types",
+        component:CarePlanTypesComponent
+      },
+      {
+        path:"clicnical-notes-groups",
+        component:ClinicalNotesGroupsComponent
+      },
+      {
+        path:"case-notes-categories",
+        component:CaseNoteCategoriesComponent
+      },
+      {
+        path:"op-notes-categories",
+        component:OpNoteCategoriesComponent
+      },
+      {
+        path:"care-domains",
+        component:CareDomainsComponent
+      },
+      {
+        path:"discharge-reasons",
+        component:DischargeReasonsComponent
+      },
+      {
+        path:"refferal-reasons",
+        component:RefferalReasonsComponent
+      },
+      {
+        path:"user-define-reminders",
+        component:UserDefinedRemindersComponent
+      },
+      {
+        path:"recipient-prefrences",
+        component:RecipientPrefrencesComponent
+      },
+      {
+        path:"mobility-codes",
+        component:MobilityCodesComponent
+      },
+      {
+        path:"tasks",
+        component:TasksComponent
+      },
+      {
+        path:"health-conditions",
+        component:HealthConditionsComponent,
+      },
+      {
+        path:"medications",
+        component:MedicationsComponent
+      },
+      {
+        path:"nursing-dignosis",
+        component:NursingDignosisComponent
+      },
+      {
+        path:"medical-dignosis",
+        component:MedicalDignosisComponent
+      },
+      {
+        path:"medical-procedures",
+        component:MedicalProceduresComponent
+      },
+      {
+        path:"clinical-reminders",
+        component:ClinicalRemindersComponent
+      },
+      {
+        path:"clinical-alerts",
+        component:ClinicalAlertsComponent
+      },
+      {
+        path:"admitting-priorities",
+        component:AdmittingPrioritiesComponent
+      },
+      {
+        path:"service-not-categories",
+        component:ServicenotecatComponent
+      },
+      {
+        path:"referral-sources",
+        component:ReferralSourcesComponent
+      },
+      {
+        path:"lifecycle-events",
+        component:LifecycleEventsComponent
+      },
+      {
+        path:"job-category",
+        component:JobCategoryComponent
+      },
+      {
+        path:"admin-category",
+        component:AdminCategoryComponent
+      },
+      {
+        path:"admin-category",
+        component:AdminCategoryComponent
+      },
+      {
+        path:"user-groups",
+        component:StaffUserGroupsComponent
+      },
+      {
+        path:"award-levels",
+        component:AwardLevelsComponent,
+      },
+      {
+        path:"competency-groups",
+        component:StaffCompetencyGroupComponent
+      },
+      {
+        path:"hr-notes-categories",
+        component:StaffNotesCategoriesComponent
+      },
+      {
+        path:"staff-positions",
+        component:StaffPositionsComponent
+      },
+      {
+        path:"staff-teams",
+        component:StaffTeamsComponent
+      },
+      {
+        path:"award-details",
+        component:AwardDetailsComponent
+      },
+      {
+        path:"op-staff-notes",
+        component:OpStaffNotesComponent,
       },
       {
         path: 'rosters',
@@ -748,7 +947,7 @@ const routes: Routes = [
 export class AppRoutingModule { }
 
 export const PAGE_COMPONENTS = [
-
+  
   // Importing Client
   HomeClient,
   NotesClient,
@@ -760,7 +959,7 @@ export const PAGE_COMPONENTS = [
   ShiftClient,
   CalendarClient,
   ProfileClient,
-
+  
   // Importing Providers
   ProfileProvider,
   HomeProvider,
@@ -769,7 +968,7 @@ export const PAGE_COMPONENTS = [
   HistoryProvider,
   LeaveProvider,
   PackageProvider,
-
+  
   // Importing Admin
   AttendanceAdmin,
   DayManagerAdmin,
@@ -784,10 +983,10 @@ export const PAGE_COMPONENTS = [
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
-
+  
   // Components
   ProfilePage,
-
+  
   //Configuration
   BranchesComponent,
   FundingRegionsComponent,
@@ -819,6 +1018,45 @@ export const PAGE_COMPONENTS = [
   LocationCategoriesComponent,
   FillingclassificationComponent,
   DocumentcategoriesComponent,
+  RecipientsCategoryComponent,
+  RecipientsGroupComponent,
+  RecipientsMinorGroupComponent,
+  RecipientsBillingCyclesComponent,
+  DebtorTermsComponent,
+  RecipientGoalsComponent,
+  ConsentTypesComponent,
+  CarePlanTypesComponent,
+  ClinicalNotesGroupsComponent,
+  CaseNoteCategoriesComponent,
+  OpNoteCategoriesComponent,
+  CareDomainsComponent,
+  DischargeReasonsComponent,
+  RefferalReasonsComponent,
+  UserDefinedRemindersComponent,
+  RecipientPrefrencesComponent,
+  MobilityCodesComponent,
+  TasksComponent,
+  HealthConditionsComponent,
+  MedicationsComponent,
+  NursingDignosisComponent,
+  MedicalDignosisComponent,
+  MedicalProceduresComponent,
+  ClinicalRemindersComponent,
+  ClinicalAlertsComponent,
+  AdmittingPrioritiesComponent,
+  ServicenotecatComponent,
+  ReferralSourcesComponent,
+  LifecycleEventsComponent,
+  JobCategoryComponent,
+  AdminCategoryComponent,
+  StaffUserGroupsComponent,
+  AwardLevelsComponent,
+  StaffCompetencyGroupComponent,
+  StaffNotesCategoriesComponent,
+  StaffPositionsComponent,
+  StaffTeamsComponent,
+  AwardDetailsComponent,
+  OpStaffNotesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,
@@ -834,7 +1072,7 @@ export const PAGE_COMPONENTS = [
   StaffPositionAdmin,
   StaffReminderAdmin,
   StaffTrainingAdmin,
-
+  
   // Recipient Views
   RecipientCasenoteAdmin,
   RecipientContactsAdmin,
@@ -847,7 +1085,7 @@ export const PAGE_COMPONENTS = [
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
   RecipientRemindersAdmin,
-
+  
   // Intake Views
   IntakeAlerts,
   IntakeBranches,
@@ -858,10 +1096,10 @@ export const PAGE_COMPONENTS = [
   IntakePlans,
   IntakeServices,
   IntakeStaff,
-
+  
   ExtraComponent,
   UnauthorizedComponent,
-
+  
   // Client Manager
   HomeClientManager,
   ProfileClientManager,
@@ -873,11 +1111,11 @@ export const PAGE_COMPONENTS = [
   PackageClientManager,
   PreferencesClientManager,
   ShiftClientManager,
-
+  
   //Staff Redirect
   HomeStaffRedirect,
   StaffRedirect,
-
+  
   StaffPersonalAdminRedirect,
   StaffContactAdminRedirect,
   StaffPayAdminRedirect,

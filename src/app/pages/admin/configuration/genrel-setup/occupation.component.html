@@ -31,14 +31,14 @@
             <div *ngIf="current == 0">
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <div nz-col nzSpan="24" class="mrg-btm">
-                        <input nz-input placeholder="Name/Title"  formControlName="occupation" required />
+                        <input nz-input placeholder="Name/Title"  formControlName="name" required />
                     </div>
                 </div>
             </div>
         </div>
         <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!inputForm.get('occupation').value" (click)="save()" *ngIf="current === 0">
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!inputForm.get('name').value" (click)="save()" *ngIf="current === 0">
                         <span>Save</span>
                     </button>
                 </ng-container>

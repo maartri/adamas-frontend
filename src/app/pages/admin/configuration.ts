@@ -164,6 +164,129 @@ export class ConfigurationAdmin   {
         if(index == 30){
             this.router.navigate(['/admin/document-categories']);
         }
+        if(index == 31){
+            // this.router.navigate(['/admin/document-categories']);
+        }
+        if(index == 32){
+            this.router.navigate(['/admin/recipients-categories']);
+        }
+        if(index == 33){
+            this.router.navigate(['/admin/recipients-groups']);
+        }
+        if(index == 34){
+            this.router.navigate(['/admin/recipients-minor-group']);
+        }
+        if(index == 35){
+            this.router.navigate(['/admin/recipients-billing-cycles']);
+        }
+        if(index == 36){
+            this.router.navigate(['/admin/debtor-terms']);
+        }
+        if(index == 37){
+            this.router.navigate(['/admin/recipient-goals']);
+        }
+        if(index == 38){
+            this.router.navigate(['/admin/consent-types']);
+        }
+        if(index == 39){
+            this.router.navigate(['/admin/care-plan-types']);
+        }
+        if(index == 40){
+            this.router.navigate(['/admin/clicnical-notes-groups']);
+        }
+        if(index == 41){
+            this.router.navigate(['/admin/case-notes-categories']);
+        }
+        if(index == 42){
+            this.router.navigate(['/admin/op-notes-categories']);
+        }
+        if(index == 43){
+            this.router.navigate(['/admin/care-domains']);
+        }
+        if(index == 44){
+            this.router.navigate(['/admin/discharge-reasons']);
+        }
+        if(index == 45){
+            this.router.navigate(['/admin/refferal-reasons'])
+        }
+        if(index == 46){
+            this.router.navigate(['/admin/user-define-reminders'])
+        }
+        if(index == 47){
+            this.router.navigate(['/admin/recipient-prefrences'])
+        }
+        if(index == 48){
+            this.router.navigate(['/admin/mobility-codes'])
+        }
+        if(index == 49){
+            this.router.navigate(['/admin/tasks'])
+        }
+        if(index == 50){
+            this.router.navigate(['/admin/health-conditions'])
+        }
+        if(index == 51){
+            this.router.navigate(['/admin/medications'])
+        }
+        if(index == 52){
+            this.router.navigate(['/admin/nursing-dignosis'])
+        }
+        if(index == 53){
+            this.router.navigate(['/admin/medical-dignosis'])
+        }
+        if(index == 54){
+            this.router.navigate(['/admin/medical-procedures'])
+        }
+        if(index == 55){
+            this.router.navigate(['/admin/clinical-reminders'])
+        }
+        if(index == 56){
+            this.router.navigate(['/admin/clinical-alerts'])
+        }
+        if(index == 57){
+            this.router.navigate(['/admin/admitting-priorities']);
+        }
+        if(index == 58){
+            this.router.navigate(['/admin/service-not-categories']);
+        }
+        if(index == 59){
+            this.router.navigate(['/admin/referral-sources']);
+        }
+        if(index == 60){
+            this.router.navigate(['/admin/lifecycle-events']);
+        }
+        if(index == 61){
+            this.router.navigate(['/admin/job-category']);
+        }
+        if(index == 62){
+            this.router.navigate(['/admin/admin-category']);
+        }
+        if(index == 63){
+            this.router.navigate(['/admin/user-groups']);
+        }
+        if(index == 64){
+            this.router.navigate(['/admin/staff-positions']);
+        }
+        if(index == 65){
+            this.router.navigate(['/admin/staff-teams']);
+        }
+        if(index == 66){
+            this.router.navigate(['/admin/award-levels']);
+        }
+        if(index == 67){
+            this.router.navigate(['/admin/award-details']);
+        }
+        if(index == 68){
+            this.router.navigate(['/admin/competency-groups']);
+        }
+        if(index == 69){
+            // this.router.navigate(['/admin/competency-groups']);
+        }
+        if(index == 70){
+            this.router.navigate(['/admin/hr-notes-categories']);
+        }
+        if(index == 71){
+            this.router.navigate(['/admin/op-staff-notes']);
+        }
 
     }  
 }

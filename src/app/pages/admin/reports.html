@@ -142,6 +142,12 @@
                                                 <i nz-icon nzType="user"></i>
                                                 <strong>AGENCY LISTINGS</strong>
                                                 <div>                                        
+                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()" disabled>
+                                                        <i nz-icon nzType="plus"></i>
+                                                    USER REPORTS
+                                                </button> 
+                                                </div>                                                                                               
+                                                <div>                                        
                                                     <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled  >
                                                     <i nz-icon nzType="printer"></i>
                                                     Approved Staff Listing
@@ -516,13 +522,13 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-FORPT-ActivityRecipientRpt" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Activity Recipient Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Activity Staff Report
                                                 </button>
@@ -532,33 +538,33 @@
                                                 <i nz-icon nzType="printer"></i>
                                                 Activity Group Report
                                                 </button>
-                                        </div>
+                                        </div>                                        
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
-                                                <i nz-icon nzType="printer"></i>
-                                                Dataset Activity Analysis Report
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-report-UnbilledItems" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Unbilled Items Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-report-fundingAuditReport" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Funding Audit Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-FORPT-DatasetActivityAnalysis" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Dataset Activity Summary Report
+                                                Dataset Activity Analysis Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default"id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-FORPT-DatasetoutputSummary" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Dataset Output Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-report-DatasetUnitCost" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Dataset RecipientUnit Cost Report
                                                 </button>
@@ -572,21 +578,27 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>STAFF REPORTS </strong>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffPaysRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Pays
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffProgramPayType"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Program Pay Type
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffunderPayrollRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Funder Payroll Type
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-FunderPayrollRpt"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Funder Payroll Type
                                                 </button>
                                         </div>
                                         <div>
@@ -596,31 +608,31 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffAllowanceRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Allowances
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffProgramUtilisation"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Program Utilisation
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffClientServiced"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Clients Serviced
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffAdminRpt"  (click)="showModal(this.id)" disabled>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffAdminRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Admin Report
                                                 </button>
                                         </div> 
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Activity Report
                                                 </button>
@@ -1397,7 +1409,7 @@
                             </div>
                         </div>
                         <div nz-row>
-                            <div nz-col nzSpan="24">
+                            <div nz-col nzSpan="16">
                                 <div class="form-group">
                                     <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>
                                     <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>

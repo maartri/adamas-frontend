@@ -189,6 +189,9 @@ const inputFormDefault = {
         nz-date-picker{
             margin:5pt;
         }
+        .inner-content[_ngcontent-wws-c367] {
+            padding: 0px !important;
+        }
         
     `],
     templateUrl: './reports.html'
@@ -3291,7 +3294,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "Discharge During Period.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -3383,7 +3386,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "Absent Client Status Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -3472,7 +3475,7 @@ var strdate;
             let _blob: Blob = blob;
            
             let fileURL = URL.createObjectURL(_blob);
-            this.pdfTitle = "Reports.pdf"
+            this.pdfTitle = "Associate Listing.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
         }, err => {
@@ -3564,7 +3567,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "Unserviced Recipient Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -3642,7 +3645,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "Active Staff List.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -3720,7 +3723,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "InActive Staff.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -3798,7 +3801,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "Active Contractor List.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -3877,7 +3880,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "InActive Contractor List.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -3955,7 +3958,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "Active Volunteers.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -4034,7 +4037,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "InActive Volunteers.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {

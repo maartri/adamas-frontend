@@ -222,7 +222,8 @@ th.action{
 }
 .inner-content {   
     
-    min-height: 100pt !important;   
+    min-height: 100pt !important; 
+    padding: 0px !important;  
 }
 
 .ant-btn-rpts {

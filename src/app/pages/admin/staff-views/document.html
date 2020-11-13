@@ -21,24 +21,24 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ data.title  }}</td>
+                    <td nzBreakWord class="left">{{ data.title  }}</td>
                     <td>{{ data.status }}</td>
                     <td>{{ data.classification }}</td>
                     <td>{{ data.category }}</td>
-                    <td>{{ data.created | date: 'd/M/yyyy'  }}</td>
-                    <td>{{ data.author }}</td>
-                    <td>{{ data.modified | date: 'd/M/yyyy'  }}</td>
-                    <td>{{ data.filename }}</td>
-                    <td>{{ data.type }}</td>
-                    <td>
-                        <div class="limit-width">
+                    <td nzBreakWord>{{ data.created | date: 'd/M/yyyy'  }}</td>
+                    <td nzBreakWord>{{ data.author }}</td>
+                    <td nzBreakWord>{{ data.modified | date: 'd/M/yyyy'  }}</td>
+                    <td nzBreakWord>{{ data.filename }}</td>
+                    <td nzBreakWord>{{ data.type }}</td>
+                    <td nzBreakWord>
+                        
                             {{ data.originalLocation }}
-                        </div>
+                     
                     </td>
                     <td>
-                        <a (click)="showEditModal(i)">Download</a>
+                        <a (click)="downloadFile(i)">Download</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a (click)="showEditModal(i)">View</a>
+                        <a (click)="viewFile(i)">View</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>

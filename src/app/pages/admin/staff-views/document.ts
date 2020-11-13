@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 interface NewDocument{
     file: string,
@@ -78,6 +79,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
         private cd: ChangeDetectorRef,
+        private message: NzMessageService,
         private uploadS: UploadService
     ) {
         cd.reattach();
@@ -160,6 +162,64 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
 
     showEditModal(index: any) {
         
+    }
+
+    downloadFile(index: any){
+        var doc = this.tableData[index];
+        var notifId = this.globalS.loadingMessage('Downloading Document');
+        
+        this.uploadS.download({
+            PersonID: this.user.id,
+            Extension: doc.type,
+            FileName: doc.filename,
+            DocPath: doc.originalLocation
+        }).pipe(takeUntil(this.unsubscribe)).subscribe(blob => {
+
+            let data = window.URL.createObjectURL(blob);      
+            let link = document.createElement('a');
+            link.href = data;
+            link.download = doc.filename;
+            link.click();
+
+            setTimeout(() =>
+            {
+                // For Firefox it is necessary to delay revoking the ObjectURL
+                window.URL.revokeObjectURL(data);
+                this.message.remove(notifId);
+
+                this.globalS.sToast('Success','Download Complete');
+            }, 100);
+
+        }, err =>{
+            console.log(err);
+            this.globalS.eToast('Error', "Document can't be found");
+        })
+    }
+
+    reportTab: any;
+    viewFile(index: any){
+        var doc = this.tableData[index];
+
+        this.reportTab = window.open("", "_blank");
+
+        this.uploadS.getdocumentblob({
+            PersonID: this.user.id,
+            Extension: doc.type,
+            FileName: doc.filename,
+            DocPath: doc.originalLocation
+        }).subscribe(data => {
+          this.openDocumentTab(data);
+        }, (error: any) => {
+            this.reportTab.close();
+            this.globalS.eToast('Error','File not located')
+        })
+    }
+
+    openDocumentTab(data: any)
+    {
+        // this.fileDocumentName = data.fileName;
+        this.reportTab.location.href = `${data.path}`;   
+        this.reportTab.focus();
     }
 
     handleCancel(){

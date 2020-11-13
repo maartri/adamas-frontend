@@ -370,6 +370,18 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     return false;
   }
 
+  hehe(data: any){
+    console.log(data);
+  }
+
+  isMobile(data: any){
+    return data == 'MOBILE';
+  }
+
+  isPhoneFax(data: any){
+    return data == 'FAX' || data == 'HOME' || data == 'WORK';
+  }
+
   save(){
     
     const {
@@ -425,8 +437,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               }
           }
       }).filter(x => x);
-
-      
 
       this.staffS.poststaffprofile({
           Staff: {

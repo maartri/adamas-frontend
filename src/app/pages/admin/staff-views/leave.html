@@ -1,6 +1,6 @@
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add Leave</button>
+        <button class="botton success" (click)="putonLeaveModal = !putonLeaveModal">Add Leave</button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
             [nzData]="tableData">
             <thead>
@@ -42,8 +42,9 @@
     </div>
 </div>
 
+<app-leave-application *ngIf="user" [open]="putonLeaveModal" [user]="user"></app-leave-application>
 
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="'Leave Application'" (nzOnCancel)="handleCancel()" [nzStyle]="{ top: '20px' }">
+<!-- <nz-modal [(nzVisible)]="modalOpen" [nzTitle]="'Leave Application'" (nzOnCancel)="handleCancel()" [nzStyle]="{ top: '20px' }">
     <div nz-row [formGroup]="leaveGroup">
         <div nz-row>
             <nz-form-item >
@@ -114,4 +115,4 @@
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
         <button nz-button nzType="primary"  [nzLoading]="isLoading">Save</button>
     </div>
-</nz-modal>
+</nz-modal> -->

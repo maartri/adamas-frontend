@@ -18,7 +18,7 @@
                 <div nz-col nzSpan="8">
                     <div class="form-group">
                         <label for="">Type</label>
-                        <nz-select class="nzselect-min" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select a Program" >
+                        <nz-select class="nzselect-min" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="" >
                             <nz-option *ngFor="let d of typesArr" [nzLabel]="d" [nzValue]="d"></nz-option>
                         </nz-select>
                     </div>
@@ -187,7 +187,9 @@
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="12">
-                                <input type="text" formControlName="contact" placeholder="Details" nz-input>
+                                <input type="text" *ngIf="!isMobile(staff.value.contacttype) && !isPhoneFax(staff.value.contacttype)" formControlName="contact" placeholder="Details" nz-input>
+                                <app-phonefax *ngIf="isMobile(staff.value.contacttype)" [isMobile]="true" formControlName="contact"></app-phonefax>
+                                <app-phonefax *ngIf="isPhoneFax(staff.value.contacttype)" formControlName="contact"></app-phonefax>
                             </div>     
                         </ng-container>                             
                     </div>
@@ -237,7 +239,8 @@
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
                 <span>Previous</span>
             </button>
-            <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!nextRequired">
+            <!-- *ngIf="current < 3" [disabled]="!nextRequired" -->
+            <button nz-button nzType="default" (click)="next()" >
                 <span>Next</span>
             </button>
             <button nz-button nzType="primary" (click)="save()" *ngIf="current == 3" >

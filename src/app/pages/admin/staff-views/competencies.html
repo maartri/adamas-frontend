@@ -17,8 +17,8 @@
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
                 <td class="left">{{ data.competency  }}</td>
-                <td>{{ data.expiryDate | date: 'd/MM/y' }}</td>
-                <td>{{ data.reminderDate | date: 'd/MM/y'  }}</td>
+                <td>{{ data.expiryDate | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ data.reminderDate | date: 'dd/MM/yyyy'  }}</td>
                 <td>
                     <label nz-checkbox nzDisabled [ngModel]="data.mandatory" nzDisabled ></label>
                 </td>

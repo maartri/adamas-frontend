@@ -65,10 +65,10 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         unallocUnapproved: true,
         unallocMaster: false,
 
-        explanation: '',
-        activityCode: '',
-        payCode: '',
-        program: '',
+        explanation: null,
+        activityCode: null,
+        payCode: null,
+        program: null,
 
         programShow: false
     });
@@ -101,8 +101,8 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
   }
 
   save(){
-    const { dates, program, programShow} = this.leaveGroup.value;
-    const { tokenUser } = this.globalS.decode();
+    const { dates, program, programShow, explanation, payCode, activityCode, unallocAdmin, unallocMaster,makeUnavailable, unallocUnapproved } = this.leaveGroup.value;
+    const { tokenUser, user } = this.globalS.decode();
 
 
     const inputs = {
@@ -110,8 +110,17 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         toDate: format(dates[1],'yyyy/MM/dd'),
         program: programShow ? program : '',
         staffcode: this.user.code,
-        user: tokenUser
+        user: user,
+        explanation: explanation,
+        payCode: payCode,
+        activityCode: activityCode,
+        unallocAdmin: unallocAdmin,
+        makeUnavailable: makeUnavailable,
+        unallocMaster: unallocMaster,
+        unallocUnapproved: unallocUnapproved
     };
+
+    console.log(this.globalS.decode());
 
     this.timeS.postleaveentry(inputs)
         .subscribe(data => {

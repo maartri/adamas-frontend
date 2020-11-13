@@ -1096,4 +1096,13 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         this.handleCancel();
       });
   }
+
+  isMobile(data: any){
+    return data == 'MOBILE';
+  }
+
+  isPhoneFax(data: any){
+    return data == 'FAX' || data == 'HOME' || data == 'WORK';
+  }
+  
 }

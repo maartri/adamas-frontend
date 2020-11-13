@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isAdmin">
+<ng-container *ngIf="!isAdmin" >
     <div class="space-top" style="margin:3rem 0">
         <div class="form-group">
             <!-- <label for="" class="info">Profile Information</label> -->
@@ -172,7 +172,7 @@
 
 
 <ng-container *ngIf="isAdmin">
-    <div nz-row style="margin-top:2rem" nzGutter="16">
+    <div nz-row style="margin-top:2rem; background:#fff" nzGutter="16">
 
         <ng-container *ngIf="this.innerValue?.view == 'staff'">
             <div nz-col nzSpan="12">
@@ -536,7 +536,7 @@
             <div nz-col nzSpan="8">
                 <div class="form-group">
                     <label for="">Preferred Name</label>
-                    <input nz-input type="text" formControlName="preferredName">
+                    <input nz-input type="text"  oninput="this.value = this.value.toUpperCase()" formControlName="preferredName">
                 </div>
             </div>
         </div>
@@ -985,7 +985,7 @@
     <form nz-row nzGutter="16" nz-form [nzLayout]="'vertical'" [formGroup]="addressForm">
         <div nz-col nzSpan="12">
             <nz-form-item>
-                <nz-form-label>Description</nz-form-label>
+                <nz-form-label>Type</nz-form-label>
                 <nz-form-control nzErrorTip="Description is required!">
                     <nz-select formControlName="description" nzAllowClear nzPlaceHolder=""
                         [nzDropdownMatchSelectWidth]="false">
@@ -995,19 +995,19 @@
                 </nz-form-control>
             </nz-form-item>
         </div>
-        <div nz-col nzSpan="12">
+        <div nz-col nzSpan="24">
             <nz-form-item>
-                <nz-form-label>Suburb</nz-form-label>
-                <nz-form-control nzErrorTip="Suburb is required!">
-                    <suburb formControlName="pcodesuburb"></suburb>
+                <nz-form-label>Address</nz-form-label>
+                <nz-form-control nzErrorTip="Address is required!">
+                    <input nz-input type="text" formControlName="address" oninput="this.value = this.value.toUpperCase()">
                 </nz-form-control>
             </nz-form-item>
         </div>
         <div nz-col nzSpan="24">
             <nz-form-item>
-                <nz-form-label>Address</nz-form-label>
-                <nz-form-control nzErrorTip="Address is required!">
-                    <input nz-input type="text" formControlName="address">
+                <nz-form-label>Suburb</nz-form-label>
+                <nz-form-control nzErrorTip="Suburb is required!">
+                    <suburb formControlName="pcodesuburb"></suburb>
                 </nz-form-control>
             </nz-form-item>
         </div>
@@ -1042,7 +1042,12 @@
             <nz-form-item>
                 <nz-form-label>Details</nz-form-label>
                 <nz-form-control nzErrorTip="Contact Details is required!">
-                    <input nz-input type="text" formControlName="details">
+                    <!-- <input nz-input type="text" formControlName="details"> -->
+
+                    <input type="text" *ngIf="!isMobile(contactForm.get('type').value) && !isPhoneFax(contactForm.get('type').value)" formControlName="details" placeholder="Details" nz-input>
+                    <app-phonefax *ngIf="isMobile(contactForm.get('type').value)" [isMobile]="true" formControlName="details"></app-phonefax>
+                    <app-phonefax *ngIf="isPhoneFax(contactForm.get('type').value)" formControlName="details"></app-phonefax>
+
                 </nz-form-control>
             </nz-form-item>
         </div>

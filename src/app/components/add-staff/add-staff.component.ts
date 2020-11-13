@@ -371,10 +371,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     return false;
   }
 
-  hehe(data: any){
-    console.log(data);
-  }
-
   isMobile(data: any){
     return data == 'MOBILE';
   }

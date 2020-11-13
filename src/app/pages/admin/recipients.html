@@ -1,69 +1,71 @@
-<div nz-row>
-    <div nz-col nzSpan="24" class="recipient-controls">
-        <button class="botton success" (click)="newReferralModal = !newReferralModal"><i nz-icon nzType="plus" nzTheme="outline"></i> New Referral</button>
-        <button class="botton sea" (click)="newOtherModal = true"><i nz-icon nzType="check-circle" nzTheme="outline"></i> New Other</button>
-        <button class="botton warn" (click)="quoteModal = true"><i nz-icon nzType="form" nzTheme="outline"></i> Quote</button>
-        <button class="botton other" (click)="saveModal = true"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Save</button>
+<div style="padding:8px">
+    <div nz-row>
+        <div nz-col nzSpan="24" class="recipient-controls">
+            <button class="botton success" (click)="newReferralModal = !newReferralModal"><i nz-icon nzType="plus" nzTheme="outline"></i> New Referral</button>
+            <button class="botton sea" (click)="newOtherModal = true"><i nz-icon nzType="check-circle" nzTheme="outline"></i> New Other</button>
+            <button class="botton warn" (click)="quoteModal = true"><i nz-icon nzType="form" nzTheme="outline"></i> Quote</button>
+            <button class="botton other" (click)="saveModal = true"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Save</button>
+        </div>
     </div>
-</div>
-<div nz-row>
+    <div nz-row>
+        
+        <div nz-col nzSpan="6" style="margin-top: 10px;">
+            <app-search-list [view]="0" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+        </div>
     
-    <div nz-col nzSpan="6" style="margin-top: 10px;">
-        <app-search-list [view]="0" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
-    </div>
-
-    <div nz-col nzSpan="18">
-        <ul class="options">
-            <li><button (click)="clicky(0)" [disabled]="status?.b_IsDead || status == null"><div><i class="fas fa-file"></i></div>Refer In</button></li>
-            <li><button (click)="clicky(1)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-file-alt"></i></div>Refer On</button></li>
-            <li><button (click)="clicky(2)" [disabled]="status?.b_IsDead || !status?.b_HasReferrals"><div><i class="fas fa-hand-paper"></i></div>Not Proceed</button></li>
-            <li><button (click)="clicky(3)" [disabled]="status?.b_IsDead || !status?.b_HasReferrals"><div><i class="fas fa-comment-dots"></i></div>Assess</button></li>
-            <li><button (click)="clicky(4)" [disabled]="status?.b_IsDead || !status?.b_HasReferrals"><div><i class="fas fa-file-invoice"></i></div>Admit</button></li>
-            <li><button (click)="clicky(5)" [disabled]="status?.b_IsDead || !status?.b_HasActivePrograms"><div><i class="fas fa-hourglass-half"></i></div>Wait List</button></li>
-            <li><button (click)="clicky(6)" [disabled]="status?.b_IsDead || !status?.b_HasActivePrograms"><div><i class="fas fa-user-check"></i></div>Discharge</button></li>
-            <li><button (click)="clicky(7)" [disabled]="status?.b_IsDead || !status?.b_HasActivePrograms"><div><i class="fas fa-folder-minus"></i></div>Suspend</button></li>
-            <li><button (click)="clicky(8)" [disabled]="status?.b_IsDead || (!status?.b_HasOnHoldPrograms && !status?.b_HasOnHoldServices)"><div><i class="fas fa-folder-plus"></i></div>Reinstate</button></li>
-            <li><button (click)="clicky(9)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-procedures"></i></div>Decease</button></li>
-            <li><button (click)="clicky(10)" [disabled]="status == null"><div><i class="fas fa-address-book"></i></div>Admin</button></li>
-            <li><button (click)="clicky(11)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-th-list"></i></div>Item</button></li>
-        </ul>
-    </div>
-
-    <!-- <select [(ngModel)]="user" (ngModelChange)="change($event)">
-        <option value=""></option>
-        <option value="ABBERTON B">ABBERTON B</option>
-        <option value="*****AAAZ T">*****AAAZ T</option>
-        <option value="3CDC STEPH">3CDC STEPH</option>
-    </select> -->
-
-    <div nz-col nzSpan="24">
-        <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzType]="'card'">
-            <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
-            <nz-tab nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
-            <nz-tab nzTitle="Intake Details" (nzClick)="view(2)"></nz-tab>
-            <nz-tab nzTitle="Reminders" (nzClick)="view(3)"> </nz-tab>
-            <nz-tab nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>
-            <nz-tab nzTitle="Case Notes" (nzClick)="view(5)"> </nz-tab>
-            <nz-tab nzTitle="Incidents" (nzClick)="view(6)"> </nz-tab>
-            <nz-tab nzTitle="Permanent Roster" (nzClick)="view(7)"> </nz-tab>
-            <nz-tab nzTitle="History" (nzClick)="view(8)"> </nz-tab>
-            <nz-tab nzTitle="Insurance & Pension" (nzClick)="view(9)"> </nz-tab>
-            <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
-        </nz-tabset>
-    </div>
-
-    <nz-empty *ngIf="user == null" style="margin-top:8rem"
-        nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg" [nzNotFoundContent]="contentTpl">
-        <ng-template #contentTpl>
-            <p>Select Recipient</p>
-        </ng-template>
-    </nz-empty>
+        <div nz-col nzSpan="18">
+            <ul class="options">
+                <li><button (click)="clicky(0)" [disabled]="status?.b_IsDead || status == null"><div><i class="fas fa-file"></i></div>Refer In</button></li>
+                <li><button (click)="clicky(1)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-file-alt"></i></div>Refer On</button></li>
+                <li><button (click)="clicky(2)" [disabled]="status?.b_IsDead || !status?.b_HasReferrals"><div><i class="fas fa-hand-paper"></i></div>Not Proceed</button></li>
+                <li><button (click)="clicky(3)" [disabled]="status?.b_IsDead || !status?.b_HasReferrals"><div><i class="fas fa-comment-dots"></i></div>Assess</button></li>
+                <li><button (click)="clicky(4)" [disabled]="status?.b_IsDead || !status?.b_HasReferrals"><div><i class="fas fa-file-invoice"></i></div>Admit</button></li>
+                <li><button (click)="clicky(5)" [disabled]="status?.b_IsDead || !status?.b_HasActivePrograms"><div><i class="fas fa-hourglass-half"></i></div>Wait List</button></li>
+                <li><button (click)="clicky(6)" [disabled]="status?.b_IsDead || !status?.b_HasActivePrograms"><div><i class="fas fa-user-check"></i></div>Discharge</button></li>
+                <li><button (click)="clicky(7)" [disabled]="status?.b_IsDead || !status?.b_HasActivePrograms"><div><i class="fas fa-folder-minus"></i></div>Suspend</button></li>
+                <li><button (click)="clicky(8)" [disabled]="status?.b_IsDead || (!status?.b_HasOnHoldPrograms && !status?.b_HasOnHoldServices)"><div><i class="fas fa-folder-plus"></i></div>Reinstate</button></li>
+                <li><button (click)="clicky(9)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-procedures"></i></div>Decease</button></li>
+                <li><button (click)="clicky(10)" [disabled]="status == null"><div><i class="fas fa-address-book"></i></div>Admin</button></li>
+                <li><button (click)="clicky(11)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-th-list"></i></div>Item</button></li>
+            </ul>
+        </div>
     
-    <div nz-col nzSpan="24">
-        <router-outlet></router-outlet>
+        <!-- <select [(ngModel)]="user" (ngModelChange)="change($event)">
+            <option value=""></option>
+            <option value="ABBERTON B">ABBERTON B</option>
+            <option value="*****AAAZ T">*****AAAZ T</option>
+            <option value="3CDC STEPH">3CDC STEPH</option>
+        </select> -->
+    
+        <div nz-col nzSpan="24">
+            <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzType]="'card'">
+                <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
+                <nz-tab nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
+                <nz-tab nzTitle="Intake Details" (nzClick)="view(2)"></nz-tab>
+                <nz-tab nzTitle="Reminders" (nzClick)="view(3)"> </nz-tab>
+                <nz-tab nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>
+                <nz-tab nzTitle="Case Notes" (nzClick)="view(5)"> </nz-tab>
+                <nz-tab nzTitle="Incidents" (nzClick)="view(6)"> </nz-tab>
+                <nz-tab nzTitle="Permanent Roster" (nzClick)="view(7)"> </nz-tab>
+                <nz-tab nzTitle="History" (nzClick)="view(8)"> </nz-tab>
+                <nz-tab nzTitle="Insurance & Pension" (nzClick)="view(9)"> </nz-tab>
+                <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
+            </nz-tabset>
+        </div>
+    
+        <nz-empty *ngIf="user == null" style="margin-top:8rem"
+            nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg" [nzNotFoundContent]="contentTpl">
+            <ng-template #contentTpl>
+                <p>Select Recipient</p>
+            </ng-template>
+        </nz-empty>
+        
+        <div nz-col nzSpan="24">
+            <router-outlet></router-outlet>
+        </div>
     </div>
+    
 </div>
-
 
 
 <app-add-referral [open]="newReferralModal" [type]="'referral'" (openRefer)="openReferModal($event)"></app-add-referral>

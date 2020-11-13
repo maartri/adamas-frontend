@@ -11,7 +11,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core'
         grid-gap: 1rem;
         width: 50%;
         margin: 0 auto;
-        margin-top: 5%;
+        padding-top: 5%;
       }
       figure{
         min-width:4rem;

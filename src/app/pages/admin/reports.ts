@@ -161,6 +161,9 @@ const inputFormDefault = {
             width: 200pt !important;
             text-align: left !important;
         }
+        .inner-content{
+            padding: 0px !important;
+        }
         .btn{
             border:none;
             cursor:pointer;
@@ -4122,7 +4125,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "Staff User Permissions.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {
@@ -4183,7 +4186,7 @@ var strdate;
         let _blob: Blob = blob;
        
         let fileURL = URL.createObjectURL(_blob);
-        this.pdfTitle = "Reports.pdf"
+        this.pdfTitle = "Meal Order Repo.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
 
     }, err => {

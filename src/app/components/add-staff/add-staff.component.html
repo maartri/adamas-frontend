@@ -240,7 +240,7 @@
                 <span>Previous</span>
             </button>
             <!-- *ngIf="current < 3" [disabled]="!nextRequired" -->
-            <button nz-button nzType="default" (click)="next()" >
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!nextRequired">
                 <span>Next</span>
             </button>
             <button nz-button nzType="primary" (click)="save()" *ngIf="current == 3" >

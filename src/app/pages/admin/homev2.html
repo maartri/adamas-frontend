@@ -3,6 +3,7 @@
         [nzZeroTrigger]="zeroTrigger">
         <div class="logo"></div>
         <ul nz-menu [nzMode]="'vertical'" nzTheme="dark" class="main-list">
+            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/landing"><i nz-icon nzType="home" nzTheme="outline"></i> Home</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/daymanager"><i nz-icon class="material-icons"> date_range </i> Day Manager</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/recipient"><i nz-icon class="material-icons"> people_alt </i> Recipients</li>
             <li nz-menu-item routerLinkActive="ant-menu-item-selected" routerLink="/admin/staff"><i class="fas fa-user-nurse staff-icon-fix"></i> Staff</li>

@@ -452,7 +452,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'daymanager',
+        redirectTo: 'landing',
         pathMatch: 'full'
       },
       {

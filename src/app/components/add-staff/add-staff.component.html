@@ -67,7 +67,7 @@
                             <div nz-col nzSpan="24">
                                 <div class="form-group">
                                     <label for="">Account Name</label>
-                                    <input type="text" formControlName="accountNo" class="text-upper" nz-input />
+                                    <input type="text" formControlName="accountNo" nz-input />
                                 </div>
                                 <nz-alert *ngIf="accountTaken == false" nzType="success" nzMessage="Account Valid"></nz-alert>
                                 <nz-alert *ngIf="accountTaken" nzType="error" nzMessage="Account Taken"></nz-alert>
@@ -157,16 +157,18 @@
 
                     <div nz-row class="list-group" nzGutter="24" formArrayName="addressForm" *ngFor="let staff of staffForm.get('addressForm')['controls']; let i = index;">
                         <ng-container [formGroupName]="i">
-                            <div nz-col class="form-group" nzSpan="24">
-                                <input type="text" formControlName="address1" placeholder="Address" nz-input>
-                            </div>
+                     
                             <div nz-col nzSpan="12">
-                                <nz-select style="width:100%" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Type" >
+                                <nz-select style="width:100%;margin-bottom:10px" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Type" >
                                     <nz-option *ngFor="let d of addressType" [nzLabel]="d" [nzValue]="d"></nz-option>
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="12">
                                 <suburb formControlName="suburb"></suburb>
+                            </div>
+                            
+                            <div nz-col class="form-group" nzSpan="24">
+                                <input type="text" formControlName="address1" placeholder="Address" nz-input>
                             </div>
                         </ng-container>                        
                     </div>

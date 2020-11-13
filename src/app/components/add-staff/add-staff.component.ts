@@ -182,9 +182,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           return EMPTY;
         })
       ).subscribe(next => {
-
+        var haha = this.titleCase.transform(this.generatedAccount);
+        console.log(haha);
         this.staffForm.patchValue({
-          accountNo: this.generatedAccount.toUpperCase()
+          accountNo: haha
         }, { emitEvent: false});
 
 

@@ -7,6 +7,8 @@ import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
+import { TitleCasePipe } from '@angular/common';
+
 import { ProfileInterface} from '@modules/modules';
 
 const noop = () => {
@@ -45,7 +47,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
   postLoading: boolean = false;  
 
   selected: any;
-
   current: number = 0;
   loading: boolean;
 
@@ -57,7 +58,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
     private listS: ListService,
     private formBuilder: FormBuilder,
     private cd: ChangeDetectorRef,
-    private http: HttpClient
+    private http: HttpClient,
+    private titleCase: TitleCasePipe
   ) { }
 
   ngOnInit(): void {

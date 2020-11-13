@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group">
                         <h3>{{ user?.uniqueID || '-' }}</h3>
-                        <h2 class="highlight">{{ user?.title }} {{ user?.firstName }} {{ user?.middleNames }} {{ user?.lastName || user?.surnameOrg  }}<span
+                        <h2 class="highlight">{{ user?.title  | titlecase  }} {{ user?.firstName  | titlecase  }} {{ user?.middleNames | titlecase  }} {{ (user?.lastName || user?.surnameOrg)  | titlecase   }}<span
                                 *ngIf="user?.preferredName" style="color:#8c928e">({{ user?.preferredName }})</span></h2>
                     </div>
                 </div>                
@@ -190,7 +190,7 @@
                         </div>
                         <div class="form-group">
                             <h3>{{ user?.uniqueID || '-' }}</h3>
-                            <h2 class="highlight">{{ user?.title }} {{ user?.firstName }} {{ user?.middleNames }} {{ user?.lastName }}<span *ngIf="user?.preferredName" style="color:#8c928e">({{ user?.preferredName }})</span></h2>
+                            <h2 class="highlight">{{ user?.title | titlecase }} {{ user?.firstName  | titlecase }} {{ user?.middleNames | titlecase }} {{ user?.lastName | titlecase }}<span *ngIf="user?.preferredName" style="color:#8c928e">({{ user?.preferredName }})</span></h2>
                         </div>
                     </div>
                     <div nz-row nzGutter="16">

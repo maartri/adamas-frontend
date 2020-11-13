@@ -15,8 +15,8 @@
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
                     <td class="left">{{ data.alert  }}</td>
-                    <td>{{ data.reminderDate | date: 'dd/MM/y' }}</td>
-                    <td>{{ data.dueDate | date: 'dd/MM/y'  }}</td>
+                    <td>{{ data.reminderDate | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ data.dueDate | date: 'dd/MM/yyyy'  }}</td>
                     <td>{{ data.notes || '-' }}</td>
                     <td>
                         <a (click)="showEditModal(i)">Update</a>

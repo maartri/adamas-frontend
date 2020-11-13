@@ -37,7 +37,7 @@
                             <div nz-col nzSpan="8">
                                 <div class="form-group">
                                     <label for="">Gender</label>
-                                    <nz-select formControlName="gender" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                    <nz-select formControlName="gender" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Select an Incident Type" >
                                         <nz-option *ngFor="let d of genderArr" [nzLabel]="d" [nzValue]="d"></nz-option>
                                     </nz-select>
                                 </div>
@@ -162,14 +162,16 @@
                                 <nz-select style="width:100%;margin-bottom:10px" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Type" >
                                     <nz-option *ngFor="let d of addressType" [nzLabel]="d" [nzValue]="d"></nz-option>
                                 </nz-select>
-                            </div>
-                            <div nz-col nzSpan="12">
-                                <suburb formControlName="suburb"></suburb>
-                            </div>
-                            
+                            </div>                
+
                             <div nz-col class="form-group" nzSpan="24">
                                 <input type="text" formControlName="address1" placeholder="Address" nz-input>
                             </div>
+
+                            <div nz-col nzSpan="24">
+                                <suburb [placeholder]="'Suburb/Postcode'" formControlName="suburb"></suburb>
+                            </div>
+
                         </ng-container>                        
                     </div>
                </div>

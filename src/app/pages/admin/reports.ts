@@ -1871,7 +1871,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
    // console.log(lblcriteria)
 
    
@@ -1972,7 +1972,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
     
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2062,7 +2062,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2155,7 +2155,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2247,7 +2247,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2329,7 +2329,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2388,7 +2388,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2478,7 +2478,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2570,7 +2570,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2662,7 +2662,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2752,7 +2752,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2835,7 +2835,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2919,7 +2919,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3003,7 +3003,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3086,7 +3086,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3178,7 +3178,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3272,7 +3272,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
    // console.log(lblcriteria)               
     this.drawerVisible = true;
 
@@ -3364,7 +3364,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3452,7 +3452,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
    // console.log(lblcriteria)
 
    
@@ -3545,7 +3545,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3623,7 +3623,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3701,7 +3701,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3779,7 +3779,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3858,7 +3858,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3936,7 +3936,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4015,7 +4015,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4100,7 +4100,7 @@ var  tempsdate,tempedate,strdate,endate;
              */                                               
         fQuery = fQuery + "ORDER BY [NAME] "
         
-  ///  //console.log(fQuery)
+  ///  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4161,7 +4161,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                  
         fQuery = fQuery + "  ORDER BY [CLIENT CODE],DATE "
         
-  ///  //console.log(fQuery)
+  ///  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4234,7 +4234,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " Order By DatasetGroup, [Date]  "
         
-    ///  //console.log(fQuery)
+    ///  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4317,7 +4317,7 @@ var  tempsdate,tempedate,strdate,endate;
         fQuery = fQuery + "AND IT.[MINORGROUP] IN ('FULL DAY-HOSPITAL', 'FULL DAY-RESPITE', 'FULL DAY-SOCIAL LEAVE', 'FULL DAY-TRANSITION') ) AS T"                                          
         fQuery = fQuery + " GROUP BY [CLIENT CODE], CDC_Level, [LEAVETYPE], RANKDATE, BRANCH  "
         
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4389,7 +4389,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY HR.Name, R.AccountNo, PB.[Date]  "
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4487,7 +4487,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY DATE  "
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4581,7 +4581,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY HumanResources.Name "
         
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4638,7 +4638,7 @@ var  tempsdate,tempedate,strdate,endate;
                                              
         fQuery = fQuery + " ORDER BY  ACCOUNTNO  "
         
-   //   //console.log(fQuery)
+   //   ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4721,7 +4721,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY [AccountNo], [STF_DEPARTMENT], [StaffGroup] "
         
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4825,7 +4825,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY Staff.[LastName], Staff.[FirstName] "
         
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4915,7 +4915,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + "  ORDER BY [Carer Code], Date, [Start Time] "
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5006,7 +5006,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time]  "
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5097,7 +5097,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time]  "
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5190,7 +5190,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY HumanResources.Name "
         
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5309,7 +5309,7 @@ var  tempsdate,tempedate,strdate,endate;
         fQuery = fQuery +    "AND ExtraDetail1 = 'CASENOTE'  AND (History.DeletedRecord = 0)  ) ROP"                                 
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated  "
         
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5416,7 +5416,7 @@ var  tempsdate,tempedate,strdate,endate;
         fQuery = fQuery +    "AND ExtraDetail1 = 'SVCNOTE'  AND (History.DeletedRecord = 0)  ) ROP "                                 
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated   "
         
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5523,7 +5523,7 @@ var  tempsdate,tempedate,strdate,endate;
         fQuery = fQuery +    "  AND (History.DeletedRecord = 0)  ) ROP"
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated   "
         
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5596,7 +5596,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                  
         fQuery = fQuery + " ORDER BY R.AccountNo, CarePlanName   "
         
-  ///  //console.log(fQuery)
+  ///  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5684,7 +5684,7 @@ var  tempsdate,tempedate,strdate,endate;
        
         fQuery = fQuery + " ORDER BY ACCOUNTNO, DATE,STARTTIME ASC "
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5766,7 +5766,7 @@ var  tempsdate,tempedate,strdate,endate;
        
       
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5855,7 +5855,7 @@ var  tempsdate,tempedate,strdate,endate;
         fQuery = fQuery +    "ORDER BY Staff.[LastName], History.DetailDate "
       
         
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5962,7 +5962,7 @@ var  tempsdate,tempedate,strdate,endate;
        
         fQuery = fQuery + " ORDER BY Staff.[LastName], History.DetailDate   "
         
-//console.log(fQuery)
+////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -6060,7 +6060,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY DATE  "
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -6179,7 +6179,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    //console.log(fQuery)
+    ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -6255,7 +6255,7 @@ var  tempsdate,tempedate,strdate,endate;
 
         fQuery = fQuery + " ORDER BY ActionDate "
         
-        console.log(fQuery)
+        //console.log(fQuery)
         
             this.drawerVisible = true;
         
@@ -6314,7 +6314,7 @@ var  tempsdate,tempedate,strdate,endate;
 
             fQuery = fQuery + " ORDER BY H.[NAME], S.[SERVICE TYPE] "
         
-            //console.log(fQuery)
+            ////console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -6417,7 +6417,7 @@ var  tempsdate,tempedate,strdate,endate;
 
             fQuery = fQuery + "  ORDER BY staffcode, [Date], [Start Time] "
         
-            console.log(fQuery)
+            //console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -6515,7 +6515,7 @@ var  tempsdate,tempedate,strdate,endate;
 
             fQuery = fQuery + " ORDER BY [Carer Code], [Date], [Start Time], [Client Code]  "
         
-            console.log(fQuery)
+            //console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -6617,7 +6617,7 @@ var  tempsdate,tempedate,strdate,endate;
 
             fQuery = fQuery + "  ORDER BY staffcode, [Date], [Start Time] "
         
-            //console.log(fQuery)
+            ////console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -6707,7 +6707,7 @@ var  tempsdate,tempedate,strdate,endate;
 
             fQuery = fQuery + " ORDER BY Recipients.AccountNo "
         
-        //    //console.log(fQuery)
+        //    ////console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -7098,7 +7098,7 @@ var  tempsdate,tempedate,strdate,endate;
 
         
         
-        //console.log(fQuery)
+        ////console.log(fQuery)
        
         
             this.drawerVisible = true;
@@ -7443,7 +7443,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + "ORDER BY [Service Description], [Program], Date, [Start Time]";
                
-        //console.log(fQuery)
+        ////console.log(fQuery)
 
        switch (format) {
         case "Detailed":
@@ -7796,7 +7796,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], Date, [Service Type], [Start Time]";
                
-       // //console.log(fQuery)
+       // ////console.log(fQuery)
 
        switch (format) {
         case "Detailed":
@@ -8225,7 +8225,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                
                
-        //console.log(fQuery)
+        ////console.log(fQuery)
        
         
             this.drawerVisible = true;
@@ -8566,7 +8566,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + " ORDER BY [Program], [Client Code], Date, [Start Time]";
                
-     //   //console.log(fQuery)
+     //   ////console.log(fQuery)
      switch (format) {
         case "Detailed":
             Title = Title + "-Detail"            
@@ -8665,7 +8665,7 @@ var  tempsdate,tempedate,strdate,endate;
 
             fQuery = fQuery + " ORDER BY H.[Name], I.TITLE "
         
-           // //console.log(fQuery)
+           // ////console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -8757,7 +8757,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
    // console.log(lblcriteria)
 
    
@@ -9074,7 +9074,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + " ORDER BY [Service Type], [Anal], Date, [Start Time] ";
                
-       // //console.log(fQuery)
+       // ////console.log(fQuery)
 
        switch (format) {
         case "Detailed":
@@ -9422,7 +9422,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], [Service Type], Date, [Start Time]";
                
-//        //console.log(fQuery)
+//        ////console.log(fQuery)
 
             switch (format) {
                 case "Detailed":
@@ -9771,7 +9771,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + "ORDER BY [Service Type], [Client Code], Date, [Start Time]";
                
-      //console.log(fQuery)
+      ////console.log(fQuery)
 
       switch (format) {
         case "Detailed":
@@ -10119,7 +10119,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], [Client Code], Date, [Start Time]";
                
-       //console.log(fQuery)
+       ////console.log(fQuery)
 
        switch (format) {
         case "Detailed":
@@ -10468,7 +10468,7 @@ var  tempsdate,tempedate,strdate,endate;
          fQuery = fQuery + "And ([Roster].[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4))"
                 fQuery = fQuery + "ORDER BY [Carer Code], [Service Description], Date, [Start Time]";
                
-        //console.log(fQuery)
+        ////console.log(fQuery)
 
         switch (format) {
             case "Detailed":
@@ -10816,7 +10816,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], [Program], [Service Description], Date, [Start Time]";
                
-        //console.log(fQuery)
+        ////console.log(fQuery)
 
         switch (format) {
             case "Detailed":
@@ -11157,7 +11157,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], PayrollType, Date, [Start Time]";
                
-      //console.log(fQuery)
+      ////console.log(fQuery)
 
       switch (format) {
         case "Detailed":
@@ -11498,7 +11498,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + " ORDER BY [MDS], PayrollType, Date, [Start Time]";
                
-        //console.log(fQuery)
+        ////console.log(fQuery)
 
       switch (format) {
         case "Detailed":
@@ -11593,7 +11593,7 @@ var  tempsdate,tempedate,strdate,endate;
 
         fQuery = fQuery + " ORDER BY  ACCOUNTNO"
         
-        //console.log(fQuery)
+        ////console.log(fQuery)
         
             this.drawerVisible = true;
         
@@ -11910,7 +11910,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + " ORDER BY [HumanResourceTypes].[Type], ItemTypes.HACCType, [Service Type], Date, [Start Time]";
                
-      //console.log(fQuery)
+      ////console.log(fQuery)
 
         
             this.drawerVisible = true;
@@ -12249,7 +12249,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + " ORDER BY [MDSType], [Client Code], Date, [Start Time] ";
                
-    //    //console.log(fQuery) 
+    //    ////console.log(fQuery) 
     switch (format) {
         case "Detailed":
             Title = Title + "-Detail"            
@@ -12368,7 +12368,7 @@ var  tempsdate,tempedate,strdate,endate;
         fQuery = fQuery + " ORDER BY  [Date], [Service Type], [Program]"                                          
     
         
-  //  //console.log(fQuery)
+  //  ////console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -12683,7 +12683,7 @@ var  tempsdate,tempedate,strdate,endate;
                
                 fQuery = fQuery + " ORDER BY [Service Type], [Client Code], Date, [Start Time] ";
                
-       // //console.log(fQuery) 
+       // ////console.log(fQuery) 
        switch (format) {
         case "Detailed":
             Title = Title + "-Detail"            
@@ -13033,7 +13033,7 @@ var  tempsdate,tempedate,strdate,endate;
 
         
         
-        //console.log(fQuery)
+        ////console.log(fQuery)
 
        switch (format) {
         case "Detailed":
@@ -13379,7 +13379,7 @@ var  tempsdate,tempedate,strdate,endate;
                 var Report_Definer = " "                
                 fQuery = fQuery + " ORDER BY [Carer Code], [Service Description], Date, [Start Time]"
             
-            //console.log(fQuery)
+            ////console.log(fQuery)
 
                 switch (format) {
                     case "Detailed":
@@ -13500,7 +13500,7 @@ var  tempsdate,tempedate,strdate,endate;
         fQuery = fQuery + " ) t group by [client code], [service type]  ORDER BY [Client Code], [Service Type]"                                          
     
         
-   // //console.log(fQuery)
+   // ////console.log(fQuery)
 
     this.drawerVisible = true;
 

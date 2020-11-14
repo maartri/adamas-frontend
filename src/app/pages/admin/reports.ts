@@ -7,7 +7,7 @@ import { ListService, states, TimeSheetService } from '@services/index';
 import * as FileSaver from 'file-saver';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
-import { EventInputTransformer } from '@fullcalendar/angular';
+import { EventInputTransformer, whenTransitionDone } from '@fullcalendar/angular';
 import { getDate } from 'date-fns';
 import { now } from 'lodash';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
@@ -1707,19 +1707,19 @@ var  tempsdate,tempedate,strdate,endate;
                 this.StaffCompetencyRenewal(s_Branches,s_Staff,s_Competencies,s_Managers,s_StaffTeam,s_CompetencyGroups,strdate,endate)
                 break;
             case 'btn-Systm-AuditRegister':
-                this.AuditRegister(s_who,s_Description,s_TraccsUser,strdate,endate)
+                this.AuditRegister(s_who,s_Description,s_TraccsUser,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-Systm-ActivityStatusAudit':
                 this.ProgramActivityStatusAudit(s_Programs)
                 break;
             case 'btn-Systm-MTARegister':
-                this.MTARegister(s_Programs,s_Managers,s_Staff,s_StfGroup,s_Recipient,strdate,endate)
+                this.MTARegister(s_Programs,s_Managers,s_Staff,s_StfGroup,s_Recipient,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-Systm-RosterOverlap':
-                this.RosterOverlapRegister(s_Programs,s_Branches,s_Staff,s_Recipient,strdate,endate)
+                this.RosterOverlapRegister(s_Programs,s_Branches,s_Staff,s_Recipient,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-Systm- MTAVerification':
-                this.MTAVerificationAudit(s_Programs,s_Managers,s_Staff,s_StfGroup,s_Recipient,strdate,endate)
+                this.MTAVerificationAudit(s_Programs,s_Managers,s_Staff,s_StfGroup,s_Recipient,strdate,endate,tempsdate,tempedate)
                 break;                                
             case 'btn-FORPT-ProgramUtilisation':               
                 this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
@@ -6217,13 +6217,13 @@ var  tempsdate,tempedate,strdate,endate;
         console.log(err);
     });        
     }
-    AuditRegister(who,descibe,traccsuser,startdate,enddate){
+    AuditRegister(who,descibe,traccsuser,startdate,enddate,tempsdate,tempedate){
 
         var fQuery = "SELECT RecordNumber,format( ActionDate,'dd/MM/yyyy') as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
         var lblcriteria;
             
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " (ActionDate  >=  '" +startdate + ("' AND ActionDate <  '") + enddate  +  "' )";
+            this.s_DateSQL = " (ActionDate  >=  '" +tempsdate + ("' AND ActionDate <  '") + tempedate  +  "' )";
             if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
         }
         if(traccsuser != ""){
@@ -6231,12 +6231,12 @@ var  tempsdate,tempedate,strdate,endate;
             if (this.s_TraccsuserSQL != ""){ fQuery = fQuery + " AND " + this.s_TraccsuserSQL};
         }
         if(descibe != ""){
-            this.s_DescribeSQL = "AuditDescription like ('" + descibe.join("','")  +  "')";            
-            if (this.s_DescribeSQL != ""){ fQuery = fQuery + " AND " + this.s_DescribeSQL};
+            this.s_DescribeSQL = "AuditDescription like ('" + descibe  +  "')";            
+          //  if (this.s_DescribeSQL != ""){ fQuery = fQuery + " AND " + this.s_DescribeSQL};
         }
         if(who != ""){
-            this.s_whowhatSQL = "whowhatcode like ('" + who.join("','")  +  "')";            
-            if (this.s_whowhatSQL != ""){ fQuery = fQuery + " AND " + this.s_whowhatSQL};
+            this.s_whowhatSQL = "whowhatcode like ('" + whenTransitionDone  +  "')";            
+          //  if (this.s_whowhatSQL != ""){ fQuery = fQuery + " AND " + this.s_whowhatSQL};
         }
 
         if (startdate != ""){ 
@@ -6246,16 +6246,16 @@ var  tempsdate,tempedate,strdate,endate;
             lblcriteria =lblcriteria + " Traccs Users: " + traccsuser.join(",")+ "; "}
             else{lblcriteria = lblcriteria + "All Users,"}
         if (descibe != ""){ 
-            lblcriteria =lblcriteria + " Description: " + descibe.join(",")+ "; "}
+            lblcriteria =lblcriteria + " Description: " + descibe + "; "}
             else{lblcriteria = lblcriteria + "All Descriptions,"}
         if (who != ""){ 
-            lblcriteria =lblcriteria + " Who/What: " + who.join(",")+ "; "}
+            lblcriteria =lblcriteria + " Who/What: " + who + "; "}
             else{lblcriteria = lblcriteria + "All Who/what,"}
 
 
         fQuery = fQuery + " ORDER BY ActionDate "
         
-        //console.log(fQuery)
+        console.log(fQuery)
         
             this.drawerVisible = true;
         
@@ -6300,6 +6300,8 @@ var  tempsdate,tempedate,strdate,endate;
 
         var fQuery = "SELECT H.[NAME], H.[TYPE], S.[SERVICE TYPE], S.SERVICESTATUS FROM HUMANRESOURCETYPES H INNER JOIN SERVICEOVERVIEW S ON CONVERT(VARCHAR(15),H.RECORDNUMBER) = S.PERSONID WHERE [GROUP] = 'PROGRAMS' AND (ENDDATE >= getDate() OR ENDDATE IS NULL) ";
         var lblcriteria;
+
+        
 
         if(program != ""){
             this.s_ProgramSQL = " ([Program] in ('" + program.join("','")  +  "'))";
@@ -6354,17 +6356,18 @@ var  tempsdate,tempedate,strdate,endate;
     
     
     }
-    MTARegister(program,manager,Staff,stfgroup,recipient,startdate,enddate){
+    MTARegister(program,manager,Staff,stfgroup,recipient,startdate,enddate,tempsdate,tempedate){
         
-        
-        var fQuery = "select t0.*, ez.jobno, Convert(varchar(5),ez.datetime,108) AS ActualStart, DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS StartVAR,Convert(varchar(5), ez.lodatetime,108) AS ActualEnd,  DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) AS EndVAR, Round(ez.WorkDuration * 60, 0) AS [ActualDuration], DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) - DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS [DurationVAR], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF' WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF' ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON' WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.PANNoGoTH,     re.PANNoWorkTH,     re.PANEarlyStartTH,     re.PANLateStartTH,     re.PANEarlyFinishTH,     re.PANLateFinishTH,     re.PANOverstayTH,     re.PANUnderstayTH,     re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ', ' +     CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE            WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting            WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]'            WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where  (ro.[Carer Code] > '!MULTIPLE') AND ro.Type <> 9    and isnull(it.taexclude1, 0) = 0 ) t0 left join ezitracker_log ez on t0.recordno = ez.jobno ";
+       
+        var fQuery = "select t0.*, ez.jobno, Convert(varchar(5),ez.datetime,108) AS ActualStart, DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS StartVAR,Convert(varchar(5), ez.lodatetime,108) AS ActualEnd,  DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) AS EndVAR, Round(ez.WorkDuration * 60, 0) AS [ActualDuration], DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) - DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS [DurationVAR], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF' WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF' ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON' WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.PANNoGoTH,     re.PANNoWorkTH,     re.PANEarlyStartTH,     re.PANLateStartTH,     re.PANEarlyFinishTH,     re.PANLateFinishTH,     re.PANOverstayTH,     re.PANUnderstayTH,     re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ', ' +     CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE            WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting            WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]'            WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where  ";
         var lblcriteria;
 
         
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " (ro.Date BETWEEN  '" +startdate + ("' AND '") + enddate  +  "' )";
+            this.s_DateSQL = " (ro.Date BETWEEN  '" +tempsdate + ("' AND '") + tempedate  +  "' )";
             if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
         }
+        fQuery = fQuery + "and (ro.[Carer Code] > '!MULTIPLE') AND ro.Type <> 9    and isnull(it.taexclude1, 0) = 0 ) t0 left join ezitracker_log ez on t0.recordno = ez.jobno "
         if(program != ""){
             this.s_ProgramSQL = " (ro.[Program] in ('" + program.join("','")  +  "'))";
             if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
@@ -6414,7 +6417,7 @@ var  tempsdate,tempedate,strdate,endate;
 
             fQuery = fQuery + "  ORDER BY staffcode, [Date], [Start Time] "
         
-            //console.log(fQuery)
+            console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -6455,16 +6458,16 @@ var  tempsdate,tempedate,strdate,endate;
                 });  
 
     }
-    RosterOverlapRegister(program,branch,Staff,recipient,startdate,enddate){
+    RosterOverlapRegister(program,branch,Staff,recipient,startdate,enddate,tempsdate,tempedate){
         
         
         var fQuery = "SELECT RECORDNO, [CLIENT CODE], [CARER CODE], [SERVICE TYPE], PROGRAM, [DATE], [START TIME], DURATION * 5 as DURATION,  ST.[STAFFGROUP] ,[STF_DEPARTMENT] AS BRANCH  FROM ROSTER ro INNER JOIN STAFF ST ON ro.[CARER CODE] = ST.[ACCOUNTNO] LEFT JOIN ITEMTYPES IT ON  IT.Title = RO.[Service Type] Where Exists ( SELECT * FROM ROSTER ro2 Where ro.[CARER CODE] = ro2.[CARER CODE] AND ro.RECORDNO <> ro2.RECORDNO AND ro.[DATE] = ro2.[DATE] AND ro.BLOCKNO >= ro2.BLOCKNO AND ro.BLOCKNO < ro2.BLOCKNO+ro2.DURATION AND TYPE NOT IN (13) )    AND ro.[Type] NOT IN (13) AND ro.[CARER CODE] > '!z'     AND st.[STAFFGROUP] <> 'NON-STAFF' AND  ST.CATEGORY = 'STAFF'    AND InfoOnly <> 1    ";
         var lblcriteria;
+    
 
-        
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " (ro.Date BETWEEN  '" +startdate + ("' AND '") + enddate  +  "' )";
-            if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
+            this.s_DateSQL = " (ro.Date BETWEEN  '" +tempsdate + ("' AND '") + tempedate  +  "' )";
+            if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
         }
         if(program != ""){
             this.s_ProgramSQL = " (ro.[Program] in ('" + program.join("','")  +  "'))";
@@ -6512,7 +6515,7 @@ var  tempsdate,tempedate,strdate,endate;
 
             fQuery = fQuery + " ORDER BY [Carer Code], [Date], [Start Time], [Client Code]  "
         
-            //console.log(fQuery)
+            console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -6553,17 +6556,18 @@ var  tempsdate,tempedate,strdate,endate;
                 });  
 
     }
-    MTAVerificationAudit(program,manager,Staff,stfgroup,recipient,startdate,enddate){
+    MTAVerificationAudit(program,manager,Staff,stfgroup,recipient,startdate,enddate,tempsdate,tempedate){
         
         
-        var fQuery = "select t0.RecordNo,t0.Date,Recipient_Signature,ClientCode,StaffCode, ez.jobno,CONVERT(VARCHAR(5),ez.datetime, 108)  AS ActualStart,CONVERT(VARCHAR(5),ez.lodatetime, 108)  AS ActualEnd,  Round(ez.WorkDuration * 60, 0) AS [ActualDuration], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF'      WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF'      ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON'                WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.Recipient_Signature,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ', ' +         CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting   WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]'            WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where    (ro.Date BETWEEN '2019/08/01' AND '2020/08/31') AND (ro.[Carer Code] > '!MULTIPLE') AND ro.Type <> 9    and isnull(it.taexclude1, 0) = 0 ) t0 left join ezitracker_log ez on t0.recordno = ez.jobno  WHERE  ISNULL(ez.JobNo, '') <> ''  ";
+        var fQuery = "select t0.RecordNo,t0.Date,Recipient_Signature,ClientCode,StaffCode, ez.jobno,CONVERT(VARCHAR(5),ez.datetime, 108)  AS ActualStart,CONVERT(VARCHAR(5),ez.lodatetime, 108)  AS ActualEnd,  Round(ez.WorkDuration * 60, 0) AS [ActualDuration], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF'      WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF'      ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON' WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.Recipient_Signature,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ', ' +         CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting   WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]' WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where   ";
         var lblcriteria;
 
-        
+      
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " (ro.Date BETWEEN  '" +startdate + ("' AND '") + enddate  +  "' )";
+            this.s_DateSQL = " (ro.Date BETWEEN  '" +tempsdate + ("' AND '") + tempedate  +  "' )";
             if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
         }
+        fQuery = fQuery + "AND (ro.[Carer Code] > '!MULTIPLE') AND ro.Type <> 9    and isnull(it.taexclude1, 0) = 0 ) t0 left join ezitracker_log ez on t0.recordno = ez.jobno  WHERE  ISNULL(ez.JobNo, '') <> '' "
         if(program != ""){
             this.s_ProgramSQL = " (ro.[Program] in ('" + program.join("','")  +  "'))";
             if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}

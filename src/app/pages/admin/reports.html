@@ -584,7 +584,7 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffProgramPayType"  (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffProgramPayType"  (click)="showModal(this.id)" disabled >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Program Pay Type
                                                 </button>
@@ -768,8 +768,8 @@
                     <div nz-row *ngIf="frm_Date" >
                         <div nz-col nzSpan="20">
                             <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
-                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" ></nz-date-picker>
-                                <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date"></nz-date-picker>                                 
+                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" [nzFormat]="dateFormat" ></nz-date-picker>
+                                <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker>                                 
                         </div>
                     </div>
                 <div nz-row [formGroup]="inputForm">
@@ -1105,9 +1105,9 @@
             </nz-modal>            
         </div>
 
-        <div>
+        <div> <!--nzWidth="768px"-->
             <nz-modal
-            nzWidth="768px" 
+            [nzWidth]="modelwidth" 
             [(nzVisible)]="FOReports" 
             nzTitle="FINANCIALS/OUTPUT REPORTS MODAL"
             [nzContent]="modalContent"
@@ -1122,8 +1122,9 @@
                                 <div nz-col nzSpan="20" >
                                     <div class="form-group">
                                         <label><i nz-icon nzType="solution" nzTheme="outline"></i> DateType </label>
-                                        <nz-select formControlName="DatetypeArr" nzMode="multiple" >
+                                        <nz-select formControlName="DatetypeArr" nzMode="default" >
                                             <nz-option *ngFor="let option of DatetypeArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
+                                            
                                         </nz-select>                                    
                                     </div>
                                 </div>
@@ -1138,7 +1139,7 @@
                                 <div nz-col nzSpan="20" >
                                     <div class="form-group">
                                         <label><i nz-icon nzType="solution" nzTheme="outline"></i> Status Category </label>
-                                        <nz-select formControlName="statuscategoryArr" nzMode="multiple" >
+                                        <nz-select formControlName="statuscategoryArr" nzMode="default" >
                                             <nz-option *ngFor="let option of statuscategoryArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                         </nz-select>                                    
                                     </div>
@@ -1155,7 +1156,7 @@
                                 <div nz-col nzSpan="20" >
                                     <div class="form-group">
                                         <label><i nz-icon nzType="solution" nzTheme="outline"></i> Branch Primacy </label>
-                                        <nz-select formControlName="branchprimacyArr" nzMode="multiple" >
+                                        <nz-select formControlName="branchprimacyArr" nzMode="default" >
                                             <nz-option *ngFor="let option of branchprimacyArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                         </nz-select>                                    
                                     </div>
@@ -1172,7 +1173,7 @@
                                 <div nz-col nzSpan="20" >
                                     <div class="form-group">
                                         <label><i nz-icon nzType="solution" nzTheme="outline"></i> AGE/ATSI Status </label>
-                                        <nz-select formControlName="AGE_ATSI_StatusArr" nzMode="multiple" >
+                                        <nz-select formControlName="AGE_ATSI_StatusArr" nzMode="default" >
                                             <nz-option *ngFor="let option of AGE_ATSI_StatusArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                         </nz-select>                                    
                                     </div>
@@ -1384,8 +1385,8 @@
                     <div nz-row>                        
                         <div nz-col nzSpan="24">
                             <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
-                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" ></nz-date-picker>
-                                <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date"></nz-date-picker>                                 
+                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker>                                 
                         </div>
                     </div>
                     <div nz-row [formGroup]="inputForm">
@@ -1425,10 +1426,13 @@
             </ng-template>
               
               
-               <ng-template #modalFooter>                
-                    <button nz-button nzType="primary" class="btn" (click)="toggle()"><span>Extra Options</span></button>
-                    <button nz-button nzType="primary" class="btn" ><span>Print</span></button>                
-                    <button nz-button nzType="primary" class="btn" (click)="handleOk()">Preview</button>
+               <ng-template #modalFooter> 
+                   <div class="modalFooter">
+                        <button nz-button nzType="primary" class="btn" (click)="toggle()"><span>Extra Options</span></button>
+                        <button nz-button nzType="primary" class="btn" ><span>Print</span></button>                
+                        <button nz-button nzType="primary" class="btn" (click)="handleOk()">Preview</button>
+                        <button nz-button nzType="primary" class="btn" (click)="handleCancel()">Cancel</button>
+                    </div>               
                </ng-template>
                
                 

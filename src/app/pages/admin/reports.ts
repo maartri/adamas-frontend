@@ -124,8 +124,7 @@ const inputFormDefault = {
 
     description:[],
     
-
-    RecipientLeave : [true],   
+    RecipientLeave : [false],   
     RecipientUR :  [true],
     DBO :  [false],
     splitonHyphen :  [false], 
@@ -136,15 +135,15 @@ const inputFormDefault = {
     XtraInfo : [false],
     InclFinancials: [false],
     ExcluPgeHeader: [false],
+    
     radioFormat: ['Summary'],
 
-    DatetypeArr:[[]],
-    statuscategoryArr:[[]],
-    branchprimacyArr:[[]],
-    AGE_ATSI_StatusArr:[[]],
+    DatetypeArr:['Service Date'],
+    statuscategoryArr:['All services'],
+    branchprimacyArr:['Automatic'],
+    AGE_ATSI_StatusArr:['Over 64 OR ATSI Over 49   ']
     
-  
-
+   
 
 
 }
@@ -164,6 +163,10 @@ const inputFormDefault = {
         .inner-content{
             padding: 0px !important;
         }
+        #aligner>span {
+            display : none;
+            color: red;
+          }
         .btn{
             border:none;
             cursor:pointer;
@@ -171,8 +174,13 @@ const inputFormDefault = {
             transition: background-color 0.5s ease;
             padding: 5px 7px;
             border-radius: 3px;
-            text-align: center !important;
+            text-align: center !important;        
             width: 100px !important;
+        }
+        .modalFooter{
+            align-content: center;
+            text-align: center;
+            vertical-align: center;
         }
         label{
             font-weight: bold; 
@@ -219,7 +227,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     //Financial Output Criteri ##EXTRA OPTIONS##
     show =false ;
     showoption = true;
-    
+    modelwidth = "680px";
     // 
      
     frm_Date :boolean ;
@@ -255,8 +263,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_OPNotes:boolean;
     
 
-
-    RecipientLeave : [true];   
+    RecipientLeave : [false];   
     RecipientUR :  [true];
     DBO :  [false];
     splitonHyphen :  [false];
@@ -266,8 +273,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     InfoOnly  : [true];
     XtraInfo : [false];
     InclFinancials: [false];
-    ExcluPgeHeader: [false];
+    ExcluPgeHeader: [false];    
     radioFormat: ['Summary'];
+
+   
 
 
 
@@ -330,7 +339,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     activityArr: Array<any> = [];  
     settting_vehicleArr: Array<any> = [];    
     OPnotesArr: Array<any> = [];  
-    hrnotesArr: Array<any> = [];
+    hrnotesArr: Array<any> = [];    
     DatetypeArr: Array<any> = ['Billing Date' , 'Pay Period EndDate' , 'Service Date'];
     statuscategoryArr: Array<any> = ['All services','Approved Services Only','UnApproved Services Only'];
     branchprimacyArr: Array<any> = ['Automatic','Recipient Branch Overrides ','Staff Branch Overrides '];
@@ -387,12 +396,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     reportid:string;
 
    
-    dateFormat: string = 'yyyy-MM-dd'   
+    dateFormat: string = 'dd/MM/yyyy'   
     enddate :Date;
     startdate :Date;
- //   enddate: string ;
+   
+ //   enddate: string ;  defaultsratdate defaultenddate
  //   startdate: string ;
-    //format(new Date(), 'yyyy-MM-dd');
+    //format(new Date(), 'dd/MM/yyyy');
 
     rpthttp = 'http://45.77.37.207:5488/api/report';
  // rpthttp = 'http://127.1.1.1:5488/api/report';
@@ -432,7 +442,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             children.push({ label: i.toString(36) + i, value: i.toString(36) + i });
             
         }
-        
+        //
+        var date = new Date();
+        let temp = new Date(date.getFullYear(), date.getMonth(), 1);
+        let temp1 = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+        this.startdate = temp;
+        this.enddate =  temp1;
+      
 
 
         this.listOfOption = children;       
@@ -758,6 +775,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     toggle(){
         this.show = !this.show;
         this.showoption = !this.showoption ;
+        if(this.show == true){
+            this.modelwidth = "760px";
+        }
+        else{
+            this.modelwidth = "680px";
+        }
     }
     showUserReport(){
         
@@ -1305,8 +1328,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         
     }
     handleCancel(){
-        this.inputForm.reset(inputFormDefault);
+        this.inputForm = this.fb.group(inputFormDefault);
+       // this.inputForm.reset(inputFormDefault);
         this.FOReports = false;
+        this.pdfTitle = ""
     }
 
     handleOkTop() {
@@ -1315,10 +1340,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     //    console.log(this.startdate)        
     //    console.log(this.enddate)        
         this.isVisibleTop = false;
-        
-    
-    this.reportRender(this.btnid);
-    this.tryDoctype = ""
+     //   this.inputForm.reset(inputFormDefault);            
+     this.inputForm = this.fb.group(inputFormDefault);
+        this.reportRender(this.btnid);
+        this.tryDoctype = ""
+        this.pdfTitle = ""
      //   this.QueryFormatter(this.btnid);
     ///    this.goJSReport();
 
@@ -1328,12 +1354,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.inputForm.reset(inputFormDefault);
         this.isVisibleTop = false;
         this.drawerVisible = false;
+        this.pdfTitle = ""
     }       
         
     reportRender(idbtn){
       console.log(idbtn)
-var endate ;
-var strdate;
+var  tempsdate,tempedate,strdate,endate; 
+
     //    var s_States = this.inputForm.value.statesArr;
         var s_Branches = this.inputForm.value.branchesArr;
         var s_Managers = this.inputForm.value.managersArr;
@@ -1382,64 +1409,43 @@ var strdate;
         
             var date = new Date();
             var temp_lftstr = idbtn.substring(0,10)
-        
+
+                strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'dd/MM/yyyy')
+                endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'dd/MM/yyyy');                
+
             if (this.startdate != null )
-            { strdate = format(this.startdate,'yyyy-MM-dd')}else{
+            { strdate = format(this.startdate,'dd/MM/yyyy')}else{
                 //strdate = "2020-07-01"              
-                strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'yyyy-MM-dd')
-            
+                strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'dd/MM/yyyy')                
 
             } 
             if (this.enddate != null )
-            { endate = format(this.enddate,'yyyy-MM-dd')}else{
-            // endate = "2020-07-31"
-            endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'yyyy-MM-dd');
+            { endate = format(this.enddate,'dd/MM/yyyy')}else{
+            // endate = "2020-07-31" strdate endate
+            endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'dd/MM/yyyy');
             }
+           
             switch(temp_lftstr){
                 case 'btn-staff-':                    
-                    this.isVisibleTop = true;
-                    break;
-                case 'btn-Regis-':                    
-                    this.isVisibleTop = true;   
-                    break;
-                case 'btn-FORPT-': 
-                    if (this.startdate != null )
-                    { strdate = format(this.startdate,'yyyy/MM/dd')}else{                                  
-                        strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'yyyy/MM/dd')                   
-                    } 
-                    if (this.enddate != null )
-                    { endate = format(this.enddate,'yyyy/MM/dd')}else{                  
-                    endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'yyyy/MM/dd');                  
-                    }         
                     
                     break;
+                case 'btn-Regis-':                    
+                   
+                    break;
+                case 'btn-FORPT-': 
+             //   ,tempsdate,tempedate
+                        tempsdate = format(this.startdate,'yyyy/MM/dd')
+                        tempedate = format(this.enddate,'yyyy/MM/dd')
+               
+                    break;
                 case 'btn-report': 
-                    if (this.startdate != null )
-                    { strdate = format(this.startdate,'yyyy/MM/dd')}else{                                  
-                        strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'yyyy/MM/dd')                   
-                    } 
-                    if (this.enddate != null )
-                    { endate = format(this.enddate,'yyyy/MM/dd')}else{                  
-                    endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'yyyy/MM/dd');                  
-                    }         
+                        
                     
                     break;
                 default:
-                        if (this.startdate != null )
-                        { strdate = format(this.startdate,'yyyy-MM-dd')}else{
-                            //strdate = "2020-07-01"              
-                            strdate = format(new Date(date.getFullYear(), date.getMonth(), 1),'yyyy-MM-dd')
-                        
-            
-                        } 
-                        if (this.enddate != null )
-                        { endate = format(this.enddate,'yyyy-MM-dd')}else{
-                        // endate = "2020-07-31"
-                        endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0),'yyyy-MM-dd');
-                        
-                        }  
+                         
             }     
-
+                
             
    
      
@@ -1716,34 +1722,34 @@ var strdate;
                 this.MTAVerificationAudit(s_Programs,s_Managers,s_Staff,s_StfGroup,s_Recipient,strdate,endate)
                 break;                                
             case 'btn-FORPT-ProgramUtilisation':               
-                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;            
             case 'btn-FORPT-PaytypeReport':                               
-                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break; 
             case 'btn-FORPT-StaffusageReport':                               
-                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break; 
             case 'btn-FORPT-RecipientserviceReport':                               
-                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ReportUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-PayTypeProgram':                               
-                this.PayTypeProgram(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.PayTypeProgram(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-DailyStaffHrs':                               
-                this.DailyStaffHrs(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.DailyStaffHrs(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-ProgramActivitySpread':                               
-                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-ProgramStaffUtilized':                               
-                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-ProgramRecipientServiced':                               
-                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ProgramReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-ProgramBillingReport':                               
-                this.ProgramBillingReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ProgramBillingReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
 
 
@@ -1756,49 +1762,49 @@ var strdate;
 
 
             case 'btn-FORPT-ActivityGroupRpt':                               
-                this.ActivityGroupReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ActivityGroupReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-StaffActivityRpt':                               
-                this.StaffActivityReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.StaffActivityReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-StaffAdminRpt':                               
-                this.StaffAdminReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.StaffAdminReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-StaffClientServiced':                               
-                this.StaffRecipientServiced(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.StaffRecipientServiced(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-StaffPaysRpt':                               
-                this.StaffPaysReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.StaffPaysReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-StaffProgramPayType':                               
-                this.StaffProgramPaytypeRpt(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.StaffProgramPaytypeRpt(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-StaffunderPayrollRpt':                               
-                this.StaffFunderPayrolltypeRpt(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.StaffFunderPayrolltypeRpt(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-FunderPayrollRpt':                               
-                this.FunderPayrolltypeRpt(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)
+                this.FunderPayrolltypeRpt(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)
                 break;
             case 'btn-report-fundingAuditReport':                               
                 this.FundingAuditReport(strdate,endate)
                 break;
             case 'btn-FORPT-DatasetActivityAnalysis':                               
-                this.DatasetActivityAnalysis(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.DatasetActivityAnalysis(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-DatasetoutputSummary':                               
-                this.DatasetoutputSummary(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.DatasetoutputSummary(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-report-UnbilledItems':                               
                 this.UnbilledItems(s_Branches,s_Programs,s_SvcType,strdate,endate)
                 break;
             case 'btn-FORPT-ActivityRecipientRpt':                               
-                this.ActivityRecipientReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)                               
+                this.ActivityRecipientReport(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)                               
                 break;
             case 'btn-FORPT-StaffProgramUtilisation':                               
-            this.StaffProgramUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)
+            this.StaffProgramUtilisation(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)
                 break;
             case 'btn-FORPT-StaffAllowanceRpt':                               
-                this.StaffAllowance(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating)
+                this.StaffAllowance(s_Branches,s_Managers,s_ServiceRegions,s_StfGroup,s_Funders,s_Recipient,s_Staff,s_HACCCategory,s_RosterType,s_Age,s_DateType,s_Programs,s_MdsAgencyID,s_OutLetID,s_StaffTeam,status,strdate,endate,idbtn,s_Stafftype,s_PayType,s_Activity,s_Settings_vehicle,formating,tempsdate,tempedate)
                 break;
 
 
@@ -1865,7 +1871,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
    // console.log(lblcriteria)
 
    
@@ -1966,7 +1972,7 @@ var strdate;
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
     
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2056,7 +2062,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2241,7 +2247,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2323,7 +2329,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2472,7 +2478,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2746,7 +2752,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2788,7 +2794,7 @@ var strdate;
     ActiveRecipientList(branch,manager,region,program){
         
         
-        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,CONVERT(varchar, R.AdmissionDate,23) As [Activation Date],CONVERT(varchar, R.DischargeDate,23)  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT')  AND (RecipientPrograms.ProgramStatus = 'ACTIVE')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))  "
+        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,CONVERT(varchar, R.AdmissionDate,'dd/MM/yyyy') As [Activation Date],CONVERT(varchar, R.DischargeDate,'dd/MM/yyyy')  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT')  AND (RecipientPrograms.ProgramStatus = 'ACTIVE')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))  "
 
         if (branch != ""){
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','")  +  "')";
@@ -2829,7 +2835,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -2871,7 +2877,7 @@ var strdate;
     InActiveRecipientList(branch,manager,region,program){
         
         
-        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, CONVERT(varchar, R.AdmissionDate,23)  As [Activation Date], CONVERT(varchar,R.DischargeDate,23)  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT') AND (DischargeDate is not null)"
+        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, CONVERT(varchar, R.AdmissionDate,'dd/MM/yyyy')  As [Activation Date], CONVERT(varchar,R.DischargeDate,'dd/MM/yyyy')  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT') AND (DischargeDate is not null)"
 
         if (branch != ""){
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','")  +  "')";
@@ -2955,7 +2961,7 @@ var strdate;
     CareerList(branch,manager,region,program){
         
         
-        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,CONVERT(VARCHAR,R.AdmissionDate ,23) As [Activation Date],CONVERT (varchar,R.DischargeDate,23)  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'CARER' OR [R].[Type] = 'CARER/RECIPIENT')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))"
+        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,CONVERT(VARCHAR,R.AdmissionDate ,'dd/MM/yyyy') As [Activation Date],CONVERT (varchar,R.DischargeDate,'dd/MM/yyyy')  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'CARER' OR [R].[Type] = 'CARER/RECIPIENT')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))"
 
         if (branch != ""){
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','")  +  "')";
@@ -2997,7 +3003,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3080,7 +3086,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3266,7 +3272,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
    // console.log(lblcriteria)               
     this.drawerVisible = true;
 
@@ -3358,7 +3364,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3446,7 +3452,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
    // console.log(lblcriteria)
 
    
@@ -3539,7 +3545,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3580,7 +3586,7 @@ var strdate;
     ActiveStaffListing(manager,branch,stfgroup){
         
         
-        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is null)  "
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is null)  "
 
         if (branch != ""){
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
@@ -3658,7 +3664,7 @@ var strdate;
     InActiveStaffListing(manager,branch,stfgroup){
         
         
-        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is not null) "
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is not null) "
 
         if (branch != ""){
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
@@ -3736,7 +3742,7 @@ var strdate;
     ActiveBrokerage_Contractor(manager,branch,stfgroup){
         
         
-        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is null)  "
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is null)  "
 
         if (branch != ""){
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
@@ -3815,7 +3821,7 @@ var strdate;
     InActiveBrokerage_Contractor(manager,branch,stfgroup){
         
         
-        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is not null)  "
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is not null)  "
 
         if (branch != ""){
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
@@ -3852,7 +3858,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -3893,7 +3899,7 @@ var strdate;
     ActiveVolunters(manager,branch,stfgroup){
         
         
-        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is null)  "
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is null)  "
 
         if (branch != ""){
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
@@ -3972,7 +3978,7 @@ var strdate;
     InActiveVolunteers(manager,branch,stfgroup){
         
         
-        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, CONVERT(nvarchar, CommencementDate,23) as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is not null)  "
+        var fQuery = "Select s.UniqueID, AccountNo, STF_CODE, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is not null)  "
 
         if (branch != ""){
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','")  +  "')";
@@ -4094,7 +4100,7 @@ var strdate;
              */                                               
         fQuery = fQuery + "ORDER BY [NAME] "
         
-  ///  console.log(fQuery)
+  ///  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4155,7 +4161,7 @@ var strdate;
                                                  
         fQuery = fQuery + "  ORDER BY [CLIENT CODE],DATE "
         
-  ///  console.log(fQuery)
+  ///  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4228,7 +4234,7 @@ var strdate;
                                                 
         fQuery = fQuery + " Order By DatasetGroup, [Date]  "
         
-    ///  console.log(fQuery)
+    ///  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4277,7 +4283,7 @@ var strdate;
     CDCLeaveRegister(branch,program,startdate,enddate){
             
             
-        var fQuery = "SELECT [CLIENT CODE], CDC_Level ,  [LEAVETYPE], Convert(nvarchar, DateAdd(D, 0, MIN([DATE])),23) AS START_DATE,convert(nvarchar, DATEADD(D, 0, MAX([DATE])),23) AS END_DATE, COUNT(*) AS CONTINUOUS_DAYS FROM ( SELECT DISTINCT [CLIENT CODE], IT.[MINORGROUP] AS LEAVETYPE, HRT.User3 as CDC_Level, RE.[BRANCH], RO.[DATE], DATEADD(D,-DENSE_RANK() OVER ( PARTITION BY [CLIENT CODE] ORDER BY [DATE]),[DATE] ) AS RANKDATE FROM ROSTER RO  INNER JOIN RECIPIENTS RE ON RO.[Client Code] = RE.Accountno  INNER JOIN ITEMTYPES IT ON RO.[Service Type] = IT.Title  INNER JOIN HumanResourceTypes HRT ON HRT.Name = RO.Program AND HRT.[GROUP] = 'PROGRAMS'  WHERE  "
+        var fQuery = "SELECT [CLIENT CODE], CDC_Level ,  [LEAVETYPE], format( DateAdd(D, 0, MIN([DATE])),'dd/MM/yyyy') AS START_DATE,format( DATEADD(D, 0, MAX([DATE])),'dd/MM/yyyy') AS END_DATE, COUNT(*) AS CONTINUOUS_DAYS FROM ( SELECT DISTINCT [CLIENT CODE], IT.[MINORGROUP] AS LEAVETYPE, HRT.User3 as CDC_Level, RE.[BRANCH], RO.[DATE], DATEADD(D,-DENSE_RANK() OVER ( PARTITION BY [CLIENT CODE] ORDER BY [DATE]),[DATE] ) AS RANKDATE FROM ROSTER RO  INNER JOIN RECIPIENTS RE ON RO.[Client Code] = RE.Accountno  INNER JOIN ITEMTYPES IT ON RO.[Service Type] = IT.Title  INNER JOIN HumanResourceTypes HRT ON HRT.Name = RO.Program AND HRT.[GROUP] = 'PROGRAMS'  WHERE  "
         var lblcriteria;
         
         
@@ -4311,7 +4317,7 @@ var strdate;
         fQuery = fQuery + "AND IT.[MINORGROUP] IN ('FULL DAY-HOSPITAL', 'FULL DAY-RESPITE', 'FULL DAY-SOCIAL LEAVE', 'FULL DAY-TRANSITION') ) AS T"                                          
         fQuery = fQuery + " GROUP BY [CLIENT CODE], CDC_Level, [LEAVETYPE], RANKDATE, BRANCH  "
         
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4383,7 +4389,7 @@ var strdate;
                                                 
         fQuery = fQuery + " ORDER BY HR.Name, R.AccountNo, PB.[Date]  "
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4427,7 +4433,7 @@ var strdate;
     IncidentRegister(branch,SvcType,Staff,incidenttype,category,startdate,enddate){
             
             
-        var fQuery = "SELECT AccountNo, Branch, AccountNo + ' - ' + CASE WHEN [Surname/Organisation]<> '' THEN Upper([Surname/Organisation]) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN pSuburb <> '' THEN ' ' + pSuburb  ELSE ' '  END + CASE WHEN R.[Phone] <> '' THEN ' Ph.' + R.[Phone]  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.*,Convert(nvarchar,Date,23) as ReportedDate FROM IM_Master I INNER JOIN RECIPIENTS R ON I.PERSONID = R.UNIQUEID WHERE"
+        var fQuery = "SELECT AccountNo, Branch, AccountNo + ' - ' + CASE WHEN [Surname/Organisation]<> '' THEN Upper([Surname/Organisation]) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN pSuburb <> '' THEN ' ' + pSuburb  ELSE ' '  END + CASE WHEN R.[Phone] <> '' THEN ' Ph.' + R.[Phone]  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.*,format(Date,'dd/MM/yyyy') as ReportedDate FROM IM_Master I INNER JOIN RECIPIENTS R ON I.PERSONID = R.UNIQUEID WHERE"
         var lblcriteria;
         
         
@@ -4481,7 +4487,7 @@ var strdate;
                                                 
         fQuery = fQuery + " ORDER BY DATE  "
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4525,7 +4531,7 @@ var strdate;
     LoanItemRegister(branch,program,recipient,loanitems,loancategory,startdate,enddate){
             
             
-        var fQuery = "SELECT HumanResources.Name,HumanResources.PersonID,HumanResources.[Type],HumanResources.[Address1],HumanResources.[Group],Convert(nvarchar,HumanResources.Date1,23) as Date1, Convert(nvarchar,HumanResources.Date2,23) as Date2,Recipients.AccountNo,        Recipients.Branch FROM HumanResources INNER JOIN Recipients on HumanResources.PersonID = Recipients.UniqueID  WHERE   HumanResources.[Group] = 'LOANITEMS' "
+        var fQuery = "SELECT HumanResources.Name,HumanResources.PersonID,HumanResources.[Type],HumanResources.[Address1],HumanResources.[Group],format(HumanResources.Date1,'dd/MM/yyyy') as Date1, format(HumanResources.Date2,'dd/MM/yyyy') as Date2,Recipients.AccountNo,        Recipients.Branch FROM HumanResources INNER JOIN Recipients on HumanResources.PersonID = Recipients.UniqueID  WHERE   HumanResources.[Group] = 'LOANITEMS' "
         var lblcriteria;
         
         
@@ -4575,7 +4581,7 @@ var strdate;
                                                 
         fQuery = fQuery + " ORDER BY HumanResources.Name "
         
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4618,7 +4624,7 @@ var strdate;
     StaffLeaveRegister(startdate,enddate){ 
             
             
-        var fQuery = "SELECT ACCOUNTNO, L.NAME, convert(nvarchar,DATE1,23) as StartDate, convert(nvarchar,DATE2,23)  as EndDate, L.NOTES, CASE WHEN IsNull(L.Completed,0) = 1 THEN 'YES' ELSE 'NO' END AS APPROVED  FROM STAFF S  INNER JOIN HUMANRESOURCES L ON S.UNIQUEID = L.PERSONID AND L.[GROUP] = 'LEAVEAPP' WHERE      "
+        var fQuery = "SELECT ACCOUNTNO, L.NAME, format(DATE1,'dd/MM/yyyy') as StartDate, format(DATE2,'dd/MM/yyyy')  as EndDate, L.NOTES, CASE WHEN IsNull(L.Completed,0) = 1 THEN 'YES' ELSE 'NO' END AS APPROVED  FROM STAFF S  INNER JOIN HUMANRESOURCES L ON S.UNIQUEID = L.PERSONID AND L.[GROUP] = 'LEAVEAPP' WHERE      "
         var lblcriteria;
 
         if (startdate != "" ||enddate != ""){
@@ -4632,7 +4638,7 @@ var strdate;
                                              
         fQuery = fQuery + " ORDER BY  ACCOUNTNO  "
         
-   //   console.log(fQuery)
+   //   //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4909,7 +4915,7 @@ var strdate;
                                                 
         fQuery = fQuery + "  ORDER BY [Carer Code], Date, [Start Time] "
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5000,7 +5006,7 @@ var strdate;
                                                 
         fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time]  "
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5091,7 +5097,7 @@ var strdate;
                                                 
         fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time]  "
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5134,7 +5140,7 @@ var strdate;
     StaffLoanRegister(branch,program,staff,loanitems,loancategory,startdate,enddate){
             
             
-        var fQuery = "SELECT HumanResources.Name,HumanResources.PersonID,HumanResources.[Type],HumanResources.[Address1],HumanResources.[Group],Convert(nvarchar,HumanResources.Date1,23) as Date1, Convert(nvarchar,HumanResources.Date2,23) as Date2,Recipients.AccountNo,        Recipients.Branch FROM HumanResources INNER JOIN Recipients on HumanResources.PersonID = Recipients.UniqueID  WHERE   HumanResources.[Group] = 'LOANITEMS' "
+        var fQuery = "SELECT HumanResources.Name,HumanResources.PersonID,HumanResources.[Type],HumanResources.[Address1],HumanResources.[Group],format(HumanResources.Date1,'dd/MM/yyyy') as Date1, format(HumanResources.Date2,'dd/MM/yyyy') as Date2,Recipients.AccountNo,        Recipients.Branch FROM HumanResources INNER JOIN Recipients on HumanResources.PersonID = Recipients.UniqueID  WHERE   HumanResources.[Group] = 'LOANITEMS' "
         var lblcriteria;
         
         
@@ -5228,7 +5234,7 @@ var strdate;
     RecipientProg_CaseReport(branch,program,casenotecat,recipient,discipline,caredomain,category,manager,startdate,enddate){
             
             
-        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, convert(nvarchar,History.DetailDate,22) AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Recipients as R INNER JOIN History ON R.UniqueID = History.PersonID LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE   "
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Recipients as R INNER JOIN History ON R.UniqueID = History.PersonID LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE   "
         var lblcriteria;
         
         // '08-01-2019' AND '08-31-2020 23:59:59' AND
@@ -5303,7 +5309,7 @@ var strdate;
         fQuery = fQuery +    "AND ExtraDetail1 = 'CASENOTE'  AND (History.DeletedRecord = 0)  ) ROP"                                 
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated  "
         
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5410,7 +5416,7 @@ var strdate;
         fQuery = fQuery +    "AND ExtraDetail1 = 'SVCNOTE'  AND (History.DeletedRecord = 0)  ) ROP "                                 
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated   "
         
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5454,7 +5460,7 @@ var strdate;
     OPNotesRegister(branch,program,casenotecat,recipient,discipline,caredomain,startdate,enddate){
             
             
-        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail,Convert(nvarchar, History.DetailDate,22) AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Recipients as R INNER JOIN History ON R.UniqueID = History.PersonID LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE ExtraDetail1 = 'OPNOTE'"
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail,format( History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Recipients as R INNER JOIN History ON R.UniqueID = History.PersonID LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE ExtraDetail1 = 'OPNOTE'"
         var lblcriteria;
         
         // History. DetailDate Between '08-01-2020' AND '08-31-2020 23:59:59'
@@ -5517,7 +5523,7 @@ var strdate;
         fQuery = fQuery +    "  AND (History.DeletedRecord = 0)  ) ROP"
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated   "
         
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5590,7 +5596,7 @@ var strdate;
                                                  
         fQuery = fQuery + " ORDER BY R.AccountNo, CarePlanName   "
         
-  ///  console.log(fQuery)
+  ///  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5678,7 +5684,7 @@ var strdate;
        
         fQuery = fQuery + " ORDER BY ACCOUNTNO, DATE,STARTTIME ASC "
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5722,7 +5728,7 @@ var strdate;
     TimeattandanceComparison(branch,staff,startdate,enddate){
             
             
-        var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName],Convert(nvarchar, DateTime,22) as DateTime,Convert(nvarchar, RosteredStart,22) as RosteredStart,Convert(nvarchar, ActualDateTime,22) as ActualDateTime , DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, Convert(nvarchar,RosteredEnd,22) as RosteredEnd, Convert(nvarchar, LOActualDateTime,22) as LOActualDateTime, DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  FORMAT (getdate(),'yyyy/MM/dd')) ";
+        var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName],format( DateTime,22) as DateTime,format( RosteredStart,'dd/MM/yyyy') as RosteredStart,format( ActualDateTime,'dd/mm/yyyy') as ActualDateTime , DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, format(RosteredEnd,'dd/MM/yyyy') as RosteredEnd, format( LOActualDateTime,'dd/MM/yyyy') as LOActualDateTime, DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  FORMAT (getdate(),'dd/mm/yyyy')) ";
         var lblcriteria;
         
         
@@ -5760,7 +5766,7 @@ var strdate;
        
       
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5804,7 +5810,7 @@ var strdate;
     HRNotesRegister(branch,staff,casenotecat,startdate,enddate){
             
             
-        var fQuery = "SELECT UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +       CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,Convert(nvarchar, History.DetailDate,22) AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE  ExtraDetail1 = 'HRNOTE'  AND (History.DeletedRecord = 0) AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr'))  ";
+        var fQuery = "SELECT UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +       CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,format( History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE  ExtraDetail1 = 'HRNOTE'  AND (History.DeletedRecord = 0) AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr'))  ";
         var lblcriteria;
         
         
@@ -5849,7 +5855,7 @@ var strdate;
         fQuery = fQuery +    "ORDER BY Staff.[LastName], History.DetailDate "
       
         
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5893,7 +5899,7 @@ var strdate;
     StaffOPNotesRegister(branch,program,casenotecat,staff,discipline,caredomain,startdate,enddate){
             
             
-        var fQuery = "SELECT UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END + CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,Convert(nvarchar,History.DetailDate,22) AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE ExtraDetail1 <> 'HRNOTE'  AND (History.DeletedRecord = 0)  "
+        var fQuery = "SELECT UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END + CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,format(History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE ExtraDetail1 <> 'HRNOTE'  AND (History.DeletedRecord = 0)  "
         var lblcriteria;
         
         
@@ -6054,7 +6060,7 @@ var strdate;
                                                 
         fQuery = fQuery + " ORDER BY DATE  "
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -6173,7 +6179,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    console.log(fQuery)
+    //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -6213,7 +6219,7 @@ var strdate;
     }
     AuditRegister(who,descibe,traccsuser,startdate,enddate){
 
-        var fQuery = "SELECT RecordNumber,Convert(nvarchar, ActionDate,23) as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
+        var fQuery = "SELECT RecordNumber,format( ActionDate,'dd/MM/yyyy') as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
         var lblcriteria;
             
         if (startdate != "" ||enddate != ""){
@@ -6651,7 +6657,7 @@ var strdate;
     UnsedFunding(program,manager,recipient,region){
         
         
-        var fQuery = "Select Recipients.UniqueID, Recipients.AccountNo, Recipients.Branch, Recipients.AdmissionDate,Recipients.DischargeDate, CASE WHEN Recipients.[Surname/Organisation] <> '' THEN [Surname/Organisation] ELSE '*' END + ', ' + CASE WHEN Recipients.FirstName <> '' THEN FirstName ELSE '*' END AS NameDetails, Recipients.RECIPIENT_Coordinator, RecipientPrograms.Program, RecipientPrograms.Quantity, RecipientPrograms.ItemUnit, RecipientPrograms.PerUnit, RecipientPrograms.TimeUnit, RecipientPrograms.Period, Convert(nvarchar,RecipientPrograms.ExpiryDate,23) as ExpiryDate , RecipientPrograms.TotalAllocation, RecipientPrograms.Used, RecipientPrograms.Remaining FROM RecipientPrograms INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID  WHERE AccountNo > '!z' AND ((Recipients.AdmissionDate is NOT NULL) and (Recipients.DischargeDate is NULL))    ";
+        var fQuery = "Select Recipients.UniqueID, Recipients.AccountNo, Recipients.Branch, Recipients.AdmissionDate,Recipients.DischargeDate, CASE WHEN Recipients.[Surname/Organisation] <> '' THEN [Surname/Organisation] ELSE '*' END + ', ' + CASE WHEN Recipients.FirstName <> '' THEN FirstName ELSE '*' END AS NameDetails, Recipients.RECIPIENT_Coordinator, RecipientPrograms.Program, RecipientPrograms.Quantity, RecipientPrograms.ItemUnit, RecipientPrograms.PerUnit, RecipientPrograms.TimeUnit, RecipientPrograms.Period, format(RecipientPrograms.ExpiryDate,'dd/MM/yyyy') as ExpiryDate , RecipientPrograms.TotalAllocation, RecipientPrograms.Used, RecipientPrograms.Remaining FROM RecipientPrograms INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID  WHERE AccountNo > '!z' AND ((Recipients.AdmissionDate is NOT NULL) and (Recipients.DischargeDate is NULL))    ";
         var lblcriteria;
 
         
@@ -6697,7 +6703,7 @@ var strdate;
 
             fQuery = fQuery + " ORDER BY Recipients.AccountNo "
         
-        //    console.log(fQuery)
+        //    //console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -6738,7 +6744,7 @@ var strdate;
                 });  
 
     }
-    ReportUtilisation(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    ReportUtilisation(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT  [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE Round([Roster].[Duration] / 12,2) END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]    "
         var lblcriteria;
@@ -6763,20 +6769,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate": 
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -6892,13 +6898,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -6971,7 +6977,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -7011,11 +7017,13 @@ var strdate;
                
                 switch (format) {
                     case "Detailed":
+                        Title = Title + "-Detail"
                         this.reportid = " 20xwMDHmzWQlOD6N" ;
                         
                         break;
                 
-                    default:                        
+                    default: 
+                    Title = Title +"-Summary"                       
                         this.reportid = "QRa7a6vcHl74gzKk"
                         break;
                 }                                 
@@ -7028,11 +7036,13 @@ var strdate;
                 
                 switch (format) {
                     case "Detailed":
+                        Title = Title + "-Detail"
                         this.reportid = "0ZnxAZqeBt95hPdb" ;
                         
                         break;
                 
-                    default:                        
+                    default:   
+                    Title = Title + "-Summary"                     
                         this.reportid = "QRa7a6vcHl74gzKk"
                         break;
                 }
@@ -7046,12 +7056,14 @@ var strdate;
                 
                 switch (format) {
                     case "Detailed":
+                        Title = Title + "-Detail"
                         this.reportid = "KNUFzfW2y0u1Vmp8" ;
                         
                         break;
                 
-                    default:                        
-                        this.reportid = "QRa7a6vcHl74gzKk "
+                    default:      
+                    Title = Title + "-Summary"                  
+                        this.reportid = "QRa7a6vcHl74gzKk"
                         break;
                 }
                 
@@ -7064,12 +7076,14 @@ var strdate;
                 
                 switch (format) {
                     case "Detailed":
+                        Title = Title + "-Detail"
                         this.reportid = "bS5eYd0QZKtRh7kR" ;
                         
                         break;
                 
-                    default:                        
-                        this.reportid = "QRa7a6vcHl74gzKk "
+                    default:                     
+                    Title = Title + "-Summary"                       
+                        this.reportid = "QRa7a6vcHl74gzKk " 
                         break;
                 }
                 
@@ -7080,7 +7094,7 @@ var strdate;
 
         
         
-       // console.log(fQuery)
+        //console.log(fQuery)
        
         
             this.drawerVisible = true;
@@ -7147,10 +7161,14 @@ var strdate;
 
     }
 
-    PayTypeProgram(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    PayTypeProgram(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE Round([Roster].[Duration] / 12,2) END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
         var lblcriteria;
+       
+                
+                
+                
         
         if(funders != "" || mdsagencyID != ""){
             fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
@@ -7177,26 +7195,26 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
            
         if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
-        ///console.log("s_DateSQL" + this.s_DateSQL)            
+        console.log("s_DateSQL" + this.s_DateSQL)            
         }
         if(manager != ""){
             this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
@@ -7306,13 +7324,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -7385,7 +7403,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -7421,13 +7439,15 @@ var strdate;
                
                 fQuery = fQuery + "ORDER BY [Service Description], [Program], Date, [Start Time]";
                
-       // console.log(fQuery)
+        //console.log(fQuery)
 
        switch (format) {
         case "Detailed":
+            Title = Title + "-Detailed"
             this.reportid = "DeKVDYBlePosUVbB" ;                       
         break;
-        default:                        
+        default: 
+        Title = Title + "-Summary"                       
             this.reportid = "gHY4F0UbTNzf4oPk"
         break;
         }
@@ -7500,9 +7520,9 @@ var strdate;
 
     }
 
-    DailyStaffHrs(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    DailyStaffHrs(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE Round([Roster].[Duration] / 12,2) END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE Round([Roster].[Duration] / 12,2) END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
         var lblcriteria;
       
         if(funders != "" || mdsagencyID != ""){
@@ -7528,20 +7548,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -7657,13 +7677,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -7736,7 +7756,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -7772,13 +7792,16 @@ var strdate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], Date, [Service Type], [Start Time]";
                
-       // console.log(fQuery)
+       // //console.log(fQuery)
 
        switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             this.reportid = "br0hApzbOEUutqz0" ;                       
         break;
-        default:                        
+        default:  
+            
+            Title = Title + "-Summary"                       
             this.reportid = "VFZKXpQuPdRjOz7U"
         break;
         }
@@ -7846,7 +7869,7 @@ var strdate;
             });  
 
     }
-    ProgramReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    ProgramReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
               
 
         var fQuery = " SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
@@ -7891,20 +7914,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -8020,13 +8043,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -8099,7 +8122,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -8139,10 +8162,13 @@ var strdate;
              
              switch (format) {
                  case "Detailed":
+                    Title = Title + "-Detail"                                                              
                      reportid = "MePWCZQThe0CAnu5" ;
                      break;
              
                  default:
+                    
+                    Title = Title + "-Summary"
                     reportid = "IlzJ8y3CcohttpLy"
                      break;
              }
@@ -8156,10 +8182,12 @@ var strdate;
                
                 switch (format) {
                     case "Detailed":
+                        Title = Title + "-Detail"                    
                         reportid = "dBfGjQMGcDFpS0tN" ;
                         break;
                 
-                    default:
+                    default:                        
+                    Title = Title + "-Summary"
                        reportid = "IlzJ8y3CcohttpLy"
                         break;
                 }
@@ -8173,10 +8201,12 @@ var strdate;
              
              switch (format) {
                  case "Detailed":
+                    Title = Title + "-Detail"                    
                      reportid = "Oc4nxLXjTPbGcZQH" ;
                      break;
              
-                 default:
+                 default:                    
+                    Title = Title + "-Summary"
                     reportid = "IlzJ8y3CcohttpLy"
                      break;
              }
@@ -8256,7 +8286,7 @@ var strdate;
             });  
 
     }
-    ProgramBillingReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    ProgramBillingReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
         var lblcriteria;
@@ -8289,17 +8319,17 @@ var strdate;
            console.log(strkey);
            switch (strkey) {
            
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
                     
@@ -8417,13 +8447,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -8496,7 +8526,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -8532,13 +8562,15 @@ var strdate;
                
                 fQuery = fQuery + " ORDER BY [Program], [Client Code], Date, [Start Time]";
                
-     //   console.log(fQuery)
+     //   //console.log(fQuery)
      switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             reportid = "dBfGjQMGcDFpS0tN" ;
             break;
     
-        default:
+        default:            
+            Title = Title + "-Summary"
            reportid = "7RdGSvcsDNba5xah"
             break;
     }
@@ -8629,7 +8661,7 @@ var strdate;
 
             fQuery = fQuery + " ORDER BY H.[Name], I.TITLE "
         
-           // console.log(fQuery)
+           // //console.log(fQuery)
             
                 this.drawerVisible = true;
             
@@ -8674,7 +8706,7 @@ var strdate;
     ProgramSummaryReport(branch,manager,region,program){
         
         
-        var fQuery = "SELECT ACCOUNTNO, PROGRAM, ALLOWED, USEDAMOUNT, ALLOWED-USEDAMOUNT AS BALANCE, COSTTYPE, AP_PERUNIT, AP_PERIOD,EXPIREUSING , ALERTSTARTDATE,  Convert(nvarchar,RENEWDATE,23) as RENEWDATE, [REDAMOUNT], [ORANGEAMOUNT], [YELLOWAMOUNT],   BRANCH, [RECIPIENT_COORDINATOR], [AGENCYDEFINEDGROUP] FROM ( SELECT ACCOUNTNO,PROGRAM,ISNULL(AP_BASEDON, 0) AS ALLOWED, ISNULL(AP_COSTTYPE, '') AS COSTTYPE, ISNULL(AP_PERUNIT, '') AS AP_PERUNIT,ISNULL(AP_PERIOD, '') AS AP_PERIOD,ISNULL(EXPIREUSING, '') AS EXPIREUSING,ISNULL(ALERTSTARTDATE, '') AS ALERTSTARTDATE, CASE WHEN AP_PERIOD = 'DAY' THEN DATEADD(DAY,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'WEEK' THEN DATEADD(WEEK,1,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'FORTNIGHT' THEN DATEADD(WEEK,2,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'MONTH' THEN DATEADD(MONTH,1,RP.ALERTSTARTDATE)WHEN AP_PERIOD = '6 WEEKS' THEN DATEADD(WEEK,6,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'QUARTER' THEN DATEADD(MONTH,3,RP.ALERTSTARTDATE)WHEN AP_PERIOD = '6 MONTHS' THEN DATEADD(MONTH,6,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'YEAR' THEN DATEADD(MONTH,12,RP.ALERTSTARTDATE) END AS RENEWDATE,ISNULL(AP_REDQTY, 0) AS [REDAMOUNT], ISNULL(AP_ORANGEQTY, 0) AS [ORANGEAMOUNT], ISNULL(AP_YELLOWQTY, 0) AS [YELLOWAMOUNT],(SELECT ISNULL(SUM(ADMINAMOUNT), 0) + ISNULL(SUM(SERVICEAMOUNT), 0) AS GTOTAL FROM (SELECT CASE WHEN ISNULL(IT.MAINGROUP, 'DIRECT SERVICE') IN ('PACKAGE ADMIN', 'CASE MANAGEMENT') THEN ROUND((DURATION * 5) / 60, 2) END AS ADMINAMOUNT, CASE WHEN ISNULL(IT.MAINGROUP, 'DIRECT SERVICE') NOT IN ('PACKAGE ADMIN', 'CASE MANAGEMENT') THEN ROUND((DURATION * 5) / 60, 2) END AS SERVICEAMOUNT FROM ROSTER RO INNER JOIN ITEMTYPES IT ON RO.[SERVICE TYPE] = IT.TITLE Where RO.[CLIENT CODE] = R.ACCOUNTNO AND RO.[PROGRAM] = RP.PROGRAM AND ISNULL(IT.[EXCLUDEFROMUSAGESTATEMENTS], 0) = 0 AND NOT (RO.[TYPE] = 9 AND RO.[SERVICE DESCRIPTION] = 'CONTRIBUTION') AND RO.DATE > '2000/01/01' AND  (RO.[DATE] BETWEEN RP.ALERTSTARTDATE AND  CASE WHEN AP_PERIOD = 'DAY' THEN DATEADD(DAY,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'WEEK' THEN DATEADD(WEEK,7,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'FORTNIGHT' THEN DATEADD(WEEK,2,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'MONTH' THEN DATEADD(MONTH,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = '6 WEEKS' THEN DATEADD(WEEK,6,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'QUARTER' THEN DATEADD(MONTH,3,RP.ALERTSTARTDATE) WHEN AP_PERIOD = '6 MONTHS' THEN DATEADD(MONTH,6,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'YEAR' THEN DATEADD(MONTH,12,RP.ALERTSTARTDATE) END )) AS T ) AS USEDAMOUNT,  R.BRANCH, [RECIPIENT_COORDINATOR], [AGENCYDEFINEDGROUP] FROM RECIPIENTS R INNER JOIN RECIPIENTPROGRAMS RP ON R.UNIQUEID = RP.PERSONID ) AS T2 WHERE ACCOUNTNO > '!Z'  "
+        var fQuery = "SELECT ACCOUNTNO, PROGRAM, ALLOWED, USEDAMOUNT, ALLOWED-USEDAMOUNT AS BALANCE, COSTTYPE, AP_PERUNIT, AP_PERIOD,EXPIREUSING , ALERTSTARTDATE,  format(RENEWDATE,'dd/MM/yyyy') as RENEWDATE, [REDAMOUNT], [ORANGEAMOUNT], [YELLOWAMOUNT],   BRANCH, [RECIPIENT_COORDINATOR], [AGENCYDEFINEDGROUP] FROM ( SELECT ACCOUNTNO,PROGRAM,ISNULL(AP_BASEDON, 0) AS ALLOWED, ISNULL(AP_COSTTYPE, '') AS COSTTYPE, ISNULL(AP_PERUNIT, '') AS AP_PERUNIT,ISNULL(AP_PERIOD, '') AS AP_PERIOD,ISNULL(EXPIREUSING, '') AS EXPIREUSING,ISNULL(ALERTSTARTDATE, '') AS ALERTSTARTDATE, CASE WHEN AP_PERIOD = 'DAY' THEN DATEADD(DAY,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'WEEK' THEN DATEADD(WEEK,1,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'FORTNIGHT' THEN DATEADD(WEEK,2,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'MONTH' THEN DATEADD(MONTH,1,RP.ALERTSTARTDATE)WHEN AP_PERIOD = '6 WEEKS' THEN DATEADD(WEEK,6,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'QUARTER' THEN DATEADD(MONTH,3,RP.ALERTSTARTDATE)WHEN AP_PERIOD = '6 MONTHS' THEN DATEADD(MONTH,6,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'YEAR' THEN DATEADD(MONTH,12,RP.ALERTSTARTDATE) END AS RENEWDATE,ISNULL(AP_REDQTY, 0) AS [REDAMOUNT], ISNULL(AP_ORANGEQTY, 0) AS [ORANGEAMOUNT], ISNULL(AP_YELLOWQTY, 0) AS [YELLOWAMOUNT],(SELECT ISNULL(SUM(ADMINAMOUNT), 0) + ISNULL(SUM(SERVICEAMOUNT), 0) AS GTOTAL FROM (SELECT CASE WHEN ISNULL(IT.MAINGROUP, 'DIRECT SERVICE') IN ('PACKAGE ADMIN', 'CASE MANAGEMENT') THEN ROUND((DURATION * 5) / 60, 2) END AS ADMINAMOUNT, CASE WHEN ISNULL(IT.MAINGROUP, 'DIRECT SERVICE') NOT IN ('PACKAGE ADMIN', 'CASE MANAGEMENT') THEN ROUND((DURATION * 5) / 60, 2) END AS SERVICEAMOUNT FROM ROSTER RO INNER JOIN ITEMTYPES IT ON RO.[SERVICE TYPE] = IT.TITLE Where RO.[CLIENT CODE] = R.ACCOUNTNO AND RO.[PROGRAM] = RP.PROGRAM AND ISNULL(IT.[EXCLUDEFROMUSAGESTATEMENTS], 0) = 0 AND NOT (RO.[TYPE] = 9 AND RO.[SERVICE DESCRIPTION] = 'CONTRIBUTION') AND RO.DATE > '2000/01/01' AND  (RO.[DATE] BETWEEN RP.ALERTSTARTDATE AND  CASE WHEN AP_PERIOD = 'DAY' THEN DATEADD(DAY,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'WEEK' THEN DATEADD(WEEK,7,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'FORTNIGHT' THEN DATEADD(WEEK,2,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'MONTH' THEN DATEADD(MONTH,1,RP.ALERTSTARTDATE) WHEN AP_PERIOD = '6 WEEKS' THEN DATEADD(WEEK,6,RP.ALERTSTARTDATE) WHEN AP_PERIOD = 'QUARTER' THEN DATEADD(MONTH,3,RP.ALERTSTARTDATE) WHEN AP_PERIOD = '6 MONTHS' THEN DATEADD(MONTH,6,RP.ALERTSTARTDATE)WHEN AP_PERIOD = 'YEAR' THEN DATEADD(MONTH,12,RP.ALERTSTARTDATE) END )) AS T ) AS USEDAMOUNT,  R.BRANCH, [RECIPIENT_COORDINATOR], [AGENCYDEFINEDGROUP] FROM RECIPIENTS R INNER JOIN RECIPIENTPROGRAMS RP ON R.UNIQUEID = RP.PERSONID ) AS T2 WHERE ACCOUNTNO > '!Z'  "
         var lblcriteria;
         if (branch != ""){
             this.s_BranchSQL = "BRANCH in ('" + branch.join("','")  +  "')";
@@ -8721,7 +8753,7 @@ var strdate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-   // console.log(fQuery)
+   // //console.log(fQuery)
    // console.log(lblcriteria)
 
    
@@ -8765,7 +8797,7 @@ var strdate;
             console.log(err);
         });    this.drawerVisible = true;     
     }
-    ActivityGroupReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    ActivityGroupReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
         var lblcriteria;
@@ -8794,20 +8826,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -8923,13 +8955,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -9002,7 +9034,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -9038,13 +9070,15 @@ var strdate;
                
                 fQuery = fQuery + " ORDER BY [Service Type], [Anal], Date, [Start Time] ";
                
-       // console.log(fQuery)
+       // //console.log(fQuery)
 
        switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             this.reportid = "s7xkRQoypsgZDEJi" ;                       
         break;
-        default:                        
+        default:            
+            Title = Title + "-Summary"                    
             this.reportid = "EUpoRvslDL2jReMC"
         break;
         }
@@ -9112,7 +9146,7 @@ var strdate;
             });  
 
     }
-    StaffActivityReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    StaffActivityReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
         var lblcriteria;
@@ -9140,20 +9174,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -9269,13 +9303,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -9348,7 +9382,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -9384,13 +9418,15 @@ var strdate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], [Service Type], Date, [Start Time]";
                
-//        console.log(fQuery)
+//        //console.log(fQuery)
 
             switch (format) {
                 case "Detailed":
+                    Title = Title + "-Detail"            
                     this.reportid = "BkY2eCxEZ9xs7JdN" ;                       
                 break;
-                default:                        
+                default:                  
+                    Title = Title + "-Summary"                      
                     this.reportid = "Cjq0J0FwEE9NpEjG"
                 break;
                 }
@@ -9458,10 +9494,10 @@ var strdate;
             });  
 
     }
-    StaffAdminReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    StaffAdminReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE ([Carer Code] <> '!MULTIPLE')  And [Roster].[Type] in (1, 6)"
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE ([Carer Code] <> '!MULTIPLE')  And [Roster].[Type] in (1, 6)"
         var lblcriteria;
         
         if(funders != "" || mdsagencyID != ""){
@@ -9487,20 +9523,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -9616,13 +9652,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -9695,7 +9731,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -9731,13 +9767,15 @@ var strdate;
                
                 fQuery = fQuery + "ORDER BY [Service Type], [Client Code], Date, [Start Time]";
                
-      //  console.log(fQuery)
+      //console.log(fQuery)
 
       switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             this.reportid = "PWrjCCfGSodTi4k5" ;                       
         break;
-        default:                        
+        default:          
+            Title = Title + "-Summary"                      
             this.reportid = "52x7yFFEwpini1aA"
         break;
         }
@@ -9805,7 +9843,7 @@ var strdate;
             });  
 
     }
-    StaffRecipientServiced(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    StaffRecipientServiced(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
         var lblcriteria;
@@ -9833,20 +9871,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -9962,13 +10000,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -10041,7 +10079,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -10077,13 +10115,15 @@ var strdate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], [Client Code], Date, [Start Time]";
                
-       // console.log(fQuery)
+       //console.log(fQuery)
 
        switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             this.reportid = "pcOEeUeWKPGaGFPA" ;                       
         break;
-        default:                        
+        default:             
+            Title = Title + "-Summary"                   
             this.reportid = "OTUPu95cLd6uPgd5"
         break;
         }
@@ -10151,11 +10191,11 @@ var strdate;
             });  
 
     }
-    StaffPaysReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    StaffPaysReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]"
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno],[Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]"
         var lblcriteria;
-      
+
         if(funders != "" || mdsagencyID != ""){
             fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
         }
@@ -10164,6 +10204,7 @@ var strdate;
             fQuery = fQuery + join;
         
         }
+        //WHERE ([Date Timesheet] >= '2020-11-01' And [Date Timesheet] <= '2020-11-30') AND         
         fQuery = fQuery +"WHERE ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And ([Roster].[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')) And [Carer Code] <> '!MULTIPLE'AND ([service type] <> 'CONTRIBUTION')";
          
         var Title = "STAFF PAYS REPORT -SUMMARY";
@@ -10179,20 +10220,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -10308,13 +10349,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -10387,7 +10428,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -10420,16 +10461,18 @@ var strdate;
          
          
                
-               
+         fQuery = fQuery + "And ([Roster].[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4))"
                 fQuery = fQuery + "ORDER BY [Carer Code], [Service Description], Date, [Start Time]";
                
         //console.log(fQuery)
 
         switch (format) {
             case "Detailed":
+                Title = Title + "-Detail"            
                 this.reportid = "3tnMUYUAp8WHDU1Z" ;                       
             break;
-            default:                        
+            default:                
+            Title = Title + "-Summary"                        
                 this.reportid = "OTUPu95cLd6uPgd5"
             break;
             }
@@ -10497,9 +10540,9 @@ var strdate;
             });  
 
     }
-    StaffProgramPaytypeRpt(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    StaffProgramPaytypeRpt(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]"
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]"
         var lblcriteria;
       
         if(funders != "" || mdsagencyID != ""){
@@ -10525,26 +10568,26 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
            
         if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};
-        alert("Yet to summarize detail")
+        alert("Not Completed. yet to do")
         }
         if(manager != ""){
             this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','")  +  "')";            
@@ -10654,13 +10697,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -10733,7 +10776,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -10773,9 +10816,11 @@ var strdate;
 
         switch (format) {
             case "Detailed":
+                Title = Title + "-Detail"            
                 this.reportid = "wrRlhBfDegZzFrlu" ;                       
             break;
-            default:                        
+            default:              
+            Title = Title + "-Summary"                      
                 this.reportid = "pq2cnQ2nGuR4Szlh"
             break;
             }
@@ -10843,9 +10888,9 @@ var strdate;
             });  
 
     }
-    StaffFunderPayrolltypeRpt(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    StaffFunderPayrolltypeRpt(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , PT.[AccountingIdentifier] AS PayrollType , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN ITEMTYPES PT ON [Roster].[Service Description] = PT.[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name "
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , PT.[AccountingIdentifier] AS PayrollType , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo]  INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN ITEMTYPES PT ON [Roster].[Service Description] = PT.[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name "
         var lblcriteria;
       
        
@@ -10864,20 +10909,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -10993,13 +11038,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } //.join(",") +
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -11072,7 +11117,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        }  //.join(",") + "; "
              else{statuscat =  " All "
          }
         
@@ -11108,13 +11153,15 @@ var strdate;
                
                 fQuery = fQuery + "ORDER BY [Carer Code], PayrollType, Date, [Start Time]";
                
-      //  console.log(fQuery)
+      //console.log(fQuery)
 
       switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             this.reportid = "UBAW9sppie7EzOiP" ;                       
         break;
-        default:                        
+        default:               
+            Title = Title + "-Summary"                 
             this.reportid = "6v9LSTGgq06bT7xK"
         break;
         }
@@ -11182,7 +11229,7 @@ var strdate;
             });  
 
     }
-    FunderPayrolltypeRpt(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    FunderPayrolltypeRpt(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , PT.[AccountingIdentifier] AS PayrollType , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1]  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN ITEMTYPES PT ON [Roster].[Service Description] = PT.[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name "
         var lblcriteria;
@@ -11203,20 +11250,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -11332,13 +11379,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -11411,7 +11458,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -11447,13 +11494,15 @@ var strdate;
                
                 fQuery = fQuery + " ORDER BY [MDS], PayrollType, Date, [Start Time]";
                
-      //  console.log(fQuery)
+        //console.log(fQuery)
 
       switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             this.reportid = "2MILocaJ7z4C1VP2" ;                       
         break;
-        default:                        
+        default:         
+            Title = Title + "-Summary"                       
             this.reportid = "rUnfnSRvYRppjPTk"
         break;
         }
@@ -11540,7 +11589,7 @@ var strdate;
 
         fQuery = fQuery + " ORDER BY  ACCOUNTNO"
         
-        console.log(fQuery)
+        //console.log(fQuery)
         
             this.drawerVisible = true;
         
@@ -11581,9 +11630,9 @@ var strdate;
             });  
 
     }
-    DatasetActivityAnalysis(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    DatasetActivityAnalysis(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type] as ServiceType, [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1] , [ItemTypes].[HACCType] AS MDSType  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name     "
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type] as ServiceType, [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1] , [ItemTypes].[HACCType] AS MDSType  ,[Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name     "
         var lblcriteria;
         
         if (stfgroup !="" ||Staff != "" ||staffteam != "" ||stafftype !=""){
@@ -11613,20 +11662,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -11742,13 +11791,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -11821,7 +11870,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -11857,7 +11906,7 @@ var strdate;
                
                 fQuery = fQuery + " ORDER BY [HumanResourceTypes].[Type], ItemTypes.HACCType, [Service Type], Date, [Start Time]";
                
-      //  console.log(fQuery)
+      //console.log(fQuery)
 
         
             this.drawerVisible = true;
@@ -11922,7 +11971,7 @@ var strdate;
             });  
 
     }
-    DatasetoutputSummary(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    DatasetoutputSummary(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0) WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [ItemTypes].[HACCType] AS MDSType, [ItemTypes].[AccountingIdentifier], [ItemTypes].[MinorGroup] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
         var lblcriteria;
@@ -11952,20 +12001,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -12081,13 +12130,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -12160,7 +12209,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -12196,12 +12245,14 @@ var strdate;
                
                 fQuery = fQuery + " ORDER BY [MDSType], [Client Code], Date, [Start Time] ";
                
-    //    console.log(fQuery) 
+    //    //console.log(fQuery) 
     switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             this.reportid = "cgcfODRkRP2q67Sh" ;                       
         break;
-        default:                        
+        default:         
+            Title = Title + "-Summary"                       
             this.reportid = "YYfS88zCaEg6Qd12"
         break;
         }
@@ -12313,7 +12364,7 @@ var strdate;
         fQuery = fQuery + " ORDER BY  [Date], [Service Type], [Program]"                                          
     
         
-  //  console.log(fQuery)
+  //  //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -12354,7 +12405,7 @@ var strdate;
     });        
     }
 
-    ActivityRecipientReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    ActivityRecipientReport(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
         var lblcriteria;
@@ -12384,20 +12435,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -12513,13 +12564,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -12592,7 +12643,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -12628,13 +12679,15 @@ var strdate;
                
                 fQuery = fQuery + " ORDER BY [Service Type], [Client Code], Date, [Start Time] ";
                
-       // console.log(fQuery) Mufeed
+       // //console.log(fQuery) 
        switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             reportid = "pgPwDEeuHN7slyuf " ;
             break;
     
-        default:
+        default:            
+            Title = Title + "-Summary"
            reportid = "EUpoRvslDL2jReMC"
             break;
     }
@@ -12701,9 +12754,9 @@ var strdate;
             });  
 
     }
-    StaffProgramUtilisation(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    StaffProgramUtilisation(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
-        var fQuery = " SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
+        var fQuery = " SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
         var lblcriteria;
 
         if(funders != "" || mdsagencyID != ""){
@@ -12726,20 +12779,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate":  //tempsdate tempedate
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -12855,13 +12908,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -12934,7 +12987,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -12976,13 +13029,15 @@ var strdate;
 
         
         
-       // console.log(fQuery)
+        //console.log(fQuery)
 
        switch (format) {
         case "Detailed":
+            Title = Title + "-Detail"            
             this.reportid = "A1mesTZmNX4TwwUC" ;                       
         break;
-        default:                        
+        default:            
+            Title = Title + "-Summary"                    
             this.reportid = "ML1Lx7IY0KXwlJdd"
         break;
         }
@@ -13051,9 +13106,9 @@ var strdate;
             });  
 
     }
-    StaffAllowance(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format){
+    StaffAllowance(branch,manager,region,stfgroup,funders,recipient,Staff,HACCCategory,RosterCategory,Age,Datetype,program,mdsagencyID,outletid,staffteam,status,startdate,enddate,rptname,stafftype,paytype,activity,settings,format,tempsdate,tempedate){
        
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]      "
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]      "
         var lblcriteria;
 
         if(funders != "" || mdsagencyID != ""){
@@ -13076,20 +13131,20 @@ var strdate;
            let strkey = Datetype.toString();
            switch (strkey) {
                 
-                case "Pay Period EndDate":
+                case "Pay Period EndDate": 
                    
-                    this.s_DateSQL = " ([Date Timesheet] >=  '" +startdate + ("' AND [Date Timesheet] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" +tempsdate + ("' AND [Date Timesheet] <= '") + tempedate  +  "' )";
                     break;
                 case 'Billing Date': 
                   
-                    this.s_DateSQL = " ([Date Invoice] >=  '" +startdate + ("' AND [Date Invoice] <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " ([Date Invoice] >=  '" +tempsdate + ("' AND [Date Invoice] <= '") + tempedate  +  "' )";
                     break;
                 case 'Service Date':
                     
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" +startdate + ("' AND Date <= '") + enddate  +  "' )";
+                    this.s_DateSQL = " (Date >=  '" +tempsdate + ("' AND Date <= '") + tempedate  +  "' )";
                     
                     break;
                 }                         
@@ -13205,13 +13260,13 @@ var strdate;
         
 
         if(Datetype != ""){
-            var Datetypes =  Datetype.join(",") + "; "        } 
+            var Datetypes =  Datetype + "; "        } 
             else{Datetypes =  " Service Date "
         }
         
 
         if(Age != ""){
-            var Age_ATSI =  Age.join(",") + "; "        } 
+            var Age_ATSI =  Age + "; "        } 
             else{Age_ATSI =  " All "
         }
        
@@ -13284,7 +13339,7 @@ var strdate;
          
 
          if(status != ""){
-            var statuscat =  status.join(",") + "; "        } 
+            var statuscat =  status + "; "        } 
              else{statuscat =  " All "
          }
         
@@ -13320,15 +13375,17 @@ var strdate;
                 var Report_Definer = " "                
                 fQuery = fQuery + " ORDER BY [Carer Code], [Service Description], Date, [Start Time]"
             
- //console.log(fQuery)
+            //console.log(fQuery)
 
                 switch (format) {
                     case "Detailed":
+                        Title = Title + "-Detail"            
                         this.reportid = "pt03dt4gX7njbIcj" ;
                         
                         break;
 
-                    default:                        
+                    default:                     
+                        Title = Title + "-Summary"                       
                         this.reportid = "9PRBcDXyREab0Qke"
                         break;
                 }
@@ -13439,7 +13496,7 @@ var strdate;
         fQuery = fQuery + " ) t group by [client code], [service type]  ORDER BY [Client Code], [Service Type]"                                          
     
         
-   // console.log(fQuery)
+   // //console.log(fQuery)
 
     this.drawerVisible = true;
 

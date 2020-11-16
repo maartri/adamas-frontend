@@ -33,9 +33,9 @@ export class NursingDignosisComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
-      this.items = ["Leprosy","Other Form of Leprosy","Bordline"]
-      this.tableData = [{name:"Leprosy",icdcode:'4.2'},{name:"Bordline",icdcode:'6.2.1'},{name:"Other Form of Leprosy",icdcode:'6.7'}]
-      // this.loadData();
+      this.items = ["FEAR","Other Form of Leprosy","Bordline"]
+      // this.tableData = [{name:"Leprosy",icdcode:'4.2'},{name:"Bordline",icdcode:'6.2.1'},{name:"Other Form of Leprosy",icdcode:'6.7'}]
+      this.loadData();
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -61,16 +61,16 @@ export class NursingDignosisComponent implements OnInit {
       this.current = 0;
       this.modalOpen = true;
       const { 
-        name,
-        icdcode,
+        description,
+        code,
         usercode,
-        recordNumber
+        Recordno
        } = this.tableData[index];
         this.inputForm.patchValue({
-        name: name,
-        icdcode:icdcode,
+        name: description,
+        icdcode:code,
         usercode:usercode,
-        recordNumber:recordNumber
+        recordNumber:Recordno
       });
     }
     
@@ -135,7 +135,7 @@ export class NursingDignosisComponent implements OnInit {
           }    
       }
       loadData(){
-          let sql ="select Description as name,User1 as rate,recordNumber from DataDomains where Domain='PACKAGERATES'";
+          let sql ="Select Recordno, Description, Code FROM NDiagnosisTypes  ORDER BY Description";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;

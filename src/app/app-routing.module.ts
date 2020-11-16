@@ -215,6 +215,14 @@ import { StaffPositionsComponent } from '@admin/configuration/staff/staff-positi
 import { StaffTeamsComponent } from '@admin/configuration/staff/staff-teams.component';
 import { AwardDetailsComponent } from '@admin/configuration/staff/award-details.component';
 import { OpStaffNotesComponent } from '@admin/configuration/staff/op-staff-notes.component';
+import { StaffRemindersComponent } from '@admin/configuration/staff/staff-reminders.component';
+import { ServiceDeciplinesComponent } from '@admin/configuration/staff/service-deciplines.component';
+import { StaffPreferencesComponent } from '@admin/configuration/staff/staff-preferences.component';
+import { LeaveDescriptionsComponent } from '@admin/configuration/staff/leave-descriptions.component';
+import { ServiceNoteCategoriesComponent } from '@admin/configuration/staff/service-note-categories.component';
+import { VehiclesComponent } from '@admin/configuration/others/vehicles.component';
+import { ActivityGroupsComponent } from '@admin/configuration/others/activity-groups.component';
+import { EquipmentsComponent } from '@admin/configuration/others/equipments.component';
 
 const routes: Routes = [
   {
@@ -760,6 +768,38 @@ const routes: Routes = [
         component:OpStaffNotesComponent,
       },
       {
+        path:"staff-reminder",
+        component:StaffRemindersComponent,
+      },
+      {
+        path:"service-deciplines",
+        component:ServiceDeciplinesComponent
+      },
+      {
+        path:"staff-preferences",
+        component:StaffPreferencesComponent,
+      },
+      {
+        path:"leave-description",
+        component:LeaveDescriptionsComponent,
+      },
+      {
+        path:"service-note-categories",
+        component:ServiceNoteCategoriesComponent,
+      },
+      {
+        path:"vehicles",
+        component:VehiclesComponent,
+      },
+      {
+        path:"activity-groups",
+        component:ActivityGroupsComponent,
+      },
+      {
+        path:"equipments",
+        component:EquipmentsComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1057,6 +1097,14 @@ export const PAGE_COMPONENTS = [
   StaffTeamsComponent,
   AwardDetailsComponent,
   OpStaffNotesComponent,
+  StaffRemindersComponent,
+  ServiceDeciplinesComponent,
+  StaffPreferencesComponent,
+  LeaveDescriptionsComponent,
+  ServiceNoteCategoriesComponent,
+  VehiclesComponent,
+  ActivityGroupsComponent,
+  EquipmentsComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

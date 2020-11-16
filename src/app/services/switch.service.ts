@@ -4,6 +4,9 @@ import { mergeMap } from 'rxjs/operators';
 import { Injectable, Injector } from '@angular/core';
 import { ListService } from '@services/index';
 
+import { ModalVariables } from '@modules/modules';
+declare var Dto: any;
+
 @Injectable({
     providedIn: 'root'
 })

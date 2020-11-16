@@ -45,6 +45,7 @@ import { MembersComponent } from './members/members.component';
 import { IncidentPostComponent } from './incident-post/incident-post.component';
 import { AddStaffComponent } from './add-staff/add-staff.component';
 import { IncidentDocumentsComponent } from './incident-documents/incident-documents.component';
+import { RecipientsOptionsComponent } from './recipients-options/recipients-options.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { IncidentDocumentsComponent } from './incident-documents/incident-docume
     MembersComponent,
     IncidentPostComponent,
     AddStaffComponent,
-    IncidentDocumentsComponent
+    IncidentDocumentsComponent,
+    RecipientsOptionsComponent
   ],
   imports: [
     CommonModule,
@@ -118,7 +120,8 @@ import { IncidentDocumentsComponent } from './incident-documents/incident-docume
     MembersComponent,
     IncidentPostComponent,
     AddStaffComponent,
-    IncidentDocumentsComponent
+    IncidentDocumentsComponent,
+    RecipientsOptionsComponent
   ],
   providers: [
     

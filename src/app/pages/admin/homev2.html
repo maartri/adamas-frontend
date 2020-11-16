@@ -3,12 +3,13 @@
         [nzZeroTrigger]="zeroTrigger">
         <div class="logo"></div>
         <ul nz-menu [nzMode]="'vertical'" nzTheme="dark" class="main-list">
+            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/landing"><i nz-icon nzType="home" nzTheme="outline"></i> Home</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/daymanager"><i nz-icon class="material-icons"> date_range </i> Day Manager</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/recipient"><i nz-icon class="material-icons"> people_alt </i> Recipients</li>
             <li nz-menu-item routerLinkActive="ant-menu-item-selected" routerLink="/admin/staff"><i class="fas fa-user-nurse staff-icon-fix"></i> Staff</li>
-            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/rosters"><i class="far fa-address-card"></i> Rosters</li>
-            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/timesheet"><i nz-icon class="material-icons"> menu_book </i> Timesheets</li>
-            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected"><i class="far fa-clock"></i> Time & Attendance</li>
+            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/rosters"><i class="far fa-address-card" style="margin-right: 10px; margin-left: 1px;"></i> Rosters</li>
+            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/timesheet"><i nz-icon nzType="read" nzTheme="outline" style="margin-right: 15px;"></i>Timesheets</li>
+            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected"><i nz-icon nzType="clock-circle" nzTheme="outline" style="margin-right: 15px;"></i>Time & Attendance</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/reports"><i nz-icon class="material-icons"> poll </i> Reports</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/budget"><i nz-icon class="material-icons"> show_chart </i> Analyse & Budget</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected"><i nz-icon class="material-icons"> search </i> At A Glance</li>

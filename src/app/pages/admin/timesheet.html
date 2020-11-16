@@ -242,13 +242,13 @@
                     </div>
                     <div class="form-group">
                         <label for="">Program</label>
-                        <nz-select nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                        <nz-select nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                             <nz-option *ngFor="let list of programsList" [nzValue]="list.progName" [nzLabel]="list.progName"></nz-option>
                         </nz-select>
                     </div>
                     <div class="form-group">
                         <label for="">Service/Activity/Item</label>
-                        <nz-select nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                        <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                             <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list.activity" [nzLabel]="list.activity"></nz-option>
                         </nz-select>                        
                         <div>

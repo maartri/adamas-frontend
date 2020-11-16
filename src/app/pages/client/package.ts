@@ -7,6 +7,8 @@ import { Subscription, Subject, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { switchMap, distinctUntilChanged, debounceTime, mergeMap, map, tap } from 'rxjs/operators';
 
+import { GetPackage } from '@modules/modules';
+
 @Component({
     selector: 'package-client',
     styles: [`
@@ -87,7 +89,7 @@ export class PackageClient implements OnInit, OnDestroy {
             debounceTime(500),
             distinctUntilChanged(),
             switchMap((date: any) => {
-                let data: Dto.GetPackage = {
+                let data: GetPackage = {
                     Code: this.client,
                     PCode: this.program,
                     Date: moment(this.date).format('YYYY/MM/DD')
@@ -101,7 +103,7 @@ export class PackageClient implements OnInit, OnDestroy {
             debounceTime(500),
             distinctUntilChanged(),
             switchMap((program: any) => {
-                let data: Dto.GetPackage = {
+                let data: GetPackage = {
                     Code: this.client,
                     PCode: this.program,
                     Date: moment(this.date).format('YYYY/MM/DD')
@@ -217,7 +219,7 @@ export class PackageClient implements OnInit, OnDestroy {
         this.dateStream.next(date);
     }
 
-    getPackages(data: Dto.GetPackage) {
+    getPackages(data: GetPackage) {
         return this.clientS.getpackages(data);
     }
 

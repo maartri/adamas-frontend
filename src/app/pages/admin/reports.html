@@ -1,4 +1,4 @@
-<div >
+
     
      
     <div nz-layout>
@@ -16,7 +16,7 @@
                                                 <div>                                        
                                                     <button nz-button nzType="default"  nzJustify="start"  id="btn-refferallist" (click)="showModal(this.id)"  >
                                                         <i nz-icon nzType="printer"  ></i>
-                                                        Refferal List
+                                                        Referral List
                                                     </button> 
                                                 </div>
                                                 <div>                                        
@@ -141,6 +141,12 @@
                                             <li nz-menu-item  >
                                                 <i nz-icon nzType="user"></i>
                                                 <strong>AGENCY LISTINGS</strong>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()" disabled>
+                                                        <i nz-icon nzType="plus"></i>
+                                                    USER REPORTS
+                                                </button> 
+                                                </div>                                                                                               
                                                 <div>                                        
                                                     <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled  >
                                                     <i nz-icon nzType="printer"></i>
@@ -449,13 +455,13 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-timeattandencecomp" (click)="showModal(this.id)">
+                                            <button nz-button nzType="default" id="btn-staff-timeattandencecomp" (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
                                                 Time & Attendance Comparison
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-staffavailability" (click)="showModal(this.id)">
+                                            <button nz-button nzType="default" id="btn-staff-availability" (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Availability Register
                                                 </button>
@@ -516,13 +522,13 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-FORPT-ActivityRecipientRpt" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Activity Recipient Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Activity Staff Report
                                                 </button>
@@ -532,33 +538,33 @@
                                                 <i nz-icon nzType="printer"></i>
                                                 Activity Group Report
                                                 </button>
-                                        </div>
+                                        </div>                                        
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
-                                                <i nz-icon nzType="printer"></i>
-                                                Dataset Activity Analysis Report
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-report-UnbilledItems" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Unbilled Items Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-report-fundingAuditReport" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Funding Audit Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-FORPT-DatasetActivityAnalysis" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Dataset Activity Summary Report
+                                                Dataset Activity Analysis Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default"id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id="btn-FORPT-DatasetoutputSummary" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Dataset Output Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-report-DatasetUnitCost" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Dataset RecipientUnit Cost Report
                                                 </button>
@@ -572,21 +578,27 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>STAFF REPORTS </strong>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffPaysRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Pays
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffProgramPayType"  (click)="showModal(this.id)" disabled >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Program Pay Type
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffunderPayrollRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Funder Payroll Type
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-FunderPayrollRpt"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Funder Payroll Type
                                                 </button>
                                         </div>
                                         <div>
@@ -596,31 +608,31 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffAllowanceRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Allowances
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffProgramUtilisation"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Program Utilisation
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffClientServiced"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Clients Serviced
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffAdminRpt"  (click)="showModal(this.id)" disabled>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffAdminRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Admin Report
                                                 </button>
                                         </div> 
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Activity Report
                                                 </button>
@@ -753,11 +765,18 @@
                 (nzOnOk)="handleOkTop()"
                 >
             <div>
+                <div nz-row *ngIf="frm_OneDate" >
+                    <div nz-col nzSpan="20">
+                        <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
+                        <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Date" [nzFormat]="dateFormat" ></nz-date-picker>
+                            
+                    </div>
+                </div>
                     <div nz-row *ngIf="frm_Date" >
                         <div nz-col nzSpan="20">
                             <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
-                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" ></nz-date-picker>
-                                <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date"></nz-date-picker>                                 
+                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" [nzFormat]="dateFormat" ></nz-date-picker>
+                                <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker>                                 
                         </div>
                     </div>
                 <div nz-row [formGroup]="inputForm">
@@ -1081,21 +1100,21 @@
                         </div>
                     </div>
                     <div nz-row *ngIf="frm_Description" >
-                                    <div nz-col nzSpan="20" [formGroup]="inputForm"> 
-                                        <div class="form-group">
-                                            <label><i nz-icon nzType="apartment" nzTheme="outline"  ></i> Description</label>                                                                               
-                                            <input nz-input placeholder="Text Search for Audit Description (Wildcard %, _ can be used)" formControlName="description"  />
-                                        </div>      
-                                    </div>
+                        <div nz-col nzSpan="20" [formGroup]="inputForm"> 
+                            <div class="form-group">
+                                <label><i nz-icon nzType="apartment" nzTheme="outline"  ></i> Description</label>                                                                               
+                                <input nz-input placeholder="Text Search for Audit Description (Wildcard %, _ can be used)" formControlName="description"  />
+                            </div>      
+                        </div>
                     </div>
                 </div>                                                  
             </div>
             </nz-modal>            
         </div>
 
-        <div>
+        <div> <!--nzWidth="768px"-->
             <nz-modal
-            nzWidth="768px" 
+            [nzWidth]="modelwidth" 
             [(nzVisible)]="FOReports" 
             nzTitle="FINANCIALS/OUTPUT REPORTS MODAL"
             [nzContent]="modalContent"
@@ -1110,8 +1129,9 @@
                                 <div nz-col nzSpan="20" >
                                     <div class="form-group">
                                         <label><i nz-icon nzType="solution" nzTheme="outline"></i> DateType </label>
-                                        <nz-select formControlName="DatetypeArr" nzMode="multiple" >
+                                        <nz-select formControlName="DatetypeArr" nzMode="default" >
                                             <nz-option *ngFor="let option of DatetypeArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
+                                            
                                         </nz-select>                                    
                                     </div>
                                 </div>
@@ -1126,7 +1146,7 @@
                                 <div nz-col nzSpan="20" >
                                     <div class="form-group">
                                         <label><i nz-icon nzType="solution" nzTheme="outline"></i> Status Category </label>
-                                        <nz-select formControlName="statuscategoryArr" nzMode="multiple" >
+                                        <nz-select formControlName="statuscategoryArr" nzMode="default" >
                                             <nz-option *ngFor="let option of statuscategoryArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                         </nz-select>                                    
                                     </div>
@@ -1143,7 +1163,7 @@
                                 <div nz-col nzSpan="20" >
                                     <div class="form-group">
                                         <label><i nz-icon nzType="solution" nzTheme="outline"></i> Branch Primacy </label>
-                                        <nz-select formControlName="branchprimacyArr" nzMode="multiple" >
+                                        <nz-select formControlName="branchprimacyArr" nzMode="default" >
                                             <nz-option *ngFor="let option of branchprimacyArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                         </nz-select>                                    
                                     </div>
@@ -1160,7 +1180,7 @@
                                 <div nz-col nzSpan="20" >
                                     <div class="form-group">
                                         <label><i nz-icon nzType="solution" nzTheme="outline"></i> AGE/ATSI Status </label>
-                                        <nz-select formControlName="AGE_ATSI_StatusArr" nzMode="multiple" >
+                                        <nz-select formControlName="AGE_ATSI_StatusArr" nzMode="default" >
                                             <nz-option *ngFor="let option of AGE_ATSI_StatusArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                         </nz-select>                                    
                                     </div>
@@ -1372,8 +1392,8 @@
                     <div nz-row>                        
                         <div nz-col nzSpan="24">
                             <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
-                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" ></nz-date-picker>
-                                <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date"></nz-date-picker>                                 
+                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker>                                 
                         </div>
                     </div>
                     <div nz-row [formGroup]="inputForm">
@@ -1397,7 +1417,7 @@
                             </div>
                         </div>
                         <div nz-row>
-                            <div nz-col nzSpan="24">
+                            <div nz-col nzSpan="16">
                                 <div class="form-group">
                                     <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>
                                     <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
@@ -1413,10 +1433,13 @@
             </ng-template>
               
               
-               <ng-template #modalFooter>                
-                    <button nz-button nzType="primary" class="btn" (click)="toggle()"><span>Extra Options</span></button>
-                    <button nz-button nzType="primary" class="btn" ><span>Print</span></button>                
-                    <button nz-button nzType="primary" class="btn" (click)="handleOk()">Preview</button>
+               <ng-template #modalFooter> 
+                   <div class="modalFooter">
+                        <button nz-button nzType="primary" class="btn" (click)="toggle()"><span>Extra Options</span></button>
+                        <button nz-button nzType="primary" class="btn" ><span>Print</span></button>                
+                        <button nz-button nzType="primary" class="btn" (click)="handleOk()">Preview</button>
+                        <button nz-button nzType="primary" class="btn" (click)="handleCancel()">Cancel</button>
+                    </div>               
                </ng-template>
                
                 
@@ -1426,7 +1449,7 @@
     </div>
     
     
-    </div>
+    
         
     <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
         <div nz-row>

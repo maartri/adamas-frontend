@@ -13,6 +13,8 @@ import endOfWeek from 'date-fns/endOfWeek';
 
 import { GlobalService, StaffService, TimeSheetService } from '@services/index';
 
+import { Roster, ClaimVariation, TravelClaim, ClientNote, RosterNote, RecordIncident, LeaveEntry , Staffs } from '@modules/modules';
+
 interface ItemData {
     name: string;
     age: number;
@@ -179,7 +181,7 @@ export class PackageProvider implements OnInit, OnDestroy {
                         rosterType: x.roster_Type,
                         submitted: x.submitted,
                         note: x.note,
-                        billedTo: x.billedTo.accountNo,
+                        billedTo: x.billeaccountNo,
                         status: 0
                     }
                 });
@@ -242,7 +244,7 @@ export class PackageProvider implements OnInit, OnDestroy {
         let data = this.listOfData[pageIndex];
 
         if (!submitted) {
-            let variation: Dto.ClaimVariation = {
+            let variation: ClaimVariation = {
                 RecordNo: shiftbookNo,
                 ClaimedBy: this.token.nameid,
                 ClaimedDate: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
@@ -259,7 +261,7 @@ export class PackageProvider implements OnInit, OnDestroy {
                 }
             });
         } else {
-            let variation: Dto.ClaimVariation = {
+            let variation: ClaimVariation = {
                 RecordNo: shiftbookNo,
                 ClaimedBy: null,
                 ClaimedDate: '1753-01-01 12:00:00',
@@ -316,7 +318,7 @@ export class PackageProvider implements OnInit, OnDestroy {
         list.forEach(data => {
             
             if (submit) {
-                let variation: Dto.ClaimVariation = {
+                let variation: ClaimVariation = {
                     RecordNo: data.shiftbookNo,
                     ClaimedBy: this.token.nameid,
                     ClaimedDate: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
@@ -335,7 +337,7 @@ export class PackageProvider implements OnInit, OnDestroy {
             } 
 
             if (!submit) {
-                let variation: Dto.ClaimVariation = {
+                let variation: ClaimVariation = {
                     RecordNo: data.shiftbookNo,
                     ClaimedBy: null,
                     ClaimedDate: '1753-01-01 12:00:00',

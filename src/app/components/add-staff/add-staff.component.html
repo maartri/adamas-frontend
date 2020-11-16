@@ -18,7 +18,7 @@
                 <div nz-col nzSpan="8">
                     <div class="form-group">
                         <label for="">Type</label>
-                        <nz-select class="nzselect-min" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select a Program" >
+                        <nz-select class="nzselect-min" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="" >
                             <nz-option *ngFor="let d of typesArr" [nzLabel]="d" [nzValue]="d"></nz-option>
                         </nz-select>
                     </div>
@@ -37,7 +37,7 @@
                             <div nz-col nzSpan="8">
                                 <div class="form-group">
                                     <label for="">Gender</label>
-                                    <nz-select formControlName="gender" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                    <nz-select formControlName="gender" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Select an Incident Type" >
                                         <nz-option *ngFor="let d of genderArr" [nzLabel]="d" [nzValue]="d"></nz-option>
                                     </nz-select>
                                 </div>
@@ -67,7 +67,7 @@
                             <div nz-col nzSpan="24">
                                 <div class="form-group">
                                     <label for="">Account Name</label>
-                                    <input type="text" formControlName="accountNo" class="text-upper" nz-input />
+                                    <input type="text" formControlName="accountNo" nz-input />
                                 </div>
                                 <nz-alert *ngIf="accountTaken == false" nzType="success" nzMessage="Account Valid"></nz-alert>
                                 <nz-alert *ngIf="accountTaken" nzType="error" nzMessage="Account Taken"></nz-alert>
@@ -157,17 +157,21 @@
 
                     <div nz-row class="list-group" nzGutter="24" formArrayName="addressForm" *ngFor="let staff of staffForm.get('addressForm')['controls']; let i = index;">
                         <ng-container [formGroupName]="i">
-                            <div nz-col class="form-group" nzSpan="24">
-                                <input type="text" formControlName="address1" placeholder="Address" nz-input>
-                            </div>
+                     
                             <div nz-col nzSpan="12">
-                                <nz-select style="width:100%" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Type" >
+                                <nz-select style="width:100%;margin-bottom:10px" formControlName="type" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Type" >
                                     <nz-option *ngFor="let d of addressType" [nzLabel]="d" [nzValue]="d"></nz-option>
                                 </nz-select>
+                            </div>                
+
+                            <div nz-col class="form-group" nzSpan="24">
+                                <input type="text" formControlName="address1" placeholder="Address" oninput="this.value = this.value.toUpperCase()" nz-input>
                             </div>
-                            <div nz-col nzSpan="12">
-                                <suburb formControlName="suburb"></suburb>
+
+                            <div nz-col nzSpan="24">
+                                <suburb [placeholder]="'Suburb/Postcode'" formControlName="suburb"></suburb>
                             </div>
+
                         </ng-container>                        
                     </div>
                </div>
@@ -187,7 +191,9 @@
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="12">
-                                <input type="text" formControlName="contact" placeholder="Details" nz-input>
+                                <input type="text" *ngIf="!isMobile(staff.value.contacttype) && !isPhoneFax(staff.value.contacttype)" formControlName="contact" placeholder="Details" nz-input>
+                                <app-phonefax *ngIf="isMobile(staff.value.contacttype)" [isMobile]="true" formControlName="contact"></app-phonefax>
+                                <app-phonefax *ngIf="isPhoneFax(staff.value.contacttype)" formControlName="contact"></app-phonefax>
                             </div>     
                         </ng-container>                             
                     </div>
@@ -237,6 +243,7 @@
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
                 <span>Previous</span>
             </button>
+            <!-- *ngIf="current < 3" [disabled]="!nextRequired" -->
             <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!nextRequired">
                 <span>Next</span>
             </button>

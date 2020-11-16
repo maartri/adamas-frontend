@@ -182,9 +182,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           return EMPTY;
         })
       ).subscribe(next => {
-
+        var haha = this.titleCase.transform(this.generatedAccount);
+        console.log(haha);
         this.staffForm.patchValue({
-          accountNo: this.generatedAccount.toUpperCase()
+          accountNo: haha
         }, { emitEvent: false});
 
 
@@ -370,6 +371,14 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     return false;
   }
 
+  isMobile(data: any){
+    return data == 'MOBILE';
+  }
+
+  isPhoneFax(data: any){
+    return data == 'FAX' || data == 'HOME' || data == 'WORK';
+  }
+
   save(){
     
     const {
@@ -425,8 +434,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               }
           }
       }).filter(x => x);
-
-      
 
       this.staffS.poststaffprofile({
           Staff: {

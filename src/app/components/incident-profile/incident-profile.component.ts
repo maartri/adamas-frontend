@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap, map } from 'rxjs/operators';
 import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
 import parseISO from 'date-fns/parseISO'
-
+import { ProfileInterface } from '@modules/modules';
 
 const noop = () => {};
 
@@ -53,7 +53,7 @@ export class IncidentProfileComponent implements OnInit, ControlValueAccessor {
     this.buildForm();
   }  
 
-  pathForm(token: Dto.ProfileInterface) {
+  pathForm(token: ProfileInterface) {
     console.log(token);
     if (this.globalS.isEmpty(token))
       return;

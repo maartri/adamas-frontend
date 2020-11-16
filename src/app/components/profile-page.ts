@@ -10,7 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { RemoveFirstLast } from '@pipes/pipes';
 
 declare var Dto: any;
-
+import { ProfileInterface, PhoneFaxOther, NamesAndAddresses, Staffs, Recipients  } from '@modules/modules';
 const noop = () => {
 };
 
@@ -85,7 +85,7 @@ export class ProfilePage implements OnInit, OnDestroy, ControlValueAccessor {
     private onTouchedCallback: () => void = noop;
     private onChangeCallback: (_: any) => void = noop;
 
-    private innerValue: Dto.ProfileInterface;
+    private innerValue: ProfileInterface;
 
     editModalOpen: boolean = false;
     user: any;
@@ -276,7 +276,7 @@ export class ProfilePage implements OnInit, OnDestroy, ControlValueAccessor {
         }
     }
 
-    pathForm(token: Dto.ProfileInterface) {
+    pathForm(token: ProfileInterface) {
 
         if (this.globalS.isEmpty(token))
             return;
@@ -370,12 +370,12 @@ export class ProfilePage implements OnInit, OnDestroy, ControlValueAccessor {
         return year + '/' + month + '/' + day + ' ' + '00' + ':' + '00' + ':' + '00';
     }
 
-    formatContact(contactForm: FormGroup): Array<Dto.PhoneFaxOther> {
-        let temp: Array<Dto.PhoneFaxOther> = [];
+    formatContact(contactForm: FormGroup): Array<PhoneFaxOther> {
+        let temp: Array<PhoneFaxOther> = [];
 
         const { id, type, details, personId } = contactForm.value;
 
-        let pf: Dto.PhoneFaxOther = {
+        let pf: PhoneFaxOther = {
             RecordNumber: id,
             Type: type,
             Detail: details,
@@ -386,16 +386,16 @@ export class ProfilePage implements OnInit, OnDestroy, ControlValueAccessor {
         return temp;
     }
 
-    formatAddress(addressForm: FormGroup): Array<Dto.NamesAndAddresses> {
+    formatAddress(addressForm: FormGroup): Array<NamesAndAddresses> {
         const { pcodesuburb, address, description, id, personId } = addressForm.value;
 
         let pcode = /(\d+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\d+)/g)[0].trim() : "";
         let suburb = /(\D+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\D+)/g)[0].trim() : ""
         let state = suburb && suburb.split(',').length > 1 ? suburb.split(',')[1].trim() : '';
 
-        let temp: Array<Dto.NamesAndAddresses> = [];
+        let temp: Array<NamesAndAddresses> = [];
 
-        let na: Dto.NamesAndAddresses = {
+        let na: NamesAndAddresses = {
             Suburb: suburb && suburb.split(',').length > 0 ? suburb.split(',')[0] : suburb,
             PostCode: pcode,
             Stat: state,
@@ -414,7 +414,7 @@ export class ProfilePage implements OnInit, OnDestroy, ControlValueAccessor {
         let birthdate = this.formatDate(this.userForm);
 
         if (this.innerValue.view == 'staff') {
-            let user: Dto.Staffs = {
+            let user: Staffs = {
                 accountNo: this.innerValue.name,
                 firstName: data.firstName,
                 middleNames: data.middleNames,
@@ -445,7 +445,7 @@ export class ProfilePage implements OnInit, OnDestroy, ControlValueAccessor {
         }
 
         if (this.innerValue.view == 'recipient') {
-            let user: Dto.Recipients = {
+            let user: Recipients = {
                 accountNo: this.innerValue.name,
                 firstName: data.firstName,
                 middleNames: data.middleNames,

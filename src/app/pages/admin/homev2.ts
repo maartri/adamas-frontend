@@ -16,7 +16,9 @@ import { GlobalService } from '@services/index';
 
 
 i.fas , i.far{
-    margin-right: 13px;
+    margin-right: 16px;
+    margin-left: 1px;
+    width: 18px;
 }
 
 nz-header {
@@ -33,9 +35,9 @@ nz-breadcrumb {
 }
 
 .inner-content {
-    padding: 12px;
     background: #fff;
     min-height: 360px;
+    height: 100%;
 }
 
 nz-footer {
@@ -87,6 +89,9 @@ nz-layout{
 
 .main-list > li >>> div{
     font-size:12px;
+}
+.main-list > li > i{
+    width: 14px;
 }
 .items li{
     height: 28px;

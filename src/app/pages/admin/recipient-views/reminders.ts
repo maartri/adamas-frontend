@@ -6,8 +6,11 @@ import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
+import { Reminders } from '@modules/modules';
+
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { recurringValidator } from '../../../validators/index'
+import { recurringValidator } from '../../../validators/index';
+
 @Component({
     styles: [`
         nz-table{
@@ -174,7 +177,7 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
         const reminderDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.reminderDate);
         const dueDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.dueDate);
 
-        const reminder: Dto.Reminders = {
+        const reminder: Reminders = {
             recordNumber: remGroup.recordNumber,
             personID: this.user.id,
             name: remGroup.staffAlert,

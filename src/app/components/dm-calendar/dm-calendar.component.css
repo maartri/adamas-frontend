@@ -4,6 +4,8 @@
     flex-wrap: wrap;
     flex-direction: row;
     width: 98%; 
+    margin: 0 auto;
+    background: #fff;
 }
 .calendar-dates{
     line-height: 10px;

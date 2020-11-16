@@ -1,14 +1,16 @@
 <div nz-row>
-    <div nz-row class="dm-input">
-        <div nz-col nzSpan="5">
-            <label for="date"> Date</label>
-            <nz-date-picker [(ngModel)]="date"></nz-date-picker>
-        </div>
-        <div nz-col nzSpan="5">
-            <label for="dayview">Day View</label>
-            <nz-select [(ngModel)]="dayView">
-                <nz-option *ngFor="let no of dayViewArr" [nzValue]="no" [nzLabel]="no"></nz-option>
-            </nz-select>
+    <div style="padding:8px">
+        <div nz-row class="dm-input">
+            <div nz-col nzSpan="5">
+                <label for="date"> Date</label>
+                <nz-date-picker [(ngModel)]="date"></nz-date-picker>
+            </div>
+            <div nz-col nzSpan="5">
+                <label for="dayview">Day View</label>
+                <nz-select [(ngModel)]="dayView">
+                    <nz-option *ngFor="let no of dayViewArr" [nzValue]="no" [nzLabel]="no"></nz-option>
+                </nz-select>
+            </div>
         </div>
     </div>
     <div>

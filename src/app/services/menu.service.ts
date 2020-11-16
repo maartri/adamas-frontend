@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 import { URL } from '@constants/constant';
+import { Branch } from '@modules/modules';
 
 const menu: string = "api/menu";
 
@@ -19,10 +20,10 @@ export class MenuService {
         return this.auth.get(`${menu}/branches`)
     }
 
-    AddBranch(brnch: Dto.Branch): Observable<any> {
+    AddBranch(brnch: Branch): Observable<any> {
         return this.auth.put(`${menu}/addBranch`, brnch)
     }
-UpdateBranch(brnch: Dto.Branch): Observable<any> {
+UpdateBranch(brnch: Branch): Observable<any> {
         return this.auth.put(`${menu}/UpdateBranch`, brnch)
     }
  

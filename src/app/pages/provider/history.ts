@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import startOfMonth from 'date-fns/startOfMonth';
 import lastDayOfMonth from 'date-fns/lastDayOfMonth';
 import format from 'date-fns/format';
+import { GetTimesheet } from '@modules/modules';
 
 export interface VirtualDataInterface {
     index: number;
@@ -120,7 +121,7 @@ export class HistoryProvider implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    getTimeSheet(data: Dto.GetTimesheet): Observable<any> {
+    getTimeSheet(data: GetTimesheet): Observable<any> {
         return this.timeS.gettimesheets({
             AccountNo: data.AccountNo,
             personType: data.personType,

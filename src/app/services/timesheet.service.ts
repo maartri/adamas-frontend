@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 import { GlobalService } from './global.service';
+import { GetStaff, MiscellaneousNote, AttendanceStaff, CoordinatorEmail, InputAllocateStaff, UpdateNote, ClaimVariation, DayManager, GetRecipient, InputFilter, RecordIncident, GetTimesheet , RosterInput, AddClientNote, ApplicationUser, InputShiftBooked, InputShiftSpecific } from '@modules/modules';
 
 const timesheet: string = "api/timesheet";
 
@@ -803,35 +804,35 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/contacts/kin/${id}`)
     }
 
-    getshiftbooked(input: Dto.InputShiftBooked): Observable<any> {
+    getshiftbooked(input: InputShiftBooked): Observable<any> {
         return this.auth.get(`${timesheet}/shift/booked`, input)
     }
 
-    getshiftspecific(input: Dto.InputShiftSpecific): Observable<any> {
+    getshiftspecific(input: InputShiftSpecific): Observable<any> {
         return this.auth.get(`${timesheet}/shift/specific`, input)
     }
 
-    gettimesheets(ts: Dto.GetTimesheet): Observable<any> {
+    gettimesheets(ts: GetTimesheet): Observable<any> {
         return this.auth.get(`${timesheet}`, ts);
     }
 
-    getfilteredstaff(input: Dto.InputFilter): Observable<any> {
+    getfilteredstaff(input: InputFilter): Observable<any> {
         return this.auth.get(`${timesheet}/staff/filtered`, input)
     }
 
-    getfiltteredrecipient(input: Dto.InputFilter): Observable<any> {
+    getfiltteredrecipient(input: InputFilter): Observable<any> {
         return this.auth.get(`${timesheet}/recipient/filtered`, input)
     }
 
-    getrecipients(rec: Dto.GetRecipient): Observable<any> {
+    getrecipients(rec: GetRecipient): Observable<any> {
         return this.auth.get(`${timesheet}/recipients`, rec)
     }
 
-    getstaff(staff: Dto.GetStaff): Observable<any> {
+    getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
     }
 
-    getdaymanager(dto: Dto.DayManager): Observable<any> {
+    getdaymanager(dto: DayManager): Observable<any> {
         return this.auth.get(`${timesheet}/dmanager`, dto)
     }
 
@@ -903,7 +904,7 @@ export class TimeSheetService {
         return this.auth.put(`${timesheet}/leaveapplication/${name}`, data)
     }
 
-    getcoordinatoremail(email: Dto.CoordinatorEmail): Observable<any> {
+    getcoordinatoremail(email: CoordinatorEmail): Observable<any> {
         return this.auth.get(`${timesheet}/coordinator/email`, email)
     }
 
@@ -911,47 +912,47 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/training/${name}`)
     }
 
-    addrecordincident(incident: Dto.RecordIncident): Observable<any> {
+    addrecordincident(incident: RecordIncident): Observable<any> {
         return this.auth.post(`${timesheet}/recordincident`, incident)
     }
 
-    addclientnote(note: Dto.AddClientNote): Observable<any> {
+    addclientnote(note: AddClientNote): Observable<any> {
         return this.auth.post(`${timesheet}/client/note`, note)
     }
 
-    updateoutputtype(input: Dto.RosterInput): Observable<any> {
+    updateoutputtype(input: RosterInput): Observable<any> {
         return this.auth.put(`${timesheet}/outputtype`, input)
     }
 
-    updaterosternote(note: Dto.UpdateNote): Observable<any> {
+    updaterosternote(note: UpdateNote): Observable<any> {
         return this.auth.put(`${timesheet}/roster/note`, note)
     }
 
-    updateprogram(input: Dto.RosterInput): Observable<any> {
+    updateprogram(input: RosterInput): Observable<any> {
         return this.auth.put(`${timesheet}/program`, input)
     }
 
-    updateactivity(input: Dto.RosterInput): Observable<any> {
+    updateactivity(input: RosterInput): Observable<any> {
         return this.auth.put(`${timesheet}/activity`, input)
     }
 
-    updatepaytype(input: Dto.RosterInput): Observable<any> {
+    updatepaytype(input: RosterInput): Observable<any> {
         return this.auth.put(`${timesheet}/paytype`, input)
     }
 
-    updatebillamount(input: Dto.RosterInput): Observable<any> {
+    updatebillamount(input: RosterInput): Observable<any> {
         return this.auth.put(`${timesheet}/billamount`, input)
     }
 
-    updatebillquantity(input: Dto.RosterInput): Observable<any> {
+    updatebillquantity(input: RosterInput): Observable<any> {
         return this.auth.put(`${timesheet}/billquantity`, input)
     }
 
-    updatepayquantity(input: Dto.RosterInput): Observable<any> {
+    updatepayquantity(input: RosterInput): Observable<any> {
         return this.auth.put(`${timesheet}/payquantity`, input)
     }
 
-    updatesetunitcost(input: Dto.RosterInput): Observable<any> {
+    updatesetunitcost(input: RosterInput): Observable<any> {
         return this.auth.put(`${timesheet}/setunitcost`, input)
     }
 
@@ -959,7 +960,7 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/approved/roster`, id)
     }
 
-    updateclaimvariation(cv: Dto.ClaimVariation): Observable<any> {
+    updateclaimvariation(cv: ClaimVariation): Observable<any> {
         return this.auth.post(`${timesheet}/claimvariation`, cv)
     }
 
@@ -967,15 +968,15 @@ export class TimeSheetService {
         return this.auth.put(`${timesheet}/unapprove/roster`, id)
     }
 
-    updateallocatestaff(id: number, accountName: Dto.InputAllocateStaff): Observable<any> {
+    updateallocatestaff(id: number, accountName: InputAllocateStaff): Observable<any> {
         return this.auth.put(`${timesheet}/allocatestaff/${id}`, accountName)
     }
 
-    updatepassword(user: Dto.ApplicationUser): Observable<any> {
+    updatepassword(user: ApplicationUser): Observable<any> {
         return this.auth.put(`${timesheet}/password/update`, user);
     }
 
-    updatepasswordadmin(user: Dto.ApplicationUser): Observable<any> {
+    updatepasswordadmin(user: ApplicationUser): Observable<any> {
         return this.auth.put(`${timesheet}/password/admin/update`, user);
     }
 
@@ -1101,11 +1102,11 @@ export class TimeSheetService {
     /**      
      * End - Pay Tab
      */
-    updatemiscellaneous(note: Dto.MiscellaneousNote): Observable<any> {
+    updatemiscellaneous(note: MiscellaneousNote): Observable<any> {
         return this.auth.put(`${timesheet}/notes/miscellaneous`, note)
     }
 
-    updatetimeandattendance(attendance: Dto.AttendanceStaff): Observable<any> {
+    updatetimeandattendance(attendance: AttendanceStaff): Observable<any> {
         return this.auth.put(`${timesheet}/attendance/staff`, attendance)
     }
 

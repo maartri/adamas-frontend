@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 import { GlobalService, SettingsService, ShareService } from '@services/index';
+import { ProfileInterface } from '@modules/modules';
+
 declare var Dto: any;
 
 @Component({
@@ -29,7 +31,7 @@ declare var Dto: any;
 
 
 export class ProfileClientManager implements OnInit, OnDestroy {
-    user: Dto.ProfileInterface;
+    user: ProfileInterface;
     token: any;
 
     visible: boolean = false;

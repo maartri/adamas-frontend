@@ -1,4 +1,4 @@
-declare namespace Dto {
+export declare namespace Dto {
  
         export interface ApplicationUser {
             Username: string,
@@ -768,6 +768,31 @@ declare namespace Dto {
             staff: string,
             relationship: string,
             checked: boolean
+        }
+        
+        export enum RECIPIENT_OPTION {
+            REFER_IN = "REFER_IN",
+            REFER_ON = "REFER_ON",
+            NOT_PROCEED = "NOT_PROCEED",
+            ASSESS = "ASSESS",
+            ADMIT = "ADMIT",
+            WAIT_LIST = "WAIT_LIST",
+            DISCHARGE = "DISCHARGE",
+            SUSPEND = "SUSPEND",
+            REINSTATE = "REINSTATE",
+            DECEASE = "DECEASE",
+            ADMIN = "ADMIN",
+            ITEM = "ITEM",
+        }
+
+        export interface ModalVariables {
+            title?: string,
+            programsArr?: Array<any>,
+            referralTypesArr?: Array<string>,
+            referralCodeArr?: Array<string>,
+            referralSourceArr?:Array<string>,
+            reminderToArr?: Array<string>
+            wizardTitle?: string
         }
 
         

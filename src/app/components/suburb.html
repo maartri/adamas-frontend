@@ -1,5 +1,5 @@
-<nz-select nzAllowClear nzShowSearch *ngIf="!loadComponent" nzServerSearch [nzPlaceHolder]="'Suburb'" [ngModel]="innerValue"
-    [nzShowArrow]="false" [nzFilterOption]="true" (nzOnSearch)="search($event)" [nzDropdownMatchSelectWidth]="false" [nzPlaceHolder]="placeholder"
+<nz-select nzAllowClear nzShowSearch *ngIf="!loadComponent" nzServerSearch [nzPlaceHolder]="'Suburb/Postcode'" [ngModel]="innerValue"
+    [nzShowArrow]="false" [nzFilterOption]="true" (nzOnSearch)="search($event)" [nzDropdownMatchSelectWidth]="false"
      (ngModelChange)="select($event)">
          
     <nz-option *ngFor="let list of lists" [nzValue]="format(list)" [nzLabel]="format(list)"></nz-option>    

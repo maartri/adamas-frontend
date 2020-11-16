@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { HttpParams } from '@angular/common/http';
 
+import { Roster, ClaimVariation, TravelClaim, ClientNote, RosterNote, RecordIncident, LeaveEntry , Staffs } from '@modules/modules';
 
 const staff: string = "api/staff"
 const timesheet: string = "api/timesheet"
@@ -60,7 +61,7 @@ export class StaffService {
         return this.auth.get(`${timesheet}/user/settings/${name}`);
     }
 
-    getroster(roster: Dto.Roster) {
+    getroster(roster: Roster) {
         return this.auth.get(`${timesheet}/roster`, roster);
     }
 
@@ -68,31 +69,31 @@ export class StaffService {
         return this.auth.get(`${staff}/mobilefuturelimit/${name}`);
     }
 
-    postclaimvariation(cv: Dto.ClaimVariation): Observable<any> {
+    postclaimvariation(cv: ClaimVariation): Observable<any> {
         return this.auth.post(`${staff}/claimvariation`, cv);
     }
 
-    posttravelclaim(claim: Dto.TravelClaim): Observable<any> {
+    posttravelclaim(claim: TravelClaim): Observable<any> {
         return this.auth.post(`${staff}/travelclaim`, claim);
     }
 
-    postclientnote(cnote: Dto.ClientNote): Observable<any> {
+    postclientnote(cnote: ClientNote): Observable<any> {
         return this.auth.post(`${staff}/clientnote`, cnote);
     }
 
-    postrecordincident(incident: Dto.RecordIncident): Observable<any> {
+    postrecordincident(incident: RecordIncident): Observable<any> {
         return this.auth.post(`${staff}/incident`, incident);
     }
 
-    updaterosternote(note: Dto.RosterNote): Observable<any> {
+    updaterosternote(note: RosterNote): Observable<any> {
         return this.auth.put(`${staff}/notes`, note);
     }
 
-    updateusername(staffVal: Dto.Staffs): Observable<any> {
+    updateusername(staffVal: Staffs): Observable<any> {
         return this.auth.put(`${staff}/user/name`, staffVal);
     }
 
-    postleave(entry: Dto.LeaveEntry): Observable<any> {
+    postleave(entry: LeaveEntry): Observable<any> {
         return this.auth.post(`${staff}/leave`, entry);
     }
 }

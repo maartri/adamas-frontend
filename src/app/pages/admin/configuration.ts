@@ -279,7 +279,7 @@ export class ConfigurationAdmin   {
             this.router.navigate(['/admin/competency-groups']);
         }
         if(index == 69){
-            // this.router.navigate(['/admin/competency-groups']);
+            this.router.navigate(['/admin/competency-groups']);
         }
         if(index == 70){
             this.router.navigate(['/admin/hr-notes-categories']);

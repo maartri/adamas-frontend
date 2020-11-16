@@ -287,6 +287,31 @@ export class ConfigurationAdmin   {
         if(index == 71){
             this.router.navigate(['/admin/op-staff-notes']);
         }
+        if(index == 72){
+            this.router.navigate(['/admin/staff-reminder']);
+        }
+        if(index == 73){
+            this.router.navigate(['/admin/service-deciplines']);
+        }
+        if(index == 74){
+            this.router.navigate(['/admin/leave-description']);
+        }
+        if(index == 75){
+            this.router.navigate(['/admin/staff-preferences']);
+        }
+        if(index == 76){
+            this.router.navigate(['/admin/service-note-categories']);
+        }
+        if(index == 77){
+            this.router.navigate(['/admin/vehicles']);
+        }
+        if(index == 78){
+            this.router.navigate(['/admin/activity-groups']);
+        }
+        if(index == 79){
+            this.router.navigate(['/admin/equipments']);
+        }
+
 
     }  
 }

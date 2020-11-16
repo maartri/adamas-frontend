@@ -455,13 +455,13 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-timeattandencecomp" (click)="showModal(this.id)">
+                                            <button nz-button nzType="default" id="btn-staff-timeattandencecomp" (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
                                                 Time & Attendance Comparison
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-staffavailability" (click)="showModal(this.id)">
+                                            <button nz-button nzType="default" id="btn-staff-availability" (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Availability Register
                                                 </button>
@@ -765,6 +765,13 @@
                 (nzOnOk)="handleOkTop()"
                 >
             <div>
+                <div nz-row *ngIf="frm_OneDate" >
+                    <div nz-col nzSpan="20">
+                        <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
+                        <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Date" [nzFormat]="dateFormat" ></nz-date-picker>
+                            
+                    </div>
+                </div>
                     <div nz-row *ngIf="frm_Date" >
                         <div nz-col nzSpan="20">
                             <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>

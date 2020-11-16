@@ -231,6 +231,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     // 
      
     frm_Date :boolean ;
+    frm_OneDate: boolean;
     frm_Programs :boolean ;  
     frm_Branches :boolean ;
     frm_Managers :boolean ;
@@ -739,7 +740,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         
     }
     ResetVisibility(){
-        this.frm_Date =false;
+
+    this.frm_Date =false;
+    this.frm_OneDate = false;
     this.frm_Programs =false;
     this.frm_Branches =false;
     this.frm_Managers =false;
@@ -1117,12 +1120,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-availability':
                 this.ModalName = "STAFF AVAILABILITY REPORT"
-                this.frm_Date = true;
+                this.frm_OneDate = true;
                 this.frm_Branches = true;                 
                 this.frm_Staff = true;
                 break;
             case 'btn-staff-timeattandencecomp':
-                this.ModalName = "MTA COMPARISON REPORT"
+                this.ModalName = "TIME & ATTENDANCE COMPARISON REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;                 
                 this.frm_Staff = true;
@@ -1383,7 +1386,7 @@ var  tempsdate,tempedate,strdate,endate;
         var s_Descipiline = this.inputForm.value.disciplineArr;
         var s_CareDomain = this.inputForm.value.caredomainArr;
         var s_PlanType = this.inputForm.value.planArr;
-        var s_OPCaseNotes = this.inputForm.value.opnotesArr;
+        var s_OPCaseNotes = this.inputForm.value.OPnotesArr;
         var s_HRCaseNotes ="";
         var s_TrainingType = this.inputForm.value.trainingtypeArr;
         var s_TraccsUser = this.inputForm.value.traccsuserArr;
@@ -1602,19 +1605,19 @@ var  tempsdate,tempedate,strdate,endate;
                 this.LoanItemRegister(s_Branches,s_Programs,s_Recipient,s_LoanItems,s_ServiceRegions,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-leaveregister':
-                this.StaffLeaveRegister(strdate,endate)
+                this.StaffLeaveRegister(strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-staffnotworked':
                 this.StaffNotWorkedReport(s_Branches,s_StfGroup,s_Staff,strdate,endate)
                 break;
             case 'btn-staff-competencyrenewal':
-                this.StaffCompetencyRenewal(s_Branches,s_Staff,s_Competencies,s_Managers,s_StaffTeam,s_CompetencyGroups,strdate,endate)
+                this.StaffCompetencyRenewal(s_Branches,s_Staff,s_Competencies,s_Managers,s_StaffTeam,s_CompetencyGroups,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-unavailability':
-                this.StaffUnavailability(s_Branches,s_StfGroup,s_Staff ,s_Stafftype,strdate,endate)
+                this.StaffUnavailability(s_Branches,s_StfGroup,s_Staff ,s_Stafftype,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-Roster':
-                this.StaffRoster(s_Branches,s_StfGroup,s_Staff ,s_Stafftype,strdate,endate)
+                this.StaffRoster(s_Branches,s_StfGroup,s_Staff ,s_Stafftype,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-MasterRoster':
 
@@ -1671,7 +1674,7 @@ var  tempsdate,tempedate,strdate,endate;
                 this.StaffMasterRoster(s_Branches,s_StfGroup,s_Staff ,s_Stafftype,strdate,endate)
                 break;
             case 'btn-staff-loanregister':
-                this.StaffLoanRegister(s_Branches,s_Programs,s_Staff,s_LoanItems,s_ServiceRegions,strdate,endate)
+                this.StaffLoanRegister(s_Branches,s_Programs,s_Staff,s_LoanItems,s_ServiceRegions,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-Regis-progcasenotes':
                 this.RecipientProg_CaseReport(s_Branches,s_Programs,s_CaseNotes,s_Recipient,s_Descipiline,s_CareDomain,s_ServiceRegions,s_Managers,strdate,endate,tempsdate,tempedate)
@@ -1686,25 +1689,25 @@ var  tempsdate,tempedate,strdate,endate;
                 this.Careplanstatus(s_Recipient,s_PlanType,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-availability':
-                this.StaffAvailability(s_Branches,s_Staff,strdate)
+                this.StaffAvailability(s_Branches,s_Staff,strdate,tempsdate)
                 break;
             case 'btn-staff-timeattandencecomp':
-                this.TimeattandanceComparison(s_Branches,s_Staff,strdate,endate)
+                this.TimeattandanceComparison(s_Branches,s_Staff,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-hrnotesregister':
-                this.HRNotesRegister(s_Branches,s_Staff,s_HRCaseNotes,strdate,endate)
+                this.HRNotesRegister(s_Branches,s_Staff,s_HRCaseNotes,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-opnotes':
-                this.StaffOPNotesRegister(s_Branches,s_Programs,s_OPCaseNotes,s_Staff,s_Descipiline,s_CareDomain,strdate,endate)
+                this.StaffOPNotesRegister(s_Branches,s_Programs,s_OPCaseNotes,s_Staff,s_Descipiline,s_CareDomain,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-incidentregister':
-                this.StaffIncidentRegister(s_Branches,s_SvcType,s_Staff,s_incidenttype,s_Incidentcategory,strdate,endate)
+                this.StaffIncidentRegister(s_Branches,s_SvcType,s_Staff,s_incidenttype,s_Incidentcategory,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-staff-training':
-                this.StaffTraining(s_Branches,s_Managers,s_ServiceRegions,s_Programs,s_StaffTeam,s_TrainingType,s_StfGroup,strdate,endate)
+                this.StaffTraining(s_Branches,s_Managers,s_ServiceRegions,s_Programs,s_StaffTeam,s_TrainingType,s_StfGroup,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-competenciesrenewal':
-                this.StaffCompetencyRenewal(s_Branches,s_Staff,s_Competencies,s_Managers,s_StaffTeam,s_CompetencyGroups,strdate,endate)
+                this.StaffCompetencyRenewal(s_Branches,s_Staff,s_Competencies,s_Managers,s_StaffTeam,s_CompetencyGroups,strdate,endate,tempsdate,tempedate)
                 break;
             case 'btn-Systm-AuditRegister':
                 this.AuditRegister(s_who,s_Description,s_TraccsUser,strdate,endate,tempsdate,tempedate)
@@ -4581,7 +4584,7 @@ var  tempsdate,tempedate,strdate,endate;
                                                 
         fQuery = fQuery + " ORDER BY HumanResources.Name "
         
-  console.log(fQuery)
+ //console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -4621,14 +4624,14 @@ var  tempsdate,tempedate,strdate,endate;
         console.log(err);
     });        
     }
-    StaffLeaveRegister(startdate,enddate){ 
+    StaffLeaveRegister(startdate,enddate,tempsdate,tempedate){ 
             
             
         var fQuery = "SELECT ACCOUNTNO, L.NAME, format(DATE1,'dd/MM/yyyy') as StartDate, format(DATE2,'dd/MM/yyyy')  as EndDate, L.NOTES, CASE WHEN IsNull(L.Completed,0) = 1 THEN 'YES' ELSE 'NO' END AS APPROVED  FROM STAFF S  INNER JOIN HUMANRESOURCES L ON S.UNIQUEID = L.PERSONID AND L.[GROUP] = 'LEAVEAPP' WHERE      "
         var lblcriteria;
 
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = "Date1 BETWEEN '" +startdate + ("'AND'") + enddate  +  "'";
+            this.s_DateSQL = "Date1 BETWEEN '" +tempsdate + ("'AND'") + tempedate  +  "'";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " " + this.s_DateSQL};            
         }
        
@@ -4762,14 +4765,14 @@ var  tempsdate,tempedate,strdate,endate;
     });        
     }
 
-    StaffCompetencyRenewal(branch,staff,competency,manager,staffteam,competencygroup,startdate,enddate){
+    StaffCompetencyRenewal(branch,staff,competency,manager,staffteam,competencygroup,startdate,enddate,tempsdate,tempedate){
             
             
         var fQuery = "SELECT  IsNull([PAN_MANAGER],'') as Coordinator , UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName,Staff.StaffGroup,Staff.Category,Staff.STF_DEPARTMENT,HumanResources.Name as Competency,CASE WHEN HumanResources.Date1 IS NULL THEN 'MISSING' ELSE CAST(HumanResources.Date1 as VARCHAR(20)) END AS [Expiry Date],HumanResources.Notes FROM Staff INNER JOIN HumanResources ON Staff.UniqueID = HumanResources.PersonID WHERE ([commencementdate] is not null and [terminationdate] is null) AND (HumanResources.[Type] = 'STAFFATTRIBUTE')   "
         var lblcriteria;
 
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " ((HumanResources.[Date1] BETWEEN '" +startdate + ("'AND'") + enddate  +  "')OR ISNULL(HumanResources.[Date1], '') = '')";
+            this.s_DateSQL = " ((HumanResources.[Date1] BETWEEN '" +tempsdate + ("'AND'") + tempedate  +  "')OR ISNULL(HumanResources.[Date1], '') = '')";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
         }
         if (branch != ""){
@@ -4865,7 +4868,7 @@ var  tempsdate,tempedate,strdate,endate;
         console.log(err);
     });        
     }
-    StaffUnavailability(branch,stfgroup,staff,stafftype,startdate,enddate){
+    StaffUnavailability(branch,stfgroup,staff,stafftype,startdate,enddate,tempsdate,tempedate){
             
             
         var fQuery = "SELECT [Roster].[Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME,  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE')  AND Roster.[Type] = 13 "
@@ -4873,7 +4876,7 @@ var  tempsdate,tempedate,strdate,endate;
         
         //AND Date BETWEEN '2020/08/01' AND '2020/08/31'
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = "( Date BETWEEN '" +startdate + ("'AND'") + enddate  +  "')";
+            this.s_DateSQL = "( Date BETWEEN '" +tempsdate + ("'AND'") + tempedate  +  "')";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
         }
         if (branch != ""){
@@ -4956,7 +4959,7 @@ var  tempsdate,tempedate,strdate,endate;
     });        
     }
 
-    StaffRoster(branch,stfgroup,staff,stafftype,startdate,enddate){
+    StaffRoster(branch,stfgroup,staff,stafftype,startdate,enddate,tempsdate,tempedate){
             
             
         var fQuery = "SELECT [Roster].[Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME,  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Carer Code] > '!MULTIPLE') AND Type <> 1  AND (Type <> 13)   "
@@ -4964,7 +4967,7 @@ var  tempsdate,tempedate,strdate,endate;
         
         //AND (Date BETWEEN '2020/08/01' AND '2020/08/31')
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = "( Date BETWEEN '" +startdate + ("'AND'") + enddate  +  "')";
+            this.s_DateSQL = "( Date BETWEEN '" +tempsdate + ("'AND'") + tempedate  +  "')";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
         }
         if (branch != ""){
@@ -5137,7 +5140,7 @@ var  tempsdate,tempedate,strdate,endate;
         console.log(err);
     });        
     }
-    StaffLoanRegister(branch,program,staff,loanitems,loancategory,startdate,enddate){
+    StaffLoanRegister(branch,program,staff,loanitems,loancategory,startdate,enddate,tempsdate,tempedate){
             
             
         var fQuery = "SELECT HumanResources.Name,HumanResources.PersonID,HumanResources.[Type],HumanResources.[Address1],HumanResources.[Group],format(HumanResources.Date1,'dd/MM/yyyy') as Date1, format(HumanResources.Date2,'dd/MM/yyyy') as Date2,Recipients.AccountNo,        Recipients.Branch FROM HumanResources INNER JOIN Recipients on HumanResources.PersonID = Recipients.UniqueID  WHERE   HumanResources.[Group] = 'LOANITEMS' "
@@ -5145,7 +5148,7 @@ var  tempsdate,tempedate,strdate,endate;
         
         
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " ((Date1 < '" +startdate + ("') AND ((Date2 Is Null) OR(Date2 >'") + enddate  +  "' )) )";
+            this.s_DateSQL = " ((Date1 < '" +tempsdate + ("') AND ((Date2 Is Null) OR(Date2 >'") + tempedate  +  "' )) )";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " AND  " + this.s_DateSQL};            
         }
         if (branch != ""){
@@ -5635,10 +5638,10 @@ var  tempsdate,tempedate,strdate,endate;
     });        
     }
 
-    StaffAvailability(branch,staff,startdate){
+    StaffAvailability(branch,staff,startdate,tempsdate){
             
             
-        var fQuery = " ";
+        var fQuery = "WITH T AS (SELECT ACCOUNTNO, ";
         var lblcriteria;
         
         
@@ -5647,12 +5650,12 @@ var  tempsdate,tempedate,strdate,endate;
 
         
         if (startdate != "" ){
-            this.s_DateSQL = " WITH T AS (SELECT ACCOUNTNO,  '" +startdate + ("'AS [DATE],");
+            this.s_DateSQL = "  '" +tempsdate + ("'AS [DATE],");
             if (this.s_DateSQL != ""){ fQuery = this.s_DateSQL};            
         }
         fQuery = fQuery + "CONVERT(TIME, '00:00') AS STARTTIME, CONVERT(TIME, '00:00') AS STARTFREETIME FROM STAFF WHERE ACCOUNTNO > '!Z' AND ACCOUNTNO <> 'BOOKED' AND COMMENCEMENTDATE IS NOT NULL AND TerminationDate IS NULL UNION SELECT [CARER CODE], [DATE], CONVERT(TIME, [START TIME]) AS STARTTIME, CASE WHEN DATEADD(MINUTE, DURATION * 5,  CONVERT(TIME, [START TIME])) = '00:00' THEN '23:59:59.99' ELSE CONVERT(TIME,DATEADD(MINUTE, DURATION * 5, CONVERT(TIME, [START TIME]))) END AS STARTFREETIME FROM ROSTER WHERE [CARER CODE] > '!Z' AND [CARER CODE] <> 'BOOKED'"
 
-        this.s_DateSQL = " AND [DATE] IN ('" + startdate + ("')  UNION SELECT ACCOUNTNO, '" + startdate + "' AS [DATE], ");
+        this.s_DateSQL = " AND [DATE] IN ('" + tempsdate + ("')  UNION SELECT ACCOUNTNO, '" + tempsdate + "' AS [DATE], ");
             if (this.s_DateSQL != ""){ fQuery = fQuery + " " +this.s_DateSQL};
 
 
@@ -5684,7 +5687,7 @@ var  tempsdate,tempedate,strdate,endate;
        
         fQuery = fQuery + " ORDER BY ACCOUNTNO, DATE,STARTTIME ASC "
         
-   // ////console.log(fQuery)
+   console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5725,7 +5728,7 @@ var  tempsdate,tempedate,strdate,endate;
     });        
     }
 
-    TimeattandanceComparison(branch,staff,startdate,enddate){
+    TimeattandanceComparison(branch,staff,startdate,enddate,tempsdate,tempedate){
             
             
         var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName],format( DateTime,22) as DateTime,format( RosteredStart,'dd/MM/yyyy') as RosteredStart,format( ActualDateTime,'dd/mm/yyyy') as ActualDateTime , DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, format(RosteredEnd,'dd/MM/yyyy') as RosteredEnd, format( LOActualDateTime,'dd/MM/yyyy') as LOActualDateTime, DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  FORMAT (getdate(),'dd/mm/yyyy')) ";
@@ -5737,7 +5740,7 @@ var  tempsdate,tempedate,strdate,endate;
 
         //( BETWEEN '2020/08/01' AND '2020/08/31') AND
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = "[RosteredStart] BETWEEN '" +startdate + ("'AND'") + enddate  +  "'";
+            this.s_DateSQL = "[RosteredStart] BETWEEN '" +tempsdate + ("'AND'") + tempedate  +  "'";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
         }        
         
@@ -5807,7 +5810,7 @@ var  tempsdate,tempedate,strdate,endate;
     });        
     }
 
-    HRNotesRegister(branch,staff,casenotecat,startdate,enddate){
+    HRNotesRegister(branch,staff,casenotecat,startdate,enddate,tempsdate,tempedate){
             
             
         var fQuery = "SELECT UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +       CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,format( History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE  ExtraDetail1 = 'HRNOTE'  AND (History.DeletedRecord = 0) AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr'))  ";
@@ -5819,7 +5822,7 @@ var  tempsdate,tempedate,strdate,endate;
 
         // '08-01-2020' AND  '08-31-2020'   AND
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = "DetailDate > '" +startdate + ("'AND  DetailDate < ' ") + enddate  +  "'";
+            this.s_DateSQL = "DetailDate > '" +tempsdate + ("'AND  DetailDate < ' ") + tempedate  +  "'";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
         }        
         
@@ -5855,7 +5858,7 @@ var  tempsdate,tempedate,strdate,endate;
         fQuery = fQuery +    "ORDER BY Staff.[LastName], History.DetailDate "
       
         
-  //  ////console.log(fQuery)
+ // console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -5896,7 +5899,7 @@ var  tempsdate,tempedate,strdate,endate;
     });        
     }
 
-    StaffOPNotesRegister(branch,program,casenotecat,staff,discipline,caredomain,startdate,enddate){
+    StaffOPNotesRegister(branch,program,casenotecat,staff,discipline,caredomain,startdate,enddate,tempsdate,tempedate){
             
             
         var fQuery = "SELECT UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END + CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,format(History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE ExtraDetail1 <> 'HRNOTE'  AND (History.DeletedRecord = 0)  "
@@ -5904,7 +5907,7 @@ var  tempsdate,tempedate,strdate,endate;
         
         
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " (DetailDate >  '" +startdate + ("' AND DetailDate < '") + enddate  +  "' )";
+            this.s_DateSQL = " (DetailDate >  '" +tempsdate + ("' AND DetailDate < '") + tempedate  +  "' )";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
         }
         if (branch != ""){
@@ -5962,7 +5965,7 @@ var  tempsdate,tempedate,strdate,endate;
        
         fQuery = fQuery + " ORDER BY Staff.[LastName], History.DetailDate   "
         
-////console.log(fQuery)
+console.log(fQuery)
 
     this.drawerVisible = true;
 
@@ -6003,7 +6006,7 @@ var  tempsdate,tempedate,strdate,endate;
     });        
     }
 
-    StaffIncidentRegister(branch,SvcType,Staff,incidenttype,category,startdate,enddate){
+    StaffIncidentRegister(branch,SvcType,Staff,incidenttype,category,startdate,enddate,tempsdate,tempedate){
             
             
         var fQuery = "SELECT AccountNo, STF_Department AS Branch, AccountNo + ' - ' + CASE WHEN LastName<> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN Suburb <> '' THEN ' ' + Suburb  ELSE ' '  END + CASE WHEN TelePhone <> '' THEN ' Ph.' + TelePhone  ELSE ' '  END AS NameAddressPhone, (SELECT           CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' +        CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' +        CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName        FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT           CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' +        CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' +        CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName        FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.* FROM IM_Master I INNER JOIN STAFF R ON I.PERSONID = R.UNIQUEID WHERE"
@@ -6015,7 +6018,7 @@ var  tempsdate,tempedate,strdate,endate;
 
         
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " (Date BETWEEN '" +startdate + ("'AND'") + enddate  +  "')";
+            this.s_DateSQL = " (Date BETWEEN '" +tempsdate + ("'AND'") + tempedate  +  "')";
             if (this.s_DateSQL != ""){ fQuery = fQuery + "  " + this.s_DateSQL};            
         }
         if (branch != ""){
@@ -6100,7 +6103,7 @@ var  tempsdate,tempedate,strdate,endate;
         console.log(err);
     });        
     }
-    StaffTraining(branch,manager,region,program,staffteam,trainingtype,stfgroup,startdate,enddate){
+    StaffTraining(branch,manager,region,program,staffteam,trainingtype,stfgroup,startdate,enddate,tempsdate,tempedate){
         
         
         var fQuery = "SELECT [Roster].[Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal] AS ExpiryDate , [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Notes], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno], [Staff].[STF_DEPARTMENT], [Staff].[StaffGroup]  FROM Roster INNER JOIN STAFF on Roster.[Carer Code] = Staff.Accountno              INNER JOIN ITEMTYPES I ON Roster.[Service Type] = I.TITLE  WHERE  ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE') AND ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE') AND I.MINORGROUP = 'TRAINING'   "
@@ -6122,7 +6125,7 @@ var  tempsdate,tempedate,strdate,endate;
             if (this.s_ProgramSQL != ""){ fQuery = fQuery + " AND " + this.s_ProgramSQL}
         }
         if (startdate != "" ||enddate != ""){
-            this.s_DateSQL = " Date BETWEEN '" +startdate + ("'AND'") + enddate  +  "')";
+            this.s_DateSQL = "( Date BETWEEN '" +tempsdate + ("'AND'") + tempedate  +  "')";
             if (this.s_DateSQL != ""){ fQuery = fQuery + " AND " + this.s_DateSQL};            
         }
 
@@ -6179,7 +6182,7 @@ var  tempsdate,tempedate,strdate,endate;
     console.log(s_BranchSQL)
     console.log(s_CategorySQL)
     console.log(s_CoordinatorSQL)*/
-    ////console.log(fQuery)
+    //console.log(fQuery)
 
     this.drawerVisible = true;
 

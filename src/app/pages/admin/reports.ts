@@ -203,6 +203,10 @@ const inputFormDefault = {
         .inner-content[_ngcontent-wws-c367] {
             padding: 0px !important;
         }
+        .spinner{
+            margin:1rem auto;
+            width:1px;
+        }
         
     `],
     templateUrl: './reports.html'
@@ -216,7 +220,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     //Modals visibility
     isVisibleTop = false;
     FOReports = false;
-
+    loading: boolean = false;
     tabset = false;
     showtabother = false;
     showtabRostcriteria= false;
@@ -1455,7 +1459,7 @@ var  tempsdate,tempedate,strdate,endate;
     // console.log(strdate)
         switch(idbtn){
             case 'btn-refferallist' :
-                this.Refeeral_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
+                this.Refeeral_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs);                
                 break;
             case 'btn-activepackagelist' :                
                 this.ActivePackage_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs,strdate,endate);                  
@@ -1826,7 +1830,7 @@ var  tempsdate,tempedate,strdate,endate;
 //           
     Refeeral_list(branch,manager,region,program){
         
-        
+       
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)"
         var lblcriteria;
         if (branch != ""){
@@ -1889,7 +1893,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria" :  lblcriteria
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         
@@ -1912,11 +1916,14 @@ var  tempsdate,tempedate,strdate,endate;
            
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Referral list .pdf"
+           
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-
+            this.loading = false;
+            
         }, err => {
             console.log(err);
-        });    this.drawerVisible = true;     
+        });    this.drawerVisible = true; 
+        
     }  
 
     ActivePackage_list(branch,manager,region,program,startdate,enddate){
@@ -1988,7 +1995,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria": lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2008,6 +2015,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Active Packages.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -2078,7 +2086,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2098,6 +2106,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Recipient Rosters.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -2171,7 +2180,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2191,6 +2200,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Suspended Recipients.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -2263,7 +2273,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2283,6 +2293,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Voucher Summary.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -2345,7 +2356,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2365,6 +2376,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Package Usage Report.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -2405,7 +2417,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -2424,6 +2436,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Recipient Time Length Report.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -2494,7 +2507,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2514,6 +2527,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Unallocated Bookings.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -2586,7 +2600,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2606,6 +2620,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Transport Summary Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -2678,7 +2693,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2698,6 +2713,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Referral During Period.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -2768,7 +2784,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2788,6 +2804,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Recipients Master Roster.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -2851,7 +2868,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2871,6 +2888,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Active Recipient List.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -2935,7 +2953,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -2955,6 +2973,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "InActive Recipient List.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3019,7 +3038,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3039,6 +3058,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Carer list.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3102,7 +3122,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3122,6 +3142,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Billing Clients.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3194,7 +3215,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3214,6 +3235,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Admissions During Period.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3288,7 +3310,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3308,6 +3330,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Discharge During Period.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3380,7 +3403,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3400,6 +3423,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Absent Client Status Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3469,7 +3493,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria" :  lblcriteria
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3489,6 +3513,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Associate Listing.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -3561,7 +3586,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3581,6 +3606,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Unserviced Recipient Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3639,7 +3665,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3659,6 +3685,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Active Staff List.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3717,7 +3744,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3737,6 +3764,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "InActive Staff.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3795,7 +3823,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3815,6 +3843,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Active Contractor List.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3874,7 +3903,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3894,6 +3923,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "InActive Contractor List.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -3952,7 +3982,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -3972,6 +4002,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Active Volunteers.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4031,7 +4062,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -4051,6 +4082,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "InActive Volunteers.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
    //     console.log(err);
@@ -4116,7 +4148,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -4136,6 +4168,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff User Permissions.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4177,7 +4210,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -4197,6 +4230,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Meal Order Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4257,7 +4291,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -4277,6 +4311,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "HAS Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4336,7 +4371,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -4355,6 +4390,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "CDC Leave Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4408,7 +4444,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -4427,6 +4463,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "CDC Package Balance.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4506,7 +4543,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -4525,6 +4562,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Incident Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4599,7 +4637,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -4619,6 +4657,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Loan Item Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4657,7 +4696,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -4676,6 +4715,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Leave Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4739,7 +4779,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -4759,6 +4799,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Not Worked Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4844,7 +4885,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -4863,6 +4904,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Competency Renewal.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -4934,7 +4976,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -4953,6 +4995,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff UnAvailability Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5025,7 +5068,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -5044,6 +5087,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Roster.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5115,7 +5159,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -5135,6 +5179,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Master Roster.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5208,7 +5253,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -5228,6 +5273,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Loan Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5327,7 +5373,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -5347,6 +5393,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Recipient Case Note.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5434,7 +5481,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -5454,6 +5501,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Service Notes Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5542,7 +5590,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',            
@@ -5561,6 +5609,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "OP Notes Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5612,7 +5661,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -5632,6 +5681,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Care Plan Status Report .pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5702,7 +5752,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -5722,6 +5772,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Availability.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5784,7 +5835,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -5804,6 +5855,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Time Attendance Comparison Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5873,7 +5925,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -5893,6 +5945,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "HR Notes Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -5980,7 +6033,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -6000,6 +6053,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff OP Notes Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -6078,7 +6132,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -6098,6 +6152,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Incident Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -6195,7 +6250,7 @@ var  tempsdate,tempedate,strdate,endate;
             "Criteria":lblcriteria 
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -6215,6 +6270,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Staff Training Register.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -6274,7 +6330,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;        
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -6293,6 +6349,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = "Audit Register.pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -6333,7 +6390,7 @@ var  tempsdate,tempedate,strdate,endate;
                     }
                 }
             
-            
+                this.loading = true;        
                 const headerDict = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',            
@@ -6352,6 +6409,7 @@ var  tempsdate,tempedate,strdate,endate;
                     let fileURL = URL.createObjectURL(_blob);
                     this.pdfTitle = "Program Activity Status Audit.pdf"
                     this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
             
                 }, err => {
                     console.log(err);
@@ -6436,7 +6494,7 @@ var  tempsdate,tempedate,strdate,endate;
                     }
                 }
             
-            
+                this.loading = true;
                 const headerDict = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',            
@@ -6455,6 +6513,7 @@ var  tempsdate,tempedate,strdate,endate;
                     let fileURL = URL.createObjectURL(_blob);
                     this.pdfTitle = "MTA Attendance Register.pdf"
                     this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
             
                 }, err => {
                     console.log(err);
@@ -6534,7 +6593,7 @@ var  tempsdate,tempedate,strdate,endate;
                     }
                 }
             
-            
+                this.loading = true;
                 const headerDict = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',            
@@ -6553,6 +6612,7 @@ var  tempsdate,tempedate,strdate,endate;
                     let fileURL = URL.createObjectURL(_blob);
                     this.pdfTitle = "Roster OverLap Register.pdf"
                     this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
             
                 }, err => {
                     console.log(err);
@@ -6636,7 +6696,7 @@ var  tempsdate,tempedate,strdate,endate;
                     }
                 }
             
-            
+                this.loading = true;
                 const headerDict = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',            
@@ -6655,6 +6715,7 @@ var  tempsdate,tempedate,strdate,endate;
                     let fileURL = URL.createObjectURL(_blob);
                     this.pdfTitle = "MTA Attendance Verification Audit.pdf"
                     this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
             
                 }, err => {
                     console.log(err);
@@ -6726,7 +6787,7 @@ var  tempsdate,tempedate,strdate,endate;
                     }
                 }
             
-            
+                this.loading = true;
                 const headerDict = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',            
@@ -6745,6 +6806,7 @@ var  tempsdate,tempedate,strdate,endate;
                     let fileURL = URL.createObjectURL(_blob);
                     this.pdfTitle = "Recipient Unused Funding Reprot.pdf"
                     this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
             
                 }, err => {
                     console.log(err);
@@ -7142,7 +7204,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -7161,6 +7223,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -7501,7 +7564,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -7520,6 +7583,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -7851,7 +7915,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -7870,6 +7934,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -8268,7 +8333,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -8287,6 +8352,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -8620,7 +8686,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -8639,6 +8705,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -8684,7 +8751,7 @@ var  tempsdate,tempedate,strdate,endate;
                     }
                 }
             
-            
+                this.loading = true;
                 const headerDict = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',            
@@ -8703,6 +8770,7 @@ var  tempsdate,tempedate,strdate,endate;
                     let fileURL = URL.createObjectURL(_blob);
                     this.pdfTitle = "Program Budget Audit.pdf"
                     this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
             
                 }, err => {
                     console.log(err);
@@ -8776,7 +8844,7 @@ var  tempsdate,tempedate,strdate,endate;
         }
     }
 
-
+    this.loading = true;
     const headerDict = {
         
         'Content-Type': 'application/json',
@@ -8799,6 +8867,7 @@ var  tempsdate,tempedate,strdate,endate;
             let fileURL = URL.createObjectURL(_blob);
             this.pdfTitle = "Program Summary Report.pdf"
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
         }, err => {
             console.log(err);
@@ -9128,7 +9197,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -9147,6 +9216,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -9476,7 +9546,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -9495,6 +9565,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -9825,7 +9896,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -9844,6 +9915,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title+ ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -10173,7 +10245,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -10192,6 +10264,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -10522,7 +10595,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -10541,6 +10614,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -10870,7 +10944,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -10889,6 +10963,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title+ ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -11210,7 +11285,7 @@ var  tempsdate,tempedate,strdate,endate;
                             
                 }
             }
-        
+            this.loading = true;
         
             const headerDict = {
                 'Content-Type': 'application/json',
@@ -11230,6 +11305,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -11552,7 +11628,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -11571,6 +11647,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -11611,7 +11688,7 @@ var  tempsdate,tempedate,strdate,endate;
                             
                 }
             }
-        
+            this.loading = true;
         
             const headerDict = {
                 'Content-Type': 'application/json',
@@ -11631,6 +11708,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = "Funding Audit Report.pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -11953,7 +12031,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -11972,6 +12050,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -12302,7 +12381,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -12321,6 +12400,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -12386,7 +12466,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -12406,6 +12486,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "UnBilled Items Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);
@@ -12736,7 +12817,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -12755,6 +12836,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -13088,7 +13170,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -13107,6 +13189,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -13436,7 +13519,7 @@ var  tempsdate,tempedate,strdate,endate;
                 }
             }
         
-        
+            this.loading = true;
             const headerDict = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',            
@@ -13455,6 +13538,7 @@ var  tempsdate,tempedate,strdate,endate;
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = Title + ".pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
         
             }, err => {
                 console.log(err);
@@ -13518,7 +13602,7 @@ var  tempsdate,tempedate,strdate,endate;
                     
         }
     }
-
+    this.loading = true;
 
     const headerDict = {
         'Content-Type': 'application/json',
@@ -13538,6 +13622,7 @@ var  tempsdate,tempedate,strdate,endate;
         let fileURL = URL.createObjectURL(_blob);
         this.pdfTitle = "Dataset Recipient Unit Cost Report.pdf"
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
 
     }, err => {
         console.log(err);

@@ -223,6 +223,7 @@ import { ServiceNoteCategoriesComponent } from '@admin/configuration/staff/servi
 import { VehiclesComponent } from '@admin/configuration/others/vehicles.component';
 import { ActivityGroupsComponent } from '@admin/configuration/others/activity-groups.component';
 import { EquipmentsComponent } from '@admin/configuration/others/equipments.component';
+import { StaffCompetenciesComponent } from '@admin/configuration/staff/staff-competencies.component';
 
 const routes: Routes = [
   {
@@ -748,6 +749,10 @@ const routes: Routes = [
         component:StaffCompetencyGroupComponent
       },
       {
+        path:"staff-competency",
+        component:StaffCompetenciesComponent
+      },
+      {
         path:"hr-notes-categories",
         component:StaffNotesCategoriesComponent
       },
@@ -1092,6 +1097,7 @@ export const PAGE_COMPONENTS = [
   StaffUserGroupsComponent,
   AwardLevelsComponent,
   StaffCompetencyGroupComponent,
+  StaffCompetenciesComponent,
   StaffNotesCategoriesComponent,
   StaffPositionsComponent,
   StaffTeamsComponent,

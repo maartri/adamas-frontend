@@ -5,7 +5,7 @@ import { Injectable, Injector } from '@angular/core';
 import { ListService } from '@services/index';
 
 import { ModalVariables } from '@modules/modules';
-declare var Dto: any;
+// declare var Dto: any;
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +23,6 @@ export class SwitchService {
         ) {
             this.listS = this.injector.get(ListService)
         }
-        
         
         getData(tabNo: number): Observable<any> {
             this.sqlCommand = '';

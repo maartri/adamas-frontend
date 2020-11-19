@@ -38,12 +38,12 @@
                     </div>
                     <div nz-col nzSpan="8" class="mrg-btm">
                         <label nzFor="Postcode">Date</label>
-                        <nz-date-picker formControlName="date" [nzFormat]="dateFormat"></nz-date-picker>
+                        <nz-date-picker formControlName="date" [nzFormat]="dateFormat" ></nz-date-picker>
                         </div>
                     <div nz-col nzSpan="8" class="mrg-btm">
                         <label nzFor="State">State</label>
                         <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state"  nzShowSearch nzAllowClear style="width:100%;" required>
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let st of states" [nzValue]="st" [nzLabel]="st"></nz-option> 
                         </nz-select>
                     </div>
                     <div nz-col nzSpan="8" class="mrg-btm">

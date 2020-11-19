@@ -1,7 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { ListService, MenuService } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-holidays',
@@ -10,7 +13,8 @@ import { SwitchService } from '@services/switch.service';
 })
 export class HolidaysComponent implements OnInit {
 
-  tableData: Array<any>;
+    tableData: Array<any>;
+    states:Array<any>;
     loading: boolean = false;
     dateFormat: string = 'dd/MM/yyyy';
     modalOpen: boolean = false;
@@ -18,25 +22,37 @@ export class HolidaysComponent implements OnInit {
     inputForm: FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
-    title:string = "Add Public Holidays"
-    
+    title:string = "Add Public Holidays";
+    private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
       private switchS:SwitchService,
+      private menuS:MenuService,
+      private listS:ListService,
       private formBuilder: FormBuilder
     ){}
     
     loadTitle()
     {
-      // debugger;
       return this.title;
     }
+    
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{date:"2020-10-09",description:"Independece day",state:"WA"}];
+      this.loadData();
       this.loading = false;
       this.cd.detectChanges();
+    }
+    loadData(){
+      let sql ="select * from PUBLIC_HOLIDAYS order by DATE desc";
+      this.loading = true;
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        console.log(this.tableData);
+        this.loading = false;
+      });
+      this.states = ['ALL','NSW','NT','QLD','SA','TAS','VIC','WA','ACT'];
     }
     showAddModal() {
       this.resetModal();
@@ -58,34 +74,69 @@ export class HolidaysComponent implements OnInit {
         const { 
           date,
           description,
-          state,
+          stats,
+          recordno,
          } = this.tableData[index];
         this.inputForm.patchValue({
           date: date,
           description:description,
-          state:state,
+          state:stats,
+          recordno:recordno,
         });
     }
     
     handleCancel() {
       this.modalOpen = false;
     }
-    // pre(): void {
-    //   this.current -= 1;
-    // }
-    
-    // next(): void {
-    //   this.current += 1;
-    // }
+
     save() {
-      // var temp=this.inputForm.controls["fundregions"].value
-      //  var input=this.inputForm.value
-      //  var temp = input.fundregions
-      // debugger;
-      this.postLoading = true;
-      this.globalS.sToast('Success', 'Changes saved');
-      this.handleCancel();
-      this.resetModal();
+      
+      if(!this.isUpdate){        
+      this.postLoading = true;   
+      const group  = this.inputForm;
+      let description   = group.get('description').value;
+      let stats   = group.get('state').value;
+      let PublicHolidayRegion = group.get('region').value;
+      let date = this.globalS.convertDbDate(group.get('date').value);
+      if (!PublicHolidayRegion) {
+        PublicHolidayRegion = '';
+      }
+      
+      let values = date+"','"+description+"','"+stats+"','"+PublicHolidayRegion;
+      let sql = "insert into PUBLIC_HOLIDAYS (DATE,DESCRIPTION,Stats,PublicHolidayRegion) Values ('"+values+"')";
+
+      this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Success', 'Saved successful');
+            // this.globalS.sToast('Unsuccess', 'not saved' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+        });
+        }else{
+          const group = this.inputForm;
+          let description   = group.get('description').value;
+          let stats   = group.get('state').value;
+          let PublicHolidayRegion = group.get('region').value;
+          let date     = group.get('date').value;
+          let recordno = group.get('recordno').value;
+let sql  = "Update PUBLIC_HOLIDAYS SET [DATE] = '"+ date+ "',[DESCRIPTION] = '"+ description+ "',[Stats] = '"+ stats+ "',[PublicHolidayRegion] = '"+ PublicHolidayRegion + "' WHERE [RECORDNO]='"+recordno+"'";
+          console.log(sql);
+          this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+            if (data) 
+            this.globalS.sToast('Success', 'Updated successful');     
+            else
+            this.globalS.sToast('Success', 'Updated successful');
+            this.postLoading = false;      
+            this.loadData();
+            this.handleCancel();
+            this.resetModal();   
+            this.isUpdate = false; 
+          });
+     }
     }
     
     delete(data: any) {
@@ -97,6 +148,7 @@ export class HolidaysComponent implements OnInit {
         description:'',
         state:'',
         region:'',
+        recordno:null,
       });
     }
 

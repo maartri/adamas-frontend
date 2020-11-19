@@ -1,7 +1,7 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add postcode</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
                     <th class="left">Name</th>
@@ -10,7 +10,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                <td class="left">{{ data.suburb +" "+ data.state +" "+ data.postcode }} </td>
+                <td class="left">{{ data.subrub +" "+ data.state +" "+ data.postcode }} </td>
                         <td><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Financial Class ?"
@@ -33,6 +33,7 @@
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <label nzFor="SubRub">Subrub</label>
                         <input nz-input placeholder=""  formControlName="suburb" required />
+                        <!-- <suburb formControlName="suburb" placeholder="Subrub" required></suburb> -->
                     </div>
                     <div nz-col nzSpan="12" class="mrg-btm">
                         <label nzFor="Postcode">Postcode</label>
@@ -41,7 +42,7 @@
                     <div nz-col nzSpan="12" class="mrg-btm">
                         <label nzFor="State">State</label>
                         <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" placeholder="State" nzShowSearch nzAllowClear style="width:100%;" required>
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let st of states" [nzValue]="st" [nzLabel]="st"></nz-option> 
                         </nz-select>
                     </div>
                 </div>

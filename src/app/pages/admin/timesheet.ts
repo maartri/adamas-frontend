@@ -1106,22 +1106,22 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
         const { serviceType, date, time } = this.timesheetForm.value;
-        var parseDate = parseISO(date);
 
-        if(!isValid(parseDate)) return EMPTY;
+        var _date = date;
         if (!program) return EMPTY;
 
-        var formatDateString = format(parseDate,'yyyy/MM/dd');
-        // console.log(this.timesheetForm.value)
-
         if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
-            // const { recipientCode, debtor } = this.timesheetForm.value;
+
+            if(typeof date === 'string'){
+                _date = parseISO(_date);
+            }
+
             return this.listS.getserviceactivityall({
                 program,
                 recipient: this.GETRECIPIENT(this.selected.option),
                 mainGroup: serviceType,
                 viewType: this.viewType,
-                date: format(parseDate, 'yyyy/MM/dd'),
+                date: format(_date, 'yyyy/MM/dd'),
                 startTime: format(this.defaultStartTime,'hh:mm'),
                 endTime: format(this.defaultEndTime,'hh:mm'),
                 duration: this.durationObject?.duration

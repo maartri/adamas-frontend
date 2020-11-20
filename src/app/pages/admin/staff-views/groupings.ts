@@ -89,7 +89,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
 
     buildForm() {
         this.inputForm = this.formBuilder.group({
-            list: ['', Validators.required],
+            list: [[], Validators.required],
             notes: ['', Validators.required],
             id: ['']
         });
@@ -201,11 +201,15 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
         const index = this.whatView;
         this.isLoading = true;
 
+        // console.log(list);
+        // return;
+
         if (index == 1) {            
             this.timeS.postuserdefined1({
                 notes: notes,
-                group: list,
-                personID: this.user.id
+                // group: list,
+                personID: this.user.id,
+                groupList: list
             }).pipe(takeUntil(this.unsubscribe))
                 .subscribe(data => {
                     if (data) {
@@ -219,8 +223,9 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
         if (index == 2) {
             this.timeS.postuserdefined2({
                 notes: notes,
-                group: list,
-                personID: this.user.id
+                // group: list,
+                personID: this.user.id,
+                groupList: list
             }).pipe(takeUntil(this.unsubscribe))
                 .subscribe(data => {
                     if (data) {
@@ -228,7 +233,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
                         this.success();
                         this.globalS.sToast('Success', 'Data Added');
                     }
-                })
+                });
         }
     }
 

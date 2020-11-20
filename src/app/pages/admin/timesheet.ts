@@ -15,6 +15,7 @@ import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
 import addMinutes from 'date-fns/addMinutes'
 import isSameDay from 'date-fns/isSameDay'
+import { isValid } from 'date-fns';
 
 interface AddTimesheetModalInterface {
     index: number,
@@ -97,6 +98,9 @@ interface CalculatedPay{
         }
         nz-descriptions >>> div table tbody tr td{
             font-size:11px;
+        }
+        tr{
+            pointer:cursor;
         }
         .notes{
             max-height: 3rem;
@@ -418,6 +422,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.timesheetForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
+                console.log(x);
                 this.serviceActivityList = [];
                 this.timesheetForm.patchValue({
                     serviceActivity: null
@@ -661,7 +666,9 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                         debtor: x.billedTo.accountNo,
                         serviceActivity: x.activity.name,
                         serviceSetting: x.recipientLocation,
-                        analysisCode: x.anal
+                        analysisCode: x.anal,
+
+                        serviceTypePortal: x.serviceTypePortal
 
                     }
                 });
@@ -1099,9 +1106,13 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
         const { serviceType, date, time } = this.timesheetForm.value;
+        var parseDate = parseISO(date);
 
+        if(!isValid(parseDate)) return EMPTY;
         if (!program) return EMPTY;
-        console.log(this.timesheetForm.value)
+
+        var formatDateString = format(parseDate,'yyyy/MM/dd');
+        // console.log(this.timesheetForm.value)
 
         if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
             // const { recipientCode, debtor } = this.timesheetForm.value;
@@ -1110,7 +1121,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 recipient: this.GETRECIPIENT(this.selected.option),
                 mainGroup: serviceType,
                 viewType: this.viewType,
-                date: format(date, 'yyyy/MM/dd'),
+                date: format(parseDate, 'yyyy/MM/dd'),
                 startTime: format(this.defaultStartTime,'hh:mm'),
                 endTime: format(this.defaultEndTime,'hh:mm'),
                 duration: this.durationObject?.duration
@@ -1161,7 +1172,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     
     showRecipient(): boolean  {
         const { serviceType, isMultipleRecipient, isTravelTimeChargeable } = this.timesheetForm.value;
-        console.log(serviceType + '' + isTravelTimeChargeable)
+        // console.log(serviceType + '' + isTravelTimeChargeable)
 
         if(serviceType === 'TRAVEL TIME' && isTravelTimeChargeable){
             return true;
@@ -1177,7 +1188,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     get showTime(): boolean {
         const { serviceType } = this.timesheetForm.value;
-        console.log(serviceType);
         if(serviceType === 'ALLOWANCE CHARGEABLE' || serviceType === 'ALLOWANCE NON-CHARGEABLE')
             return false;
 
@@ -1225,9 +1235,9 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.timesheetForm.reset({
             date: this.payPeriodEndDate,
-            serviceType: '',
-            program: '',
-            serviceActivity: '',
+            serviceType: null,
+            program: null,
+            serviceActivity: null,
             payType: '',
             analysisCode: '',
             recipientCode: '',
@@ -1348,6 +1358,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             serviceDescription: tsheet.payType || "",
             serviceSetting: null || "",
             serviceType: tsheet.serviceActivity || "",
+            // serviceType: tsheet.serviceType || "",
             staffPosition: null || "",
             startTime: format(tsheet.time.startTime,'HH:mm'),
             status: "1",
@@ -1356,13 +1367,17 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             type: this.activity_value,
             unitBillRate: tsheet.bill.rate || 0,
             unitPayRate: tsheet.pay.rate || 0,
-            yearNo: format(tsheet.date, 'yyyy')
+            yearNo: format(tsheet.date, 'yyyy'),
+            serviceTypePortal: tsheet.serviceType
         };
 
         if(!this.timesheetForm.valid){
             this.globalS.eToast('Error', 'All fields are required');
             return;
         }
+
+        // console.log(inputs);
+        // return;
 
         this.timeS.posttimesheet(inputs).subscribe(data => {
             this.globalS.sToast('Success', 'Timesheet has been added');
@@ -1395,6 +1410,40 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (!time.endTime) {
             this.ngModelChangeEnd(this.defaultEndTime)
         }
+    }
+
+    details(index: any){
+        console.log(index);
+
+        const { 
+            activity, 
+            serviceType, 
+            analysisCode, 
+            approved, 
+            billquant,
+            billrate, 
+            billto, 
+            date, 
+            debtor,
+            duration, 
+            durationNumber, 
+            serviceTypePortal, 
+            startTime, 
+            program,
+            endTime } = index;
+
+        this.timesheetForm.patchValue({
+            serviceType: serviceTypePortal,
+            date: date,
+            program: program,
+            serviceActivity: activity
+        });
+
+        // console.log(this.defaultStartTime)
+
+        this.defaultStartTime = parseISO(startTime);
+        this.defaultEndTime = parseISO(endTime);
+        this.addTimesheetVisible = true;
     }
 
      // Add Timesheet

@@ -13,6 +13,9 @@
                     <div (click)="confirm(2)" nz-tooltip nzTooltipTitle="Delete Highlighted Status"><i nz-icon nzType="minus" nzTheme="outline"></i></div>
                 </li>
                 <li>
+                    <div (click)="confirm(7)" nz-tooltip nzTooltipTitle="Edit Timesheet"><i nz-icon nzType="edit" nzTheme="outline"></i></div>
+                </li>
+                <li>
                     <div (click)="confirm(3)" nz-tooltip nzTooltipTitle="Delete All Unapproved"><i nz-icon nzType="delete" nzTheme="outline"></i></div>
                 </li>
                 <li>
@@ -93,7 +96,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn" [class.selected]="data.selected">
+                    <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn" [class.selected]="data.selected" (dblclick)="details(data)">
                         <td nzLeft="0px">{{ data.shiftbookNo}}</td>
                         <td nzLeft="70px">{{ data.date | date: 'dd/MM/yyyy' }}</td>
                         <td nzLeft="165px">{{ data.startTime | date: 'HH:mm' }}</td>

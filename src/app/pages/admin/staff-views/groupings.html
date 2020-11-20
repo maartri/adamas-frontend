@@ -64,9 +64,10 @@
             <nz-form-item>
                 <nz-form-label>{{ whatView == 1 ? 'Group' :  'Preference'}}</nz-form-label>
                 <nz-form-control nzErrorTip="Required Field">
-                    <nz-select formControlName="list" nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false">
-                        <nz-option *ngFor="let list of listArray" [nzValue]="list" [nzLabel]="list">
-                        </nz-option>
+                    <nz-select formControlName="list" nzAllowClear nzPlaceHolder="" 
+                    nzMode="multiple"
+                    [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let list of listArray" [nzValue]="list" [nzLabel]="list"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>

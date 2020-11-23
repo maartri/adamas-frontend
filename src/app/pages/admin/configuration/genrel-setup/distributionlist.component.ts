@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService } from '@services/index';
+import { ListService, MenuService } from '@services/index';
 import { GlobalService } from '@services/global.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-distributionlist',
@@ -29,11 +31,13 @@ export class DistributionlistComponent implements OnInit {
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  heading:string = "Add Distribution List"
+  heading:string = "Add Distribution List";
+  private unsubscribe: Subject<void> = new Subject();
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private listS:ListService,
+    private menuS:MenuService,
     private formBuilder: FormBuilder
   ){}
   
@@ -163,10 +167,56 @@ export class DistributionlistComponent implements OnInit {
     this.current += 1;
   }
   save() {
-    this.postLoading = true;
-    this.globalS.sToast('Success', 'Changes saved');
-    this.handleCancel();
-    this.resetModal();
+      
+    if(!this.isUpdate){        
+    this.postLoading = true;   
+    const group = this.inputForm;
+    let ltype     = group.get('ltype').value;
+    let staff = group.get('staff').value;
+    let service = group.get('service').value;
+    let prgm   = group.get('prgm').value;
+    let location   = group.get('location').value;
+    let recepient   = group.get('recepient').value;
+    let saverity      = group.get('saverity').value;
+    let values = recepient+"','"+service+"','"+location+"','"+prgm+"','"+staff+"','"+saverity+"','"+ltype;
+    let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Severity],[ListName]) Values ('"+values+"')"; 
+    this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+       
+        if (data) 
+        this.globalS.sToast('Success', 'Saved successful');     
+        else
+        this.globalS.sToast('Success', 'Saved successful');
+        this.loadData();
+        this.postLoading = false;          
+        this.handleCancel();
+        this.resetModal();
+      });
+      }else{
+        this.postLoading  = true;   
+        const group       = this.inputForm;
+        let ltype         = group.get('ltype').value;
+        let staff         = group.get('staff').value;
+        let service       = group.get('service').value;
+        let prgm          = group.get('prgm').value;
+        let location      = group.get('location').value;
+        let recepient     = group.get('recepient').value;
+        let saverity      = group.get('saverity').value;
+        let recordNo      = group.get('recordNo').value;
+        let sql  = "Update IM_DistributionLists SET [Recipient]='"+ recepient + "',[Activity] = '"+ service + "',[Program] = '"+ prgm + "',[Staff] = '"+ staff+ "',[Severity] = '"+ saverity + "',[ListName] = '"+ ltype+ "',[Location] = '"+ location+ "'  WHERE [recordNo] ='"+recordNo+"'";
+        // console.log(sql);
+        // return false;
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+        if (data) 
+        this.globalS.sToast('Success', 'Saved successful');     
+        else
+        this.globalS.sToast('Success', 'Saved successful');
+        this.postLoading = false;      
+        this.loadData();
+        this.handleCancel();
+        this.resetModal();   
+        this.isUpdate = false; 
+        });
+   }
   }
   
   delete(data: any) {
@@ -183,6 +233,7 @@ export class DistributionlistComponent implements OnInit {
       recepient:'',
       saverity:'',
       mandatory:true,
+      recordNo:null,
     });
   }
 

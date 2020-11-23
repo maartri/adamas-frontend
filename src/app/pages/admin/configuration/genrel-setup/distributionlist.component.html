@@ -4,6 +4,7 @@
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
+                    <th class="left">List Type</th>
                     <th class="left">Recepient</th>
                     <th class="left">Activity</th>
                     <th class="left">Location</th>
@@ -15,6 +16,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
+                <td class="left">{{ data.ltype  }} </td>
                 <td class="left">{{ data.recipient  }} </td>
                 <td class="left">{{ data.activity  }} </td>
                 <td class="left">{{ data.location  }} </td>
@@ -60,7 +62,7 @@
                 </div>
                 <div nz-row nzGutter="24" class="">
                     <label for="CDC Item" nzSpan="6" >Default Assignee:</label>
-                        <label nz-checkbox nzSpan="14"   [ngModel]="checked" formControlName="assignee">Name will apear as default assignee for incidents links to the above services</label>
+                        <label nz-checkbox nzSpan="14"  formControlName="assignee">Name will apear as default assignee for incidents links to the above services</label>
                 </div>
                 <div nz-row nzGutter="24" class="">
                     <label for="CDC Item" nzSpan="6" >Program:</label>
@@ -88,7 +90,7 @@
                 </div>
                 <div nz-row nzGutter="24" class="">
                     <label for="CDC Item" nzSpan="6" >Mandatory Notification:</label>
-                    <label nz-checkbox nzSpan="14"   [ngModel]="checked2" formControlName="mandatory">staff will mandatorially receive and incident notification wihout user choice</label>
+                    <label nz-checkbox nzSpan="14"  formControlName="mandatory">staff will mandatorially receive and incident notification wihout user choice</label>
                     
                 </div>
             </div>

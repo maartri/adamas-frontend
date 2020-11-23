@@ -218,7 +218,7 @@ export class SwitchService {
                     title: 'Distribution Lists',
                     isMultiple: false
                 }
-                this.sqlCommand = "SELECT RecordNo, Recipient,Activity,Location,Program,Staff, Severity FROM IM_DistributionLists order by recipient"
+                this.sqlCommand = "SELECT RecordNo, Recipient,Activity,Location,Program,Staff, budget FROM IM_DistributionLists order by recipient"
                 
                 break;
                 case 25:

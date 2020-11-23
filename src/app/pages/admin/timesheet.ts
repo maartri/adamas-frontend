@@ -15,6 +15,7 @@ import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
 import addMinutes from 'date-fns/addMinutes'
 import isSameDay from 'date-fns/isSameDay'
+import { isValid } from 'date-fns';
 
 interface AddTimesheetModalInterface {
     index: number,
@@ -97,6 +98,9 @@ interface CalculatedPay{
         }
         nz-descriptions >>> div table tbody tr td{
             font-size:11px;
+        }
+        tr{
+            pointer:cursor;
         }
         .notes{
             max-height: 3rem;
@@ -418,6 +422,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.timesheetForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
+                console.log(x);
                 this.serviceActivityList = [];
                 this.timesheetForm.patchValue({
                     serviceActivity: null
@@ -661,7 +666,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                         debtor: x.billedTo.accountNo,
                         serviceActivity: x.activity.name,
                         serviceSetting: x.recipientLocation,
-                        analysisCode: x.anal
+                        analysisCode: x.anal,
+
+                        serviceTypePortal: x.serviceTypePortal,
+                        payType: x.payType.paytype
 
                     }
                 });
@@ -798,8 +806,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (!this.selected && this.timesheets.length > 0) return;
 
         if (index == 1) {
-            this.addTimesheetVisible = true;
             this.resetAddTimesheetModal();
+            this.addTimesheetVisible = true;
         }
 
         if (index == 2) {
@@ -979,7 +987,9 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     process(index: number) {
-        if (!this.selected && this.timesheets.length > 0) return;
+        if (!this.selected && this.timesheets.length > 0) {
+                     return;
+        };
 
         if (index == 2) {
             const shiftArray = this.timesheets.filter(x => x.selected).map(x => x.shiftbookNo)
@@ -1100,17 +1110,21 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         const { serviceType, date, time } = this.timesheetForm.value;
 
+        var _date = date;
         if (!program) return EMPTY;
-        console.log(this.timesheetForm.value)
 
         if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
-            // const { recipientCode, debtor } = this.timesheetForm.value;
+
+            if(typeof date === 'string'){
+                _date = parseISO(_date);
+            }
+
             return this.listS.getserviceactivityall({
                 program,
                 recipient: this.GETRECIPIENT(this.selected.option),
                 mainGroup: serviceType,
                 viewType: this.viewType,
-                date: format(date, 'yyyy/MM/dd'),
+                date: format(_date, 'yyyy/MM/dd'),
                 startTime: format(this.defaultStartTime,'hh:mm'),
                 endTime: format(this.defaultEndTime,'hh:mm'),
                 duration: this.durationObject?.duration
@@ -1161,7 +1175,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     
     showRecipient(): boolean  {
         const { serviceType, isMultipleRecipient, isTravelTimeChargeable } = this.timesheetForm.value;
-        console.log(serviceType + '' + isTravelTimeChargeable)
+        // console.log(serviceType + '' + isTravelTimeChargeable)
 
         if(serviceType === 'TRAVEL TIME' && isTravelTimeChargeable){
             return true;
@@ -1177,7 +1191,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     get showTime(): boolean {
         const { serviceType } = this.timesheetForm.value;
-        console.log(serviceType);
         if(serviceType === 'ALLOWANCE CHARGEABLE' || serviceType === 'ALLOWANCE NON-CHARGEABLE')
             return false;
 
@@ -1225,9 +1238,9 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.timesheetForm.reset({
             date: this.payPeriodEndDate,
-            serviceType: '',
-            program: '',
-            serviceActivity: '',
+            serviceType: null,
+            program: null,
+            serviceActivity: null,
             payType: '',
             analysisCode: '',
             recipientCode: '',
@@ -1255,6 +1268,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         
         this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
         this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);        
+        this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
     }
 
     pre(): void {
@@ -1348,21 +1362,27 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             serviceDescription: tsheet.payType || "",
             serviceSetting: null || "",
             serviceType: tsheet.serviceActivity || "",
+            // serviceType: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
             staffPosition: null || "",
             startTime: format(tsheet.time.startTime,'HH:mm'),
             status: "1",
             taxPercent: tsheet.bill.tax || 0,
             transferred: 0,
-            type: this.activity_value,
+            // type: this.activity_value,
+            type: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
             unitBillRate: tsheet.bill.rate || 0,
             unitPayRate: tsheet.pay.rate || 0,
-            yearNo: format(tsheet.date, 'yyyy')
+            yearNo: format(tsheet.date, 'yyyy'),
+            serviceTypePortal: tsheet.serviceType
         };
 
         if(!this.timesheetForm.valid){
             this.globalS.eToast('Error', 'All fields are required');
             return;
         }
+
+        // console.log(inputs);
+        // return;
 
         this.timeS.posttimesheet(inputs).subscribe(data => {
             this.globalS.sToast('Success', 'Timesheet has been added');
@@ -1397,6 +1417,131 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    details(index: any){
+
+        const { 
+            activity, 
+            serviceType, 
+            analysisCode, 
+            approved, 
+            billquant,
+            billrate, 
+            billto, 
+            date, 
+            debtor,
+            duration, 
+            durationNumber, 
+            serviceTypePortal, 
+            startTime, 
+            program,
+            payType,
+            endTime } = index;
+
+
+        this.timesheetForm.patchValue({
+            serviceType: this.DETERMINE_SERVICE_TYPE(index),
+            date: date,
+            program: program,
+            serviceActivity: activity,
+            payType: payType,
+            analysisCode: analysisCode
+        });
+
+        console.log(this.timesheetForm.value);
+
+        this.defaultStartTime = parseISO(startTime);
+        this.defaultEndTime = parseISO(endTime);
+        
+        this.current = 0;
+        setTimeout(() => {
+            this.addTimesheetVisible = true;
+        }, 100);
+    }
+
      // Add Timesheet
+
+     DETERMINE_SERVICE_TYPE(index: any): any{
+        console.log(index);
+        const { serviceType, debtor } = index;
+
+        // ALLOWANCE NON CHARGEABLE 
+        if(serviceType == 9 && debtor == '!INTERNAL'){
+            return 'ALLOWANCE NON-CHARGEABLE';
+            return this.modalTimesheetValues[2];
+        }
+
+        // ALLOWANCE CHARGEANLE 
+        if(serviceType == 9 && debtor != '!INTERNAL'){
+            return 'ALLOWANCE CHARGEABLE';
+        }
+
+        // ADMINISTRATION
+        if(serviceType == 6){            
+            return 'ADMINISTRATION';
+        }
+
+        // CASE MANAGEMENT
+        if(serviceType == 7){
+            return 'CASE MANAGEMENT';
+        }
+
+        // ITEM
+        if(serviceType == 15){
+            return 'ITEM';
+        }
+
+        // SLEEPOVER
+        if(serviceType == 8){
+
+            return 'SLEEPOVER';
+        }
+
+        // TRAVEL TIME
+        if(serviceType == 5){
+
+            return 'TRAVEL TIME';
+        }
+
+        //SERVICE
+        return 'SERVICE';
+
+     }
+
+     DETERMINE_SERVICE_TYPE_NUMBER(index: string): number{
+        // ALLOWANCE NON CHARGEABLE 
+        if(index == 'ALLOWANCE NON-CHARGEABLE' || index == 'ALLOWANCE CHARGEABLE'){
+            return 9;
+        }
+
+        // ADMINISTRATION
+        if(index == 'ADMINISTRATION'){            
+            return 6;
+        }
+
+        // CASE MANAGEMENT
+        if(index == 'CASE MANAGEMENT'){
+            return 7;
+        }
+
+        // ITEM
+        if(index == 'ITEM'){
+            return 15;
+        }
+
+        // SLEEPOVER
+        if(index == 'SLEEPOVER'){
+
+            return 8;
+        }
+
+        // TRAVEL TIME
+        if(index == 'TRAVEL TIME'){
+
+            return 5;
+        }
+
+        //SERVICE
+        return 2;
+     }
 
 }

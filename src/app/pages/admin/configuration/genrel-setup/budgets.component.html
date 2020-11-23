@@ -6,7 +6,6 @@
                 <tr>
                     <th class="left">Name</th>
                     <th class="left">Branch</th>
-                    <th class="left">Source</th>
                     <th class="left">Funding Source</th>
                     <th class="left">Care Domains</th>
                     <th class="left">Budget Group</th>
@@ -21,18 +20,17 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.description  }} </td>
+                    <td class="left">{{ data.branch  }} </td>
+                    <td class="left">{{ data.fundingSource  }} </td>
+                    <td class="left">{{ data.careDomain  }} </td>
+                    <td class="left">{{ data.budgetGroup  }} </td>
+                    <td class="left">{{ data.program  }} </td>
+                    <td class="left">{{''}}</td>
+                    <td class="left">{{''}} </td>
+                    <td class="left">{{''}} </td>
+                    <td class="left">{{ data.staffCategory  }} </td>
+                    <td class="left">{{ data.staff  }} </td>
                     <td><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Budget ?"
@@ -54,7 +52,7 @@
                 </div>
                 <div nz-col nzSpan="24" class="mrg-btm">
                 <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="type" nzShowSearch nzAllowClear style="width:100%;">
-                    <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                    <nz-option *ngFor="let typ of types" [nzValue]="typ" [nzLabel]="typ"></nz-option> 
                 </nz-select>
                 </div>
                 <div nz-col nzSpan="9" class="mrg-btm">
@@ -64,7 +62,7 @@
                     <nz-date-picker [nzPlaceHolder]="'End'" formControlName="end" [nzFormat]="dateFormat"></nz-date-picker>
                 </div>
                 <div nz-col nzSpan="6" class="mrg-btm">
-                    <label nz-checkbox  [ngModel]="" >Undated</label>
+                    <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="undated">Undated</label>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Branch" nzShowSearch nzAllowClear style="width:100%;">
@@ -73,7 +71,7 @@
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="care" nzPlaceHolder="Care Domain" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let domain of caredomain" [nzValue]="domain" [nzLabel]="domain"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
@@ -88,37 +86,32 @@
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="region" nzPlaceHolder="Funding Region" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let funding of fundingRegion" [nzValue]="funding.description" [nzLabel]="funding.description"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="ftype" nzPlaceHolder="Funding Type" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let fundt of fundingTypes" [nzValue]="fundt.description" [nzLabel]="fundt.description"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="prgrm" nzPlaceHolder="Programe" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let prog of program" [nzValue]="prog.name" [nzLabel]="prog.name"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="bcode" nzPlaceHolder="Service Budget Code" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let bgroup of budgetGroup" [nzValue]="bgroup.description" [nzLabel]="bgroup.description"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="dicipline" nzPlaceHolder="Service Dicipline" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let dicip of diciplines" [nzValue]="dicip.description" [nzLabel]="dicip.description"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="sregion" nzPlaceHolder="Service Region" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
-                    </nz-select>
-                </div>
-                <div nz-col nzSpan="8" class="mrg-btm">
-                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="mds" nzPlaceHolder="Service Type MDS" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let gagency of groupAgency" [nzValue]="gagency.description" [nzLabel]="gagency.description"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
@@ -138,32 +131,32 @@
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="State" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let state of states" [nzValue]="state" [nzLabel]="state"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="team" nzPlaceHolder="Staff Team" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let steam of staffTeams" [nzValue]="steam" [nzLabel]="steam"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cat" nzPlaceHolder="Staff Category" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let scategory of staffCategory" [nzValue]="scategory" [nzLabel]="scategory"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="staff" nzPlaceHolder="Staff" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let staf of staff" [nzValue]="staf.name" [nzLabel]="staf.name"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="recepient" nzPlaceHolder="Recepient" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let reci of recepient" [nzValue]="reci.name" [nzLabel]="reci.name"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="coordinator" nzPlaceHolder="Coordinator" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-option *ngFor="let progcord of programCordinates" [nzValue]="progcord.description" [nzLabel]="progcord.description"></nz-option> 
                     </nz-select>
                 </div>
                 <nz-divider></nz-divider>
@@ -171,7 +164,7 @@
                     <div nz-col nzSpan="4">
                         <label>Annual Budget</label>
                         <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="hours" nzPlaceHolder="HOURS" nzShowSearch nzAllowClear style="width:100%;">
-                            <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                            <nz-option *ngFor="let hour of budgetTypes" [nzValue]="hour" [nzLabel]="hour"></nz-option> 
                         </nz-select>
                     </div>
                     <div nz-col nzSpan="4">

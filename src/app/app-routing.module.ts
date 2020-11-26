@@ -224,6 +224,8 @@ import { VehiclesComponent } from '@admin/configuration/others/vehicles.componen
 import { ActivityGroupsComponent } from '@admin/configuration/others/activity-groups.component';
 import { EquipmentsComponent } from '@admin/configuration/others/equipments.component';
 import { StaffCompetenciesComponent } from '@admin/configuration/staff/staff-competencies.component';
+import { CentrFacilityLocationComponent } from '@admin/configuration/others/centr-facility-location.component';
+import { FundingSourcesComponent } from '@admin/configuration/others/funding-sources.component';
 
 const routes: Routes = [
   {
@@ -805,6 +807,13 @@ const routes: Routes = [
         component:EquipmentsComponent,
       },
       {
+        path:"center-facility-location",
+        component:CentrFacilityLocationComponent,
+      },{
+        path:"funding-sources",
+        component:FundingSourcesComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1111,6 +1120,8 @@ export const PAGE_COMPONENTS = [
   VehiclesComponent,
   ActivityGroupsComponent,
   EquipmentsComponent,
+  CentrFacilityLocationComponent,
+  FundingSourcesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

@@ -2,21 +2,24 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { GlobalService } from '@services/global.service';
 import { ListService } from '@services/list.service';
+import { MenuService } from '@services/menu.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-budgets',
   templateUrl: './budgets.component.html',
   styles: [`
   .mrg-btm{
-      margin-bottom:7px !important;
+    margin-bottom:7px !important;
   }
   nz-divider{
     margin:5px !important;
   }
-`],
+  `],
 })
 export class BudgetsComponent implements OnInit {
-
+  
   tableData: Array<any>;
   loading: boolean = false;
   modalOpen: boolean = false;
@@ -30,7 +33,7 @@ export class BudgetsComponent implements OnInit {
   caredomain:Array<any>;
   fundingRegion:Array<any>;
   fundingTypes:Array<any>;
-  program:Array<any>;
+  programz:Array<any>;
   budgetGroup:Array<any>;
   diciplines:Array<any>;
   groupAgency:Array<any>;
@@ -42,148 +45,304 @@ export class BudgetsComponent implements OnInit {
   types:Array<any>;
   budgetTypes:Array<any>;
   programCordinates:Array<any>;
+  private unsubscribe: Subject<void> = new Subject();
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
+    private menuS:MenuService,
     private listS: ListService,
     ){}
-
-  ngOnInit(): void {
-    this.buildForm();
-    // this.tableData = [{ name:"Nursing Allied Health (H3)"},{name:"Meals (H7)"},{name:"Personal Care"},{name:"Shopping"},{name:"Transport"},{name:"In home Care"}];
-    this.loading = false;
-    this.loadData();
-    this.populateDropdowns();
-    this.cd.detectChanges();
-  }
-  populateDropdowns(): void {
-
-    this.states = ['ALL','NSW','NT','QLD','SA','TAS','VIC','WA','ACT'];
-    this.types  = ['INPUT','OUTPUT'];
-    this.budgetTypes  = ['HOURS'];
-    this.listS.getlistbranches().subscribe(data => this.branches = data);
-    this.listS.getcaredomain().subscribe(data => this.caredomain = data);
-    this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
-    this.listS.getstaffcategory().subscribe(data=>this.staffCategory=data);
-
-    let funding = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDREGION' ORDER BY Description";
-    this.listS.getlist(funding).subscribe(data => {
-      this.fundingRegion = data;
+    
+    ngOnInit(): void {
+      this.buildForm();
+      // this.tableData = [{ name:"Nursing Allied Health (H3)"},{name:"Meals (H7)"},{name:"Personal Care"},{name:"Shopping"},{name:"Transport"},{name:"In home Care"}];
       this.loading = false;
-    });
-    let fundingt = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDINGBODIES' ORDER BY Description";
-    this.listS.getlist(fundingt).subscribe(data => {
-      this.fundingTypes = data;
-      this.loading = false;
-    });
-    let prog = "SELECT [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
-    this.listS.getlist(prog).subscribe(data => {
-      this.program = data;
-    });
-    let bgroup = "Select RecordNumber, Description From DataDomains Where Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
-    this.listS.getlist(bgroup).subscribe(data => {
-      this.budgetGroup = data;
-    });
-    let dicip = "Select RecordNumber, Description From DataDomains Where Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
-    this.listS.getlist(dicip).subscribe(data => {
-      this.diciplines = data;
-    });
-    let gagency = "Select RecordNumber, Description From DataDomains Where Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
-    this.listS.getlist(gagency).subscribe(data => {
-      this.groupAgency = data;
-    });
-
-    let staf = "SELECT ACCOUNTNO as name FROM STAFF WHERE CommencementDate IS NOT NULL AND TerminationDate IS NULL AND ACCOUNTNO > '!Z'";
-    this.listS.getlist(staf).subscribe(data => {
-      this.staff = data;
-    });
-    let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
-    this.listS.getlist(reci).subscribe(data => {
-      this.recepient = data;
-    });
-    let progcor = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'CASE MANAGERS'";
-    this.listS.getlist(progcor).subscribe(data => {
-      this.programCordinates = data;
-    });
-  }
-  loadData(){
-    let sql="SELECT RecordNumber, Name AS Description, Branch, [Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, SvcDiscipline, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit from Budgets ORDER BY [Name]";
-    this.listS.getlist(sql).subscribe(data => {
-      this.tableData = data
-      console.log(this.tableData);
-    });
-  }
-  showAddModal() {
-    this.resetModal();
-    this.modalOpen = true;
+      this.loadData();
+      this.populateDropdowns();
+      this.cd.detectChanges();
+    }
+    populateDropdowns(): void {
+      
+      this.states = ['ALL','NSW','NT','QLD','SA','TAS','VIC','WA','ACT'];
+      this.types  = ['INPUT','OUTPUT'];
+      this.budgetTypes  = ['HOURS'];
+      this.listS.getlistbranches().subscribe(data => this.branches = data);
+      this.listS.getcaredomain().subscribe(data => this.caredomain = data);
+      this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
+      // this.listS.getstaffcategory().subscribe(data=>this.staffCategory=data);
+      
+      let funding = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDREGION' ORDER BY Description";
+      this.listS.getlist(funding).subscribe(data => {
+        this.fundingRegion = data;
+        this.loading = false;
+      });
+      let sc = "Select RecordNumber, Description From DataDomains Where Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
+      this.listS.getlist(sc).subscribe(data => {
+        this.staffCategory = data;
+        this.loading = false;
+      });
+      let fundingt = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDINGBODIES' ORDER BY Description";
+      this.listS.getlist(fundingt).subscribe(data => {
+        this.fundingTypes = data;
+        this.loading = false;
+      });
+      let prog = "SELECT [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
+      this.listS.getlist(prog).subscribe(data => {
+        this.programz = data;
+      });
+      let bgroup = "Select RecordNumber, Description From DataDomains Where Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
+      this.listS.getlist(bgroup).subscribe(data => {
+        this.budgetGroup = data;
+      });
+      let dicip = "Select RecordNumber, Description From DataDomains Where Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
+      this.listS.getlist(dicip).subscribe(data => {
+        this.diciplines = data;
+      });
+      let gagency = "Select RecordNumber, Description From DataDomains Where Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
+      this.listS.getlist(gagency).subscribe(data => {
+        this.groupAgency = data;
+      });
+      
+      let staf = "SELECT ACCOUNTNO as name FROM STAFF WHERE CommencementDate IS NOT NULL AND TerminationDate IS NULL AND ACCOUNTNO > '!Z'";
+      this.listS.getlist(staf).subscribe(data => {
+        this.staff = data;
+      });
+      let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
+      this.listS.getlist(reci).subscribe(data => {
+        this.recepient = data;
+      });
+      let progcor = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'CASE MANAGERS'";
+      this.listS.getlist(progcor).subscribe(data => {
+        this.programCordinates = data;
+      });
+    }
+    loadData(){
+      let sql="SELECT RecordNumber, Name AS Description, Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,undated from Budgets ORDER BY [recordNumber] desc";
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data
+        console.log(this.tableData);
+      });
+    }
+    showAddModal() {
+      this.resetModal();
+      this.modalOpen = true;
+    }
+    
+    resetModal() {
+      this.current = 0;
+      this.inputForm.reset();
+      this.postLoading = false;
+    }
+    
+    
+    showEditModal(index: any) {
+      this.isUpdate = true;
+      this.current = 0;
+      this.modalOpen = true;
+      const { 
+        description,
+        budgetType,
+        undated,
+        branch,
+        careDomain,
+        costCentre,
+        dsOutlet,
+        fundingRegion,
+        fundingSource,
+        program,
+        budgetGroup,
+        svcDiscipline,
+        svcRegion,
+        mds,
+        tracss,
+        spid,
+        state,
+        staffTeam,
+        staffCategory,
+        staff,
+        recipient,
+        coordinator,
+        unit,
+        hours,
+        older,
+        younger,
+        dollars,
+        packages,
+        recordNumber,
+      } = this.tableData[index];
+      this.inputForm.patchValue({
+        title:description, 
+        type:budgetType,
+        undated:undated,
+        branch:branch,
+        care:careDomain,
+        cost:costCentre,
+        outlet:dsOutlet,
+        region:fundingRegion,
+        ftype:fundingSource,
+        prgrm:program,
+        bcode:budgetGroup,
+        dicipline:svcDiscipline,
+        sregion:svcRegion,
+        mds,
+        tracss,
+        spid:spid,
+        state:state,
+        team:staffTeam,
+        cat:staffCategory,
+        staff:staff,
+        recepient:recipient,
+        coordinator:coordinator,
+        hours:unit,
+        total:hours,
+        older:older,
+        younger:younger,
+        dollar:dollars,
+        packages:packages,
+        RecordNumber:recordNumber,
+      });
+    }
+    
+    handleCancel() {
+      this.modalOpen = false;
+    }
+    pre(): void {
+      this.current -= 1;
+    }
+    
+    next(): void {
+      this.current += 1;
+    }
+    save() {
+      if(!this.isUpdate){        
+        this.postLoading = true;   
+        const group = this.inputForm;
+        let name     = group.get('title').value;
+        let branch   = group.get('branch').value;
+        let funding_source    = group.get('ftype').value; 
+        let care_domain    = group.get('care').value; 
+        let budget_group    = group.get('bcode').value; 
+        let prog    = group.get('prgrm').value; 
+        let dataset = group.get('mds').value;
+        let traccs  = group.get('tracss').value;
+        let staff_team = group.get('team').value;
+        let staff_cat = group.get('cat').value;
+        let staff = group.get('staff').value;
+        let recepient = group.get('recepient').value;
+        let coordinator = group.get('coordinator').value;
+        let spid        = group.get('spid').value;
+        let state        = group.get('state').value;
+        let costcenter        = group.get('cost').value;
+        let dsoutlet        = group.get('outlet').value;
+        let funding_region        = group.get('region').value;
+        let svcdicipline        = group.get('dicipline').value;
+        let svcregion        = group.get('sregion').value;
+        let hours        = group.get('total').value;
+        let dollars      = group.get('dollar').value;
+        let emoty        = '';
+        let input_type   = group.get('type').value;
+        let unit         = group.get('hours').value; 
+        let values = name+"','"+branch+"','"+funding_source+"','"+care_domain+"','"+budget_group+"','"+prog+"','"+dataset+"','"+traccs+"','"+staff_team+"','"+staff_cat+"','"+staff+"','"+recepient+"','"+coordinator+"','"+spid+"','"+state+"','"+costcenter+"','"+dsoutlet+"','"+funding_region+"','"+svcdicipline+"','"+svcregion+"','"+hours+"','"+dollars+"','"+emoty+"','"+emoty+"','"+emoty+"','"+emoty+"','"+emoty+"','"+emoty+"','"+emoty+"','"+input_type+"','"+unit+"','"+'1'+"','"+emoty+"','"+emoty;
+        let sql = "INSERT INTO Budgets([Name], [Branch], [Funding Source], [Care Domain], [Budget Group], [Program], [Dataset Code], [Activity], [Staff Team], [Staff Category], [Staff], [Recipient],[coordinator], [SPID], [State], [CostCentre], [DSOutlet], [FundingRegion], [SvcDiscipline], [SvcRegion], [Hours], [Dollars], [Places], [O_Hours], [O_Dollars], [O_PlcPkg], [Y_Hours], [Y_Dollars], [Y_PlcPkg], [BudgetType], [Unit], Undated, StartDate, EndDate) Values ('"+values+"');select @@IDENTITY"; 
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{   
+          
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal();
+        });
+      }else{
+        this.postLoading = true;   
+        const group = this.inputForm;
+        let name     = group.get('title').value;
+        let branch   = group.get('branch').value;
+        let funding_source    = group.get('ftype').value; 
+        let care_domain    = group.get('care').value; 
+        let budget_group    = group.get('bcode').value; 
+        let prog    = group.get('prgrm').value; 
+        let dataset = group.get('mds').value;
+        let traccs  = group.get('tracss').value;
+        let staff_team = group.get('team').value;
+        let staff_cat = group.get('cat').value;
+        let staff = group.get('staff').value;
+        let recepient = group.get('recepient').value;
+        let coordinator = group.get('coordinator').value;
+        let spid        = group.get('spid').value;
+        let state        = group.get('state').value;
+        let costcenter        = group.get('cost').value;
+        let dsoutlet        = group.get('outlet').value;
+        let funding_region        = group.get('region').value;
+        let svcdicipline        = group.get('dicipline').value;
+        let svcregion        = group.get('sregion').value;
+        let hours        = group.get('total').value;
+        let dollars      = group.get('dollar').value;
+        let emoty        = '';
+        let input_type   = group.get('type').value;
+        let unit         = group.get('hours').value; 
+        let recordNumber = group.get('RecordNumber').value;
+        
+        let sql = "Update Budgets SET [Name]='"+ name + "', [Branch]='"+ branch + "', [Funding Source]='"+ funding_source + "', [Care Domain]='"+ care_domain + "', [Budget Group]='"+ budget_group + "', [Program]='"+ prog + "',[Dataset Code]='"+ dataset + "', [Activity]='"+ traccs + "', [Staff Team]='"+ staff_team + "', [Staff Category]='"+ staff_cat + "', [Staff]='"+ staff + "', [Recipient]='"+ recepient + "',[coordinator]='"+ coordinator + "', [SPID]='"+ spid + "', [State]='"+ state + "', [CostCentre]='"+ costcenter + "', [DSOutlet]='"+ dsoutlet + "', [FundingRegion]='"+ funding_region + "', [SvcDiscipline]='"+ svcdicipline + "', [SvcRegion]='"+ svcregion + "', [Hours]='"+ hours + "', [Dollars]='"+ dollars + "', [Places]='"+ emoty + "', [O_Hours]='"+ emoty + "', [O_Dollars]='"+ emoty + "', [O_PlcPkg]='"+ emoty + "', [Y_Hours]='"+ emoty + "', [Y_Dollars]='"+ emoty + "', [Y_PlcPkg]='"+ emoty + "', [BudgetType]='"+ input_type + "', [Unit]='"+ unit + "', Undated='"+ '1' + "',StartDate='"+ ' ' + "', EndDate='"+ ' ' + "'  WHERE [recordNumber] ='"+recordNumber+"'"; 
+        console.log(sql);
+        // let recordNo      = group.get('recordNo').value;
+        // let sql  = "Update IM_DistributionLists SET [Recipient]='"+ recepient + "',[Activity] = '"+ service + "',[Program] = '"+ prgm + "',[Staff] = '"+ staff+ "',[Severity] = '"+ saverity + "',[ListName] = '"+ ltype+ "',[Location] = '"+ location+ "'  WHERE [recordNo] ='"+recordNo+"'";
+         
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+        if (data) 
+        this.globalS.sToast('Success', 'Saved successful');     
+        else
+        this.globalS.sToast('Success', 'Update successful');
+        this.postLoading = false;      
+        this.loadData();
+        this.handleCancel();
+        this.resetModal();   
+        this.isUpdate = false; 
+        });
+      }
+    }
+    
+    delete(data: any) {
+      this.globalS.sToast('Success', 'Data Deleted!');
+    }
+    buildForm() {
+      this.inputForm = this.formBuilder.group({
+        title: '',
+        type:'',
+        start:'',
+        end:'',
+        undated:true,
+        branch:null,
+        care:'',
+        cost:'',
+        outlet:'',
+        region:'',
+        ftype:'',
+        prgrm:'',
+        bcode:'',
+        dicipline:'',
+        sregion:'',
+        mds:'',
+        tracss:'',
+        spid:'',
+        state:'',
+        team:'',
+        cat:'',
+        staff:'',
+        recepient:'',
+        coordinator:'',
+        hours:'',
+        total:'',
+        older:'',
+        younger:'',
+        dollar:'',
+        packages:'',
+        RecordNumber:null,
+      });
+    }
+    
   }
   
-  resetModal() {
-    this.current = 0;
-    this.inputForm.reset();
-    this.postLoading = false;
-  }
-  
-  showEditModal(index: any) {
-    this.isUpdate = true;
-    this.current = 0;
-    this.modalOpen = true;
-  }
-  
-  handleCancel() {
-    this.modalOpen = false;
-  }
-  pre(): void {
-    this.current -= 1;
-  }
-  
-  next(): void {
-    this.current += 1;
-  }
-  save() {
-    this.postLoading = true;
-    this.globalS.sToast('Success', 'Changes saved');
-    this.handleCancel();
-    this.resetModal();
-  }
-  
-  delete(data: any) {
-    this.globalS.sToast('Success', 'Data Deleted!');
-  }
-  buildForm() {
-    this.inputForm = this.formBuilder.group({
-      title: '',
-      type:'',
-      start:null,
-      end:null,
-      undated:true,
-      branch:null,
-      care:null,
-      cost:null,
-      outlet:null,
-      region:null,
-      ftype:null,
-      prgrm:null,
-      bcode:null,
-      dicipline:null,
-      sregion:null,
-      mds:null,
-      tracss:null,
-      spid:null,
-      state:null,
-      team:null,
-      cat:null,
-      staff:null,
-      recepient:null,
-      coordinator:null,
-      hours:null,
-      total:'',
-      older:'',
-      younger:'',
-      dollar:'',
-      packages:'',
-    });
-  }
-
-}

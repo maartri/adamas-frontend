@@ -1,10 +1,11 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add Budget</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #fixedTable  [nzScroll]="{ x: '1050px', y: '240px' }" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
-                    <th class="left">Name</th>
+                    <th nz-left>Budget Type</th>
+                    <th nzLeft>Name</th>
                     <th class="left">Branch</th>
                     <th class="left">Funding Source</th>
                     <th class="left">Care Domains</th>
@@ -15,23 +16,34 @@
                     <th class="left">Staff Team</th>
                     <th class="left">Staff Category</th>
                     <th class="left">Staff</th>
-                    <th class="left">Action</th>
+                    <th class="left">Recepient</th>
+                    <th class="left">Hours</th>
+                    <th class="left">Dollars</th>
+                    <th class="left">SPID</th>
+                    <th class="left">STATE</th>
+                    <th class="left" nzRight>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td class="left">{{ data.description  }} </td>
+                <tr *ngFor="let data of fixedTable.data;let i = index;">
+                    <td  nzLeft>{{ data.budgetType  }} </td>
+                    <td  nzLeft>{{ data.description  }} </td>
                     <td class="left">{{ data.branch  }} </td>
                     <td class="left">{{ data.fundingSource  }} </td>
                     <td class="left">{{ data.careDomain  }} </td>
                     <td class="left">{{ data.budgetGroup  }} </td>
                     <td class="left">{{ data.program  }} </td>
-                    <td class="left">{{''}}</td>
-                    <td class="left">{{''}} </td>
-                    <td class="left">{{''}} </td>
+                    <td class="left">{{ data.datasetCode === 'null' ? '' : data.datasetCodekm}}</td>
+                    <td class="left">{{ data.activity === 'null' ? '' : data.activity}} </td>
+                    <td class="left">{{ data.staffTeam}} </td>
                     <td class="left">{{ data.staffCategory  }} </td>
                     <td class="left">{{ data.staff  }} </td>
-                    <td><a (click)="showEditModal(i)">Update</a>
+                    <td class="left">{{ data.recipient  }} </td>
+                    <td class="left">{{ data.hours  }} </td>
+                    <td class="left">{{ data.dollars  }} </td>
+                    <td class="left">{{data.spid === 'null' ? '' : data.spid}} </td>
+                    <td class="left">{{ data.state }}</td>
+                    <td nzRight><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Budget ?"
                         nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
@@ -96,7 +108,7 @@
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="prgrm" nzPlaceHolder="Programe" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="let prog of program" [nzValue]="prog.name" [nzLabel]="prog.name"></nz-option> 
+                        <nz-option *ngFor="let prog of programz" [nzValue]="prog.name" [nzLabel]="prog.name"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
@@ -141,7 +153,7 @@
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cat" nzPlaceHolder="Staff Category" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="let scategory of staffCategory" [nzValue]="scategory" [nzLabel]="scategory"></nz-option> 
+                        <nz-option *ngFor="let scategory of staffCategory" [nzValue]="scategory.description" [nzLabel]="scategory.description"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="8" class="mrg-btm">

@@ -5,27 +5,43 @@ import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-equipments',
-  templateUrl: './equipments.component.html',
-  styles: []
+  selector: 'app-centr-facility-location',
+  templateUrl: './centr-facility-location.component.html',
+  styles: [`
+  .ant-modal-body {
+    padding: 0px 24px !important;
+  }
+  .mrg-btm{
+    margin-bottom:5px !important;
+  }
+  textarea{
+    resize:none;
+  },
+  `]
 })
-export class EquipmentsComponent implements OnInit {
+export class CentrFacilityLocationComponent implements OnInit {
 
   tableData: Array<any>;
+  branches:Array<any>;
   ServiceData:Array<any>;
   items:Array<any>;
-  groups:Array<any>;
+  jurisdiction:Array<any>;
   loading: boolean = false;
   modalOpen: boolean = false;
-  isVisible: boolean = false;
+  staffApproved: boolean = false;
+  staffUnApproved: boolean = false;
+  competency: boolean = false;
+  
   current: number = 0;
+  checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
   inputForm: FormGroup;
   modalVariables:any;
-  inputVariables:any;
+  inputVariables:any; 
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  title:string = "Add New Equipments";
+  
+  title:string = "Add New Facility/Location";
   private unsubscribe: Subject<void> = new Subject();
   constructor(
     private globalS: GlobalService,
@@ -36,25 +52,34 @@ export class EquipmentsComponent implements OnInit {
   ){}
   
   ngOnInit(): void {
-
     this.loadData();
-
     this.buildForm();
-    
-    this.groups = ["Aid For Reading","Car Modification","Communication Aids","Medical Care Aids","Self Care Aids","Vehicle"];
-    // this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
     this.loading = false;
     this.cd.detectChanges();
   }
   
   showAddModal() {
-    this.title = "Add New Equipments"
+    this.title = "Add New Facility/Location"
     this.resetModal();
     this.modalOpen = true;
   }
-  showServiceModal(){
+  showstaffApprovedModal(){
     this.resetModal();
-    this.isVisible = true;
+    this.staffApproved = true;
+  }
+  showstaffUnApprovedModal(){
+    this.staffUnApproved = true;
+  }
+  showCompetencyModal(){
+    this.resetModal();
+    this.competency = true;
+  }
+  
+  
+
+
+  showServiceModal(){
+    this.modalOpen = true;
   }
   loadTitle()
   {
@@ -67,7 +92,7 @@ export class EquipmentsComponent implements OnInit {
   }
   
   showEditModal(index: any) {
-    this.title = "Edit New Equipments"
+    this.title = "Edit New Facility/Location"
     this.isUpdate = true;
     this.current = 0;
     this.modalOpen = true;
@@ -88,23 +113,21 @@ export class EquipmentsComponent implements OnInit {
   handleCancel() {
     this.modalOpen = false;
   }
-  handleSCancel() {
-    this.isVisible = false;
+  handleCompCancel() {
+    this.competency = false;
   }
-  handleOk(){
-    this.modalOpen = false;
+  handleAprfCancel(){
+    this.staffApproved = false;
   }
-
+  handleUnAprfCancel(){
+    this.staffUnApproved = false;
+  }
   pre(): void {
     this.current -= 1;
   }
   
   next(): void {
     this.current += 1;
-  }
-  addEquipmentDeatil(){
-
-
   }
   save() {
     this.postLoading = true;     
@@ -158,17 +181,18 @@ export class EquipmentsComponent implements OnInit {
         
       }
       loadData(){
-        let sql ="SELECT [recordnumber] AS [RecordNumber], [type] AS [Type], [itemid] AS [ItemID], [datedisposed] AS [DateDisposed], [lastservice] AS [LastService], [equipcode] AS [EquipCode], [serialno] AS [SerialNo], [purchasedate] AS [PurchaseDate], [purchaseamount] AS [PurchaseAmount], [lockboxcode] AS [LockBoxCode], [lockboxlocation] AS [LockBoxLocation], [notes] AS [Notes] FROM equipment";
+
+        this.jurisdiction = [{'id':'13','name':'STATE'},{'id':'93','name':'FEDERAL'}];
+        console.log(this.jurisdiction);
+        let sql ="SELECT RecordNumber, [Name], ServiceOutletID, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Address FROM CSTDAOutlets WHERE ( EndDate is NULL OR EndDate >= Getdate()) ORDER BY [NAME]";
         this.loading = true;
         this.listS.getlist(sql).subscribe(data => {
           this.tableData = data;
-          console.log(this.tableData);
-          // this.loading = false;
         });
 
         let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
         this.listS.getlist(branch).subscribe(data => {
-          this.items = data;
+          this.branches = data;
           this.loading = false;
         });
 
@@ -176,27 +200,23 @@ export class EquipmentsComponent implements OnInit {
   delete(data: any) {
     this.globalS.sToast('Success', 'Data Deleted!');
   }
-  // this.loanProductForm = this._formBuilder.group({
-  //   products: this._formBuilder.array([this.addProductFormGroup()])
-  // });
-  // addProductFormGroup(): FormGroup {
-  //   return this._formBuilder.group({
-  //     productId: ["", Validators.required],
-  //     price: ["", Validators.required]
-  //     //loanTermId: ["", Validators.required],
-  //     //quantity: ["", Validators.required],
-  //     // deposit: ["", Validators.required],
-  //     // total: ["", Validators.required]
-  //   });
-  // }
-  // addProductButtonClick(): void {
-  //   (<FormArray>this.loanProductForm.get("products")).push(
-  //     this.addProductFormGroup()
-  //   );
-  // }
   buildForm() {
     this.inputForm = this.formBuilder.group({
+      
       type: '',
+      outletid:'',
+      cstdaoutlet:'',
+      dsci:'',
+      name:'',
+      branch:'',
+      places:'',
+      cat:'',
+      category:'',
+      agencysector:'',
+      servicetype:'',
+      fundingjunc:'',
+      fundingtype:'',
+      sheetalert:'',
       description: '',
       asset_no:'',
       serial_no:'',
@@ -207,11 +227,26 @@ export class EquipmentsComponent implements OnInit {
       lockcode:'',
       disposal:'',
       notes:'',
-      category:'',
-      service_date:'',
-      reminder_date:'',
-      due_date:'',
-      details:'',
+      glRevene:'',
+      glCost:'',
+      centerName:'',
+      addrLine1:'',
+      addrLine2:'',
+      Phone:'',
+      startHour:'',
+      finishHour:'',
+      earlyStart:'',
+      lateStart:'',
+      earlyFinish:'',
+      lateFinish:'',
+      overstay:'',
+      understay:'',
+      t2earlyStart:'',
+      t2lateStart:'',
+      t2earlyFinish:'',
+      t2lateFinish:'',
+      t2overstay:'',
+      t2understay:'',
       recordNumber:null
     });
   }

@@ -311,7 +311,12 @@ export class ConfigurationAdmin   {
         if(index == 79){
             this.router.navigate(['/admin/equipments']);
         }
-
+        if(index == 80){
+            this.router.navigate(['/admin/center-facility-location']);
+        }
+        if(index == 81){
+            this.router.navigate(['/admin/funding-sources']);
+        }
 
     }  
 }

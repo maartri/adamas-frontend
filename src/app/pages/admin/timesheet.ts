@@ -379,6 +379,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         ).subscribe((d: Array<any>) => {
 
             this.programsList = d.map(x => x.progName);
+            console.log(this.programsList)
 
             if(this.whatProcess == PROCESS.UPDATE){
                 setTimeout(() => {
@@ -429,7 +430,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         ).subscribe(d => {
             this.analysisCodeList = d[0];
             this.payTypeList = d[1];
-            this.programsList = d[2];
+            this.programsList = d[2].map(x => x.progName);
 
             if(this.viewType == 'Recipient'){
                 this.timesheetForm.patchValue({

@@ -11,7 +11,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core'
       }
       figure{
         min-width:4rem;
-        background-color:#1b549c;
+        background-color:#85B9D5;
         color:#fff;
         border-radius: 3px;
         padding: 20px;

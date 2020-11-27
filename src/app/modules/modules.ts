@@ -17,6 +17,11 @@ export enum RECIPIENT_OPTION {
     ITEM = "ITEM"
 }
 
+export enum PROCESS{
+    UPDATE = "UPDATE",
+    ADD = "ADD"
+}
+
 export interface ModalVariables {
     title?: string,
     programsArr?: Array<any>,

@@ -17,6 +17,10 @@ import addMinutes from 'date-fns/addMinutes'
 import isSameDay from 'date-fns/isSameDay'
 import { isValid } from 'date-fns';
 
+import { take } from 'rxjs/operators'
+
+import { PROCESS } from '../../modules/modules';
+
 interface AddTimesheetModalInterface {
     index: number,
     name: string
@@ -144,6 +148,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     // 0 = staff; 1 = recipient
     view: number = 0;
     viewType: any;
+
+    whatProcess = PROCESS.ADD;
 
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
@@ -274,6 +280,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     buildForm() {
         this.timesheetForm = this.formBuilder.group({
+            recordNo: [''],
             date: [this.payPeriodEndDate, Validators.required],
             serviceType: ['', Validators.required],
             program: ['', Validators.required],
@@ -363,14 +370,27 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.timesheetForm.get('recipientCode').valueChanges.pipe(
             takeUntil(this.unsubscribe),
-            switchMap(x => {
+            switchMap(x => {            
                 this.timesheetForm.patchValue({
                     debtor: x
                 });
                 return this.GETPROGRAMS(x)
             })
         ).subscribe((d: Array<any>) => {
-            this.programsList = d;
+
+            this.programsList = d.map(x => x.progName);
+            console.log(this.programsList)
+
+            if(this.whatProcess == PROCESS.UPDATE){
+                setTimeout(() => {
+                    this.timesheetForm.patchValue({
+                        program: this.default
+                    });
+                }, 0);
+            }         
+
+            this.cd.markForCheck();
+            this.cd.detectChanges();
 
             if(d && d.length == 1){
                 this.timesheetForm.patchValue({
@@ -410,7 +430,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         ).subscribe(d => {
             this.analysisCodeList = d[0];
             this.payTypeList = d[1];
-            this.programsList = d[2];
+            this.programsList = d[2].map(x => x.progName);
 
             if(this.viewType == 'Recipient'){
                 this.timesheetForm.patchValue({
@@ -422,6 +442,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.timesheetForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
+                if(!x) return EMPTY;
                 console.log(x);
                 this.serviceActivityList = [];
                 this.timesheetForm.patchValue({
@@ -431,11 +452,19 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             })
         ).subscribe((d: Array<any>) => {
 
-            this.serviceActivityList = d;
+            this.serviceActivityList = d.map(x => x.activity);
+
+            if(this.whatProcess == PROCESS.UPDATE){
+                setTimeout(() => {
+                    this.timesheetForm.patchValue({
+                        serviceActivity: this.defaultActivity
+                    });
+                }, 0);
+            }
 
             if(d && d.length == 1){
                 this.timesheetForm.patchValue({
-                    serviceActivity: d[0].activity
+                    serviceActivity: d[0]
                 });
             }
         });
@@ -450,7 +479,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 return this.GETROSTERGROUP(x)
             })
         ).subscribe(d => {
-            if (d.length > 1) return false;
+            console.log(d);
+            if (d.length > 1 || d.length == 0) return false;
             this.rosterGroup = (d[0].rosterGroup).toUpperCase();
             this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
 
@@ -597,7 +627,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit(): void{
         this.staffS.getpayperiod().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             this.payPeriodEndDate = parseISO(data.end_Date);
-            console.log(this.payPeriodEndDate)
         });
 
         this.cd.reattach();
@@ -609,7 +638,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     picked(data: any) {
-        console.log(data);
         if (!data.data) {
             this.timesheets = [];
             this.selected = null;
@@ -799,7 +827,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     };
 
     clickme(){
-        console.log('hehe')
+   
     }
 
     confirm(index: number) {
@@ -808,6 +836,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (index == 1) {
             this.resetAddTimesheetModal();
             this.addTimesheetVisible = true;
+            this.whatProcess = PROCESS.ADD
         }
 
         if (index == 2) {
@@ -877,7 +906,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
     selectedTimesheet(event: any, data: any) {
-        console.log(event);
         data.selected = event;
         // this.timesheets = [...this.timesheets, data]
         // this.timesheets = this.timesheets.filter(x => x.shiftbookNo == data.shiftbookNo);
@@ -946,7 +974,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     checkBoxChange(event: any, timesheet: any){
    
         const tdate = parseISO(timesheet.date);
-        console.log(timesheet)
+
         this.timeS.getclosedate({ program: timesheet.program })
             .pipe(
                 switchMap(x => {
@@ -1016,7 +1044,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Status: 1
             }
 
-            console.log(input);
             this.timeS.deleteunapprovedall(input).subscribe(data => {
                 this.globalS.sToast('Success', data.message);
                 this.picked(this.selected);              
@@ -1079,6 +1106,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     GETPROGRAMS(type: string): Observable<any> {
+        console.log(type);
         let sql;
         if (!type) return EMPTY;
         const { isMultipleRecipient } = this.timesheetForm.value;
@@ -1278,6 +1306,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     next(): void {
         this.current += 1;
 
+        if(this.whatProcess == PROCESS.UPDATE) return;
+
         if(this.current == 1 && this.selected.option == 1){
             this.timesheetForm.patchValue({
                 debtor: this.selected.data
@@ -1342,22 +1372,25 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime, tsheet.time.endTime));
 
+        if(typeof tsheet.date === 'string'){
+            tsheet.date = parseISO(tsheet.date);
+        }
         let inputs = {
             anal: tsheet.analysisCode || "",
-            billQty: tsheet.bill.quantity || 0,
+            billQty: parseInt(tsheet.bill.quantity || 0),
             billTo: clientCode,
             billUnit: tsheet.bill.unit || 0,
             blockNo: durationObject.blockNo,
             carerCode: this.selected.option == 0 ? this.selected.data : tsheet.staffCode,
             clientCode: this.selected.option == 0 ? clientCode : this.selected.data,
-            costQty: tsheet.pay.quantity || 0,
+            costQty: parseInt(tsheet.pay.quantity || 0),
             costUnit: tsheet.pay.unit || 0,
             date: format(tsheet.date,'yyyy/MM/dd'),
-            dayno: format(tsheet.date, 'd'),
+            dayno: parseInt(format(tsheet.date, 'd')),
             duration: durationObject.duration,
             groupActivity: false,
             haccType: tsheet.haccType || "",
-            monthNo: format(tsheet.date, 'M'),
+            monthNo: parseInt(format(tsheet.date, 'M')),
             program: tsheet.program,
             serviceDescription: tsheet.payType || "",
             serviceSetting: null || "",
@@ -1366,14 +1399,15 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             staffPosition: null || "",
             startTime: format(tsheet.time.startTime,'HH:mm'),
             status: "1",
-            taxPercent: tsheet.bill.tax || 0,
+            taxPercent: parseInt(tsheet.bill.tax || 0),
             transferred: 0,
             // type: this.activity_value,
             type: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
-            unitBillRate: tsheet.bill.rate || 0,
+            unitBillRate: parseInt(tsheet.bill.rate || 0),
             unitPayRate: tsheet.pay.rate || 0,
-            yearNo: format(tsheet.date, 'yyyy'),
-            serviceTypePortal: tsheet.serviceType
+            yearNo: parseInt(format(tsheet.date, 'yyyy')),
+            serviceTypePortal: tsheet.serviceType,
+            recordNo: tsheet.recordNo
         };
 
         if(!this.timesheetForm.valid){
@@ -1381,14 +1415,22 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        // console.log(inputs);
-        // return;
-
-        this.timeS.posttimesheet(inputs).subscribe(data => {
-            this.globalS.sToast('Success', 'Timesheet has been added');
-            this.addTimesheetVisible = false;
-            this.picked(this.selected);
-        });
+        if(this.whatProcess == PROCESS.ADD){
+            this.timeS.posttimesheet(inputs).subscribe(data => {
+                this.globalS.sToast('Success', 'Timesheet has been added');
+                this.addTimesheetVisible = false;
+                this.picked(this.selected);
+            });
+        }   
+        
+        if(this.whatProcess == PROCESS.UPDATE){
+            console.log('update');
+            this.timeS.updatetimesheet(inputs).subscribe(data => {
+                this.globalS.sToast('Success', 'Timesheet has been updated');
+                this.addTimesheetVisible = false;
+                this.picked(this.selected);
+            });
+        }
     }
 
     FIX_CLIENTCODE_INPUT(tgroup: any): string{
@@ -1417,49 +1459,75 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    default: any;
+    defaultActivity: any
     details(index: any){
 
-        const { 
+        this.whatProcess = PROCESS.UPDATE;
+        console.log(index);
+        const {
             activity, 
             serviceType, 
             analysisCode, 
             approved, 
             billquant,
             billrate, 
-            billto, 
+            billto,
             date, 
             debtor,
             duration, 
-            durationNumber, 
-            serviceTypePortal, 
-            startTime, 
+            durationNumber,
+            serviceTypePortal,
+            recipientCode,
+            startTime,
             program,
             payType,
+            shiftbookNo,
             endTime } = index;
 
 
-        this.timesheetForm.patchValue({
-            serviceType: this.DETERMINE_SERVICE_TYPE(index),
-            date: date,
-            program: program,
-            serviceActivity: activity,
-            payType: payType,
-            analysisCode: analysisCode
-        });
-
-        console.log(this.timesheetForm.value);
+        // this.timesheetForm.patchValue({
+        //     serviceType: this.DETERMINE_SERVICE_TYPE(index),
+        //     date: date,
+        //     program: program,
+        //     serviceActivity: activity,
+        //     payType: payType,
+        //     analysisCode: analysisCode,
+        //     recordNo: shiftbookNo,            
+            
+        //     recipientCode: recipientCode,
+        //     debtor: debtor
+        // });
 
         this.defaultStartTime = parseISO(startTime);
-        this.defaultEndTime = parseISO(endTime);
-        
+        this.defaultEndTime = parseISO(endTime);        
         this.current = 0;
+
+        console.log(this.timesheetForm.value)
+
         setTimeout(() => {
             this.addTimesheetVisible = true;
+
+            
+            this.default = program;
+            this.defaultActivity = activity
+
+            this.timesheetForm.patchValue({
+                serviceType: this.DETERMINE_SERVICE_TYPE(index),
+                date: date,
+                program: program,
+                serviceActivity: activity,
+                payType: payType,
+                analysisCode: analysisCode,
+                recordNo: shiftbookNo,            
+                
+                recipientCode: recipientCode,
+                debtor: debtor
+            });
         }, 100);
     }
 
      // Add Timesheet
-
      DETERMINE_SERVICE_TYPE(index: any): any{
         console.log(index);
         const { serviceType, debtor } = index;

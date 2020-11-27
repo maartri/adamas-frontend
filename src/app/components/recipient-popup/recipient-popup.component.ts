@@ -109,10 +109,11 @@ export class RecipientPopupComponent implements OnInit, OnDestroy,ControlValueAc
   }
 
   writeValue(value: any): void {
-    if(value){
+    if(value != null){
       this.isDataLoaded = false;
       this.selectedValue = value;
-      this.searchText.next(value);      
+      this.searchText.next(value);
+      this.onChangeCallback(this.selectedValue);
     }
   }
 
@@ -150,6 +151,7 @@ export class RecipientPopupComponent implements OnInit, OnDestroy,ControlValueAc
     });
 
     this.selectedValue = this.selectedUser.accountNo;
+    // console.log(this.selectedValue)
     this.onChangeCallback(this.selectedValue);
 
     this.isVisible = false;

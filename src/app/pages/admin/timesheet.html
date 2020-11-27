@@ -246,13 +246,13 @@
                     <div class="form-group">
                         <label for="">Program</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of programsList" [nzValue]="list.progName" [nzLabel]="list.progName"></nz-option>
+                            <nz-option *ngFor="let list of programsList" [nzValue]="list" [nzLabel]="list"></nz-option>
                         </nz-select>
                     </div>
                     <div class="form-group">
                         <label for="">Service/Activity/Item</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list.activity" [nzLabel]="list.activity"></nz-option>
+                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list"></nz-option>
                         </nz-select>                        
                         <div>
                             <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="timesheetForm.get('program').value && serviceActivityList?.length == 0" nzType="warning" nzMessage="No Activities found"></nz-alert>

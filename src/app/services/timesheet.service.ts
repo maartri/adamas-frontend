@@ -128,6 +128,10 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/timesheet`, data);
     }
 
+    updatetimesheet(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/timesheet`, data);
+    }
+
     postsamplereport(data: any) {
         return this.auth.post(`${timesheet}/sample-report`, data);
     }

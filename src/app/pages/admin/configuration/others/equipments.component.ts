@@ -40,9 +40,7 @@ export class EquipmentsComponent implements OnInit {
     this.loadData();
 
     this.buildForm();
-    
-    this.groups = ["Aid For Reading","Car Modification","Communication Aids","Medical Care Aids","Self Care Aids","Vehicle"];
-    // this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
+    // this.groups = ["Aid For Reading","Car Modification","Communication Aids","Medical Care Aids","Self Care Aids","Vehicle"];
     this.loading = false;
     this.cd.detectChanges();
   }
@@ -165,7 +163,11 @@ export class EquipmentsComponent implements OnInit {
           console.log(this.tableData);
           // this.loading = false;
         });
-
+        let type = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'GOODS' ORDER BY Description";
+        this.listS.getlist(type).subscribe(data => {
+          this.groups = data;
+          this.loading = false;
+        });
         let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
         this.listS.getlist(branch).subscribe(data => {
           this.items = data;

@@ -226,6 +226,7 @@ import { EquipmentsComponent } from '@admin/configuration/others/equipments.comp
 import { StaffCompetenciesComponent } from '@admin/configuration/staff/staff-competencies.component';
 import { CentrFacilityLocationComponent } from '@admin/configuration/others/centr-facility-location.component';
 import { FundingSourcesComponent } from '@admin/configuration/others/funding-sources.component';
+import { PayTypeComponent } from '@admin/configuration/others/pay-type.component';
 
 const routes: Routes = [
   {
@@ -811,7 +812,11 @@ const routes: Routes = [
         component:CentrFacilityLocationComponent,
       },{
         path:"funding-sources",
-        component:FundingSourcesComponent
+        component:FundingSourcesComponent,
+      },
+      {
+        path:"pay-types",
+        component:PayTypeComponent,
       },
       {
         path: 'rosters',
@@ -1122,6 +1127,7 @@ export const PAGE_COMPONENTS = [
   EquipmentsComponent,
   CentrFacilityLocationComponent,
   FundingSourcesComponent,
+  PayTypeComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

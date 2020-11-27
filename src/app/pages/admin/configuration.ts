@@ -317,6 +317,9 @@ export class ConfigurationAdmin   {
         if(index == 81){
             this.router.navigate(['/admin/funding-sources']);
         }
+        if(index == 82){
+            this.router.navigate(['/admin/pay-types']);
+        }
 
     }  
 }

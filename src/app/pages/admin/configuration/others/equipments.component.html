@@ -48,8 +48,8 @@
                     <nz-tabset>
                         <nz-tab nzTitle="ASSETTS/ITEM">
                             <div nz-col nzGutter="24" class="mrg-btm">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" placeholder="Type" formControlName="type" nzShowSearch nzAllowClear style="width:100%;">
-                                    <nz-option *ngFor="let group of groups" [nzValue]="group" [nzLabel]="group"></nz-option> 
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzPlaceHolder]="'Type'" formControlName="type" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-option *ngFor="let group of groups" [nzValue]="group.description" [nzLabel]="group.description"></nz-option> 
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="24" class="mrg-btm">
@@ -126,8 +126,7 @@
             </div>
         </nz-modal>
         
-        <nz-modal [nzWidth]="400"  [(nzVisible)]="isVisible" nzTitle="Service Detail ADD?\CHANGE" (nzOnCancel)="handleSCancel()" (nzOnOk)="handleOk()">
-            <div class="flexy">
+        <nz-modal [nzWidth]="400"  [(nzVisible)]="isVisible" nzTitle="Service Detail ADD\CHANGE" (nzOnCancel)="handleSCancel()" (nzOnOk)="handleOk()">
                 <form nz-form [formGroup]="inputForm" >
                     <div nz-row nzGutter="24">    
                         <div  class="mrg-btm">
@@ -154,6 +153,5 @@
                         </button>
                     </ng-container>
                 </div>
-            </div>
         </nz-modal>
         

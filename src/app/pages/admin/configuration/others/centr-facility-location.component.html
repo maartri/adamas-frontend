@@ -327,12 +327,12 @@
                         </div>
                     </div>
                 </nz-modal>
-                <nz-modal [nzWidth]="400"  [(nzVisible)]="staffApproved" nzTitle="STAFF ADD?\CHANGE" (nzOnCancel)="handleAprfCancel()">
-                    <div class="flexy">
+                <nz-modal [nzWidth]="400"  [(nzVisible)]="staffApproved" nzTitle="APPROVED STAFF" (nzOnCancel)="handleAprfCancel()">
+                    
                     <form nz-form [formGroup]="inputForm" >
                         <div nz-row nzGutter="24">    
                             <div  class="mrg-btm">
-                                <input nz-input placeholder="Category" formControlName="category"/>
+                                <input nz-input placeholder="Staff" formControlName="aprstaff"/>
                             </div>
                         </div>
                     </form>
@@ -342,15 +342,14 @@
                                     <span>Save</span>
                                 </button>
                             </ng-container>
-                    </div>
                     </div>
                 </nz-modal>
-                <nz-modal [nzWidth]="400"  [(nzVisible)]="staffUnApproved" nzTitle="STAFF ADD?\CHANGE" (nzOnCancel)="handleUnAprfCancel()">
-                    <div class="flexy">
+                <nz-modal [nzWidth]="400"  [(nzVisible)]="staffUnApproved" nzTitle="EXCLUDED STAFF" (nzOnCancel)="handleUnAprfCancel()">
+                    
                     <form nz-form [formGroup]="inputForm" >
                         <div nz-row nzGutter="24">    
                             <div  class="mrg-btm">
-                                <input nz-input placeholder="Category" formControlName="category"/>
+                                <input nz-input placeholder="Staff" formControlName="unaprstaff"/>
                             </div>
                         </div>
                     </form>
@@ -361,5 +360,21 @@
                                 </button>
                             </ng-container>
                     </div>
+                </nz-modal>
+                <nz-modal [nzWidth]="400"  [(nzVisible)]="competencymodal" nzTitle="COMPETENCIES" (nzOnCancel)="handleCompCancel()">
+                    
+                    <form nz-form [formGroup]="inputForm" >
+                        <div nz-row nzGutter="24">    
+                            <div  class="mrg-btm">
+                                <input nz-input placeholder="Competencise" formControlName="competences"/>
+                            </div>
+                        </div>
+                    </form>
+                    <div *nzModalFooter>
+                            <ng-container>
+                                <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
+                                    <span>Save</span>
+                                </button>
+                            </ng-container>
                     </div>
                 </nz-modal>

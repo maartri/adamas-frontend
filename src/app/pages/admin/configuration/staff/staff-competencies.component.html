@@ -1,0 +1,69 @@
+<div nz-row>
+    <div nz-col>
+        <button class="botton success" (click)="showAddModal()">Medical Procedures</button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Description</th>
+                    <th class="left">Competency Group</th>
+                    
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                <td class="left">{{ data.description  }} </td>
+                <td class="left">{{ data.code  }} </td>
+                
+                <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure Medical Procedure ?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+<nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+    <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+        <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
+    </nz-steps>
+    <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <div nz-row nzGutter="24">
+                <div nz-col nzSpan="24" class="mrg-btm">
+                    <label for="Group">Competency Group:</label>
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="group" nzShowSearch nzAllowClear style="width:100%;">
+                    <nz-option *ngFor="let itm of items" [nzValue]="itm.description" [nzLabel]="itm.description"></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-col nzSpan="24" class="mrg-btm">
+                        <label for="Rate">Name/Title:</label>
+                        <input nz-input placeholder=""  formControlName="name" />
+                </div>
+                
+                <div nz-col nzSpan="24" class="mrg-btm">
+                    <!-- <label for="mandatory">Mandatory:</label> -->
+                    <label nz-checkbox  [ngModel]="" >Mandatory</label>
+                </div>
+                <div nz-col nzSpan="24" class="mrg-btm">
+                    <!-- <label for="undated">Undated:</label> -->
+                    <label nz-checkbox  [ngModel]="" >Undated</label>
+                </div>
+                <div nz-col nzSpan="24" class="mrg-btm">
+                    <nz-date-picker [nzPlaceHolder]="'end_date'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+                <ng-container>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('item').value" (click)="save()" *ngIf="current === 0">
+                        <span>Save</span>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+</nz-modal>

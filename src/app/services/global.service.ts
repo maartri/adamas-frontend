@@ -451,6 +451,10 @@ export class GlobalService {
         const newDate = format(Date.parse(date),'dd/MM/yyyy');
         return newDate;
     }
+    convertDbDate(date:string){
+        const newDate = format(Date.parse(date),'yyyy/MM/dd');
+        return newDate;
+    }
 
     VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(date: string | Date): Date | null {
         if (!date) return null;

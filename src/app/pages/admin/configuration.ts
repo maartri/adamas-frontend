@@ -279,7 +279,7 @@ export class ConfigurationAdmin   {
             this.router.navigate(['/admin/competency-groups']);
         }
         if(index == 69){
-            this.router.navigate(['/admin/competency-groups']);
+            this.router.navigate(['/admin/staff-competency']);
         }
         if(index == 70){
             this.router.navigate(['/admin/hr-notes-categories']);
@@ -311,7 +311,12 @@ export class ConfigurationAdmin   {
         if(index == 79){
             this.router.navigate(['/admin/equipments']);
         }
-
+        if(index == 80){
+            this.router.navigate(['/admin/center-facility-location']);
+        }
+        if(index == 81){
+            this.router.navigate(['/admin/funding-sources']);
+        }
 
     }  
 }

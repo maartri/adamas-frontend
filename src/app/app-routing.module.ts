@@ -223,6 +223,9 @@ import { ServiceNoteCategoriesComponent } from '@admin/configuration/staff/servi
 import { VehiclesComponent } from '@admin/configuration/others/vehicles.component';
 import { ActivityGroupsComponent } from '@admin/configuration/others/activity-groups.component';
 import { EquipmentsComponent } from '@admin/configuration/others/equipments.component';
+import { StaffCompetenciesComponent } from '@admin/configuration/staff/staff-competencies.component';
+import { CentrFacilityLocationComponent } from '@admin/configuration/others/centr-facility-location.component';
+import { FundingSourcesComponent } from '@admin/configuration/others/funding-sources.component';
 
 const routes: Routes = [
   {
@@ -748,6 +751,10 @@ const routes: Routes = [
         component:StaffCompetencyGroupComponent
       },
       {
+        path:"staff-competency",
+        component:StaffCompetenciesComponent
+      },
+      {
         path:"hr-notes-categories",
         component:StaffNotesCategoriesComponent
       },
@@ -798,6 +805,13 @@ const routes: Routes = [
       {
         path:"equipments",
         component:EquipmentsComponent,
+      },
+      {
+        path:"center-facility-location",
+        component:CentrFacilityLocationComponent,
+      },{
+        path:"funding-sources",
+        component:FundingSourcesComponent
       },
       {
         path: 'rosters',
@@ -1092,6 +1106,7 @@ export const PAGE_COMPONENTS = [
   StaffUserGroupsComponent,
   AwardLevelsComponent,
   StaffCompetencyGroupComponent,
+  StaffCompetenciesComponent,
   StaffNotesCategoriesComponent,
   StaffPositionsComponent,
   StaffTeamsComponent,
@@ -1105,6 +1120,8 @@ export const PAGE_COMPONENTS = [
   VehiclesComponent,
   ActivityGroupsComponent,
   EquipmentsComponent,
+  CentrFacilityLocationComponent,
+  FundingSourcesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

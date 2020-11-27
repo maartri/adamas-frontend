@@ -47,7 +47,7 @@
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <!-- <label nzFor="Address 1">Address 1:</label> -->
-                        <input nz-input placeholder="Agency ID"  formControlName="address1" required />
+                        <input nz-input placeholder="Address 1"  formControlName="address1" required />
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <!-- <label nzFor="Address 2">Address 2:</label> -->
@@ -55,9 +55,10 @@
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <!-- <label nzFor="Suburb">Suburb:</label> -->
-                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="suburb" nzPlaceHolder="Suburb" nzShowSearch nzAllowClear style="width:100%;" required>
+                        <suburb formControlName="suburb" placeholder="Subrub"></suburb>
+                        <!-- <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="suburb" nzPlaceHolder="Suburb" nzShowSearch nzAllowClear style="width:100%;" required>
                         <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
-                        </nz-select>
+                        </nz-select> -->
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <!-- <label nzFor="Phone 1">Phone 1:</label> -->

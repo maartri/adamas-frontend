@@ -5,24 +5,23 @@ import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-centr-facility-location',
-  templateUrl: './centr-facility-location.component.html',
+  selector: 'app-pay-type',
+  templateUrl: './pay-type.component.html',
   styles: [`
   .ant-modal-body {
     padding: 0px 24px !important;
-  }
-  .mrg-btm{
-    margin-bottom:5px !important;
   }
   textarea{
     resize:none;
   },
   `]
 })
-export class CentrFacilityLocationComponent implements OnInit {
+export class PayTypeComponent implements OnInit {
 
   tableData: Array<any>;
   branches:Array<any>;
+  paytypes:Array<any>;
+  subgroups:Array<any>;
   ServiceData:Array<any>;
   items:Array<any>;
   jurisdiction:Array<any>;
@@ -41,7 +40,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   postLoading: boolean = false;
   isUpdate: boolean = false;
   
-  title:string = "Add New Facility/Location";
+  title:string = "Add New Agency Pay Types";
   private unsubscribe: Subject<void> = new Subject();
   constructor(
     private globalS: GlobalService,
@@ -59,7 +58,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   }
   
   showAddModal() {
-    this.title = "Add New Facility/Location"
+    this.title = "Add New Agency Pay Types"
     this.resetModal();
     this.modalOpen = true;
   }
@@ -85,7 +84,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   }
   
   showEditModal(index: any) {
-    this.title = "Edit New Facility/Location"
+    this.title = "Edit Agency Pay Types"
     this.isUpdate = true;
     this.current = 0;
     this.modalOpen = true;
@@ -174,20 +173,19 @@ export class CentrFacilityLocationComponent implements OnInit {
         
       }
       loadData(){
-
         this.jurisdiction = [{'id':'13','name':'STATE'},{'id':'93','name':'FEDERAL'}];
         console.log(this.jurisdiction);
-        let sql ="SELECT RecordNumber, [Name], ServiceOutletID, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Address FROM CSTDAOutlets WHERE ( EndDate is NULL OR EndDate >= Getdate()) ORDER BY [NAME]";
+        let sql ="SELECT [recnum] AS [RecordNumber], [title] AS [Code], [rostergroup] AS [Pay Category], [minorgroup] AS [Sub Group], [amount] AS [Pay Amount], [unit] AS [Pay Unit], [enddate] AS [End Date], [billtext] AS [Description], [accountingidentifier] AS [Pay ID], [paygroup] AS [Pay Group], [paytype] AS [Pay Type], [excludefrompayexport] AS [No Pay Export] FROM itemtypes WHERE processclassification = 'INPUT' AND ( enddate IS NULL OR enddate >= '04-05-2019' ) ORDER BY title";
         this.loading = true;
         this.listS.getlist(sql).subscribe(data => {
           this.tableData = data;
         });
 
-        let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
-        this.listS.getlist(branch).subscribe(data => {
-          this.branches = data;
-          this.loading = false;
-        });
+        // let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
+        // this.listS.getlist(branch).subscribe(data => {
+        //   this.branches = data;
+        //   this.loading = false;
+        // });
 
       }
   delete(data: any) {

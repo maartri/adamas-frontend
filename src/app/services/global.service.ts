@@ -19,6 +19,7 @@ import getHours from 'date-fns/getHours'
 import getMinutes from 'date-fns/getMinutes'
 import differenceInDays from 'date-fns/differenceInDays'
 import differenceInWeeks from 'date-fns/differenceInWeeks'
+import differenceInMinutes from 'date-fns/differenceInMinutes'
 import { Jwt, DateTimeVariables } from '@modules/modules';
 
 const helper = new JwtHelperService();
@@ -540,6 +541,11 @@ export class GlobalService {
             blockNo: starttime / 5
         }
     }
+
+    computeTimeDifference(_start: Date, _end: Date){
+        return differenceInMinutes(_end, _start);
+    }
+
 
     computeTimeDATE_FNS(_start: any, _end: any): DateTimeVariables {
         

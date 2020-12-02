@@ -773,7 +773,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 currentTime.getHours(),
                 currentTime.getMinutes(),
                 currentTime.getSeconds()
-            ), "yyyy-MM-dd'T'hh:mm:ss");
+            ), "yyyy-MM-dd'T'HH:mm:ss");
         
         return newDate;
     }
@@ -1500,10 +1500,12 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         // });
 
         this.defaultStartTime = parseISO(startTime);
-        this.defaultEndTime = parseISO(endTime);        
+        this.defaultEndTime = parseISO(endTime);
         this.current = 0;
 
-        console.log(this.timesheetForm.value)
+        console.log(this.defaultEndTime)
+
+        this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
 
         setTimeout(() => {
             this.addTimesheetVisible = true;

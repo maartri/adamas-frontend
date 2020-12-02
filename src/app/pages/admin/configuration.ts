@@ -320,6 +320,9 @@ export class ConfigurationAdmin   {
         if(index == 82){
             this.router.navigate(['/admin/pay-types']);
         }
+        if(index == 83){
+            this.router.navigate(['/admin/program-packages']);
+        }
 
     }  
 }

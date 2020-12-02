@@ -227,6 +227,7 @@ import { StaffCompetenciesComponent } from '@admin/configuration/staff/staff-com
 import { CentrFacilityLocationComponent } from '@admin/configuration/others/centr-facility-location.component';
 import { FundingSourcesComponent } from '@admin/configuration/others/funding-sources.component';
 import { PayTypeComponent } from '@admin/configuration/others/pay-type.component';
+import { ProgramPackagesComponent } from '@admin/configuration/others/program-packages.component';
 
 const routes: Routes = [
   {
@@ -817,6 +818,9 @@ const routes: Routes = [
       {
         path:"pay-types",
         component:PayTypeComponent,
+      },{
+        path:"program-packages",
+        component:ProgramPackagesComponent
       },
       {
         path: 'rosters',
@@ -1128,6 +1132,7 @@ export const PAGE_COMPONENTS = [
   CentrFacilityLocationComponent,
   FundingSourcesComponent,
   PayTypeComponent,
+  ProgramPackagesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

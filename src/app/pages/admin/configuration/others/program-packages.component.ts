@@ -11,6 +11,9 @@ import { Subject } from 'rxjs';
   .mrg-btm{
     margin-bottom:5px;
   },
+  textarea{
+    resize:none;
+  },
   `]
 })
 export class ProgramPackagesComponent implements OnInit {
@@ -21,6 +24,7 @@ export class ProgramPackagesComponent implements OnInit {
   budgetEnforcement:Array<any>;
   branches:Array<any>;
   paytypes:Array<any>;
+  alerts:Array<any>;
   subgroups:Array<any>;
   caredomain:Array<any>;
   fundingRegion:Array<any>;
@@ -173,16 +177,11 @@ export class ProgramPackagesComponent implements OnInit {
       this.period = ['ANNUAL','MONTH','QUARTER'];
       this.levels = ['Level 1','Level 2','Level 3','Level 4','STRC'];
       this.budgetEnforcement = ['HARD','SOFT'];
-
-
+      this.alerts   = ['HOURS', 'DOLLARS', 'SERVICES'];
       this.listS.getcaredomain().subscribe(data => this.caredomain = data);
-
       this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
-      
-      // this.listS.getstaffcategory().subscribe(data=>this.staffCategory=data);
-      
+
       let funding = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDREGION' ORDER BY Description";
-      
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
         this.loading = false;
@@ -205,17 +204,30 @@ export class ProgramPackagesComponent implements OnInit {
         this.targetGroups = data;
       });
 
+      let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
+      this.listS.getlist(reci).subscribe(data => {
+        this.recepients = data;
+      });
+      let acti = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
+      this.listS.getlist(acti).subscribe(data => {
+        this.activities = data;
+      });
+      let ptype ="SELECT [recnum] AS [RecordNumber], [title] AS [Code] FROM itemtypes WHERE processclassification = 'INPUT' AND ( enddate IS NULL OR enddate >= '04-05-2019' ) ORDER BY title";
+        this.loading = true;
+        this.listS.getlist(ptype).subscribe(data => {
+          this.paytypes = data;
+      });
+      let prog = "SELECT [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
+      this.listS.getlist(prog).subscribe(data => {
+        this.programz = data;
+      });
+
       // let sc = "Select RecordNumber, Description From DataDomains Where Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
       // this.listS.getlist(sc).subscribe(data => {
       //   this.staffCategory = data;
       //   this.loading = false;
       // });
 
-      
-      let prog = "SELECT [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
-      this.listS.getlist(prog).subscribe(data => {
-        this.programz = data;
-      });
       // let bgroup = "Select RecordNumber, Description From DataDomains Where Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
       // this.listS.getlist(bgroup).subscribe(data => {
       //   this.budgetGroup = data;
@@ -233,16 +245,6 @@ export class ProgramPackagesComponent implements OnInit {
       // this.listS.getlist(staf).subscribe(data => {
       //   this.staff = data;
       // });
-      let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
-      this.listS.getlist(reci).subscribe(data => {
-        this.recepients = data;
-      });
-      let acti = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
-      this.listS.getlist(acti).subscribe(data => {
-        this.activities = data;
-      });
-      
-      
     }
     delete(data: any) {
       this.globalS.sToast('Success', 'Data Deleted!');
@@ -288,6 +290,8 @@ export class ProgramPackagesComponent implements OnInit {
         cactivity:'',
         cpay:'',
         no_notice:'',
+        recurant:'',
+        packg_balance:'',
         type: '',
         vehicledef:'',
         outletid:'',
@@ -295,6 +299,7 @@ export class ProgramPackagesComponent implements OnInit {
         dsci:'',
         branch:'',
         places:'',
+        standard_quote:'',
         cat:'',
         category:'',
         unaprstaff:'',

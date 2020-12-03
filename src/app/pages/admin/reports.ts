@@ -409,7 +409,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
  //   startdate: string ;
     //format(new Date(), 'dd/MM/yyyy');
 
-    rpthttp = 'http://45.77.37.207:5488/api/report';
+    //rpthttp = 'http://45.77.37.207:5488/api/report';
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
  // rpthttp = 'http://127.1.1.1:5488/api/report';
   
     dropDownArray: any = {

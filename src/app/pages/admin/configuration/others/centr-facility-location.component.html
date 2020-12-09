@@ -241,23 +241,23 @@
                     <div nz-row nzGutter=24>
                         <div nz-col nzSpan="12">
                             <button class="botton success" (click)="showstaffApprovedModal()">Approved Staff</button>
-                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="staffList">
                                 <thead>
                                     <tr>
                                         <th class="left">Name</th>
-                                        <th class="left">Service</th>
+                                        <th class="left">Notes</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let data of basicTable.data;let i = index;">
+                                    <!-- <tr *ngFor="let data of basicTable.data;let i = index;">
                                         <td class="left">{{ data.type  }} </td>
                                         <td class="left">{{ data.itemID  }} </td>
                                         <td class="left"><a (click)="showEditModal(i)">Update</a>
                                             <nz-divider nzType="vertical"></nz-divider>
                                             <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
                                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </nz-table>
                             </div>
@@ -272,14 +272,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let data of basicTable.data;let i = index;">
+                                        <!-- <tr *ngFor="let data of basicTable.data;let i = index;">
                                             <td class="left">{{ data.type  }} </td>
                                             <td class="left">{{ data.itemID  }} </td>
                                             <td class="left"><a (click)="showEditModal(i)">Update</a>
                                                 <nz-divider nzType="vertical"></nz-divider>
                                                 <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
                                                 nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                            </tr>
+                                            </tr> -->
                                         </tbody>
                                     </nz-table>
                                 </div>
@@ -298,16 +298,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let data of basicTable.data;let i = index;">
-                                                <td class="left">{{ data.type  }} </td>
-                                                <td class="left">{{ data.itemID  }} </td>
-                                                <td class="left"><a (click)="showEditModal(i)">Update</a>
-                                                    <nz-divider nzType="vertical"></nz-divider>
-                                                    <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                                </tr>
-                                            </tbody>
-                                        </nz-table>
+                                            
+                                        </tbody>
+                                    </nz-table>
                                 </div>
                             </div>
                             </div>
@@ -331,32 +324,45 @@
                     
                     <form nz-form [formGroup]="inputForm" >
                         <div nz-row nzGutter="24">    
-                            <div  class="mrg-btm">
-                                <input nz-input placeholder="Staff" formControlName="aprstaff"/>
+                            <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let staff of staffList">
+                                            <label nz-checkbox [nzValue]="staff.accountNo" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{ staff.accountNo }}</label>
+                                        </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
                             </div>
                         </div>
                     </form>
                     <div *nzModalFooter>
                             <ng-container>
-                                <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                                    <span>Save</span>
+                                <button nz-button nzType="primary" [nzLoading]="postLoading">
+                                    <span>ADD</span>
                                 </button>
                             </ng-container>
                     </div>
                 </nz-modal>
                 <nz-modal [nzWidth]="400"  [(nzVisible)]="staffUnApproved" nzTitle="EXCLUDED STAFF" (nzOnCancel)="handleUnAprfCancel()">
-                    
                     <form nz-form [formGroup]="inputForm" >
+                        <!-- <input nz-input placeholder="Staff" formControlName="unaprstaff"/> -->
                         <div nz-row nzGutter="24">    
-                            <div  class="mrg-btm">
-                                <input nz-input placeholder="Staff" formControlName="unaprstaff"/>
+                            <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let staff of staffList">
+                                            <label nz-checkbox [nzValue]="staff.accountNo" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{ staff.accountNo }}</label>
+                                        </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
                             </div>
                         </div>
                     </form>
                     <div *nzModalFooter>
                             <ng-container>
-                                <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                                    <span>Save</span>
+                                <button nz-button nzType="primary" [nzLoading]="postLoading">
+                                    <span>ADD</span>
                                 </button>
                             </ng-container>
                     </div>
@@ -365,15 +371,21 @@
                     
                     <form nz-form [formGroup]="inputForm" >
                         <div nz-row nzGutter="24">    
-                            <div  class="mrg-btm">
-                                <input nz-input placeholder="Competencise" formControlName="competences"/>
+                            <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let comptency of competencyList">
+                                            <label nz-checkbox [nzValue]="comptency.description" [(ngModel)]="comptency.checked" [ngModelOptions]="{standalone: true}">{{ comptency.description }}</label>
+                                        </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
                             </div>
                         </div>
                     </form>
                     <div *nzModalFooter>
                             <ng-container>
-                                <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                                    <span>Save</span>
+                                <button nz-button nzType="primary" [nzLoading]="postLoading">
+                                    <span>ADD</span>
                                 </button>
                             </ng-container>
                     </div>

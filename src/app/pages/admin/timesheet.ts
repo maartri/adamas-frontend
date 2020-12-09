@@ -384,9 +384,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             if(this.whatProcess == PROCESS.UPDATE){
                 setTimeout(() => {
                     this.timesheetForm.patchValue({
-                        program: this.default
+                        program: this.defaultProgram
                     });
                 }, 0);
+                console.log(this.timesheetForm.value)
             }         
 
             this.cd.markForCheck();
@@ -443,7 +444,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             distinctUntilChanged(),
             switchMap(x => {
                 if(!x) return EMPTY;
-                console.log(x);
                 this.serviceActivityList = [];
                 this.timesheetForm.patchValue({
                     serviceActivity: null
@@ -453,7 +453,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         ).subscribe((d: Array<any>) => {
 
             this.serviceActivityList = d.map(x => x.activity);
-
+            console.log(d)
+            console.log(this.serviceActivityList)
             if(this.whatProcess == PROCESS.UPDATE){
                 setTimeout(() => {
                     this.timesheetForm.patchValue({
@@ -863,7 +864,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             //     nzTitle: '<b>Automatic Overlap Removal</b>',
             //     nzContent: `
             //         <div>This action will force any overlapping shifts to a later start time to remove the overlap. All entries must be either approved or unapproved. You cannot use this function if some entries are approved and others are not.</div>
-            //         <div>If you want to force a timegap between overlapping shifts - select 5 minutes from the drop down or if a gap is not needed accept the default of 0</div>
+            //         <div>If you want to force a timegap between overlapping shifts - select 5 minutes from the drop down or if a gap is not needed accept the defaultProgram of 0</div>
             //         <butto (click)="clickme()">Click</butto>
             //     `,
             //     nzOnOk: () => this.process(index)
@@ -1424,7 +1425,6 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }   
         
         if(this.whatProcess == PROCESS.UPDATE){
-            console.log('update');
             this.timeS.updatetimesheet(inputs).subscribe(data => {
                 this.globalS.sToast('Success', 'Timesheet has been updated');
                 this.addTimesheetVisible = false;
@@ -1459,8 +1459,10 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    default: any;
-    defaultActivity: any
+    defaultProgram: any = null;
+    defaultActivity: any = null;
+    defaultCategory: any = null;
+
     details(index: any){
 
         this.whatProcess = PROCESS.UPDATE;
@@ -1511,8 +1513,9 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.addTimesheetVisible = true;
 
             
-            this.default = program;
-            this.defaultActivity = activity
+            this.defaultProgram = program;
+            this.defaultActivity = activity;
+            this.defaultCategory = analysisCode;
 
             this.timesheetForm.patchValue({
                 serviceType: this.DETERMINE_SERVICE_TYPE(index),

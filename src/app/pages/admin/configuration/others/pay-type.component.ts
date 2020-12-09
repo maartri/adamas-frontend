@@ -240,7 +240,7 @@ export class PayTypeComponent implements OnInit {
         let recordNumber      = group.get('recordNumber').value;
         
         let sql  = "Update itemtypes SET [Status]='"+ status + "',[ProcessClassification] = '"+ process + "',[Title] = '"+ code + "',[billText] = '"+ description+ "',[RosterGroup] = '"+ type + "',[Amount] = '"+ payrate + "',[Unit] = '"+ unit+ "',[AccountingIdentifier] = '"+ payid+ "',[MainGroup] = '"+ mainGroup + "',[MinorGroup] = '"+ subgroup + "' WHERE [Recnum] ='"+recordNumber+"'";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');

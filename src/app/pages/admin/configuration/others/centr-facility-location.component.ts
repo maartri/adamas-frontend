@@ -25,13 +25,14 @@ export class CentrFacilityLocationComponent implements OnInit {
   branches:Array<any>;
   ServiceData:Array<any>;
   items:Array<any>;
+  staffList:Array<any>;
+  competencyList:Array<any>;
   jurisdiction:Array<any>;
   loading: boolean = false;
   modalOpen: boolean = false;
   staffApproved: boolean = false;
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
-  
   current: number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
@@ -83,7 +84,9 @@ export class CentrFacilityLocationComponent implements OnInit {
     this.inputForm.reset();
     this.postLoading = false;
   }
-  
+  log(value: string[]): void {
+    // console.log(value);
+  }
   showEditModal(index: any) {
     this.title = "Edit New Facility/Location"
     this.isUpdate = true;
@@ -176,7 +179,8 @@ export class CentrFacilityLocationComponent implements OnInit {
       loadData(){
 
         this.jurisdiction = [{'id':'13','name':'STATE'},{'id':'93','name':'FEDERAL'}];
-        console.log(this.jurisdiction);
+        // console.log(this.jurisdiction);
+        
         let sql ="SELECT RecordNumber, [Name], ServiceOutletID, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Address FROM CSTDAOutlets WHERE ( EndDate is NULL OR EndDate >= Getdate()) ORDER BY [NAME]";
         this.loading = true;
         this.listS.getlist(sql).subscribe(data => {
@@ -188,6 +192,18 @@ export class CentrFacilityLocationComponent implements OnInit {
           this.branches = data;
           this.loading = false;
         });
+        let staf = "Select AccountNo from Staff WHERE AccountNo > '!z' AND (CommencementDate is not null) and (TerminationDate is null) AND (Accountno NOT IN (Select [Name] AS Accountno FROM HumanResources WHERE [Group] = 'INCLUDEDSTAFF' AND PersonID = '1094') AND  Accountno NOT IN (Select [Name] AS Accountno FROM HumanResources WHERE [Group] = 'INCLUDEDSTAFF' AND PersonID = 'T0100005501')) ORDER BY AccountNo";
+        this.listS.getlist(staf).subscribe(data => {
+          this.staffList = data;
+          this.loading = false;
+        });
+        let compet = "SELECT Description FROM DATADOMAINS WHERE Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+        
+        this.listS.getlist(compet).subscribe(data => {
+          this.competencyList = data;
+          this.loading = false;
+        });
+
 
       }
   delete(data: any) {

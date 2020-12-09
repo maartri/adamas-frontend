@@ -402,6 +402,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges {
       }
   }
 
+  GETREFERRAL_LIST(){
+    if(this.option == RECIPIENT_OPTION.ITEM){
+      console.log('item');
+    }
+  }
+
   formProgramArray(data: any, type: RECIPIENT_OPTION){
 
 

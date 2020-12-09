@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { GlobalService, ListService } from '@services/index';
+import { GlobalService, ListService, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
   selector: 'app-centr-facility-location',
@@ -25,9 +26,14 @@ export class CentrFacilityLocationComponent implements OnInit {
   branches:Array<any>;
   ServiceData:Array<any>;
   items:Array<any>;
+  serviceType:Array<any>;
   staffList:Array<any>;
+  agencySector:Array<any>;
+  numbers:Array<any>;
+  fundTypes:Array<any>;
   competencyList:Array<any>;
   jurisdiction:Array<any>;
+  checkedList:Array<any>;
   loading: boolean = false;
   modalOpen: boolean = false;
   staffApproved: boolean = false;
@@ -35,6 +41,9 @@ export class CentrFacilityLocationComponent implements OnInit {
   competencymodal: boolean = false;
   current: number = 0;
   checkedflag:boolean = true;
+  checkedStaff:boolean = false;
+  checkedUnapprStaff:boolean = false;
+  checkedcompetency:boolean = false;
   dateFormat: string = 'dd/MM/yyyy';
   inputForm: FormGroup;
   modalVariables:any;
@@ -49,6 +58,7 @@ export class CentrFacilityLocationComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private listS: ListService,
+    private menuS: MenuService,
     private switchS:SwitchService,
   ){}
   
@@ -93,16 +103,22 @@ export class CentrFacilityLocationComponent implements OnInit {
     this.current = 0;
     this.modalOpen = true;
     const { 
-      name,
       branch,
-      agroup,
-      recordNumber
+      address,
+      subrub,
+      cstdasla,
+      name,
+      serviceOutletID, 
+      recordNumber,
      } = this.tableData[index];
     this.inputForm.patchValue({
-      item: branch,
-      rate:name,
-      agroup:agroup,
-      recordNumber:recordNumber
+     branch : branch,
+     adress : address,
+     subrub : subrub,
+     sla    : cstdasla,
+     name   : name,
+     outletid : serviceOutletID,
+    recordNumber:recordNumber,
     });
   }
   
@@ -129,59 +145,87 @@ export class CentrFacilityLocationComponent implements OnInit {
     this.postLoading = true;     
     const group = this.inputForm;
     if(!this.isUpdate){         
-      // this.switchS.addData(  
-      //   this.modalVariables={
-      //     title: 'CDC Claim Rates'
-      //   }, 
-      //   this.inputVariables = {
-      //     item: group.get('item').value,
-      //     rate: group.get('rate').value,
-      //     domain: 'PACKAGERATES', 
-      //   }
-      //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      //     if (data) 
-      //     this.globalS.sToast('Success', 'Saved successful');     
-      //     else
-      //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-      //     this.loadData();
-      //     this.postLoading = false;          
-      //     this.handleCancel();
-      //     this.resetModal();
-      //   });
+        
+        const group = this.inputForm;
+        let branch             = group.get('branch').value;
+        let adress             = group.get('adress').value;
+        let subrub             = group.get('subrub').value;
+        let sla                = group.get('sla').value;
+        let name               = group.get('name').value;
+        let outletid           = group.get('outletid').value;
+
+        let values = branch+"','"+name+"','"+outletid+"','"+adress+"','"+subrub+"','"+sla;
+        let sqlz = "insert into CSTDAOutlets ([Branch],[Name],[ServiceOutletID],[AddressLine1],[Suburb],[CSTDASLA]) values('"+values+"');select @@IDENTITY"; 
+        
+        this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data){
+            this.globalS.sToast('Success', 'Saved successful');
+            this.loadData();
+            this.postLoading = false;   
+            this.loading = false;       
+            this.handleCancel();
+            this.resetModal();
+          }
+          else{
+            this.globalS.sToast('Success', 'Saved successful');
+            this.loadData();
+            this.loading = false;   
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          }
+        });
       }else{
         this.postLoading = true;     
         const group = this.inputForm;
-        // console.log(group.get('item').value);
-        // this.switchS.updateData(  
-        //   this.modalVariables={
-        //     title: 'CDC Claim Rates'
-        //   }, 
-        //   this.inputVariables = {
-        //     item: group.get('item').value,
-        //     rate: group.get('rate').value,
-        //     recordNumber:group.get('recordNumber').value,
-        //     domain: 'PACKAGERATES',
-        //   }
-          
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Updated successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-        //     this.loadData();
-        //     this.postLoading = false;          
-        //     this.handleCancel();
-        //     this.resetModal();
-        //   });
+        let branch             = group.get('branch').value;
+        let adress             = group.get('adress').value;
+        let subrub             = group.get('subrub').value;
+        let sla                = group.get('sla').value;
+        let name               = group.get('name').value;
+        let outletid           = group.get('outletid').value;
+        let recordNumber       = group.get('recordNumber').value;
+        
+        let sqlz = "Update CSTDAOutlets SET [Branch]='"+ branch + "',[Name]='"+ name + "',[ServiceOutletID]='"+ outletid + "',[AddressLine1]='"+ adress + "',[Suburb]='"+ subrub + "',[CSTDASLA]='"+ sla + "' WHERE [RecordNumber] ='"+recordNumber+"'"; 
+        
+        console.log(sqlz);
+
+
+        this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data){
+            this.globalS.sToast('Success', 'Saved successful');
+            this.loadData();
+            this.postLoading = false;   
+            this.loading = false;       
+            this.handleCancel();
+            this.resetModal();
+          }
+          else{
+            this.globalS.sToast('Success', 'Saved successful');
+            this.loadData();
+            this.loading = false;   
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          }
+        });
         }
         
       }
       loadData(){
 
         this.jurisdiction = [{'id':'13','name':'STATE'},{'id':'93','name':'FEDERAL'}];
-        // console.log(this.jurisdiction);
+        this.agencySector = ['Commonwealth Government','State Territory Government','Local Government','Income Tax Exempt Charity','Non-Income Tax Exempt'];
+        this.serviceType  = ['1.01-LARGE RESIDENTIAL/INSTITUTION (>20 PEOPLE) - 24 HOUR CARE','1.014-ADDITIONAL ACCOMMODATION SUPPORT – LARGE RESIDENTIAL/INSTITUTION (>20 PLACES)','1.02-SMALL RESIDENTIAL/INSTITUTION (7-20 PEOPLE) - 24 HOUR CARE','1.024-ADDITIONAL ACCOMMODATION SUPPORT – SMALL RESIDENTIAL/INSTITUTION (7-20 PLACES)','1.03-HOSTELS - GENERALLY NOT 24 HOUR CARE','1.041-GROUP HOME (<7 PLACES)','1.042-GROUP HOME (<7 PLACES) – NO DIRECT FINANCIAL CONTROL','1.044-ADDITIONAL ACCOMMODATION SUPPORT – GROUP HOME (<7 PLACES)','1.05-ATTENDANT CARE/PERSONAL CARE','1.06-IN-HOME ACCOMMODATION SUPPORT','1.07-ALTERNATIVE FAMILY PLACEMENT','1.081-ACCOMMODATION PROVIDED SO THAT INDIVIDUALS CAN ACCESS SPECIALIST SERVICES OR FURTHER EDUCATION','1.082-EMERGENCY OR CRISIS ACCOMMODATION SUPPORT (E.G. FOLLOWING THE DEATH OF A PARENT OR CARER)','1.083-HOUSES OR FLATS FOR HOLIDAY ACCOMMODATION','2.01-THERAPY SUPPORT FOR INDIVIDUALS','2.02-EARLY CHILDHOOD INTERVENTION','2.021-EARLY INTERVENTION','2.03-BEHAVIOUR/SPECIALIST INTERVENTION','2.04-COUNSELLING (INDIVIDUAL/FAMILY/GROUP)','2.05-REGIONAL RESOURCE AND SUPPORT TEAMS','2.061-PROGRAM SUPPORTS FACILITATION','2.062-CASE MANAGEMENT','2.063-LOCAL AREA COORDINATION','2.064-COMMUNITY DEVELOPMENT','2.066-SELF DIRECTED SUPPORT-MANAGEMENT','2.067-SELF DIRECTED SUPPORT-ESTABLISHMENT','2.071-OTHER COMMUNITY SUPPORT','2.072-OTHER COMMUNITY SUPPORT','2.073-OTHER COMMUNITY SUPPORT']
+        this.fundTypes    = ['Block Funded','Both','Individually Funded','N/A'];
         
-        let sql ="SELECT RecordNumber, [Name], ServiceOutletID, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Address FROM CSTDAOutlets WHERE ( EndDate is NULL OR EndDate >= Getdate()) ORDER BY [NAME]";
+        let arr = [1,2,3,4,5];
+          for(let i=6;i<=90;i++)
+          {
+            arr.push(i);
+          }
+        this.numbers = arr;
+        let sql ="SELECT RecordNumber, [Name],[Branch],[Suburb],[CSTDASLA],ServiceOutletID, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Address FROM CSTDAOutlets WHERE ( EndDate is NULL OR EndDate >= Getdate()) ORDER BY [NAME]";
         this.loading = true;
         this.listS.getlist(sql).subscribe(data => {
           this.tableData = data;
@@ -209,6 +253,17 @@ export class CentrFacilityLocationComponent implements OnInit {
   delete(data: any) {
     this.globalS.sToast('Success', 'Data Deleted!');
   }
+  onCheckboxChange(option, event) {
+    if(event.target.checkedcompetency) {
+      this.checkedList.push(option.description);
+    } else {
+    for(var i=0 ; i < this.competencyList.length; i++) {
+      if(this.checkedList[i] == option.description) {
+        this.checkedList.splice(i,1);
+     }
+   }
+  }
+  }
   buildForm() {
     this.inputForm = this.formBuilder.group({
       
@@ -218,10 +273,20 @@ export class CentrFacilityLocationComponent implements OnInit {
       dsci:'',
       name:'',
       branch:'',
+      adress:'',
+      sla:'',
+      postcode:'',
+      subrub:'',
       places:'',
       cat:'',
       category:'',
       unaprstaff:'',
+      anualhours:'',
+      serviceUsers:'',
+      minUserWeek:'',
+      maxUserWeek:'',
+      minStaffHour:'',
+      maxStaffHour:'',
       aprstaff:'',
       competences:'',
       agencysector:'',
@@ -229,6 +294,12 @@ export class CentrFacilityLocationComponent implements OnInit {
       fundingjunc:'',
       fundingtype:'',
       sheetalert:'',
+      hour:'',
+      week:'',
+      day:'',
+      weekPatern:false,
+      dayPatern:false,
+      hourPatern:false,
       description: '',
       asset_no:'',
       serial_no:'',
@@ -241,6 +312,7 @@ export class CentrFacilityLocationComponent implements OnInit {
       notes:'',
       glRevene:'',
       glCost:'',
+      gloveride:'',
       centerName:'',
       addrLine1:'',
       addrLine2:'',

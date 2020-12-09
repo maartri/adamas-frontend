@@ -14,6 +14,14 @@ import { Subject } from 'rxjs';
   textarea{
     resize:none;
   },
+  .staff-wrapper{
+    height: 10rem;
+    width: 100%;
+    overflow: auto;
+    padding: .5rem 1rem;
+    border: 1px solid #e9e9e9;
+    border-radius: 3px;
+},
   `]
 })
 export class ProgramPackagesComponent implements OnInit {
@@ -47,17 +55,20 @@ export class ProgramPackagesComponent implements OnInit {
   individual:boolean= false;
   aged:boolean= false;
   vehicledef:boolean=false;
+  packageLevel:boolean=false;
   ServiceData:Array<any>;
   items:Array<any>;
   jurisdiction:Array<any>;
   loading: boolean = false;
   modalOpen: boolean = false;
+  servicesModal:boolean = false;
   staffApproved: boolean = false;
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
   packageLeaveModal:boolean = false;
   
   current: number = 0;
+  checked:boolean=false;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
   inputForm: FormGroup;
@@ -90,18 +101,36 @@ export class ProgramPackagesComponent implements OnInit {
       this.resetModal();
       this.modalOpen = true;
     }
+    showServicesModal(){
+      this.servicesModal  =true;
+    }
+    showPackageLeaveModal(){
+      this.packageLevel = true;
+    }
+    handleServicesCancel() {
+      this.servicesModal = false;
+    }
+    handlePackageLevelCancel() {
+      this.packageLevel = false;
+    }
     showstaffApprovedModal(){
       // this.resetModal();
       this.staffApproved = true;
     }
+    handleAprfCancel(){
+      this.staffApproved = false;
+    }
     showstaffUnApprovedModal(){
       this.staffUnApproved = true;
+    }
+    handleUnAprfCancel(){
+      this.staffUnApproved = false;
     }
     showCompetencyModal(){
       this.competencymodal = true;
     }
-    showPackageLeaveModal(){
-      this.packageLeaveModal = true;
+    handleCompetencyCancel(){
+      this.competencymodal = false;
     }
     //End Opening of All Modals
     loadTitle()
@@ -136,15 +165,8 @@ export class ProgramPackagesComponent implements OnInit {
     handleCancel() {
       this.modalOpen = false;
     }
-    handleCompCancel() {
-      this.competencymodal = false;
-    }
-    handleAprfCancel(){
-      this.staffApproved = false;
-    }
-    handleUnAprfCancel(){
-      this.staffUnApproved = false;
-    }
+    
+    
     pre(): void {
       this.current -= 1;
     }
@@ -246,6 +268,10 @@ export class ProgramPackagesComponent implements OnInit {
       //   this.staff = data;
       // });
     }
+    log(value: string[]): void {
+      // console.log(value);
+    }
+
     delete(data: any) {
       this.globalS.sToast('Success', 'Data Deleted!');
     }

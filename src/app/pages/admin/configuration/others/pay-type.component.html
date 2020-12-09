@@ -57,31 +57,34 @@
                             <div nz-col nzSpan="16" class="mrg-btm">
                                 
                                 <div class="mrg-btm" nz-col nzSpan="24">
-                                    <input nz-input placeholder="Code"  formControlName="glRevene" />
+                                    <input nz-input placeholder="Code"  formControlName="code" />
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
-                                    <textarea rows="4" nz-input placeholder="Description" formControlName="sheetalert"></textarea>
+                                    <textarea rows="4" nz-input placeholder="Description" formControlName="description"></textarea>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of paytypes" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let payt of paytypes" [nzLabel]="payt" [nzValue]="payt"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="SubGroup" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="subgroup" nzPlaceHolder="SubGroup" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub" [nzValue]="sub"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
-                                    <input nz-input placeholder="Pay Rate"  formControlName="glRevene" />
+                                    <input nz-input placeholder="Pay Rate"  formControlName="payrate" />
                                 </div>
-                                <div nz-col nzSpan="8">
-                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Unit" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                                <div nz-col nzSpan="8" class="mrg-btm">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="unit" nzPlaceHolder="Unit" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let unit of units" [nzLabel]="unit" [nzValue]="unit"></nz-option>
                                     </nz-select>
                                 </div>
-                                <div nz-col nzSpan="12">
-                                    <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">Applicable to Casuals</label>
+                                <div nz-col nzSpan="12" class="mrg-btm">
+                                    <label nz-checkbox  formControlName="casuals">Applicable to Casuals</label>
+                                </div>
+                                <div class="mrg-btm" nz-col nzSpan="24">
+                                    <nz-date-picker [nzPlaceHolder]="'End Date'" formControlName="end" [nzFormat]="dateFormat"></nz-date-picker>
                                 </div>
                                 <div nz-col nzSpan="4">
                                 </div>
@@ -96,10 +99,10 @@
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <div nz-col nzSpan="16" class="mrg-btm">
                             <div class="mrg-btm" nz-col nzSpan="16">
-                                <input nz-input placeholder="PAY CODE"  formControlName="glRevene" />
+                                <input nz-input placeholder="PAY CODE"  formControlName="payid" />
                             </div>
                             <div nz-col nzSpan="12">
-                                <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">EXCLUDE FROM PAY EXPORT</label>
+                                <label nz-checkbox  formControlName="exportfrompay">EXCLUDE FROM PAY EXPORT</label>
                             </div>
                         </div>    
                     </div>
@@ -110,7 +113,7 @@
                             <h2 style="color:#1890FF;">Roster Actions</h2>
                         </div>
                         <div nz-col nzSpan="" class="">
-                            <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">Can Conflict</label>
+                            <label nz-checkbox formControlName="conflict">Can Conflict</label>
                         </div>
                     </div>
                     <nz-divider nzText="Roster Restrictions" nzOrientation="left"></nz-divider>
@@ -118,14 +121,14 @@
                         <div nz-col nzSpan="20" class="mrg-btm">
                             <div class="mrg-btm" nz-col nzSpan="24">
                                 <label for="Can Only Be Roasted" class="mrg-btm">Can Only Be Roasted:</label> 
-                                Mon <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label>
-                                Tue <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label>
-                                Wed <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label>
-                                Thu <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label>
-                                Fri <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label>
-                                Sat <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label>
-                                Sun <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label>
-                                Pub Hol <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label>
+                                Mon <label nz-checkbox  formControlName="day1"></label>
+                                Tue <label nz-checkbox  formControlName="day2"></label>
+                                Wed <label nz-checkbox  formControlName="day3"></label>
+                                Thu <label nz-checkbox  formControlName="day4"></label>
+                                Fri <label nz-checkbox  formControlName="day5"></label>
+                                Sat <label nz-checkbox  formControlName="day6"></label>
+                                Sun <label nz-checkbox  formControlName="day7"></label>
+                                Pub Hol <label nz-checkbox  formControlName="day0"></label>
                             </div>
                             <div nz-row nzSpan="24">
                                 <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
@@ -151,19 +154,19 @@
                                         <label>Min Duration</label>
                                     </div>
                                     <div nz-col nzSpan="4">
-                                        <input nz-input placeholder="" nz-value="0" formControlName="glRevene" />
+                                        <input nz-input placeholder="" nz-value="0" formControlName="min" />
                                     </div>
                                     <div nz-col nzSpan="4">
                                         <label style="margin-left:20px;">Max Duration</label>
                                     </div>
                                     <div nz-col nzSpan="4">
-                                        <input nz-input placeholder="" nz-value="0" formControlName="glRevene" />
+                                        <input nz-input placeholder="" nz-value="0" formControlName="max" />
                                     </div>
                                     <div nz-col nzSpan="4">
                                         <label style="margin-left:20px;">Roasted Time</label>
                                     </div>
                                     <div nz-col nzSpan="4"> 
-                                        <input nz-input placeholder="" nz-value="0" formControlName="glRevene" />
+                                        <input nz-input placeholder="" nz-value="0" formControlName="forceRostedTime" />
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
@@ -172,10 +175,10 @@
                                     </div>
                                     <div nz-col nzSpan="16">
                                         <div>
-                                            <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">Rosted Day</label>
+                                            <label nz-checkbox formControlName="rostedDay">Rosted Day</label>
                                         </div>
                                         <div>
-                                            <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">Rosted Time</label>
+                                            <label nz-checkbox formControlName="rostedTime">Rosted Time</label>
                                         </div>
                                     </div>
                                 </div>
@@ -185,7 +188,7 @@
                                         <span>Time Must Be withIn:</span>
                                     </div>
                                     <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" nz-value="0" formControlName="glRevene" />
+                                        <input nz-input placeholder="" nz-value="0" formControlName="orignalminute" />
                                     </div>
                                     <div nz-col nzSpan="8" style="text-align: center;">
                                         <span>Minutes of Orignal Start</span>
@@ -200,32 +203,29 @@
                         <div nz-col nzSpan="12" class="">
                             <h2 style="color:#1890FF;">Award Actions</h2>
                         </div>
-                        <div nz-col nzSpan="" class="">
-                            <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">Can Conflict</label>
-                        </div>
                     </div>
                     <nz-divider nzText="Award Interpretation Options" nzOrientation="left"></nz-divider>
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <div nz-col nzSpan="14">
                             <div class="mrg-btm">
-                            Exclude From Higher Rate Calculation : <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label><br>
+                            Exclude From Higher Rate Calculation : <label nz-checkbox formControlName="award1"></label><br>
                             </div>
                             <div class="mrg-btm">
-                            No Overtime Accoumnodation : <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label><br>
+                            No Overtime Accoumnodation : <label nz-checkbox formControlName="award2"></label><br>
                             </div>
                             <div class="mrg-btm">
-                            Pay As Rostered : <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label><br>
+                            Pay As Rostered : <label nz-checkbox formControlName="award3"></label><br>
                             </div>
                             <div class="mrg-btm">
-                            Exclude From Timeband Interpretation : <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label><br>
+                            Exclude From Timeband Interpretation : <label nz-checkbox formControlName="award4"></label><br>
                             </div>
                             <div class="mrg-btm">
-                            Exclude From Timeband Interpretation : <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci"></label><br>
+                            Exclude From All Interpretation : <label nz-checkbox formControlName="award5"></label><br>
                             </div>
                         </div>
                         <div nz-col nzSpan="10">
                             <label for="Special Shift Type" class="mrg-btm">Special Shift Type:</label>
-                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="specialShift" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
                             </nz-select>
                         </div>

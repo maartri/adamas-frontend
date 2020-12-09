@@ -86,29 +86,28 @@
                         </nz-tab>
                         <nz-tab nzTitle="SERVICE HISTORY">
                             <button class="botton success" (click)="showServiceModal()">Add SERVICE HISTORY</button>
-                            <nz-table #basicTablein [nzData]="ServiceData">
+                            <nz-table #basicTable [nzData]="tableSData"  [nzShowPagination]="true" [nzFrontPagination]="true" [nzLoading]="loading">
                                 <thead>
                                     <tr>
                                         <th class="left">Category</th>
+                                        <th class="left">Details</th>
                                         <th class="left">Service Date</th>
                                         <th class="left">Reminder Date</th>
                                         <th class="left">Due Date</th>
-                                        <th class="left">Details</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let data of basicTablein.data;let i = index;">
-                                        <td class="left">{{ data.name  }} </td>
-                                        <td class="left">{{ data.branch  }} </td>
-                                        <td class="left">{{ data.agroup  }} </td>
-                                        <td class="left">{{ data.agroup  }} </td>
-                                        <td class="left">{{ data.agroup  }} </td>
-                                        <!-- <td class="left">{{ data.rate  }} </td> -->
-                                        <td class="left"><a (click)="showEditModal(i)">Update</a>
+                                    <tr *ngFor="let dataa of tableSData;let i = index;">
+                                        <td class="left">{{ dataa.category  }} </td>
+                                        <td class="left">{{ dataa.details  }} </td>
+                                        <td class="left">{{ dataa.serviceDate  }} </td>
+                                        <td class="left">{{ dataa.reminderDate  }} </td>
+                                        <td class="left">{{ dataa.dueDate  }} </td>
+                                        <td class="left"><a (click)="showEditServiceModal(i)">Update</a>
                                             <nz-divider nzType="vertical"></nz-divider>
                                             <a nz-popconfirm nzPopconfirmTitle="Are you sure You want to delete This Service History ?"
-                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(dataa)">Delete</a></td>
                                         </tr>
                                     </tbody>
                                 </nz-table>
@@ -148,7 +147,7 @@
                 </form>
                 <div *nzModalFooter>
                     <ng-container>
-                        <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="addEquipmentDeatil()" *ngIf="current === 0">
+                        <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" [disabled]="!this.inputForm.get('category').value">
                             <span>Save</span>
                         </button>
                     </ng-container>

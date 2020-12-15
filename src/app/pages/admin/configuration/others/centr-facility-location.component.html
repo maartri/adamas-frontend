@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
                                     <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="agencysector" nzPlaceHolder="Agency Sector" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let agency of agencySector" [nzLabel]="agency" [nzValue]="agency"></nz-option>
+                                        <nz-option *ngFor="let agency of agencySector" [nzLabel]="agency.name" [nzValue]="agency.id"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
@@ -241,7 +241,7 @@
                     <div nz-row nzGutter=24>
                         <div nz-col nzSpan="12">
                             <button class="botton success" (click)="showstaffApprovedModal()">Approved Staff</button>
-                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="staffList">
+                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedListApproved">
                                 <thead>
                                     <tr>
                                         <th class="left">Name</th>
@@ -250,20 +250,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- <tr *ngFor="let data of basicTable.data;let i = index;">
-                                        <td class="left">{{ data.type  }} </td>
-                                        <td class="left">{{ data.itemID  }} </td>
-                                        <td class="left"><a (click)="showEditModal(i)">Update</a>
+                                    <tr *ngFor="let approvedlist of checkedListApproved;let k = index;">
+                                        <td>{{approvedlist}}</td>
+                                        <td></td>
+                                        <td class="left"><a (click)="showEditModal(k)">Update</a>
                                             <nz-divider nzType="vertical"></nz-divider>
                                             <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                        </tr> -->
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(approvedlist)">Delete</a>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </nz-table>
                             </div>
                             <div nz-col nzSpan="12">
                                 <button class="botton success" (click)="showstaffUnApprovedModal()">Excluded Staff</button>
-                                <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                                <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedListExcluded">
                                     <thead>
                                         <tr>
                                             <th class="left">Name</th>
@@ -272,14 +273,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- <tr *ngFor="let data of basicTable.data;let i = index;">
-                                            <td class="left">{{ data.type  }} </td>
-                                            <td class="left">{{ data.itemID  }} </td>
-                                            <td class="left"><a (click)="showEditModal(i)">Update</a>
+                                        <tr *ngFor="let excludedlist of checkedListExcluded;let l = index;">
+                                            <td>{{excludedlist}}</td>
+                                            <td></td>
+                                            <td class="left"><a (click)="showEditModal(l)">Update</a>
                                                 <nz-divider nzType="vertical"></nz-divider>
                                                 <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                            </tr> -->
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(excludedlist)">Delete</a>
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </nz-table>
                                 </div>
@@ -289,7 +291,7 @@
                             <div nz-row nzGutter=24>
                                 <div nz-col nzSpan="24">
                                     <button class="botton success" (click)="showCompetencyModal()">Required Competencies</button>
-                                    <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                                    <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedList">
                                         <thead>
                                             <tr>
                                                 <th class="left">Competency</th>
@@ -298,7 +300,15 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            
+                                            <tr *ngFor="let list of checkedList;let j = index;">
+                                                <td>{{list}}</td>
+                                                <td></td>
+                                                <td class="left"><a (click)="showEditModal(j)">Update</a>
+                                                    <nz-divider nzType="vertical"></nz-divider>
+                                                    <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
+                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(list)">Delete</a>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </nz-table>
                                 </div>
@@ -328,7 +338,7 @@
                             <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                 <div nz-row>
                                     <div nz-col nzSpan="24" *ngFor="let staff of staffList">
-                                        <label nz-checkbox [nzValue]="staff.accountNo" [(ngModel)]="staff.checkedStaff" [ngModelOptions]="{standalone: true}">{{ staff.accountNo }}</label>
+                                        <label nz-checkbox [nzValue]="staff.accountNo" (change)="onCheckboxapprovedChange(staff,$event)" >{{ staff.accountNo }}</label>
                                     </div>
                                 </div>
                             </nz-checkbox-wrapper>
@@ -351,7 +361,7 @@
                             <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                 <div nz-row>
                                     <div nz-col nzSpan="24" *ngFor="let staff of staffList">
-                                        <label nz-checkbox [nzValue]="staff.accountNo" [(ngModel)]="staff.checkedUnapprStaff" [ngModelOptions]="{standalone: true}">{{ staff.accountNo }}</label>
+                                        <label nz-checkbox [nzValue]="staff.accountNo" (change)="onCheckboxUnapprovedChange(staff,$event)" >{{ staff.accountNo }}</label>
                                     </div>
                                 </div>
                             </nz-checkbox-wrapper>
@@ -373,7 +383,7 @@
                             <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                 <div nz-row>
                                     <div nz-col nzSpan="24" *ngFor="let comptency of competencyList">
-                                        <label nz-checkbox [nzValue]="comptency.description" (change)="onCheckboxChange(comptency,$event)" [(ngModel)]="comptency.checkedcompetency" [ngModelOptions]="{standalone: true}">{{ comptency.description }}</label>
+                                        <label nz-checkbox [nzValue]="comptency.description" (change)="onCheckboxChange(comptency,$event)" >{{ comptency.description }}</label>
                                     </div>
                                 </div>
                             </nz-checkbox-wrapper>
@@ -382,9 +392,9 @@
                 </form>
                 <div *nzModalFooter>
                     <ng-container>
-                        <button nz-button nzType="primary" [nzLoading]="postLoading">
-                            <span>ADD</span>
-                        </button>
+                        <!-- <button nz-button nzType="primary" [nzLoading]="postLoading" (nzOnCancel)="handleCompCancel()"> -->
+                            <span></span>
+                        <!-- </button> -->
                     </ng-container>
                 </div>
             </nz-modal>

@@ -346,7 +346,7 @@
                                     <div nz-col nzSpan="4">
                                         <div class="mrg-btm" style="text-align:center">
                                             <h3 style="margin-bottom:5px;">Alerts</h3>
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="p_alert_type"  nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
                                             </nz-select>
                                         </div>  
@@ -359,20 +359,20 @@
                                         </div>
                                         <div nz-col nzSpan="12">
                                             <label for="">period</label>
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="p_alert_period"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                             </nz-select>
                                         </div>
                                         <div nz-col nzSpan="12">
                                             <label for="">Commencing</label>
-                                            <input nz-input placeholder="Name"  formControlName="name" />
+                                            <input nz-input placeholder="Package Start Date"  formControlName="name" />
                                         </div>
                                     </div>
                                     <div nz-col nzSpan="8">
-                                        <input nz-input class="mrg-btm" placeholder="Allowed"  formControlName="name" />
-                                        <input nz-input class="mrg-btm" placeholder="Yellow Alert"  formControlName="name" />
-                                        <input nz-input class="mrg-btm" placeholder="Green Alert"  formControlName="name" />
-                                        <input nz-input class="" placeholder="Red Alert"  formControlName="name" />
+                                        <input nz-input class="mrg-btm" placeholder="Allowed"  formControlName="allowed" />
+                                        <input nz-input class="mrg-btm" placeholder="Yellow Alert"  formControlName="yellow" />
+                                        <input nz-input class="mrg-btm" placeholder="Green Alert"  formControlName="green" />
+                                        <input nz-input class="" placeholder="Red Alert"  formControlName="red" />
                                     </div>
                                 </div>
                                 <div style="clear:both;"></div>
@@ -380,36 +380,36 @@
                                 <div nz-col nzSpan="24">
                                     <div nz-col nzSpan="4">
                                         <label for="">Expire Using</label>
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="expire_using"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let usign of expireUsing" [nzLabel]="usign" [nzValue]="usign"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div nz-col nzSpan="4">
                                         <label for="">Amount</label>
-                                        <input nz-input placeholder="Amount" formControlName="name" />
+                                        <input nz-input placeholder="" formControlName="expire_amount" />
                                     </div>
                                     <div nz-col nzSpan="4">
                                         <label for="">Cost Type</label>
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="expire_costType"  nzShowSearch nzAllowClear style="width:100%;">
                                             <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div nz-col nzSpan="4">
                                         <label for="">Per Unit</label>
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="expire_unit"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let unit of unitsArray" [nzLabel]="unit" [nzValue]="unit"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div nz-col nzSpan="4">
                                         <label for="">Period</label>
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="expire_period"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div nz-col nzSpan="4">
                                         <label for="">Length</label>
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="expire_length"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                         </nz-select>
                                     </div>
                                 </div>
@@ -436,32 +436,32 @@
                                                 <tr>
                                                     <td>Admin</td>
                                                     <td>
-                                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                                            <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="adminType"  nzShowSearch nzAllowClear style="width:100%;">
+                                                            <nz-option *ngFor="let adminTypeAr of adminTypesArray" [nzLabel]="adminTypeAr" [nzValue]="adminTypeAr"></nz-option>
                                                         </nz-select>
                                                     </td>
                                                     <td>
-                                                        <input nz-input placeholder="" formControlName="name" />
+                                                        <input nz-input  formControlName="admin_parc_amt" />
                                                     </td>
-                                                    <td><nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                                        <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                                    <td><nz-select [nzDropdownMatchSelectWidth]="false" formControlName="adminFrequency"  nzShowSearch nzAllowClear style="width:100%;">
+                                                        <nz-option *ngFor="let dail of dailyArry" [nzLabel]="dail" [nzValue]="dail"></nz-option>
                                                     </nz-select>
                                                 </td>
                                                 <td>
-                                                    <input nz-input placeholder="" formControlName="name" />
+                                                    <input nz-input  formControlName="adminDay" />
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>Case Mgt</td>
-                                                <td><nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                                    <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                                <td><nz-select [nzDropdownMatchSelectWidth]="false" formControlName="admincmType"  nzShowSearch nzAllowClear style="width:100%;">
+                                                    <nz-option *ngFor="let adminTypeArz of adminTypesArray" [nzLabel]="adminTypeArz" [nzValue]="adminTypeArz"></nz-option>
                                                 </nz-select></td>
-                                                <td><input nz-input placeholder="" formControlName="name" /></td>
-                                                <td><nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                                    <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                                <td><input nz-input  formControlName="admin_cm_parc_amt" /></td>
+                                                <td><nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cmFrequency"  nzShowSearch nzAllowClear style="width:100%;">
+                                                    <nz-option *ngFor="let dail of dailyArry" [nzLabel]="dail" [nzValue]="dail"></nz-option>
                                                 </nz-select></td>
                                                 <td>
-                                                    <input nz-input placeholder="" formControlName="name" />
+                                                    <input nz-input  formControlName="cmday" />
                                                 </td>
                                             </tr>
                                         </tbody>    
@@ -471,32 +471,27 @@
                                 </div>
                                 <div nz-col nzSpan="19">
                                     <div nz-col nzSpan="12" style="padding-left:0px !important;">
-                                        <label style="font-size:9px;" nz-checkbox nzValue="vehicledef"  formControlName="vehicledef">Include Income Tested Fee in Admin % Calculation</label>
+                                        <label style="font-size:9px;" nz-checkbox nzValue=""  formControlName="includetested">Include Income Tested Fee in Admin % Calculation</label>
                                     </div>
                                     <div nz-col nzSpan="12" style="padding-left:0px !important;">
-                                        <label style="font-size:9px;margin-top:5px;" nz-checkbox nzValue="vehicledef"  formControlName="vehicledef">Option to Delete Admin Lines on un acceptance of Fees</label>
+                                        <label style="font-size:9px;margin-top:5px;" nz-checkbox nzValue=""  formControlName="includeClientFeesCont">Option to Delete Admin Lines on un acceptance of Fees</label>
                                     </div>
                                     <div nz-col nzSpan="12" style="padding-left:0px !important;">
-                                        <label style="font-size:9px;" nz-checkbox nzValue="vehicledef"  formControlName="vehicledef">Include Basic Care Fee in Admin % Calculation</label>
+                                        <label style="font-size:9px;" nz-checkbox nzValue=""  formControlName="IncludeCare">Include Basic Care Fee in Admin % Calculation</label>
                                     </div>
                                     <div nz-col nzSpan="12" style="padding-left:0px !important;">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Master Cycle For Fees" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cycle" nzPlaceHolder="Master Cycle For Fees" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let cycle of cycles" [nzLabel]="cycle" [nzValue]="cycle"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div nz-col nzSpan="12" style="padding-left:0px !important;">
-                                        <label style="font-size:9px;" nz-checkbox nzValue="vehicledef"  formControlName="vehicledef">Include Top Up Fee in Admin & Calculation</label>
-                                    </div>
-                                    <div nz-col nzSpan="12" class="mrg-btm" style="padding-left:0px !important;">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Master Cycle For Fees" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
-                                        </nz-select>
+                                        <label style="font-size:9px;" nz-checkbox nzValue=""  formControlName="IncludeTopUp">Include Top Up Fee in Admin & Calculation</label>
                                     </div>
                                     <div nz-col nzSpan="12">
                                         
                                     </div>
                                     <div nz-col nzSpan="12">
-                                        <input nz-input placeholder="Default Basic Care Fee"  formControlName="name" />
+                                        <input nz-input placeholder="Default Basic Care Fee"  formControlName="default_daily_fees" />
                                     </div>
                                     <div nz-col nzSpan="24">
                                         <label for="tandard Quote Disclaimer">Standard Quote Disclaimer</label>
@@ -514,17 +509,17 @@
                                 </div>
                                 <div nz-col nzSpan="19">
                                     <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="Max Continguency"  formControlName="name" />
+                                        <input nz-input placeholder="Max Continguency"  formControlName="max_contiguency" />
                                     </div>
                                     <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="% / Amount"  formControlName="name" />
+                                        <input nz-input placeholder="% / Amount"  formControlName="perc_amt" />
                                     </div>
                                     <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="Default Daily Fee"  formControlName="name" />
+                                        <input nz-input placeholder="Default Daily Fee"  formControlName="defaultbasiccarefee" />
                                     </div>
                                     <div nz-col nzSpan="24" class="space-top">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="state" nzPlaceHolder="Quote Template" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="quoute_template" nzPlaceHolder="Quote Template" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let temp of quoutetemplates" [nzLabel]="temp" [nzValue]="temp"></nz-option>
                                         </nz-select>
                                     </div>
                                 </div>
@@ -610,34 +605,34 @@
                                         
                                         <div class="mrg-btm" nz-col nzSpan="12">
                                             <label>Non Chargeable</label>
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="nprogram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="wnprogram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let pr of programz" [nzLabel]="pr.name" [nzValue]="pr.name"></nz-option>
                                             </nz-select>
                                         </div>
                                         <div class="mrg-btm" nz-col nzSpan="12">
                                             <label>Chargeable</label>
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cprogram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="wcprogram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let pr of programz" [nzLabel]="pr.name" [nzValue]="pr.name"></nz-option>
                                             </nz-select>
                                         </div>
                                         <div class="mrg-btm" nz-col nzSpan="12">
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="nactivity" nzPlaceHolder="Activity" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="wnactivity" nzPlaceHolder="Activity" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let activity of activities" [nzLabel]="activity.title" [nzValue]="activity.title"></nz-option>
                                             </nz-select>
                                         </div>
                                         
                                         <div class="mrg-btm" nz-col nzSpan="12">
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cactivity" nzPlaceHolder="Activity" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="wcactivity" nzPlaceHolder="Activity" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let activity of activities" [nzLabel]="activity.title" [nzValue]="activity.title"></nz-option>
                                             </nz-select>
                                         </div>
                                         <div class="mrg-btm" nz-col nzSpan="12">
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="npay" nzPlaceHolder="Pay Type" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="wnpay" nzPlaceHolder="Pay Type" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let ptype of paytypes" [nzLabel]="ptype.code" [nzValue]="ptype.code"></nz-option>
                                             </nz-select>
                                         </div>
                                         <div class="mrg-btm" nz-col nzSpan="12">
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cpay" nzPlaceHolder="Pay Type" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="wcpay" nzPlaceHolder="Pay Type" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let ptype of paytypes" [nzLabel]="ptype.code" [nzValue]="ptype.code"></nz-option>
                                             </nz-select>
                                         </div>
@@ -647,7 +642,7 @@
                             <nz-divider nzOrientation="left" style="color:#1890FF;"></nz-divider>
                             <div nz-col nzSpan="24">
                                 <div nz-col nzSpan="10">
-                                    <label nz-checkbox nzValue="vehicledef"  formControlName="vehicledef">Vehicle Defaults to Own</label>
+                                    <label nz-checkbox formControlName="vehicledef">Vehicle Defaults to Own</label>
                                 </div>
                             </div>
                         </div>
@@ -663,7 +658,7 @@
                                 <div class="mrg-btm" style="text-align:center">
                                     <h2 style="margin-bottom:5px;">No Notice</h2>
                                     <label>Lead Time In Hours</label>
-                                    <input nz-input placeholder="No Notice" value="" formControlName="line_2" />
+                                    <input nz-input placeholder="No Notice" value="" formControlName="noNoticeLeadTime" />
                                 </div>  
                             </div>
                             <div nz-col nzSpan="6">
@@ -672,17 +667,17 @@
                             <div nz-col nzSpan="14">
                                 <div col nzSpan="24">
                                     <div class="mrg-btm">   
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="npay" nzPlaceHolder="Client Cancel Activity Code" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let recipient of recepients" [nzLabel]="recipient.name" [nzValue]="recipient.name"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultNoNoticeCancel" nzPlaceHolder="Client Cancel Activity Code" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let activity of activityTypes" [nzLabel]="activity.title" [nzValue]="activity.title"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div class="mrg-btm">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cpay" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultNoNoticeBillProgram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
                                             <nz-option *ngFor="let pr of programz" [nzLabel]="pr.name" [nzValue]="pr.name"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div class="mrg-btm" nz-col nzSpan="5">
-                                        <input nz-input placeholder="% To Bill" value="" formControlName="line_2" />
+                                        <input nz-input placeholder="% To Bill"  formControlName="noNoticeCancelRate" />
                                     </div>
                                 </div>
                             </div>
@@ -696,12 +691,12 @@
                             <div nz-col nzSpan="14">
                                 <div col nzSpan="24">
                                     <div class="mrg-btm">   
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="npay" nzPlaceHolder="Activity Code For TimeSheet" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let recipient of recepients" [nzLabel]="recipient.name" [nzValue]="recipient.name"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="noNoticeLeaveActivity" nzPlaceHolder="Activity Code For TimeSheet" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let timsheet of activityTimeSheet" [nzLabel]="timsheet.title" [nzValue]="timsheet.title"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div class="mrg-btm">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cpay" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultNoNoticePayProgram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
                                             <nz-option *ngFor="let pr of programz" [nzLabel]="pr.name" [nzValue]="pr.name"></nz-option>
                                         </nz-select>
                                     </div>
@@ -716,7 +711,7 @@
                                 <div class="mrg-btm" style="text-align:center">
                                     <h2 style="margin-bottom:5px;">Short Notice</h2>
                                     <label>Lead Time In Hours</label>
-                                    <input nz-input placeholder="Short Notice" value="" formControlName="line_2" />
+                                    <input nz-input placeholder="Short Notice"  formControlName="shortNoticeLeadTime" />
                                 </div>  
                             </div>
                             <div nz-col nzSpan="6">
@@ -725,17 +720,17 @@
                             <div nz-col nzSpan="14">
                                 <div col nzSpan="24">
                                     <div class="mrg-btm">   
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="npay" nzPlaceHolder="Client Cancel Activity Code" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let recipient of recepients" [nzLabel]="recipient.name" [nzValue]="recipient.name"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultShortNoticeCancel" nzPlaceHolder="Client Cancel Activity Code" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let activity of activityTypes" [nzLabel]="activity.title" [nzValue]="activity.title"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div class="mrg-btm">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cpay" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultShortNoticeBillProgram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
                                             <nz-option *ngFor="let pr of programz" [nzLabel]="pr.name" [nzValue]="pr.name"></nz-option>
                                         </nz-select> 
                                     </div>
                                     <div class="mrg-btm" nz-col nzSpan="5">
-                                        <input nz-input placeholder="% To Bill" value="" formControlName="line_2" />
+                                        <input nz-input placeholder="% To Bill"  formControlName="shortNoticeCancelRate" />
                                     </div>
                                 </div>
                             </div>
@@ -749,12 +744,12 @@
                             <div nz-col nzSpan="14">
                                 <div col nzSpan="24">
                                     <div class="mrg-btm">   
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="npay" nzPlaceHolder="Activity Code For TimeSheet" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="shortNoticeLeaveActivity" nzPlaceHolder="Activity Code For TimeSheet" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let timsheet of activityTimeSheet" [nzLabel]="timsheet.title" [nzValue]="timsheet.title"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div class="mrg-btm">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cpay" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultShortNoticePayProgram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
                                             <nz-option *ngFor="let pr of programz" [nzLabel]="pr.name" [nzValue]="pr.name"></nz-option>
                                         </nz-select>
                                     </div>
@@ -775,12 +770,12 @@
                             <div nz-col nzSpan="14">
                                 <div col nzSpan="24">
                                     <div class="mrg-btm">   
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="npay" nzPlaceHolder="Client Cancel Activity Code" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultWithNoticeCancel" nzPlaceHolder="Client Cancel Activity Code" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let activity of activityTypes" [nzLabel]="activity.title" [nzValue]="activity.title"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div class="mrg-btm">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="cpay" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultWithNoticeProgram" nzPlaceHolder="Program" nzShowSearch nzAllowClear style="width:100%;">
                                             <nz-option *ngFor="let pr of programz" [nzLabel]="pr.name" [nzValue]="pr.name"></nz-option>
                                         </nz-select>
                                     </div>

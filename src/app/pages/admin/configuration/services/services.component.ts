@@ -11,6 +11,17 @@ import { takeUntil } from 'rxjs/operators';
   styles: [`
     .mrg-btm{
       margin-bottom:0.5rem;
+    },
+    textarea{
+      resize:none;
+    },
+    .staff-wrapper{
+      height: 20rem;
+      width: 100%;
+      overflow: auto;
+      padding: .5rem 1rem;
+      border: 1px solid #e9e9e9;
+      border-radius: 3px;
     }
   `]
 })
@@ -18,7 +29,13 @@ export class ServicesComponent implements OnInit {
   
   tableData: Array<any>;//load Main Listing
   branches:Array<any>;
+  listStaff:Array<any>;
+  selectedStaff:Array<any>;
   paytypes:Array<any>;
+  checkedList:string[];//competency 
+  competencyList:Array<any>//list competency;
+  programz:Array<any>;
+  mtaAlerts:Array<any>;
   subgroups:Array<any>;//populate dropdown
   status:Array<any>;//populate dropdown
   units:Array<any>;//populate dropdown
@@ -59,6 +76,7 @@ export class ServicesComponent implements OnInit {
     
     ngOnInit(): void {
       
+      this.checkedList = new Array<string>();
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -71,15 +89,8 @@ export class ServicesComponent implements OnInit {
       this.resetModal();
       this.modalOpen = true;
     }
-    showstaffApprovedModal(){
-      // this.resetModal();
-      this.staffApproved = true;
-    }
-    showstaffUnApprovedModal(){
-      this.staffUnApproved = true;
-    }
-    showCompetencyModal(){
-      this.competencymodal = true;
+    log(value: string[]): void {
+      // console.log(value);
     }
     
     loadTitle()
@@ -166,6 +177,12 @@ export class ServicesComponent implements OnInit {
     handleUnAprfCancel(){
       this.staffUnApproved = false;
     }
+    showCompetencyModal(){
+      this.competencymodal = true;
+    }
+    handleCompetencyCancel(){
+      this.competencymodal = false;
+    }
     pre(): void {
       this.current -= 1;
     }
@@ -177,7 +194,14 @@ export class ServicesComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    
+    onCheckboxChange(option, event) {
+      if(event.target.checked){
+        console.log(option);
+        this.checkedList.push(option.name);
+      } else {
+        this.checkedList = this.checkedList.filter(m=>m!= option.name)
+      }
+    }
     next(): void {
       this.current += 1;
     }
@@ -273,12 +297,20 @@ export class ServicesComponent implements OnInit {
         this.tableData = data;
       });
     }
+    clearStaff(){
+      this.listStaff.forEach(x => {
+        x.checked = false
+      });
+  
+      this.selectedStaff = [];
+    }
     populateDropdowns(): void {
       this.mainGroupList = ['ONE ON ONE','CENTER BASED ACTIVITY','GROUP ACTIVITY','TRANSPORT','SLEEPOVER'];
       this.subGroupList = ['GENERAL','MEAL','TRAINING','STAFF DEVELOPMENT'];
       this.status  = ['ATTRIBUTABLE','NON ATTRIBUTABLE'];
       this.units  = ['HOUR','SERVICE'];
-      
+      let todayDate  = this.globalS.curreentDate();
+
       let sql ="SELECT * FROM DataDomains WHERE Domain = 'LIFECYCLEEVENTS'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
@@ -297,9 +329,18 @@ export class ServicesComponent implements OnInit {
         this.diciplineList = data;
       });
 
+      let comp = "SELECT Description as name FROM Datadomains WHERE Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+      this.listS.getlist(comp).subscribe(data => {
+        this.competencyList = data;
+        this.loading = false;
+      });  
+
+      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > '"+todayDate+"'))";
+      this.listS.getlist(prog).subscribe(data => {
+        this.programz = data;
+      });
       
-
-
+      this.mtaAlerts = ['No Alert','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
       this.paytypes  = ['SALARY','ALLOWANCE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
     }

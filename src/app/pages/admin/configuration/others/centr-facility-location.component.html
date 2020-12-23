@@ -41,27 +41,27 @@
                                 <span>Facility/Service Outlet Details</span>
                             </div>    
                             <div nz-col nzSpan="4" class="mrg-btm">
-                                <input nz-input placeholder="Outlet ID"  formControlName="outletid" />
+                                <input nz-input  placeholder="Outlet ID"  formControlName="outletid" />
                             </div>   
                             <div nz-col nzSpan="6" class="mrg-btm">
-                                <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="cstdaoutlet">CSTDA OUTLET</label>
+                                <label nz-checkbox  formControlName="cstdaoutlet">CSTDA OUTLET</label>
                             </div>
                             <div nz-col nzSpan="5" class="mrg-btm">
-                                <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">DCSI</label>
+                                <label nz-checkbox  formControlName="dsci">DCSI</label>
                             </div>
                         </div>
                         <div nz-col nzSpan="24" class="mrg-btm">
                             <div nz-col nzSpan="16" class="mrg-btm">
                                 <div class="mrg-btm" nz-col nzSpan="24">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Branch" nzShowSearch nzAllowClear style="width:100%;">
-                                    <nz-option *ngFor="let l of branches" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
-                                </nz-select>
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Branch" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let l of branches" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
+                                    </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
-                                <input nz-input placeholder="Name"  formControlName="glRevene" />
+                                    <input nz-input placeholder="Name"  formControlName="name" />
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="8">
-                                    <input  nz-input placeholder="places"  formControlName="glRevene" />
+                                    <input  nz-input placeholder="places"  formControlName="places" />
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="16">
                                     <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Category" nzShowSearch nzAllowClear style="width:100%;">
@@ -69,25 +69,25 @@
                                     </nz-select>
                                 </div>
                                 <div  nz-col nzSpan="24">
-                                    <input nz-input placeholder="Adress"  formControlName="glRevene" />
+                                    <input nz-input placeholder="Adress"  formControlName="adress" />
                                 </div>
                                 <div  nz-col nzSpan="24">
-                                    <input nz-input placeholder="Subrub"  formControlName="glRevene" />
+                                    <input nz-input placeholder="Subrub"  formControlName="subrub" />
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="12">
-                                    <input  nz-input placeholder="PostCode"  formControlName="glRevene" />
+                                    <input  nz-input placeholder="PostCode"  formControlName="postcode" />
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="12">
-                                    <input  nz-input placeholder="SLA"  formControlName="glRevene" />
+                                    <input  nz-input placeholder="SLA"  formControlName="sla" />
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
                                     <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="agencysector" nzPlaceHolder="Agency Sector" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                        <nz-option *ngFor="let agency of agencySector" [nzLabel]="agency.name" [nzValue]="agency.id"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
                                     <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="servicetype" nzPlaceHolder="Service Type" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                        <nz-option *ngFor="let service of serviceType" [nzLabel]="service" [nzValue]="service"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
@@ -97,41 +97,41 @@
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
                                     <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="fundingtype" nzPlaceHolder="Funding Type" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                        <nz-option *ngFor="let fun of fundTypes" [nzLabel]="fun" [nzValue]="fun"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="24">
                                     <textarea rows="4" nz-input nzPlaceHolder="Runsheet Alerts" formControlName="sheetalert"></textarea>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="8">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="fundingtype" nzPlaceHolder="Hours Per day" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="hour" nzPlaceHolder="Hours Per day" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="8">
-                                    <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">No Pattern</label>
+                                    <label nz-checkbox formControlName="hourPatern">No Pattern</label>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="8">
-                                    <input  nz-input placeholder="No. Service Users"  formControlName="glRevene" />
+                                    <input  nz-input placeholder="No. Service Users"  formControlName="serviceUsers" />
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="8">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="fundingtype" nzPlaceHolder="Days Per week" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="day" nzPlaceHolder="Days Per week" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="8">
-                                    <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">No Pattern</label>
+                                    <label nz-checkbox formControlName="dayPatern">No Pattern</label>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="8">
-                                    <input  nz-input placeholder="Service Anual Hours"  formControlName="glRevene" />
+                                    <input  nz-input placeholder="Service Anual Hours"  formControlName="anualhours" />
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="8">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="fundingtype" nzPlaceHolder="Weeks Per year" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="week" nzPlaceHolder="Weeks Per year" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
                                     </nz-select>
                                 </div>
                                 <div nz-col nzSpan="8">
-                                    <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">No Pattern</label>
+                                    <label nz-checkbox formControlName="weekPatern">No Pattern</label>
                                 </div>
                                 <div nz-col nzSpan="8">
                                 </div>
@@ -139,36 +139,36 @@
                             <div nz-col nzSpan="8" class="mrg-btm">
                                 <div nz-row nzGutter="24" class="mrg-btm">
                                     <div nz-col nzSpan="24">
-                                    <label for="Name" style="color:red;font-weight:700;">WEEKLY HOUR LIMITS:</label>
+                                        <label for="Name" style="color:red;font-weight:700;">WEEKLY HOUR LIMITS:</label>
                                     </div>
                                     <nz-divider style="margin:4px 0px"></nz-divider>
                                     <div style="border:1px solid red;min-height:180px">
-                                    <div nz-col nzSpan="24">
-                                    <label for="Name" style="color:red">WEEKLY Service User Hours:</label>
-                                    </div>
-                                    <nz-divider style="margin:4px 0px"></nz-divider>
-                                    <div nz-col nzSpan="12">
-                                        <label for="Name" style="color:red">MINIMUM:</label>
-                                        <input  nz-input placeholder=""  formControlName="glRevene" style="
-                                        color: red;"/>
-                                    </div>
-                                    <div nz-col nzSpan="12">
-                                        <label for="Name" style="color:red">MAXIMUM:</label>
-                                        <input  nz-input placeholder=""  formControlName="glRevene" />   
-                                    </div>
-                                    <div nz-col nzSpan="24">
-                                        <label for="Name" style="color:red">WEEKLY Staff Hours:</label>
-                                    </div>
-                                    
-                                    <div nz-col nzSpan="12">
-                                        <label for="Name" style="color:red">MINIMUM:</label>
-                                        <input  nz-input placeholder=""  formControlName="glRevene" style="
-                                        color: red;"/>
-                                    </div>
-                                    <div nz-col nzSpan="12">
-                                        <label for="Name" style="color:red">MAXIMUM:</label>
-                                        <input  nz-input placeholder=""  formControlName="glRevene" />   
-                                    </div>
+                                        <div nz-col nzSpan="24">
+                                            <label for="Name" style="color:red">WEEKLY Service User Hours:</label>
+                                        </div>
+                                        <nz-divider style="margin:4px 0px"></nz-divider>
+                                        <div nz-col nzSpan="12">
+                                            <label for="Name" style="color:red">MINIMUM:</label>
+                                            <input  nz-input placeholder=""  formControlName="minUserWeek" style="
+                                            color: red;"/>
+                                        </div>
+                                        <div nz-col nzSpan="12">
+                                            <label for="Name" style="color:red">MAXIMUM:</label>
+                                            <input  nz-input placeholder=""  formControlName="maxUserWeek" />   
+                                        </div>
+                                        <div nz-col nzSpan="24">
+                                            <label for="Name" style="color:red">WEEKLY Staff Hours:</label>
+                                        </div>
+                                        
+                                        <div nz-col nzSpan="12">
+                                            <label for="Name" style="color:red">MINIMUM:</label>
+                                            <input  nz-input placeholder=""  formControlName="minStaffHour" style="
+                                            color: red;"/>
+                                        </div>
+                                        <div nz-col nzSpan="12">
+                                            <label for="Name" style="color:red">MAXIMUM:</label>
+                                            <input  nz-input placeholder=""  formControlName="maxStaffHour" />   
+                                        </div>
                                     </div> 
                                     <div style="border:1px solid;min-height:150px; margin-top:10px;">
                                         <div nz-col nzSpan="24">
@@ -178,10 +178,10 @@
                                         </div>
                                         <div nz-col nzSpan="24">
                                             <label for="Name">GL COST ACCOUNT:</label>
-                                            <input  nz-input placeholder=""  formControlName="glRevene" />   
+                                            <input  nz-input placeholder=""  formControlName="glCost" />   
                                         </div>
                                         <div nz-col nzSpan="24">
-                                            <label nz-checkbox nzValue="checkedflag" (change)="checkedflag = !checkedflag" formControlName="dsci">GL Override</label>
+                                            <label nz-checkbox  formControlName="gloveride">GL Override</label>
                                         </div>
                                     </div>
                                 </div>
@@ -241,29 +241,30 @@
                     <div nz-row nzGutter=24>
                         <div nz-col nzSpan="12">
                             <button class="botton success" (click)="showstaffApprovedModal()">Approved Staff</button>
-                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedListApproved">
                                 <thead>
                                     <tr>
                                         <th class="left">Name</th>
-                                        <th class="left">Service</th>
+                                        <th class="left">Notes</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let data of basicTable.data;let i = index;">
-                                        <td class="left">{{ data.type  }} </td>
-                                        <td class="left">{{ data.itemID  }} </td>
-                                        <td class="left"><a (click)="showEditModal(i)">Update</a>
+                                    <tr *ngFor="let approvedlist of checkedListApproved;let k = index;">
+                                        <td>{{approvedlist}}</td>
+                                        <td></td>
+                                        <td class="left"><a (click)="showEditModal(k)">Update</a>
                                             <nz-divider nzType="vertical"></nz-divider>
                                             <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                        </tr>
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(approvedlist)">Delete</a>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </nz-table>
                             </div>
                             <div nz-col nzSpan="12">
                                 <button class="botton success" (click)="showstaffUnApprovedModal()">Excluded Staff</button>
-                                <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                                <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedListExcluded">
                                     <thead>
                                         <tr>
                                             <th class="left">Name</th>
@@ -272,14 +273,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let data of basicTable.data;let i = index;">
-                                            <td class="left">{{ data.type  }} </td>
-                                            <td class="left">{{ data.itemID  }} </td>
-                                            <td class="left"><a (click)="showEditModal(i)">Update</a>
+                                        <tr *ngFor="let excludedlist of checkedListExcluded;let l = index;">
+                                            <td>{{excludedlist}}</td>
+                                            <td></td>
+                                            <td class="left"><a (click)="showEditModal(l)">Update</a>
                                                 <nz-divider nzType="vertical"></nz-divider>
                                                 <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                            </tr>
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(excludedlist)">Delete</a>
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </nz-table>
                                 </div>
@@ -289,7 +291,7 @@
                             <div nz-row nzGutter=24>
                                 <div nz-col nzSpan="24">
                                     <button class="botton success" (click)="showCompetencyModal()">Required Competencies</button>
-                                    <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                                    <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedList">
                                         <thead>
                                             <tr>
                                                 <th class="left">Competency</th>
@@ -298,83 +300,101 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let data of basicTable.data;let i = index;">
-                                                <td class="left">{{ data.type  }} </td>
-                                                <td class="left">{{ data.itemID  }} </td>
-                                                <td class="left"><a (click)="showEditModal(i)">Update</a>
+                                            <tr *ngFor="let list of checkedList;let j = index;">
+                                                <td>{{list}}</td>
+                                                <td></td>
+                                                <td class="left"><a (click)="showEditModal(j)">Update</a>
                                                     <nz-divider nzType="vertical"></nz-divider>
                                                     <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                                </tr>
-                                            </tbody>
-                                        </nz-table>
+                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(list)">Delete</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
                                 </div>
                             </div>
-                            </div>
-                            <div *nzModalFooter>
-                                <ng-container>
-                                    <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
-                                        <span>Previous</span>
-                                    </button>
-                                    <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" >
-                                        <span>Next</span>
-                                    </button>
-                                    <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" *ngIf="current === 3">
-                                        <span>Done</span>
-                                    </button>
-                                </ng-container>
-                            </div>
                         </div>
-                    </div>
-                </nz-modal>
-                <nz-modal [nzWidth]="400"  [(nzVisible)]="staffApproved" nzTitle="APPROVED STAFF" (nzOnCancel)="handleAprfCancel()">
-                    
-                    <form nz-form [formGroup]="inputForm" >
-                        <div nz-row nzGutter="24">    
-                            <div  class="mrg-btm">
-                                <input nz-input placeholder="Staff" formControlName="aprstaff"/>
-                            </div>
-                        </div>
-                    </form>
-                    <div *nzModalFooter>
+                        <div *nzModalFooter>
                             <ng-container>
-                                <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
+                                <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                                    <span>Previous</span>
+                                </button>
+                                <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" >
+                                    <span>Next</span>
+                                </button>
+                                <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
                                     <span>Save</span>
                                 </button>
                             </ng-container>
-                    </div>
-                </nz-modal>
-                <nz-modal [nzWidth]="400"  [(nzVisible)]="staffUnApproved" nzTitle="EXCLUDED STAFF" (nzOnCancel)="handleUnAprfCancel()">
-                    
-                    <form nz-form [formGroup]="inputForm" >
-                        <div nz-row nzGutter="24">    
-                            <div  class="mrg-btm">
-                                <input nz-input placeholder="Staff" formControlName="unaprstaff"/>
-                            </div>
                         </div>
-                    </form>
-                    <div *nzModalFooter>
-                            <ng-container>
-                                <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                                    <span>Save</span>
-                                </button>
-                            </ng-container>
                     </div>
-                </nz-modal>
-                <nz-modal [nzWidth]="400"  [(nzVisible)]="competencymodal" nzTitle="COMPETENCIES" (nzOnCancel)="handleCompCancel()">
-                    
-                    <form nz-form [formGroup]="inputForm" >
-                        <div nz-row nzGutter="24">    
-                            <div  class="mrg-btm">
-                                <input nz-input placeholder="Competencise" formControlName="competences"/>
-                            </div>
+                </div>
+            </nz-modal>
+            <nz-modal [nzWidth]="400"  [(nzVisible)]="staffApproved" nzTitle="APPROVED STAFF" (nzOnCancel)="handleAprfCancel()">
+                
+                <form [formGroup]="inputForm" >
+                    <div nz-row nzGutter="24">    
+                        <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                <div nz-row>
+                                    <div nz-col nzSpan="24" *ngFor="let staff of staffList">
+                                        <label nz-checkbox [nzValue]="staff.accountNo" (change)="onCheckboxapprovedChange(staff,$event)" >{{ staff.accountNo }}</label>
+                                    </div>
+                                </div>
+                            </nz-checkbox-wrapper>
                         </div>
-                    </form>
-                    <div *nzModalFooter>
-                            <ng-container>
-                                <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                                    <span>Save</span>
-                                </button>
-                            </ng-container>
                     </div>
-                </nz-modal>
+                </form>
+                <div *nzModalFooter>
+                    <ng-container>
+                        <button nz-button nzType="primary" [nzLoading]="postLoading">
+                            <span>ADD</span>
+                        </button>
+                    </ng-container>
+                </div>
+            </nz-modal>
+            <nz-modal [nzWidth]="400"  [(nzVisible)]="staffUnApproved" nzTitle="EXCLUDED STAFF" (nzOnCancel)="handleUnAprfCancel()">
+                <form  [formGroup]="inputForm">
+                    <div nz-row nzGutter="24">    
+                        <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                            
+                            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                <div nz-row>
+                                    <div nz-col nzSpan="24" *ngFor="let staff of staffList">
+                                        <label nz-checkbox [nzValue]="staff.accountNo" (change)="onCheckboxUnapprovedChange(staff,$event)" >{{ staff.accountNo }}</label>
+                                    </div>
+                                </div>
+                            </nz-checkbox-wrapper>
+                        </div>
+                    </div>
+                </form>
+                <div *nzModalFooter>
+                    <ng-container>
+                        <button nz-button nzType="primary" [nzLoading]="postLoading">
+                            <span>ADD</span>
+                        </button>
+                    </ng-container>
+                </div>
+            </nz-modal>
+            <nz-modal [nzWidth]="400"  [(nzVisible)]="competencymodal" nzTitle="COMPETENCIES" (nzOnCancel)="handleCompCancel()">
+                <form [formGroup]="inputForm" >
+                    <div nz-row nzGutter="24">
+                        <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                <div nz-row>
+                                    <div nz-col nzSpan="24" *ngFor="let comptency of competencyList">
+                                        <label nz-checkbox [nzValue]="comptency.description" (change)="onCheckboxChange(comptency,$event)" >{{ comptency.description }}</label>
+                                    </div>
+                                </div>
+                            </nz-checkbox-wrapper>
+                        </div>
+                    </div>
+                </form>
+                <div *nzModalFooter>
+                    <ng-container>
+                        <!-- <button nz-button nzType="primary" [nzLoading]="postLoading" (nzOnCancel)="handleCompCancel()"> -->
+                            <span></span>
+                        <!-- </button> -->
+                    </ng-container>
+                </div>
+            </nz-modal>

@@ -323,6 +323,9 @@ export class ConfigurationAdmin   {
         if(index == 83){
             this.router.navigate(['/admin/program-packages']);
         }
+        if(index == 84){
+            this.router.navigate(['/admin/services']);
+        }
 
     }  
 }

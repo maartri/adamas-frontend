@@ -596,7 +596,10 @@ export class GlobalService {
         else
             return data;
     }
-
+ 
+    curreentDate(){
+        return moment(new Date()).format('MM-DD-YYYY');
+    } 
     filterDate(date: any): string {
         return moment(date).format('DD/MM/YYYY')
     }

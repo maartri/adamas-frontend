@@ -228,6 +228,7 @@ import { CentrFacilityLocationComponent } from '@admin/configuration/others/cent
 import { FundingSourcesComponent } from '@admin/configuration/others/funding-sources.component';
 import { PayTypeComponent } from '@admin/configuration/others/pay-type.component';
 import { ProgramPackagesComponent } from '@admin/configuration/others/program-packages.component';
+import { ServicesComponent } from '@admin/configuration/services/services.component';
 
 const routes: Routes = [
   {
@@ -823,6 +824,10 @@ const routes: Routes = [
         component:ProgramPackagesComponent
       },
       {
+        path:"services",
+        component:ServicesComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1133,6 +1138,7 @@ export const PAGE_COMPONENTS = [
   FundingSourcesComponent,
   PayTypeComponent,
   ProgramPackagesComponent,
+  ServicesComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

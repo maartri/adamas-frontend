@@ -326,7 +326,12 @@ export class ConfigurationAdmin   {
         if(index == 84){
             this.router.navigate(['/admin/services']);
         }
-
+        if(index == 85){
+            this.router.navigate(['/admin/items-consumables']);
+        }
+        if(index == 86){
+            this.router.navigate(['/admin/menu-meals']);
+        }
     }  
 }
 //ConfigurationAdmin 

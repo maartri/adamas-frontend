@@ -229,6 +229,8 @@ import { FundingSourcesComponent } from '@admin/configuration/others/funding-sou
 import { PayTypeComponent } from '@admin/configuration/others/pay-type.component';
 import { ProgramPackagesComponent } from '@admin/configuration/others/program-packages.component';
 import { ServicesComponent } from '@admin/configuration/services/services.component';
+import { ItemsConsumablesComponent } from '@admin/configuration/services/items-consumables.component';
+import { MenuMealsComponent } from '@admin/configuration/services/menu-meals.component';
 
 const routes: Routes = [
   {
@@ -828,6 +830,14 @@ const routes: Routes = [
         component:ServicesComponent
       },
       {
+        path:"items-consumables",
+        component:ItemsConsumablesComponent
+      },
+      {
+        path:"menu-meals",
+        component:MenuMealsComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1139,6 +1149,8 @@ export const PAGE_COMPONENTS = [
   PayTypeComponent,
   ProgramPackagesComponent,
   ServicesComponent,
+  ItemsConsumablesComponent,
+  MenuMealsComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

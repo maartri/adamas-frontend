@@ -511,15 +511,17 @@ export class BookingClient implements OnInit, OnDestroy {
             )
         }
 
-        if(this.slots.length == 0){
+        if(this.slots.length == 0 && this.permanent){
             return this.globalS.createMessage(TYPE_MESSAGE.error, 'You have no slots added in step 1');
         }
-        console.log(booking);
+
 
         // this.loadBooking = true;
 
         var id = this.globalS.loadingMessage('Processing booking...');
         this.bookingModalOpen = false;
+
+        console.log(booking)
 
         this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let resultRows = parseInt(data);            

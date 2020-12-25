@@ -200,11 +200,20 @@ export class ProgramPackagesComponent implements OnInit {
       this.postLoading = false;
     }
     
+    
+    changePageNumber(page){
+      console.log(page);  
+    }
+    
     showEditModal(index: any) {
       this.title = "Edit Program/Packages"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+      
+      
+      
+      
       const {
         fundingSource,
         title,
@@ -297,7 +306,7 @@ export class ProgramPackagesComponent implements OnInit {
         shortNoticeLeadTime,
         shortNoticeLeaveActivity,
         recordNumber,
-      } = this.tableData[index];
+      } = this.tableData[index-1];
       this.inputForm.patchValue({
         funding_source:fundingSource,
         name:title,
@@ -653,7 +662,7 @@ export class ProgramPackagesComponent implements OnInit {
         let  defaultNoNoticePayType         = group.get('defaultNoNoticePayType').value;
         let  recordNumber                  = group.get('recordNumber').value;  
         let prog = "PROGRAMS";
-      
+        
         let sqlUpdate = "Update humanresourcetypes SET [Group]='"+ prog + "',[Name]='"+ title + "',[type]='"+ fundingSource + "',[address1]='"+ agencyID + "',[address2]='"+ cordinators + "', [Suburb]='"+ fundingRegion + "',[HRT_DATASET]='"+ careDomain + "',[USER1]='"+ fundingType + "',[Phone2]='"+ state + "',[gst]='"+ gst + "',[GSTRate]='"+ rate + "',[budgetamount]='"+ budget$ + "',[budget_1]='"+ budgetHrs + "',[budgetperiod]='"+bgtCycle+"',[fax]='"+ glExp + "',[email]='"+ glRev + "',[phone1]='"+ glSuper + "',[CloseDate]='"+ closeDate + "',[Postcode]='"+ programJob + "',[UserYesNo3]='"+ template + "',[User2]='"+ contiguency + "',[User3]='"+ level + "',[User4]='"+ targetGroup + "',[User10]='"+ conguencyPackage + "',[BudgetEnforcement]='"+ budgetEnforcement + "',[BudgetRosterEnforcement]='"+ budgetRosterEnforcement + "',[UserYesNo1]='"+ agedCarePackage + "',[UserYesNo2]='"+ individuallyFunded + "',[User8]='"+ user8 + "',[User9]='"+ user9 + "',[User11]='"+ User11 + "',[User12]='"+ User12 + "',[P_Def_Alert_Type]='"+ P_Def_Alert_Type + "',[P_Def_Alert_Period]='"+ P_Def_Alert_Period + "',[P_Def_Alert_Allowed]='"+ allowed + "',[P_Def_Alert_Yellow]='"+ yellow + "',[P_Def_Alert_Orange]='"+ green + "',[P_Def_Alert_Red]='"+ red + "',[P_Def_Expire_Amount]='"+ expire_amount + "',[P_Def_Expire_CostType]='"+ expire_costType + "',[P_Def_Expire_Unit]='"+ expire_unit + "',[P_Def_Expire_Period]='"+ expire_period + "',[P_Def_Expire_Length]='"+ expire_length + "',[P_Def_Fee_BasicCare]='"+ defaultbasiccarefee + "',[P_Def_Contingency_PercAmt]='"+ perc_amt + "',[P_Def_Admin_AdminType]='"+ adminType + "',[P_Def_Admin_CMType]='"+ admincmType + "',[P_Def_Admin_CM_PercAmt]='"+admin_cm_parc_amt+"',[p_Def_Admin_Admin_PercAmt]='"+admin_parc_amt+"',[P_Def_StdDisclaimer]='"+standard_quote+"',[P_Def_Admin_AdminFrequency]='"+adminFrequency+"',[P_Def_Admin_CMFrequency]='"+cmFrequency+"',[P_Def_Admin_AdminDay]='"+adminDay+"',[P_Def_Admin_CMDay]='"+cmday+"',[P_Def_Expire_Using]='"+expire_using+"',[P_Def_Contingency_Max]='"+max_contiguency+"',[DefaultCHGTravelWithinActivity]='"+wcactivity+"',[DefaultCHGTravelWithinPayType]='"+wcpay+"',[DefaultNCTravelWithinProgram]='"+wnprogram+"',[DefaultNCTravelWithinActivity]='"+wnactivity+"',[DefaultNCTravelWithinPayType]='"+wnpay+"',[DefaultCHGTravelBetweenActivity]='"+cactivity+"',[DefaultCHGTravelBetweenPayType]='"+cpay+"',[DefaultNCTravelBetweenProgram]='"+nprogram+"',[DefaultNCTravelBetweenActivity]='"+nactivity+"',[DefaultNCTravelBetweenPayType]='"+npay+"',[DefaultCHGTRAVELBetweenProgram]='"+cprogram+"',[DefaultCHGTRAVELWithInProgram]='"+wcprogram+"',[P_Def_IncludeClientFeesInCont]='"+includeClientFeesCont+"',[P_Def_IncludeIncomeTestedFeeInAdmin]='"+includetested+"',[P_Def_IncludeBasicCareFeeInAdmin]='"+IncludeCare+"',[P_Def_IncludeTopUpFeeInAdmin]='"+IncludeTopUp+"',[CDCStatementText1]='"+text1+"',[DefaultDailyFee]='"+default_daily_fees+"',[NoNoticeLeadTime]='"+noNoticeLeadTime+"',[ShortNoticeLeadTime]='"+shortNoticeLeadTime+"',[NoNoticeLeaveActivity]='"+noNoticeLeaveActivity+"',[ShortNoticeLeaveActivity]='"+shortNoticeLeaveActivity+"',[DefaultNoNoticeCancel]='"+defaultNoNoticeCancel+"',[DefaultNoNoticeBillProgram]='"+defaultNoNoticeBillProgram+"',[DefaultNoNoticePayProgram]='"+defaultNoNoticePayProgram+"',[DefaultNoNoticePayType]='"+defaultNoNoticePayType+"',[DefaultShortNoticeCancel]='"+defaultShortNoticeCancel+"',[DefaultShortNoticeBillProgram]='"+defaultShortNoticeBillProgram+"',[DefaultShortNoticePayProgram]='"+defaultShortNoticePayProgram+"',[DefaultShortNoticePayType]='"+defaultShortNoticePayType+"',[DefaultWithNoticeCancel]='"+defaultWithNoticeCancel+"',[NoNoticeCancelRate]='"+noNoticeCancelRate+"',[ShortNoticeCancelRate]='"+shortNoticeCancelRate+"',[DefaultWithNoticeProgram]='"+defaultWithNoticeProgram+"' WHERE [RecordNumber] ='"+recordNumber+"'";
         // console.log(sqlUpdate);
         this.menuS.InsertDomain(sqlUpdate).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
@@ -674,7 +683,7 @@ export class ProgramPackagesComponent implements OnInit {
             this.resetModal();
           }
         });
-
+        
       }
     }
     trueString(data: any): string{
@@ -686,7 +695,7 @@ export class ProgramPackagesComponent implements OnInit {
     }
     
     loadData(){
-      let sql ="SELECT [recordnumber] AS [RecordNumber], [name] AS [Title], [type] AS [Funding Source], [address1] AS [AgencyID],[address2] AS [Cordinators],[Suburb] AS [FundingRegion],[HRT_DATASET] AS [CareDomain],[USER1] as [FundingType],[Phone2] AS [State],[gst] AS [GST], [gstrate] AS [Rate], [budgetamount] AS [Budget $], [budget_1] AS [Budget Hrs], [budgetperiod] AS [Bgt Cycle], [fax] AS [GLExp], [email] AS [GLRev], [phone1] AS [GLSuper],[CloseDate] AS [CloseDate],[Postcode] AS [ProgramJob],[UserYesNo3] AS [template],[User2] AS [contiguency],[UserYesNo2] AS [IndividuallyFunded],[UserYesNo1] AS [AgedCarePackage],[User3] AS [Level],[User4] AS [TargetGroup],[User10] AS [ConguencyPackage],[BudgetEnforcement] AS [BudgetEnforcement],[BudgetRosterEnforcement],[User11],[User12],[User13],[P_Def_Alert_Type],[P_Def_Alert_BaseOn],[P_Def_Alert_Period],[P_Def_Alert_Allowed],[P_Def_Alert_Yellow],[P_Def_Alert_Orange],[P_Def_Alert_Red],[P_Def_Expire_Amount],[P_Def_Expire_CostType],[P_Def_Expire_Unit],[P_Def_Expire_Period],[P_Def_Expire_Length],[P_Def_Fee_BasicCare],[P_Def_Contingency_PercAmt],[P_Def_Admin_AdminType],[P_Def_Admin_CMType],[P_Def_Admin_CM_PercAmt],[p_Def_Admin_Admin_PercAmt],[P_Def_StdDisclaimer],[P_Def_Admin_AdminFrequency],[P_Def_Admin_CMFrequency],[P_Def_Admin_AdminDay],[P_Def_Admin_CMDay],[P_Def_Expire_Using],[P_Def_Contingency_Max],[P_Def_QueryAutoDeleteAdmin],[DefaultCHGTravelWithinActivity],[DefaultCHGTravelWithinPayType],[DefaultNCTravelWithinProgram],[DefaultNCTravelWithinActivity],[DefaultNCTravelWithinPayType],[DefaultCHGTravelBetweenActivity],[DefaultCHGTravelBetweenPayType],[DefaultNCTravelBetweenProgram],[DefaultNCTravelBetweenActivity],[DefaultNCTravelBetweenPayType],[P_Def_IncludeClientFeesInCont],[P_Def_IncludeIncomeTestedFeeInAdmin],[P_Def_IncludeBasicCareFeeInAdmin],[P_Def_IncludeTopUpFeeInAdmin],[CDCStatementText1],[DefaultCHGTRAVELWithInProgram],[DefaultCHGTRAVELBetweenProgram],[DefaultDailyFee],[NoNoticeLeadTime],[ShortNoticeLeadTime],[NoNoticeLeaveActivity],[ShortNoticeLeaveActivity],[DefaultNoNoticeCancel],[DefaultNoNoticeBillProgram],[DefaultNoNoticePayProgram],[DefaultNoNoticePayType],[DefaultShortNoticeCancel],[DefaultShortNoticeBillProgram],[DefaultShortNoticePayProgram],[DefaultShortNoticePayType],[DefaultWithNoticeCancel],[NoNoticeCancelRate],[ShortNoticeCancelRate],[DefaultWithNoticeProgram] FROM humanresourcetypes WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= '04-05-2019' ) ORDER BY title";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY [name],recordnumber) AS Row_num,[recordnumber] AS [RecordNumber], [name] AS [Title], [type] AS [Funding Source], [address1] AS [AgencyID],[address2] AS [Cordinators],[Suburb] AS [FundingRegion],[HRT_DATASET] AS [CareDomain],[USER1] as [FundingType],[Phone2] AS [State],[gst] AS [GST], [gstrate] AS [Rate], [budgetamount] AS [Budget $], [budget_1] AS [Budget Hrs], [budgetperiod] AS [Bgt Cycle], [fax] AS [GLExp], [email] AS [GLRev], [phone1] AS [GLSuper],[CloseDate] AS [CloseDate],[Postcode] AS [ProgramJob],[UserYesNo3] AS [template],[User2] AS [contiguency],[UserYesNo2] AS [IndividuallyFunded],[UserYesNo1] AS [AgedCarePackage],[User3] AS [Level],[User4] AS [TargetGroup],[User10] AS [ConguencyPackage],[BudgetEnforcement] AS [BudgetEnforcement],[BudgetRosterEnforcement],[User11],[User12],[User13],[P_Def_Alert_Type],[P_Def_Alert_BaseOn],[P_Def_Alert_Period],[P_Def_Alert_Allowed],[P_Def_Alert_Yellow],[P_Def_Alert_Orange],[P_Def_Alert_Red],[P_Def_Expire_Amount],[P_Def_Expire_CostType],[P_Def_Expire_Unit],[P_Def_Expire_Period],[P_Def_Expire_Length],[P_Def_Fee_BasicCare],[P_Def_Contingency_PercAmt],[P_Def_Admin_AdminType],[P_Def_Admin_CMType],[P_Def_Admin_CM_PercAmt],[p_Def_Admin_Admin_PercAmt],[P_Def_StdDisclaimer],[P_Def_Admin_AdminFrequency],[P_Def_Admin_CMFrequency],[P_Def_Admin_AdminDay],[P_Def_Admin_CMDay],[P_Def_Expire_Using],[P_Def_Contingency_Max],[P_Def_QueryAutoDeleteAdmin],[DefaultCHGTravelWithinActivity],[DefaultCHGTravelWithinPayType],[DefaultNCTravelWithinProgram],[DefaultNCTravelWithinActivity],[DefaultNCTravelWithinPayType],[DefaultCHGTravelBetweenActivity],[DefaultCHGTravelBetweenPayType],[DefaultNCTravelBetweenProgram],[DefaultNCTravelBetweenActivity],[DefaultNCTravelBetweenPayType],[P_Def_IncludeClientFeesInCont],[P_Def_IncludeIncomeTestedFeeInAdmin],[P_Def_IncludeBasicCareFeeInAdmin],[P_Def_IncludeTopUpFeeInAdmin],[CDCStatementText1],[DefaultCHGTRAVELWithInProgram],[DefaultCHGTRAVELBetweenProgram],[DefaultDailyFee],[NoNoticeLeadTime],[ShortNoticeLeadTime],[NoNoticeLeaveActivity],[ShortNoticeLeaveActivity],[DefaultNoNoticeCancel],[DefaultNoNoticeBillProgram],[DefaultNoNoticePayProgram],[DefaultNoNoticePayType],[DefaultShortNoticeCancel],[DefaultShortNoticeBillProgram],[DefaultShortNoticePayProgram],[DefaultShortNoticePayType],[DefaultWithNoticeCancel],[NoNoticeCancelRate],[ShortNoticeCancelRate],[DefaultWithNoticeProgram] FROM humanresourcetypes WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= '04-05-2019' ) ORDER BY title";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;

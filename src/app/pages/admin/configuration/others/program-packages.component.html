@@ -1,7 +1,7 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Program/Packages</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzResponsive]="true" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
                     <th class="left">Title</th>
@@ -20,18 +20,18 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td class="left">{{ data.title  }} </td> 
-                    <td class="left">{{ data.fundingSource  }} </td>
-                    <td class="left">{{ data.agencyID  }} </td>
-                    <td class="left"><label nz-checkbox nzDisabled nzDisabled ></label></td>
-                    <td class="left">{{ data.rate  }} </td>
-                    <td class="left">{{ data.budget$  }} </td>
-                    <td class="left">{{ data.budgetHrs  }} </td>
-                    <td class="left">{{ data.bgtCycle  }} </td>
-                    <td class="left">{{ data.glExp  }} </td>
-                    <td class="left">{{ data.glRev  }} </td>
-                    <td class="left">{{ data.glSuper  }} </td>
-                    <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <td nzLeft>{{ data.title  }} </td> 
+                    <td nzLeft nzBreakWord>{{ data.fundingSource  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.agencyID  }} </td>
+                    <td nzLeft><label nz-checkbox nzDisabled nzDisabled ></label></td>
+                    <td nzLeft nzBreakWord>{{ data.rate  }} </td>
+                    <td nzLeft nzBreakWord >{{ data.budget$  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.budgetHrs  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.bgtCycle  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.glExp  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.glRev  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.glSuper  }} </td>
+                    <td nzLeft><a (click)="showEditModal(data.row_num)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
                         nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>

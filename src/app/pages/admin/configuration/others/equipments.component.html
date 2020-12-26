@@ -1,40 +1,45 @@
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i>Equipments</button>
+        </div>
+    </div>
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Equipments</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
-                    <th class="left">Type</th>
-                    <th class="left">Item ID</th>
-                    <th class="left">Date Disposed</th>
-                    <th class="left">Last Service</th>
-                    <th class="left">Equip Code</th>
-                    <th class="left">Last Service</th>
-                    <th class="left">Lock Box Code</th>
-                    <th class="left">Lock Box Location</th>
-                    <th class="left">Purchase Date</th>
-                    <th class="left">Purchase Amount</th>
-                    <th class="left">Notes</th>
+                    <th nzLeft nzBreakWord>Type</th>
+                    <th nzLeft nzBreakWord>Item ID</th>
+                    <th nzLeft nzBreakWord>Date Disposed</th>
+                    <th nzLeft nzBreakWord>Last Service</th>
+                    <th nzLeft nzBreakWord>Equip Code</th>
+                    <th nzLeft nzBreakWord>Last Service</th>
+                    <th nzLeft nzBreakWord>Lock Box Code</th>
+                    <th nzLeft nzBreakWord>Lock Box Location</th>
+                    <th nzLeft nzBreakWord>Purchase Date</th>
+                    <th nzLeft nzBreakWord>Purchase Amount</th>
+                    <th nzLeft nzBreakWord>Notes</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td class="left">{{ data.type  }} </td>
-                    <td class="left">{{ data.itemID  }} </td>
-                    <td class="left">{{ data.dateDisposed  }} </td>
-                    <td class="left">{{ data.lastService  }} </td>
-                    <td class="left">{{ data.equipCode  }} </td>
-                    <td class="left">{{ data.lockBoxCode  }} </td>
-                    <td class="left">{{ data.lockBoxLocation  }} </td>
-                    <td class="left">{{ data.equipCode  }} </td>
-                    <td class="left">{{ data.purchaseDate}}</td>
-                    <td class="left">{{ data.purchaseAmount}}</td>
-                    <td class="left">{{ data.notes}}</td>
-                    <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <td nzLeft nzBreakWord>{{ data.type  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.itemID  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.dateDisposed  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.lastService  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.equipCode  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.lockBoxCode  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.lockBoxLocation  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.equipCode  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.purchaseDate}}</td>
+                    <td nzLeft nzBreakWord>{{ data.purchaseAmount}}</td>
+                    <td nzLeft nzBreakWord>{{ data.notes}}</td>
+                    <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure Equipment ?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
                     </tr>
                 </tbody>
             </nz-table>
@@ -89,22 +94,22 @@
                             <nz-table #basicTable [nzData]="tableSData"  [nzShowPagination]="true" [nzFrontPagination]="true" [nzLoading]="loading">
                                 <thead>
                                     <tr>
-                                        <th class="left">Category</th>
-                                        <th class="left">Details</th>
-                                        <th class="left">Service Date</th>
-                                        <th class="left">Reminder Date</th>
-                                        <th class="left">Due Date</th>
+                                        <th nzLeft nzBreakWord>Category</th>
+                                        <th nzLeft nzBreakWord>Details</th>
+                                        <th nzLeft nzBreakWord>Service Date</th>
+                                        <th nzLeft nzBreakWord>Reminder Date</th>
+                                        <th nzLeft nzBreakWord>Due Date</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let dataa of tableSData;let i = index;">
-                                        <td class="left">{{ dataa.category  }} </td>
-                                        <td class="left">{{ dataa.details  }} </td>
-                                        <td class="left">{{ dataa.serviceDate  }} </td>
-                                        <td class="left">{{ dataa.reminderDate  }} </td>
-                                        <td class="left">{{ dataa.dueDate  }} </td>
-                                        <td class="left"><a (click)="showEditServiceModal(i)">Update</a>
+                                        <td nzLeft nzBreakWord>{{ dataa.category  }} </td>
+                                        <td nzLeft nzBreakWord>{{ dataa.details  }} </td>
+                                        <td nzLeft nzBreakWord>{{ dataa.serviceDate  }} </td>
+                                        <td nzLeft nzBreakWord>{{ dataa.reminderDate  }} </td>
+                                        <td nzLeft nzBreakWord>{{ dataa.dueDate  }} </td>
+                                        <td nzLeft nzBreakWord><a (click)="showEditServiceModal(i)">Update</a>
                                             <nz-divider nzType="vertical"></nz-divider>
                                             <a nz-popconfirm nzPopconfirmTitle="Are you sure You want to delete This Service History ?"
                                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(dataa)">Delete</a></td>
@@ -153,4 +158,5 @@
                     </ng-container>
                 </div>
         </nz-modal>
+</div>        
         

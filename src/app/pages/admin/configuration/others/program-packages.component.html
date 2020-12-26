@@ -1,6 +1,11 @@
-<div nz-row>
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i> Program/Packages</button>
+        </div>
+    </div>
+    <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Program/Packages</button>
         <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzResponsive]="true" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
@@ -919,3 +924,4 @@
             </ng-container>
         </div>
     </nz-modal>
+</div>

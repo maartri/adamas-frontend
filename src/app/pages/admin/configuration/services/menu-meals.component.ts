@@ -34,8 +34,10 @@ export class MenuMealsComponent implements OnInit {
   paytypes:Array<any>;
   checkedList:string[];//competency 
   competencyList:Array<any>//list competency;
-  programz:Array<any>;
-  mtaAlerts:Array<any>;
+  programz:Array<any>;//populate dropdown
+  mtaAlerts:Array<any>;//populate dropdown
+  addressTypes:Array<any>;//populate dropdown
+  contactTypes:Array<any>;//populate dropdown
   subgroups:Array<any>;//populate dropdown
   status:Array<any>;//populate dropdown
   units:Array<any>;//populate dropdown
@@ -316,6 +318,16 @@ export class MenuMealsComponent implements OnInit {
         this.lifeCycleList = data;
       });
       
+      let sql3 ="SELECT * FROM DataDomains WHERE Domain = 'ADDRESSTYPE'";
+      this.loading = true;
+      this.listS.getlist(sql3).subscribe(data => {
+        this.addressTypes = data;
+      });
+      let sql4 ="SELECT * FROM DataDomains WHERE Domain = 'CONTACTTYPE'";
+      this.loading = true;
+      this.listS.getlist(sql4).subscribe(data => {
+        this.addressTypes = data;
+      });
       let sql1 ="SELECT * FROM DataDomains WHERE Domain = 'BUDGETGROUP'";
       this.loading = true;
       this.listS.getlist(sql1).subscribe(data => {

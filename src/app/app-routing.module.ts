@@ -231,6 +231,7 @@ import { ProgramPackagesComponent } from '@admin/configuration/others/program-pa
 import { ServicesComponent } from '@admin/configuration/services/services.component';
 import { ItemsConsumablesComponent } from '@admin/configuration/services/items-consumables.component';
 import { MenuMealsComponent } from '@admin/configuration/services/menu-meals.component';
+import { CaseMangementAdminComponent } from '@admin/configuration/services/case-mangement-admin.component';
 
 const routes: Routes = [
   {
@@ -838,6 +839,10 @@ const routes: Routes = [
         component:MenuMealsComponent,
       },
       {
+        path:"case-management-admin",
+        component:CaseMangementAdminComponent
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1151,6 +1156,7 @@ export const PAGE_COMPONENTS = [
   ServicesComponent,
   ItemsConsumablesComponent,
   MenuMealsComponent,
+  CaseMangementAdminComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

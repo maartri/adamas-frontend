@@ -1,7 +1,7 @@
 <div style="padding:8px;">
     <div nz-row>
         <div nz-col nzSpan="24">
-            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i> Items/Consumables</button>
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i> Case Management / Client Admin</button>
         </div>
     </div>
 <div nz-row>
@@ -9,18 +9,18 @@
         <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
-                    <th nzLeft nzBreakWord>Title</th>
-                    <th nzLeft nzBreakWord>Roaster Group</th>
-                    <th nzLeft nzBreakWord>Sub Group</th>
-                    <th nzLeft nzBreakWord>DataSet</th>
-                    <th nzLeft nzBreakWord>DataSet Code</th>
-                    <th nzLeft nzBreakWord>Outlet ID</th>
-                    <th nzLeft nzBreakWord>DataSet Group</th>
-                    <th nzLeft nzBreakWord>NDIA ID</th>
-                    <th nzLeft nzBreakWord>Accounting Code</th>
-                    <th nzLeft nzBreakWord>Bill Amount</th>
-                    <th nzLeft nzBreakWord>Bill Unit</th>
-                    <th nzLeft nzBreakWord>End Date</th>
+                    <th nzLeft>Title</th>
+                    <th nzLeft>Roaster Group</th>
+                    <th nzLeft>Sub Group</th>
+                    <th nzLeft>DataSet</th>
+                    <th nzLeft>DataSet Code</th>
+                    <th nzLeft>Outlet ID</th>
+                    <th nzLeft>DataSet Group</th>
+                    <th nzLeft>NDIA ID</th>
+                    <th nzLeft>Accounting Code</th>
+                    <th nzLeft>Bill Amount</th>
+                    <th nzLeft>Bill Unit</th>
+                    <th nzLeft>End Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -419,7 +419,6 @@
                         </div>
                         <div nz-col nzGutter=24>
                             <nz-divider nzText="Auto Shift Notes/Instructions" nzOrientation="left" style="margin: 0px;"></nz-divider>
-                            
                             <div nz-col nzGutter=24 class="">
                                 <div nz-col nzSpan="11">
                                     <label for="">Auto Display Notes After Service Creation: </label>
@@ -738,4 +737,4 @@
             </ng-container>
         </div>
     </nz-modal>
-</div>    
+</div>   

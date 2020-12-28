@@ -6,8 +6,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-menu-meals',
-  templateUrl: './menu-meals.component.html',
+  selector: 'app-case-mangement-admin',
+  templateUrl: './case-mangement-admin.component.html',
   styles: [`
   .mrg-btm{
     margin-bottom:0.3rem;
@@ -25,7 +25,7 @@ import { takeUntil } from 'rxjs/operators';
   }
   `]
 })
-export class MenuMealsComponent implements OnInit {
+export class CaseMangementAdminComponent implements OnInit {
 
   tableData: Array<any>;//load Main Listing
   branches:Array<any>;
@@ -63,7 +63,7 @@ export class MenuMealsComponent implements OnInit {
   inputVariables:any; 
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  title:string = "Add New Menu/Meals";
+  title:string = "Add New Case Management / Client Admin";
   private unsubscribe: Subject<void> = new Subject();
   
   constructor(
@@ -86,7 +86,7 @@ export class MenuMealsComponent implements OnInit {
     }
     
     showAddModal() {
-      this.title = "Add New Menu/Meals"
+      this.title = "Add New Case Management / Client Admin"
       this.resetModal();
       this.modalOpen = true;
     }
@@ -105,7 +105,7 @@ export class MenuMealsComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      this.title = "Edit Menu/Meals"
+      this.title = "Edit Case Management / Client Admin"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
@@ -292,7 +292,7 @@ export class MenuMealsComponent implements OnInit {
       }
     }
     loadData(){
-      let sql ="SELECT [Recnum] As [RecordNumber],[Title] As [Title], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup        END As [RosterGroup],    [MinorGroup] As [Sub Group],    [IT_Dataset] As [Dataset],      [HACCType] As [Dataset Code], [CSTDAOutletID] As [OutletID],  [DatasetGroup] As [Dataset Group],  [NDIA_ID] As [NDIA ID],  [AccountingIdentifier] As [Accounting Code],        [Amount] As [Bill Amount],          [Unit] As [Bill Unit],     [EndDate] As [End Date] FROM ItemTypes WHERE ProcessClassification <> 'INPUT' AND (EndDate Is Null OR EndDate >= '12-24-2020')  AND (MinorGroup IN ('MEALS')) ORDER BY Title";
+      let sql ="SELECT [Recnum] As [RecordNumber],[Title] As [Title], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup        END As [RosterGroup],    [MinorGroup] As [Sub Group],    [IT_Dataset] As [Dataset],      [HACCType] As [Dataset Code], [CSTDAOutletID] As [OutletID],  [DatasetGroup] As [Dataset Group],  [NDIA_ID] As [NDIA ID],  [AccountingIdentifier] As [Accounting Code],        [Amount] As [Bill Amount],          [Unit] As [Bill Unit],     [EndDate] As [End Date] FROM ItemTypes WHERE ProcessClassification <> 'INPUT' AND (EndDate Is Null OR EndDate >= '12-28-2020')  AND (RosterGroup IN ('ADMISSION')) ORDER BY Title";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -412,5 +412,6 @@ export class MenuMealsComponent implements OnInit {
         recordNumber:null
       });
     }
+
 
 }

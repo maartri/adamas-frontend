@@ -335,6 +335,9 @@ export class ConfigurationAdmin   {
         if(index == 87){
             this.router.navigate(['/admin/case-management-admin']);
         }
+        if(index == 88){
+            this.router.navigate(['/admin/staff-admin-activities']);
+        }
     }  
 }
 //ConfigurationAdmin 

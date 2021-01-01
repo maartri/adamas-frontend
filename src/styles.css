@@ -247,6 +247,9 @@ th.action{
 .pad-15{
     padding:15px;
 }
+.pad-r-5{
+    padding-right: 5px;
+}
 .width-55{
     width:55%;
 }

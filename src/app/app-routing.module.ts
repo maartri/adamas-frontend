@@ -233,6 +233,8 @@ import { ItemsConsumablesComponent } from '@admin/configuration/services/items-c
 import { MenuMealsComponent } from '@admin/configuration/services/menu-meals.component';
 import { CaseMangementAdminComponent } from '@admin/configuration/services/case-mangement-admin.component';
 import { StaffAdminActivitiesComponent } from '@admin/configuration/services/staff-admin-activities.component';
+import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
+import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
 
 const routes: Routes = [
   {
@@ -496,6 +498,10 @@ const routes: Routes = [
       {
         path: 'configuration',
         component: ConfigurationAdmin
+      },
+      {
+        path: 'companies',
+        component: CompaniesComponent,
       },
       {
         path: 'branches',
@@ -848,6 +854,10 @@ const routes: Routes = [
         component:StaffAdminActivitiesComponent
       },
       {
+        path:"recipient-absences",
+        component:RecipientAbsenceComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1076,6 +1086,7 @@ export const PAGE_COMPONENTS = [
   ProfilePage,
   
   //Configuration
+  CompaniesComponent,
   BranchesComponent,
   FundingRegionsComponent,
   ClaimratesComponent,
@@ -1163,6 +1174,7 @@ export const PAGE_COMPONENTS = [
   MenuMealsComponent,
   CaseMangementAdminComponent,
   StaffAdminActivitiesComponent,
+  RecipientAbsenceComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

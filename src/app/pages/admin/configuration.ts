@@ -338,6 +338,12 @@ export class ConfigurationAdmin   {
         if(index == 88){
             this.router.navigate(['/admin/staff-admin-activities']);
         }
+        if(index == 89){
+            this.router.navigate(['/admin/recipient-absences']);
+        }
+        if(index == 90){
+            this.router.navigate(['/admin/companies']);
+        }
     }  
 }
 //ConfigurationAdmin 

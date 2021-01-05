@@ -1,6 +1,6 @@
-<div >
+<div style="padding:8px;">
     <div nz-layout>
-        <div >
+        <div>
             <div nz-col nzSpan="24">
                 <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'" >            
                     <nz-tab nzTitle="General Setup">                     
@@ -12,7 +12,7 @@
                                             <i nz-icon nzType="user"></i>
                                             <strong>General</strong> 
                                             <div>
-                                                <button nz-button nzType="default" disabled id="btn-Systm-Companies" >
+                                                <button nz-button nzType="default" (click)="view(90)" id="btn-Systm-Companies" >
                                                     <i nz-icon nzType="read"></i>
                                                     Companies
                                                 </button>
@@ -713,31 +713,31 @@
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled id="btn-item-consumable"    >
+                                            <button nz-button nzType="default" (click)="view(85)" id="btn-item-consumable"    >
                                                 <i nz-icon nzType="read"></i>
                                                 Items Consumables
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled id="btn-item-menu-meals"    >
+                                            <button nz-button nzType="default" (click)="view(86)" id="btn-item-menu-meals"    >
                                                 <i nz-icon nzType="read"></i>
                                                 Menus/Meals
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled id="btn-item-case-manag"    >
+                                            <button nz-button nzType="default" (click)="view(87)" id="btn-item-case-manag"    >
                                                 <i nz-icon nzType="read"></i>
-                                                Case Management /Client Admin
+                                                Case Management / Client Admin
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled id="btn-staff-admin-activi"    >
+                                            <button nz-button nzType="default" (click)="view(88)" id="btn-staff-admin-activi"    >
                                                 <i nz-icon nzType="read"></i>
                                                 Staff Admin Activities
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled id="btn-staff-admin-activi"    >
+                                            <button nz-button nzType="default" (click)="view(89)" id="btn-staff-admin-activi"    >
                                                 <i nz-icon nzType="read"></i>
                                                 Recipient Absences
                                             </button>

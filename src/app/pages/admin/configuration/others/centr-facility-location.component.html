@@ -1,24 +1,29 @@
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i>Center/Facility/Location</button>
+        </div>
+    </div>
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Center/Facility/Location</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
-                    <th class="left">Name</th>
-                    <th class="left">Service</th>
-                    <th class="left">Address</th>
+                    <th nzLeft nzBreakWord>Name</th>
+                    <th nzLeft nzBreakWord>Service</th>
+                    <th nzLeft nzBreakWord>Address</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left">{{ data.serviceOutletID  }} </td>
-                    <td class="left">{{ data.address  }} </td>
-                    <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <td nzLeft nzBreakWord>{{ data.name  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.serviceOutletID  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.address  }} </td>
+                    <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
                     </tr>
                 </tbody>
             </nz-table>
@@ -398,3 +403,4 @@
                     </ng-container>
                 </div>
             </nz-modal>
+</div>            

@@ -326,7 +326,24 @@ export class ConfigurationAdmin   {
         if(index == 84){
             this.router.navigate(['/admin/services']);
         }
-
+        if(index == 85){
+            this.router.navigate(['/admin/items-consumables']);
+        }
+        if(index == 86){
+            this.router.navigate(['/admin/menu-meals']);
+        }
+        if(index == 87){
+            this.router.navigate(['/admin/case-management-admin']);
+        }
+        if(index == 88){
+            this.router.navigate(['/admin/staff-admin-activities']);
+        }
+        if(index == 89){
+            this.router.navigate(['/admin/recipient-absences']);
+        }
+        if(index == 90){
+            this.router.navigate(['/admin/companies']);
+        }
     }  
 }
 //ConfigurationAdmin 

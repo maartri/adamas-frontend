@@ -229,6 +229,12 @@ import { FundingSourcesComponent } from '@admin/configuration/others/funding-sou
 import { PayTypeComponent } from '@admin/configuration/others/pay-type.component';
 import { ProgramPackagesComponent } from '@admin/configuration/others/program-packages.component';
 import { ServicesComponent } from '@admin/configuration/services/services.component';
+import { ItemsConsumablesComponent } from '@admin/configuration/services/items-consumables.component';
+import { MenuMealsComponent } from '@admin/configuration/services/menu-meals.component';
+import { CaseMangementAdminComponent } from '@admin/configuration/services/case-mangement-admin.component';
+import { StaffAdminActivitiesComponent } from '@admin/configuration/services/staff-admin-activities.component';
+import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
+import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
 
 const routes: Routes = [
   {
@@ -492,6 +498,10 @@ const routes: Routes = [
       {
         path: 'configuration',
         component: ConfigurationAdmin
+      },
+      {
+        path: 'companies',
+        component: CompaniesComponent,
       },
       {
         path: 'branches',
@@ -828,6 +838,26 @@ const routes: Routes = [
         component:ServicesComponent
       },
       {
+        path:"items-consumables",
+        component:ItemsConsumablesComponent
+      },
+      {
+        path:"menu-meals",
+        component:MenuMealsComponent,
+      },
+      {
+        path:"case-management-admin",
+        component:CaseMangementAdminComponent
+      },
+      {
+        path:"staff-admin-activities",
+        component:StaffAdminActivitiesComponent
+      },
+      {
+        path:"recipient-absences",
+        component:RecipientAbsenceComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1056,6 +1086,7 @@ export const PAGE_COMPONENTS = [
   ProfilePage,
   
   //Configuration
+  CompaniesComponent,
   BranchesComponent,
   FundingRegionsComponent,
   ClaimratesComponent,
@@ -1139,6 +1170,11 @@ export const PAGE_COMPONENTS = [
   PayTypeComponent,
   ProgramPackagesComponent,
   ServicesComponent,
+  ItemsConsumablesComponent,
+  MenuMealsComponent,
+  CaseMangementAdminComponent,
+  StaffAdminActivitiesComponent,
+  RecipientAbsenceComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

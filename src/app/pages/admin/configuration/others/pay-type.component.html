@@ -1,7 +1,12 @@
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i>Agency Pay Types</button>
+        </div>
+    </div>
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Agency Pay Types</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
                     <th class="left">Code</th>
@@ -29,10 +34,10 @@
                     <td class="left">{{ data.payID  }} </td>
                     <td class="left">{{ data.payGroup  }} </td>
                     <td class="left">{{ data.payType  }} </td>
-                    <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
                     </tr>
                 </tbody>
             </nz-table>
@@ -248,3 +253,4 @@
                 </div>
             </div>
         </nz-modal>
+</div>       

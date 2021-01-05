@@ -31,7 +31,7 @@
     <nz-modal [nzWidth]="900" [(nzVisible)]="modalOpenelipsis" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancelellipsis()">
         <div class="flexy">
             <nz-tabset *ngIf="inputForm" [formGroup]="inputForm" style="width: 100%;">
-                    <nz-tab nzTitle="Agency Details">
+                <nz-tab nzTitle="Agency Details">
                     <div nz-col nzSpan="24" class="">
                         <h3 style="color:#1890FF;">Add Change Agency Details</h3>
                     </div>
@@ -130,13 +130,13 @@
                                     <input nz-input placeholder=""  formControlName="name" />
                                 </div>
                             </div>
-
+                            
                             <nz-divider nzText="" nzOrientation="left"></nz-divider>
-
+                            
                             <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
                                 <p style="margin: 0px;">Agency Bank Details</p>
                             </div>
-
+                            
                             <div nz-row nzJustify class="mrg-btm">
                                 <div nz-col nzSpan="3" class="text-right">
                                     <label for="Bank Name">Bank Name :</label>
@@ -177,265 +177,988 @@
                             </div>
                         </div>
                     </div>
-                    </nz-tab>
-                    <nz-tab nzTitle="CSTDA Outlets">
-                        <div nz-col nzSpan="24" class="">
-                            <h3 style="color:#1890FF;">Add Change Agency Details</h3>
+                </nz-tab>
+                <nz-tab nzTitle="CSTDA Outlets">
+                    <div nz-col nzSpan="24" class="">
+                        <h3 style="color:#1890FF;">Add Change Agency Details</h3>
+                    </div>
+                    <div nz-row nzGutter=24>
+                        <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                            <p style="margin: 0px;">Agency Contact Details For CSTDA</p>
                         </div>
-                        <div nz-row nzGutter=24>
-                            <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                <p style="margin: 0px;">Agency Contact Details For CSTDA</p>
-                            </div>
-                            <div class="pad-15">
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="2">
-                                        <label for="Name">Contact</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder=""  formControlName="name" />
-                                    </div>
-                                    <div nz-col nzSpan="2">
-                                        <label for="Name" class="text-center">Agency ID</label>
-                                    </div>
-                                    <div nz-col nzSpan="4">
-                                        <input nz-input placeholder=""  formControlName="name" />
-                                    </div>
-                                    <div nz-col nzSpan="6">
-                                        <label nz-checkbox  formControlName="name"> : Deliver WA DSC Service </label>
-                                    </div>
+                        <div class="pad-15">
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="2">
+                                    <label for="Name">Contact</label>
                                 </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="3">
-                                        <label for="Name">Position Title</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder=""  formControlName="name" />
-                                    </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="name" />
                                 </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="3">
-                                        <label for="Name">Email</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder=""  formControlName="name" />
-                                    </div>
+                                <div nz-col nzSpan="2">
+                                    <label for="Name" class="text-center">Agency ID</label>
                                 </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="2">
-                                        <label for="Name">User Name</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder=""  formControlName="name" />
-                                    </div>
-                                    <div nz-col nzSpan="3">
-                                        <label for="Name" class="text-center">Password</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder=""  formControlName="name" /><span style="color:red">(if Required)</span>
-                                    </div>
+                                <div nz-col nzSpan="4">
+                                    <input nz-input placeholder=""  formControlName="name" />
+                                </div>
+                                <div nz-col nzSpan="6">
+                                    <label nz-checkbox  formControlName="name"> : Deliver WA DSC Service </label>
                                 </div>
                             </div>
-                        </div>
-                    </nz-tab>
-                    <nz-tab nzTitle="Settings"*ngIf="settingForm" [formGroup]="settingForm">
-                        <nz-tabset [nzTabPosition]="position" >
-                            <nz-tab [nzTitle]="'General'">
-                                <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                    <p style="margin: 0px;">Agency Contact Details</p>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="3">
+                                    <label for="Name">Position Title</label>
                                 </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">SQLServer Version :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let sql of sqlserverList" [nzLabel]="sql" [nzValue]="sql"></nz-option>
-                                        </nz-select>
-                                    </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="name" />
                                 </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Default ODBC Timeout Version :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="Default" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Default ODBC Timeout Version :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Enable auditing of tables :</label>
-                                    </div>
-                                    <div nz-col nzSpan="2">
-                                        <label nz-checkbox  formControlName="title"></label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <label nz-checkbox  formControlName="title">Brokerage Request Mobile</label>
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Default ODBC Timeout Version :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="3" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Max Menu Sessions :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="3" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Max Recipient Sessions :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="3" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Max Staff Sessions :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="3" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Max Roster Sessions :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="3" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Max Day Manager Sessions :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="3" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Max TimeSheet Sessions :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="3" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Max Reports Sessions :</label>
-                                    </div>
-                                    <div nz-col nzSpan="8">
-                                        <input nz-input placeholder="" [nzValue]="3" formControlName="title" />
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify class="mrg-btm">
-                                    <div nz-col nzSpan="1"></div>
-                                    <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                        <label for="Name">Allow Manual CDC Claim Date :</label>
-                                    </div>
-                                    <div nz-col nzSpan="2">
-                                        <label nz-checkbox  formControlName="title"></label>
-                                    </div>
-                                </div>
-                                
-                            </nz-tab>
-                            <nz-tab [nzTitle]="'Recipient'">
-                                <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                    <p style="margin: 0px;">Recipient</p>
-                                </div>
-                            </nz-tab>
-                            <nz-tab [nzTitle]="'Staff'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                <p style="margin: 0px;">Staff</p>
-                            </div></nz-tab>
-                            <nz-tab [nzTitle]="'Incidents'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                <p style="margin: 0px;">Incidents</p>
-                            </div> </nz-tab>
-                            <nz-tab [nzTitle]="'Rosters'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                <p style="margin: 0px;">Rosters</p>
-                            </div></nz-tab>
-                            <nz-tab [nzTitle]="'Payroll'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                <p style="margin: 0px;">Rostering and Payroll</p>
-                            </div></nz-tab>
-                            <nz-tab [nzTitle]="'Billinjg'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                <p style="margin: 0px;">Billing</p>
-                            </div></nz-tab>
-                            <nz-tab [nzTitle]="'Time & Attendence'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                <p style="margin: 0px;">Time & Attendence</p>
-                            </div></nz-tab>
-                            <nz-tab [nzTitle]="'Clinet Portal'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                                <p style="margin: 0px;">Clinet Portal Setting</p>
-                            </div></nz-tab>
-                            <nz-tab [nzTitle]="'Email'">Email Fields</nz-tab>
-                            <nz-tab [nzTitle]="'NDIA'">NDIA Fields</nz-tab>
-                            <nz-tab [nzTitle]="'CDC'">CDC Fields</nz-tab>
-                            <nz-tab [nzTitle]="'Documents'">Documents Fields</nz-tab>
-                        </nz-tabset>
-                    </nz-tab>
-                </nz-tabset>
-            </div>
-        </nz-modal>
-        <nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
-            <div class="flexy">
-                
-                <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
-                    <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
-                </nz-steps>
-                <nz-divider class="full-height" nzType="vertical"></nz-divider>
-                <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
-                    <div *ngIf="current == 0">
-                        <div nz-row nzGutter="24" class="mrg-btm">
-                            <div nz-col nzSpan="24" class="mrg-btm">
-                                <input nz-input placeholder="Name"  formControlName="name" />
-                                
                             </div>
-                            <div nz-col nzSpan="24" class="mrg-btm">
-                                <input nz-input placeholder="GL REVENUE A/C"  formControlName="glRevene" />
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="3">
+                                    <label for="Name">Email</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="name" />
+                                </div>
                             </div>
-                            <div nz-col nzSpan="24" class="mrg-btm">
-                                <input nz-input placeholder="GL Cost A/C"  formControlName="glCost" />
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="2">
+                                    <label for="Name">User Name</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="name" />
+                                </div>
+                                <div nz-col nzSpan="3">
+                                    <label for="Name" class="text-center">Password</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="name" /><span style="color:red">(if Required)</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div *nzModalFooter>
-                        <ng-container>
-                            <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" *ngIf="current === 1">
-                                <span>Save</span>
-                            </button>
-                        </ng-container>
+                </nz-tab>
+                <nz-tab nzTitle="Settings"*ngIf="settingForm" [formGroup]="settingForm">
+                    <nz-tabset [nzTabPosition]="position" >
+                        <nz-tab [nzTitle]="'General'">
+                            <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                                <p style="margin: 0px;">Agency Contact Details</p>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">SQLServer Version :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let sql of sqlserverList" [nzLabel]="sql"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Default ODBC Timeout Version :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Default ODBC Timeout Version :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Enable auditing of tables :</label>
+                                </div>
+                                <div nz-col nzSpan="2">
+                                    <label nz-checkbox  formControlName="title"></label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <label nz-checkbox  formControlName="title">Brokerage Request Mobile</label>
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Default ODBC Timeout Version :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Max Menu Sessions :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Max Recipient Sessions :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Max Staff Sessions :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Max Roster Sessions :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Max Day Manager Sessions :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Max TimeSheet Sessions :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="1"></div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label for="Name">Max Reports Sessions :</label>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                
+                                <div nz-col nzSpan="9" class="text-right pad-r-5">
+                                    <label for="Name">Allow Manual CDC Claim Date :</label>
+                                </div>
+                                <div nz-col nzSpan="2">
+                                    <label nz-checkbox  formControlName="title"></label>
+                                </div>
+                            </div>
+                            
+                        </nz-tab>
+                        <nz-tab [nzTitle]="'Recipient'">
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="6">
+                                    <p style="margin: 0px;">Recipient</p>
+                                </div>
+                                <div nz-col nzSpan="10">
+                                    <label nz-checkbox  formControlName="checkboxcheck">: Force Default Option For All Users</label>
+                                </div>
+                                <div nz-col nzSpan="6">
+                                    <label For="">Account Code List With :</label>
+                                </div>
+                                <div nz-col nzSpan="2">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm" style="background-color:#A4A4A4;">
+                                <p style="margin: 0px;">General Options</p>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                    3rd Party Accounting ID : 
+                                </div>
+                                <div nz-col nzSpan="12">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="incRecipient" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let etype of incidentTypes" [nzLabel]="etype" [nzValue]="etype"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                    Lagacy CarePlan Labels : 
+                                </div>
+                                <div nz-col nzSpan="4">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    Wizard Default Note : 
+                                </div>
+                                <div nz-col nzSpan="4">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="incRecipient" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let etype of incidentTypes" [nzLabel]="etype" [nzValue]="etype"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                    <label>Auto Export Case Notes :</label>
+                                </div>
+                                <div nz-col nzSpan="1">
+                                    <label nz-checkbox  formControlName="checkboxcheck"></label>
+                                </div>
+                                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                    Case Notes Folder : 
+                                </div>
+                                <div nz-col nzSpan="10">
+                                    <input nz-input placeholder=""  formControlName="title" />
+                                </div>
+                            </div>
+                            <nz-divider nzText="" nzOrientation="left"></nz-divider>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="12">
+                                    <div nz-col nzSpan="24">
+                                        <label nz-checkbox  formControlName="checkboxcheck">Force UperCase Surname</label>
+                                    </div>
+                                    <div nz-col nzSpan="24">
+                                        <label nz-checkbox  formControlName="checkboxcheck">Auto Generate File No</label>
+                                    </div>
+                                    <div nz-col nzSpan="24">
+                                        <label nz-checkbox  formControlName="checkboxcheck">Defaults to Display All Recipients</label>
+                                    </div>
+                                    <div nz-col nzSpan="24">
+                                        <label nz-checkbox  formControlName="checkboxcheck">ONI auto Archiving Enable</label>
+                                    </div>
+                                    <div nz-col nzSpan="24">
+                                        <label nz-checkbox  formControlName="checkboxcheck">Force Case Note On Admit and Discharge</label>
+                                    </div>
+                                    <div nz-col nzSpan="24">
+                                        <label nz-checkbox  formControlName="checkboxcheck">Force Reminder On Service Suspension</label>
+                                    </div>
+                                    <div nz-col nzSpan="24">
+                                        <div nz-col nzSpan="10">
+                                            <label nz-checkbox  formControlName="checkboxcheck">Auto Export ONI</label>
+                                        </div>
+                                        <div nz-col nzSpan="14">
+                                            <label nz-checkbox  formControlName="checkboxcheck">Print ONI OPTION TO REFER</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="12">
+                                    <div nz-col nzSpan="24">
+                                        <div nz-col nzSpan="12" class="text-right pad-r-5">
+                                            Package Budget Format : 
+                                        </div>
+                                        <div nz-col nzSpan="12">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="incRecipient" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let etype of incidentTypes" [nzLabel]="etype" [nzValue]="etype"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
+                                    <div nz-col nzSpan="24">
+                                        <div nz-col nzSpan="12" class="text-right pad-r-5">
+                                            Package Statement Format : 
+                                        </div>
+                                        <div nz-col nzSpan="12">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="incRecipient" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let etype of incidentTypes" [nzLabel]="etype" [nzValue]="etype"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <nz-divider nzText="" nzOrientation="left"></nz-divider>
+                            <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                                <p style="margin: 0px;">Case Notes Options</p>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="8">
+                                    <label nz-checkbox  formControlName="checkboxcheck" style="font-size: 10px;">Extra Warning On Case Notes Save</label>
+                                </div>
+                                <div nz-col nzSpan="7">
+                                    <label nz-checkbox  formControlName="checkboxcheck" style="font-size: 10px;">Case Notes Extra Security Check</label>
+                                </div>
+                                <div nz-col nzSpan="9">
+                                    <label nz-checkbox  formControlName="checkboxcheck" style="font-size: 10px;">Storage Full Operator Name as Craetor</label>
+                                </div>
+                            </div>
+                            <nz-divider nzText="" nzOrientation="left"></nz-divider>
+                            <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                                <p style="margin: 0px;">Referrals And Waiting List</p>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="24">
+                                    <label nz-checkbox  formControlName="checkboxcheck">Include Referrals in Active Recipient List</label>
+                                </div>
+                                <div nz-col nzSpan="24">
+                                    <label nz-checkbox  formControlName="checkboxcheck">Include Waiting List in Active Recipient List</label>
+                                </div>
+                                <div nz-col nzSpan="24">
+                                    <label nz-checkbox  formControlName="checkboxcheck">Restrict Referrals and Waiting List to Admitting Branch(Only If Viewing Restrictions Enabled)</label>
+                                </div>
+                            </div>
+                        </nz-tab>
+                        <nz-tab [nzTitle]="'Staff'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                            <p style="margin: 0px;">Staff</p>
+                        </div></nz-tab>
+                        <nz-tab [nzTitle]="'Incidents'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                            <p style="margin: 0px;">Incidents</p>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="9" class="text-right pad-r-5">
+                                <label for="Name">Incident Management Style Recipients :</label>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="incRecipient" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-option *ngFor="let etype of incidentTypes" [nzLabel]="etype" [nzValue]="etype"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="9" class="text-right pad-r-5">
+                                <label for="Name">Incident Management Style Staff :</label>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="incStaff" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-option *ngFor="let itype of incidentTypes" [nzLabel]="itype" [nzValue]="itype"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>    
+                    </nz-tab>
+                    <nz-tab [nzTitle]="'Rosters'">
+                        <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                            <p style="margin: 0px;">Roster Setting</p>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="11" class="text-right pad-r-5">
+                                <label for="Name">Enforce Activity Action Limits :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="11" class="text-right pad-r-5">
+                                <label for="Agency Billing Method">Roster Award Enforcement :</label>
+                            </div>
+                            <div nz-col nzSpan="6">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-option *ngFor="let award of awardEnforcementTypes" [nzLabel]="award" [nzValue]="award"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="11" class="text-right pad-r-5">
+                                <label for="Name">Use Incremental Roster Creation :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="11" class="text-right pad-r-5">
+                                <label for="Name">Use Incremental Competency Enforcement :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <nz-divider nzText="" nzOrientation="left"></nz-divider>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Meal Label Agency name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Enable Dot Point In Xtra Info :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 1 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 2 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 3 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 4 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 5 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 6 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 7 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 8 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 9 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Cycle 10 Name :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Roster Email For Notification :</label>
+                            </div>
+                            <div nz-col nzSpan="10">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab [nzTitle]="'Payroll'">
+                        <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                            <p style="margin: 0px;">Rostering and Payroll</p>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Enforce Activity Action Limits :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Agency Billing Method">Staff Competency Enforcement Level :</label>
+                            </div>
+                            <div nz-col nzSpan="6">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-option *ngFor="let award of awardEnforcementTypes" [nzLabel]="award" [nzValue]="award"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Payroll Provide Core Staff Deatails :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Keep Orignal when Allocating Shift :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Auto Approve Recipient Administration :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Disable Note In Day Manager :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">user Award Interpretation :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Enforce Positions :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Apply Roster Filter In Timesheet :</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                <label for="Name">Enable Auto Travel Calculation :</label>
+                            </div>
+                            <div nz-col nzSpan="1">
+                                <label nz-checkbox  formControlName="checkboxcheck"></label>
+                            </div>
+                            <div nz-col nzSpan="3">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="google" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:60%;">
+                                    <nz-option *ngFor="let b of browsers" [nzLabel]="b" [nzValue]="b"></nz-option>
+                                </nz-select>
+                            </div>
+                            <div nz-col nzSpan="2" class="text-right">
+                                <label for="Key">Key :</label>
+                            </div>
+                            <div nz-col nzSpan="8">
+                                <textarea rows="4" nz-input placeholder="Billing Text" formControlName="branch"></textarea>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="11" class="text-right pad-r-5">
+                                
+                            </div>
+                            
+                            <div nz-col nzSpan="5" class="text-center">
+                                <label for="Key">Google Costumer ID :</label>
+                            </div>
+                            <div nz-col nzSpan="8">
+                                <input nz-input placeholder=""  formControlName="title" />
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab [nzTitle]="'Billing'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                        <p style="margin: 0px;">Billing</p>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="9" class="text-right pad-r-5">
+                            <label for="Agency Billing Method">Agency Billing Method :</label>
+                        </div>
+                        <div nz-col nzSpan="7">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let billing of billingType" [nzLabel]="billing" [nzValue]="billing"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="9" class="text-right pad-r-5">
+                            <label for="Custom Invoice Format">Custom Invoice Format  :</label>
+                        </div>
+                        <div nz-col nzSpan="4">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                        <div nz-col nzSpan="9" class="text-right pad-r-5">
+                            <label for="Custom Invoice Format">Include Aged Summary In Invoice :</label>
+                        </div>
+                        <div nz-col nzSpan="1">
+                            <label nz-checkbox  formControlName="name"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="9" class="text-right pad-r-5">
+                            <label for="Direct Debit Detail">Direct Debit Detail :</label>
+                        </div>
+                        <div nz-col nzSpan="15">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="9" class="text-right pad-r-5">
+                            <label for="Direct Debit Detail">Pay at Office Detail :</label>
+                        </div>
+                        <div nz-col nzSpan="15">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="9" class="text-right pad-r-5">
+                            <label for="Direct Debit Detail">Bill By MaiTo Detail :</label>
+                        </div>
+                        <div nz-col nzSpan="15">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="9" class="text-right pad-r-5">
+                            <label for="Direct Debit Detail">Bill By phone Detail :</label>
+                        </div>
+                        <div nz-col nzSpan="15">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="9" class="text-right pad-r-5">
+                            <label for="Agency Billing Method">Custom Email Invoice Subject Type :</label>
+                        </div>
+                        <div nz-col nzSpan="15">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let subj of emailSubjectType" [nzLabel]="subj" [nzValue]="subj"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                </nz-tab>
+                <nz-tab [nzTitle]="'Time & Attendence'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                    <p style="margin: 0px;">Time & Attendence</p>
+                </div></nz-tab>
+                <nz-tab [nzTitle]="'Clinet Portal'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                    <p style="margin: 0px;">Clinet Portal Setting</p>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Short Notice threshold">Short Notice threshold :</label>
+                    </div>
+                    <div nz-col nzSpan="2">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="No Notice threshold">No Notice threshold :</label>
+                    </div>
+                    <div nz-col nzSpan="2">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Minimum Cancelation Lead Time">Minimum Cancelation Lead Time :</label>
+                    </div>
+                    <div nz-col nzSpan="2">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Booking Lead Time">Booking Lead Time :</label>
+                    </div>
+                    <div nz-col nzSpan="2">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Cancelation Fee Text">Cancelation Fee Text :</label>
+                    </div>
+                    <div nz-col nzSpan="15">
+                        <textarea rows="4" nz-input placeholder="Billing Text" formControlName="branch"></textarea>
+                    </div>
+                </div>
+                
+            </nz-tab>
+            <nz-tab [nzTitle]="'Email'">
+                <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                    <p style="margin: 0px;">Traccs Generated Email</p>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">POP3 Server :</label>
+                    </div>
+                    <div nz-col nzSpan="15">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">POP3 Username :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">POP3 Password :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">SMTP SERVER :</label>
+                    </div>
+                    <div nz-col nzSpan="15">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">SMTP Username :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">SMTP Password :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">System Send Email address For Emails :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">System Send Display Emails :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">Helpdesk Email For TRACCS Support :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">Which Email Application to use :</label>
+                    </div>
+                    <div nz-col nzSpan="7">
+                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-option *ngFor="let etype of emailTypes" [nzLabel]="etype" [nzValue]="etype"></nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">Password / Text For SMS email subject :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">Default Invoice email subject :</label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">Outlook Location and Filename :</label>
+                    </div>
+                    <div nz-col nzSpan="15">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+            </nz-tab>
+            <nz-tab [nzTitle]="'NDIA'">
+                <div nz-row nzJustify class="mrg-btm">
+                    
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">Maximum Travel Time Before Shift :</label>
+                    </div>
+                    <div nz-col nzSpan="2">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="Name">NDIA short Notice Cancel Claim % :</label>
+                    </div>
+                    <div nz-col nzSpan="2">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+            </nz-tab>
+            <nz-tab [nzTitle]="'CDC'">
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label for="Name">Single :</label>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label for="Name">Default Basic Fee Percentage :</label>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label for="Name">Couple - each :</label>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label for="Name">Couple - Combined :</label>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label for="Name">Couple each Seprated due to ill health :</label>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <nz-divider nzText="" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="11" class="text-right pad-r-5">
+                        <label for="Name">Use Auto Medicare Import For CDC Income :</label>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <label nz-checkbox  formControlName="name"></label>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    
+                    <div nz-col nzSpan="11" class="text-right pad-r-5">
+                        <label for="Name">Allow Chnage For Income Tested Fee :</label>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <label nz-checkbox  formControlName="name"></label>
+                    </div>
+                </div>
+                
+            </nz-tab>
+            <nz-tab [nzTitle]="'Documents'">
+                <div nz-row nzJustify class="mrg-btm">
+                    
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label for="Name">Docusign Server Reference :</label>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label for="Name">Docusign Port Reference :</label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <input nz-input placeholder=""  formControlName="title" />
+                    </div>
+                </div>
+            </nz-tab>
+        </nz-tabset>
+    </nz-tab>
+</nz-tabset>
+</div>
+</nz-modal>
+<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+        
+        <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+            <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
+        </nz-steps>
+        <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <input nz-input placeholder="Name"  formControlName="name" />
+                        
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <input nz-input placeholder="GL REVENUE A/C"  formControlName="glRevene" />
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <input nz-input placeholder="GL Cost A/C"  formControlName="glCost" />
                     </div>
                 </div>
             </div>
-        </nz-modal>
-        
+            <div *nzModalFooter>
+                <ng-container>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" *ngIf="current === 1">
+                        <span>Save</span>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</nz-modal>

@@ -31,6 +31,12 @@ export class CompaniesComponent implements OnInit {
   private unsubscribe: Subject<void> = new Subject();
   branchList: Array<any>;
   sqlserverList:Array<any>;
+  emailTypes:Array<any>;
+  incidentTypes:Array<any>;
+  billingType:Array<any>;
+  emailSubjectType:Array<any>;
+  awardEnforcementTypes:Array<any>;
+  browsers:Array<any>;
   tabset = false;
   isVisibleTop =false;
   showtabother = false;
@@ -252,6 +258,12 @@ export class CompaniesComponent implements OnInit {
     buildForm() {
       this.settingForm = this.formBuilder.group({
         title:'',
+        name:'',
+        branch:'',
+        checkboxcheck:false,
+        incRecipient:'NDIA',
+        incStaff:'NDIA',
+        google:'Google'
       });
       this.inputForm = this.formBuilder.group({
         recordNumber: null,
@@ -263,6 +275,7 @@ export class CompaniesComponent implements OnInit {
         addrLine1:'',
         addrLine2:'',
         Phone:'',
+        branch:'',
         startHour:'',
         finishHour:'',
         earlyStart:'',
@@ -280,7 +293,13 @@ export class CompaniesComponent implements OnInit {
       });
     }
     populateDropdowns(){
-      this.sqlserverList = ['2000','2005','2008','2012'];
+      this.sqlserverList    = ['2000','2005','2008','2012'];
+      this.emailTypes       = ['OUTLOOK','TRACCS'];
+      this.incidentTypes    = ['NDIA','AUTO','WA','QLD','AGED CARE']
+      this.billingType      = ['CONSOLIDATED BILLING','PROGRAM BILLING'];
+      this.emailSubjectType = ['BILLING CLIENT/INVOICE NUMBER/COMPANY NAME','CUSTOM'];
+      this.awardEnforcementTypes = ['No Enforcement','Warm On Breach','Prevent Breach'];
+      this.browsers = ['Google','Bing'];
     }
     loadData(){
       let sql ="Select RecordNumber, Description From DataDomains Where Domain = 'COMPANY'  ORDER BY DESCRIPTION";

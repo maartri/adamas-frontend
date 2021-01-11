@@ -150,15 +150,24 @@
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <div nz-col nzSpan="24" class="mrg-btm">
-                            <div nz-col nzSpan="12" class="mrg-btm">
+                            <div style="clear: both;"></div>
+                            
+                            <!-- <div nz-col nzSpan="12" class="mrg-btm" style="display:none;">
                                 <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="datasetMapping" nzPlaceHolder="DataSet" nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let dicipline of diciplineList" [nzLabel]="dicipline.description" [nzValue]="dicipline.description"></nz-option>
                                 </nz-select>
-                            </div>
-                            <div nz-col nzSpan="12" class="mrg-btm" style="display:none;">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="datasetMapping" nzPlaceHolder="DataSet" nzShowSearch nzAllowClear style="width:100%;">
+                            </div> -->
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="12" class="mrg-btm">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="datasetMapping" nzPlaceHolder="DataSet" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let set of dataSets" [nzLabel]="set" [nzValue]="set"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div nz-col nzSpan="12" class="mrg-btm">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="datasetMapping" nzPlaceHolder="CSTDA outletID" nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let dicipline of diciplineList" [nzLabel]="dicipline.description" [nzValue]="dicipline.description"></nz-option>
                                 </nz-select>
+                                </div>
                             </div>
                             <div nz-col class="mrg-btm">
                                 <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="groupMapping" nzPlaceHolder="Group" nzShowSearch nzAllowClear style="width:100%;">

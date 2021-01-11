@@ -864,9 +864,134 @@
                         </div>
                     </div>
                 </nz-tab>
-                <nz-tab [nzTitle]="'Time & Attendence'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
-                    <p style="margin: 0px;">Time & Attendence</p>
-                </div></nz-tab>
+                <nz-tab [nzTitle]="'Time & Attendence'">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="9">
+                            <p style="margin: 0px;">Add Change Timelogging Information</p>
+                        </div>
+                        
+                        <div nz-col nzSpan="12" class="text-right pad-r-5">
+                            <label For="Minimum Internet Speed For Online Operation">Minimum Internet Speed For Online Operation :</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm" style="background-color:#A4A4A4;">
+                        <p style="margin: 0px;">Geo Location</p>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="12" class="text-right pad-r-5">
+                            <label for="Geo Locating Staff To Client Distance Limit">Geo Locating Staff To Client Distance Limit :</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="12" class="text-right pad-r-5">
+                            <label for="Geo Locating Interval For Location Update">Geo Locating Interval For Location Update :</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm" style="background-color:#A4A4A4;">
+                        <p style="margin: 0px;">URL's For User Listing</p>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="6" class="text-right pad-r-5">
+                            <label for="Mobile User List URL">Mobile User List URL :</label>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="6" class="text-right pad-r-5">
+                            <label for="Web Kiosk User URL">Web Kiosk User URL :</label>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                        <div nz-col nsSpan="8" class="text-right pad-r-5">
+                            <label nz-checkbox  formControlName="checkboxcheck">Lock Disable Kiosk Logins</label>
+                        </div>
+                    </div>
+
+                    <div nz-row nzJustify class="mrg-btm" style="background-color:#A4A4A4;">
+                        <p style="margin: 0px;">Payroll thresholds</p>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="14"  style="font-size:11px;">
+                            <label for="Force staff pay to rostered time If the duration of actual work Is less then">Force staff pay to rostered time If the duration of actual work Is less then :</label>
+                        </div>
+                        <div nz-col nzSpan="2" class="text-right pad-r-5">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                        <div nz-col nsSpan="7"  style="font-size:11px;">
+                            <label for="Minutes Under The Rostered Time">Minutes Under The Rostered Time</label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="14"  style="font-size:11px;">
+                            <label for="Force staff pay to rostered time If the duration of actual work Is less then">Force staff pay to actual Work If the duration of actual work Is More> then :</label>
+                        </div>
+                        <div nz-col nzSpan="2" class="text-right pad-r-5">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                        <div nz-col nsSpan="7"  style="font-size:11px;">
+                            <label for="Minutes Under The Rostered Time">Minutes Under The Rostered Time</label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="14"  style="font-size:11px;">
+                            <label for="Force staff pay to Actual Work If the duration of actual work Is less then">Force staff pay to Actual Work If the duration of actual work Is less then :</label>
+                        </div>
+                        <div nz-col nzSpan="2" class="text-right pad-r-5">
+                            <input nz-input placeholder=""  formControlName="title" />
+                        </div>
+                        <div nz-col nsSpan="7"  style="font-size:11px;">
+                            <label for="Minutes Under The Rostered Time">Minutes Over The Rostered Time</label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm" style="background-color:#A4A4A4;">
+                        <p style="margin: 0px;">Other</p>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="12">
+                            <label nz-checkbox formControlName="checkboxcheck">Hide Recipient Phone Number In App Display</label>
+                        </div>                        
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="8">
+                            <label For="">Default Travel Display In App : </label>
+                        </div>
+                        <div nz-col nzSpan="12">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let award of awardEnforcementTypes" [nzLabel]="award" [nzValue]="award"></nz-option>
+                            </nz-select>
+                        </div>             
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm" style="font-size:12px;">
+                        <div nz-col nzSpan="10">
+                            <label nz-checkbox formControlName="title">Shift Note Mandatory On Forced Log On/off : </label>
+                        </div>
+                        <div nz-col nzSpan="7">
+                            <label For="">Default App Note Category : </label>
+                        </div>
+                        <div nz-col nzSpan="7">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="title" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let award of awardEnforcementTypes" [nzLabel]="award" [nzValue]="award"></nz-option>
+                            </nz-select>
+                        </div>             
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="12"> 
+                            <label nz-checkbox formControlName="title">Hide Recipient Phone Number In App Display</label>
+                        </div>                        
+                    </div>
+                </nz-tab>
                 <nz-tab [nzTitle]="'Clinet Portal'"><div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
                     <p style="margin: 0px;">Clinet Portal Setting</p>
                 </div>

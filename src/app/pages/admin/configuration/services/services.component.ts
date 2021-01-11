@@ -36,6 +36,7 @@ export class ServicesComponent implements OnInit {
   competencyList:Array<any>//list competency;
   programz:Array<any>;
   mtaAlerts:Array<any>;
+  dataSets:Array<any>;
   subgroups:Array<any>;//populate dropdown
   status:Array<any>;//populate dropdown
   units:Array<any>;//populate dropdown
@@ -307,8 +308,9 @@ export class ServicesComponent implements OnInit {
     populateDropdowns(): void {
       this.mainGroupList = ['ONE ON ONE','CENTER BASED ACTIVITY','GROUP ACTIVITY','TRANSPORT','SLEEPOVER'];
       this.subGroupList = ['GENERAL','MEAL','TRAINING','STAFF DEVELOPMENT'];
-      this.status  = ['ATTRIBUTABLE','NON ATTRIBUTABLE'];
-      this.units  = ['HOUR','SERVICE'];
+      this.status   = ['ATTRIBUTABLE','NON ATTRIBUTABLE'];
+      this.units    = ['HOUR','SERVICE'];
+      this.dataSets = ['CACP','CSTDA','CTP','DEX','DFC','DVA','HACC','HAS','ICTD','NDIS'];
       let todayDate  = this.globalS.curreentDate();
 
       let sql ="SELECT * FROM DataDomains WHERE Domain = 'LIFECYCLEEVENTS'";

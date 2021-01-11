@@ -801,6 +801,172 @@
                             </div>
                         </div> 
                     </nz-tab>
+                    <nz-tab nzTitle="Report Menus">
+                        <div nz-row >
+                            <div nz-col [nzSpan]="6">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>NDIA Claims</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(102)" id="ndia-package-statement">
+                                                <i nz-icon nzType="read"></i>
+                                                NDIA Package Statement Print
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(103)" id="ndia-unclaimed-items">
+                                                <i nz-icon nzType="read"></i>
+                                                NDIA Unclaimed Items Report
+                                            </button>
+                                        </div><div>
+                                            <button nz-button nzType="default" (click) = "view(104)" id="ndia-batch-register">
+                                                <i nz-icon nzType="read"></i>
+                                                NDIA Batch Register Print
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="6">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>CDC Claims</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(97)" id="cdc-package-status">
+                                                <i nz-icon nzType="read"></i>
+                                                CDC Package Status Summary
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(98)" id="fee-verification-report">
+                                                <i nz-icon nzType="read"></i>
+                                                CDC FEE Verification Report
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(99)" id="claim-verification-report">
+                                                <i nz-icon nzType="read"></i>
+                                                CDC Claim Verification Report
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(100)" id="leave-verification-report">
+                                                <i nz-icon nzType="read"></i>
+                                                CDC Leave Verification Report
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(101)" id="medicine-claim-report">
+                                                <i nz-icon nzType="read"></i>
+                                                CDC Medicine Claim Report
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="6">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>Public & Print Rosters</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(91)" id="print-staff-rosters">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Staff Rosters
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(92)" id="print-location-rosters">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Location Rosters
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(93)" id="print-group-activity-rosters">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Group Activity Rosters
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(94)" id="print-transport-run-sheets">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Transport Run Sheets
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(95)" id="print-meal-run-sheets">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Meal Run Sheets
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(96)" id="print-staff-rosters">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Job Sheets
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div nz-col [nzSpan]="6">
+                                <ul nz-menu nzMode="horizontal">
+                                    <li nz-menu-item >
+                                        <i nz-icon nzType="user"></i>
+                                        <strong>Accounting Print Functions</strong> 
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(105)" id="print-invoices">
+                                                <i nz-icon nzType="read"></i>
+                                                Print/Reprint Invoices
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(106)" id="print-invoices-batch">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Invoice Batch Register
+                                            </button>
+                                        </div><div>
+                                            <button nz-button nzType="default" (click) = "view(107)" id="print-account-statement">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Account Statements
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(108)" id="print-reprint-recipts">
+                                                <i nz-icon nzType="read"></i>
+                                                Print/Reprint Receipts
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(109)" id="print-receipts-batch">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Receipts Batch Register
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(110)" id="print-deposit-slip">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Bank Deposit Slip
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(111)" id="print-aged-debtors">
+                                                <i nz-icon nzType="read"></i>
+                                                Print Aged Debtors Report
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" (click) = "view(112)" id="invouce-verification">
+                                                <i nz-icon nzType="read"></i>
+                                                Invoice Verification Report
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nz-tab>
                 </nz-tabset>
             </div>
         </div>

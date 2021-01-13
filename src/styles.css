@@ -189,7 +189,7 @@ nz-step.mini .ant-steps-item-container > .ant-steps-item-content *{
 }
 
 .word-break{
-      white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+    white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
     white-space: -webkit-pre-wrap;          /* Chrome & Safari */ 
     white-space: -pre-wrap;                 /* Opera 4-6 */
     white-space: -o-pre-wrap;               /* Opera 7 */
@@ -219,11 +219,6 @@ th.action{
     display: block;
     width: 100%;
     flex: 2;
-}
-.inner-content {   
-    
-    min-height: 100pt !important; 
-     
 }
 
 .ant-btn-rpts {

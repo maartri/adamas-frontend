@@ -5,7 +5,7 @@ import { Injectable, Injector } from '@angular/core';
 import { ListService } from '@services/index';
 
 import { ModalVariables } from '@modules/modules';
-declare var Dto: any;
+// declare var Dto: any;
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +23,6 @@ export class SwitchService {
         ) {
             this.listS = this.injector.get(ListService)
         }
-        
         
         getData(tabNo: number): Observable<any> {
             this.sqlCommand = '';
@@ -219,7 +218,7 @@ export class SwitchService {
                     title: 'Distribution Lists',
                     isMultiple: false
                 }
-                this.sqlCommand = "SELECT RecordNo, Recipient,Activity,Location,Program,Staff, Severity FROM IM_DistributionLists order by recipient"
+                this.sqlCommand = "SELECT RecordNo, Recipient,Activity,Location,Program,Staff, budget FROM IM_DistributionLists order by recipient"
                 
                 break;
                 case 25:

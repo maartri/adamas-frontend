@@ -19,6 +19,7 @@ import getHours from 'date-fns/getHours'
 import getMinutes from 'date-fns/getMinutes'
 import differenceInDays from 'date-fns/differenceInDays'
 import differenceInWeeks from 'date-fns/differenceInWeeks'
+import differenceInMinutes from 'date-fns/differenceInMinutes'
 import { Jwt, DateTimeVariables } from '@modules/modules';
 
 const helper = new JwtHelperService();
@@ -451,6 +452,10 @@ export class GlobalService {
         const newDate = format(Date.parse(date),'dd/MM/yyyy');
         return newDate;
     }
+    convertDbDate(date:string){
+        const newDate = format(Date.parse(date),'yyyy/MM/dd');
+        return newDate;
+    }
 
     VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(date: string | Date): Date | null {
         if (!date) return null;
@@ -537,6 +542,11 @@ export class GlobalService {
         }
     }
 
+    computeTimeDifference(_start: Date, _end: Date){
+        return differenceInMinutes(_end, _start);
+    }
+
+
     computeTimeDATE_FNS(_start: any, _end: any): DateTimeVariables {
         
         const minutesInAnHour = 60;
@@ -586,7 +596,10 @@ export class GlobalService {
         else
             return data;
     }
-
+ 
+    curreentDate(){
+        return moment(new Date()).format('MM-DD-YYYY');
+    } 
     filterDate(date: any): string {
         return moment(date).format('DD/MM/YYYY')
     }

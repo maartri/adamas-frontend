@@ -28,21 +28,27 @@
                 <div nz-row *ngIf="current == 1">
                     <div nz-row nzGutter="24" [formGroup]="itemGroup"> 
                         <div nz-col nzSpan="24">
-                            <div class="form-group">
-                                <nz-select formControlName="referralType" style="width:11.3rem" nzAllowClear nzPlaceHolder="Referral Type">
-                                    <!-- <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option> -->
-                                </nz-select>
+                            <div nz-row>
+                                <div nz-col nzSpan="16">
+                                    <div class="form-group">
+                                        <nz-select formControlName="referralType" style="width:100%" nzAllowClear nzPlaceHolder="Referral Type">
+                                            <!-- <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option> -->
+                                        </nz-select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <nz-date-picker formControlName="date" (ngModelChange)="onChange($event)" nzPlaceHolder="Date"></nz-date-picker>
-                            </div>
-                        </div>
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <input nz-input placeholder="Ref/No" formControlName="refNo" />
-                            </div>
+                           <div nz-row>
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <nz-date-picker formControlName="date" (ngModelChange)="onChange($event)" nzPlaceHolder="Date"></nz-date-picker>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <div class="form-group">
+                                        <input nz-input placeholder="Ref/No" formControlName="refNo" />
+                                    </div>
+                                </div>
+                           </div>
                         </div>
                     </div>
                     <hr>

@@ -7,10 +7,13 @@
         <div nz-col nzSpan="16">
             <ul *ngIf="selected">
                 <li>
-                    <div (click)="confirm(1)" nz-tooltip nzTooltipTitle="Add Timesheets"><i nz-icon nzType="plus" nzTheme="outline"></i></div>
+                    <div (click)="confirm(1)" nz-tooltip nzTooltipTitle="Add Timesheet Line"><i nz-icon nzType="plus" nzTheme="outline"></i></div>
                 </li>
                 <li>
-                    <div (click)="confirm(2)" nz-tooltip nzTooltipTitle="Delete Highlighted Status"><i nz-icon nzType="minus" nzTheme="outline"></i></div>
+                    <div (click)="confirm(2)" nz-tooltip nzTooltipTitle="Delete Timesheet Line"><i nz-icon nzType="minus" nzTheme="outline"></i></div>
+                </li>
+                <li>
+                    <div (click)="confirm(7)" nz-tooltip nzTooltipTitle="Edit Timesheet Line"><i nz-icon nzType="edit" nzTheme="outline"></i></div>
                 </li>
                 <li>
                     <div (click)="confirm(3)" nz-tooltip nzTooltipTitle="Delete All Unapproved"><i nz-icon nzType="delete" nzTheme="outline"></i></div>
@@ -93,7 +96,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn" [class.selected]="data.selected">
+                    <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn" [class.selected]="data.selected" (dblclick)="details(data)">
                         <td nzLeft="0px">{{ data.shiftbookNo}}</td>
                         <td nzLeft="70px">{{ data.date | date: 'dd/MM/yyyy' }}</td>
                         <td nzLeft="165px">{{ data.startTime | date: 'HH:mm' }}</td>
@@ -243,16 +246,18 @@
                     <div class="form-group">
                         <label for="">Program</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of programsList" [nzValue]="list.progName" [nzLabel]="list.progName"></nz-option>
+                            <nz-option *ngFor="let list of programsList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
                         </nz-select>
                     </div>
                     <div class="form-group">
                         <label for="">Service/Activity/Item</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list.activity" [nzLabel]="list.activity"></nz-option>
+                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
                         </nz-select>                        
                         <div>
-                            <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="timesheetForm.get('program').value && serviceActivityList?.length == 0" nzType="warning" nzMessage="No Activities found"></nz-alert>
+                            <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="timesheetForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
                             <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
                         </div>
                     </div>
@@ -276,8 +281,8 @@
                         <label for="">Category</label>
                         <nz-select formControlName="analysisCode"
                             [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of analysisCodeList" [nzValue]="list" [nzLabel]="list">
-                            </nz-option>
+                            <nz-option *ngFor="let list of analysisCodeList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultCategory" [nzValue]="defaultCategory" nzHide></nz-option>
                         </nz-select>
                     </div>
                 </div>

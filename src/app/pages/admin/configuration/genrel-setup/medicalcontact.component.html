@@ -42,8 +42,8 @@
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <!-- <label nzFor="Type">Type:</label> -->
-                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="type" nzShowSearch nzAllowClear style="width:100%;" required>
-                        <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
+                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;" required>
+                        <nz-option *ngFor="let mtype of medicaltype" [nzValue]="mtype" [nzLabel]="mtype"></nz-option> 
                         </nz-select>
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
@@ -60,9 +60,10 @@
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <!-- <label nzFor="Suburb">Suburb:</label> -->
-                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="suburb" nzPlaceHolder="Suburb"  nzShowSearch nzAllowClear style="width:100%;" required>
+                        <suburb formControlName="suburb"></suburb>
+                        <!-- <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="suburb" nzPlaceHolder="Suburb"  nzShowSearch nzAllowClear style="width:100%;" required>
                         <nz-option *ngFor="" [nzValue]="" [nzLabel]=""></nz-option> 
-                        </nz-select>
+                        </nz-select> -->
                     </div>
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <!-- <label nzFor="Phone 1">Phone 1:</label> -->

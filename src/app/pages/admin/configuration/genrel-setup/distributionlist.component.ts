@@ -1,6 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { ListService, MenuService } from '@services/index';
 import { GlobalService } from '@services/global.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-distributionlist',
@@ -13,27 +16,101 @@ import { GlobalService } from '@services/global.service';
 export class DistributionlistComponent implements OnInit {
 
   tableData: Array<any>;
+  staff:Array<any>;
+  listType:Array<any>;
+  program:Array<any>;
+  recipients:Array<any>;
+  locations:Array<any>;
+  services:Array<any>;
+  severity:Array<any>;
+  checked = true;
+  checked2=true;
   loading: boolean = false;
   modalOpen: boolean = false;
   current: number = 0;
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  heading:string = "Add New Distribution List"
+  heading:string = "Add Distribution List";
+  private unsubscribe: Subject<void> = new Subject();
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
+    private listS:ListService,
+    private menuS:MenuService,
     private formBuilder: FormBuilder
   ){}
   
   ngOnInit(): void {
     this.buildForm();
-    this.tableData = [{ code:"Other",name:"K AGGARWAL"},{ code:"Other",name:"HILDA SMITH"}];
+    this.populateDropdowns();
+    this.loadData();
+    // this.tableData = [{ code:"Other",name:"K AGGARWAL"},{ code:"Other",name:"HILDA SMITH"}];
     this.loading = false;
     this.cd.detectChanges();
   }
-  
+  loadData(){
+    let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,ListName as ltype,Severity FROM IM_DistributionLists order by recipient";
+    this.loading = true;
+    this.listS.getlist(sql).subscribe(data => {
+      this.tableData = data;
+      this.loading = false;
+    });
+    // this.staff = ['ABBAS A','ADAMS D S','WATTS T','GOEL T J','DARLISON S','TRINIDAD M','ALONSO J C','AHMAD A','AAAQWERTY TOM','AGGARWAL K H','MALIK I','SMITH H','MILLER A','AI BBCRI DAVIS B C','DIAZ J P','ALLEN C J','HARPER B','ALONSO J C','','DARLISION AWARD','DARLISION AWARD 2','DARLISION AWARD 3','DARLISION AWARD 3','DARLISION AWARD 4','DARLISION AWARD 5','DARLISION AWARD 6','DARLISION AWARD 7'];
+  }
+  populateDropdowns(){
+    // this.staff = ['ABBAS A','ADAMS D S','WATTS T','GOEL T J','DARLISON S','TRINIDAD M','ALONSO J C','AHMAD A','AAAQWERTY TOM','AGGARWAL K H','MALIK I','SMITH H','MILLER A','AI BBCRI DAVIS B C','DIAZ J P','ALLEN C J','HARPER B','ALONSO J C','','DARLISION AWARD','DARLISION AWARD 2','DARLISION AWARD 3','DARLISION AWARD 3','DARLISION AWARD 4','DARLISION AWARD 5','DARLISION AWARD 6','DARLISION AWARD 7'];
+    this.listType = ['INCIDENT','DOCUSIGN'];
+    let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
+    this.listS.getlist(sql).subscribe(data => {
+      this.services = data;
+      let da ={
+        "title" :"ALL"
+      };
+      this.services.unshift(da);
+      console.log(this.services);
+    });
+
+    let staff_query = "SELECT ACCOUNTNO as name FROM STAFF WHERE CommencementDate IS NOT NULL AND TerminationDate IS NULL AND ACCOUNTNO > '!Z'";
+    this.listS.getlist(staff_query).subscribe(data => {
+      this.staff = data;
+      let da ={
+        "name" :"ALL"
+      };
+      this.staff.unshift(da);
+    });
+    let prog = "SELECT [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
+    this.listS.getlist(prog).subscribe(data => {
+      this.program = data;
+      let da ={
+        "name" :"ALL"
+      };
+      this.program.unshift(da);
+      // this.staff.unshift('ALL');
+    });
+    let loca = "SELECT [NAME] FROM CSTDAOutlets WHERE [NAME] IS NOT NULL";
+    this.listS.getlist(loca).subscribe(data => {
+      this.locations = data;
+      let da ={
+        "name" :"ALL"
+      };
+      this.locations.unshift(da);
+      // this.locations.unshift('ALL');
+    });
+    let recip = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
+    this.listS.getlist(recip).subscribe(data => {
+      this.recipients = data;
+      let da ={
+        "name" :"ALL"
+      };
+      this.recipients.unshift(da);
+      // this.recipients.unshift();
+    });
+
+    this.severity = ['ALL','LOW','MEDIUM','HIGH','CRITICAL'];
+  }
   showAddModal() {
+    this.heading = "Add Distribution List"
     this.resetModal();
     this.modalOpen = true;
   }
@@ -54,21 +131,26 @@ export class DistributionlistComponent implements OnInit {
       staff,
       service,
       assignee,
+      program,
       location,
-      recepient,
-      saverity,
+      recipient,
+      activity,
+      severity,
       mandatory,
+      recordNo,
 
     } = this.tableData[index];
       this.inputForm.patchValue({
-        name:ltype,
-        code:staff,
-        service:service,
+        ltype:ltype,
+        staff:staff,
+        service:activity,
         assignee:assignee,
+        prgm:program,
         location:location,
-        recepient:recepient,
-        saverity:saverity,
+        recepient:recipient,
+        saverity:severity,
         mandatory:mandatory,  
+        recordNo:recordNo,
    });
   }
   loadtitle(){
@@ -85,10 +167,56 @@ export class DistributionlistComponent implements OnInit {
     this.current += 1;
   }
   save() {
-    this.postLoading = true;
-    this.globalS.sToast('Success', 'Changes saved');
-    this.handleCancel();
-    this.resetModal();
+      
+    if(!this.isUpdate){        
+    this.postLoading = true;   
+    const group = this.inputForm;
+    let ltype     = group.get('ltype').value;
+    let staff = group.get('staff').value;
+    let service = group.get('service').value;
+    let prgm   = group.get('prgm').value;
+    let location   = group.get('location').value;
+    let recepient   = group.get('recepient').value;
+    let saverity      = group.get('saverity').value;
+    let values = recepient+"','"+service+"','"+location+"','"+prgm+"','"+staff+"','"+saverity+"','"+ltype;
+    let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Severity],[ListName]) Values ('"+values+"')"; 
+    this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+       
+        if (data) 
+        this.globalS.sToast('Success', 'Saved successful');     
+        else
+        this.globalS.sToast('Success', 'Saved successful');
+        this.loadData();
+        this.postLoading = false;          
+        this.handleCancel();
+        this.resetModal();
+      });
+      }else{
+        this.postLoading  = true;   
+        const group       = this.inputForm;
+        let ltype         = group.get('ltype').value;
+        let staff         = group.get('staff').value;
+        let service       = group.get('service').value;
+        let prgm          = group.get('prgm').value;
+        let location      = group.get('location').value;
+        let recepient     = group.get('recepient').value;
+        let saverity      = group.get('saverity').value;
+        let recordNo      = group.get('recordNo').value;
+        let sql  = "Update IM_DistributionLists SET [Recipient]='"+ recepient + "',[Activity] = '"+ service + "',[Program] = '"+ prgm + "',[Staff] = '"+ staff+ "',[Severity] = '"+ saverity + "',[ListName] = '"+ ltype+ "',[Location] = '"+ location+ "'  WHERE [recordNo] ='"+recordNo+"'";
+        // console.log(sql);
+        // return false;
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+        if (data) 
+        this.globalS.sToast('Success', 'Saved successful');     
+        else
+        this.globalS.sToast('Success', 'Saved successful');
+        this.postLoading = false;      
+        this.loadData();
+        this.handleCancel();
+        this.resetModal();   
+        this.isUpdate = false; 
+        });
+   }
   }
   
   delete(data: any) {
@@ -99,11 +227,13 @@ export class DistributionlistComponent implements OnInit {
       ltype:'',
       staff:'',
       service:'',
-      assignee:'',
+      assignee:true,
+      prgm:'',
       location:'',
       recepient:'',
       saverity:'',
-      mandatory:'',
+      mandatory:true,
+      recordNo:null,
     });
   }
 

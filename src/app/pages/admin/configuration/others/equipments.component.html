@@ -1,126 +1,162 @@
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i>Equipments</button>
+        </div>
+    </div>
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Equipments</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
-                    <th class="left">Type</th>
-                    <th class="left">Item ID</th>
-                    <th class="left">Date Disposed</th>
-                    <th class="left">Last Service</th>
-                    <th class="left">Equip Code</th>
-                    <th class="left">Last Service</th>
-                    <th class="left">Lock Box Code</th>
-                    <th class="left">Lock Box Location</th>
-                    <th class="left">Purchase Date</th>
-                    <th class="left">Purchase Amount</th>
-                    <th class="left">Notes</th>
+                    <th nzLeft nzBreakWord>Type</th>
+                    <th nzLeft nzBreakWord>Item ID</th>
+                    <th nzLeft nzBreakWord>Date Disposed</th>
+                    <th nzLeft nzBreakWord>Last Service</th>
+                    <th nzLeft nzBreakWord>Equip Code</th>
+                    <th nzLeft nzBreakWord>Last Service</th>
+                    <th nzLeft nzBreakWord>Lock Box Code</th>
+                    <th nzLeft nzBreakWord>Lock Box Location</th>
+                    <th nzLeft nzBreakWord>Purchase Date</th>
+                    <th nzLeft nzBreakWord>Purchase Amount</th>
+                    <th nzLeft nzBreakWord>Notes</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td class="left">{{ data.type  }} </td>
-                    <td class="left">{{ data.itemID  }} </td>
-                    <td class="left">{{ data.dateDisposed  }} </td>
-                    <td class="left">{{ data.lastService  }} </td>
-                    <td class="left">{{ data.equipCode  }} </td>
-                    <td class="left">{{ data.lockBoxCode  }} </td>
-                    <td class="left">{{ data.lockBoxLocation  }} </td>
-                    <td class="left">{{ data.equipCode  }} </td>
-                    <td class="left">{{ data.purchaseDate}}</td>
-                    <td class="left">{{ data.purchaseAmount}}</td>
-                    <td class="left">{{ data.notes}}</td>
-                    <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <td nzLeft nzBreakWord>{{ data.type  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.itemID  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.dateDisposed  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.lastService  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.equipCode  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.lockBoxCode  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.lockBoxLocation  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.equipCode  }} </td>
+                    <td nzLeft nzBreakWord>{{ data.purchaseDate}}</td>
+                    <td nzLeft nzBreakWord>{{ data.purchaseAmount}}</td>
+                    <td nzLeft nzBreakWord>{{ data.notes}}</td>
+                    <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure Equipment ?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
                     </tr>
                 </tbody>
             </nz-table>
         </div>
     </div>
+    
     <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
         <div class="flexy">
-                <form nz-form [formGroup]="inputForm">
-                        <div nz-row nzGutter="24" class="mrg-btm" >
-                            <nz-tabset>
-                                <nz-tab nzTitle="ASSETTS/ITEM">
-                                    <div nz-col nzGutter="24" class="mrg-btm">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" placeholder="Type" formControlName="type" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let group of groups" [nzValue]="group" [nzLabel]="group"></nz-option> 
-                                        </nz-select>
-                                    </div>
-                                    <div nz-col nzSpan="24" class="mrg-btm">
-                                        <input nz-input placeholder="Description" formControlName="description" />
-                                    </div>
-                                    <div nz-col nzSpan="24" class="mrg-btm">
-                                        <input nz-input placeholder="Asset No" formControlName="asset_no"/>
-                                    </div>
-                                    <div nz-col nzSpan="24" class="mrg-btm">
-                                        <input nz-input placeholder="Serial No" formControlName="serial_no"/>
-                                    </div>
-                                    <div nz-col nzSpan="12" class="mrg-btm">
-                                        <nz-date-picker [nzPlaceHolder]="'purchase date'" formControlName="purchase_date" [nzFormat]="dateFormat"></nz-date-picker>
-                                    </div>
-                                    <div nz-col nzSpan="12" class="mrg-btm">
-                                        <input nz-input placeholder="Purchase $" formControlName="purchase_am"/>
-                                    </div>
-                                    <div nz-col nzSpan="24" class="mrg-btm">
-                                        <nz-date-picker [nzPlaceHolder]="'Last Service'" formControlName="last_service" [nzFormat]="dateFormat"></nz-date-picker>
-                                    </div>
-                                    <div nz-col nzSpan="12" class="mrg-btm">
-                                        <input nz-input placeholder="lock Box Loctn" formControlName="lockloct"/>
-                                    </div>
-                                    <div nz-col nzSpan="12" class="mrg-btm">
-                                        <input nz-input placeholder="lock Box Code" formControlName="lockcode"/>
-                                    </div>
-                                    <div nz-col nzSpan="24" class="mrg-btm">
-                                        <nz-date-picker [nzPlaceHolder]="'Disposal Date'" formControlName="disposal" [nzFormat]="dateFormat"></nz-date-picker>
-                                    </div>
-                                    <div nz-col nzSpan="24" class="mrg-btm">
-                                        <label for="Name">Notes:</label>
-                                        <textarea rows="6" nz-input  formControlName="notes"></textarea>
-                                    </div>
-                                </nz-tab>
-                                <nz-tab nzTitle="SERVICE HISTORY">
-                                        <button class="botton success" (click)="showServiceModal()">Add SERVICE HISTORY</button>
-                                        <nz-table #basicTablein [nzData]="ServiceData">
-                                            <thead>
-                                                <tr>
-                                                    <th class="left">Category</th>
-                                                    <th class="left">Service Date</th>
-                                                    <th class="left">Reminder Date</th>
-                                                    <th class="left">Due Date</th>
-                                                    <th class="left">Details</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let data of basicTablein.data;let i = index;">
-                                                    <td class="left">{{ data.name  }} </td>
-                                                    <td class="left">{{ data.branch  }} </td>
-                                                    <td class="left">{{ data.agroup  }} </td>
-                                                    <td class="left">{{ data.agroup  }} </td>
-                                                    <td class="left">{{ data.agroup  }} </td>
-                                                    <!-- <td class="left">{{ data.rate  }} </td> -->
-                                                    <td class="left"><a (click)="showEditModal(i)">Update</a>
-                                                        <nz-divider nzType="vertical"></nz-divider>
-                                                        <a nz-popconfirm nzPopconfirmTitle="Are you sure You want to delete This Service History ?"
-                                                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                                                </tr>
-                                            </tbody>
-                                        </nz-table>
-                                </nz-tab>
-                            </nz-tabset>     
-                        </div>
+            <form nz-form [formGroup]="inputForm">
+                <div nz-row nzGutter="24" class="mrg-btm" >
+                    <nz-tabset>
+                        <nz-tab nzTitle="ASSETTS/ITEM">
+                            <div nz-col nzGutter="24" class="mrg-btm">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzPlaceHolder]="'Type'" formControlName="type" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-option *ngFor="let group of groups" [nzValue]="group.description" [nzLabel]="group.description"></nz-option> 
+                                </nz-select>
+                            </div>
+                            <div nz-col nzSpan="24" class="mrg-btm">
+                                <input nz-input placeholder="Description" formControlName="description" />
+                            </div>
+                            <div nz-col nzSpan="24" class="mrg-btm">
+                                <input nz-input placeholder="Asset No" formControlName="asset_no"/>
+                            </div>
+                            <div nz-col nzSpan="24" class="mrg-btm">
+                                <input nz-input placeholder="Serial No" formControlName="serial_no"/>
+                            </div>
+                            <div nz-col nzSpan="12" class="mrg-btm">
+                                <nz-date-picker [nzPlaceHolder]="'purchase date'" formControlName="purchase_date" [nzFormat]="dateFormat"></nz-date-picker>
+                            </div>
+                            <div nz-col nzSpan="12" class="mrg-btm">
+                                <input nz-input placeholder="Purchase $" formControlName="purchase_am"/>
+                            </div>
+                            <div nz-col nzSpan="24" class="mrg-btm">
+                                <nz-date-picker [nzPlaceHolder]="'Last Service'" formControlName="last_service" [nzFormat]="dateFormat"></nz-date-picker>
+                            </div>
+                            <div nz-col nzSpan="12" class="mrg-btm">
+                                <input nz-input placeholder="lock Box Loctn" formControlName="lockloct"/>
+                            </div>
+                            <div nz-col nzSpan="12" class="mrg-btm">
+                                <input nz-input placeholder="lock Box Code" formControlName="lockcode"/>
+                            </div>
+                            <div nz-col nzSpan="24" class="mrg-btm">
+                                <nz-date-picker [nzPlaceHolder]="'Disposal Date'" formControlName="disposal" [nzFormat]="dateFormat"></nz-date-picker>
+                            </div>
+                            <div nz-col nzSpan="24" class="mrg-btm">
+                                <label for="Name">Notes:</label>
+                                <textarea rows="6" nz-input  formControlName="notes"></textarea>
+                            </div>
+                        </nz-tab>
+                        <nz-tab nzTitle="SERVICE HISTORY">
+                            <button class="botton success" (click)="showServiceModal()">Add SERVICE HISTORY</button>
+                            <nz-table #basicTable [nzData]="tableSData"  [nzShowPagination]="true" [nzFrontPagination]="true" [nzLoading]="loading">
+                                <thead>
+                                    <tr>
+                                        <th nzLeft nzBreakWord>Category</th>
+                                        <th nzLeft nzBreakWord>Details</th>
+                                        <th nzLeft nzBreakWord>Service Date</th>
+                                        <th nzLeft nzBreakWord>Reminder Date</th>
+                                        <th nzLeft nzBreakWord>Due Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let dataa of tableSData;let i = index;">
+                                        <td nzLeft nzBreakWord>{{ dataa.category  }} </td>
+                                        <td nzLeft nzBreakWord>{{ dataa.details  }} </td>
+                                        <td nzLeft nzBreakWord>{{ dataa.serviceDate  }} </td>
+                                        <td nzLeft nzBreakWord>{{ dataa.reminderDate  }} </td>
+                                        <td nzLeft nzBreakWord>{{ dataa.dueDate  }} </td>
+                                        <td nzLeft nzBreakWord><a (click)="showEditServiceModal(i)">Update</a>
+                                            <nz-divider nzType="vertical"></nz-divider>
+                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure You want to delete This Service History ?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(dataa)">Delete</a></td>
+                                        </tr>
+                                    </tbody>
+                                </nz-table>
+                            </nz-tab>
+                        </nz-tabset>     
+                    </div>
                 </form>        
                 <div *nzModalFooter>
-                        <ng-container>
-                            <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('type').value || !this.inputForm.get('description').value" (click)="save()" *ngIf="current === 0">
-                                <span>Save</span>
-                            </button>
-                        </ng-container>
+                    <ng-container>
+                        <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('type').value || !this.inputForm.get('description').value" (click)="save()" *ngIf="current === 0">
+                            <span>Save</span>
+                        </button>
+                    </ng-container>
                 </div>
-        </div>
-    </nz-modal>
+            </div>
+        </nz-modal>
+        
+        <nz-modal [nzWidth]="400"  [(nzVisible)]="isVisible" nzTitle="Service Detail ADD\CHANGE" (nzOnCancel)="handleSCancel()" (nzOnOk)="handleOk()">
+                <form nz-form [formGroup]="inputForm" >
+                    <div nz-row nzGutter="24">    
+                        <div  class="mrg-btm">
+                            <input nz-input placeholder="Category" formControlName="category"/>
+                        </div>
+                        <div   class="mrg-btm" >
+                            <nz-date-picker [nzPlaceHolder]="'Service Date'" formControlName="service_date" [nzFormat]="dateFormat"></nz-date-picker>
+                        </div>
+                        <div   class="mrg-btm" >
+                            <nz-date-picker [nzPlaceHolder]="'Reminder Date'" formControlName="reminder_date" [nzFormat]="dateFormat"></nz-date-picker>
+                        </div>
+                        <div   class="mrg-btm" >
+                            <nz-date-picker [nzPlaceHolder]="'Due Date'" formControlName="due_date" [nzFormat]="dateFormat"></nz-date-picker>
+                        </div>
+                        <div   class="mrg-btm">
+                            <textarea rows="6" nz-input formControlName="details"></textarea>
+                        </div>
+                    </div>
+                </form>
+                <div *nzModalFooter>
+                    <ng-container>
+                        <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" [disabled]="!this.inputForm.get('category').value">
+                            <span>Save</span>
+                        </button>
+                    </ng-container>
+                </div>
+        </nz-modal>
+</div>        
+        

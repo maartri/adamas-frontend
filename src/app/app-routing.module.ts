@@ -224,6 +224,18 @@ import { ServiceNoteCategoriesComponent } from '@admin/configuration/staff/servi
 import { VehiclesComponent } from '@admin/configuration/others/vehicles.component';
 import { ActivityGroupsComponent } from '@admin/configuration/others/activity-groups.component';
 import { EquipmentsComponent } from '@admin/configuration/others/equipments.component';
+import { StaffCompetenciesComponent } from '@admin/configuration/staff/staff-competencies.component';
+import { CentrFacilityLocationComponent } from '@admin/configuration/others/centr-facility-location.component';
+import { FundingSourcesComponent } from '@admin/configuration/others/funding-sources.component';
+import { PayTypeComponent } from '@admin/configuration/others/pay-type.component';
+import { ProgramPackagesComponent } from '@admin/configuration/others/program-packages.component';
+import { ServicesComponent } from '@admin/configuration/services/services.component';
+import { ItemsConsumablesComponent } from '@admin/configuration/services/items-consumables.component';
+import { MenuMealsComponent } from '@admin/configuration/services/menu-meals.component';
+import { CaseMangementAdminComponent } from '@admin/configuration/services/case-mangement-admin.component';
+import { StaffAdminActivitiesComponent } from '@admin/configuration/services/staff-admin-activities.component';
+import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
+import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
 
 const routes: Routes = [
   {
@@ -493,6 +505,10 @@ const routes: Routes = [
         component: ConfigurationAdmin
       },
       {
+        path: 'companies',
+        component: CompaniesComponent,
+      },
+      {
         path: 'branches',
         component: BranchesComponent
       },
@@ -753,6 +769,10 @@ const routes: Routes = [
         component:StaffCompetencyGroupComponent
       },
       {
+        path:"staff-competency",
+        component:StaffCompetenciesComponent
+      },
+      {
         path:"hr-notes-categories",
         component:StaffNotesCategoriesComponent
       },
@@ -803,6 +823,44 @@ const routes: Routes = [
       {
         path:"equipments",
         component:EquipmentsComponent,
+      },
+      {
+        path:"center-facility-location",
+        component:CentrFacilityLocationComponent,
+      },{
+        path:"funding-sources",
+        component:FundingSourcesComponent,
+      },
+      {
+        path:"pay-types",
+        component:PayTypeComponent,
+      },{
+        path:"program-packages",
+        component:ProgramPackagesComponent
+      },
+      {
+        path:"services",
+        component:ServicesComponent
+      },
+      {
+        path:"items-consumables",
+        component:ItemsConsumablesComponent
+      },
+      {
+        path:"menu-meals",
+        component:MenuMealsComponent,
+      },
+      {
+        path:"case-management-admin",
+        component:CaseMangementAdminComponent
+      },
+      {
+        path:"staff-admin-activities",
+        component:StaffAdminActivitiesComponent
+      },
+      {
+        path:"recipient-absences",
+        component:RecipientAbsenceComponent,
       },
       {
         path: 'rosters',
@@ -1034,6 +1092,7 @@ export const PAGE_COMPONENTS = [
   ProfilePage,
   
   //Configuration
+  CompaniesComponent,
   BranchesComponent,
   FundingRegionsComponent,
   ClaimratesComponent,
@@ -1098,6 +1157,7 @@ export const PAGE_COMPONENTS = [
   StaffUserGroupsComponent,
   AwardLevelsComponent,
   StaffCompetencyGroupComponent,
+  StaffCompetenciesComponent,
   StaffNotesCategoriesComponent,
   StaffPositionsComponent,
   StaffTeamsComponent,
@@ -1111,6 +1171,16 @@ export const PAGE_COMPONENTS = [
   VehiclesComponent,
   ActivityGroupsComponent,
   EquipmentsComponent,
+  CentrFacilityLocationComponent,
+  FundingSourcesComponent,
+  PayTypeComponent,
+  ProgramPackagesComponent,
+  ServicesComponent,
+  ItemsConsumablesComponent,
+  MenuMealsComponent,
+  CaseMangementAdminComponent,
+  StaffAdminActivitiesComponent,
+  RecipientAbsenceComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

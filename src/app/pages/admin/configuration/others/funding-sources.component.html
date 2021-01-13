@@ -1,0 +1,69 @@
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i>Funding Source</button>
+        </div>
+    </div>
+<div nz-row>
+    <div nz-col>
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Name/Title</th>
+                    <th class="left">GL Revenue A/c</th>
+                    <th class="left">GL Cost A/c</th>
+                    <th class="left">End Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                <td class="left">{{ data.description  }} </td>
+                <td class="left">{{ data.user1  }} </td>
+                <td class="left">{{ data.user2  }} </td>
+                <td class="left">{{ (data.endDate === 'NULL') ? '' : data.endDate }} </td>
+                <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
+                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+<nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadtitle()" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+    <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+        <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
+    </nz-steps>
+    <nz-divider class="full-height" nzType="vertical"></nz-divider>
+        <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+            <div *ngIf="current == 0">
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    <label for="CDC Item">Name/Title:</label>
+                    <input nz-input placeholder="Name/Title"  formControlName="name" />
+                </div>
+                <div nz-row nzGutter="24" class="mrg-btm">
+                        <label for="GL Revenue A/C">GL Revenue A/C:</label>
+                        <input nz-input placeholder="GL Revenue A/C"  formControlName="glrevnue" />
+                </div>
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    <label for="GL Revenue A/C">GL Cost A/C:</label>
+                    <input nz-input placeholder="GL Cost A/C"  formControlName="glcost" />
+                </div>
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    <label for="End Date">End Date:</label>
+                    <nz-date-picker [nzPlaceHolder]="'End'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
+                </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+                <ng-container>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('name').value" (click)="save()" *ngIf="current === 0">
+                        <span>Save</span>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+</nz-modal>
+</div>

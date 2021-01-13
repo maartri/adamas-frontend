@@ -1,0 +1,255 @@
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i>Agency Pay Types</button>
+        </div>
+    </div>
+<div nz-row>
+    <div nz-col>
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Code</th>
+                    <th class="left">Pay Category</th>
+                    <th class="left">Sub Group</th>
+                    <th class="left">Pay Amount</th>
+                    <th class="left">Pay Unit</th>
+                    <th class="left">End Date</th>
+                    <th class="left">Description</th>
+                    <th class="left">Pay ID</th>
+                    <th class="left">Pay Group</th>
+                    <th class="left">Pay Type</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;">
+                    <td class="left">{{ data.code  }} </td>
+                    <td class="left">{{ data.payCategory  }} </td>
+                    <td class="left">{{ data.subGroup  }} </td>
+                    <td class="left">{{ data.payAmount  }} </td>
+                    <td class="left">{{ data.payUnit  }} </td>
+                    <td class="left">{{ data.endDate  }} </td>
+                    <td class="left">{{ data.description  }} </td>
+                    <td class="left">{{ data.payID  }} </td>
+                    <td class="left">{{ data.payGroup  }} </td>
+                    <td class="left">{{ data.payType  }} </td>
+                    <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+    <nz-modal [nzWidth]="900" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+        <div class="flexy">
+            <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+                <nz-step class="mini" nzTitle="General" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="3rd Party Payrool Info" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Act. 1" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Act. 2" nzDescription=""></nz-step>
+            </nz-steps>
+            <nz-divider class="full-height" nzType="vertical"></nz-divider>
+            <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+                <div *ngIf="current == 0">
+                    <div nz-row nzGutter="24" class="mrg-btm">
+                        <div nz-col nzSpan="24" class="mrg-btm">
+                            <h2 style="color:#1890FF;">Pay Type Details</h2>
+                        </div>
+                        <div nz-col nzSpan="24" class="mrg-btm">
+                            <div nz-col nzSpan="16" class="mrg-btm">
+                                
+                                <div class="mrg-btm" nz-col nzSpan="24">
+                                    <input nz-input placeholder="Code"  formControlName="code" />
+                                </div>
+                                <div class="mrg-btm" nz-col nzSpan="24">
+                                    <textarea rows="4" nz-input placeholder="Description" formControlName="description"></textarea>
+                                </div>
+                                <div class="mrg-btm" nz-col nzSpan="24">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let payt of paytypes" [nzLabel]="payt" [nzValue]="payt"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div class="mrg-btm" nz-col nzSpan="24">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="subgroup" nzPlaceHolder="SubGroup" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub" [nzValue]="sub"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div class="mrg-btm" nz-col nzSpan="24">
+                                    <input nz-input placeholder="Pay Rate"  formControlName="payrate" />
+                                </div>
+                                <div nz-col nzSpan="8" class="mrg-btm">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="unit" nzPlaceHolder="Unit" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let unit of units" [nzLabel]="unit" [nzValue]="unit"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div nz-col nzSpan="12" class="mrg-btm">
+                                    <label nz-checkbox  formControlName="casuals">Applicable to Casuals</label>
+                                </div>
+                                <div class="mrg-btm" nz-col nzSpan="24">
+                                    <nz-date-picker [nzPlaceHolder]="'End Date'" formControlName="end" [nzFormat]="dateFormat"></nz-date-picker>
+                                </div>
+                                <div nz-col nzSpan="4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="current == 1">
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <h2 style="color:#1890FF;">Other Payroll Information</h2>
+                    </div>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <div nz-col nzSpan="16" class="mrg-btm">
+                            <div class="mrg-btm" nz-col nzSpan="16">
+                                <input nz-input placeholder="PAY CODE"  formControlName="payid" />
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <label nz-checkbox  formControlName="exportfrompay">EXCLUDE FROM PAY EXPORT</label>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+                <div *ngIf="current == 2">
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <div nz-col nzSpan="12" class="">
+                            <h2 style="color:#1890FF;">Roster Actions</h2>
+                        </div>
+                        <div nz-col nzSpan="" class="">
+                            <label nz-checkbox formControlName="conflict">Can Conflict</label>
+                        </div>
+                    </div>
+                    <nz-divider nzText="Roster Restrictions" nzOrientation="left"></nz-divider>
+                    <div nz-row nzGutter=24>
+                        <div nz-col nzSpan="20" class="mrg-btm">
+                            <div class="mrg-btm" nz-col nzSpan="24">
+                                <label for="Can Only Be Roasted" class="mrg-btm">Can Only Be Roasted:</label> 
+                                Mon <label nz-checkbox  formControlName="day1"></label>
+                                Tue <label nz-checkbox  formControlName="day2"></label>
+                                Wed <label nz-checkbox  formControlName="day3"></label>
+                                Thu <label nz-checkbox  formControlName="day4"></label>
+                                Fri <label nz-checkbox  formControlName="day5"></label>
+                                Sat <label nz-checkbox  formControlName="day6"></label>
+                                Sun <label nz-checkbox  formControlName="day7"></label>
+                                Pub Hol <label nz-checkbox  formControlName="day0"></label>
+                            </div>
+                            <div nz-row nzSpan="24">
+                                <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
+                                    <div nz-col nzSpan="4">
+                                        <label>Between</label>
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <label style="margin-left:20px;">AND</label>
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
+                                    <div nz-col nzSpan="4">
+                                        <label>Min Duration</label>
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <input nz-input placeholder="" nz-value="0" formControlName="min" />
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <label style="margin-left:20px;">Max Duration</label>
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <input nz-input placeholder="" nz-value="0" formControlName="max" />
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <label style="margin-left:20px;">Roasted Time</label>
+                                    </div>
+                                    <div nz-col nzSpan="4"> 
+                                        <input nz-input placeholder="" nz-value="0" formControlName="forceRostedTime" />
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
+                                    <div nz-col nzSpan="6">
+                                        Cannot Change:
+                                    </div>
+                                    <div nz-col nzSpan="16">
+                                        <div>
+                                            <label nz-checkbox formControlName="rostedDay">Rosted Day</label>
+                                        </div>
+                                        <div>
+                                            <label nz-checkbox formControlName="rostedTime">Rosted Time</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
+                                    <div nz-col nzSpan="8">
+                                        <span>Time Must Be withIn:</span>
+                                    </div>
+                                    <div nz-col nzSpan="8">
+                                        <input nz-input placeholder="" nz-value="0" formControlName="orignalminute" />
+                                    </div>
+                                    <div nz-col nzSpan="8" style="text-align: center;">
+                                        <span>Minutes of Orignal Start</span>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div *ngIf="current == 3">
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <div nz-col nzSpan="12" class="">
+                            <h2 style="color:#1890FF;">Award Actions</h2>
+                        </div>
+                    </div>
+                    <nz-divider nzText="Award Interpretation Options" nzOrientation="left"></nz-divider>
+                    <div nz-col nzSpan="24" class="mrg-btm">
+                        <div nz-col nzSpan="14">
+                            <div class="mrg-btm">
+                            Exclude From Higher Rate Calculation : <label nz-checkbox formControlName="award1"></label><br>
+                            </div>
+                            <div class="mrg-btm">
+                            No Overtime Accoumnodation : <label nz-checkbox formControlName="award2"></label><br>
+                            </div>
+                            <div class="mrg-btm">
+                            Pay As Rostered : <label nz-checkbox formControlName="award3"></label><br>
+                            </div>
+                            <div class="mrg-btm">
+                            Exclude From Timeband Interpretation : <label nz-checkbox formControlName="award4"></label><br>
+                            </div>
+                            <div class="mrg-btm">
+                            Exclude From All Interpretation : <label nz-checkbox formControlName="award5"></label><br>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="10">
+                            <label for="Special Shift Type" class="mrg-btm">Special Shift Type:</label>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="specialShift" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+                    <div *nzModalFooter>
+                        <ng-container>
+                            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                                <span>Previous</span>
+                            </button>
+                            <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" >
+                                <span>Next</span>
+                            </button>
+                            <!-- *ngIf="current === 3" -->
+                            <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
+                                <span>SAVE</span>
+                            </button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </nz-modal>
+</div>       

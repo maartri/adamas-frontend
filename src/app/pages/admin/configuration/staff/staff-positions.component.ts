@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class StaffPositionsComponent implements OnInit {
 
-  tableData: Array<any>;
+    tableData: Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;

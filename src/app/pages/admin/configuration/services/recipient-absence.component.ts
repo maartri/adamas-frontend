@@ -292,10 +292,11 @@ export class RecipientAbsenceComponent implements OnInit {
       }
     }
     loadData(){
-      let sql ="SELECT [Recnum] As [RecordNumber],[Title] As [Title], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup        END As [RosterGroup],    [MinorGroup] As [Sub Group],    [IT_Dataset] As [Dataset],      [HACCType] As [Dataset Code], [CSTDAOutletID] As [OutletID],  [DatasetGroup] As [Dataset Group],  [NDIA_ID] As [NDIA ID],  [AccountingIdentifier] As [Accounting Code],        [Amount] As [Bill Amount],          [Unit] As [Bill Unit],     [EndDate] As [End Date] FROM ItemTypes WHERE ProcessClassification <> 'INPUT' AND (EndDate Is Null OR EndDate >= '12-30-2020')  AND (RosterGroup IN ('RECPTABSENCE')) ORDER BY Title";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.GetlistRecipientAbsenses().subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+        this.cd.detectChanges();
       });
     }
     clearStaff(){

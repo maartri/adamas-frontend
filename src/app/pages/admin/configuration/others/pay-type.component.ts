@@ -265,10 +265,11 @@ export class PayTypeComponent implements OnInit {
       this.units  = ['HOUR','SERVICE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
       
-      let sql ="SELECT [recnum] AS [RecordNumber], [title] AS [Code], [rostergroup] AS [Pay Category], [minorgroup] AS [Sub Group], [amount] AS [Pay Amount], [unit] AS [Pay Unit], [enddate] AS [End Date], [billtext] AS [Description], [accountingidentifier] AS [Pay ID], [paygroup] AS [Pay Group], [paytype] AS [Pay Type], [excludefrompayexport] AS [No Pay Export] FROM itemtypes WHERE processclassification = 'INPUT' AND ( enddate IS NULL OR enddate >= '04-05-2019' ) ORDER BY title";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.GetlistagencyPayTypes().subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+        this.cd.detectChanges();
       });
     }
     delete(data: any) {

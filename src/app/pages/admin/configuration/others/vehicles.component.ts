@@ -66,7 +66,7 @@ export class VehiclesComponent implements OnInit {
       const { 
         name,
         recordNumber,
-      } = this.tableData[index];
+      } = this.tableData[index-1];
       this.inputForm.patchValue({
         name: name,
         recordNumber:recordNumber,

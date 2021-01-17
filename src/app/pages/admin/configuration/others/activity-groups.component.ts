@@ -69,7 +69,7 @@ export class ActivityGroupsComponent implements OnInit {
         branch,
         agroup,
         recordNumber
-      } = this.tableData[index];
+      } = this.tableData[index-1];
       this.inputForm.patchValue({
         item: branch,
         rate:name,

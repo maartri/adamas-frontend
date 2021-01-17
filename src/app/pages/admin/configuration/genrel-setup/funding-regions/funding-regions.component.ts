@@ -42,7 +42,6 @@ export class FundingRegionsComponent implements OnInit {
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
-      this.loadData();
     }
     
     loadData(){
@@ -160,14 +159,5 @@ export class FundingRegionsComponent implements OnInit {
               recordNumber:0,
             });
           }
-          
-          search(){
-            this.loading = true;
-            this.switchS.getData(2).subscribe(data => {
-              this.tableData = data.list;
-              this.cd.detectChanges();
-            });
-          }
-          
         }
         

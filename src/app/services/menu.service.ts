@@ -52,6 +52,10 @@ export class MenuService {
     getlistactivityGroups():Observable<any>{
         return this.auth.get(`${menu}/activityGroups`)
     }
+    getlistcenterFacilityLoc():Observable<any>{
+        return this.auth.get(`${menu}/centerFacilityLoc`)
+    }
+    
     getlistbranches(): Observable<any>{
         return this.auth.get(`${menu}/branches`)
     }

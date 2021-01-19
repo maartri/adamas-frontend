@@ -3,7 +3,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { UploadChangeParam } from 'ng-zorro-antd/upload';
 
 import { UploadXHRArgs } from 'ng-zorro-antd/upload';
-import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { TimeSheetService, GlobalService, UploadService } from '@services/index';
@@ -134,24 +134,34 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   downloadDocument(index: number) {
     const { docID, filename, type, originalLocation } = this.loadedFiles[index];
 
-    console.log(this.loadedFiles[index])
-    this.uploadS.downloadFileDocumentInProjectDirectory({
+    console.log(this.loadedFiles[index]);
+
+
+
+    this.uploadS.downloadFileDocumentRemoteServer({
       PersonID: this.token.id,
       Extension: type,
       FileName: filename,
-      DocPath: originalLocation
+      SourceDocPath: originalLocation,
+      DestinationDocPath: "C:\\Users\\mark\\Desktop\\Programming\\Adamas\\adamasv3\\document"
     }).subscribe(blob => {
-      // console.log(blob);
-      let data = window.URL.createObjectURL(blob);
-      let link = document.createElement('a');
-      link.href = data;
-      link.download = filename;
-      link.click();
+        // console.log(blob);
+        let data = window.URL.createObjectURL(blob);
+        let link = document.createElement('a');
+        link.href = data;
+        link.download = filename;
+        link.click();
 
-      setTimeout(() => {
-        window.URL.revokeObjectURL(data);
-      }, 100);
-    });
+        setTimeout(() => {
+          window.URL.revokeObjectURL(data);
+        }, 100);
+        
+        this.globalS.sToast('Success','Download Successful')
+
+      }, (err: HttpErrorResponse) => {
+        this.globalS.eToast('Error','Failed to download')
+      });
+
   }
 
   //From ControlValueAccessor interface

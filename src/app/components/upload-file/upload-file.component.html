@@ -20,33 +20,33 @@
             <li *ngFor="let file of loadedFiles;let i = index">
                 <div>
                     <div class="logo-group">
-                        <i class="error" *ngIf="file.extension == ''" nz-icon nzType="file-unknown"
+                        <i class="" *ngIf="file.extension == ''" nz-icon nzType="file-unknown"
                             nzTheme="outline"></i>
-                        <i class="good" *ngIf="file.extension !== '' && file.extension == '.pdf'" nz-icon
+                        <i class="" *ngIf="file.extension !== '' && (file.extension).toLowerCase() == '.pdf'" nz-icon
                             nzType="file-pdf" nzTheme="outline"></i>
-                        <i class="good"
-                            *ngIf="file.extension !== '' && (file.extension == '.jpg' || file.extension == '.png') "
+                        <i class=""
+                            *ngIf="file.extension !== '' && ((file.extension).toLowerCase() == '.jpg' || (file.extension).toLowerCase() == '.png') "
                             nz-icon nzType="file-image" nzTheme="outline"></i>
-                        <i class="good"
-                            *ngIf="file.extension !== '' && (file.extension == '.xlsx' || file.extension == '.xls') "
+                        <i class=""
+                            *ngIf="file.extension !== '' && ((file.extension).toLowerCase() == '.xlsx' || (file.extension).toLowerCase() == '.xls') "
                             nz-icon nzType="file-excel" nzTheme="outline"></i>
-                        <i class="good"
-                            *ngIf="file.extension !== '' && (file.extension == '.ppt' || file.extension == '.pptx')"
+                        <i class=""
+                            *ngIf="file.extension !== '' && ((file.extension).toLowerCase() == '.ppt' || (file.extension).toLowerCase() == '.pptx')"
                             nz-icon nzType="file-ppt" nzTheme="outline"></i>
-                        <i class="good"
-                            *ngIf="file.extension !== '' && (file.extension == '.doc' || file.extension == '.docx') "
+                        <i class=""
+                            *ngIf="file.extension !== '' && ((file.extension).toLowerCase() == '.doc' || (file.extension).toLowerCase() == '.docx') "
                             nz-icon nzType="file-word" nzTheme="outline"></i>
-                        <i class="good" *ngIf="file.extension !== '' && file.extension == '.txt'" nz-icon
+                        <i class="" *ngIf="file.extension !== '' && (file.extension).toLowerCase() == '.txt'" nz-icon
                             nzType="file-text" nzTheme="outline"></i>
                     </div>
                     <div class="file-info">
                         <h5 [nzTooltipTitle]="file.title" nzTooltipPlacement="topLeft" nz-tooltip>
                             {{ (file.title.length > 50)? (file.title | slice:0:50)+'..':(file.title) }}</h5>
                         <span *ngIf="file.fileSize !== 0">{{ file.fileSize | fileSizeFilter }}</span>
-                        <span class="error" *ngIf="file.fileSize == 0">FILE NOT FOUND!</span>
+                        <!-- <span class="" *ngIf="file.fileSize == 0">FILE NOT FOUND!</span> -->
                     </div>
                     <div class="file-operations">
-                        <i nz-icon nzType="eye" nzTheme="outline"></i>
+                        <!-- <i nz-icon nzType="eye" nzTheme="outline"></i> -->
                         <i nz-icon nz-popconfirm nzPopconfirmTitle="Are you sure download this file?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="downloadDocument(i)" nzType="cloud-download"
                             nzTheme="outline"></i>

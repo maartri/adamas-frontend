@@ -40,9 +40,9 @@
                             nzType="file-text" nzTheme="outline"></i>
                     </div>
                     <div class="file-info">
-                        <h5 [nzTooltipTitle]="file.title" nzTooltipPlacement="topLeft" nz-tooltip>
-                            {{ (file.title.length > 50)? (file.title | slice:0:50)+'..':(file.title) }}</h5>
-                        <span *ngIf="file.fileSize !== 0">{{ file.fileSize | fileSizeFilter }}</span>
+                        <h5 [nzTooltipTitle]="file?.title" nzTooltipPlacement="topLeft" nz-tooltip>
+                            {{ (file?.title.length > 50)? (file?.title | slice:0:50)+'..':(file?.title) }}</h5>
+                        <!-- <span *ngIf="file.fileSize !== 0">{{ file?.fileSize | fileSizeFilter }}</span> -->
                         <!-- <span class="" *ngIf="file.fileSize == 0">FILE NOT FOUND!</span> -->
                     </div>
                     <div class="file-operations">

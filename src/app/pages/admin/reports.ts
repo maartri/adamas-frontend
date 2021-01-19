@@ -864,7 +864,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.frm_Date = false;
         this.frm_OneDate = false;
         this.frm_Programs = false;
-        this.frm_Branches = true;
+        this.frm_Branches = false;
         this.frm_Managers = false;
         this.frm_Categories = false;
         this.frm_SVCTypes = false;
@@ -5308,7 +5308,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         }
        
 
-        console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -7037,7 +7037,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         fQuery = fQuery + "  ORDER BY staffcode, [Date], [Start Time] "
 
-        console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 

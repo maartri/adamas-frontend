@@ -214,12 +214,12 @@
                                             Incident Register
                                         </button> 
                                         </div>
-                                        <div>                                        
+                                    <!--    <div>                                        
                                             <button nz-button nzType="default" id="btn-r-LagTimeRegister" (click)="showModal(this.id)" disabled >
                                             <i nz-icon nzType="printer"></i>
                                             Lag Time Register
                                         </button> 
-                                        </div>
+                                        </div> -->
                                         <div>                                        
                                             <button nz-button nzType="default" id="btn-Regis-loanregister" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
@@ -238,12 +238,12 @@
                                             Recipient Service Notes Register
                                         </button> 
                                         </div>
-                                        <div>                                        
+                                        <!-- <div>                                        
                                             <button nz-button nzType="default" id="btn-regis-serviceplan" (click)="showModal(this.id)" disabled >
                                             <i nz-icon nzType="printer"></i>
                                             Service Plans Register
                                         </button> 
-                                        </div>
+                                        </div> -->
                                         <div>                                        
                                             <button nz-button nzType="default" id="btn-Regis-careplanstatus" (click)="showModal(this.id)"  >
                                             <i nz-icon nzType="printer"></i>
@@ -437,12 +437,12 @@
                                     <li nz-menu-item >
                                         <i nz-icon nzType="user"></i>
                                         <strong>HUMAN RESOURCE REPORTS </strong> 
-                                        <div>
+                                        <!-- <div>
                                             <button nz-button nzType="default" id="btn-staff-competencyRegister" (click)="showModal(this.id)" disabled >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Competency Register
                                                 </button>
-                                        </div>
+                                        </div> -->
                                         <div>
                                             <button nz-button nzType="default" id="btn-competenciesrenewal" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
@@ -522,12 +522,12 @@
                                                 Program Billing Report
                                                 </button>
                                         </div>
-                                        <div>
+                                       <!-- <div>
                                             <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
                                                 <i nz-icon nzType="printer"></i>
                                                 Program Recipient Budget(IND PKG)
                                                 </button>
-                                        </div>
+                                        </div> -->
                                         <div>
                                             <button nz-button nzType="default" id="btn-BudgetAuditReport" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
@@ -602,12 +602,12 @@
                                                 Staff Pays
                                                 </button>
                                         </div>
-                                        <div>
+                                    <!--    <div>
                                             <button nz-button nzType="default" id = "btn-FORPT-StaffProgramPayType"  (click)="showModal(this.id)" disabled >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Program Pay Type
                                                 </button>
-                                        </div>
+                                        </div> -->
                                         <div>
                                             <button nz-button nzType="default" id = "btn-FORPT-StaffunderPayrollRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
@@ -620,12 +620,12 @@
                                                 Funder Payroll Type
                                                 </button>
                                         </div>
-                                        <div>
+                                    <!--    <div>
                                             <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Date Program
                                                 </button>
-                                        </div>
+                                        </div> -->
                                         <div>
                                             <button nz-button nzType="default" id = "btn-FORPT-StaffAllowanceRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
@@ -662,7 +662,7 @@
                                                 Staff Daily Hours Report
                                                 </button>
                                         </div> 
-                                        <div>
+                                    <!--    <div>
                                             <button nz-button nzType="default" disabled >
                                                 <i nz-icon nzType="printer"></i>
                                                 Award Staff Pay Report
@@ -673,7 +673,7 @@
                                                 <i nz-icon nzType="printer"></i>
                                                 Award Staff Program Pay Report
                                                 </button>
-                                        </div>
+                                        </div> -->
                                         <div>
                                             <button nz-button nzType="default" id = "btn-FORPT-PayTypeProgram"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
@@ -812,7 +812,7 @@
                         </div>
                     </div>    
                    
-                        <div nz-row>
+                        <div nz-row *ngIf="frm_Branches">
                             <div nz-col nzSpan="20">
                                 <div class="form-group">
                                     <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>

@@ -36,12 +36,13 @@ export class FundingSourcesComponent implements OnInit {
       this.loading = false;
       this.cd.detectChanges();
     }
+    
     loadData(){
-      let sql ="Select * From DataDomains Where Domain = 'FUNDINGBODIES' AND (EndDate Is Null OR EndDate >= '04-05-2019') ORDER BY DESCRIPTION";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.getlistFundingSource().subscribe(data => {
         this.tableData = data;
         this.loading = false;
+        this.cd.detectChanges();
       });
     }
     showAddModal() {

@@ -257,13 +257,15 @@ export class EquipmentsComponent implements OnInit {
         }
       }
     }
-    loadData(){
-      let sql ="SELECT [recordnumber] AS [RecordNumber], [type] AS [Type], [itemid] AS [ItemID], [datedisposed] AS [DateDisposed], [lastservice] AS [LastService], [equipcode] AS [EquipCode], [serialno] AS [SerialNo], [purchasedate] AS [PurchaseDate], [purchaseamount] AS [PurchaseAmount], [lockboxcode] AS [LockBoxCode], [lockboxlocation] AS [LockBoxLocation], [notes] AS [Notes] FROM equipment";
+    
+      loadData(){
+        
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.Getlistequipments().subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+        this.cd.detectChanges();
       });
-      
       
       let Ssql = "SELECT [RecordNumber] As [RecordNumber],[Category] As [Category],[Details] As [Details],[ServiceDate] As [ServiceDate],[DueDate] As [DueDate],[ReminderDate] As [ReminderDate],[ItemID] as [ItemID] FROM EquipmentDetails WHERE ItemId = ''"
       this.loading = true;

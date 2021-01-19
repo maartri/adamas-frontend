@@ -15,6 +15,43 @@ export class MenuService {
         public http: HttpClient,
         public auth: AuthService
     ){ }
+    
+    getlistServices():Observable<any>{
+        return this.auth.get(`${menu}/Services`)
+    }
+    getlistItemConsumables():Observable<any>{
+        return this.auth.get(`${menu}/itemConsumable`)
+    }
+    getlistMenuMeals():Observable<any>{
+        return this.auth.get(`${menu}/menuMeals`)
+    }
+    GetlistcaseManagement():Observable<any>{
+        return this.auth.get(`${menu}/caseManagement`)
+    }
+    GetlistStaffAdminActivities():Observable<any>{
+        return this.auth.get(`${menu}/staffAdminActivities`)
+    }
+    GetlistRecipientAbsenses():Observable<any>{
+        return this.auth.get(`${menu}/recipientAbsenses`)
+    }
+    Getlistequipments():Observable<any>{
+        return this.auth.get(`${menu}/equipments`)
+    }
+    GetlistagencyPayTypes():Observable<any>{
+        return this.auth.get(`${menu}/agencyPayTypes`)
+    }
+    getlistFundingSource(): Observable<any>{
+        return this.auth.get(`${menu}/fundingSource`)
+    }
+    getlistProgramPackages():Observable<any>{
+        return this.auth.get(`${menu}/programPackages`)
+    }
+    getlistvehicles():Observable<any>{
+        return this.auth.get(`${menu}/vehicles`)
+    }
+    getlistactivityGroups():Observable<any>{
+        return this.auth.get(`${menu}/activityGroups`)
+    }
     getlistbranches(): Observable<any>{
         return this.auth.get(`${menu}/branches`)
     }

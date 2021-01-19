@@ -84,6 +84,7 @@ import {
   SideMainMenu,
   RecipientsAdmin,
   ReportsAdmin,
+  UserReports,
   RostersAdmin,
   SessionsAdmin,
   StaffAdmin,
@@ -494,6 +495,10 @@ const routes: Routes = [
       {
         path: 'reports',
         component: ReportsAdmin
+      },
+      {
+        path: 'user-reports',
+        component: UserReports
       },
       {
         path: 'configuration',
@@ -1076,6 +1081,7 @@ export const PAGE_COMPONENTS = [
   LandingAdmin,
   RecipientsAdmin,
   ReportsAdmin,
+  UserReports,
   RostersAdmin,
   SessionsAdmin,
   StaffAdmin,

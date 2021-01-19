@@ -1,4 +1,4 @@
-<div style="padding:8px;">
+
     <div nz-layout>
         <div>
             <div nz-col nzSpan="24">
@@ -801,7 +801,7 @@
                             </div>
                         </div> 
                     </nz-tab>
-                    <nz-tab nzTitle="Report Menus">
+                <!--    <nz-tab nzTitle="Report Menus">
                         <div nz-row >
                             <div nz-col [nzSpan]="6">
                                 <ul nz-menu nzMode="horizontal">
@@ -809,18 +809,18 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>NDIA Claims</strong> 
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(102)" id="ndia-package-statement">
+                                            <button nz-button nzType="default"  id="ndia-package-statement" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 NDIA Package Statement Print
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(103)" id="ndia-unclaimed-items">
+                                            <button nz-button nzType="default"  id="ndia-unclaimed-items" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 NDIA Unclaimed Items Report
                                             </button>
                                         </div><div>
-                                            <button nz-button nzType="default" (click) = "view(104)" id="ndia-batch-register">
+                                            <button nz-button nzType="default"  id="ndia-batch-register" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 NDIA Batch Register Print
                                             </button>
@@ -834,31 +834,31 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>CDC Claims</strong> 
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(97)" id="cdc-package-status">
+                                            <button nz-button nzType="default"  id="cdc-package-status" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 CDC Package Status Summary
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(98)" id="fee-verification-report">
+                                            <button nz-button nzType="default"  id="fee-verification-report" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 CDC FEE Verification Report
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(99)" id="claim-verification-report">
+                                            <button nz-button nzType="default"  id="claim-verification-report" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 CDC Claim Verification Report
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(100)" id="leave-verification-report">
+                                            <button nz-button nzType="default"  id="leave-verification-report" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 CDC Leave Verification Report
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(101)" id="medicine-claim-report">
+                                            <button nz-button nzType="default"  id="medicine-claim-report" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 CDC Medicine Claim Report
                                             </button>
@@ -872,92 +872,92 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>Public & Print Rosters</strong> 
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(91)" id="print-staff-rosters">
+                                            <button nz-button nzType="default"  id="print-staff-rosters" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Staff Rosters
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(92)" id="print-location-rosters">
+                                            <button nz-button nzType="default"  id="print-location-rosters" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Location Rosters
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(93)" id="print-group-activity-rosters">
+                                            <button nz-button nzType="default"  id="print-group-activity-rosters" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Group Activity Rosters
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(94)" id="print-transport-run-sheets">
+                                            <button nz-button nzType="default"  id="print-transport-run-sheets" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Transport Run Sheets
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(95)" id="print-meal-run-sheets">
+                                            <button nz-button nzType="default"  id="print-meal-run-sheets" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Meal Run Sheets
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(96)" id="print-staff-rosters">
+                                            <button nz-button nzType="default"  id="print-staff-rosters" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Job Sheets
                                             </button>
                                         </div>
-                                    </li>
+                                    </li> 
                                 </ul>
-                            </div>
+                            </div> 
                             <div nz-col [nzSpan]="6">
                                 <ul nz-menu nzMode="horizontal">
                                     <li nz-menu-item >
                                         <i nz-icon nzType="user"></i>
                                         <strong>Accounting Print Functions</strong> 
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(105)" id="print-invoices">
+                                            <button nz-button nzType="default"  id="print-invoices" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print/Reprint Invoices
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(106)" id="print-invoices-batch">
+                                            <button nz-button nzType="default"  id="print-invoices-batch" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Invoice Batch Register
                                             </button>
                                         </div><div>
-                                            <button nz-button nzType="default" (click) = "view(107)" id="print-account-statement">
+                                            <button nz-button nzType="default" id="print-account-statement"  (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Account Statements
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(108)" id="print-reprint-recipts">
+                                            <button nz-button nzType="default"  id="print-reprint-recipts" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print/Reprint Receipts
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(109)" id="print-receipts-batch">
+                                            <button nz-button nzType="default"  id="print-receipts-batch" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Receipts Batch Register
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(110)" id="print-deposit-slip">
+                                            <button nz-button nzType="default"  id="print-deposit-slip" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Bank Deposit Slip
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(111)" id="print-aged-debtors">
+                                            <button nz-button nzType="default"   id="print-aged-debtors" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Print Aged Debtors Report
                                             </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" (click) = "view(112)" id="invouce-verification">
+                                            <button nz-button nzType="default"   id="invoice-verification" (click) = "ShowModal(this.id)" >
                                                 <i nz-icon nzType="read"></i>
                                                 Invoice Verification Report
                                             </button>
@@ -966,14 +966,211 @@
                                 </ul>
                             </div>
                         </div>
-                    </nz-tab>
+                    </nz-tab> -->
                 </nz-tabset>
             </div>
         </div>
+        <!--MUFEED-->
+        <div>
+            <nz-modal
+                nzWidth="600px"
+                [nzStyle]="{ top: '20px' }"
+                [(nzVisible)]="isVisibleTop"
+                [(nzTitle)]="ModalName"
+                (nzOnCancel)="handleCancelTop()"
+                (nzOnOk)="handleOkTop()"
+                >
+                <div nz-row *ngIf="frm_TypeFilter" [formGroup]="inputForm" >
+                    <div nz-col nzSpan="10" class="form-group" >                                                                     
+                        <nz-select formControlName="filterArr"   >
+                            <nz-option *ngFor="let option of filterArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
+                        </nz-select>                             
+                    </div>
+                </div>
+                <div nz-row *ngIf="frm_Date" >
+                    <div nz-col nzSpan="20">
+                        <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date </label>
+                        <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Start Date" [nzFormat]="dateFormat" ></nz-date-picker>
+                            <nz-date-picker [(ngModel)]="enddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker>                                 
+                    </div>
+                </div>
+                <div nz-row [formGroup]="inputForm">
+                    <div nz-row *ngIf="frm_Branches">
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>
+                                <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
+                                <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
+                                    <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>
+                                
+                            </div>
+                        </div>   
+                    </div>
+                    <div nz-row *ngIf="frm_Managers">
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="user" nzTheme="outline"></i> Managers </label>
+                                <label class="checks" nz-checkbox formControlName="allManager">All Managers</label>
+                                <nz-select formControlName="managersArr" nzMode="multiple" [nzDisabled]="inputForm.value.allManager">
+                                    <nz-option *ngFor="let option of managersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>                                        
+                            </div>
+                        </div>  
+                                                
+                    </div>
+                    <div nz-row *ngIf="frm_Recipients" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> Recipients  </label>
+                                <label class="checks" nz-checkbox formControlName="allRecipients">All Recipients </label>
+                                <nz-select formControlName="recipientArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allRecipients">
+                                    <nz-option *ngFor="let option of recipientArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>                                    
+                            </div>     
+                        </div>
+                    </div>
+                    <div nz-row *ngIf="frm_Programs">                             
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="solution" nzTheme="outline"></i> Programs </label>
+                                <label class="checks" nz-checkbox formControlName="allPrograms">All Programs</label>
+                                <nz-select formControlName="programsArr" nzMode="multiple" [nzDisabled]="inputForm.value.allPrograms">
+                                    <nz-option *ngFor="let option of programsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
+                                </nz-select>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-row *ngIf="frm_Categories" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Categories </label>
+                                <label class="checks" nz-checkbox formControlName="allServiceRegion">All Categories</label>                                        
+                                <nz-select formControlName="serviceRegionsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allServiceRegion">
+                                    <nz-option *ngFor="let option of serviceRegionsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>                                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </nz-modal>
+        </div>
+        <div>
+            <nz-modal
+                nzWidth="400px"
+                [nzStyle]="{ top: '20px' }"
+                [(nzVisible)]="Single_input_integer"
+                [(nzTitle)]="Modal"
+                (nzOnCancel)="handleCancelTop()"
+                (nzOnOk)="handleOkTop()"
+            >
+            <div nz-row [formGroup]="inputForm">
+                <div nz-col nzSpan = "20">
+                    <label>Enter Batch Number to Print</label> 
+                        <nz-input-number class="frm_number"   formControlName="single_input_number" ></nz-input-number>
+                </div>
+            </div>
+
+
+            </nz-modal>
+        </div>
+        <div>
+            <nz-modal
+                nzWidth="600px"
+                [nzStyle]="{ top: '20px' }"
+                [(nzVisible)]="isVisible"
+                [(nzTitle)]="ModalTitle"
+                [nzFooter]="modalFooter"
+               
+            >
+            <nz-container>
+                <div *ngIf="selection"> 
+                    <div nz-row *ngIf="frm_Date_AgeCycle"> 
+                        <div nz-col nzSpan="20">
+                            <label><i nz-icon nzType="calendar" nzTheme="outline"></i> Date to Age from </label>
+                            <nz-date-picker [(ngModel)]="startdate" nzPlaceHolder = "Date" [nzFormat]="dateFormat" ></nz-date-picker>
+                            <div [formGroup]="inputForm" *ngIf="frm_AgeCycle">
+                                <span>Aging Cycle in Days  </span><nz-input-number  class="frm_AgingNumber" formControlName="AgingCycles" ></nz-input-number>
+                            </div>    
+                        </div>
+                    </div>
+                    <div [formGroup]="inputForm">
+                        <div nz-row *ngIf="frm_BatchNo" > 
+                            <div nz-col nzSpan="20">
+                                <div class="form-group"> 
+                                    <label><i nz-icon nzType="environment" nzTheme="outline"></i>Select Batch to Print</label>
+                                   <nz-select formControlName="BatchNoArr" >
+                                        <nz-option *ngFor="let option of BatchNoArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                    </nz-select>
+                                    
+                                </div>
+                            </div>   
+                        </div>
+                        <div nz-row >
+                            <div nz-col nzSpan="20">
+                                <div class="form-group">
+                                    <label><i nz-icon nzType="environment" nzTheme="outline"></i>Branches to Print for</label>
+                                    <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
+                                    <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
+                                        <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                    </nz-select>
+                                    
+                                </div>
+                            </div>   
+                        </div>
+                        <div nz-row *ngIf="frm_Accounts">
+                            <div nz-col nzSpan="20">
+                                <div class="form-group"> 
+                                    <label><i nz-icon nzType="environment" nzTheme="outline"></i> Accounts to Print for </label>
+                                    <label class="checks" nz-checkbox formControlName="allAccounts">All Accounts</label>
+                                    <nz-select formControlName="AccountsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allAccounts">
+                                        <nz-option *ngFor="let option of AccountsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                    </nz-select>
+                                    
+                                </div>
+                            </div>   
+                        </div> 
+                        <div nz-row *ngIf="frm_Packages">
+                            <div nz-col nzSpan="20">
+                                <div class="form-group"> 
+                                    <label><i nz-icon nzType="environment" nzTheme="outline"></i> Packages to Print for </label>
+                                    <label class="checks" nz-checkbox formControlName="allPackages">All Packages</label>
+                                    <nz-select formControlName="PackagesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allPackages">
+                                        <nz-option *ngFor="let option of PackagesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                    </nz-select>
+                                    
+                                </div>
+                            </div>   
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div *ngIf="options" >
+
+                </div>
+            </nz-container>
+            <ng-template #modalFooter> 
+                <div class="modalFooter">
+                <!--     <button nz-button nzType="primary" class="btn" (click)="toggle_Selection_Option()"><span>Options</span></button>  -->
+                     <button nz-button nzType="primary" class="btn" (click)="handleOkTop()">Preview</button>
+                     <button nz-button nzType="primary" class="btn" (click)="handleCancelTop()">Cancel</button>
+                 </div>               
+            </ng-template>
+
+
+            </nz-modal>
+        </div>
+        <!--MUFEED-->
     </div>
-</div>
-<!-- <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
-    <div nz-row>
-        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
-    </div>
-</nz-drawer> -->
+    <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+        <div class="col-md-12 spinner" *ngIf="loading">
+            <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
+        <div nz-row>
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        </div>
+    </nz-drawer>

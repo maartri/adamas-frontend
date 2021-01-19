@@ -100,6 +100,15 @@ export class ListService {
     GetRecipientAll(): Observable<any>{
         return this.auth.get(`${list}/intake/recipients/all`);
     }
+    GetRecipientActive(): Observable<any>{
+        return this.auth.get(`${list}/recipients/active`);
+    }
+    GetBatchNo(): Observable<any>{
+        return this.auth.get(`${list}/batchnumbers`);
+    }
+    Getpackages(): Observable<any>{
+        return this.auth.get(`${list}/packages`);
+    }
     Getrptcasenotes(): Observable<any>{
         return this.auth.get(`${list}/casenotesgroup`);
     }
@@ -115,6 +124,10 @@ export class ListService {
     
     GetStaffServiceTypes(): Observable<any>{ 
         return this.auth.get(`${list}/staffservices`);
+    }
+
+    GetActiveRecipientAccountNo(): Observable<any>{ 
+        return this.auth.get(`${list}/AccountNumbers`);
     }
 
     getimlocation(): Observable<any>{
@@ -239,7 +252,7 @@ export class ListService {
 
     getwizardnote(whatnote: string): Observable<any>{
         return this.auth.get(`${list}/wizards-note/${whatnote}`)
-    }
+    }  
 
     getwizardreferralcode(): Observable<any>{
         return this.auth.get(`${list}/wizards-referral-code`)

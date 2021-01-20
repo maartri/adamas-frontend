@@ -143,7 +143,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
       Extension: type,
       FileName: filename,
       SourceDocPath: originalLocation,
-      DestinationDocPath: "\\sjcc-sydgw01\portal$\document"
+      DestinationDocPath: "\\\\sjcc-sydgw01\\portal$\\document"
     }).subscribe(blob => {
         // console.log(blob);
         let data = window.URL.createObjectURL(blob);

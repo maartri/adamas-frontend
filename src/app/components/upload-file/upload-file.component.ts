@@ -169,7 +169,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
     if (value != null) {
       this.innerValue = value;
       this.token = value.token;
-      this.urlPath = `api/v2/file/upload-document-procedure`;
+      this.urlPath = `api/v2/file/upload-document-remote`;
 
       this.loadFiles();
       // this.pathForm(this.innerValue);

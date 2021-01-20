@@ -154,7 +154,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         suburb,
         weeksPerCollectionPeriodOfOperation_NoPattern,
         weeksPerYear,
-      } = this.tableData[index];
+      } = this.tableData[index-1];
       this.inputForm.patchValue({
         branch : branch,
         adress : address,
@@ -362,11 +362,12 @@ export class CentrFacilityLocationComponent implements OnInit {
       {
         arr.push(i);
       }
-      this.numbers = arr;
-      let sql ="SELECT [FundingSource],[Jurisdiction],[AgencySector],[WeeksPerYear],[DaysPerWeek],[HoursPerDay],[NoServiceUsers],[CSTDAServiceType],[ServiceAnnualHours],[DaysPerWeekOfOperation_NoPattern],[WeeksPerCollectionPeriodOfOperation_NoPattern],[HoursPerDayOfOperation_NoPattern],[MAXWeeklyRecipientHours],[MINWeeklyRecipientHours],[MAXWeeklyStaffHours],[MINWeeklyStaffHours],[GLRevenue],[GLCost],[GLOverride],[CSTDA],[DCSI],[Branch],[Places],[BH_EarlyStart],[BH_LateStart],[BH_EarlyFinish],[BH_LateFinish],[BH_OverStay],[BH_UndrStay],[BH_NoWork],[AH_EarlyStart],[AH_LateStart],[AH_EarlyFinish],[AH_LateFinish],[AH_OverStay],[AH_UndrStay],[FundingType],[RunsheetAlerts],[ServiceOutletID],[RecordNumber],[Name],[Suburb],[CSTDASLA],AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Address FROM CSTDAOutlets WHERE ( EndDate is NULL OR EndDate >= Getdate()) ORDER BY [NAME]";
+      this.numbers = arr;      
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.getlistcenterFacilityLoc().subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+        this.cd.detectChanges();
       });
       
       let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";

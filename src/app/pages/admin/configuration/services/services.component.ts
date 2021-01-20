@@ -135,7 +135,7 @@ export class ServicesComponent implements OnInit {
         rostedTime,
         orignalminute,
         recordNumber,
-      } = this.tableData[index];
+      } = this.tableData[index-1];
       this.inputForm.patchValue({
         code:code,
         description:description,

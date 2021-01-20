@@ -16,7 +16,7 @@
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
                 <td class="left">{{ data.name  }} </td>     
-                <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
+                <td nzLeft nzBreakWord><a (click)="showEditModal(data.row_num)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                     <nz-divider nzType="vertical"></nz-divider>
                     <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
                     nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>

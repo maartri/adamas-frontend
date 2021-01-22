@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormControl, FormArray, } from '@an
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ViewEncapsulation } from '@angular/core';
-import { ListService, states, TimeSheetService } from '@services/index';
+import { ListService, states, TimeSheetService,GlobalService } from '@services/index';
 import * as FileSaver from 'file-saver';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
@@ -101,7 +101,7 @@ const inputFormDefault = {
     allagencies: [true],
 
     mdstypeArr: [[]],
-    allmdsypes: [true],
+    allmdstypes: [true],
 
     paytypeArr: [[]],
     allpaytypes: [true],
@@ -271,6 +271,7 @@ const inputFormDefault = {
 export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     validateForm!: FormGroup;
+    tocken :any;
 
 
 
@@ -446,7 +447,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     stafftypeArr: Array<any> = ['BROKERAGE ORGANISATION', 'STAFF', 'VOLUNTEER']
     trainingtypeArr: Array<any> = [];
     traccsuserArr: Array<any> = [];
-    rostertypeArr: Array<any> = ['BOOKINGS', 'ADMISSION SERVICES', 'DIRECT CARE', 'SLEEPOVERS', 'BROKERAGE', 'TRANSPORT', 'MEALS', 'CENTRE BASED ACTIVITIES', 'GROUP BASED ACTIVITIES', 'TRAVEL TIME', 'LEAVE/ABSENCE', 'ADMINISTRATION', 'ALLOWANCES'];
+    rostertypeArr: Array<{ label: string; value: string }> =  [
+        {label:"BOOKINGS",value:"01"},{label:"DIRECT CARE",value:"02"},{label:"BROKERAGE",value:"03"},{label:"LEAVE/ABSENCE",value:"04"},{label:"TRAVEL TIME",value:"05"}
+        ,{label:"ADMINISTRATION",value:"06"},{label:"ADMISSION SERVICES",value:"07"},{label:"SLEEPOVERS",value:"08"},{label:"ALLOWANCES",value:"09"},{label:"TRANSPORT",value:"10"}
+        ,{label:"CENTRE BASED ACTIVITIES",value:"11"},{label:"GROUP BASED ACTIVITIES",value:"12"},{label:"MEALS",value:"14"}
+
+    ] ;//['01-BOOKINGS', '02-DIRECT CARE','03-BROKERAGE','04-LEAVE/ABSENCE', '05-TRAVEL TIME',  '06-ADMINISTRATION','07-ADMISSION SERVICES',  '08-SLEEPOVERS','09-ALLOWANCES',  '10-TRANSPORT','11-CENTRE BASED ACTIVITIES', '12-GROUP BASED ACTIVITIES', '14-MEALS'  ];
     mdstypeArr: Array<any> = [];
     agencyidArr: Array<any> = [];
     paytypeArr: Array<any> = [];
@@ -460,6 +466,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     AGE_ATSI_StatusArr: Array<any> = ['Over 64 OR ATSI Over 49   ', 'Under 65 OR ATSI under 50'];
     incidentcategoryArr: Array<any> = ['Open', 'Close'];
     Additional_inclusion: Array<any> = [];
+    RosterCategory: Array<any> = []; 
 
 
 
@@ -548,6 +555,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         private formBuilder: FormBuilder,
         private listS: ListService,
         private TimesheetS: TimeSheetService,
+        private GlobalS:GlobalService,
         private http: HttpClient,
         private fb: FormBuilder,
         private sanitizer: DomSanitizer,
@@ -558,7 +566,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
     ngOnInit(): void {
         const children: Array<{ label: string; value: string }> = [];
-
+        this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
         for (let i = 10; i < 36; i++) {
             children.push({ label: i.toString(36) + i, value: i.toString(36) + i });
 
@@ -733,7 +741,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             });
         });
 
-        this.inputForm.get('allmdsypes').valueChanges.subscribe(data => {
+        this.inputForm.get('allmdstypes').valueChanges.subscribe(data => {
             this.inputForm.patchValue({
                 mdstypeArr: []
             });
@@ -915,6 +923,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.frm_mta_options = false;
 
+        this.RosterCategory = []; 
+
 
 
         this.ModalName = " CRITERIA "
@@ -943,6 +953,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         //Criteria Items/Lists Visibility   
         this.ResetVisibility();
+        this.inputForm = this.fb.group(inputFormDefault);
         switch (this.btnid) {
             case 'btn-refferallist':
                 this.ModalName = "REFERRAL LIST CRITERIA"
@@ -1575,8 +1586,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     handleOk() {
         this.reportRender(this.btnid);
-        this.tryDoctype = ""
+        this.tryDoctype = "";
         this.FOReports = false;
+        
+
+        
 
     }
     handleCancel() {
@@ -1666,6 +1680,36 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         var str_inclusion;
 
+    /*    console.log("test "+ RosterType)
+        if (RosterType !=""){
+            for(var te of RosterType ){
+                if(te.count >= 1){
+                    var test = [te]
+                }else{
+                    for(var a of test){}
+                    var test = [a]
+                }
+                
+                console.log("te "+ test)
+               }
+                    
+            for (let index = 0; index < RosterType.length; index++) {
+                var RosterC = [(RosterType[index])]
+                
+                var third = (RosterC.toString()).substring(0,2)
+            //    third +=  third
+            var s_RosterType = [third]
+                
+            }
+            
+            console.log("test3 "+ s_RosterType) 
+       }*/
+      
+        
+        
+
+
+
         if (s_inclusion != "") {
             switch (s_inclusion) {
                 case 'Include Staff Code':
@@ -1746,7 +1790,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.SuspendedRecipient(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate, tempsdate, tempedate);
                 break;
             case 'btn-vouchersummary':
-                this.VoucherSummary(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate);
+                this.VoucherSummary(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate, tempsdate, tempedate);
                 break;
             case 'btn-packageusage':
                 this.PackageUsage(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
@@ -2098,7 +2142,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             default:
                 alert("Yet to do")
 
-        }
+        } 
 
     }
     //           
@@ -2154,8 +2198,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'REFERRAL') ORDER BY R.[Surname/Organisation], R.FirstName"
 
 
-        //console.log(fQuery)
-        // console.log(lblcriteria)
+        //  console.log(fQuery)
+        //  console.log(lblcriteria)
 
 
 
@@ -2167,6 +2211,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+                
             }
         }
         this.loading = true;
@@ -2273,7 +2319,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -2314,7 +2361,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
         }
         if (branch != "") {
-            this.s_BranchSQL = "STF_DEPARTMENT in ('" + branch.join("','") + "')";
+            this.s_BranchSQL = " Recipients.[BRANCH] in ('" + branch.join("','") + "')";
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
         }
         if (stfgroup != "") {
@@ -2322,11 +2369,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
         }
         if (recipient != "") {
-            this.s_StaffSQL = "[Carer Code] in ('" + recipient.join("','") + "')";
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','") + "')";
             if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL };
         }
         if (stafftype != "") {
-            this.s_StafftypeSQL = "[AccountNo] in ('" + stafftype.join("','") + "')";
+            this.s_StafftypeSQL = "Category in ('" + stafftype.join("','") + "')";
             if (this.s_StafftypeSQL != "") { fQuery = fQuery + " AND " + this.s_StafftypeSQL };
         }
 
@@ -2359,7 +2406,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-        // //////console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -2369,7 +2416,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -2468,7 +2516,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -2499,7 +2548,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    VoucherSummary(branch, manager, region, program, startdate, enddate) {
+    VoucherSummary(branch, manager, region, program, startdate, enddate,tempsdate, tempedate) {
 
 
         var fQuery = "SELECT Recipients.AccountNo as [Recipient],  COUNT(SrNo) as  [Vouchers Issued], COUNT(CASE Cancelled WHEN 1 then 'True' else NULL END) as [Vouchers Cancelled], COUNT(CASE Redeemed WHEN 1 then 'True' else NULL END) as [Vouchers Redeemed], SUM(((CASE Redeemed WHEN 1 then 1 else 0 END) * SubsidyAmountt)) as [Value] FROM LMVoucher LEFT JOIN Recipients on LMVoucher.PersonID = Recipients.UniqueID  WHERE  "
@@ -2519,9 +2568,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
         }
-        //(DATEOFISSUE BETWEEN '2013/07/01' AND '2020/07/31')
+        
         if (startdate != "" || enddate != "") {
-            this.s_DateSQL = "  DATEOFISSUE BETWEEN '" + startdate + ("'AND'") + enddate + "'";
+            this.s_DateSQL = "  DATEOFISSUE BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
             if (this.s_DateSQL != "") { fQuery = fQuery + "  " + this.s_DateSQL };
         }
         if (startdate != "") {
@@ -2555,8 +2604,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
-        console.log(s_CoordinatorSQL)*/
-        // //////console.log(fQuery)
+        console.log(s_CoordinatorSQL)
+        console.log(fQuery)*/
 
         this.drawerVisible = true;
 
@@ -2566,7 +2615,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -2653,7 +2703,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -2714,7 +2765,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
 
@@ -2810,7 +2862,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -2908,7 +2961,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3006,7 +3060,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3047,7 +3102,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
         }
         if (branch != "") {
-            this.s_BranchSQL = "STF_DEPARTMENT in ('" + branch.join("','") + "')";
+            this.s_BranchSQL = " Recipients.[BRANCH] in ('" + branch.join("','") + "')";
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
         }
         if (stfgroup != "") {
@@ -3055,15 +3110,15 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
         }
         if (recipient != "") {
-            this.s_StaffSQL = "[Carer Code] in ('" + recipient.join("','") + "')";
+            this.s_StaffSQL = "[Client Code] in ('" + recipient.join("','") + "')";
             if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL };
         }
         if (stafftype != "") {
-            this.s_StafftypeSQL = "[AccountNo] in ('" + stafftype.join("','") + "')";
+            this.s_StafftypeSQL = "[Category] in ('" + stafftype.join("','") + "')";
             if (this.s_StafftypeSQL != "") { fQuery = fQuery + " AND " + this.s_StafftypeSQL };
         }
 
-
+  
 
 
         if (branch != "") {
@@ -3102,7 +3157,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3190,7 +3246,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3279,7 +3336,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3368,7 +3426,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3456,7 +3515,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3554,7 +3614,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3654,7 +3715,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3752,7 +3814,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3846,7 +3909,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
                 //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -3944,7 +4008,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4025,7 +4090,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "include": inclusion,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4104,7 +4170,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "include": inclusion,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4183,7 +4250,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "include": inclusion,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4263,7 +4331,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "include": inclusion,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4342,7 +4411,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "include": inclusion,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4422,7 +4492,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "include": inclusion,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4508,7 +4579,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4572,7 +4644,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -4649,6 +4722,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
                 "ClientCount": Client,
                 "InRefStaff": InRefStf,
                 "HouseHold": HHouse,
@@ -4736,6 +4810,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -4812,6 +4887,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -4917,6 +4993,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5018,6 +5095,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5077,6 +5155,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5165,6 +5244,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5319,6 +5399,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5415,6 +5496,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5512,6 +5594,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5609,6 +5692,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5709,6 +5793,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5838,6 +5923,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -5953,6 +6039,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -6068,6 +6155,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -6144,7 +6232,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -6241,6 +6330,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -6327,6 +6417,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -6421,6 +6512,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -6536,6 +6628,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -6641,6 +6734,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -6768,7 +6862,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
 
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
         this.loading = true;
@@ -6852,6 +6947,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -6913,6 +7009,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -7048,6 +7145,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -7152,6 +7250,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -7283,6 +7382,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -7367,7 +7467,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         fQuery = fQuery + " ORDER BY Recipients.AccountNo "
 
-        //    //////console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -7378,6 +7478,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -7726,6 +7827,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                         this.reportid = " 20xwMDHmzWQlOD6N";
 
                         break;
+                    case "Standard":
+                    //    Title = Title + "-Standard"
+                        this.reportid = "QRa7a6vcHl74gzKk";
+
+                        break;
 
                     default:
                         Title = Title + "-Summary"
@@ -7743,6 +7849,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                     case "Detailed":
                         Title = Title + "-Detail"
                         this.reportid = "0ZnxAZqeBt95hPdb";
+
+                        break;
+                    case "Standard":
+                        Title = Title + "-Standard"
+                        this.reportid = " ";
 
                         break;
 
@@ -7765,6 +7876,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                         this.reportid = "KNUFzfW2y0u1Vmp8";
 
                         break;
+                    case "Standard":
+                            Title = Title + "-Standard"
+                            this.reportid = " ";
+    
+                            break;
 
                     default:
                         Title = Title + "-Summary"
@@ -7785,10 +7901,15 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                         this.reportid = "bS5eYd0QZKtRh7kR";
 
                         break;
+                    case "Standard":
+                        //    Title = Title + "-Standard"
+                            this.reportid = "QRa7a6vcHl74gzKk";
+    
+                            break;
 
                     default:
                         Title = Title + "-Summary"
-                        this.reportid = "QRa7a6vcHl74gzKk "
+                        this.reportid = "QRa7a6vcHl74gzKk" 
                         break;
                 }
 
@@ -7799,7 +7920,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-        //////console.log(fQuery)
+    //    console.log(fQuery)
 
 
         this.drawerVisible = true;
@@ -7835,6 +7956,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -8192,6 +8314,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detailed"
                 this.reportid = "DeKVDYBlePosUVbB";
                 break;
+            case "Standard":
+                //    Title = Title + "-Standard"
+                    this.reportid = "gHY4F0UbTNzf4oPk ";
+
+                    break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "gHY4F0UbTNzf4oPk"
@@ -8235,6 +8362,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -8579,17 +8707,22 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         fQuery = fQuery + "ORDER BY [Carer Code], Date, [Service Type], [Start Time]";
 
-        // //////console.log(fQuery)
+//        console.log(fQuery)
 
         switch (format) {
             case "Detailed":
                 Title = Title + "-Detail"
                 this.reportid = "br0hApzbOEUutqz0";
                 break;
+            case "Standard":
+                    //Title = Title + "-Standard"
+                    this.reportid = "VFZKXpQuPdRjOz7U";
+
+                    break;
             default:
 
                 Title = Title + "-Summary"
-                this.reportid = "VFZKXpQuPdRjOz7U"
+                this.reportid = "VFZKXpQuPdRjOz7U" 
                 break;
         }
 
@@ -8626,6 +8759,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -8993,6 +9127,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                         Title = Title + "-Detail"
                         reportid = "MePWCZQThe0CAnu5";
                         break;
+                    case "Standard":
+                            Title = Title + "-Standard"
+                            this.reportid = " ";
+    
+                            break;
 
                     default:
 
@@ -9013,6 +9152,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                         Title = Title + "-Detail"
                         reportid = "dBfGjQMGcDFpS0tN";
                         break;
+                    case "Standard":
+                            Title = Title + "-Standard"
+                            this.reportid = " ";
+    
+                            break;
 
                     default:
                         Title = Title + "-Summary"
@@ -9032,6 +9176,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                         Title = Title + "-Detail"
                         reportid = "Oc4nxLXjTPbGcZQH";
                         break;
+                    case "Standard":
+                            Title = Title + "-Standard"
+                            this.reportid = " ";
+    
+                            break;
 
                     default:
                         Title = Title + "-Summary"
@@ -9084,6 +9233,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -9437,6 +9587,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detail"
                 reportid = "dBfGjQMGcDFpS0tN";
                 break;
+            case "Standard":
+                    //Title = Title + "-Standard"
+                    this.reportid = "7RdGSvcsDNba5xah";
+
+                    break;
 
             default:
                 Title = Title + "-Summary"
@@ -9477,6 +9632,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -9544,6 +9700,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -9642,7 +9799,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "reports": { "save": false },
                 //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
                 "sql": fQuery,
-                "Criteria": lblcriteria
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
             }
         }
 
@@ -9988,16 +10146,22 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         fQuery = fQuery + " ORDER BY [Service Type], [Anal], Date, [Start Time] ";
 
-        // //////console.log(fQuery)
+    //    console.log(fQuery)
 
         switch (format) {
             case "Detailed":
                 Title = Title + "-Detail"
                 this.reportid = "s7xkRQoypsgZDEJi";
                 break;
+            case "Standard":
+                    //Title = Title + "-Standard"
+                    this.reportid = "EUpoRvslDL2jReMC";
+
+                    break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "EUpoRvslDL2jReMC"
+              
                 break;
         }
 
@@ -10034,6 +10198,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -10384,6 +10549,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detail"
                 this.reportid = "BkY2eCxEZ9xs7JdN";
                 break;
+            case "Standard":
+                        Title = Title + "-Standard"
+                        this.reportid = "Cjq0J0FwEE9NpEjG";
+
+                        break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "Cjq0J0FwEE9NpEjG"
@@ -10423,6 +10593,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -10774,6 +10945,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detail"
                 this.reportid = "PWrjCCfGSodTi4k5";
                 break;
+            case "Standard":
+                    //    Title = Title + "-Standard"
+                        this.reportid = "52x7yFFEwpini1aA";
+
+                        break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "52x7yFFEwpini1aA"
@@ -10813,6 +10989,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -11163,6 +11340,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detail"
                 this.reportid = "pcOEeUeWKPGaGFPA";
                 break;
+            case "Standard":
+                //    Title = Title + "-Standard"
+                    this.reportid = "OTUPu95cLd6uPgd5";
+
+                    break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "OTUPu95cLd6uPgd5"
@@ -11202,6 +11384,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -11553,6 +11736,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detail"
                 this.reportid = "3tnMUYUAp8WHDU1Z";
                 break;
+            case "Standard":
+                //    Title = Title + "-Standard"
+                    this.reportid = "OTUPu95cLd6uPgd5";
+
+                    break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "OTUPu95cLd6uPgd5"
@@ -11592,6 +11780,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -11942,6 +12131,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detail"
                 this.reportid = "wrRlhBfDegZzFrlu";
                 break;
+            case "Standard":
+                //    Title = Title + "-Standard"
+                    this.reportid = "pq2cnQ2nGuR4Szlh";
+
+                    break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "pq2cnQ2nGuR4Szlh"
@@ -11981,6 +12175,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -12017,7 +12212,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , PT.[AccountingIdentifier] AS PayrollType , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo]  INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN ITEMTYPES PT ON [Roster].[Service Description] = PT.[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name "
         var lblcriteria;
 
-
+//
         fQuery = fQuery + " WHERE  ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') ";
 
         var Title = "STAFF FUNDER PAYROLL TYPE -SUMMARY";
@@ -12317,13 +12512,18 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         fQuery = fQuery + "ORDER BY [Carer Code], PayrollType, Date, [Start Time]";
 
-        //////console.log(fQuery)
+    //    console.log(fQuery)
 
         switch (format) {
             case "Detailed":
                 Title = Title + "-Detail"
                 this.reportid = "UBAW9sppie7EzOiP";
                 break;
+            case "Standard":
+                //    Title = Title + "-Standard"
+                    this.reportid = "6v9LSTGgq06bT7xK ";
+
+                    break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "6v9LSTGgq06bT7xK"
@@ -12363,6 +12563,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -12396,7 +12597,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
     FunderPayrolltypeRpt(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
 
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , PT.[AccountingIdentifier] AS PayrollType , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1]  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN ITEMTYPES PT ON [Roster].[Service Description] = PT.[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name "
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , PT.[AccountingIdentifier] AS PayrollType , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1]  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN ITEMTYPES PT ON [Roster].[Service Description] = PT.[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] "
         var lblcriteria;
 
 
@@ -12699,13 +12900,18 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         fQuery = fQuery + " ORDER BY [MDS], PayrollType, Date, [Start Time]";
 
-        //////console.log(fQuery)
+    //    console.log(fQuery)
 
         switch (format) {
             case "Detailed":
                 Title = Title + "-Detail"
                 this.reportid = "2MILocaJ7z4C1VP2";
                 break;
+            case "Standard":
+                    //    Title = Title + "-Standard"
+                        this.reportid = "rUnfnSRvYRppjPTk";
+
+                        break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "rUnfnSRvYRppjPTk"
@@ -12745,6 +12951,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -12807,6 +13014,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -13189,6 +13397,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -13540,6 +13749,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detail"
                 this.reportid = "cgcfODRkRP2q67Sh";
                 break;
+            case "Standard":
+                    //    Title = Title + "-Standard"
+                        this.reportid = "YYfS88zCaEg6Qd12";
+
+                        break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "YYfS88zCaEg6Qd12"
@@ -13579,6 +13793,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -13669,6 +13884,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
@@ -13721,7 +13937,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         var Report_Definer = "";
 
         if (branch != "") {
-            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
+            this.s_BranchSQL = "[Recipients].[Branch] in ('" + branch.join("','") + "')";
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
         }
         if (startdate != "" || enddate != "") {
@@ -13785,7 +14001,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (this.s_FundersSQL != "") { fQuery = fQuery + " AND " + this.s_FundersSQL };
         }
         if (RosterCategory != "") {
-            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','") + "')";
+            
+            this.s_RosterCategorySQL = "[Roster].[Type]  in ('" + RosterCategory.join("','") + "')";
             if (this.s_RosterCategorySQL != "") { fQuery = fQuery + " AND " + this.s_RosterCategorySQL };
         }
         if (HACCCategory != "") {
@@ -14014,12 +14231,17 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         fQuery = fQuery + " ORDER BY [Service Type], [Client Code], Date, [Start Time] ";
 
-        // //////console.log(fQuery) 
+     //   console.log(fQuery) 
         switch (format) {
             case "Detailed":
                 Title = Title + "-Detail"
                 reportid = "pgPwDEeuHN7slyuf ";
                 break;
+            case "Standard":
+                //    Title = Title + "-Standard"
+                    this.reportid = "EUpoRvslDL2jReMC";
+
+                    break;
 
             default:
                 Title = Title + "-Summary"
@@ -14059,6 +14281,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -14412,6 +14635,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 Title = Title + "-Detail"
                 this.reportid = "A1mesTZmNX4TwwUC";
                 break;
+            case "Standard":
+                        //Title = Title + "-Standard"
+                        this.reportid = "ML1Lx7IY0KXwlJdd";
+
+                        break;
             default:
                 Title = Title + "-Summary"
                 this.reportid = "ML1Lx7IY0KXwlJdd"
@@ -14452,6 +14680,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -14800,6 +15029,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.reportid = "pt03dt4gX7njbIcj";
 
                 break;
+            case "Standard":
+                        //Title = Title + "-Standard"
+                        this.reportid = "9PRBcDXyREab0Qke";
+
+                        break;
 
             default:
                 Title = Title + "-Summary"
@@ -14841,6 +15075,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "txtpaytypes": paytypes,
                 "txtactivities": activities,
                 "txtsetting": setting,
+                "userid": this.tocken.user,
 
 
             }
@@ -14930,6 +15165,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }

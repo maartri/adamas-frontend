@@ -1424,7 +1424,7 @@
                             <div nz-col nzSpan="16">
                                 <div class="form-group">
                                     <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Activity</label>
-                                    <label class="checks" nz-checkbox formControlName="allactivities">All Roster Types</label>
+                                    <label class="checks" nz-checkbox formControlName="allactivities">All Activities</label>
                                     <nz-select formControlName="activityArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allactivities">
                                         <nz-option *ngFor="let option of activityArr" [nzLabel]="option" [nzValue]="option"></nz-option>
                                     </nz-select>  
@@ -1435,7 +1435,7 @@
                             <div nz-col nzSpan="16">
                                 <div class="form-group">
                                     <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Settings/Vehicles</label>
-                                    <label class="checks" nz-checkbox formControlName="Allsettting_vehicle">All Roster Types</label>
+                                    <label class="checks" nz-checkbox formControlName="Allsettting_vehicle">All </label>
                                     <nz-select formControlName="settting_vehicleArr"  nzMode="multiple" [nzDisabled]="inputForm.value.Allsettting_vehicle">
                                         <nz-option *ngFor="let option of settting_vehicleArr" [nzLabel]="option" [nzValue]="option"></nz-option>
                                     </nz-select>  
@@ -1446,8 +1446,8 @@
                             <div nz-col nzSpan="16">
                                 <div class="form-group">
                                     <label><i nz-icon nzType="environment" nzTheme="outline"></i>  MDS Type</label>
-                                    <label class="checks" nz-checkbox formControlName="allmdsypes">All Datasets</label>
-                                    <nz-select formControlName="mdstypeArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allmdsypes">
+                                    <label class="checks" nz-checkbox formControlName="allmdstypes">All Datasets</label>
+                                    <nz-select formControlName="mdstypeArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allmdstypes">
                                         <nz-option *ngFor="let option of mdstypeArr" [nzLabel]="option" [nzValue]="option"></nz-option>
                                     </nz-select> 
                                 </div>
@@ -1459,10 +1459,12 @@
                                     <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Roster Type</label>
                                     <label class="checks" nz-checkbox formControlName="allRostertypes">All Roster Types</label>
                                     <nz-select formControlName="rostertypeArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allRostertypes">
-                                        <nz-option *ngFor="let option of rostertypeArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                        <!-- <nz-option *ngFor="let option of rostertypeArr" [nzLabel]="option" [nzValue]="option"></nz-option> -->
+                                        <nz-option *ngFor="let option of rostertypeArr" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
                                     </nz-select> 
                                 </div>
-                            </div>   
+                            </div>  
+                             
                         </div>
                         
                         
@@ -1522,7 +1524,7 @@
                <ng-template #modalFooter> 
                    <div class="modalFooter">
                         <button nz-button nzType="primary" class="btn" (click)="toggle()"><span>Extra Options</span></button>
-                        <button nz-button nzType="primary" class="btn" ><span>Print</span></button>                
+                        <button nz-button nzType="primary" class="btn" (click)="handleOk()" ><span>Print</span></button>                 
                         <button nz-button nzType="primary" class="btn" (click)="handleOk()">Preview</button>
                         <button nz-button nzType="primary" class="btn" (click)="handleCancel()">Cancel</button>
                     </div>               

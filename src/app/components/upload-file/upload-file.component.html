@@ -20,7 +20,7 @@
             <li *ngFor="let file of loadedFiles;let i = index">
                 <div>
                     <div class="logo-group">
-                        <i class="" *ngIf="file.extension == ''" nz-icon nzType="file-unknown"
+                        <!-- <i class="" *ngIf="file.extension == ''" nz-icon nzType="file-unknown"
                             nzTheme="outline"></i>
                         <i class="" *ngIf="file.extension !== '' && (file.extension).toLowerCase() == '.pdf'" nz-icon
                             nzType="file-pdf" nzTheme="outline"></i>
@@ -37,7 +37,7 @@
                             *ngIf="file.extension !== '' && ((file.extension).toLowerCase() == '.doc' || (file.extension).toLowerCase() == '.docx') "
                             nz-icon nzType="file-word" nzTheme="outline"></i>
                         <i class="" *ngIf="file.extension !== '' && (file.extension).toLowerCase() == '.txt'" nz-icon
-                            nzType="file-text" nzTheme="outline"></i>
+                            nzType="file-text" nzTheme="outline"></i> -->
                     </div>
                     <div class="file-info">
                         <h5 [nzTooltipTitle]="file?.title" nzTooltipPlacement="topLeft" nz-tooltip>

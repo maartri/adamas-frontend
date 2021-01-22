@@ -2244,6 +2244,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             }); this.drawerVisible = true;
 
     }
@@ -2347,6 +2351,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -2444,6 +2452,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -2544,6 +2556,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -2643,6 +2659,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -2731,6 +2751,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -2793,6 +2817,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -2890,6 +2918,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -2989,6 +3021,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -3088,6 +3124,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -3185,6 +3225,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -3274,6 +3318,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -3364,6 +3412,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -3454,6 +3506,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -3543,6 +3599,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     AdmissiionDuringPeriod(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
@@ -3642,6 +3702,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     DischargeDuringPeriod(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
@@ -3743,6 +3807,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -3842,6 +3910,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     Associate_list(branch, manager, region, program) {
@@ -3937,6 +4009,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             }); this.drawerVisible = true;
     }
 
@@ -4036,6 +4112,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     ActiveStaffListing(manager, branch, stfgroup, inclusion) {
@@ -4118,6 +4198,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     InActiveStaffListing(manager, branch, stfgroup, inclusion) {
@@ -4198,6 +4282,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     ActiveBrokerage_Contractor(manager, branch, stfgroup, inclusion) {
@@ -4278,6 +4366,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -4359,6 +4451,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     ActiveVolunters(manager, branch, stfgroup, inclusion) {
@@ -4439,6 +4535,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -4607,6 +4707,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -4672,6 +4776,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -4756,6 +4864,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -4839,6 +4951,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -4916,6 +5032,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -5022,6 +5142,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -5124,6 +5248,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     StaffLeaveRegister(startdate, enddate, tempsdate, tempedate) {
@@ -5184,6 +5312,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -5273,6 +5405,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -5428,6 +5564,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     StaffUnavailability(branch, stfgroup, staff, stafftype, startdate, enddate, tempsdate, tempedate) {
@@ -5525,6 +5665,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -5623,6 +5767,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -5721,6 +5869,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     StaffLoanRegister(branch, program, staff, loanitems, loancategory, startdate, enddate, tempsdate, tempedate) {
@@ -5822,6 +5974,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -5952,6 +6108,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -6068,6 +6228,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -6184,6 +6348,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -6260,6 +6428,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -6359,6 +6531,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -6446,6 +6622,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -6541,6 +6721,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -6657,6 +6841,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -6763,6 +6951,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     StaffTraining(branch, manager, region, program, staffteam, trainingtype, stfgroup, startdate, enddate, tempsdate, tempedate) {
@@ -6890,6 +7082,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
     AuditRegister(who, descibe, traccsuser, startdate, enddate, tempsdate, tempedate) {
@@ -6905,12 +7101,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.s_TraccsuserSQL = "R.[RECIPIENT_COOrdinator] in ('" + traccsuser.join("','") + "')";
             if (this.s_TraccsuserSQL != "") { fQuery = fQuery + " AND " + this.s_TraccsuserSQL };
         }
-        if (descibe != "") {
+        if (descibe != "" && descibe != null) {
             this.s_DescribeSQL = "AuditDescription like ('" + descibe + "')";
               if (this.s_DescribeSQL != ""){ fQuery = fQuery + " AND " + this.s_DescribeSQL};
             
         }
-        if (who != "") {
+        if (who != "" && descibe != null) {
             this.s_whowhatSQL = "whowhatcode like ('" + who + "')";
               if (this.s_whowhatSQL != ""){ fQuery = fQuery + " AND " + this.s_whowhatSQL};
             
@@ -6924,11 +7120,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             lblcriteria = lblcriteria + " Traccs Users: " + traccsuser.join(",") + "; "
         }
         else { lblcriteria = lblcriteria + "All Users," }
-        if (descibe != "") {
+        if (descibe != "" && descibe != null) {
             lblcriteria = lblcriteria + " Description: " + descibe + "; "
         }
         else { lblcriteria = lblcriteria + "All Descriptions," }
-        if (who != "") {
+        if (who != "" && who != null) {
             lblcriteria = lblcriteria + " Who/What: " + who + "; "
         }
         else { lblcriteria = lblcriteria + "All Who/what," }
@@ -6976,6 +7172,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -7038,6 +7238,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
+            
             });
 
 
@@ -7095,9 +7301,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (this.inputForm.value.not_logon == true) {
             fQuery1 = fQuery1 + " AND (IsNull(ez.datetime,'')= '') "
         }
-
-        if (fQuery1 != "" && fQuery1 != undefined) {
+       
+        if (fQuery1 != " " && fQuery1 != undefined) {
             var sql = fQuery1.substring(4, fQuery1.length)
+
             fQuery = fQuery + " where " + sql
         }
 
@@ -7174,6 +7381,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
 
     }
@@ -7279,7 +7491,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
+            
 
     }
     MTAVerificationAudit(program, manager, Staff, stfgroup, recipient, startdate, enddate, tempsdate, tempedate, XXLate, XXEarly, XXOverstayed) {
@@ -7411,7 +7629,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
+            
 
     }
     UnsedFunding(program, manager, recipient, region) {
@@ -7507,7 +7731,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
+        
 
     }
     ReportUtilisation(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
@@ -7985,7 +8215,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
+            
 
     }
 
@@ -8391,7 +8627,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
+          
 
     }
 
@@ -8788,7 +9030,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
+           
 
     }
     ProgramReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
@@ -9262,7 +9510,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
+           
 
     }
     ProgramBillingReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
@@ -9661,7 +9915,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
             });
+           
 
     }
     ProgramBudgetAudit(branch, program) {
@@ -9729,6 +9989,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
+                
+           
             });
 
 
@@ -9831,6 +10097,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             }); this.drawerVisible = true;
     }
     ActivityGroupReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
@@ -10227,6 +10497,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -10622,6 +10896,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -11018,6 +11296,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -11413,6 +11695,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -11809,6 +12095,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -12204,6 +12494,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -12592,6 +12886,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -12980,6 +13278,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -13043,6 +13345,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -13426,6 +13732,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -13822,6 +14132,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -13913,6 +14227,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 
@@ -14310,6 +14628,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -14709,6 +15031,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -15104,6 +15430,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
 
     }
@@ -15194,6 +15524,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             }, err => {
                 console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+                  });
             });
     }
 

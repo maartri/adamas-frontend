@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ListService } from '@services/list.service';
+import { MenuService } from '@services/menu.service';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
@@ -30,6 +31,7 @@ export class ContactgroupsComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private listS: ListService,
+    private menuS: MenuService,
     private switchS:SwitchService,
     ){}
     
@@ -136,7 +138,16 @@ export class ContactgroupsComponent implements OnInit {
           });
         }
         delete(data: any) {
-          this.globalS.sToast('Success', 'Data Deleted!');
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
         }
         buildForm() {
           this.inputForm = this.formBuilder.group({

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ListService } from '@services/list.service';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
+import { MenuService } from '@services/menu.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -12,25 +13,26 @@ import { takeUntil } from 'rxjs/operators';
   styles: []
 })
 export class TargetgroupsComponent implements OnInit {
-
-    tableData: Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    inputForm: FormGroup;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    modalVariables:any;
-    inputVariables:any;
-    title :string = "Add CDC Target Groups";
-    private unsubscribe: Subject<void> = new Subject();
-
-    constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private formBuilder: FormBuilder,
-      private listS: ListService,
-      private switchS:SwitchService,
+  
+  tableData: Array<any>;
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  inputForm: FormGroup;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  modalVariables:any;
+  inputVariables:any;
+  title :string = "Add CDC Target Groups";
+  private unsubscribe: Subject<void> = new Subject();
+  
+  constructor(
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private formBuilder: FormBuilder,
+    private listS: ListService,
+    private menuS: MenuService,
+    private switchS:SwitchService,
     ){}
     
     ngOnInit(): void {
@@ -69,7 +71,7 @@ export class TargetgroupsComponent implements OnInit {
       const { 
         name,
         recordNumber
-       } = this.tableData[index];
+      } = this.tableData[index];
       this.inputForm.patchValue({
         name: name,
         recordNumber:recordNumber
@@ -137,15 +139,25 @@ export class TargetgroupsComponent implements OnInit {
           }
           
         }
-    
-    delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
-    }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        name: '',
-        recordNumber:null,
-      });
-    }
-
-}
+        
+        delete(data: any) {
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        } 
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            name: '',
+            recordNumber:null,
+          });
+        }
+        
+      }
+      

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { GlobalService, ListService } from '@services/index';
+import { GlobalService, ListService , MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,25 +11,26 @@ import { takeUntil } from 'rxjs/operators';
   styles: []
 })
 export class StaffTeamsComponent implements OnInit {
-
-    tableData: Array<any>;
-    items:Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    inputForm: FormGroup;
-    modalVariables:any;
-    inputVariables:any;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    title:string = "Add New Staff Team";
-    private unsubscribe: Subject<void> = new Subject();
-    constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private formBuilder: FormBuilder,
-      private listS: ListService,
-      private switchS:SwitchService,
+  
+  tableData: Array<any>;
+  items:Array<any>;
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  inputForm: FormGroup;
+  modalVariables:any;
+  inputVariables:any;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  title:string = "Add New Staff Team";
+  private unsubscribe: Subject<void> = new Subject();
+  constructor(
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private formBuilder: FormBuilder,
+    private listS: ListService,
+    private menuS: MenuService,
+    private switchS:SwitchService,
     ){}
     
     ngOnInit(): void {
@@ -37,7 +38,7 @@ export class StaffTeamsComponent implements OnInit {
       // this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
       
       this.loadData();
-
+      
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -66,7 +67,7 @@ export class StaffTeamsComponent implements OnInit {
         name,
         branch,
         recordNumber
-       } = this.tableData[index];
+      } = this.tableData[index];
       this.inputForm.patchValue({
         item: branch,
         rate:name,
@@ -107,51 +108,60 @@ export class StaffTeamsComponent implements OnInit {
         //     this.handleCancel();
         //     this.resetModal();
         //   });
-        }else{
-          this.postLoading = true;     
-          const group = this.inputForm;
-          // console.log(group.get('item').value);
-          // this.switchS.updateData(  
-          //   this.modalVariables={
-          //     title: 'CDC Claim Rates'
-          //   }, 
-          //   this.inputVariables = {
-          //     item: group.get('item').value,
-          //     rate: group.get('rate').value,
-          //     recordNumber:group.get('recordNumber').value,
-          //     domain: 'PACKAGERATES',
-          //   }
-            
-          //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          //     if (data) 
-          //     this.globalS.sToast('Success', 'Updated successful');     
-          //     else
-          //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-          //     this.loadData();
-          //     this.postLoading = false;          
-          //     this.handleCancel();
-          //     this.resetModal();
-          //   });
-          }
-          
-        }
-        loadData(){
-          let sql ="select Description as name,User1 as branch,recordNumber from DataDomains where Domain='STAFFTEAM'";
-          this.loading = true;
-          this.listS.getlist(sql).subscribe(data => {
-            this.tableData = data;
-            this.loading = false;
-          });
-
-          let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
-          this.listS.getlist(branch).subscribe(data => {
-            this.items = data;
-            this.loading = false;
-          });
-
-        }
+      }else{
+        this.postLoading = true;     
+        const group = this.inputForm;
+        // console.log(group.get('item').value);
+        // this.switchS.updateData(  
+        //   this.modalVariables={
+        //     title: 'CDC Claim Rates'
+        //   }, 
+        //   this.inputVariables = {
+        //     item: group.get('item').value,
+        //     rate: group.get('rate').value,
+        //     recordNumber:group.get('recordNumber').value,
+        //     domain: 'PACKAGERATES',
+        //   }
+        
+        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        //     if (data) 
+        //     this.globalS.sToast('Success', 'Updated successful');     
+        //     else
+        //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+        //     this.loadData();
+        //     this.postLoading = false;          
+        //     this.handleCancel();
+        //     this.resetModal();
+        //   });
+      }
+      
+    }
+    loadData(){
+      let sql ="select Description as name,User1 as branch,recordNumber from DataDomains where Domain='STAFFTEAM'";
+      this.loading = true;
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        this.loading = false;
+      });
+      
+      let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
+      this.listS.getlist(branch).subscribe(data => {
+        this.items = data;
+        this.loading = false;
+      });
+      
+    }
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.deleteDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
@@ -160,5 +170,6 @@ export class StaffTeamsComponent implements OnInit {
         recordNumber:null
       });
     }
-
-}
+    
+  }
+  

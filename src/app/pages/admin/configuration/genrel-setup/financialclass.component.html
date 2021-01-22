@@ -1,3 +1,4 @@
+<div style="padding:8px;">
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add Financial Classification</button>
@@ -13,14 +14,14 @@
                 <td class="left">{{ data.name  }} </td>
                         <a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Financial Class ?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Financial Class List?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
                 </tr>
             </tbody>
         </nz-table>
     </div>
 </div>
-
+</div>
 <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">
     <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">

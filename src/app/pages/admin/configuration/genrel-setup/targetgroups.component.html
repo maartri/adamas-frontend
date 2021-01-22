@@ -1,3 +1,4 @@
+<div style="padding:8px;">
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add Target Groups</button>
@@ -13,7 +14,7 @@
                 <td class="left">{{ data.name  }} </td>
                         <td><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Target Group ?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Target Group List ? "
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
                 </tr>
             </tbody>
@@ -44,3 +45,4 @@
             </div>
         </div>
 </nz-modal>
+</div>

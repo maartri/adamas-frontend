@@ -5,6 +5,7 @@ import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MenuService } from '@services/index';
 
 @Component({
   selector: 'app-claimrates',
@@ -30,6 +31,7 @@ export class ClaimratesComponent implements OnInit {
       private cd: ChangeDetectorRef,
       private formBuilder: FormBuilder,
       private listS: ListService,
+      private menuS: MenuService,
       private switchS:SwitchService,
     ){}
     
@@ -81,7 +83,6 @@ export class ClaimratesComponent implements OnInit {
     pre(): void {
       this.current -= 1;
     }
-    
     next(): void {
       this.current += 1;
     }
@@ -121,8 +122,7 @@ export class ClaimratesComponent implements OnInit {
               rate: group.get('rate').value,
               recordNumber:group.get('recordNumber').value,
               domain: 'PACKAGERATES',
-            }
-            
+            } 
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
               if (data) 
               this.globalS.sToast('Success', 'Updated successful');     
@@ -133,8 +133,7 @@ export class ClaimratesComponent implements OnInit {
               this.handleCancel();
               this.resetModal();
             });
-          }
-          
+          } 
         }
         loadData(){
           let sql ="select Description as name,User1 as rate,recordNumber from DataDomains where Domain='PACKAGERATES'";
@@ -144,18 +143,24 @@ export class ClaimratesComponent implements OnInit {
             console.log(data);
             this.loading = false;
           });
-
-          
         }
-    
-    delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
-    }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        item: '',
-        rate: '',
-        recordNumber:null
-      });
-    }
+        delete(data: any) {
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) {
+                this.globalS.sToast('Success', 'Data Deleted!');
+                this.loadData();
+                return;
+             }
+            });
+        } 
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            item: '',
+            rate: '',
+            recordNumber:null
+          });
+        }
 }

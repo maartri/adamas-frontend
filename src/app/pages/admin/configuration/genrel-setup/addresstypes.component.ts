@@ -5,6 +5,7 @@ import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MenuService } from '@services/menu.service';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class AddresstypesComponent implements OnInit {
   private cd: ChangeDetectorRef,
   private formBuilder: FormBuilder,
   private listS: ListService,
+  private menuS: MenuService,
   private switchS:SwitchService,
   ){}
   
@@ -138,7 +140,16 @@ export class AddresstypesComponent implements OnInit {
         });
       }
       delete(data: any) {
-        this.globalS.sToast('Success', 'Data Deleted!');
+        this.postLoading = true;     
+        const group = this.inputForm;
+        this.menuS.deleteDomain(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadData();
+            return;
+          }
+        });
       }
       buildForm() {
         this.inputForm = this.formBuilder.group({

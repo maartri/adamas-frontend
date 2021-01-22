@@ -1,3 +1,4 @@
+<div style="padding:8px">
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Staff Teams</button>
@@ -16,12 +17,13 @@
                 <!-- <td class="left">{{ data.rate  }} </td> -->
                 <td class="left"><a (click)="showEditModal(i)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure Staff Team ?"
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete from Staff Team List?"
                         nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
                 </tr>
             </tbody>
         </nz-table>
     </div>
+</div>
 </div>
 <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">

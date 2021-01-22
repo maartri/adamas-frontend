@@ -1,23 +1,25 @@
-<div nz-row>
-    <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Contact Group</button>
-        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
-            <thead>
-                <tr>
-                    <th class="left">Name/Title</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td class="left">{{ data.name  }} </td>
-                    <td class="left"><a (click)="showEditModal(i)">Update</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Contact Group ?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+<div style="padding:8px">
+    <div nz-row>
+        <div nz-col>
+            <button class="botton success" (click)="showAddModal()">Contact Group</button>
+            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                <thead>
+                    <tr>
+                        <th class="left">Name/Title</th>
+                        <th>Action</th>
                     </tr>
-                </tbody>
-            </nz-table>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of basicTable.data;let i = index;">
+                        <td class="left">{{ data.name  }} </td>
+                        <td class="left"><a (click)="showEditModal(i)">Update</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Contact Group List ?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
         </div>
     </div>
     <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">

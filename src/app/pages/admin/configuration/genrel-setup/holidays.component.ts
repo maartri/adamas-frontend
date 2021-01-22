@@ -140,8 +140,18 @@ let sql  = "Update PUBLIC_HOLIDAYS SET [DATE] = '"+ date+ "',[DESCRIPTION] = '"+
     }
     
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.deleteholidayslist(data.recordno)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
     }
+    
     buildForm() {
       this.inputForm = this.formBuilder.group({
         date:'',

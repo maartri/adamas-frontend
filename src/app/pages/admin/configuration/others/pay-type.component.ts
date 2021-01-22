@@ -229,15 +229,17 @@ export class PayTypeComponent implements OnInit {
         let status            = "NONATTRIBUTABLE";
         let process           = "INPUT";
         let mainGroup         = "DIRECT SERVICE";
+        let unitCostUom       = "EACH/SERVICE";
         let code              = group.get('code').value;
         let description       = group.get('description').value;
         let type              = group.get('type').value;
         let subgroup          = group.get('subgroup').value;
         let payrate           = group.get('payrate').value;
-        let end               = "" ; //  (group.get('end').value == '') ? '' : this.globalS.convertDbDate(group.get('end').value);
+        let end               = this.globalS.convertDbDate(group.get('end').value);
         let unit              = group.get('unit').value;
         let payid             = group.get('payid').value;
         let recordNumber      = group.get('recordNumber').value;
+        
         
         let sql  = "Update itemtypes SET [Status]='"+ status + "',[ProcessClassification] = '"+ process + "',[Title] = '"+ code + "',[billText] = '"+ description+ "',[RosterGroup] = '"+ type + "',[Amount] = '"+ payrate + "',[Unit] = '"+ unit+ "',[AccountingIdentifier] = '"+ payid+ "',[MainGroup] = '"+ mainGroup + "',[MinorGroup] = '"+ subgroup + "' WHERE [Recnum] ='"+recordNumber+"'";
         // console.log(sql);
@@ -285,7 +287,7 @@ export class PayTypeComponent implements OnInit {
         payrate:'',
         unit:'',
         casuals:false,
-        end:'',
+        end:new Date(),
         payid:'',
         exportfrompay:false,
         conflict:false,

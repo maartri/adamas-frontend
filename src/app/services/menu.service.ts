@@ -69,7 +69,6 @@ export class MenuService {
     }
     updatUDomain(sqlString: string):Observable<any>{
         return this.auth.post(`${menu}/updateDomain/`, { Sql: sqlString});
-        
     }
     InsertRecord(sqlString: string): Observable<any>{
         return this.auth.post(`${menu}/insertSql-list`, { Sql: sqlString})
@@ -77,4 +76,23 @@ export class MenuService {
     InsertDomain(sqlString: string): Observable<any>{
         return this.auth.post(`${menu}/addDomain`, { Sql: sqlString})
     }
+    deleteDomain(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/datadomains/${recordNo}`)
+    }
+    deleteDistributionlist(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/distribution/${recordNo}`)
+    }
+    deleteBudgetlist(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/budgets/${recordNo}`)
+    }
+    deletepostcodeslist(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/postcodes/${recordNo}`)
+    }
+    deleteholidayslist(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/holidays/${recordNo}`)
+    }
+    deletemedicalContacts(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/medicalContacts/${recordNo}`)
+    }
+    
 }

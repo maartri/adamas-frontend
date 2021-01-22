@@ -2246,7 +2246,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             }); this.drawerVisible = true;
 
@@ -2353,7 +2356,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -2454,7 +2460,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -2558,7 +2567,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -2661,7 +2673,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -2753,7 +2768,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -2819,7 +2837,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -2920,7 +2941,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3023,7 +3047,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3126,7 +3153,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3227,7 +3257,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3320,7 +3353,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3414,7 +3450,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3508,7 +3547,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3601,7 +3643,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3704,7 +3749,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3809,7 +3857,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -3912,7 +3963,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4011,7 +4065,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             }); this.drawerVisible = true;
     }
@@ -4114,7 +4171,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4200,7 +4260,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4284,7 +4347,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4368,7 +4434,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4453,7 +4522,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4537,7 +4609,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4709,7 +4784,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4778,7 +4856,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4866,7 +4947,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -4953,7 +5037,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5034,7 +5121,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5144,7 +5234,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5250,7 +5343,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5314,7 +5410,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5407,7 +5506,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5566,7 +5668,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5667,7 +5772,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5769,7 +5877,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5871,7 +5982,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -5976,7 +6090,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6110,7 +6227,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6230,7 +6350,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6350,7 +6473,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6430,7 +6556,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6533,7 +6662,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6624,7 +6756,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6723,7 +6858,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6843,7 +6981,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -6953,7 +7094,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -7084,7 +7228,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -7174,7 +7321,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -7240,7 +7390,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             
@@ -7383,7 +7536,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -7493,7 +7649,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -7631,7 +7790,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -7733,7 +7895,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -8217,7 +8382,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -8629,7 +8797,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -9032,7 +9203,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -9512,7 +9686,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -9917,7 +10094,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
             });
@@ -9991,7 +10171,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
                 
            
@@ -10099,7 +10282,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             }); this.drawerVisible = true;
     }
@@ -10499,7 +10685,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -10898,7 +11087,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -11298,7 +11490,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -11697,7 +11892,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -12097,7 +12295,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -12496,7 +12697,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -12888,7 +13092,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -13280,7 +13487,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -13347,7 +13557,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -13734,7 +13947,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -14134,7 +14350,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -14229,7 +14448,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }
@@ -14630,7 +14852,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -15033,7 +15258,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -15432,7 +15660,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
 
@@ -15526,7 +15757,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')'
+nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
                   });
             });
     }

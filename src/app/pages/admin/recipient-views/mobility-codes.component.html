@@ -1,6 +1,7 @@
+<div style="padding:8px">
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add Mobility Codes</button>
+        <button class="botton success" (click)="showAddModal()"> Add Mobility Codes </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
@@ -13,7 +14,7 @@
                 <td class="left">{{ data.name  }} </td>     
                 <td><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Mobility Code?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Mobility Codes List?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
                 </td>
                 </tr>
@@ -24,7 +25,7 @@
         </nz-table>
     </div>
 </div>
-
+</div>
 <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">
     <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">

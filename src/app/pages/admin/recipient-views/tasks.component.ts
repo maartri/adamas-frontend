@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { GlobalService, ListService } from '@services/index';
+import { GlobalService, ListService, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -28,6 +28,7 @@ export class TasksComponent implements OnInit {
       private cd: ChangeDetectorRef,
       private switchS:SwitchService,
       private listS:ListService,
+      private menuS:MenuService,
       private formBuilder: FormBuilder
     ){}
     
@@ -140,10 +141,18 @@ export class TasksComponent implements OnInit {
           }
           
         }
-    
-    delete(data: any) {
-      this.globalS.sToast('Success', 'Sorry At this movement you can not perform this action!');
-    }
+        delete(data: any) {
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        }
     buildForm() {
       this.inputForm = this.formBuilder.group({
         name: '',

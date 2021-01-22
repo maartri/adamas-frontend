@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { GlobalService, ListService } from '@services/index';
+import { GlobalService, ListService, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -29,13 +29,13 @@ export class MedicalDignosisComponent implements OnInit {
       private cd: ChangeDetectorRef,
       private formBuilder: FormBuilder,
       private listS: ListService,
+      private menuS: MenuService,
       private switchS:SwitchService,
     ){}
     
     ngOnInit(): void {
       this.buildForm();
       this.items = ["Leprosy","Other Form of Leprosy","Bordline"]
-      // this.tableData = [{name:"Leprosy",icdcode:'R.28'},{name:"Bordline",icdcode:'R.22'}]
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
@@ -88,53 +88,16 @@ export class MedicalDignosisComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
+    
       if(!this.isUpdate){         
-      //   this.switchS.addData(  
-      //     this.modalVariables={
-      //       title: 'CDC Claim Rates'
-      //     }, 
-      //     this.inputVariables = {
-      //       item: group.get('item').value,
-      //       rate: group.get('rate').value,
-      //       domain: 'PACKAGERATES', 
-      //     }
-      //     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      //       if (data) 
-      //       this.globalS.sToast('Success', 'Saved successful');     
-      //       else
-      //       this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-      //       this.loadData();
-      //       this.postLoading = false;          
-      //       this.handleCancel();
-      //       this.resetModal();
-      //     });
-      }else{
-          // this.postLoading = true;     
-          // const group = this.inputForm;
-          // // console.log(group.get('item').value);
-          // this.switchS.updateData(  
-          //   this.modalVariables={
-          //     title: 'CDC Claim Rates'
-          //   }, 
-          //   this.inputVariables = {
-          //     item: group.get('item').value,
-          //     rate: group.get('rate').value,
-          //     recordNumber:group.get('recordNumber').value,
-          //     domain: 'PACKAGERATES',
-          //   }
-            
-          //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          //     if (data) 
-          //     this.globalS.sToast('Success', 'Updated successful');     
-          //     else
-          //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-          //     this.loadData();
-          //     this.postLoading = false;          
-          //     this.handleCancel();
-          //     this.resetModal();
-          //   });
-          }    
+      
       }
+      else
+      {
+          
+      }    
+      
+    }
       loadData(){
           let sql ="Select RecordNumber, Description, Code FROM MDiagnosisTypes where RecordNumber < 500";
           this.loading = true;
@@ -143,16 +106,19 @@ export class MedicalDignosisComponent implements OnInit {
             console.log(data);
             this.loading = false;
           });
-          // let sql2 = "Select RecordNumber, Description, Code FROM MDiagnosisTypes  ORDER BY Description";
-          // this.listS.getlist(sql2).subscribe(data => {
-            // this.items = data;
-            // console.log(data);
-          // });
       }
-    
-    delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
-    }
+      delete(data: any) {
+        this.postLoading = true;     
+        const group = this.inputForm;
+        this.menuS.deleteMDiagnosisTypes(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadData();
+            return;
+          }
+        });
+      }
     buildForm() {
       this.inputForm = this.formBuilder.group({
         name: '',

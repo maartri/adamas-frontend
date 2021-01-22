@@ -41,7 +41,6 @@ export class VehiclesComponent implements OnInit {
     ngOnInit(): void {
       this.buildForm();
       this.loadData();
-      // this.tableData = [{name:"test Vehicles a"},{name:"test Vehicles b"},{name:"test Vehicles c"}];
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -141,9 +140,17 @@ export class VehiclesComponent implements OnInit {
           }
           
         }
-        
         delete(data: any) {
-          this.globalS.sToast('Success', 'Sorry At this movement you can not perform this action!');
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
         }
         buildForm() {
           this.inputForm = this.formBuilder.group({

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { GlobalService, ListService ,MenuService} from '@services/index';
+import { GlobalService, ListService ,MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

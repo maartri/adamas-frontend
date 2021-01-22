@@ -1,6 +1,7 @@
+<div style="padding:8px">
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add Recipient Minor Group</button>
+        <button class="botton success" (click)="showAddModal()"> Add Recipient Minor Group </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
@@ -13,12 +14,13 @@
                 <td class="left">{{ data.name  }} </td>
                 <td class="left"><a (click)="showEditModal(i)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete Recipient Minor Group ?"
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Recipient Minor Group List?"
                         nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
                 </tr>
             </tbody>
         </nz-table>
     </div>
+</div>
 </div>
 <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadtitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">

@@ -135,7 +135,16 @@ export class ProgramcoordinatesComponent implements OnInit {
    }
   }
   delete(data: any) {
-    this.globalS.sToast('Success', 'Data Deleted!');
+    this.postLoading = true;     
+    const group = this.inputForm;
+    this.menuS.deleteDomain(data.recordNumber)
+    .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+      if (data) {
+        this.globalS.sToast('Success', 'Data Deleted!');
+        this.loadData();
+        return;
+      }
+    });
   }
   buildForm() {
     this.inputForm = this.formBuilder.group({

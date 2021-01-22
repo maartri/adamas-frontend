@@ -4,7 +4,7 @@ import { SwitchService } from '@services/switch.service';
 import {ListService} from '@services/list.service';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TimeSheetService, GlobalService,incidentTypes} from '@services/index';
+import { TimeSheetService, GlobalService,incidentTypes, MenuService} from '@services/index';
 @Component({
   selector: 'app-incidentsubcat',
   templateUrl: './incidentsubcat.component.html',
@@ -29,6 +29,7 @@ export class IncidentsubcatComponent implements OnInit {
     private globalS: GlobalService,
     private listS:ListService,
     private switchS:SwitchService,
+    private menuS:MenuService,
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder
   ){}
@@ -144,9 +145,18 @@ export class IncidentsubcatComponent implements OnInit {
         
       }
   
-  delete(data: any) {
-    this.globalS.sToast('Success', 'Data Deleted!');
-  }
+      delete(data: any) {
+        this.postLoading = true;     
+        const group = this.inputForm;
+        this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+           }
+          });
+        }
   buildForm() {
     this.inputForm = this.formBuilder.group({
       incident_type:'',

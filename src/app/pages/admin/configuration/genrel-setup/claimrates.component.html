@@ -1,7 +1,8 @@
+<div style="padding:8px;">
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">CDC Claim Rates</button>
-        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
                     <th class="left">CDC Item</th>
@@ -15,7 +16,7 @@
                 <td class="left">{{ data.rate  }} </td>
                 <td class="left"><a (click)="showEditModal(i)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure Claim Rate ?"
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Claim Rate List?"
                         nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
                 </tr>
             </tbody>
@@ -51,3 +52,4 @@
             </div>
         </div>
 </nz-modal>
+</div>

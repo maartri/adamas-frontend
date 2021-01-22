@@ -1,3 +1,4 @@
+<div style="padding:8px">
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add Staff Admin Categories</button>
@@ -24,7 +25,7 @@
         </nz-table>
     </div>
 </div>
-
+<div>
 <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">
     <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">

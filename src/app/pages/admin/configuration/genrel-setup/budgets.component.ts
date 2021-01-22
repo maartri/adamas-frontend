@@ -56,7 +56,6 @@ export class BudgetsComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
-      // this.tableData = [{ name:"Nursing Allied Health (H3)"},{name:"Meals (H7)"},{name:"Personal Care"},{name:"Shopping"},{name:"Transport"},{name:"In home Care"}];
       this.loading = false;
       this.loadData();
       this.populateDropdowns();
@@ -304,10 +303,20 @@ export class BudgetsComponent implements OnInit {
         });
       }
     }
-    
+
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.deleteBudgetlist(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
     }
+    
     buildForm() {
       this.inputForm = this.formBuilder.group({
         title: '',

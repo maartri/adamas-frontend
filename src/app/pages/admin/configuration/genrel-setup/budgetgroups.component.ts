@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { GlobalService } from '@services/global.service';
 import { ListService } from '@services/list.service';
 import { SwitchService } from '@services/switch.service';
+import { MenuService } from '@services/menu.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -29,6 +30,7 @@ export class BudgetgroupsComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private listS: ListService,
+    private menuS: MenuService,
     private switchS:SwitchService,
     ){}
     
@@ -123,7 +125,6 @@ export class BudgetgroupsComponent implements OnInit {
               this.resetModal();
             });
           }
-          
         }
         loadData(){
           let sql ="select Description as name,recordNumber from DataDomains where Domain='BUDGETGROUP' ";
@@ -134,7 +135,16 @@ export class BudgetgroupsComponent implements OnInit {
           });
         }
         delete(data: any) {
-          this.globalS.sToast('Success', 'Data Deleted!');
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
         }
         buildForm() {
           this.inputForm = this.formBuilder.group({

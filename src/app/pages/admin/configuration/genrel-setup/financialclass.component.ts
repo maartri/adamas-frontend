@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ListService } from '@services/list.service';
+import { MenuService } from '@services/menu.service';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
@@ -13,25 +14,26 @@ import { takeUntil } from 'rxjs/operators';
   styles: []
 })
 export class FinancialclassComponent implements OnInit {
-
-    tableData: Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    modalVariables:any;
-    inputVariables:any;
-    inputForm: FormGroup;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    title:string = "Add Financial Class"
-    private unsubscribe: Subject<void> = new Subject();
-    
-    constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private switchS:SwitchService,
-      private listS:ListService,
-      private formBuilder: FormBuilder
+  
+  tableData: Array<any>;
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  modalVariables:any;
+  inputVariables:any;
+  inputForm: FormGroup;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  title:string = "Add Financial Class"
+  private unsubscribe: Subject<void> = new Subject();
+  
+  constructor(
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private switchS:SwitchService,
+    private listS:ListService,
+    private menuS:MenuService,
+    private formBuilder: FormBuilder
     ){}
     
     loadTitle()
@@ -64,26 +66,19 @@ export class FinancialclassComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-        const { 
-          name,
-          recordNumber
-         } = this.tableData[index];
-        this.inputForm.patchValue({
-          fclass: name,
-          recordNumber:recordNumber
-        });
+      const { 
+        name,
+        recordNumber
+      } = this.tableData[index];
+      this.inputForm.patchValue({
+        fclass: name,
+        recordNumber:recordNumber
+      });
     }
     
     handleCancel() {
       this.modalOpen = false;
     }
-    // pre(): void {
-    //   this.current -= 1;
-    // }
-    
-    // next(): void {
-    //   this.current += 1;
-    // }
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
@@ -140,15 +135,25 @@ export class FinancialclassComponent implements OnInit {
             this.loading = false;
           });
         }
-    
-    delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
-    }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        fclass: '',
-        recordNumber:null
-      });
-    }
-
-}
+        
+        delete(data: any) {
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        }
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            fclass: '',
+            recordNumber:null
+          });
+        }
+        
+      }
+      

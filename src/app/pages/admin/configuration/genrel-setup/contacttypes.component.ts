@@ -1,6 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { MenuService } from '@services/index';
 import { GlobalService } from '@services/global.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -9,8 +12,7 @@ import { GlobalService } from '@services/global.service';
   styles: []
 })
 export class ContacttypesComponent implements OnInit {
-  
-  tableData: Array<any>;
+    tableData: Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
@@ -18,15 +20,17 @@ export class ContacttypesComponent implements OnInit {
     postLoading: boolean = false;
     isUpdate: boolean = false;
     heading:string = "Add New Contact Type"
+    private unsubscribe: Subject<void> = new Subject();
     constructor(
       private globalS: GlobalService,
       private cd: ChangeDetectorRef,
+      private menuS:MenuService,
       private formBuilder: FormBuilder
     ){}
     
     ngOnInit(): void {
       this.buildForm();
-      this.tableData = [{ pgroup:"Other",title:"test type"}];
+      this.loadData();
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -79,7 +83,19 @@ export class ContacttypesComponent implements OnInit {
     }
     
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.deleteDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
+    }
+    loadData(){
+      this.tableData = [{ pgroup:"Other",title:"test type"}];
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({

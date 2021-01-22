@@ -5,6 +5,7 @@ import { SwitchService } from '@services/switch.service';
 import {ListService} from '@services/list.service';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MenuService } from '@services/menu.service';
 
 @Component({
   selector: 'app-location-categories',
@@ -29,13 +30,13 @@ export class LocationCategoriesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
     private listS:ListService,
+    private menuS:MenuService,
     private formBuilder: FormBuilder
   ){}
   
   loadData(){
     let sql ="select Description as name,recordNumber from DataDomains where Domain='IMLocation' ";
     this.loading = true;
-    sql
     this.listS.getlist(sql).subscribe(data => {
       this.tableData = data;
       this.loading = false;
@@ -141,9 +142,18 @@ export class LocationCategoriesComponent implements OnInit {
         
       }
   
-  delete(data: any) {
-    this.globalS.sToast('Success', 'Data Deleted!');
-  }
+      delete(data: any) {
+        this.postLoading = true;     
+        const group = this.inputForm;
+        this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+           }
+          });
+        }
   buildForm() {
     this.inputForm = this.formBuilder.group({
       name: '',

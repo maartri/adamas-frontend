@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { GlobalService } from '@services/global.service';
 import { ListService } from '@services/list.service';
 import { SwitchService } from '@services/switch.service';
+import { MenuService } from '@services/menu.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -11,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './purposestatement.component.html',
   styles: [`
   textarea{
-     resize:none;
+    resize:none;
   },
   table {
     table-layout: fixed; 
@@ -20,28 +21,29 @@ import { takeUntil } from 'rxjs/operators';
   td{
     word-wrap: break-word;
   }
-`],
+  `],
 })
 export class PurposestatementComponent implements OnInit {
-
-    tableData: Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    inputForm: FormGroup;
-    modalVariables:any;
-    inputVariables:any;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    title:string = "Add Package Purpose Statement";
-    private unsubscribe: Subject<void> = new Subject();
-    constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private formBuilder: FormBuilder,
-      private listS: ListService,
-      private switchS:SwitchService,
-      ){}
+  
+  tableData: Array<any>;
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  inputForm: FormGroup;
+  modalVariables:any;
+  inputVariables:any;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  title:string = "Add Package Purpose Statement";
+  private unsubscribe: Subject<void> = new Subject();
+  constructor(
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private formBuilder: FormBuilder,
+    private listS: ListService,
+    private menuS: MenuService,
+    private switchS:SwitchService,
+    ){}
     
     ngOnInit(): void {
       this.buildForm();
@@ -76,11 +78,11 @@ export class PurposestatementComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-
+      
       const { 
         name,
         recordNumber
-       } = this.tableData[index];
+      } = this.tableData[index];
       this.inputForm.patchValue({
         porpose: name,
         recordNumber:recordNumber
@@ -145,15 +147,25 @@ export class PurposestatementComponent implements OnInit {
           }
           
         }
-    
-    delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
-    }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        porpose: '',
-        recordNumber:null
-      });
-    }
-
-}
+        
+        delete(data: any) {
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        }
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            porpose: '',
+            recordNumber:null
+          });
+        }
+        
+      }
+      

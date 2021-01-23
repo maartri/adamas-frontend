@@ -54,7 +54,7 @@
         </div>
         <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('item').value" (click)="save()" *ngIf="current === 0">
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('name').value" (click)="save()" *ngIf="current === 0">
                         <span>Save</span>
                     </button>
                 </ng-container>

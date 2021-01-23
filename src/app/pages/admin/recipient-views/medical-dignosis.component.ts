@@ -64,14 +64,14 @@ export class MedicalDignosisComponent implements OnInit {
       const { 
         description,
         code,
-        usercode,
+        icdCode,
         recordNumber
        } = this.tableData[index];
         this.inputForm.patchValue({
-        name: description,
-        icdcode:code,
-        usercode:usercode,
-        recordNumber:recordNumber
+          name    :     (description == null) ? '' : description,
+          icdcode :     (icdCode == null) ? '' : icdCode,
+          usercode:     (code == null) ? '' : code,
+          recordNumber:recordNumber
       });
     }
     
@@ -88,18 +88,48 @@ export class MedicalDignosisComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-    
       if(!this.isUpdate){         
-      
-      }
-      else
-      {
-          
+        this.postLoading = true;   
+        const group = this.inputForm;
+        let name             = group.get('name').value;
+        let icdcode          = group.get('icdcode').value;
+        let usercode         = group.get('usercode').value;
+        let values           = name+"','"+icdcode+"','"+usercode;
+        let sql              = "insert into MDiagnosisTypes([Description],[ICDCode],[Code]) Values ('"+values+"')"; 
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal();
+        });
+      }else{
+        this.postLoading  = true;   
+        const group       = this.inputForm;
+        let name             = group.get('name').value;
+        let icdcode          = group.get('icdcode').value;
+        let usercode         = group.get('usercode').value; 
+        let recordNumber     = group.get('recordNumber').value;
+        let sql  = "Update MDiagnosisTypes SET [Description]='"+ name + "',[ICDCode] = '"+ icdcode + "',[Code] = '"+ usercode + "' WHERE [RecordNumber] ='"+recordNumber+"'";
+        console.log(sql);
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Updated successful');     
+          else
+          this.globalS.sToast('Success', 'Updated successful');
+          this.postLoading = false;      
+          this.loadData();
+          this.handleCancel();
+          this.resetModal();   
+          this.isUpdate = false; 
+        });
       }    
-      
     }
       loadData(){
-          let sql ="Select RecordNumber, Description, Code FROM MDiagnosisTypes where RecordNumber < 500";
+          let sql ="Select [RecordNumber], [Description],[Code],[ICDCode] FROM MDiagnosisTypes Where [RecordNumber] > 38100 Order BY [Description]";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;

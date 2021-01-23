@@ -2252,8 +2252,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                              },
                   });
             }); this.drawerVisible = true;
-
-    }
+        }
 
     ActivePackage_list(branch, manager, region, program, startdate, enddate) {
 
@@ -4347,7 +4346,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                    nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },

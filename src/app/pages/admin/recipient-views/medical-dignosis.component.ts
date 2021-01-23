@@ -109,7 +109,7 @@ export class MedicalDignosisComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
-        let name             = group.get('name').value;
+        let name             = (group.get('name').value) ? group.get('name').value.toUpperCase() : null;
         let icdcode          = group.get('icdcode').value;
         let usercode         = group.get('usercode').value; 
         let recordNumber     = group.get('recordNumber').value;

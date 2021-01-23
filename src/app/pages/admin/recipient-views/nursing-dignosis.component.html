@@ -37,9 +37,10 @@
                 <div nz-row nzGutter="24">
                 <div nz-col nzSpan="24" class="mrg-btm">
                     <label for="CDC Item">Description:</label>
-                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="name" nzShowSearch nzAllowClear style="width:100%;">
+                    <!-- <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="name" nzShowSearch nzAllowClear style="width:100%;">
                     <nz-option *ngFor="let itm of items" [nzValue]="itm" [nzLabel]="itm"></nz-option> 
-                    </nz-select>
+                    </nz-select> -->
+                    <input nz-input placeholder="Description"  formControlName="name" oninput="this.value = this.value.toUpperCase()" />
                 </div>
                 <div nz-col nzSpan="12" class="mrg-btm">
                         <label for="Rate">User Code:</label>

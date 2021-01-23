@@ -61,18 +61,13 @@ export class NursingDignosisComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-      const { 
-        description,
-        code,
-        usercode,
-        Recordno
-       } = this.tableData[index];
+      const { description,code,icdCode,recordno} = this.tableData[index];
         this.inputForm.patchValue({
-        name: description,
-        icdcode:code,
-        usercode:usercode,
-        recordNumber:Recordno
-      });
+        name    :     (description == null) ? '' : description,
+        icdcode :     (icdCode == null) ? '' : icdCode,
+        usercode:     (code == null) ? '' : code,
+        recordNumber: recordno
+       });
     }
     
     handleCancel() {
@@ -89,13 +84,47 @@ export class NursingDignosisComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-      
+        this.postLoading = true;   
+        const group = this.inputForm;
+        let name             = group.get('name').value;
+        let icdcode          = group.get('icdcode').value;
+        let usercode         = group.get('usercode').value;
+        let values           = name+"','"+icdcode+"','"+usercode;
+        let sql              = "insert into NDiagnosisTypes([Description],[ICDCode],[Code]) Values ('"+values+"')"; 
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal();
+        });
       }else{
-          
-          }    
+        this.postLoading  = true;   
+        const group       = this.inputForm;
+        let name             = group.get('name').value;
+        let icdcode          = group.get('icdcode').value;
+        let usercode         = group.get('usercode').value; 
+        let recordNumber     = group.get('recordNumber').value;
+        let sql  = "Update NDiagnosisTypes SET [Description]='"+ name + "',[ICDCode] = '"+ icdcode + "',[Code] = '"+ usercode + "' WHERE [Recordno] ='"+recordNumber+"'";
+        console.log(sql);
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Updated successful');     
+          else
+          this.globalS.sToast('Success', 'Updated successful');
+          this.postLoading = false;      
+          this.loadData();
+          this.handleCancel();
+          this.resetModal();   
+          this.isUpdate = false; 
+        });
       }
+    }
       loadData(){
-          let sql ="Select Recordno, Description, Code FROM NDiagnosisTypes  ORDER BY Description";
+          let sql ="Select Recordno, Description,ICDCode,Code FROM NDiagnosisTypes  ORDER BY Description";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
@@ -116,9 +145,9 @@ export class NursingDignosisComponent implements OnInit {
       }
     buildForm() {
       this.inputForm = this.formBuilder.group({
-        name: '',
-        icdcode: '',
-        usercode:'',
+        name: null,
+        icdcode: null,
+        usercode:null,
         recordNumber:null
       });
     }

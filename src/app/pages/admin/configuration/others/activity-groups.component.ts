@@ -4,11 +4,12 @@ import { GlobalService, ListService, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
+import { ReplaceNullWithTextPipe } from '@pipes/pipes';
 @Component({
   selector: 'app-activity-groups',
   templateUrl: './activity-groups.component.html',
-  styles: []
+  styles: [],
+  providers: [ReplaceNullWithTextPipe]
 })
 export class ActivityGroupsComponent implements OnInit {
   
@@ -31,6 +32,7 @@ export class ActivityGroupsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private listS: ListService,
     private menuS: MenuService,
+    private replaceNullWithText: ReplaceNullWithTextPipe,
     private switchS:SwitchService,
     ){}
     
@@ -70,7 +72,7 @@ export class ActivityGroupsComponent implements OnInit {
       this.inputForm.patchValue({
         item: branch,
         rate:name,
-        agroup:agroup,
+        agroup:(agroup == null) ? '' : agroup,
         recordNumber:recordNumber
       });
     }
@@ -87,9 +89,47 @@ export class ActivityGroupsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-      }else{
-        this.postLoading = true;     
+        this.postLoading = true;   
         const group = this.inputForm;
+        let domain       = 'ACTIVITYGROUPS';
+        let item         = group.get('item').value;
+        let rate         = group.get('rate').value;
+        let agroup       = group.get('agroup').value;
+
+        let values = domain+"','"+rate+"','"+item+"','"+agroup;
+        let sql = "insert into DataDomains([Domain],[Description],[User1],[User2]) Values ('"+values+"')"; 
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal();
+        });
+      }else{
+        this.postLoading  = true;   
+        const group       = this.inputForm;
+        let domain        = 'ACTIVITYGROUPS';
+        let item          = group.get('item').value;
+        let rate          = group.get('rate').value;
+        let agroup        = group.get('agroup').value; 
+        let recordNumber  = group.get('recordNumber').value;
+        
+        let sql  = "Update DataDomains SET [Description]='"+ rate + "',[User1] = '"+ item + "',[User2] = '"+ agroup + "' WHERE [RecordNumber] ='"+recordNumber+"'";
+        
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.postLoading = false;      
+          this.loadData();
+          this.handleCancel();
+          this.resetModal();   
+          this.isUpdate = false; 
+        });
       }
     }
     loadData(){

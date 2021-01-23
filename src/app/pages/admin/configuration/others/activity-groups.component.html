@@ -17,9 +17,9 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                <td nzLeft nzBreakWord>{{ data.name  }} </td>
-                <td nzLeft nzBreakWord>{{ data.branch  }} </td>
-                <td nzLeft nzBreakWord>{{ data.agroup  }} </td>
+                <td nzLeft nzBreakWord>{{ data.name   }} </td>
+                <td nzLeft nzBreakWord>{{ data.branch }} </td>
+                <td nzLeft nzBreakWord>{{ data.agroup }} </td>
                 <!-- <td class="left">{{ data.rate  }} </td> -->
                 <td nzLeft nzBreakWord><a (click)="showEditModal(data.row_num)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                     <nz-divider nzType="vertical"></nz-divider>

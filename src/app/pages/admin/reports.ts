@@ -2246,7 +2246,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -2356,7 +2356,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -2460,7 +2460,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -2567,7 +2567,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -2673,7 +2673,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -2768,7 +2768,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -2837,7 +2837,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -2941,7 +2941,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3047,7 +3047,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3153,7 +3153,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3257,7 +3257,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3353,7 +3353,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3450,7 +3450,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3547,7 +3547,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3643,7 +3643,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3749,7 +3749,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3857,7 +3857,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -3963,7 +3963,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4065,7 +4065,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4171,7 +4171,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4260,7 +4260,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4347,7 +4347,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4434,7 +4434,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4522,7 +4522,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4609,7 +4609,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4784,7 +4784,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4856,7 +4856,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -4947,7 +4947,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5037,7 +5037,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5121,7 +5121,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5234,7 +5234,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5343,7 +5343,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5410,7 +5410,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5506,7 +5506,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5668,7 +5668,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5772,7 +5772,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5877,7 +5877,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -5982,7 +5982,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6090,7 +6090,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6227,7 +6227,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6350,7 +6350,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6473,7 +6473,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6556,7 +6556,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6662,7 +6662,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6756,7 +6756,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6858,7 +6858,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -6981,7 +6981,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -7094,7 +7094,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -7228,7 +7228,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -7321,7 +7321,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -7390,7 +7390,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -7536,7 +7536,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -7649,7 +7649,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -7790,7 +7790,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -7895,7 +7895,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -8382,7 +8382,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -8720,7 +8720,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 break;
             case "Standard":
                 //    Title = Title + "-Standard"
-                    this.reportid = "gHY4F0UbTNzf4oPk ";
+                    this.reportid = "gHY4F0UbTNzf4oPk";
 
                     break;
             default:
@@ -8797,7 +8797,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -9203,7 +9203,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -9686,7 +9686,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -10094,7 +10094,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -10171,7 +10171,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -10282,7 +10282,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -10685,7 +10685,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -11087,7 +11087,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -11490,7 +11490,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -11892,7 +11892,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -12295,7 +12295,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -12697,7 +12697,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -13092,7 +13092,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -13487,7 +13487,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -13557,7 +13557,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -13947,7 +13947,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -14350,7 +14350,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -14448,7 +14448,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -14775,7 +14775,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
         switch (format) {
             case "Detailed":
                 Title = Title + "-Detail"
-                reportid = "pgPwDEeuHN7slyuf ";
+                reportid = "pgPwDEeuHN7slyuf";
                 break;
             case "Standard":
                 //    Title = Title + "-Standard"
@@ -14852,7 +14852,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -15258,7 +15258,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -15660,7 +15660,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
@@ -15757,7 +15757,7 @@ nzContent: 'The report has encountered the error and need to close (' + err.code
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },

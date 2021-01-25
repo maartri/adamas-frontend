@@ -91,7 +91,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
     formData.append('data', JSON.stringify({
       PersonId: this.token.uniqueID,
       DocPath: this.token.recipientDocFolder,
-      SourceDocPath: "C:\\Users\\mark\\Desktop\\Programming\\Adamas\\adamasv3\\document",
+      SourceDocPath: "\\\\sjcc-sydgw01\\portal$\\document",
       DestinationDocPath: "C:\\Users\\mark\\Desktop\\Programming\\Adamas\\adamasv3\\WebHookFile"
     }))
 

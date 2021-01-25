@@ -94,5 +94,16 @@ export class MenuService {
     deletemedicalContacts(recordNo: number): Observable<any> {
         return this.auth.delete(`${menu}/configuration/delete/medicalContacts/${recordNo}`)
     }
+    deletenursingDiagnosis(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/nursingDiagnosis/${recordNo}`)
+    }
+    deleteMDiagnosisTypes(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/MDiagnosisTypes/${recordNo}`)
+    }
+    deleteMProcedureTypes(recordNo: number): Observable<any> {
+        return this.auth.delete(`${menu}/configuration/delete/MProcedureTypes/${recordNo}`)
+    }
+    
+    
     
 }

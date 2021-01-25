@@ -5,6 +5,7 @@ import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { MenuService } from '@services/menu.service';
 @Component({
   selector: 'app-recipients-group',
   templateUrl: './recipients-group.component.html',
@@ -28,6 +29,7 @@ export class RecipientsGroupComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
     private listS:ListService,
+    private menuS:MenuService,
     private formBuilder: FormBuilder
     ){}
     
@@ -136,14 +138,23 @@ export class RecipientsGroupComponent implements OnInit {
             this.loading = false;
           });
         }
-    delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
-    }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        name:'',
-        recordNumber:null
-      });
-    }
+        delete(data: any) {
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        }
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            name:'',
+            recordNumber:null
+          });
+        }
 
 }

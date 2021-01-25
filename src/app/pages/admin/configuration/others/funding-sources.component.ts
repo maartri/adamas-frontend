@@ -101,7 +101,6 @@ export class FundingSourcesComponent implements OnInit {
         let glrevnue     = group.get('glrevnue').value;
         let glcost       = group.get('glcost').value;
         let end_date     = this.globalS.convertDbDate(group.get('end_date').value);
-
         let values = domain+"','"+name+"','"+glrevnue+"','"+glcost+"','"+end_date;
         let sql = "insert into DataDomains([Domain],[Description],[User1],[User2],[EndDate]) Values ('"+values+"')"; 
         console.log(sql);
@@ -142,7 +141,16 @@ export class FundingSourcesComponent implements OnInit {
     }
     
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.deleteDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({

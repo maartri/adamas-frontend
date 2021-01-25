@@ -1,7 +1,7 @@
 <div style="padding:8px;">
     <div nz-row>
         <div nz-col nzSpan="24">
-            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i>Funding Source</button>
+            <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus" nzTheme="outline"></i> Funding Source </button>
         </div>
     </div>
 <div nz-row>
@@ -24,7 +24,7 @@
                 <td class="left">{{ (data.endDate === 'NULL') ? '' : data.endDate }} </td>
                 <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                     <nz-divider nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want delete this from the Funding Source List?"
                     nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
                 </tr>
             </tbody>

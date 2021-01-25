@@ -3,11 +3,13 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { GlobalService, ListService, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
-
+import { takeUntil } from 'rxjs/operators';
+import { ReplaceNullWithTextPipe } from '@pipes/pipes';
 @Component({
   selector: 'app-activity-groups',
   templateUrl: './activity-groups.component.html',
-  styles: []
+  styles: [],
+  providers: [ReplaceNullWithTextPipe]
 })
 export class ActivityGroupsComponent implements OnInit {
   
@@ -30,16 +32,14 @@ export class ActivityGroupsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private listS: ListService,
     private menuS: MenuService,
+    private replaceNullWithText: ReplaceNullWithTextPipe,
     private switchS:SwitchService,
     ){}
     
     ngOnInit(): void {
       this.buildForm();
       this.groups = ["MEALS","MAINT/MOD","SOCIAL"];
-      // this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
-      
       this.loadData();
-      
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -58,7 +58,6 @@ export class ActivityGroupsComponent implements OnInit {
       this.inputForm.reset();
       this.postLoading = false;
     }
-    
     showEditModal(index: any) {
       this.title = "Edit New Activity Group"
       this.isUpdate = true;
@@ -73,18 +72,16 @@ export class ActivityGroupsComponent implements OnInit {
       this.inputForm.patchValue({
         item: branch,
         rate:name,
-        agroup:agroup,
+        agroup:(agroup == null) ? '' : agroup,
         recordNumber:recordNumber
       });
     }
-    
     handleCancel() {
       this.modalOpen = false;
     }
     pre(): void {
       this.current -= 1;
     }
-    
     next(): void {
       this.current += 1;
     }
@@ -92,55 +89,50 @@ export class ActivityGroupsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        // this.switchS.addData(  
-        //   this.modalVariables={
-        //     title: 'CDC Claim Rates'
-        //   }, 
-        //   this.inputVariables = {
-        //     item: group.get('item').value,
-        //     rate: group.get('rate').value,
-        //     domain: 'PACKAGERATES', 
-        //   }
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Saved successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-        //     this.loadData();
-        //     this.postLoading = false;          
-        //     this.handleCancel();
-        //     this.resetModal();
-        //   });
-      }else{
-        this.postLoading = true;     
+        this.postLoading = true;   
         const group = this.inputForm;
-        // console.log(group.get('item').value);
-        // this.switchS.updateData(  
-        //   this.modalVariables={
-        //     title: 'CDC Claim Rates'
-        //   }, 
-        //   this.inputVariables = {
-        //     item: group.get('item').value,
-        //     rate: group.get('rate').value,
-        //     recordNumber:group.get('recordNumber').value,
-        //     domain: 'PACKAGERATES',
-        //   }
+        let domain       = 'ACTIVITYGROUPS';
+        let item         = group.get('item').value;
+        let rate         = group.get('rate').value;
+        let agroup       = group.get('agroup').value;
+
+        let values = domain+"','"+rate+"','"+item+"','"+agroup;
+        let sql = "insert into DataDomains([Domain],[Description],[User1],[User2]) Values ('"+values+"')"; 
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal();
+        });
+      }else{
+        this.postLoading  = true;   
+        const group       = this.inputForm;
+        let domain        = 'ACTIVITYGROUPS';
+        let item          = group.get('item').value;
+        let rate          = group.get('rate').value;
+        let agroup        = group.get('agroup').value; 
+        let recordNumber  = group.get('recordNumber').value;
         
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Updated successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-        //     this.loadData();
-        //     this.postLoading = false;          
-        //     this.handleCancel();
-        //     this.resetModal();
-        //   });
+        let sql  = "Update DataDomains SET [Description]='"+ rate + "',[User1] = '"+ item + "',[User2] = '"+ agroup + "' WHERE [RecordNumber] ='"+recordNumber+"'";
+        
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.postLoading = false;      
+          this.loadData();
+          this.handleCancel();
+          this.resetModal();   
+          this.isUpdate = false; 
+        });
       }
-      
     }
     loadData(){
-
       this.menuS.getlistactivityGroups().subscribe(data => {
         this.tableData = data;
         this.loading = false;
@@ -152,10 +144,18 @@ export class ActivityGroupsComponent implements OnInit {
         this.items = data;
         this.loading = false;
       });
-      
     }
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.deleteDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({

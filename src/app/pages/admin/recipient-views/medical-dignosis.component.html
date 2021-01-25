@@ -1,6 +1,7 @@
+<div style="padding:8px;">
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Medical Diagnosis</button>
+        <button class="botton success" (click)="showAddModal()"> Medical Diagnosis </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
@@ -17,12 +18,13 @@
                 
                 <td class="left"><a (click)="showEditModal(i)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure Medical Diagnosis ?"
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Medical Diagnosis List ?"
                         nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
                 </tr>
             </tbody>
         </nz-table>
     </div>
+</div>
 </div>
 <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">
@@ -35,9 +37,10 @@
                 <div nz-row nzGutter="24">
                 <div nz-col nzSpan="24" class="mrg-btm">
                     <label for="CDC Item">Description:</label>
-                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="name" nzShowSearch nzAllowClear style="width:100%;">
+                    <!-- <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="name" nzShowSearch nzAllowClear style="width:100%;">
                     <nz-option *ngFor="let itm of items" [nzValue]="itm" [nzLabel]="itm"></nz-option> 
-                    </nz-select>
+                    </nz-select> -->
+                    <input nz-input placeholder="Description"  formControlName="name"  oninput="this.value = this.value.toUpperCase()" />
                 </div>
                 <div nz-col nzSpan="12" class="mrg-btm">
                         <label for="Rate">User Code:</label>
@@ -52,7 +55,7 @@
         </div>
         <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('item').value" (click)="save()" *ngIf="current === 0">
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('name').value" (click)="save()" *ngIf="current === 0">
                         <span>Save</span>
                     </button>
                 </ng-container>

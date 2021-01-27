@@ -6,13 +6,18 @@ import { SwitchService } from '@services/switch.service';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MenuService } from '@services/index';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
+
 @Component({
   selector: 'app-funding-regions',
   templateUrl: './funding-regions.component.html',
   styleUrls: ['./funding-regions.component.css']
 })
+
 export class FundingRegionsComponent implements OnInit {
-  
+
   tableData: Array<any>;
   fundinglist: Array<any>;
   loading: boolean = false;
@@ -23,16 +28,25 @@ export class FundingRegionsComponent implements OnInit {
   isUpdate: boolean = false;
   modalVariables: any;
   inputVariables:any;
-  title:string = "Add Funding Regions"
+  title:string = "Add Funding Regions";
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
-  
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
     private listS:ListService,
     private menuS:MenuService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService,
     ){}
     
     loadTitle()
@@ -40,6 +54,7 @@ export class FundingRegionsComponent implements OnInit {
       return this.title;
     }
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       this.loadData();
       this.loading = false;
@@ -80,9 +95,65 @@ export class FundingRegionsComponent implements OnInit {
         recordNumber:recordNumber,
       });
     }
-    
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='FUNDREGION'";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+     
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+     
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Funding Region List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Name",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
+    }
     handleCancel() {
       this.modalOpen = false;
+    }
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
     }
     pre(): void {
       this.current -= 1;
@@ -139,23 +210,23 @@ export class FundingRegionsComponent implements OnInit {
           } 
         }
         
-          delete(data: any) {
+        delete(data: any) {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) {
-                this.globalS.sToast('Success', 'Data Deleted!');
-                this.loadData();
-                return;
-             }
-            });
-          }          
-          buildForm() {
-            this.inputForm = this.formBuilder.group({
-              description: '',
-              recordNumber:0,
-            });
-          }
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        }          
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            description: '',
+            recordNumber:0,
+          });
         }
-        
+      }
+      

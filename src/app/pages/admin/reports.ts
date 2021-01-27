@@ -1616,7 +1616,6 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     handleCancelTop(): void {
-
         this.isVisibleTop = false;
         this.drawerVisible = false;
         this.pdfTitle = ""
@@ -2246,7 +2245,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
+                        nzContent: 'The report has encountered the error and need to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },

@@ -56,10 +56,8 @@ export class DistributionlistComponent implements OnInit {
       this.tableData = data;
       this.loading = false;
     });
-    // this.staff = ['ABBAS A','ADAMS D S','WATTS T','GOEL T J','DARLISON S','TRINIDAD M','ALONSO J C','AHMAD A','AAAQWERTY TOM','AGGARWAL K H','MALIK I','SMITH H','MILLER A','AI BBCRI DAVIS B C','DIAZ J P','ALLEN C J','HARPER B','ALONSO J C','','DARLISION AWARD','DARLISION AWARD 2','DARLISION AWARD 3','DARLISION AWARD 3','DARLISION AWARD 4','DARLISION AWARD 5','DARLISION AWARD 6','DARLISION AWARD 7'];
   }
   populateDropdowns(){
-    // this.staff = ['ABBAS A','ADAMS D S','WATTS T','GOEL T J','DARLISON S','TRINIDAD M','ALONSO J C','AHMAD A','AAAQWERTY TOM','AGGARWAL K H','MALIK I','SMITH H','MILLER A','AI BBCRI DAVIS B C','DIAZ J P','ALLEN C J','HARPER B','ALONSO J C','','DARLISION AWARD','DARLISION AWARD 2','DARLISION AWARD 3','DARLISION AWARD 3','DARLISION AWARD 4','DARLISION AWARD 5','DARLISION AWARD 6','DARLISION AWARD 7'];
     this.listType = ['INCIDENT','DOCUSIGN'];
     let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
     this.listS.getlist(sql).subscribe(data => {
@@ -68,7 +66,6 @@ export class DistributionlistComponent implements OnInit {
         "title" :"ALL"
       };
       this.services.unshift(da);
-      console.log(this.services);
     });
 
     let staff_query = "SELECT ACCOUNTNO as name FROM STAFF WHERE CommencementDate IS NOT NULL AND TerminationDate IS NULL AND ACCOUNTNO > '!Z'";
@@ -86,7 +83,6 @@ export class DistributionlistComponent implements OnInit {
         "name" :"ALL"
       };
       this.program.unshift(da);
-      // this.staff.unshift('ALL');
     });
     let loca = "SELECT [NAME] FROM CSTDAOutlets WHERE [NAME] IS NOT NULL";
     this.listS.getlist(loca).subscribe(data => {
@@ -95,7 +91,6 @@ export class DistributionlistComponent implements OnInit {
         "name" :"ALL"
       };
       this.locations.unshift(da);
-      // this.locations.unshift('ALL');
     });
     let recip = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
     this.listS.getlist(recip).subscribe(data => {
@@ -104,7 +99,6 @@ export class DistributionlistComponent implements OnInit {
         "name" :"ALL"
       };
       this.recipients.unshift(da);
-      // this.recipients.unshift();
     });
 
     this.severity = ['ALL','LOW','MEDIUM','HIGH','CRITICAL'];

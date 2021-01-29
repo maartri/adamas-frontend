@@ -1,6 +1,6 @@
 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
     <div nz-col nzSpan="8">
-        <nz-upload nzType="drag" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes"
+        <nz-upload nzType="drag" [nzMultiple]="false" [nzLimit]="2" [nzAccept]="acceptedTypes"
             [nzCustomRequest]="customReq" [nzAction]="urlPath" (nzChange)="handleChange($event)" nzListType="picture"
             [(nzFileList)]="fileList2">
 

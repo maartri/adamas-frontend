@@ -6,6 +6,16 @@ import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MenuService } from '@services/index';
+import { jsPDF } from 'jspdf'
+import 'jspdf-autotable';
+import { UserOptions } from 'jspdf-autotable';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
+
+interface jsPDFWithPlugin extends jsPDF {
+  autoTable: (options: UserOptions) => jsPDF;
+}
 
 @Component({
   selector: 'app-claimrates',
@@ -13,34 +23,43 @@ import { MenuService } from '@services/index';
   styles: []
 })
 export class ClaimratesComponent implements OnInit {
-
-    tableData: Array<any>;
-    items:Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    inputForm: FormGroup;
-    modalVariables:any;
-    inputVariables:any;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    title:string = "Add New Package Claim Rates";
-    private unsubscribe: Subject<void> = new Subject();
-    constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private formBuilder: FormBuilder,
-      private listS: ListService,
-      private menuS: MenuService,
-      private switchS:SwitchService,
+  
+  tableData: Array<any>;
+  items:Array<any>;
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  inputForm: FormGroup;
+  modalVariables:any;
+  inputVariables:any;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  title:string = "Add New Package Claim Rates";
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+  token:any;
+  private unsubscribe: Subject<void> = new Subject();
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
+  constructor(
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private formBuilder: FormBuilder,
+    private listS: ListService,
+    private menuS: MenuService,
+    private switchS:SwitchService,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService,
     ){}
     
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
-      
       this.loadData();
-
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -69,16 +88,24 @@ export class ClaimratesComponent implements OnInit {
         name,
         rate,
         recordNumber
-       } = this.tableData[index];
+      } = this.tableData[index];
       this.inputForm.patchValue({
         item: name,
         rate:rate,
         recordNumber:recordNumber
       });
     }
-    
     handleCancel() {
       this.modalOpen = false;
+    }
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
     }
     pre(): void {
       this.current -= 1;
@@ -140,7 +167,6 @@ export class ClaimratesComponent implements OnInit {
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
-            console.log(data);
             this.loading = false;
           });
         }
@@ -148,14 +174,64 @@ export class ClaimratesComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) {
-                this.globalS.sToast('Success', 'Data Deleted!');
-                this.loadData();
-                return;
-             }
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        }
+        generatePdf(){
+          this.drawerVisible = true;
+          
+          this.loading = true;
+          
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2,User1 as Field3,recordNumber as Field4 from DataDomains where Domain='PACKAGERATES'";
+          
+          const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+         
+          const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+          };
+         
+          const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+              "reports": { "save": false },
+              "txtTitle": "Claim Rates List",
+              "sql": fQuery,
+              "userid":this.tocken.user,
+              "head1" : "Sr#",
+              "head2" : "Name",
+              "head3" : "Rate",
+            }
+          }
+          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+          .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+          }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                this.drawerVisible = false;
+              },
             });
-        } 
+          });
+          this.loading = true;
+          this.tryDoctype = "";
+          this.pdfTitle = "";
+        }
+
         buildForm() {
           this.inputForm = this.formBuilder.group({
             item: '',
@@ -163,4 +239,5 @@ export class ClaimratesComponent implements OnInit {
             recordNumber:null
           });
         }
-}
+      }
+      

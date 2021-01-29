@@ -1616,7 +1616,6 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     handleCancelTop(): void {
-
         this.isVisibleTop = false;
         this.drawerVisible = false;
         this.pdfTitle = ""

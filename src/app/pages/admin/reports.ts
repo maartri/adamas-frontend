@@ -1586,7 +1586,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     handleOk() {
         this.reportRender(this.btnid);
-        this.tryDoctype = "";
+        this.tryDoctype = "";        
         this.FOReports = false;
         
 
@@ -2138,6 +2138,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-UnsedFunding':
                 this.UnsedFunding(s_Programs, s_Managers, s_Recipient, s_Recipient)
+                break; 
+                case 'btn-FORPT-StaffDateProgram':
+                this.StaffDateProgram(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                 break;
             default:
                 alert("Yet to do")
@@ -9245,7 +9248,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
 
         var lblcriteria;
-        var reportid;
+        
 
 
 
@@ -9548,7 +9551,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 switch (format) {
                     case "Detailed":
                         Title = Title + "-Detail"
-                        reportid = "MePWCZQThe0CAnu5";
+                        this.reportid = "MePWCZQThe0CAnu5";
                         break;
                     case "Standard":
                             Title = Title + "-Standard"
@@ -9559,7 +9562,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                     default:
 
                         Title = Title + "-Summary"
-                        reportid = "IlzJ8y3CcohttpLy"
+                        this.reportid = "IlzJ8y3CcohttpLy"
                         break;
                 }
 
@@ -9573,7 +9576,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 switch (format) {
                     case "Detailed":
                         Title = Title + "-Detail"
-                        reportid = "dBfGjQMGcDFpS0tN";
+                        this.reportid = "dBfGjQMGcDFpS0tN";
                         break;
                     case "Standard":
                             Title = Title + "-Standard"
@@ -9583,7 +9586,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                     default:
                         Title = Title + "-Summary"
-                        reportid = "IlzJ8y3CcohttpLy"
+                        this.reportid = "IlzJ8y3CcohttpLy"
                         break;
                 }
 
@@ -9597,7 +9600,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 switch (format) {
                     case "Detailed":
                         Title = Title + "-Detail"
-                        reportid = "Oc4nxLXjTPbGcZQH";
+                        this.reportid = "Oc4nxLXjTPbGcZQH";
                         break;
                     case "Standard":
                             Title = Title + "-Standard"
@@ -9607,7 +9610,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                     default:
                         Title = Title + "-Summary"
-                        reportid = "IlzJ8y3CcohttpLy"
+                        this.reportid = "IlzJ8y3CcohttpLy"
                         break;
                 }
 
@@ -9627,7 +9630,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         this.drawerVisible = true;
 
         const data = {
-            "template": { "_id": reportid },
+            "template": { "_id": this.reportid },
             "options": {
                 "reports": { "save": false },
 
@@ -9701,7 +9704,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
         var lblcriteria;
-        var reportid;
+       
 
         if (funders != "" || mdsagencyID != "") {
             fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
@@ -10013,21 +10016,21 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY [Program], [Client Code], Date, [Start Time]";
 
-        //   //////console.log(fQuery)
+//        console.log(fQuery)
+//        console.log(format)
         switch (format) {
             case "Detailed":
                 Title = Title + "-Detail"
-                reportid = "dBfGjQMGcDFpS0tN";
+                this.reportid= "dBfGjQMGcDFpS0tN";
                 break;
             case "Standard":
-                    //Title = Title + "-Standard"
-                    this.reportid = "7RdGSvcsDNba5xah";
-
+                    Title = Title + "-Standard"
+                    this.reportid = "EZZVik7hH088dxQG";
                     break;
 
             default:
                 Title = Title + "-Summary"
-                reportid = "7RdGSvcsDNba5xah"
+                this.reportid = "7RdGSvcsDNba5xah"
                 break;
         }
 
@@ -10035,7 +10038,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         this.drawerVisible = true;
 
         const data = {
-            "template": { "_id": reportid },
+            "template": { "_id": this.reportid },
             "options": {
                 "reports": { "save": false },
 
@@ -10631,6 +10634,8 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "reports": { "save": false },
 
                 "txtTitle": Title,
+
+                "includeFinancials":this.inputForm.value.InclFinancials,
 
 
                 "sql": fQuery,
@@ -14461,7 +14466,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
         var lblcriteria;
-        var reportid;
+        
 
         if (funders != "" || mdsagencyID != "") {
             fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
@@ -14776,7 +14781,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         switch (format) {
             case "Detailed":
                 Title = Title + "-Detail"
-                reportid = "pgPwDEeuHN7slyuf";
+                this.reportid = "pgPwDEeuHN7slyuf";
                 break;
             case "Standard":
                 //    Title = Title + "-Standard"
@@ -14786,14 +14791,14 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
             default:
                 Title = Title + "-Summary"
-                reportid = "EUpoRvslDL2jReMC"
+                this.reportid  = "EUpoRvslDL2jReMC"
                 break;
         }
 
         this.drawerVisible = true;
 
         const data = {
-            "template": { "_id": reportid },
+            "template": { "_id": this.reportid },
             "options": {
                 "reports": { "save": false },
 
@@ -15766,6 +15771,314 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
     }
 
+    StaffDateProgram(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
+
+        var fQuery = " SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo]   "
+        var lblcriteria;
+
+        if (funders != "" || mdsagencyID != "") {
+            fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
+        }
+        if (stfgroup != "" || Staff != "" || staffteam != "" || stafftype != "") {
+            var join = "INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo]";
+            fQuery = fQuery + join;
+
+        }
+        fQuery = fQuery + " WHERE  ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') ";
+
+        if (branch != "") {
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }
+        if (startdate != "" || enddate != "") {
+
+
+            let strkey = Datetype.toString();
+            switch (strkey) {
+
+                case "Pay Period EndDate":  //tempsdate tempedate
+
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" + tempsdate + ("' AND [Date Timesheet] <= '") + tempedate + "' )";
+                    break;
+                case 'Billing Date':
+
+                    this.s_DateSQL = " ([Date Invoice] >=  '" + tempsdate + ("' AND [Date Invoice] <= '") + tempedate + "' )";
+                    break;
+                case 'Service Date':
+
+                    this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
+                    break;
+                default:
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" + tempsdate + ("' AND [Date Timesheet] <= '") + tempedate + "' )";
+
+                    break;
+            }
+
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+            // console.log("s_DateSQL" + this.s_DateSQL)            
+        }
+        if (manager != "") {
+            this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','") + "')";
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+        }
+        if (region != "") {
+            this.s_CategorySQL = "Anal in ('" + region.join("','") + "')";
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+        }
+        if (stfgroup != "") {
+            this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','") + "'))";
+            if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
+        }
+        if (staffteam != "") {
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','") + "'))";
+            if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+        }
+        if (Staff != "") {
+            this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','") + "'))";
+            if (this.s_StfSQL != "") { fQuery = fQuery + " AND " + this.s_StfSQL };
+        }
+        if (status != "") {
+            this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','") + "'))";
+            if (this.s_statusSQL != "") { fQuery = fQuery + " AND " + this.s_statusSQL };
+        }
+        if (program != "") {
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+
+        if (funders != "") {
+            this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','") + "')";
+            if (this.s_FundersSQL != "") { fQuery = fQuery + " AND " + this.s_FundersSQL };
+        }
+        if (RosterCategory != "") {
+            this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','") + "')";
+            if (this.s_RosterCategorySQL != "") { fQuery = fQuery + " AND " + this.s_RosterCategorySQL };
+        }
+        if (HACCCategory != "") {
+            this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','") + "')";
+            if (this.s_HACCCategorySQL != "") { fQuery = fQuery + " AND " + this.s_HACCCategorySQL };
+        }
+        if (mdsagencyID != "") {
+            this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','") + "')";
+            if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
+        }
+
+        if (Age != "") {
+            let tempkay = (Age.toString()).substring(0, 8);
+            switch (tempkay) {
+                case "Under 65":
+                    this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                    break;
+                case "Over 64 ":
+                    this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    break;
+
+                default:
+                    break;
+            }
+
+            fQuery = fQuery + " AND " + this.s_AgeSQL;
+
+        }
+
+        if (outletid != "") {
+            this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','") + "')";
+            if (this.s_OutletIDSQL != "") { fQuery = fQuery + " AND " + this.s_OutletIDSQL };
+        }
+        if (recipient != "") {
+            this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','") + "')";
+            if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL };
+        }
+        if (stafftype != "") {
+            this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','") + "')";
+            if (this.s_StafftypeSQL != "") { fQuery = fQuery + " AND " + this.s_StafftypeSQL };
+        }
+        if (paytype != "") {
+            this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','") + "')";
+            if (this.s_paytypeSQL != "") { fQuery = fQuery + " AND " + this.s_paytypeSQL };
+        }
+        if (activity != "") {
+            this.s_activitySQL = "[Service Type] in ('" + activity.join("','") + "')";
+            if (this.s_activitySQL != "") { fQuery = fQuery + " AND " + this.s_activitySQL };
+        }
+        if (settings != "") {
+            this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','") + "')";
+            if (this.s_setting_vehicleSQL != "") { fQuery = fQuery + " AND " + this.s_setting_vehicleSQL };
+        }
+
+
+
+
+
+        if (startdate != "") {
+            lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+        }
+        else { lblcriteria = " All Dated " }
+        if (branch != "") {
+            lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + " All Branches " }
+
+
+        if (outletid != "") {
+            var OutletID = outletid.join(",") + "; "
+        }
+        else {
+            OutletID = " All "
+        }
+
+
+        if (Datetype != "") {
+            var Datetypes = Datetype + "; "
+        }
+        else {
+            Datetypes = " Service Date "
+        }
+
+
+        if (Age != "") {
+            var Age_ATSI = Age + "; "
+        }
+        else {
+            Age_ATSI = " All "
+        }
+
+
+
+        if (mdsagencyID != "") {
+            var mdsagency = mdsagencyID.join(",") + "; "
+        }
+        else {
+            mdsagency = " All "
+        }
+
+
+
+        if (HACCCategory != "") {
+            var HACCCategories = HACCCategory.join(",") + "; "
+        }
+        else {
+            HACCCategories = " All "
+        }
+
+
+
+        if (RosterCategory != "") {
+            var RosterCategories = RosterCategory.join(",") + "; "
+        }
+        else {
+            RosterCategories = " All "
+        }
+
+        if (program != "") {
+            var programs = program.join(",") + "; "
+        }
+        else {
+            programs = " All "
+        }
+
+
+
+        if (Staff != "") {
+            var Staffs = Staff.join(",") + "; "
+        }
+        else {
+            Staffs = " All "
+        }
+
+
+
+        if (staffteam != "") {
+            var staffteams = staffteam.join(",") + "; "
+        }
+        else {
+            staffteams = " All "
+        }
+
+
+
+        if (stfgroup != "") {
+            var stfgroups = stfgroup.join(",") + "; "
+        }
+        else {
+            stfgroups = " All "
+        }
+
+
+
+        if (region != "") {
+            var regions = region.join(",") + "; "
+        }
+        else {
+            regions = " All "
+        }
+
+
+
+        if (manager != "") {
+            var managers = manager.join(",") + "; "
+        }
+        else {
+            managers = " All "
+        }
+
+
+        if (funders != "") {
+            var fundingsource = funders.join(",") + "; "
+        }
+        else {
+            fundingsource = " All "
+        }
+
+
+        if (status != "") {
+            var statuscat = status + "; "
+        }
+        else {
+            statuscat = " All "
+        }
+
+
+
+        if (recipient != "") {
+            var recipients = recipient.join(",") + "; "
+        }
+        else {
+            recipients = " All "
+        }
+
+
+        if (stafftype != "") {
+            var stafftypes = stafftype.join(",") + "; "
+        }
+        else {
+            stafftypes = " All "
+        }
+
+        if (paytype != "") {
+            var paytypes = paytype.join(",") + "; "
+        }
+        else {
+            paytypes = " All "
+        }
+        if (activity != "") {
+            var activities = activity.join(",") + "; "
+        }
+        else {
+            activities = " All "
+        }
+        if (settings != "") {
+            var setting = settings.join(",") + "; "
+        }
+        else {
+            setting = " All "
+        }
+
+
+
+        var Title = "STAFF DATE PROGRAM REPORT ";
+        var Report_Definer = " "
+        fQuery = fQuery + " ORDER BY [Carer Code], Date, [Program], [Service Description], [Start Time]"
 
 
 
@@ -15773,6 +16086,97 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
 
+        console.log(fQuery)
+
+        switch (format) {
+            case "Detailed":
+                Title = Title + "-Detail"
+                this.reportid = "MXXQYfoclIO6RAj0";
+                break;
+            case "Standard":
+                //Title = Title + "-Standard"
+                this.reportid = " ";
+
+                break;
+            default:
+                Title = Title + "-Summary"
+                this.reportid = " "
+                break;
+        }
+
+
+        this.drawerVisible = true;
+
+        const data = {
+            "template": { "_id": this.reportid },
+            "options": {
+                "reports": { "save": false },
+
+                "txtTitle": Title,
+
+                "txtCriteriaStmt": Report_Definer,
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+
+                "txtregions": regions,
+                "txtstfgroups": stfgroups,
+                "txtstaffteams": staffteams,
+                "txtStaffs": Staffs,
+                "txtprograms": programs,
+                "txtRosterCategories": RosterCategories,
+                "txtHACCCategories": HACCCategories,
+                "txtmdsagency": mdsagency,
+                "txtAge_ATSI": Age_ATSI,
+                "txtDatetypes": Datetypes,
+                "txtmanagers": managers,
+                "txtfundingsource": fundingsource,
+                "txtOutletID": OutletID,
+                "txtstatuscat": statuscat,
+                "txtrecipients": recipients,
+                "txtstafftypes": stafftypes,
+                "txtpaytypes": paytypes,
+                "txtactivities": activities,
+                "txtsetting": setting,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+
+        this.loading = true;
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+
+                let _blob: Blob = blob;
+
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = Title + ".pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                this.loading = false;
+
+            }, err => {
+                console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
+                  });
+            });
+
+    }
 
 
 

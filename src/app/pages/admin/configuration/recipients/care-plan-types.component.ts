@@ -1,7 +1,10 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
+import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -12,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class CarePlanTypesComponent implements OnInit {
 
-  tableData: Array<any>;
+    tableData: Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
@@ -22,28 +25,34 @@ export class CarePlanTypesComponent implements OnInit {
     modalVariables:any;
     inputVariables:any;
     title:string = "Add Care Plan Types"
+    tocken: any;
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;
     private unsubscribe: Subject<void> = new Subject();
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  
     constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private switchS:SwitchService,
-      private listS:ListService,
-      private menuS:MenuService,
-      private formBuilder: FormBuilder
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private switchS:SwitchService,
+    private listS:ListService,
+    private menuS:MenuService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService,
     ){}
-    
-    loadTitle()
-    {
-      // debugger;
-      return this.title;
-    }
-    
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       this.loadData();
-      // this.tableData = [{name:"test Care Plan Types a"},{name:"test Care Plan Types b"},{name:"test Care Plan Types c"}];
       this.loading = false;
       this.cd.detectChanges();
+    }
+    loadTitle(){
+      return this.title;
     }
     showAddModal() {
       this.title = "Add Care Plan Types"
@@ -84,7 +93,7 @@ export class CarePlanTypesComponent implements OnInit {
       this.current += 1;
     }
     loadData(){
-      let sql ="select Description as name,recordNumber from DataDomains where Domain='CAREPLANTYPES' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains where Domain='CAREPLANTYPES' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -160,6 +169,63 @@ export class CarePlanTypesComponent implements OnInit {
         name: '',
         recordNumber:null,
       });
+    }
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains where Domain='CAREPLANTYPES'";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+      
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+      
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Recipient Care Plan Types List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Name",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
     }
 
 }

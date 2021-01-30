@@ -6,6 +6,9 @@ import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
 
 
 @Component({
@@ -26,27 +29,36 @@ export class FinancialclassComponent implements OnInit {
   isUpdate: boolean = false;
   title:string = "Add Financial Class"
   private unsubscribe: Subject<void> = new Subject();
-  
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+  token:any;
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
+
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
-    private switchS:SwitchService,
     private listS:ListService,
     private menuS:MenuService,
-    private formBuilder: FormBuilder
-    ){}
+    private switchS:SwitchService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService
+  ){}
     
-    loadTitle()
-    {
-      // debugger;
-      return this.title;
-    }
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       this.loadData();
       // this.tableData = [{ description:"Employeed 10000"},{description:"Employeed 20000"},{description:"Un Employeed"}];
       this.loading = false;
       this.cd.detectChanges();
+    }
+    loadTitle(){
+      return this.title;
     }
     showAddModal() {
       this.title = "Add Financial Class"
@@ -128,7 +140,7 @@ export class FinancialclassComponent implements OnInit {
           
         }
         loadData(){
-          let sql ="select Description as name,recordNumber from DataDomains where Domain='FINANCIALCLASS'";
+          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains where Domain='FINANCIALCLASS'";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
@@ -154,6 +166,62 @@ export class FinancialclassComponent implements OnInit {
             recordNumber:null
           });
         }
-        
+        handleOkTop() {
+          this.generatePdf();
+          this.tryDoctype = ""
+          this.pdfTitle = ""
+        }
+        handleCancelTop(): void {
+          this.drawerVisible = false;
+          this.pdfTitle = ""
+        }
+        generatePdf(){
+          this.drawerVisible = true;
+          
+          this.loading = true;
+          
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='FINANCIALCLASS'";
+          
+          const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+         
+          const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+          };
+         
+          const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+              "reports": { "save": false },
+              "txtTitle": "Financial Class List",
+              "sql": fQuery,
+              "userid":this.tocken.user,
+              "head1" : "Sr#",
+              "head2" : "Name",
+            }
+          }
+          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+          .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+          }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                this.drawerVisible = false;
+              },
+            });
+          });
+          this.loading = true;
+          this.tryDoctype = "";
+          this.pdfTitle = "";
+        }
       }
       

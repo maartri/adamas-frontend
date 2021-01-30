@@ -5,6 +5,9 @@ import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-holidays',
@@ -24,25 +27,35 @@ export class HolidaysComponent implements OnInit {
     isUpdate: boolean = false;
     title:string = "Add Public Holidays";
     private unsubscribe: Subject<void> = new Subject();
-    constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private switchS:SwitchService,
-      private menuS:MenuService,
-      private listS:ListService,
-      private formBuilder: FormBuilder
-    ){}
-    
-    loadTitle()
-    {
-      return this.title;
-    }
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+  token:any;
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
+
+  constructor(
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private listS:ListService,
+    private menuS:MenuService,
+    private switchS:SwitchService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService
+  ){}
     
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
+    }
+    loadTitle(){
+      return this.title;
     }
     loadData(){
       let sql ="select * from PUBLIC_HOLIDAYS order by DATE desc";
@@ -123,7 +136,7 @@ export class HolidaysComponent implements OnInit {
           let PublicHolidayRegion = group.get('region').value;
           let date     = group.get('date').value;
           let recordno = group.get('recordno').value;
-let sql  = "Update PUBLIC_HOLIDAYS SET [DATE] = '"+ date+ "',[DESCRIPTION] = '"+ description+ "',[Stats] = '"+ stats+ "',[PublicHolidayRegion] = '"+ PublicHolidayRegion + "' WHERE [RECORDNO]='"+recordno+"'";
+          let sql  = "Update PUBLIC_HOLIDAYS SET [DATE] = '"+ date+ "',[DESCRIPTION] = '"+ description+ "',[Stats] = '"+ stats+ "',[PublicHolidayRegion] = '"+ PublicHolidayRegion + "' WHERE [RECORDNO]='"+recordno+"'";
           console.log(sql);
           this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
             if (data) 
@@ -161,5 +174,63 @@ let sql  = "Update PUBLIC_HOLIDAYS SET [DATE] = '"+ date+ "',[DESCRIPTION] = '"+
         recordno:null,
       });
     }
-
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,[DATE] as Field4 from PUBLIC_HOLIDAYS";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+     
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+     
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Public Holidays List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Title",
+          "head3" : "State",
+          "head4" : "Date",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
+    }
 }

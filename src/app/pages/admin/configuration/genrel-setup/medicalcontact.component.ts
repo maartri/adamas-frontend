@@ -5,6 +5,9 @@ import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-medicalcontact',
@@ -26,26 +29,36 @@ export class MedicalcontactComponent implements OnInit {
   modalVariables:any;
   inputVariables:any;
   private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+  token:any;
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
+
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private listS:ListService,
+    private menuS:MenuService,
     private switchS:SwitchService,
-    private menuS: MenuService,
-    private formBuilder: FormBuilder
-    ){}
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService
+  ){}
     
-    loadTitle()
-    {
-      // debugger;
-      return this.title;
-    }
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       // this.tableData = [{type:"GF",name:"mr beechtrr",address1:"TEST1",address2:"TEST2",phone1:"test3",phone2:"wa",fax:"wa",mobile:"wa",email:"wa@mIL.COM",date:"10-13-2020",}];
       this.loading = false;
       this.loadData();
       this.cd.detectChanges();
+    }
+    loadTitle(){
+      return this.title;
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
@@ -171,7 +184,7 @@ export class MedicalcontactComponent implements OnInit {
         let fax      = group.get('fax').value;
         let mobile   = group.get('mobile').value;
         let email    = group.get('email').value;
-        let date     = group.get('date').value;
+        let date     = (group.get('date').value) ? this.globalS.convertDbDate(group.get('date').value) : '';
         let postcode = '';
         let recordnumber = group.get('recordNumber').value;
         let values = "3-Medical"+"','"+type+"','"+name+"','"+address1+"','"+address2+"','"+suburb+"','"+postcode+"','"+phone1+"','"+phone2+"','"+fax+"','"+mobile+"','"+email+"','"+'2020-11-18';
@@ -206,6 +219,68 @@ export class MedicalcontactComponent implements OnInit {
           return;
         }
       });
+    }
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,[EndDate] as Field7 from HumanResourceTypes  WHERE [Group] like '3-Medical'";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+     
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+     
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Medical Contact List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Name",
+          "head3" : "Type",
+          "head4" : "Address",
+          "head5" : "Phone",
+          "head6" : "Fax",
+          "head7" : "Date",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
     }
   }
   

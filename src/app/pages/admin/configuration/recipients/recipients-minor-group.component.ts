@@ -6,6 +6,9 @@ import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MenuService } from '@services/menu.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
 
 
 @Component({
@@ -25,24 +28,36 @@ export class RecipientsMinorGroupComponent implements OnInit {
   postLoading: boolean = false;
   isUpdate: boolean = false;
   heading:string = "Add New Recipients Minor Group"
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
     private listS:ListService,
     private menuS:MenuService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService,
     ){}
-    
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       this.loadData();
       // this.tableData = [{name:"Test 1"},{name:"Test 2"},{name:"Test 3"}];
       this.loading = false;
       this.cd.detectChanges();
     }
-    
+    loadTitle(){
+      return this.heading;
+    }
     showAddModal() {
       this.heading  = "Add New Recipients Minor Group"
       this.resetModal();
@@ -131,7 +146,7 @@ export class RecipientsMinorGroupComponent implements OnInit {
           }
         }
         loadData(){
-          let sql ="select Description as name,recordNumber from DataDomains where Domain='GROUPMINOR'";
+          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains where Domain='GROUPMINOR'";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
@@ -157,6 +172,63 @@ export class RecipientsMinorGroupComponent implements OnInit {
         recordNumber:0
       });
       this.resetModal();
+    }
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains where Domain='GROUPMINOR'";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+      
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+      
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Recipient Minor Group List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Name",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
     }
 
 }

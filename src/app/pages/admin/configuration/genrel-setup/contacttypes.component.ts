@@ -1,9 +1,13 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { MenuService } from '@services/index';
+import { ListService, MenuService } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SwitchService } from '@services/switch.service';
+import { NzModalService } from 'ng-zorro-antd';
 
 
 @Component({
@@ -13,6 +17,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class ContacttypesComponent implements OnInit {
     tableData: Array<any>;
+    contactGroups:Array<any>;
     loading: boolean = false;
     modalOpen: boolean = false;
     current: number = 0;
@@ -21,14 +26,28 @@ export class ContacttypesComponent implements OnInit {
     isUpdate: boolean = false;
     heading:string = "Add New Contact Type"
     private unsubscribe: Subject<void> = new Subject();
-    constructor(
-      private globalS: GlobalService,
-      private cd: ChangeDetectorRef,
-      private menuS:MenuService,
-      private formBuilder: FormBuilder
-    ){}
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+    token:any;
+    tocken: any;
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;
+   
+  constructor(
+    private globalS: GlobalService,
+    private cd: ChangeDetectorRef,
+    private listS:ListService,
+    private menuS:MenuService,
+    private switchS:SwitchService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService
+  ){}
     
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       this.loadData();
       this.loading = false;
@@ -94,14 +113,84 @@ export class ContacttypesComponent implements OnInit {
         }
       });
     }
+
     loadData(){
-      this.tableData = [{ pgroup:"Other",title:"test type"}];
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as title,HACCCode as pgroup,recordNumber from DataDomains where Domain='CONTACTSUBGROUP' ";
+      this.loading = true;
+      this.listS.getlist(sql).subscribe(data => {
+        this.tableData = data;
+        this.loading = false;
+      });
+
+      let sql2 = "select distinct Description from DataDomains WHERE Domain = 'CONTACTGROUP'";
+      this.listS.getlist(sql2).subscribe(data => {
+        this.contactGroups = data;
+        this.loading = false;
+      });
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
         pgroup:'',
         title:'',
       });
+    }
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3 from DataDomains where Domain='CONTACTSUBGROUP'";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+     
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+     
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Contact Type List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Title",
+          "head3" : "Group",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
     }
 
 }

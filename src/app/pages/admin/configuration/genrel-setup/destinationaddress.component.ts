@@ -5,6 +5,9 @@ import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { pipe, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-destinationaddress',
@@ -24,27 +27,36 @@ export class DestinationaddressComponent implements OnInit {
   modalVariables:any;
   inputVariables:any;
   private unsubscribe: Subject<void> = new Subject();
-  
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+  token:any;
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
+
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
-    private switchS:SwitchService,
     private listS:ListService,
     private menuS:MenuService,
-    private formBuilder: FormBuilder
+    private switchS:SwitchService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService
   ){}
-  
-  loadTitle()
-  {
-    // debugger;
-    return this.title;
-  }
-  ngOnInit(): void {
+    
+    ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
     this.buildForm();
     this.loadData();
     // this.tableData = [{type:"GF",name:"RBH-XRAY",address1:"Gate 13 44 Lutwyche Road",address2:"TEST2",phone1:"98986767",phone2:"wa",fax:"wa",mobile:"wa",email:"wa@mIL.COM",date:"10-13-2020",}];
     this.loading = false;
     this.cd.detectChanges();
+  }
+  loadTitle(){
+    return this.title;
   }
   loadData(){
     let sql ="SELECT * FROM HumanResourceTypes WHERE [Group] like 'DESTINATION'";
@@ -135,10 +147,10 @@ export class DestinationaddressComponent implements OnInit {
     let address2 = group.get('address2').value;
     let suburb   = group.get('suburb').value;
     let phone1   = group.get('phone1').value;
-    let phone2   = group.get('phone2').value;
-    let fax      = group.get('fax').value;
+    let phone2   = (group.get('phone2').value ==  null) ? '' : group.get('phone2').value;
+    let fax      = (group.get('fax').value ==  null) ? '' : group.get('fax').value;
     let mobile   = group.get('mobile').value;
-    let email    = group.get('email').value;
+    let email    = (group.get('email').value ==  null) ? '' : group.get('email').value;
     let date     = group.get('date').value;
     let postcode = '';
 
@@ -167,7 +179,7 @@ export class DestinationaddressComponent implements OnInit {
         let fax      = group.get('fax').value;
         let mobile   = group.get('mobile').value;
         let email    = group.get('email').value;
-        let date     = group.get('date').value;
+        let date     = (group.get('date').value) ? this.globalS.convertDbDate(group.get('date').value) : '';
         let recordnumber     = group.get('recordNumber').value;
         let postcode = '';
         let sql  = "Update HumanResourceTypes SET [Group]='DESTINATION',[Type] = '"+ type+ "',[Name] = '"+ name+ "',[Address1] = '"+ address1+ "',[Address2] = '"+ address2+ "',[Suburb] = '"+ suburb+ "',[Postcode] = '"+ postcode+ "',[Phone1] = '"+ phone1+ "',[Phone2] = '"+ phone2+ "',[Fax] = '"+ fax+ "',[Mobile] = '"+ mobile + "',[EMail] = '"+ email + "',[EndDate] = '"+ '' + "' WHERE [RecordNumber] ='"+recordnumber+"'";
@@ -198,5 +210,67 @@ export class DestinationaddressComponent implements OnInit {
         return;
       }
     });
+  }
+  handleOkTop() {
+    this.generatePdf();
+    this.tryDoctype = ""
+    this.pdfTitle = ""
+  }
+  handleCancelTop(): void {
+    this.drawerVisible = false;
+    this.pdfTitle = ""
+  }
+  generatePdf(){
+    this.drawerVisible = true;
+    
+    this.loading = true;
+    
+    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,[EndDate] as Field7 from HumanResourceTypes  WHERE [Group] like 'DESTINATION'";
+    
+    const headerDict = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    }
+   
+    const requestOptions = {
+      headers: new HttpHeaders(headerDict)
+    };
+   
+    const data = {
+      "template": { "_id": "0RYYxAkMCftBE9jc" },
+      "options": {
+        "reports": { "save": false },
+        "txtTitle": "Destination Address List",
+        "sql": fQuery,
+        "userid":this.tocken.user,
+        "head1" : "Sr#",
+        "head2" : "Name",
+        "head3" : "Type",
+        "head4" : "Address",
+        "head5" : "Phone",
+        "head6" : "Fax",
+        "head7" : "Date",
+      }
+    }
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+      let _blob: Blob = blob;
+      let fileURL = URL.createObjectURL(_blob);
+      this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+      this.loading = false;
+    }, err => {
+      console.log(err);
+      this.loading = false;
+      this.ModalS.error({
+        nzTitle: 'TRACCS',
+        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+        nzOnOk: () => {
+          this.drawerVisible = false;
+        },
+      });
+    });
+    this.loading = true;
+    this.tryDoctype = "";
+    this.pdfTitle = "";
   }
 }

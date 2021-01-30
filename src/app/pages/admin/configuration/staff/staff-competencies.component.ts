@@ -1,7 +1,10 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService ,MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
+import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -24,20 +27,30 @@ export class StaffCompetenciesComponent implements OnInit {
   postLoading: boolean = false;
   isUpdate: boolean = false;
   title:string = "Add New Staff Competencies";
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
-    private formBuilder: FormBuilder,
-    private listS: ListService,
-    private menuS: MenuService,
     private switchS:SwitchService,
+    private listS:ListService,
+    private menuS:MenuService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService,
     ){}
     
+    
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
-      // this.items = ["Leprosy","Other Form of Leprosy","Bordline"]
-      // this.tableData = [{name:"Leprosy",icdcode:'R.28'},{name:"Bordline",icdcode:'R.22'}]
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
@@ -141,7 +154,7 @@ export class StaffCompetenciesComponent implements OnInit {
       }    
     }
     loadData(){
-      let sql ="Select RecordNumber, Description, Embedded AS Mandatory From DataDomains Where Domain = 'STAFFATTRIBUTE' ORDER BY DESCRIPTION";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, RecordNumber, Description, Embedded AS Mandatory From DataDomains Where Domain = 'STAFFATTRIBUTE' ORDER BY DESCRIPTION";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -175,6 +188,63 @@ export class StaffCompetenciesComponent implements OnInit {
         recordNumber:null
       });
     }
-    
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Embedded as Field3 from DataDomains where Domain='STAFFATTRIBUTE'";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+      
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+      
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Staff Competencies List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Name",
+          "head3" : "Mandatory",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
+    } 
   }
   

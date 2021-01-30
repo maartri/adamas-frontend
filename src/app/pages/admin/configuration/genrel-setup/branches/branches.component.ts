@@ -133,15 +133,7 @@ export class BranchesComponent implements OnInit {
     handleCancel() {
       this.modalOpen = false;
     }
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
+    
     pre(): void {
       this.current -= 1;
     }
@@ -277,6 +269,15 @@ export class BranchesComponent implements OnInit {
         this.cd.detectChanges();
       });
     }
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
     generatePdf(){
       this.drawerVisible = true;
       
@@ -297,7 +298,7 @@ export class BranchesComponent implements OnInit {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {
           "reports": { "save": false },
-          "txtTitle": "Claim Rates List",
+          "txtTitle": "Branches List",
           "sql": fQuery,
           "userid":this.tocken.user,
           "head1" : "Sr#",

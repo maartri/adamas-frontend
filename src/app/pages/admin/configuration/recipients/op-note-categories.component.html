@@ -1,7 +1,8 @@
 <div style="padding:8px">
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()"> Add OP Notes Categories </button>
+        <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus"></i> Add OP Notes Categories </button>
+        <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
@@ -19,9 +20,6 @@
                 </td>
                 </tr>
             </tbody>
-            <!-- <tfoot>
-                <nz-pagination [nzPageIndex]="1" [nzTotal]="basicTable.data.length"></nz-pagination>
-            </tfoot> -->
         </nz-table>
     </div>
 </div>
@@ -50,3 +48,11 @@
             </div>
         </div>
 </nz-modal>
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loading">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    </div>
+</nz-drawer>

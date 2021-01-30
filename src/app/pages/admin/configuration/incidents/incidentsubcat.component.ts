@@ -5,6 +5,9 @@ import {ListService} from '@services/list.service';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TimeSheetService, GlobalService,incidentTypes, MenuService} from '@services/index';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
 @Component({
   selector: 'app-incidentsubcat',
   templateUrl: './incidentsubcat.component.html',
@@ -23,25 +26,36 @@ export class IncidentsubcatComponent implements OnInit {
   modalVariables:any;
   inputVariables:any;
   heading:string = "Add New Incident Sub Category";
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   
   constructor(
     private globalS: GlobalService,
-    private listS:ListService,
-    private switchS:SwitchService,
-    private menuS:MenuService,
     private cd: ChangeDetectorRef,
-    private formBuilder: FormBuilder
-  ){}
-  
-  ngOnInit(): void {
+    private switchS:SwitchService,
+    private listS:ListService,
+    private menuS:MenuService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService,
+    ){}
+    
+    
+    ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
     this.buildForm();
     this.loadData();
     this.loading = false;
     this.cd.detectChanges();
   }
   loadData(){
-    let sql ="select Description as name,recordNumber,HACCCODE as incident_type from DataDomains where Domain='INCIDENTSUBGROUP' ";
+    let sql ="select ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber,HACCCODE as incident_type from DataDomains where Domain='INCIDENTSUBGROUP' ";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
       this.tableData = data;
@@ -163,6 +177,65 @@ export class IncidentsubcatComponent implements OnInit {
       name:'',
       recordNumber:null
     });
+  }
+
+  handleOkTop() {
+    this.generatePdf();
+    this.tryDoctype = ""
+    this.pdfTitle = ""
+  }
+  handleCancelTop(): void {
+    this.drawerVisible = false;
+    this.pdfTitle = ""
+  }
+  generatePdf(){
+    this.drawerVisible = true;
+    
+    this.loading = true;
+    
+    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 ,HACCCODE as Field3 from DataDomains where Domain='INCIDENTSUBGROUP'";
+    
+    const headerDict = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    }
+    
+    const requestOptions = {
+      headers: new HttpHeaders(headerDict)
+    };
+    
+    const data = {
+      "template": { "_id": "0RYYxAkMCftBE9jc" },
+      "options": {
+        "reports": { "save": false },
+        "txtTitle": "Incident Sub Categories List",
+        "sql": fQuery,
+        "userid":this.tocken.user,
+        "head1" : "Sr#",
+        "head2" : "Name",
+        "head3" : "Type",
+      }
+    }
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+      let _blob: Blob = blob;
+      let fileURL = URL.createObjectURL(_blob);
+      this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+      this.loading = false;
+    }, err => {
+      console.log(err);
+      this.loading = false;
+      this.ModalS.error({
+        nzTitle: 'TRACCS',
+        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+        nzOnOk: () => {
+          this.drawerVisible = false;
+        },
+      });
+    });
+    this.loading = true;
+    this.tryDoctype = "";
+    this.pdfTitle = "";
   }
 
 

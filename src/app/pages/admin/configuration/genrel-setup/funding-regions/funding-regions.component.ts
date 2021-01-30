@@ -49,10 +49,7 @@ export class FundingRegionsComponent implements OnInit {
     private ModalS: NzModalService,
     ){}
     
-    loadTitle()
-    {
-      return this.title;
-    }
+    
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
@@ -60,7 +57,10 @@ export class FundingRegionsComponent implements OnInit {
       this.loading = false;
       this.cd.detectChanges();
     }
-    
+    loadTitle()
+    {
+      return this.title;
+    }
     loadData(){
       let sql ="select Description as name,recordNumber from DataDomains where Domain='FUNDREGION' ";
       this.loading = true;
@@ -95,66 +95,11 @@ export class FundingRegionsComponent implements OnInit {
         recordNumber:recordNumber,
       });
     }
-    generatePdf(){
-      this.drawerVisible = true;
-      
-      this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='FUNDREGION'";
-      
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-     
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-     
-      const data = {
-        "template": { "_id": "0RYYxAkMCftBE9jc" },
-        "options": {
-          "reports": { "save": false },
-          "txtTitle": "Funding Region List",
-          "sql": fQuery,
-          "userid":this.tocken.user,
-          "head1" : "Sr#",
-          "head2" : "Name",
-        }
-      }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loading = false;
-      }, err => {
-        console.log(err);
-        this.loading = false;
-        this.ModalS.error({
-          nzTitle: 'TRACCS',
-          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-          nzOnOk: () => {
-            this.drawerVisible = false;
-          },
-        });
-      });
-      this.loading = true;
-      this.tryDoctype = "";
-      this.pdfTitle = "";
-    }
+    
     handleCancel() {
       this.modalOpen = false;
     }
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
+   
     pre(): void {
       this.current -= 1;
     }
@@ -227,6 +172,63 @@ export class FundingRegionsComponent implements OnInit {
             description: '',
             recordNumber:0,
           });
+        }
+        handleOkTop() {
+          this.generatePdf();
+          this.tryDoctype = ""
+          this.pdfTitle = ""
+        }
+        handleCancelTop(): void {
+          this.drawerVisible = false;
+          this.pdfTitle = ""
+        }
+        generatePdf(){
+          this.drawerVisible = true;
+          
+          this.loading = true;
+          
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='FUNDREGION'";
+          
+          const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+         
+          const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+          };
+         
+          const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+              "reports": { "save": false },
+              "txtTitle": "Funding Region List",
+              "sql": fQuery,
+              "userid":this.tocken.user,
+              "head1" : "Sr#",
+              "head2" : "Name",
+            }
+          }
+          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+          .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+          }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                this.drawerVisible = false;
+              },
+            });
+          });
+          this.loading = true;
+          this.tryDoctype = "";
+          this.pdfTitle = "";
         }
       }
       

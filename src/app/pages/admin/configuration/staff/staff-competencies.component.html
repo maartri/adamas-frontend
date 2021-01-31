@@ -48,22 +48,20 @@
                 </div>
                 
                 <div nz-col nzSpan="24" class="mrg-btm">
-                    <!-- <label for="mandatory">Mandatory:</label> -->
-                    <label nz-checkbox  [ngModel]="" >Mandatory</label>
+                    <label nz-checkbox   formControlName="mandatory" >Mandatory</label>
                 </div>
                 <div nz-col nzSpan="24" class="mrg-btm">
-                    <!-- <label for="undated">Undated:</label> -->
-                    <label nz-checkbox  [ngModel]="" >Undated</label>
+                    <label nz-checkbox   formControlName="undated" >Undated</label>
                 </div>
                 <div nz-col nzSpan="24" class="mrg-btm">
-                    <nz-date-picker [nzPlaceHolder]="'end_date'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
+                    <nz-date-picker [nzPlaceHolder]="'enddate'" formControlName="enddate" [nzFormat]="dateFormat"></nz-date-picker>
                 </div>
                 </div>
             </div>
         </div>
         <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('item').value" (click)="save()" *ngIf="current === 0">
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('name').value" (click)="save()" *ngIf="current === 0">
                         <span>Save</span>
                     </button>
                 </ng-container>

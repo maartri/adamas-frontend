@@ -78,14 +78,18 @@ export class StaffCompetenciesComponent implements OnInit {
       this.modalOpen = true;
       const { 
         description,
-        code,
-        usercode,
+        cGroup,
+        mandatory,
+        undated,
+        enddate,
         recordNumber
       } = this.tableData[index];
       this.inputForm.patchValue({
         name: description,
-        icdcode:code,
-        usercode:usercode,
+        group:cGroup,
+        mandatory:(mandatory == 1) ? true:false,
+        undated:(undated == 1) ? true:false,
+        enddate:enddate,
         recordNumber:recordNumber
       });
     }
@@ -103,58 +107,56 @@ export class StaffCompetenciesComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      if(!this.isUpdate){         
-        //   this.switchS.addData(  
-        //     this.modalVariables={
-        //       title: 'CDC Claim Rates'
-        //     }, 
-        //     this.inputVariables = {
-        //       item: group.get('item').value,
-        //       rate: group.get('rate').value,
-        //       domain: 'PACKAGERATES', 
-        //     }
-        //     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //       if (data) 
-        //       this.globalS.sToast('Success', 'Saved successful');     
-        //       else
-        //       this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-        //       this.loadData();
-        //       this.postLoading = false;          
-        //       this.handleCancel();
-        //       this.resetModal();
-        //     });
+      if(!this.isUpdate){        
+        this.postLoading = true;   
+        const group = this.inputForm;
+        let domain       = 'STAFFATTRIBUTE';
+        let name         = group.get('name').value;
+        let groupz       = group.get('group').value;
+        let mandatory    = (group.get('mandatory').value) ? 1 : 0 ;
+        let undated      = (group.get('undated').value) ? 1 : 0 ;
+        let enddate      = (group.get('enddate').value != null && group.get('enddate').value != '') ? this.globalS.convertDbDate(group.get('enddate').value) : '';
+        let values = domain+"','"+name+"','"+groupz+"','"+mandatory+"','"+undated+"','"+enddate;
+        let sql = "insert into DataDomains([Domain],[Description],[User1],[Embedded],[Undated],[EndDate]) Values ('"+values+"')"; 
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal();
+        });
       }else{
-        this.postLoading = false;
-        this.isUpdate = false;
-        this.resetModal();
-        // this.postLoading = true;     
-        // const group = this.inputForm;
-        // // console.log(group.get('item').value);
-        // this.switchS.updateData(  
-        //   this.modalVariables={
-        //     title: 'CDC Claim Rates'
-        //   }, 
-        //   this.inputVariables = {
-        //     item: group.get('item').value,
-        //     rate: group.get('rate').value,
-        //     recordNumber:group.get('recordNumber').value,
-        //     domain: 'PACKAGERATES',
-        //   }
+        this.postLoading  = true;   
+        const group       = this.inputForm;
+        let domain       = 'STAFFATTRIBUTE';
+        let name         = group.get('name').value;
+        let groupz       = group.get('group').value;
+        let mandatory    = group.get('mandatory').value;
+        let undated      = group.get('undated').value;
+        let enddate      = (group.get('enddate').value != null && group.get('enddate').value != '') ? this.globalS.convertDbDate(group.get('enddate').value) : '';
+        let recordNumber  = group.get('recordNumber').value;
         
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Updated successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-        //     this.loadData();
-        //     this.postLoading = false;          
-        //     this.handleCancel();
-        //     this.resetModal();
-        //   });
-      }    
+        let sql  = "Update DataDomains SET [Description]='"+ name + "',[User1] = '"+ groupz + "',[Embedded] = '"+ mandatory + "',[Undated] = '"+ undated + "',[EndDate] = '"+ enddate+ "' WHERE [RecordNumber] ='"+recordNumber+"'";
+        
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.postLoading = false;      
+          this.loadData();
+          this.handleCancel();
+          this.resetModal();   
+          this.isUpdate = false; 
+        });
+      }   
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, RecordNumber, Description, Embedded AS Mandatory From DataDomains Where Domain = 'STAFFATTRIBUTE' ORDER BY DESCRIPTION";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,RecordNumber,Description,Embedded AS Mandatory,User1 as cGroup,Undated as undated,EndDate as EndDate From DataDomains Where Domain = 'STAFFATTRIBUTE' ORDER BY DESCRIPTION";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -183,8 +185,10 @@ export class StaffCompetenciesComponent implements OnInit {
     buildForm() {
       this.inputForm = this.formBuilder.group({
         name: '',
-        icdcode: '',
-        usercode:'',
+        group: '',
+        enddate:'',
+        mandatory :false,
+        undated   :false,
         recordNumber:null
       });
     }

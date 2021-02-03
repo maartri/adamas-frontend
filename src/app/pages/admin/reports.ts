@@ -8224,7 +8224,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 switch (format) {
                     case "Detailed":
                         Title = Title + "-Detail"
-                        this.reportid = " 20xwMDHmzWQlOD6N";
+                        this.reportid = "20xwMDHmzWQlOD6N";
 
                         break;
                     case "Standard":
@@ -11217,16 +11217,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             switch (tempkay) {
                 case "Under 65":
                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                    fQuery = fQuery + " AND " + this.s_AgeSQL;
                     break;
                 case "Over 64 ":
                     this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    fQuery = fQuery + " AND " + this.s_AgeSQL;
                     break;
 
                 default:
                     break;
             }
 
-            fQuery = fQuery + " AND " + this.s_AgeSQL;
+            
 
         }
 
@@ -11429,7 +11431,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + "ORDER BY [Carer Code], [Service Type], Date, [Start Time]";
 
-        //        //////console.log(fQuery)
+        //console.log(fQuery)
 
         switch (format) {
             case "Detailed":
@@ -11523,7 +11525,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     StaffAdminReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  WHERE ([Carer Code] <> '!MULTIPLE')  And [Roster].[Type] in (1, 6)"
+        var fQuery = "SELECT [Roster].[Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
         var lblcriteria;
 
         if (funders != "" || mdsagencyID != "") {
@@ -11535,7 +11537,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         }
 
-
+        fQuery = fQuery + "WHERE ([Carer Code] <> '!MULTIPLE')  And [Roster].[Type] in (1, 6) "
         var Title = "STAFF ADMIN REPORT";
         var Report_Definer = "";
 
@@ -11621,16 +11623,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             switch (tempkay) {
                 case "Under 65":
                     this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                    fQuery = fQuery + " AND " + this.s_AgeSQL;
                     break;
                 case "Over 64 ":
                     this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                    fQuery = fQuery + " AND " + this.s_AgeSQL;
                     break;
 
                 default:
                     break;
             }
-
-            fQuery = fQuery + " AND " + this.s_AgeSQL;
+            
+           
 
         }
 
@@ -11833,7 +11837,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + "ORDER BY [Service Type], [Client Code], Date, [Start Time]";
 
-        //////console.log(fQuery)
+    //    console.log(fQuery)
 
         switch (format) {
             case "Detailed":
@@ -12343,7 +12347,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //WHERE ([Date Timesheet] >= '2020-11-01' And [Date Timesheet] <= '2020-11-30') AND         
         fQuery = fQuery + "WHERE ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And ([Roster].[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')) And [Carer Code] <> '!MULTIPLE'AND ([service type] <> 'CONTRIBUTION')";
 
-        var Title = "STAFF PAYS REPORT -SUMMARY";
+        var Title = "STAFF PAYS REPORT";
         var Report_Definer = "";
 
         if (branch != "") {
@@ -12640,7 +12644,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         fQuery = fQuery + "And ([Roster].[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4))"
         fQuery = fQuery + "ORDER BY [Carer Code], [Service Description], Date, [Start Time]";
 
-        //////console.log(fQuery)
+    //    console.log(fQuery)
 
         switch (format) {
             case "Detailed":
@@ -13538,7 +13542,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " WHERE ([Roster].[Status] >= '2') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION' AND PT.MinorGroup NOT IN ('PAID LEAVE', 'UNPAID LEAVE')) ";
 
-        var Title = "FUNDER PAYROLL TYPE -SUMMARY";
+        var Title = "FUNDER PAYROLL TYPE";
         var Report_Definer = "";
 
         if (branch != "") {
@@ -15609,7 +15613,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
 
-        //////console.log(fQuery)
+        //console.log(fQuery)
 
         switch (format) {
             case "Detailed":
@@ -16010,7 +16014,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         var Report_Definer = " "
         fQuery = fQuery + " ORDER BY [Carer Code], [Service Description], Date, [Start Time]"
 
-        //////console.log(fQuery)
+        //console.log(fQuery)
 
         switch (format) {
             case "Detailed":

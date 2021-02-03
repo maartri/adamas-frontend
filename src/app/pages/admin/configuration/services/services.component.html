@@ -2,6 +2,7 @@
     <div nz-row>
         <div nz-col nzSpan="24">
             <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i> Services</button>
+            <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         </div>
     </div>
 <div nz-row>
@@ -41,7 +42,7 @@
                     <td nzLeft nzBreakWord>{{data.endDate}}</td>
                     <td nzLeft nzBreakWord><a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Services List ?"
                         nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
                     </tr>
                 </tbody>
@@ -747,4 +748,12 @@
             </ng-container>
         </div>
     </nz-modal>
+    <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+        <div class="col-md-12 spinner" *ngIf="loading">
+            <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
+        <div nz-row>
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        </div>
+    </nz-drawer>
 </div>    

@@ -117,48 +117,21 @@ export class MenuService {
         deleteMProcedureTypes(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/MProcedureTypes/${recordNo}`)
         }
-        
-        generatePdf(sql: string,options:any) {
-
-            this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
-        
-            var fQuery = sql;
-            const data = {
-                "template": { "_id": "0RYYxAkMCftBE9jc" },
-                "options": {
-                    "reports": { "save": false },
-                    "txtTitle": "Claim Rates List",
-                    "sql": fQuery,
-                    "userid":this.tocken.user,
-                    "head1" : "Sr#",
-                    "head2" : "Name",
-                    "head3" : "Rate",
-                }
-            }
-
-            const headerDict = {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-            const requestOptions = {
-                headers: new HttpHeaders(headerDict)
-            };
-            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                let _blob: Blob = blob;
-                let fileURL = URL.createObjectURL(_blob);
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                        this.drawerVisible = false;
-                    },
-                });
-            });
+        deleteActivityServiceslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/ActivityServices/${recordNo}`)
+        }
+        deleteEquipmentslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/Equipments/${recordNo}`)
+        }
+        deletePayTypeslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/PayTypes/${recordNo}`)
+        }
+        deleteProgarmPackageslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/ProgarmPackages/${recordNo}`)
+        }
+        deleteCenterFacilityLoclist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/CenterFacilityLoc/${recordNo}`)
         }
         
+
     }

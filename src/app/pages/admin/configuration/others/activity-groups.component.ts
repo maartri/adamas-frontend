@@ -190,16 +190,14 @@ export class ActivityGroupsComponent implements OnInit {
     }
     generatePdf(){
       this.drawerVisible = true;
-      
       this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains where Domain='ACTIVITYGROUPS'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,[User1] as Field3,[User2] as Field4 from DataDomains where Domain='ACTIVITYGROUPS'";
       
       const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
-     
+
       const requestOptions = {
         headers: new HttpHeaders(headerDict)
       };
@@ -213,6 +211,8 @@ export class ActivityGroupsComponent implements OnInit {
           "userid":this.tocken.user,
           "head1" : "Sr#",
           "head2" : "Name",
+          "head3" : "Branch",
+          "head4" : "Group",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

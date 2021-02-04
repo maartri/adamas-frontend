@@ -57,7 +57,7 @@ export class PostcodesComponent implements OnInit {
       return this.title;
     }
     loadData(){
-      let sql ="SELECT Recnum, [Suburb] as subrub, [State] as state, [Postcode] as postcode FROM Pcodes Order By Recnum desc";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Suburb) AS row_num, Recnum, [Suburb] as subrub, [State] as state, [Postcode] as postcode FROM Pcodes";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;

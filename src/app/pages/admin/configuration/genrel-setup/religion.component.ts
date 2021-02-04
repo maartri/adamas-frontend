@@ -144,7 +144,7 @@ export class ReligionComponent implements OnInit {
         }
       }
       loadData(){
-        let sql ="select Description as name,recordNumber from DataDomains where Domain='RELIGION' ";
+        let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains where Domain='RELIGION' ";
         this.loading = true;
         this.listS.getlist(sql).subscribe(data => {
           this.tableData = data;
@@ -183,7 +183,7 @@ export class ReligionComponent implements OnInit {
         
         this.loading = true;
         
-        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='RELIGION'";
+        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains where Domain='RELIGION'";
         
         const headerDict = {
           'Content-Type': 'application/json',

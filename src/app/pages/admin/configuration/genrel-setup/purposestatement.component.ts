@@ -78,7 +78,7 @@ export class PurposestatementComponent implements OnInit {
       this.postLoading = false;
     }
     loadData(){
-      let sql ="select Description as name,recordNumber from DataDomains where Domain='PKGPURPOSE' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains where Domain='PKGPURPOSE' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -195,7 +195,7 @@ export class PurposestatementComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='BRANCHES'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains where Domain='BRANCHES'";
           
           const headerDict = {
             'Content-Type': 'application/json',

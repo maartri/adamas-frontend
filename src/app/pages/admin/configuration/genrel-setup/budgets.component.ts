@@ -117,7 +117,7 @@ export class BudgetsComponent implements OnInit {
       });
     }
     loadData(){
-      let sql="SELECT RecordNumber, Name AS Description, Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,undated from Budgets ORDER BY [recordNumber] desc";
+      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description, Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,undated from Budgets ORDER BY [recordNumber] desc";
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data
         console.log(this.tableData);

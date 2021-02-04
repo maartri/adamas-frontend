@@ -141,7 +141,7 @@ export class BudgetgroupsComponent implements OnInit {
           }
         }
         loadData(){
-          let sql ="select Description as name,recordNumber from DataDomains where Domain='BUDGETGROUP' ";
+          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains where Domain='BUDGETGROUP' ";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;

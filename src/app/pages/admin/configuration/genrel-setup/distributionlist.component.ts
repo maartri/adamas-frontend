@@ -59,12 +59,11 @@ export class DistributionlistComponent implements OnInit {
       this.buildForm();
       this.populateDropdowns();
       this.loadData();
-      // this.tableData = [{ code:"Other",name:"K AGGARWAL"},{ code:"Other",name:"HILDA SMITH"}];
       this.loading = false;
       this.cd.detectChanges();
     }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,ListName as ltype,Severity FROM IM_DistributionLists order by recipient";
+      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity FROM IM_DistributionLists order by recipient";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -72,7 +71,7 @@ export class DistributionlistComponent implements OnInit {
       });
     }
     populateDropdowns(){
-      this.listType = ['INCIDENT','DOCUSIGN'];
+      this.listType = ['INCIDENT','DOCUSIGN','EVENT'];
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
       this.listS.getlist(sql).subscribe(data => {
         this.services = data;
@@ -82,7 +81,7 @@ export class DistributionlistComponent implements OnInit {
         this.services.unshift(da);
       });
       
-      let staff_query = "SELECT ACCOUNTNO as name FROM STAFF WHERE CommencementDate IS NOT NULL AND TerminationDate IS NULL AND ACCOUNTNO > '!Z'";
+      let staff_query = "SELECT distinct [AccountNo] as name from Staff Where AccountNo not like '!%' Order BY [AccountNo] ";
       this.listS.getlist(staff_query).subscribe(data => {
         this.staff = data;
         let da ={
@@ -137,7 +136,6 @@ export class DistributionlistComponent implements OnInit {
       const { 
         ltype,
         staff,
-        service,
         assignee,
         program,
         location,
@@ -152,14 +150,20 @@ export class DistributionlistComponent implements OnInit {
         ltype:ltype,
         staff:staff,
         service:activity,
-        assignee:assignee,
+        assignee:(assignee) ? true : false,
         prgm:program,
         location:location,
         recepient:recipient,
         saverity:severity,
-        mandatory:mandatory,  
+        mandatory:(mandatory) ? true : false,
         recordNo:recordNo,
       });
+    }
+    trueString(data: any): string{
+      return data ? '1': '0';
+    }
+    isChecked(data: string): boolean{
+      return '1' == data ? true : false;
     }
     loadtitle(){
       return this.heading
@@ -186,8 +190,11 @@ export class DistributionlistComponent implements OnInit {
         let location   = group.get('location').value;
         let recepient   = group.get('recepient').value;
         let saverity      = group.get('saverity').value;
-        let values = recepient+"','"+service+"','"+location+"','"+prgm+"','"+staff+"','"+saverity+"','"+ltype;
-        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Severity],[ListName]) Values ('"+values+"')"; 
+        let mandatory     = this.trueString(group.get('mandatory').value);
+        let assignee     = this.trueString(group.get('assignee').value);
+        
+        let values = recepient+"','"+service+"','"+location+"','"+prgm+"','"+staff+"','"+mandatory+"','"+assignee+"','"+saverity+"','"+ltype;
+        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName]) Values ('"+values+"')"; 
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
           if (data) 
@@ -210,6 +217,8 @@ export class DistributionlistComponent implements OnInit {
         let recepient     = group.get('recepient').value;
         let saverity      = group.get('saverity').value;
         let recordNo      = group.get('recordNo').value;
+        let mandatory     = this.trueString(group.get('mandatory').value);
+        let assignee     = this.trueString(group.get('assignee').value);
         let sql  = "Update IM_DistributionLists SET [Recipient]='"+ recepient + "',[Activity] = '"+ service + "',[Program] = '"+ prgm + "',[Staff] = '"+ staff+ "',[Severity] = '"+ saverity + "',[ListName] = '"+ ltype+ "',[Location] = '"+ location+ "'  WHERE [recordNo] ='"+recordNo+"'";
         // console.log(sql);
         // return false;
@@ -244,12 +253,12 @@ export class DistributionlistComponent implements OnInit {
         ltype:'',
         staff:'',
         service:'',
-        assignee:true,
+        assignee:false,
         prgm:'',
         location:'',
         recepient:'',
         saverity:'',
-        mandatory:true,
+        mandatory:false,
         recordNo:null,
       });
     }
@@ -270,7 +279,7 @@ export class DistributionlistComponent implements OnInit {
       
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY RecordNo) AS Field1," +
       "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-      "ListName as  Field6,Severity as Field8 FROM IM_DistributionLists order by recipient";
+      "ListName as  Field7,Severity as Field8 FROM IM_DistributionLists order by recipient";
       
       const headerDict = {
         'Content-Type': 'application/json',

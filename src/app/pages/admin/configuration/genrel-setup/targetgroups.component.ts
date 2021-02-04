@@ -57,7 +57,7 @@ export class TargetgroupsComponent implements OnInit {
       this.cd.detectChanges();
     }
     loadData(){
-      let sql ="select Description as name,recordNumber from DataDomains where Domain='CDCTARGETGROUPS' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains where Domain='CDCTARGETGROUPS' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -187,7 +187,7 @@ export class TargetgroupsComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='BRANCHES'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains where Domain='CDCTARGETGROUPS'";
           
           const headerDict = {
             'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ export class TargetgroupsComponent implements OnInit {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
               "reports": { "save": false },
-              "txtTitle": "Branches List",
+              "txtTitle": "CDC Target Group List",
               "sql": fQuery,
               "userid":this.tocken.user,
               "head1" : "Sr#",

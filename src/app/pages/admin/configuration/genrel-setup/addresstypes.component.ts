@@ -146,7 +146,7 @@ export class AddresstypesComponent implements OnInit {
         
       }
       loadData(){
-        let sql ="select Description as name,recordNumber from DataDomains where Domain='ADDRESSTYPE'";
+        let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains where Domain='ADDRESSTYPE'";
         this.loading = true;
         this.listS.getlist(sql).subscribe(data => {
           this.tableData = data;

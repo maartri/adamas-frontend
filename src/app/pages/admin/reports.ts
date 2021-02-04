@@ -479,6 +479,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     mta_time_early: string;
 
     ModalName: string;
+    FORptModelTitle: string;
     btnid: string;
     id: string;
     tryDoctype: any;
@@ -928,6 +929,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.ModalName = " CRITERIA "
+        
     }
     toggle() {
         this.show = !this.show;
@@ -1509,8 +1511,79 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Recipients = true;
                 this.frm_SVCTypes = true;
                 break;
-
-            default://
+            case 'btn-FORPT-ProgramActivitySpread':
+               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD REPORT CRITERIA" ;
+            break;
+            case 'btn-FORPT-ProgramStaffUtilized':
+                this.FORptModelTitle = "PROGRAM STAFF UTILIZED REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-ProgramRecipientServiced':
+                this.FORptModelTitle = "PROGRAM RECIPIENT SERVICED REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-ProgramBillingReport':
+                this.FORptModelTitle = "PROGRAM BILLING REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-ActivityRecipientRpt':
+                this.FORptModelTitle = "ACTIVITY RECIPIENT REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-ActivityStaff':
+                this.FORptModelTitle = "ACTIVITY STAFF REPORT CRITERIA" ;
+             break;
+           
+             case 'btn-FORPT-ActivityGroupRpt':
+                this.FORptModelTitle = "ACTIVITY GROUP REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-fundingAuditReport':
+                this.FORptModelTitle = "FUNDING AUDIT REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-DatasetActivityAnalysis':
+                this.FORptModelTitle = "DATA ACTIVITY ANALYSIS REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-DatasetoutputSummary':
+                this.FORptModelTitle = "DATA SET OUTPUT REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-DatasetUnitCost':
+                this.FORptModelTitle = "DATA SET UNIT COST REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-StaffPaysRpt':
+                this.FORptModelTitle = "STAFF PAY REPORT CRITERIA" ;
+             break;             
+             case 'btn-FORPT-FunderPayrollRpt':
+                this.FORptModelTitle = "FUNDER PAYROLL REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-StaffAllowanceRpt':
+                this.FORptModelTitle = "STAFF ALLOWANCE REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-StaffProgramUtilisation':
+                this.FORptModelTitle = "STAFF PROGRAM UTILIZATION REPORT CRITERIA" ;
+             break;            
+             case 'btn-FORPT-StaffClientServiced':
+                this.FORptModelTitle = "STAFF CLIENT SERVICED REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-StaffAdminRpt':
+                this.FORptModelTitle = "STAFF ADMIN REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-StaffActivityRpt':
+                this.FORptModelTitle = "STAFF ACTIVITY REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-DailyStaffHrs':
+                this.FORptModelTitle = "STAFF DAILY HOURS REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-PayTypeProgram':
+                this.FORptModelTitle = "PAY TYPE PROGRAM REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-StaffusageReport':
+                this.FORptModelTitle = "STAFF USAGE REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-PaytypeReport':
+                this.FORptModelTitle = "PAY TYPE REPORT CRITERIA" ;
+             break;
+             case 'btn-FORPT-ProgramUtilisation':
+                this.FORptModelTitle = "PROGRAM UTILIZATION REPORT CRITERIA" ;
+             break;
+            
+ 
+            default:
             //  alert("Yet to do")
 
         }

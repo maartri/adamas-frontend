@@ -1199,8 +1199,7 @@
             <nz-modal
             [nzWidth]="modelwidth" 
             [(nzVisible)]="FOReports"
-            
-            nzTitle="FINANCIALS/OUTPUT REPORTS MODAL"
+            [(nzTitle)]="FORptModelTitle"
             [nzContent]="modalContent"
             [nzFooter]="modalFooter"      
             (nzOnCancel)="handleCancel()" 

@@ -990,8 +990,8 @@
                     <div nz-row *ngIf="frm_StaffGroup" >                                    
                         <div nz-col nzSpan="20">
                             <div class="form-group">
-                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff Group </label>
-                                <label class="checks" nz-checkbox formControlName="allGroups">All Groups </label>
+                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> Job Category </label>
+                                <label class="checks" nz-checkbox formControlName="allGroups">All Jobs </label>
                                 <nz-select formControlName="staffgroupsArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allGroups">
                                     <nz-option *ngFor="let option of staffgroupsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
                                 </nz-select>                                    
@@ -1195,10 +1195,11 @@
             </nz-modal>            
         </div>
 
-        <div> <!--nzWidth="768px"-->
+        <div > <!--nzWidth="768px"-->
             <nz-modal
             [nzWidth]="modelwidth" 
-            [(nzVisible)]="FOReports" 
+            [(nzVisible)]="FOReports"
+            
             nzTitle="FINANCIALS/OUTPUT REPORTS MODAL"
             [nzContent]="modalContent"
             [nzFooter]="modalFooter"      

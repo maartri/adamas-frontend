@@ -115,7 +115,7 @@ export class ContacttypesComponent implements OnInit {
     }
 
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as title,HACCCode as pgroup,recordNumber from DataDomains where Domain='CONTACTSUBGROUP' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,Description as title,HACCCode as pgroup,recordNumber from DataDomains where Domain='CONTACTSUBGROUP' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;

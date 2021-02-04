@@ -83,12 +83,12 @@ export class BranchesComponent implements OnInit {
       const { 
         recordNumber,
         description,
-        glRevene,
-        glCost,
-        centerName,
+        glcost,
+        glrevene,
+        googleAddress,
         addrLine1,
         addrLine2,
-        phone,
+        addrphone,
         startHour,
         finishHour,
         lateStart,
@@ -107,12 +107,12 @@ export class BranchesComponent implements OnInit {
       this.inputForm.patchValue({
         recordNumber:recordNumber,
         name:description,
-        glRevene:glRevene,
-        glCost:glCost,
-        centerName:centerName,
+        glRevene:glcost,
+        glCost:glrevene,
+        centerName:googleAddress,
         addrLine1:addrLine1,
         addrLine2:addrLine2,
-        Phone:phone,
+        Phone:addrphone,
         startHour:startHour,
         finishHour:finishHour,
         earlyStart:earlyStart,
@@ -172,7 +172,7 @@ export class BranchesComponent implements OnInit {
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
-          this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+          this.globalS.sToast('Unsuccess', 'Saved successful' + data);
 
           this.loadBranches();
           this.handleCancel();
@@ -209,7 +209,7 @@ export class BranchesComponent implements OnInit {
           if (data) 
           this.globalS.sToast('Success', 'Update successful');     
           else
-          this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+          this.globalS.sToast('Unsuccess', 'Update successful' + data);
 
           this.loadBranches();
           this.handleCancel();

@@ -195,7 +195,7 @@ export class PurposestatementComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains where Domain='BRANCHES'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains where Domain='PKGPURPOSE'";
           
           const headerDict = {
             'Content-Type': 'application/json',
@@ -210,7 +210,7 @@ export class PurposestatementComponent implements OnInit {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
               "reports": { "save": false },
-              "txtTitle": "Branches List",
+              "txtTitle": "Package Purpose Statement List",
               "sql": fQuery,
               "userid":this.tocken.user,
               "head1" : "Sr#",

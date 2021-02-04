@@ -59,7 +59,7 @@ export class DestinationaddressComponent implements OnInit {
     return this.title;
   }
   loadData(){
-    let sql ="SELECT * FROM HumanResourceTypes WHERE [Group] like 'DESTINATION'";
+    let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num FROM HumanResourceTypes WHERE [Group] like 'DESTINATION'";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
       this.tableData = data;
@@ -225,7 +225,7 @@ export class DestinationaddressComponent implements OnInit {
     
     this.loading = true;
     
-    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,[EndDate] as Field7 from HumanResourceTypes  WHERE [Group] like 'DESTINATION'";
+    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,[EndDate] as Field7 from HumanResourceTypes  WHERE [Group] like 'DESTINATION'";
     
     const headerDict = {
       'Content-Type': 'application/json',

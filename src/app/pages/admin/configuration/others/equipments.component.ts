@@ -163,16 +163,16 @@ export class EquipmentsComponent implements OnInit {
         
         if(group.get('type').value){
           let type            = group.get('type').value;
-          let description     = (group.get('description').value == null || group.get('description').value == '') ? '' : group.get('description').value;
-          let asset           = (group.get('asset_no').value == null    || group.get('asset_no').value == '') ? '' : group.get('asset_no').value;
-          let serial_no       = (group.get('serial_no').value == null   || group.get('serial_no').value == '') ? '' : group.get('serial_no').value;
-          let purchase_am     = (group.get('purchase_am').value == null || group.get('purchase_am').value == '') ? '' : group.get('purchase_am').value;
+          let description     = (group.get('description').value == null || group.get('description').value == '') ? null : group.get('description').value;
+          let asset           = (group.get('asset_no').value == null    || group.get('asset_no').value == '') ? null : group.get('asset_no').value;
+          let serial_no       = (group.get('serial_no').value == null   || group.get('serial_no').value == '') ? null : group.get('serial_no').value;
+          let purchase_am     = (group.get('purchase_am').value == null || group.get('purchase_am').value == '') ? null : group.get('purchase_am').value;
           let purchase_date   = (group.get('purchase_date').value != null && group.get('purchase_date').value != '') ? this.globalS.convertDbDate(group.get('purchase_date').value) : null;
           let last_service    = (group.get('last_service').value != null  && group.get('last_service').value != '') ? this.globalS.convertDbDate(group.get('last_service').value) : null;
-          let lockloct        = (group.get('lockloct').value == null || group.get('lockloct').value == '') ? '' : group.get('lockloct').value ;
-          let lockcode        = (group.get('lockcode').value == null || group.get('lockcode').value == '') ? '' : group.get('lockcode').value;
+          let lockloct        = (group.get('lockloct').value == null || group.get('lockloct').value == '') ? null : group.get('lockloct').value ;
+          let lockcode        = (group.get('lockcode').value == null || group.get('lockcode').value == '') ? null : group.get('lockcode').value;
           let disposal        = (group.get('disposal').value != null && group.get('disposal').value != '') ? this.globalS.convertDbDate(group.get('disposal').value) : null;
-          let notes           = (group.get('notes').value == null    || group.get('notes').value == '') ? '' : group.get('notes').value;
+          let notes           = (group.get('notes').value == null    || group.get('notes').value == '') ? null : group.get('notes').value;
           
           let values = type+"','"+description+"',"+disposal+","+last_service+",'"+asset+"','"+serial_no+"',"+purchase_date+",'"+purchase_am+"','"+lockcode+"','"+lockloct+"','"+notes;
           let sql = "insert into Equipment ([Type],[ItemID],[DateDisposed],[LastService],[EquipCode],[SerialNo],[PurchaseDate],[PurchaseAmount],[LockBoxCode],[LockBoxLocation],[Notes]) values('"+values+"');select @@IDENTITY"; 

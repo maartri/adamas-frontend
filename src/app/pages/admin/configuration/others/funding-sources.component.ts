@@ -113,14 +113,16 @@ export class FundingSourcesComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
-        let domain       = 'FUNDINGBODIES';
-        let name         = group.get('name').value;
-        let glrevnue     = group.get('glrevnue').value;
-        let glcost       = group.get('glcost').value;
-        let end_date     = this.globalS.convertDbDate(group.get('end_date').value);
-        let values = domain+"','"+name+"','"+glrevnue+"','"+glcost+"','"+end_date;
-        let sql = "insert into DataDomains([Domain],[Description],[User1],[User2],[EndDate]) Values ('"+values+"')"; 
-        console.log(sql);
+        let domain       = "'FUNDINGBODIES'";
+        let name         =  this.globalS.isValueNull(group.get('name').value);
+        let glrevnue     =  this.globalS.isValueNull(group.get('glrevnue').value);
+        let glcost       =  this.globalS.isValueNull(group.get('glcost').value);
+        let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+
+        let values = domain+","+name.trim()+","+glrevnue+","+glcost+","+end_date;
+
+        let sql = "insert into DataDomains([Domain],[Description],[User1],[User2],[EndDate]) Values ("+values+")"; 
+        
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
           if (data) 
@@ -133,16 +135,20 @@ export class FundingSourcesComponent implements OnInit {
           this.resetModal();
         });
       }else{
+        
         this.postLoading  = true;   
         const group       = this.inputForm;
-        let name          = group.get('name').value;
-        let glrevnue      = group.get('glrevnue').value;
-        let glcost        = group.get('glcost').value;
-        let end_date      =  this.globalS.convertDbDate(group.get('end_date').value);
+        let name         =  this.globalS.isValueNull(group.get('name').value);
+        let glrevnue     =  this.globalS.isValueNull(group.get('glrevnue').value);
+        let glcost       =  this.globalS.isValueNull(group.get('glcost').value);
+        let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+       
+        
+
         let recordNumber  = group.get('recordNumber').value;
         
-        let sql  = "Update DataDomains SET [Description]='"+ name + "',[User1] = '"+ glrevnue + "',[User2] = '"+ glcost + "',[EndDate] = '"+ end_date+ "' WHERE [RecordNumber] ='"+recordNumber+"'";
-        
+        let sql  = "Update DataDomains SET [Description]="+name+",[User1]="+glrevnue+",[User2]="+glcost+",[EndDate]= "+end_date+" WHERE [RecordNumber]='"+recordNumber+"'";
+          console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     

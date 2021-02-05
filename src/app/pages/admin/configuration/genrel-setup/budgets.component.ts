@@ -1,25 +1,28 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder} from '@angular/forms';
 import { GlobalService } from '@services/global.service';
 import { ListService } from '@services/list.service';
 import { MenuService } from '@services/menu.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
 @Component({
   selector: 'app-budgets',
   templateUrl: './budgets.component.html',
   styles: [`
   .mrg-btm{
-    margin-bottom:7px !important;
-  }
+    margin-bottom:3px !important;
+  },
   nz-divider{
     margin:5px !important;
+  },
+  .ant-select-selection--single{
+    height:24px
   }
   `],
 })
 export class BudgetsComponent implements OnInit {
   
+  size:'small';
   tableData: Array<any>;
   loading: boolean = false;
   modalOpen: boolean = false;
@@ -306,7 +309,6 @@ export class BudgetsComponent implements OnInit {
 
     delete(data: any) {
       this.postLoading = true;     
-      const group = this.inputForm;
       this.menuS.deleteBudgetlist(data.recordNumber)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {

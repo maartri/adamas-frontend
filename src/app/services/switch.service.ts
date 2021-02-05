@@ -1430,7 +1430,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: (inputVariables.expiry),
                     },
                     table: 'DataDomains'
                 }

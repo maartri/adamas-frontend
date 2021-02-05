@@ -1209,6 +1209,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 break;
+                case 'btn-Regis-masterrosteredhoursreport':
+                this.ModalName = "MASTER ROSTERED HOURS REPORT"
+                this.frm_MasterRosterCycles = true;
+                this.frm_Programs = true;
+                break;
+                
             case 'btn-Regis-hasreport':
                 this.ModalName = "HAS REPORT CRITERIA"
                 this.frm_Date = true;
@@ -1748,8 +1754,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         var s_XXEarly = this.inputForm.value.mta_time_early;
         var s_XXOverstayed = this.inputForm.value.mta_time_overstayed;
 
-
-
+               
         var str_inclusion;
 
     /*    console.log("test "+ RosterType)
@@ -1938,6 +1943,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             case 'btn-inactiverecipient':
                 this.InActiveRecipientList(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
+            case 'btn-Regis-masterrosteredhoursreport':                    
+                    this.MasterRosteredhours(s_Programs,s_Cycle);
+                    break;
             case 'btn-adminduringperiod':
                 this.AdmissiionDuringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate, tempsdate, tempedate);
                 break;
@@ -2147,7 +2155,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-FORPT-ProgramBillingReport':
                 this.ProgramBillingReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
-                break; //
+                break; 
                 case 'btn-FORPT-ActivityStaff':
                     this.ActivityStaffReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                     break;
@@ -3340,7 +3348,134 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                   });
             });
     }
+    MasterRosteredhours(program, s_Cycle) {        
+          
+        
+        switch (s_Cycle) {
+            case 'Cycle 1':
+            var   strdate = "01/01/1900";
+            var    endate = "28/01/1900";
+                break;
+            case "Cycle 2":
+                strdate = "01/10/1900";
+                endate = "28/10/1900";
+                break;
+            case 'Cycle 3':
+                strdate = "01/04/1901";
+                endate = "28/04/1901";
+                break;
+            case 'Cycle 4':
+                strdate = "01/07/1901";
+                endate = "28/07/1901";
+                break;
+            case 'Cycle 5':
+                strdate = "01/09/1902";
+                endate = "28/09/1902";
+                break;
 
+            case 'Cycle 6':
+                strdate = "01/12/1902";
+                endate = "28/12/1902";
+                break;
+            case 'Cycle 7':
+                strdate = "01/06/1903";
+                endate = "28/06/1903";
+                break;
+            case 'Cycle 8':
+                strdate = "01/02/1904";
+                endate = "28/02/1904";
+                break;
+            case 'Cycle 9':
+                strdate = "01/08/1904";
+                endate = "28/08/1904";
+                break;
+            case 'Cycle 10':
+                strdate = "01/05/1905";
+                endate = "28/05/1905";
+                break;
+            default:
+                strdate = "1900/01/01";
+                endate = "1900/01/28";
+
+                break;
+        }
+        var lblcriteria;
+        var fQuery = "SELECT PROGRAM, ROUND(SUM( CASE WHEN [DATE] = '1900/01/01' THEN DURATION ELSE 0 END)/12,2) AS [DAY1], ROUND(SUM( CASE WHEN [DATE] = '1900/01/02' THEN DURATION ELSE 0 END)/12,2) AS [DAY2], ROUND(SUM( CASE WHEN [DATE] = '1900/01/03' THEN DURATION ELSE 0 END)/12,2) AS [DAY3], ROUND(SUM( CASE WHEN [DATE] = '1900/01/04' THEN DURATION ELSE 0 END)/12,2) AS [DAY4], ROUND(SUM( CASE WHEN [DATE] = '1900/01/05' THEN DURATION ELSE 0 END)/12,2) AS [DAY5], ROUND(SUM( CASE WHEN [DATE] = '1900/01/06' THEN DURATION ELSE 0 END)/12,2) AS [DAY6], ROUND(SUM( CASE WHEN [DATE] = '1900/01/07' THEN DURATION ELSE 0 END)/12,2) AS [DAY7], ROUND(SUM( CASE WHEN [DATE] = '1900/01/08' THEN DURATION ELSE 0 END)/12,2) AS [DAY8], ROUND(SUM( CASE WHEN [DATE] = '1900/01/09' THEN DURATION ELSE 0 END)/12,2) AS [DAY9], ROUND(SUM( CASE WHEN [DATE] = '1900/01/10' THEN DURATION ELSE 0 END)/12,2) AS [DAY10], ROUND(SUM( CASE WHEN [DATE] = '1900/01/11' THEN DURATION ELSE 0 END)/12,2) AS [DAY11], ROUND(SUM( CASE WHEN [DATE] = '1900/01/12' THEN DURATION ELSE 0 END)/12,2) AS [DAY12], ROUND(SUM( CASE WHEN [DATE] = '1900/01/13' THEN DURATION ELSE 0 END)/12,2) AS [DAY13], ROUND(SUM( CASE WHEN [DATE] = '1900/01/14' THEN DURATION ELSE 0 END)/12,2) AS [DAY14] FROM ROSTER  WHERE [TYPE] IN (1,2,3,4,5,6,7,8,10,11,12)    "
+
+        
+        if (strdate != "" || endate != "") {
+            this.s_DateSQL = "( [DATE] BETWEEN '" + strdate + ("'AND'") + endate + "')";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        }
+        if (program != "") {
+            this.s_ProgramSQL = " ([Program] in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        } 
+
+        if (program != "") {
+            lblcriteria =  " Programs " + program.join(",") + "; "
+        }
+        else { lblcriteria = "All Programs." }
+        if (s_Cycle != "") {
+            lblcriteria = lblcriteria + " Date: " + s_Cycle + "; "
+        }
+        else{lblcriteria = lblcriteria + " Date: Cycle 01  "; }
+        
+        
+        
+
+        fQuery = fQuery + " GROUP BY PROGRAM  "
+        /*   
+        console.log(s_BranchSQL)
+        console.log(s_CategorySQL)
+        console.log(s_CoordinatorSQL)*/
+        //  //////console.log(fQuery)
+
+        this.drawerVisible = true;
+
+        const data = {
+            "template": { "_id": "cNhkW3O0lp9TSQyg" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+            }
+        }
+        this.loading = true;
+
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+
+                let _blob: Blob = blob;
+
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Master Rostered Hours Report.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                this.loading = false;
+
+            }, err => {
+                console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
+                  });
+            });
+    }
     ActiveRecipientList(branch, manager, region, program) {
 
 

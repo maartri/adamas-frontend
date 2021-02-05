@@ -276,6 +276,12 @@
                                             <i nz-icon nzType="printer"></i>
                                             Meal Order Report
                                             </button> 
+                                        </div> 
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-masterrosteredhoursreport" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Master Rostered hours Register
+                                            </button> 
                                         </div>                                                                                                                                  
                                     </li>                  
                                 </ul>
@@ -1059,7 +1065,7 @@
                                     <div class="form-group">
                                         <label><i nz-icon nzType="environment" nzTheme="outline"></i>  CYCLE</label>
                                         <label class="checks" nz-checkbox formControlName="cycles">Default Cycle</label>
-                                        <nz-select formControlName="cycleArr"  nzMode="multiple" [nzDisabled]="inputForm.value.cycles">
+                                        <nz-select formControlName="cycleArr"  [nzDisabled]="inputForm.value.cycles">
                                             <nz-option *ngFor="let option of cycleArr" [nzLabel]="option" [nzValue]="option"></nz-option>
                                         </nz-select>
                                     </div>

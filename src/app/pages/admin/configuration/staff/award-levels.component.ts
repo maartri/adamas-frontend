@@ -95,7 +95,7 @@ export class AwardLevelsComponent implements OnInit {
       this.current += 1;
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER By Description) AS row_num,Description as name,recordNumber from DataDomains where Domain='AWARDLEVEL' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER By Description) AS row_num,Description as name,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='AWARDLEVEL' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -184,7 +184,7 @@ export class AwardLevelsComponent implements OnInit {
           
           this.drawerVisible = true;
           this.loading = true;
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,User1 as Field3 from DataDomains where Domain='AWARDLEVEL'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,User1 as Field3 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='AWARDLEVEL'";
           
           const headerDict = {
             'Content-Type': 'application/json',

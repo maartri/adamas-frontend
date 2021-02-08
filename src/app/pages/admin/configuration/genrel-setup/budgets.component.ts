@@ -74,17 +74,17 @@ export class BudgetsComponent implements OnInit {
       this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
       // this.listS.getstaffcategory().subscribe(data=>this.staffCategory=data);
       
-      let funding = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDREGION' ORDER BY Description";
+      let funding = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDREGION' ORDER BY Description";
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
         this.loading = false;
       });
-      let sc = "Select RecordNumber, Description From DataDomains Where Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
+      let sc = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(sc).subscribe(data => {
         this.staffCategory = data;
         this.loading = false;
       });
-      let fundingt = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDINGBODIES' ORDER BY Description";
+      let fundingt = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDINGBODIES' ORDER BY Description";
       this.listS.getlist(fundingt).subscribe(data => {
         this.fundingTypes = data;
         this.loading = false;
@@ -93,15 +93,15 @@ export class BudgetsComponent implements OnInit {
       this.listS.getlist(prog).subscribe(data => {
         this.programz = data;
       });
-      let bgroup = "Select RecordNumber, Description From DataDomains Where Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
+      let bgroup = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(bgroup).subscribe(data => {
         this.budgetGroup = data;
       });
-      let dicip = "Select RecordNumber, Description From DataDomains Where Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
+      let dicip = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
       this.listS.getlist(dicip).subscribe(data => {
         this.diciplines = data;
       });
-      let gagency = "Select RecordNumber, Description From DataDomains Where Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
+      let gagency = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
       this.listS.getlist(gagency).subscribe(data => {
         this.groupAgency = data;
       });
@@ -114,7 +114,7 @@ export class BudgetsComponent implements OnInit {
       this.listS.getlist(reci).subscribe(data => {
         this.recepient = data;
       });
-      let progcor = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'CASE MANAGERS'";
+      let progcor = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'CASE MANAGERS'";
       this.listS.getlist(progcor).subscribe(data => {
         this.programCordinates = data;
       });
@@ -326,7 +326,7 @@ export class BudgetsComponent implements OnInit {
         start:'',
         end:'',
         undated:true,
-        branch:null,
+        branch:'',
         care:'',
         cost:'',
         outlet:'',

@@ -62,7 +62,7 @@ export class FundingRegionsComponent implements OnInit {
       return this.title;
     }
     loadData(){
-      let sql ="select Description as name,recordNumber from DataDomains where Domain='FUNDREGION' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber,DeletedRecord as is_deleted from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='FUNDREGION'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -81,7 +81,6 @@ export class FundingRegionsComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      // debugger;
       this.title = "Edit Funding Regions"
       this.isUpdate = true;
       this.current = 0;
@@ -187,7 +186,7 @@ export class FundingRegionsComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='FUNDREGION'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='FUNDREGION' AND ISNULL(DataDomains.DeletedRecord, 0) = 0";
           
           const headerDict = {
             'Content-Type': 'application/json',

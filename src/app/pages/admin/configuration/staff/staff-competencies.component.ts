@@ -156,14 +156,14 @@ export class StaffCompetenciesComponent implements OnInit {
       }   
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,RecordNumber,Description,Embedded AS Mandatory,User1 as cGroup,Undated as undated,EndDate as EndDate From DataDomains Where Domain = 'STAFFATTRIBUTE' ORDER BY DESCRIPTION";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,RecordNumber,Description,Embedded AS Mandatory,User1 as cGroup,Undated as undated,EndDate as EndDate from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY DESCRIPTION";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
         console.log(data);
         this.loading = false;
       });
-      let sql2 = "Select RecordNumber, Description From DataDomains Where Domain = 'COMPETENCYGROUP'  ORDER BY DESCRIPTION";
+      let sql2 = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'COMPETENCYGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(sql2).subscribe(data => {
         this.items = data;
         console.log(data);
@@ -206,7 +206,7 @@ export class StaffCompetenciesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Embedded as Field3 from DataDomains where Domain='STAFFATTRIBUTE'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Embedded as Field3 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='STAFFATTRIBUTE'";
       
       const headerDict = {
         'Content-Type': 'application/json',

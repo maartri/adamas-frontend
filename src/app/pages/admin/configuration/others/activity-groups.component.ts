@@ -158,7 +158,7 @@ export class ActivityGroupsComponent implements OnInit {
         this.cd.detectChanges();
       });
       
-      let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
+      let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'BRANCHES' ORDER BY Description";
       this.listS.getlist(branch).subscribe(data => {
         this.items = data;
         this.loading = false;
@@ -197,7 +197,7 @@ export class ActivityGroupsComponent implements OnInit {
     generatePdf(){
       this.drawerVisible = true;
       this.loading = true;
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,[User1] as Field3,[User2] as Field4,[EndDate] as Field5 from DataDomains where Domain='ACTIVITYGROUPS'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,[User1] as Field3,[User2] as Field4,[EndDate] as Field5 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='ACTIVITYGROUPS'";
       
       const headerDict = {
         'Content-Type': 'application/json',

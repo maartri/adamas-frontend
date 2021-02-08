@@ -61,7 +61,7 @@ export class IncidentnotecategoryComponent implements OnInit {
     return this.title;
   }
   loadData(){
-    let sql ="select ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber from DataDomains where Domain='RECIMNTECAT' ";
+    let sql ="select ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='RECIMNTECAT' ";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
       this.tableData = data;
@@ -189,7 +189,7 @@ export class IncidentnotecategoryComponent implements OnInit {
     
     this.loading = true;
     
-    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='RECIMNTECAT'";
+    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='RECIMNTECAT'";
     
     const headerDict = {
       'Content-Type': 'application/json',

@@ -291,7 +291,7 @@ export class EquipmentsComponent implements OnInit {
         console.log(this.tableSData);
       });
       
-      let type = "SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'GOODS' ORDER BY Description";
+      let type = "SELECT DISTINCT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'GOODS' ORDER BY Description";
       this.listS.getlist(type).subscribe(data => {
         this.groups = data;
         this.loading = false;

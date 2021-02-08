@@ -55,14 +55,14 @@ export class IncidentsubcatComponent implements OnInit {
     this.cd.detectChanges();
   }
   loadData(){
-    let sql ="select ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber,HACCCODE as incident_type from DataDomains where Domain='INCIDENTSUBGROUP' ";
+    let sql ="select ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber,HACCCODE as incident_type from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='INCIDENTSUBGROUP' ";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
       this.tableData = data;
       this.loading = false;
     });
 
-    let sql2 ="select Description as name,recordNumber from DataDomains where Domain='INCIDENT TYPE' ";
+    let sql2 ="select Description as name,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='INCIDENT TYPE' ";
     this.loading = true;
     this.listS.getlist(sql2).subscribe(data => {
       this.IncidentTypesArr = data;
@@ -193,7 +193,7 @@ export class IncidentsubcatComponent implements OnInit {
     
     this.loading = true;
     
-    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 ,HACCCODE as Field3 from DataDomains where Domain='INCIDENTSUBGROUP'";
+    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 ,HACCCODE as Field3 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='INCIDENTSUBGROUP'";
     
     const headerDict = {
       'Content-Type': 'application/json',

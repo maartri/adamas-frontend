@@ -302,7 +302,7 @@ export class CompaniesComponent implements OnInit {
       this.browsers = ['Google','Bing'];
     }
     loadData(){
-      let sql ="Select RecordNumber, Description From DataDomains Where Domain = 'COMPANY'  ORDER BY DESCRIPTION";
+      let sql ="Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'COMPANY'  ORDER BY DESCRIPTION";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.branchList = data;

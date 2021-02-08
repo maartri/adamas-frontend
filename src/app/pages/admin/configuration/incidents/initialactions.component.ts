@@ -97,7 +97,7 @@ export class InitialactionsComponent implements OnInit {
       this.current += 1;
     }
     loadData(){
-      let sql ="select ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,description as name,recordNumber from DataDomains where Domain='IMActionInit' ";
+      let sql ="select ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,description as name,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='IMActionInit' ";
       this.loading = true;
       sql
       this.listS.getlist(sql).subscribe(data => {
@@ -188,7 +188,7 @@ export class InitialactionsComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains where Domain='IMActionInit'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='IMActionInit'";
           
           const headerDict = {
             'Content-Type': 'application/json',

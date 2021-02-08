@@ -328,25 +328,25 @@ export class ItemsConsumablesComponent implements OnInit {
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
       let todayDate  = this.globalS.curreentDate();
       
-      let sql ="SELECT * FROM DataDomains WHERE Domain = 'LIFECYCLEEVENTS'";
+      let sql ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'LIFECYCLEEVENTS'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.lifeCycleList = data;
       });
       
-      let sql1 ="SELECT * FROM DataDomains WHERE Domain = 'BUDGETGROUP'";
+      let sql1 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'BUDGETGROUP'";
       this.loading = true;
       this.listS.getlist(sql1).subscribe(data => {
         this.budgetGroupList = data;
       });
       
-      let sql2 ="SELECT * FROM DataDomains WHERE Domain = 'DISCIPLINE'";
+      let sql2 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'DISCIPLINE'";
       this.loading = true;
       this.listS.getlist(sql1).subscribe(data => {
         this.diciplineList = data;
       });
       
-      let comp = "SELECT Description as name FROM Datadomains WHERE Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+      let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
         this.loading = false;

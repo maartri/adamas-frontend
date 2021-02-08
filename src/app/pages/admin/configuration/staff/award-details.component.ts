@@ -182,7 +182,7 @@ export class AwardDetailsComponent implements OnInit {
         this.loading = false;
       });
       
-      let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'AWARDLEVEL' ORDER BY Description";
+      let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'AWARDLEVEL' ORDER BY Description";
       this.listS.getlist(branch).subscribe(data => {
         this.items = data;
         this.loading = false;

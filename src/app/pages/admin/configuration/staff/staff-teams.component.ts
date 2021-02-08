@@ -149,14 +149,14 @@ export class StaffTeamsComponent implements OnInit {
       
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER By Description) AS row_num,Description as name,User1 as branch,recordNumber from DataDomains where Domain='STAFFTEAM'";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER By Description) AS row_num,Description as name,User1 as branch,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='STAFFTEAM'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });
       
-      let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
+      let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'BRANCHES' ORDER BY Description";
       this.listS.getlist(branch).subscribe(data => {
         this.items = data;
         this.loading = false;
@@ -195,7 +195,7 @@ export class StaffTeamsComponent implements OnInit {
       
       this.drawerVisible = true;
       this.loading = true;
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,User1 as Field3 from DataDomains where Domain='STAFFTEAM'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,User1 as Field3 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='STAFFTEAM'";
       
       const headerDict = {
         'Content-Type': 'application/json',

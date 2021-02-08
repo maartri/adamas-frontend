@@ -163,7 +163,7 @@ export class ClaimratesComponent implements OnInit {
           } 
         }
         loadData(){
-          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,User1 as rate,recordNumber from DataDomains where Domain='PACKAGERATES'";
+          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,User1 as rate,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='PACKAGERATES'";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
@@ -187,7 +187,7 @@ export class ClaimratesComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,recordNumber as Field4 from DataDomains where Domain='PACKAGERATES'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,recordNumber as Field4 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='PACKAGERATES'";
           
           const headerDict = {
             'Content-Type': 'application/json',

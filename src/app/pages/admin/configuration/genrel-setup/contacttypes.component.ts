@@ -115,14 +115,14 @@ export class ContacttypesComponent implements OnInit {
     }
 
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,Description as title,HACCCode as pgroup,recordNumber from DataDomains where Domain='CONTACTSUBGROUP' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,Description as title,HACCCode as pgroup,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='CONTACTSUBGROUP' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });
 
-      let sql2 = "select distinct Description from DataDomains WHERE Domain = 'CONTACTGROUP'";
+      let sql2 = "select distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'CONTACTGROUP'";
       this.listS.getlist(sql2).subscribe(data => {
         this.contactGroups = data;
         this.loading = false;
@@ -148,7 +148,7 @@ export class ContacttypesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3 from DataDomains where Domain='CONTACTSUBGROUP'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='CONTACTSUBGROUP'";
       
       const headerDict = {
         'Content-Type': 'application/json',

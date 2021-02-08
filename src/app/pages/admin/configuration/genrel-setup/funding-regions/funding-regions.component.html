@@ -13,10 +13,11 @@
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
                 <td class="left">{{ data.name  }} </td>
-                        <td><a (click)="showEditModal(i)">Update</a>
+                        <td ><a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete the Funding Region ?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Funding Region List?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                        </td>
                 </tr>
             </tbody>
         </nz-table>

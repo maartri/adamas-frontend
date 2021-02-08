@@ -55,7 +55,7 @@ export class ProgramcoordinatesComponent implements OnInit {
     this.cd.detectChanges();
   }
   loadData(){
-    let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,HACCCode as code , RecordNumber, Description as name FROM DataDomains WHERE Domain =  'CASE MANAGERS'";
+    let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,HACCCode as code , RecordNumber, Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'CASE MANAGERS'";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
       this.tableData = data;
@@ -189,7 +189,7 @@ export class ProgramcoordinatesComponent implements OnInit {
     
     this.loading = true;
     
-    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,HACCCode as Field3 from DataDomains where Domain='CASE MANAGERS'";
+    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,HACCCode as Field3 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='CASE MANAGERS'";
     
     const headerDict = {
       'Content-Type': 'application/json',

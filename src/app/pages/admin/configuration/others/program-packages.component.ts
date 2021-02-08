@@ -741,24 +741,24 @@ export class ProgramPackagesComponent implements OnInit {
       this.listS.getcaredomain().subscribe(data => this.caredomain = data);
       this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
       let todayDate  = this.globalS.curreentDate();
-      let funding = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDREGION' ORDER BY Description";
+      let funding = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDREGION' ORDER BY Description";
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
         this.loading = false;
       });
       
-      let fundings = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FUNDINGBODIES' ORDER BY Description";
+      let fundings = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDINGBODIES' ORDER BY Description";
       this.listS.getlist(fundings).subscribe(data => {
         this.fundingSources = data;
         this.loading = false;
       });
       
-      let progcor = "SELECT Description FROM DataDomains WHERE Domain = 'CASE MANAGERS' ORDER BY Description";
+      let progcor = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'CASE MANAGERS' ORDER BY Description";
       this.listS.getlist(progcor).subscribe(data => {
         this.programCordinates = data;
       });
       
-      let target = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'CDCTARGETGROUPS' ORDER BY Description";
+      let target = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'CDCTARGETGROUPS' ORDER BY Description";
       
       this.listS.getlist(target).subscribe(data => {
         this.targetGroups = data;
@@ -803,7 +803,7 @@ export class ProgramPackagesComponent implements OnInit {
         this.loading = false;
       });
       
-      let comp = "SELECT Description as name FROM Datadomains WHERE Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+      let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
         this.loading = false;

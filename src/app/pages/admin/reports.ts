@@ -12151,7 +12151,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         fQuery = fQuery + "WHERE ([Carer Code] > '!MULTIPLE')  And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 9 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6)) And [Client Code] <> '!MULTIPLE' AND ([Service Type] <> 'CONTRIBUTION') "
 
-        var Title = "STAFF RECIPIENT REPORT -SUMMARY";
+        var Title = "STAFF RECIPIENT REPORT";
         var Report_Definer = "";
 
         if (branch != "") {
@@ -12958,7 +12958,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         fQuery = fQuery + " WHERE ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION')";
 
-        var Title = "STAFF PROGRAM PAYTYPE -SUMMARY";
+        var Title = "STAFF PROGRAM PAYTYPE";
         var Report_Definer = "";
 
         if (branch != "") {

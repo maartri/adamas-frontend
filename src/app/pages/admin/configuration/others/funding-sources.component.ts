@@ -138,10 +138,10 @@ export class FundingSourcesComponent implements OnInit {
         
         this.postLoading  = true;   
         const group       = this.inputForm;
-        let name         =  this.globalS.isValueNull(group.get('name').value);
-        let glrevnue     =  this.globalS.isValueNull(group.get('glrevnue').value);
-        let glcost       =  this.globalS.isValueNull(group.get('glcost').value);
-        let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let name          =  this.globalS.isValueNull(group.get('name').value);
+        let glrevnue      =  this.globalS.isValueNull(group.get('glrevnue').value);
+        let glcost        =  this.globalS.isValueNull(group.get('glcost').value);
+        let end_date      =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
        
         
 

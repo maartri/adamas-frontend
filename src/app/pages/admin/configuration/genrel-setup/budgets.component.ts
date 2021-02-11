@@ -15,6 +15,9 @@ import { takeUntil } from 'rxjs/operators';
   nz-divider{
     margin:5px !important;
   },
+  nz-select{
+    width:100%;
+  },
   .ant-select-selection--single{
     height:24px
   }
@@ -37,6 +40,11 @@ export class BudgetsComponent implements OnInit {
   fundingRegion:Array<any>;
   fundingTypes:Array<any>;
   programz:Array<any>;
+  programz1:Array<any>;
+  programz2:Array<any>;
+  programz3:Array<any>;
+  hACCType:Array<any>;
+  output:Array<any>;
   budgetGroup:Array<any>;
   diciplines:Array<any>;
   groupAgency:Array<any>;
@@ -72,55 +80,76 @@ export class BudgetsComponent implements OnInit {
       this.listS.getlistbranches().subscribe(data => this.branches = data);
       this.listS.getcaredomain().subscribe(data => this.caredomain = data);
       this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
-      // this.listS.getstaffcategory().subscribe(data=>this.staffCategory=data);
       
-      let funding = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDREGION' ORDER BY Description";
+      
+      let funding = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDREGION' ORDER BY Description";
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
         this.loading = false;
       });
-      let sc = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
+      let sc = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(sc).subscribe(data => {
         this.staffCategory = data;
         this.loading = false;
       });
-      let fundingt = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDINGBODIES' ORDER BY Description";
+      
+      let fundingt = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDINGBODIES' ORDER BY Description";
       this.listS.getlist(fundingt).subscribe(data => {
         this.fundingTypes = data;
         this.loading = false;
       });
-      let prog = "SELECT [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
+      let prog = "SELECT Distinct [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
       this.listS.getlist(prog).subscribe(data => {
         this.programz = data;
       });
-      let bgroup = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
+      //new 
+      let prog1 = "SELECT Distinct Address1 AS AgencyID FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
+      this.listS.getlist(prog1).subscribe(data => {
+        this.programz1 = data;
+      });
+      let prog2 = "SELECT DISTINCT UPPER(FAX) FROM HumanResourceTypes WHERE [Group] = 'PROGRAMS'";
+      this.listS.getlist(prog2).subscribe(data => {
+        this.programz2 = data;
+      });
+
+      let outp = "SELECT Distinct Title from ITEMTYPES WHERE ProcessClassification = 'OUTPUT'";
+      this.listS.getlist(outp).subscribe(data => {
+        this.output = data;
+      });
+      let hACType = "select Distinct HACCType from ITEMTYPES WHERE ProcessClassification = 'OUTPUT'";
+      this.listS.getlist(hACType).subscribe(data => {
+        this.hACCType = data;
+      });
+      
+      //end new
+      let bgroup = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(bgroup).subscribe(data => {
         this.budgetGroup = data;
       });
-      let dicip = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
+      let dicip = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
       this.listS.getlist(dicip).subscribe(data => {
         this.diciplines = data;
       });
-      let gagency = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
+      let gagency = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
       this.listS.getlist(gagency).subscribe(data => {
         this.groupAgency = data;
       });
       
-      let staf = "SELECT ACCOUNTNO as name FROM STAFF WHERE CommencementDate IS NOT NULL AND TerminationDate IS NULL AND ACCOUNTNO > '!Z'";
+      let staf = "SELECT Distinct ACCOUNTNO as name FROM STAFF WHERE CommencementDate IS NOT NULL AND TerminationDate IS NULL AND ACCOUNTNO > '!Z'";
       this.listS.getlist(staf).subscribe(data => {
         this.staff = data;
       });
-      let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
+      let reci = "SELECT Distinct ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
       this.listS.getlist(reci).subscribe(data => {
         this.recepient = data;
       });
-      let progcor = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'CASE MANAGERS'";
+      let progcor = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'CASE MANAGERS'";
       this.listS.getlist(progcor).subscribe(data => {
         this.programCordinates = data;
       });
     }
     loadData(){
-      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description, Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,undated from Budgets ORDER BY [recordNumber] desc";
+      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description, Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,undated from Budgets WHERE ISNULL(Budgets.DeletedRecord, 0) = 0 ORDER BY [recordNumber] desc";
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data
         console.log(this.tableData);

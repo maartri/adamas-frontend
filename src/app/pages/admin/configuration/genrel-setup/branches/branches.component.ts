@@ -60,7 +60,7 @@ export class BranchesComponent implements OnInit {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();      
       this.loadBranches();
-      this.workStartHour = ["00:15","00:30","00:45","01:00","01:15","01:30","01:45","2:00","02:15","02:30","02:45","03:00","03:15","03:30","03:45","04:00","04:15","04:30","04:45","05:00","06:15","06:30","06:45","07:00","07:00","07:15","07:30","07:45","08:00","08:15","08:30","08:45","09:00","09:15","09:30","09:45","10:00","10:15","10:30","10:45","11:00","11:15","11:30","11:45","12:00","13:15","13:30","13:45","14:00","14:15","14:30","14:45","15:00","15:15","15:30","15:45","16:00","16:15","16:30","16:45","17:00","17:15","17:30","17:45","18:00","18:15","18:30","18:45","18:00","18:15","18:30","18:45","19:00","19:15","19:30","19:45","20:00","20:15","20:30","20:45","21:00","21:15","21:30","21:45","22:00","23:15","23:30","23:45","24:00"];
+      this.workStartHour = ["00:15","00:30","00:45","01:00","01:15","01:30","01:45","02:00","02:15","02:30","02:45","03:00","03:15","03:30","03:45","04:00","04:15","04:30","04:45","05:00","05:15","05:30","05:45","06:00","06:15","06:30","06:45","07:00","07:00","07:15","07:30","07:45","08:00","08:15","08:30","08:45","09:00","09:15","09:30","09:45","10:00","10:15","10:30","10:45","11:00","11:15","11:30","11:45","12:00","13:15","13:30","13:45","14:00","14:15","14:30","14:45","15:00","15:15","15:30","15:45","16:00","16:15","16:30","16:45","17:00","17:15","17:30","17:45","18:00","18:15","18:30","18:45","18:00","18:15","18:30","18:45","19:00","19:15","19:30","19:45","20:00","20:15","20:30","20:45","21:00","21:15","21:30","21:45","22:00","23:15","23:30","23:45","24:00"];
     }
     
     showAddModal() {
@@ -146,28 +146,28 @@ export class BranchesComponent implements OnInit {
       if(!this.isUpdate){
         const group = this.inputForm;
         this.menuS.AddBranch({
-          name: group.get('name').value,
-          glRevene: group.get('glRevene').value,
-          glCost: group.get('glCost').value,
-          centerName: group.get('centerName').value,
-          addrLine1: group.get('addrLine1').value,
-          addrLine2: group.get('addrLine2').value,
-          Phone: group.get('Phone').value,
-          startHour: group.get('startHour').value,
-          finishHour: group.get('finishHour').value,
-          earlyStart: group.get('earlyStart').value,
-          lateStart: group.get('lateStart').value,
-          earlyFinish: group.get('earlyFinish').value,
-          lateFinish : group.get('lateFinish').value,
-          overstay: group.get('overstay').value,
-          understay: group.get('understay').value,
-          t2earlyStart: group.get('t2earlyStart').value,
-          t2lateStart: group.get('t2lateStart').value,
-          t2earlyFinish: group.get('t2earlyFinish').value,
-          t2lateFinish: group.get('t2lateFinish').value,
-          t2overstay: group.get('t2overstay').value,
-          t2understay: group.get('t2understay').value,
-          recordNumber: group.get('recordNumber').value
+          name: this.globalS.isValueNull(group.get('name').value),
+          glRevene: this.globalS.isValueNull(group.get('glRevene').value),
+          glCost: this.globalS.isValueNull(group.get('glCost').value),
+          centerName: this.globalS.isValueNull(group.get('centerName').value),
+          addrLine1: this.globalS.isValueNull(group.get('addrLine1').value),
+          addrLine2: this.globalS.isValueNull(group.get('addrLine2').value),
+          Phone: this.globalS.isValueNull(group.get('Phone').value),
+          startHour: this.globalS.isValueNull(group.get('startHour').value),
+          finishHour: this.globalS.isValueNull(group.get('finishHour').value),
+          earlyStart: this.globalS.isValueNull(group.get('earlyStart').value),
+          lateStart: this.globalS.isValueNull(group.get('lateStart').value),
+          earlyFinish: this.globalS.isValueNull(group.get('earlyFinish').value),
+          lateFinish : this.globalS.isValueNull(group.get('lateFinish').value),
+          overstay: this.globalS.isValueNull(group.get('overstay').value),
+          understay: this.globalS.isValueNull(group.get('understay').value),
+          t2earlyStart: this.globalS.isValueNull(group.get('t2earlyStart').value),
+          t2lateStart: this.globalS.isValueNull(group.get('t2lateStart').value),
+          t2earlyFinish: this.globalS.isValueNull(group.get('t2earlyFinish').value),
+          t2lateFinish: this.globalS.isValueNull(group.get('t2lateFinish').value),
+          t2overstay: this.globalS.isValueNull(group.get('t2overstay').value),
+          t2understay: this.globalS.isValueNull(group.get('t2understay').value),
+          recordNumber: group.get('recordNumber').value,
         }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     

@@ -57,7 +57,7 @@ export class TargetgroupsComponent implements OnInit {
       this.cd.detectChanges();
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='CDCTARGETGROUPS' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber,DeletedRecord as is_deleted from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='CDCTARGETGROUPS' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;

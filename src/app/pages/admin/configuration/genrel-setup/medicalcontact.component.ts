@@ -81,7 +81,7 @@ export class MedicalcontactComponent implements OnInit {
       this.medicaltype = ['GP','GENERAL PRACTITIONER'];
       
       
-      let sql ="SELECT * FROM HumanResourceTypes WHERE [Group] like '3-Medical'";
+      let sql ="SELECT * FROM HumanResourceTypes Where ISNULL(HumanResourceTypes.DeletedRecord, 0) = 0 AND [Group] like '3-Medical'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -234,7 +234,7 @@ export class MedicalcontactComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,[EndDate] as Field7 from HumanResourceTypes  WHERE [Group] like '3-Medical'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,[EndDate] as Field7 from HumanResourceTypes  Where ISNULL(HumanResourceTypes.DeletedRecord, 0) = 0 AND [Group] like '3-Medical'";
       
       const headerDict = {
         'Content-Type': 'application/json',

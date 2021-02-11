@@ -163,7 +163,7 @@ export class ClaimratesComponent implements OnInit {
           } 
         }
         loadData(){
-          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,User1 as rate,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='PACKAGERATES'";
+          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,User1 as rate,recordNumber,DeletedRecord as is_deleted from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='PACKAGERATES'";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;

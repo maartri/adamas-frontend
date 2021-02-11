@@ -63,7 +63,7 @@ export class DistributionlistComponent implements OnInit {
       this.cd.detectChanges();
     }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity FROM IM_DistributionLists order by recipient";
+      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity FROM IM_DistributionLists WHERE ISNULL(IM_DistributionLists.DeletedRecord, 0) = 0 order by recipient";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -279,7 +279,7 @@ export class DistributionlistComponent implements OnInit {
       
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY RecordNo) AS Field1," +
       "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-      "ListName as  Field7,Severity as Field8 FROM IM_DistributionLists order by recipient";
+      "ListName as  Field7,Severity as Field8 FROM IM_DistributionLists WHERE ISNULL(IM_DistributionLists.DeletedRecord, 0) = 0 order by recipient";
       
       const headerDict = {
         'Content-Type': 'application/json',

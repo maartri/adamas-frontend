@@ -137,7 +137,7 @@ export class NursingDignosisComponent implements OnInit {
       }
     }
       loadData(){
-          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Recordno, Description,ICDCode,Code FROM NDiagnosisTypes  ORDER BY Description";
+          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Recordno, Description,ICDCode,Code FROM NDiagnosisTypes Where ISNULL(NDiagnosisTypes.DeletedRecord, 0) = 0 ORDER BY Description";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
@@ -178,7 +178,7 @@ export class NursingDignosisComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,Description as Field2,Code as Field3,ICDCode as Field4 FROM NDiagnosisTypes  ORDER BY Description";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,Description as Field2,Code as Field3,ICDCode as Field4 FROM  NDiagnosisTypes Where ISNULL(NDiagnosisTypes.DeletedRecord, 0) = 0 ORDER BY Description";
       
       const headerDict = {
         'Content-Type': 'application/json',

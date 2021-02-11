@@ -8,6 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MenuService } from '@services/index';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
@@ -18,6 +19,7 @@ import { NzModalService } from 'ng-zorro-antd';
 
 export class FundingRegionsComponent implements OnInit {
 
+  
   tableData: Array<any>;
   fundinglist: Array<any>;
   loading: boolean = false;
@@ -26,6 +28,7 @@ export class FundingRegionsComponent implements OnInit {
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
+  check : boolean = false;
   modalVariables: any;
   inputVariables:any;
   title:string = "Add Funding Regions";
@@ -33,6 +36,8 @@ export class FundingRegionsComponent implements OnInit {
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
 
@@ -52,6 +57,8 @@ export class FundingRegionsComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
+      console.log(this.userRole);
       this.buildForm();
       this.loadData();
       this.loading = false;
@@ -61,8 +68,23 @@ export class FundingRegionsComponent implements OnInit {
     {
       return this.title;
     }
+    trueString(data: any): string{
+      return data ? '1': '0';
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        console.log("true");
+        this.loadData();
+      }else{
+        console.log("false");
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+        this.loadData();
+      }
+    }
+
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber,DeletedRecord as is_deleted from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='FUNDREGION'";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='FUNDREGION'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -186,7 +208,7 @@ export class FundingRegionsComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='FUNDREGION' AND ISNULL(DataDomains.DeletedRecord, 0) = 0";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains "+this.whereString+" Domain='FUNDREGION' AND ISNULL(DataDomains.DeletedRecord, 0) = 0";
           
           const headerDict = {
             'Content-Type': 'application/json',

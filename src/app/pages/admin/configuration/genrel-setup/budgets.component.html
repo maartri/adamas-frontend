@@ -66,7 +66,7 @@
                     </div>
                     <div nz-row nzJustify>
                     <div nz-col nzSpan="24" class="mrg-btm">
-                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" [nzSize]="'small'" nzPlaceHolder="type" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" [nzSize]="'small'" nzPlaceHolder="type" nzShowSearch nzAllowClear>
                             <nz-option *ngFor="let typ of types" [nzValue]="typ" [nzLabel]="typ"></nz-option> 
                         </nz-select>
                     </div>
@@ -87,7 +87,7 @@
                             <label for="Name">Branch :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="branch" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="branch" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let branch of branches" [nzLabel]="branch" [nzValue]="branch"></nz-option>
                             </nz-select>
                         </div>
@@ -97,7 +97,7 @@
                             <label for="Name">Care Domain :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="care" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="care" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let domain of caredomain" [nzLabel]="domain" [nzValue]="domain"></nz-option>
                             </nz-select>
                         </div>
@@ -107,8 +107,8 @@
                             <label for="Name">Cost Center :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="cost" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                <nz-option *ngFor="let domain of caredomain" [nzLabel]="domain" [nzValue]="domain"></nz-option>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="cost" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
                             </nz-select>
                         </div>
                     </div>
@@ -117,8 +117,8 @@
                             <label for="Name">DS Outlet :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="outlet" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                <nz-option *ngFor="let domain of caredomain" [nzLabel]="domain" [nzValue]="domain"></nz-option>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="outlet" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
                             </nz-select>
                         </div>
                     </div>
@@ -127,7 +127,7 @@
                             <label for="Name">Funding Region :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ftype" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ftype" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let funding of fundingRegion" [nzLabel]="funding.description" [nzValue]="funding.description"></nz-option>
                             </nz-select>
                         </div>
@@ -137,7 +137,7 @@
                             <label for="Name">Funding Type :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="region" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="region" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let fundt of fundingTypes" [nzLabel]="fundt.description" [nzValue]="fundt.description"></nz-option>
                             </nz-select>
                         </div>
@@ -147,7 +147,7 @@
                             <label for="Name">Program :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="prgrm" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="prgrm" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let prog of programz" [nzLabel]="prog.name" [nzValue]="prog.name"></nz-option>
                             </nz-select>
                         </div>
@@ -157,7 +157,7 @@
                             <label for="Name">Service Budget Code :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="bcode" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="bcode" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let bgroup of budgetGroup" [nzLabel]="bgroup.description" [nzValue]="bgroup.description"></nz-option>
                             </nz-select>
                         </div>
@@ -167,7 +167,7 @@
                             <label for="Name">Service Dicipline :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="dicipline" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="dicipline" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let dicip of diciplines" [nzLabel]="dicip.description" [nzValue]="dicip.description"></nz-option>
                             </nz-select>
                         </div>
@@ -177,7 +177,7 @@
                             <label for="Name">Service Region :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="sregion" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="sregion" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let gagency of groupAgency" [nzLabel]="gagency.description" [nzValue]="gagency.description"></nz-option>
                             </nz-select>
                         </div>
@@ -187,7 +187,7 @@
                             <label for="Name">Service Type MDS :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="mds" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="mds" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
                             </nz-select>
                         </div>
@@ -197,7 +197,7 @@
                             <label for="Name">Service Type TRACCS :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="tracss" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="tracss" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
                             </nz-select>
                         </div>
@@ -207,7 +207,7 @@
                             <label for="Name">SPID :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="spid" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="spid" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
                             </nz-select>
                         </div>
@@ -217,7 +217,7 @@
                             <label for="Name">State :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let state of states" [nzValue]="state" [nzLabel]="state"></nz-option> 
                             </nz-select>
                         </div>
@@ -227,7 +227,7 @@
                             <label for="Name">Staff Team :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="team" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="team" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let steam of staffTeams" [nzValue]="steam" [nzLabel]="steam"></nz-option>
                             </nz-select>
                         </div>
@@ -237,7 +237,7 @@
                             <label for="Name">Staff Category :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="cat" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="cat" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let scategory of staffCategory" [nzValue]="scategory.description" [nzLabel]="scategory.description"></nz-option> 
                             </nz-select>
                         </div>
@@ -247,7 +247,7 @@
                             <label for="Name">Staff :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="staff" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="staff" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let staf of staff" [nzValue]="staf.name" [nzLabel]="staf.name"></nz-option> 
                             </nz-select>
                         </div>
@@ -257,17 +257,17 @@
                             <label for="Name">Recipient :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="recepient" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="recepient" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let reci of recepient" [nzValue]="reci.name" [nzLabel]="reci.name"></nz-option> 
                             </nz-select>
                         </div>
                     </div>
                     <div nz-row nzJustify>
                         <div nz-col nzSpan="8" class="text-right  pad-r-5">
-                            <label for="Name">Recipient :</label>
+                            <label for="Name">coordinator :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="coordinator" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="coordinator" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let progcord of programCordinates" [nzValue]="progcord.description" [nzLabel]="progcord.description"></nz-option>  
                             </nz-select>
                         </div>
@@ -276,7 +276,7 @@
                     <div nz-col nzSpan="24">
                         <div nz-col nzSpan="8">
                             <label>Annual Budget</label>
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="hours" nzPlaceHolder="HOURS" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="hours" nzPlaceHolder="HOURS" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let hour of budgetTypes" [nzValue]="hour" [nzLabel]="hour"></nz-option> 
                             </nz-select>
                         </div>

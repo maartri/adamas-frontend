@@ -143,7 +143,7 @@ export class MedicalProceduresComponent implements OnInit {
       }    
       }
       loadData(){
-          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, RecordNumber, Description, Code,ICDCode FROM MProcedureTypes where RecordNumber > 6300 ORDER BY RecordNumber desc";
+          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, RecordNumber, Description, Code,ICDCode FROM MProcedureTypes Where ISNULL(MProcedureTypes.DeletedRecord, 0) = 0 AND RecordNumber > 6300 ORDER BY RecordNumber desc";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
@@ -186,7 +186,7 @@ export class MedicalProceduresComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Code as Field3,ICDCode as Field4 FROM MProcedureTypes where RecordNumber > 6300 ORDER BY RecordNumber desc";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Code as Field3,ICDCode as Field4 FROM MProcedureTypes Where ISNULL(MProcedureTypes.DeletedRecord, 0) = 0 AND RecordNumber > 6300 ORDER BY RecordNumber desc";
       
       const headerDict = {
         'Content-Type': 'application/json',

@@ -34,8 +34,11 @@ export class MedicalcontactComponent implements OnInit {
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
-  drawerVisible: boolean =  false;
-
+  drawerVisible: boolean =  false;  
+check : boolean = false;
+userRole:string="userrole";
+whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+  
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -47,7 +50,7 @@ export class MedicalcontactComponent implements OnInit {
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
-  ){}
+    ){}
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
@@ -57,8 +60,30 @@ export class MedicalcontactComponent implements OnInit {
       this.loadData();
       this.cd.detectChanges();
     }
-    loadTitle(){
-      return this.title;
+    loadTitle()
+    {
+      return this.title
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
@@ -147,18 +172,18 @@ export class MedicalcontactComponent implements OnInit {
       
       if(!this.isUpdate){       
         const group = this.inputForm;
-      let type     = group.get('type').value;
-      let name     = group.get('name').value;
-      let address1 = group.get('address1').value;
-      let address2 = group.get('address2').value;
-      let suburb   = group.get('suburb').value;
-      let phone1   = group.get('phone1').value;
-      let phone2   = group.get('phone2').value;
-      let fax      = group.get('fax').value;
-      let mobile   = group.get('mobile').value;
-      let email    = group.get('email').value;
-      let date     = group.get('date').value;
-      let postcode = ''; 
+        let type     = group.get('type').value;
+        let name     = group.get('name').value;
+        let address1 = group.get('address1').value;
+        let address2 = group.get('address2').value;
+        let suburb   = group.get('suburb').value;
+        let phone1   = group.get('phone1').value;
+        let phone2   = group.get('phone2').value;
+        let fax      = group.get('fax').value;
+        let mobile   = group.get('mobile').value;
+        let email    = group.get('email').value;
+        let date     = group.get('date').value;
+        let postcode = ''; 
         let values = "3-Medical"+"','"+type+"','"+name+"','"+address1+"','"+address2+"','"+suburb+"','"+postcode+"','"+phone1+"','"+phone2+"','"+fax+"','"+mobile+"','"+email+"','"+'2020-11-18';
         let sql = "insert into HumanResourceTypes([Group],[Type],[Name],[Address1],[Address2],Suburb, Postcode,Phone1,Phone2,Fax,Mobile,email,EndDate) Values ('"+values+"')";
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
@@ -191,12 +216,12 @@ export class MedicalcontactComponent implements OnInit {
         let sql  = "Update HumanResourceTypes SET [Group]='3-Medical',[Type] = '"+ type+ "',[Name] = '"+ name+ "',[Address1] = '"+ address1+ "',[Address2] = '"+ address2+ "',[Suburb] = '"+ suburb+ "',[Postcode] = '"+ postcode+ "',[Phone1] = '"+ phone1+ "',[Phone2] = '"+ phone2+ "',[Fax] = '"+ fax+ "',[Mobile] = '"+ mobile + "',[EMail] = '"+ '' + "',[EndDate] = '"+ '' + "' WHERE [RecordNumber] ='"+recordnumber+"'";
         console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-
+          
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
           this.globalS.sToast('Success', 'Saved successful');
-
+          
           this.postLoading = false;      
           this.loadData();
           this.handleCancel();
@@ -205,7 +230,7 @@ export class MedicalcontactComponent implements OnInit {
         });
         console.log(group.get('recordNumber').value);
         
-     
+        
       }
     }
     delete(data: any) {
@@ -240,11 +265,11 @@ export class MedicalcontactComponent implements OnInit {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
-     
+      
       const requestOptions = {
         headers: new HttpHeaders(headerDict)
       };
-     
+      
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {

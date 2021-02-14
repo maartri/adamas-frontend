@@ -87,12 +87,19 @@ export class MenuService {
         InsertRecord(sqlString: string): Observable<any>{
             return this.auth.post(`${menu}/insertSql-list`, { Sql: sqlString})
         }
+        getDataDomainByType(domain: string, is_where:boolean):Observable<any>{
+            return this.auth.get(`${menu}/getDomains/{domain}/{is_where}`)
+        }
         InsertDomain(sqlString: string): Observable<any>{
             return this.auth.post(`${menu}/addDomain`, { Sql: sqlString})
         }
         deleteDomain(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/datadomains/${recordNo}`)
         }
+        activeDomain(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/datadomains/${recordNo}`)
+        }
+        
         deleteDistributionlist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/distribution/${recordNo}`)
         }

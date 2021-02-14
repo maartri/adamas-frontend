@@ -40,7 +40,10 @@ export class DistributionlistComponent implements OnInit {
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
-  drawerVisible: boolean =  false;
+  drawerVisible: boolean =  false;  
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(IM_DistributionLists.DeletedRecord, 0) = 0";
   
   constructor(
     private globalS: GlobalService,
@@ -63,7 +66,7 @@ export class DistributionlistComponent implements OnInit {
       this.cd.detectChanges();
     }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity FROM IM_DistributionLists WHERE ISNULL(IM_DistributionLists.DeletedRecord, 0) = 0 order by recipient";
+      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,DeletedRecord as is_deleted from IM_DistributionLists "+this.whereString+" order by recipient";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -165,8 +168,30 @@ export class DistributionlistComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    loadtitle(){
-      return this.heading
+    loadTitle()
+    {
+      return this.heading;
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
     }
     handleCancel() {
       this.modalOpen = false;
@@ -279,7 +304,7 @@ export class DistributionlistComponent implements OnInit {
       
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY RecordNo) AS Field1," +
       "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-      "ListName as  Field7,Severity as Field8 FROM IM_DistributionLists WHERE ISNULL(IM_DistributionLists.DeletedRecord, 0) = 0 order by recipient";
+      "ListName as  Field7,Severity as Field8 ,DeletedRecord as is_deleted from IM_DistributionLists "+this.whereString+" order by recipient";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -327,8 +352,6 @@ export class DistributionlistComponent implements OnInit {
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";
-    }
-    
-    
+    }    
   }
   

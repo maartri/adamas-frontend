@@ -41,7 +41,10 @@ export class ClaimratesComponent implements OnInit {
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
-  drawerVisible: boolean =  false;
+  drawerVisible: boolean =  false;  
+check : boolean = false;
+userRole:string="userrole";
+whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -71,7 +74,28 @@ export class ClaimratesComponent implements OnInit {
     }
     loadTitle()
     {
-      return this.title;
+      return this.title
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
     }
     resetModal() {
       this.current = 0;
@@ -163,7 +187,7 @@ export class ClaimratesComponent implements OnInit {
           } 
         }
         loadData(){
-          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,User1 as rate,recordNumber,DeletedRecord as is_deleted from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='PACKAGERATES'";
+          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,User1 as rate,recordNumber,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='PACKAGERATES'";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
             this.tableData = data;
@@ -187,17 +211,17 @@ export class ClaimratesComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,recordNumber as Field4 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='PACKAGERATES'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,recordNumber as Field4,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='PACKAGERATES'";
           
           const headerDict = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           }
-         
+          
           const requestOptions = {
             headers: new HttpHeaders(headerDict)
           };
-         
+          
           const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -231,7 +255,7 @@ export class ClaimratesComponent implements OnInit {
           this.tryDoctype = "";
           this.pdfTitle = "";
         }
-
+        
         buildForm() {
           this.inputForm = this.formBuilder.group({
             item: '',

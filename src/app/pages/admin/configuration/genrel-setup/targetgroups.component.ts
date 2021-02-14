@@ -34,8 +34,11 @@ export class TargetgroupsComponent implements OnInit {
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
-  drawerVisible: boolean =  false;
-
+  drawerVisible: boolean =  false;  
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+  
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -47,7 +50,7 @@ export class TargetgroupsComponent implements OnInit {
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
-  ){}
+    ){}
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
@@ -57,15 +60,37 @@ export class TargetgroupsComponent implements OnInit {
       this.cd.detectChanges();
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber,DeletedRecord as is_deleted from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='CDCTARGETGROUPS' ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber,,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='CDCTARGETGROUPS' ";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });
     }
-    loadTitle(){
+    loadTitle()
+    {
       return this.title
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
     }
     showAddModal() {
       this.resetModal();
@@ -184,20 +209,16 @@ export class TargetgroupsComponent implements OnInit {
         }
         generatePdf(){
           this.drawerVisible = true;
-          
           this.loading = true;
-          
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='CDCTARGETGROUPS'";
-          
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 ,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='CDCTARGETGROUPS'";
           const headerDict = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           }
-         
           const requestOptions = {
             headers: new HttpHeaders(headerDict)
           };
-         
+          
           const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -230,6 +251,6 @@ export class TargetgroupsComponent implements OnInit {
           this.tryDoctype = "";
           this.pdfTitle = "";
         }
-      
+        
       }
       

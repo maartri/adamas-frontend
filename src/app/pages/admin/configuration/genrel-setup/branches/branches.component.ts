@@ -41,7 +41,10 @@ export class BranchesComponent implements OnInit {
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
-  drawerVisible: boolean =  false;
+  drawerVisible: boolean =  false;  
+check : boolean = false;
+userRole:string="userrole";
+whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
   constructor(
     private globalS: GlobalService,
     private listS: ListService,    

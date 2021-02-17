@@ -525,12 +525,12 @@
                                                 Program Billing Report
                                                 </button>
                                         </div>
-                                       <!-- <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" disabled >
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-BUDGE-Recpientbudgetaudit" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Program Recipient Budget(IND PKG)
                                                 </button>
-                                        </div> -->
+                                        </div> 
                                         <div>
                                             <button nz-button nzType="default" id="btn-BudgetAuditReport" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
@@ -776,6 +776,7 @@
             
         </div>
         <div>
+
             
             
             <nz-modal
@@ -1535,6 +1536,65 @@
                
                 
               </nz-modal>
+        </div>
+        <div>
+            <nz-modal
+                nzWidth="600px"
+                [nzStyle]="{ top: '20px' }"
+                [(nzVisible)]="isVisiblebudget"
+                nzTitle="Budget Report Criteria"
+                (nzOnCancel)="handleCancelTop()"
+                (nzOnOk)="handleOkTop()"
+            >
+            <div [formGroup]="inputForm">
+            <div nz-row> 
+                <div nz-col nzSpan="20">
+                   
+                    <label  >Month and Year to Report on: </label>
+                    
+                    <nz-select formControlName="monthArr" class="budget_rpt_select"  >
+                        <nz-option *ngFor="let option of monthArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                    </nz-select>
+                    <nz-select formControlName="yearArr" class="budget_rpt_select" >
+                        <nz-option *ngFor="let option of yearArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                    </nz-select>
+
+                 </div>
+            </div>
+                <div nz-row>
+                <div nz-col nzSpan="20">
+                   
+                    <label   >Budget year end Month: </label>
+                    <nz-select formControlName="FYEnd_MonthArr" class="budget_rpt_select" >
+                        <nz-option *ngFor="let option of FYEnd_MonthArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                    </nz-select>
+                    <nz-select formControlName="FYArr" class="budget_rpt_select" >
+                        <nz-option *ngFor="let option of FYArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-row> 
+                <div nz-col nzSpan="20"> 
+                    &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="incl_unapproved_services"  >Include UNAPPROVED services in actuals calculation</label>
+                    &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="incl_actuals"  >include Allowance in Actuals Calculations</label>
+                    &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="Incl_inactive"  >Include Inactive Recipients</label>
+                </div>
+            </div>
+            <div>
+                <div nz-row>                             
+                    <div nz-col nzSpan="20">
+                        <div class="form-group">
+                            <label><i nz-icon nzType="solution" nzTheme="outline"></i> Programs </label>
+                            <label class="checks" nz-checkbox formControlName="allPrograms">All Programs</label>
+                            <nz-select formControlName="programsArr" nzMode="multiple" [nzDisabled]="inputForm.value.allPrograms">
+                                <nz-option *ngFor="let option of programsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
+                            </nz-select>                                    
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+            </nz-modal>
         </div>
         
     </div>

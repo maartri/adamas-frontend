@@ -290,7 +290,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     //Modals visibility
     isVisibleTop = false;
     FOReports = false;
-    isVisiblebudget = false;
+    budgetvisible = false;
     loading: boolean = false;
     tabset = false;
     showtabother = false;
@@ -1655,13 +1655,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-FORPT-':
                 this.FOReports = true;
+                break;
             case 'btn-BUDGE-':
                 this.yearrange();
-                this.isVisiblebudget = true;
+                this.budgetvisible = true;
 
-                break; //
+                break; 
             default:
-                this.isVisibleTop = true;
+            //    this.isVisibleTop = true;
         }
 
 
@@ -1737,7 +1738,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         //    console.log(this.inputForm.value)
 
         this.isVisibleTop = false;
-        this.isVisiblebudget = false;
+        this.budgetvisible = false;
         //   this.inputForm.reset(inputFormDefault);            
 
         this.reportRender(this.btnid);
@@ -1752,7 +1753,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     handleCancelTop(): void {
         this.isVisibleTop = false;
         this.drawerVisible = false;
-        this.isVisiblebudget = false;
+        this.budgetvisible = false;
         this.pdfTitle = ""
         this.inputForm.reset(inputFormDefault);
     }

@@ -29,7 +29,11 @@ export class MedicalDignosisComponent implements OnInit {
     tocken: any;
     pdfTitle: string;
     tryDoctype: any;
-    drawerVisible: boolean =  false;
+      drawerVisible: boolean =  false;   
+  dateFormat: string ='dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="WHERE ISNULL(DataDomains.DeletedRecord) AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
     private unsubscribe: Subject<void> = new Subject();
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   
@@ -47,6 +51,7 @@ export class MedicalDignosisComponent implements OnInit {
     ){}
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.items = ["Leprosy","Other Form of Leprosy","Bordline"]
       this.loadData();
@@ -107,6 +112,7 @@ export class MedicalDignosisComponent implements OnInit {
         let name             = group.get('name').value;
         let icdcode          = group.get('icdcode').value;
         let usercode         = group.get('usercode').value;
+        let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let values           = name+"','"+icdcode+"','"+usercode;
         let sql              = "insert into MDiagnosisTypes([Description],[ICDCode],[Code]) Values ('"+values+"')"; 
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
@@ -125,6 +131,7 @@ export class MedicalDignosisComponent implements OnInit {
         let name             = (group.get('name').value) ? group.get('name').value.toUpperCase() : null;
         let icdcode          = group.get('icdcode').value;
         let usercode         = group.get('usercode').value; 
+        let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let recordNumber     = group.get('recordNumber').value;
         let sql  = "Update MDiagnosisTypes SET [Description]='"+ name + "',[ICDCode] = '"+ icdcode + "',[Code] = '"+ usercode + "' WHERE [RecordNumber] ='"+recordNumber+"'";
         console.log(sql);

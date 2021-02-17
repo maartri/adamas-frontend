@@ -2,23 +2,32 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus"></i> Add Program Coordinates </button>
+        <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
         <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
                     <th class="left">Staff Code</th>
                     <th class="left">Name</th>
+                    <th class="left">End Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                <td class="left">{{ data.code  }} </td>
+                <td class="left">{{ data.staff  }} </td>
                 <td class="left">{{ data.name  }} </td>
-                <td class="left"><a (click)="showEditModal(i)">Update</a>
+                <td class="left">{{ data.end_date | date: 'dd/MM/y' }} </td>
+                <td *ngIf="!data.is_deleted">
+                    <a (click)="showEditModal(i)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Programe Coordinate List ?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Program Coordinates List?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                </td>
+                <td *ngIf="data.is_deleted">
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to Include this from Program Coordinates List?"
+                    nzPopconfirmPlacement="bottom" (click)="activateDomain(data)">Activate</a>
+                </td>
                 </tr>
             </tbody>
         </nz-table>
@@ -36,12 +45,16 @@
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <label for="CDC Item">Staff Code:</label>
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="code" nzShowSearch nzAllowClear style="width:100%;">
-                    <nz-option *ngFor="let staf of staff" [nzValue]="staf.accountno" [nzLabel]="staf.accountno"></nz-option> 
+                    <nz-option *ngFor="let staf of staff" [nzValue]="staf.name" [nzLabel]="staf.name"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-row nzGutter="24" class="mrg-btm">
                         <label for="Title">Name/Title:</label>
                         <input nz-input placeholder=""  formControlName="name" />
+                </div>
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    <label for="End Date">Expiry Date:</label>
+                    <nz-date-picker [nzPlaceHolder]="'Expiry Date'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
                 </div>
             </div>
         </div>

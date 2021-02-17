@@ -87,8 +87,8 @@ export class MenuService {
         InsertRecord(sqlString: string): Observable<any>{
             return this.auth.post(`${menu}/insertSql-list`, { Sql: sqlString})
         }
-        getDataDomainByType(domain: string, is_where:boolean):Observable<any>{
-            return this.auth.get(`${menu}/getDomains/{domain}/{is_where}`)
+        getDataDomainByType(domain: string,is_where:boolean):Observable<any>{
+            return this.auth.get(`${menu}/getDomains/${domain}/${is_where}`)
         }
         InsertDomain(sqlString: string): Observable<any>{
             return this.auth.post(`${menu}/addDomain`, { Sql: sqlString})

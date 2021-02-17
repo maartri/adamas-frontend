@@ -26,7 +26,7 @@ export class MedicalcontactComponent implements OnInit {
   postLoading: boolean = false;
   isUpdate: boolean = false;
   title:string = "Add New Medical Contact Details"
-  modalVariables:any;
+  modalVariables: any;
   inputVariables:any;
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report'
@@ -35,9 +35,9 @@ export class MedicalcontactComponent implements OnInit {
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;  
-check : boolean = false;
-userRole:string="userrole";
-whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
   
   constructor(
     private globalS: GlobalService,
@@ -259,7 +259,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,[EndDate] as Field7 from HumanResourceTypes  Where ISNULL(HumanResourceTypes.DeletedRecord, 0) = 0 AND [Group] like '3-Medical'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 from HumanResourceTypes  Where ISNULL(HumanResourceTypes.DeletedRecord, 0) = 0 AND [Group] like '3-Medical'";
       
       const headerDict = {
         'Content-Type': 'application/json',

@@ -16,7 +16,10 @@ import { takeUntil } from 'rxjs/operators';
 export class FundingSourcesComponent implements OnInit {
   
   tableData: Array<any>;
-  dateFormat: string = 'dd/MM/yyyy';
+  dateFormat: string ='dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   loading: boolean = false;
   modalOpen: boolean = false;
   current: number = 0;
@@ -60,6 +63,27 @@ export class FundingSourcesComponent implements OnInit {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
+      });
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
       });
     }
     showAddModal() {
@@ -198,7 +222,7 @@ export class FundingSourcesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,User2 as Field4 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='FUNDINGBODIES'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,User2 as Field4,CONVERT(varchar, [enddate],105) as Field5 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='FUNDINGBODIES'";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -220,6 +244,7 @@ export class FundingSourcesComponent implements OnInit {
           "head2" : "Title",
           "head3" : "GL Revenue A/c",
           "head4" : "Gl Cost A/c",
+          "head5" : "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

@@ -28,7 +28,11 @@ export class ClinicalAlertsComponent implements OnInit {
     tocken: any;
     pdfTitle: string;
     tryDoctype: any;
-    drawerVisible: boolean =  false;
+    drawerVisible: boolean =  false;   
+    dateFormat: string ='dd/MM/yyyy';
+    check : boolean = false;
+    userRole:string="userrole";
+    whereString :string="WHERE ISNULL(DataDomains.DeletedRecord) AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
     private unsubscribe: Subject<void> = new Subject();
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   
@@ -46,6 +50,7 @@ export class ClinicalAlertsComponent implements OnInit {
     ){}
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
       this.loading = false;
@@ -67,17 +72,18 @@ export class ClinicalAlertsComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      // debugger;
       this.title = "Edit Clinical Alerts"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
         const { 
             name,
+            end_date,
             recordNumber,
          } = this.tableData[index];
         this.inputForm.patchValue({
           name: name,
+          end_date:end_date,
           recordNumber:recordNumber,
         });
     }
@@ -93,11 +99,31 @@ export class ClinicalAlertsComponent implements OnInit {
       this.current += 1;
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,recordNumber from DataDomains Where ISNULL(DataDomains .DeletedRecord, 0) = 0 AND  Domain='CLINICALALERT' ";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.getDataDomainByType("CLINICALALERT",this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
+      });
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
       });
     }
     save() {
@@ -110,6 +136,7 @@ export class ClinicalAlertsComponent implements OnInit {
           }, 
           this.inputVariables = {
             display: group.get('name').value,
+            end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             domain: 'CLINICALALERT',         
           }
           ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -131,6 +158,7 @@ export class ClinicalAlertsComponent implements OnInit {
             }, 
             this.inputVariables = {
               display: group.get('name').value,
+              end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
               primaryId:group.get('recordNumber').value,
               domain: 'CLINICALALERT',
             }
@@ -162,6 +190,7 @@ export class ClinicalAlertsComponent implements OnInit {
     buildForm() {
       this.inputForm = this.formBuilder.group({
         name: '',
+        end_date:'',
         recordNumber:null,
       });
     }
@@ -179,7 +208,7 @@ export class ClinicalAlertsComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains Where ISNULL(DataDomains .DeletedRecord, 0) = 0 AND  Domain='CLINICALALERT'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains "+this.whereString+" Domain='CLINICALALERT'";
       
       const headerDict = {
         'Content-Type': 'application/json',

@@ -28,6 +28,7 @@ export class FundingRegionsComponent implements OnInit {
   postLoading: boolean = false;
   isUpdate: boolean = false;
   modalVariables: any;
+  dateFormat: string = 'dd/MM/yyyy';
   inputVariables:any;
   title:string = "Add Funding Regions";
   tocken: any;
@@ -36,7 +37,7 @@ export class FundingRegionsComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   
@@ -68,15 +69,8 @@ export class FundingRegionsComponent implements OnInit {
     }
     
     loadData(){
-      // let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,Description as name,recordNumber,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='FUNDREGION'";
-      // this.loading = true;
-      // this.listS.getlist(sql).subscribe(data => {
-      //   this.tableData = data;
-      //   console.log(this.tableData);
-      //   this.loading = false;
-      // });
       this.loading = true;
-      this.menuS.getDataDomainByType("FUNDREGION",false).subscribe(data => {
+      this.menuS.getDataDomainByType("FUNDREGION",this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });
@@ -99,10 +93,12 @@ export class FundingRegionsComponent implements OnInit {
       this.modalOpen = true;
       const { 
         name,
+        end_date,
         recordNumber
       } = this.tableData[index];
       this.inputForm.patchValue({
-        description: name,
+        description : name,
+        end_date    : end_date,
         recordNumber:recordNumber,
       });
     }
@@ -127,9 +123,9 @@ export class FundingRegionsComponent implements OnInit {
             title: 'Funding Regions'
           }, 
           this.inputVariables = {
-            display: group.get('description').value,
-            domain: 'FUNDREGION',         
-            
+            display : group.get('description').value,
+            end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
+            domain: 'FUNDREGION',
           }
           ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data) 
@@ -151,6 +147,7 @@ export class FundingRegionsComponent implements OnInit {
             this.inputVariables = {
               display: group.get('description').value,
               primaryId:group.get('recordNumber').value,
+              end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
               domain: 'FUNDREGION',
             }
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -159,6 +156,7 @@ export class FundingRegionsComponent implements OnInit {
               else
               this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
+              this.isUpdate = false;
               this.postLoading = false;          
               this.handleCancel();
               this.resetModal();
@@ -183,7 +181,7 @@ export class FundingRegionsComponent implements OnInit {
             this.whereString = "WHERE";
             this.loadData();
           }else{
-            this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+            this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
             this.loadData();
           }
         }
@@ -203,6 +201,7 @@ export class FundingRegionsComponent implements OnInit {
         buildForm() {
           this.inputForm = this.formBuilder.group({
             description: '',
+            end_date: '',
             recordNumber:0,
           });
         }
@@ -220,7 +219,7 @@ export class FundingRegionsComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains "+this.whereString+" Domain='FUNDREGION' AND ISNULL(DataDomains.DeletedRecord, 0) = 0";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='FUNDREGION'";
           
           const headerDict = {
             'Content-Type': 'application/json',
@@ -240,6 +239,7 @@ export class FundingRegionsComponent implements OnInit {
               "userid":this.tocken.user,
               "head1" : "Sr#",
               "head2" : "Name",
+              "head3" : "End Date",
             }
           }
           this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

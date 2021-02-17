@@ -21,6 +21,7 @@ export class ContacttypesComponent implements OnInit {
   loading: boolean = false;
   modalOpen: boolean = false;
   current: number = 0;
+  dateFormat: string ='dd/MM/yyyy';
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
@@ -32,9 +33,9 @@ export class ContacttypesComponent implements OnInit {
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;  
-check : boolean = false;
-userRole:string="userrole";
-whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   
   constructor(
     private globalS: GlobalService,
@@ -51,8 +52,10 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
+      this.populateDropDown();
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -74,14 +77,16 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
       this.current = 0;
       this.modalOpen = true;
       const { 
-        pgroup,
+        staff,
         title,
-        
+        end_date,
+        recordNumber,
       } = this.tableData[index];
       this.inputForm.patchValue({
         title: title,
-        pgroup:pgroup,
-        
+        pgroup:staff,
+        end_date:end_date,
+        recordNumber:recordNumber,
       });
     }
     loadTitle()
@@ -93,7 +98,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -140,14 +145,14 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
     }
     
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,Description as title,HACCCode as pgroup,recordNumber ,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='CONTACTSUBGROUP' ";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.getDataDomainByType("CONTACTSUBGROUP",this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });
-      
-      let sql2 = "select distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'CONTACTGROUP'";
+    }
+    populateDropDown(){
+      let sql2 = "select distinct Description from DataDomains "+this.whereString+" Domain = 'CONTACTGROUP'";
       this.listS.getlist(sql2).subscribe(data => {
         this.contactGroups = data;
         this.loading = false;
@@ -156,6 +161,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
     buildForm() {
       this.inputForm = this.formBuilder.group({
         pgroup:'',
+        end_date:'',
         title:'',
       });
     }
@@ -173,7 +179,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3 from DataDomains "+this.whereString+" Domain='CONTACTSUBGROUP'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3,CONVERT(varchar, [enddate],105) as Field4 from DataDomains "+this.whereString+" Domain='CONTACTSUBGROUP'";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -194,6 +200,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
           "head1" : "Sr#",
           "head2" : "Title",
           "head3" : "Group",
+          "head4" : "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

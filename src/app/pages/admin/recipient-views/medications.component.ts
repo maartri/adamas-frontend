@@ -26,17 +26,17 @@ export class MedicationsComponent implements OnInit {
   inputVariables:any;
   title:string = "Add Medications"
   tocken: any;
-    pdfTitle: string;
-    tryDoctype: any;
-      drawerVisible: boolean =  false;   
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;   
   dateFormat: string ='dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="WHERE ISNULL(DataDomains.DeletedRecord) AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
-    private unsubscribe: Subject<void> = new Subject();
-    rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   
-    constructor(
+  constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
@@ -206,7 +206,7 @@ export class MedicationsComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains "+this.whereString+" Domain='MEDICATIONS'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='MEDICATIONS'";
           
           const headerDict = {
             'Content-Type': 'application/json',
@@ -226,6 +226,7 @@ export class MedicationsComponent implements OnInit {
               "userid":this.tocken.user,
               "head1" : "Sr#",
               "head2" : "Name",
+              "head3" : "End Date",
             }
           }
           this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

@@ -24,6 +24,10 @@ export class AdminCategoryComponent implements OnInit {
     isUpdate: boolean = false;
     modalVariables:any;
     inputVariables:any;
+  dateFormat: string ='dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
     title:string = "Add Admin Categories"
     tocken: any;
   pdfTitle: string;

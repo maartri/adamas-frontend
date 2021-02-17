@@ -14,29 +14,29 @@ import { takeUntil } from 'rxjs/operators';
   styles: []
 })
 export class MobilityCodesComponent implements OnInit {
-
+  
   tableData: Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    inputForm: FormGroup;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    modalVariables:any;
-    inputVariables:any;
-    title:string = "Add Mobility Codes"
-    tocken: any;
-    pdfTitle: string;
-    tryDoctype: any;
-      drawerVisible: boolean =  false;   
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  inputForm: FormGroup;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  modalVariables:any;
+  inputVariables:any;
+  title:string = "Add Mobility Codes"
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;   
   dateFormat: string ='dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="WHERE ISNULL(DataDomains.DeletedRecord) AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
-    private unsubscribe: Subject<void> = new Subject();
-    rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   
-    constructor(
+  constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
@@ -77,14 +77,14 @@ export class MobilityCodesComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-        const { 
-            name,
-            recordNumber,
-         } = this.tableData[index];
-        this.inputForm.patchValue({
-          name: name,
-          recordNumber:recordNumber,
-        });
+      const { 
+        name,
+        recordNumber,
+      } = this.tableData[index];
+      this.inputForm.patchValue({
+        name: name,
+        recordNumber:recordNumber,
+      });
     }
     
     handleCancel() {
@@ -147,7 +147,7 @@ export class MobilityCodesComponent implements OnInit {
             this.postLoading = false;          
             this.handleCancel();
             this.resetModal();
-           });
+          });
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
@@ -172,7 +172,7 @@ export class MobilityCodesComponent implements OnInit {
               this.isUpdate = false;
               this.handleCancel();
               this.resetModal();
-             });
+            });
           }
           
         }
@@ -188,67 +188,69 @@ export class MobilityCodesComponent implements OnInit {
             }
           });
         }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        name: '',
-        recordNumber:null,
-      });
-    }
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
-    generatePdf(){
-      this.drawerVisible = true;
-      
-      this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains "+this.whereString+" Domain='MOBILITY'";
-      
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-      
-      const data = {
-        "template": { "_id": "0RYYxAkMCftBE9jc" },
-        "options": {
-          "reports": { "save": false },
-          "txtTitle": "Recipient Mobility Codes List",
-          "sql": fQuery,
-          "userid":this.tocken.user,
-          "head1" : "Sr#",
-          "head2" : "Name",
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            name: '',
+            recordNumber:null,
+          });
+        }
+        handleOkTop() {
+          this.generatePdf();
+          this.tryDoctype = ""
+          this.pdfTitle = ""
+        }
+        handleCancelTop(): void {
+          this.drawerVisible = false;
+          this.pdfTitle = ""
+        }
+        generatePdf(){
+          this.drawerVisible = true;
+          
+          this.loading = true;
+          
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='MOBILITY'";
+          
+          const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+          
+          const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+          };
+          
+          const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+              "reports": { "save": false },
+              "txtTitle": "Recipient Mobility Codes List",
+              "sql": fQuery,
+              "userid":this.tocken.user,
+              "head1" : "Sr#",
+              "head2" : "Name",
+              "head3" : "End Date",
+            }
+          }
+          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+          .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+          }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                this.drawerVisible = false;
+              },
+            });
+          });
+          this.loading = true;
+          this.tryDoctype = "";
+          this.pdfTitle = "";
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loading = false;
-      }, err => {
-        console.log(err);
-        this.loading = false;
-        this.ModalS.error({
-          nzTitle: 'TRACCS',
-          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-          nzOnOk: () => {
-            this.drawerVisible = false;
-          },
-        });
-      });
-      this.loading = true;
-      this.tryDoctype = "";
-      this.pdfTitle = "";
-    }
-}
+      

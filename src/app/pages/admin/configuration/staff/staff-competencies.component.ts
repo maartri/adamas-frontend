@@ -24,6 +24,10 @@ export class StaffCompetenciesComponent implements OnInit {
   modalVariables:any;
   dateFormat: string = 'dd/MM/yyyy';
   inputVariables:any;
+  dateFormat: string ='dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   postLoading: boolean = false;
   isUpdate: boolean = false;
   title:string = "Add New Staff Competencies";

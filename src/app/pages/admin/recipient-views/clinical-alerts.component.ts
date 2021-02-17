@@ -208,7 +208,7 @@ export class ClinicalAlertsComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 from DataDomains "+this.whereString+" Domain='CLINICALALERT'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='CLINICALALERT'";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -228,6 +228,7 @@ export class ClinicalAlertsComponent implements OnInit {
           "userid":this.tocken.user,
           "head1" : "Sr#",
           "head2" : "Name",
+          "head3" : "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

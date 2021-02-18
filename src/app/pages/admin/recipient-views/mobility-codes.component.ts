@@ -79,10 +79,12 @@ export class MobilityCodesComponent implements OnInit {
       this.modalOpen = true;
       const { 
         name,
+        end_date,
         recordNumber,
       } = this.tableData[index];
       this.inputForm.patchValue({
         name: name,
+        end_date:end_date,
         recordNumber:recordNumber,
       });
     }
@@ -135,6 +137,7 @@ export class MobilityCodesComponent implements OnInit {
           }, 
           this.inputVariables = {
             display: group.get('name').value,
+            end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             domain: 'MOBILITY',         
             
           }
@@ -191,6 +194,7 @@ export class MobilityCodesComponent implements OnInit {
         buildForm() {
           this.inputForm = this.formBuilder.group({
             name: '',
+            end_date:'',
             recordNumber:null,
           });
         }

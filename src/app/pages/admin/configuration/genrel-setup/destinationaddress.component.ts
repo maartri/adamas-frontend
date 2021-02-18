@@ -35,7 +35,7 @@ export class DestinationaddressComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;  
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   
   constructor(
     private globalS: GlobalService,
@@ -54,7 +54,6 @@ export class DestinationaddressComponent implements OnInit {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.buildForm();
       this.loadData();
-      // this.tableData = [{type:"GF",name:"RBH-XRAY",address1:"Gate 13 44 Lutwyche Road",address2:"TEST2",phone1:"98986767",phone2:"wa",fax:"wa",mobile:"wa",email:"wa@mIL.COM",date:"10-13-2020",}];
       this.loading = false;
       this.cd.detectChanges();
     }

@@ -22,7 +22,6 @@ export class StaffCompetenciesComponent implements OnInit {
   current: number = 0;
   inputForm: FormGroup;
   modalVariables:any;
-  dateFormat: string = 'dd/MM/yyyy';
   inputVariables:any;
   dateFormat: string ='dd/MM/yyyy';
   check : boolean = false;

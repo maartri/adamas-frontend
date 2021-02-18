@@ -77,10 +77,12 @@ export class RecipientsGroupComponent implements OnInit {
       this.modalOpen = true;
       const { 
         name,
+        end_date,
         recordNumber
       } = this.tableData[index];
       this.inputForm.patchValue({
         name: name,
+        end_date:end_date,
         recordNumber:recordNumber
       });
     }
@@ -191,6 +193,7 @@ export class RecipientsGroupComponent implements OnInit {
         buildForm() {
           this.inputForm = this.formBuilder.group({
             name:'',
+            end_date:'',
             recordNumber:null
           });
         }

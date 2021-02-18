@@ -1662,7 +1662,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break; 
             default:
-            //    this.isVisibleTop = true;
+                this.isVisibleTop = true;
         }
 
 

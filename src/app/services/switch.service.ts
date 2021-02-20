@@ -1632,6 +1632,20 @@ export class SwitchService {
                     table: 'DataDomains'
                 }
                 break;
+                case 'Staff Teams':
+                this.anyVariable = {
+                    variables: {
+                        description: (inputVariables.display).toUpperCase(),
+                        domain: 'STAFFTEAM',
+                        dataset: 'USER',
+                        embedded: 0,
+                        user1: inputVariables.rate,
+                        user2: '',
+                        endDate: inputVariables.end_date,
+                    },
+                    table: 'DataDomains'
+                }
+                break;
                 case 'Service Note Categories':
                 this.anyVariable = {
                     variables: {
@@ -1735,6 +1749,7 @@ export class SwitchService {
                 }
                 break;
                 case 'CDC Claim Rates':
+                case 'Staff Teams':
                 this.anyVariable = {
                     variables: {
                         description: inputVariables.item,

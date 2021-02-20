@@ -63,7 +63,7 @@ export class ClaimratesComponent implements OnInit {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
       this.buildForm();
-      this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
+      this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","VETERANS","OXYGEN","ENTERAL FEED-BOLUS","ENTERAL FEED-NONBOLUS","EACHD TOP-UP","MMM 1","MMM 2","MMM 3","MMM 4","MMM 5","MMM 6","MMM 7","STRC"]
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
@@ -219,7 +219,7 @@ export class ClaimratesComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,CONVERT(varchar, [enddate],105) as Field4,recordNumber as Field4,DeletedRecord as is_deleted from DataDomains "+this.whereString+"Domain='PACKAGERATES'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,CONVERT(varchar, [enddate],105) as Field4,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='PACKAGERATES'";
           
           const headerDict = {
             'Content-Type': 'application/json',

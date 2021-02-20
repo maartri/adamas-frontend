@@ -52,6 +52,7 @@ export class JobCategoryComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
       this.loading = false;
@@ -80,10 +81,12 @@ export class JobCategoryComponent implements OnInit {
       this.modalOpen = true;
         const { 
             name,
+            end_date,
             recordNumber,
          } = this.tableData[index];
         this.inputForm.patchValue({
           name: name,
+          end_date:end_date,
           recordNumber:recordNumber,
         });
     }
@@ -98,12 +101,33 @@ export class JobCategoryComponent implements OnInit {
     next(): void {
       this.current += 1;
     }
+
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS row_num,Description as name,recordNumber from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='STAFFGROUP' ";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
-        this.tableData = data;
-        this.loading = false;
+          this.menuS.getDataDomainByType("STAFFGROUP",this.check).subscribe(data => {
+            this.tableData = data;
+            this.loading = false;
+      });
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
       });
     }
     save() {
@@ -116,6 +140,7 @@ export class JobCategoryComponent implements OnInit {
           }, 
           this.inputVariables = {
             display: group.get('name').value,
+            end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             domain: 'STAFFGROUP',         
             
           }
@@ -138,6 +163,7 @@ export class JobCategoryComponent implements OnInit {
             }, 
             this.inputVariables = {
               display: group.get('name').value,
+              end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
               primaryId:group.get('recordNumber').value,
               domain: 'STAFFGROUP',
             }
@@ -172,6 +198,7 @@ export class JobCategoryComponent implements OnInit {
     buildForm() {
       this.inputForm = this.formBuilder.group({
         name: '',
+        end_date:'',
         recordNumber:null,
       });
     }
@@ -189,7 +216,7 @@ export class JobCategoryComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='STAFFGROUP'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='STAFFGROUP'";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -209,6 +236,7 @@ export class JobCategoryComponent implements OnInit {
           "userid":this.tocken.user,
           "head1" : "Sr#",
           "head2" : "Name",
+          "head3" : "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

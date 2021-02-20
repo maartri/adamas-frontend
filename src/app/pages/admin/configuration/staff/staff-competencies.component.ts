@@ -49,12 +49,13 @@ export class StaffCompetenciesComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     ){}
-    
-    
+
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
+      this.populateDropDown();
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -84,7 +85,7 @@ export class StaffCompetenciesComponent implements OnInit {
         cGroup,
         mandatory,
         undated,
-        enddate,
+        end_date,
         recordNumber
       } = this.tableData[index];
       this.inputForm.patchValue({
@@ -92,7 +93,7 @@ export class StaffCompetenciesComponent implements OnInit {
         group:cGroup,
         mandatory:(mandatory == 1) ? true:false,
         undated:(undated == 1) ? true:false,
-        enddate:enddate,
+        enddate:end_date,
         recordNumber:recordNumber
       });
     }
@@ -118,8 +119,8 @@ export class StaffCompetenciesComponent implements OnInit {
         let groupz       = group.get('group').value;
         let mandatory    = (group.get('mandatory').value) ? 1 : 0 ;
         let undated      = (group.get('undated').value) ? 1 : 0 ;
-        let enddate      = (group.get('enddate').value != null && group.get('enddate').value != '') ? this.globalS.convertDbDate(group.get('enddate').value) : '';
-        let values = domain+"','"+name+"','"+groupz+"','"+mandatory+"','"+undated+"','"+enddate;
+        let enddate      = !(this.globalS.isVarNull(group.get('enddate').value)) ?  "'"+this.globalS.convertDbDate(group.get('enddate').value)+"'" : null;
+        let values = domain+"','"+name+"','"+groupz+"','"+mandatory+"',"+undated+",'"+enddate;
         let sql = "insert into DataDomains([Domain],[Description],[User1],[Embedded],[Undated],[EndDate]) Values ('"+values+"')"; 
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
@@ -140,10 +141,10 @@ export class StaffCompetenciesComponent implements OnInit {
         let groupz       = group.get('group').value;
         let mandatory    = group.get('mandatory').value;
         let undated      = group.get('undated').value;
-        let enddate      = (group.get('enddate').value != null && group.get('enddate').value != '') ? this.globalS.convertDbDate(group.get('enddate').value) : '';
+        let enddate      = !(this.globalS.isVarNull(group.get('enddate').value)) ?  "'"+this.globalS.convertDbDate(group.get('enddate').value)+"'" : null;
         let recordNumber  = group.get('recordNumber').value;
         
-        let sql  = "Update DataDomains SET [Description]='"+ name + "',[User1] = '"+ groupz + "',[Embedded] = '"+ mandatory + "',[Undated] = '"+ undated + "',[EndDate] = '"+ enddate+ "' WHERE [RecordNumber] ='"+recordNumber+"'";
+        let sql  = "Update DataDomains SET [Description]='"+ name + "',[User1] = '"+ groupz + "',[Embedded] = '"+ mandatory + "',[Undated] = '"+ undated + "',[EndDate] = "+ enddate + " WHERE [RecordNumber] ='"+recordNumber+"'";
         
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
@@ -159,20 +160,42 @@ export class StaffCompetenciesComponent implements OnInit {
       }   
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,RecordNumber,Description,Embedded AS Mandatory,User1 as cGroup,Undated as undated,EndDate as EndDate from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY DESCRIPTION";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,RecordNumber,Description,Embedded AS Mandatory,User1 as cGroup,Undated as undated,CONVERT(varchar, [enddate],105) as end_date from DataDomains "+this.whereString+" Domain = 'STAFFATTRIBUTE'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
         console.log(data);
         this.loading = false;
       });
-      let sql2 = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'COMPETENCYGROUP'  ORDER BY DESCRIPTION";
+    }
+    populateDropDown(){
+      let sql2 = "Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'COMPETENCYGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(sql2).subscribe(data => {
         this.items = data;
         console.log(data);
       });
     }
-    
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
+    }
     delete(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
@@ -209,7 +232,7 @@ export class StaffCompetenciesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Embedded as Field3 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='STAFFATTRIBUTE'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Embedded as Field3,CONVERT(varchar, [enddate],105) as Field4 from DataDomains "+this.whereString+" Domain='STAFFATTRIBUTE'";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -230,6 +253,7 @@ export class StaffCompetenciesComponent implements OnInit {
           "head1" : "Sr#",
           "head2" : "Name",
           "head3" : "Mandatory",
+          "head4" : "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

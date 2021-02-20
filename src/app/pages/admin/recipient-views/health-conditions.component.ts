@@ -28,11 +28,11 @@ export class HealthConditionsComponent implements OnInit {
     tocken: any;
     pdfTitle: string;
     tryDoctype: any;
-      drawerVisible: boolean =  false;   
-  dateFormat: string ='dd/MM/yyyy';
-  check : boolean = false;
-  userRole:string="userrole";
-  whereString :string="WHERE ISNULL(DataDomains.DeletedRecord) AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
+    drawerVisible: boolean =  false;   
+    dateFormat: string ='dd/MM/yyyy';
+    check : boolean = false;
+    userRole:string="userrole";
+    whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
     private unsubscribe: Subject<void> = new Subject();
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   

@@ -63,7 +63,7 @@ export class ClaimratesComponent implements OnInit {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
       this.buildForm();
-      this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","VETERANS","OXYGEN","ENTERAL FEED-BOLUS","ENTERAL FEED-NONBOLUS","EACHD TOP-UP","MMM 1","MMM 2","MMM 3","MMM 4","MMM 5","MMM 6","MMM 7","STRC"]
+      this.PopulateData();
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
@@ -199,6 +199,13 @@ export class ClaimratesComponent implements OnInit {
           this.loading = true;
           this.menuS.getDataDomainByType("PACKAGERATES",this.check).subscribe(data => {
             this.tableData = data;
+            this.loading = false;
+          });
+        }
+        PopulateData(){
+          this.loading = true;
+          this.menuS.getDataDomainByType("PACKAGERATES",this.check).subscribe(data => {
+            this.items = data;
             this.loading = false;
           });
         }

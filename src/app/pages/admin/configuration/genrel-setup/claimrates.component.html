@@ -45,7 +45,7 @@
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <label for="CDC Item">CDC Item:</label>
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="item" nzShowSearch nzAllowClear style="width:100%;">
-                    <nz-option *ngFor="let itm of items" [nzValue]="itm" [nzLabel]="itm"></nz-option> 
+                    <nz-option *ngFor="let itm of items" [nzValue]="itm.name" [nzLabel]="itm.name"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-row nzGutter="24" class="mrg-btm">

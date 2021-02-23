@@ -168,7 +168,7 @@ const inputFormDefault = {
     late: [false],
     chkbx_leftearly: [false],
     leftearly: [false],
-
+    excludeinactivestaff: [false],
 
 
 
@@ -376,7 +376,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     RecipientUR: [true];
     
     groupbyCoordinators: [false];
-    excludeinactivestaff: [false];
+    excludeinactivestaff: boolean;
 
     activeclients: [false];
     additionalinfo: [false];
@@ -2013,7 +2013,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                         break;
                 }
 
-                this.RecipientMasterRoster(s_Branches, s_StfGroup, s_Recipient, s_Stafftype, strdate, endate);
+                this.RecipientMasterRoster(s_Branches, s_StfGroup, s_Recipient, s_Stafftype, strdate, endate,s_Cycle);
                 break;
             case 'btn-activerecipient':
                 this.ActiveRecipientList(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
@@ -3339,7 +3339,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
     }
 
-    RecipientMasterRoster(branch, stfgroup, recipient, stafftype, startdate, enddate) {
+    RecipientMasterRoster(branch, stfgroup, recipient, stafftype, startdate, enddate ,s_Cycle) {
 
         var lblcriteria;
         var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration], case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME , [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = Recipients.[Accountno]  LEFT JOIN STAFF ON [CARER CODE] = STAFF.ACCOUNTNO  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')  "
@@ -3385,10 +3385,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             lblcriteria = lblcriteria + " Assigned To: " + stfgroup.join(",") + "; "
         }
         else { lblcriteria = lblcriteria + "All Staff Groups," }
-        if (startdate != "") {
-            lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
+        if (s_Cycle != "") {
+            lblcriteria = lblcriteria + " Date  " + s_Cycle.toString() + "; "
         }
-        else { lblcriteria = lblcriteria + " All Dated " }
+        else { lblcriteria = lblcriteria + " Dated: Cycle 1 " }
 
         fQuery = fQuery + "  ORDER BY [Client Code], Date, [Start Time] "
         /*   
@@ -6573,7 +6573,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (casenotecat != "") {
             lblcriteria = lblcriteria + " Case Notes: " + casenotecat.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Case NOtes," }
+        else { lblcriteria = lblcriteria + "All Case Notes," }
         if (manager != "") {
             lblcriteria = lblcriteria + " Manager: " + manager.join(",") + "; "
         }
@@ -6700,7 +6700,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (casenotecat != "") {
             lblcriteria = " Case Notes: " + casenotecat.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Case NOtes," }
+        else { lblcriteria = lblcriteria + "All Case Notes," }
 
         fQuery = fQuery + "AND ExtraDetail1 = 'SVCNOTE'  AND (History.DeletedRecord = 0)  ) ROP "
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated   "
@@ -6823,7 +6823,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (casenotecat != "") {
             lblcriteria = " Case Notes: " + casenotecat.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Case NOtes," }
+        else { lblcriteria = lblcriteria + "All Case Notes," }
 
         fQuery = fQuery + "  AND (History.DeletedRecord = 0)  ) ROP"
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated   "
@@ -7210,7 +7210,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (casenotecat != "") {
             lblcriteria = " Case Notes: " + casenotecat.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Case NOtes," }
+        else { lblcriteria = lblcriteria + "All Case Notes," }
 
         fQuery = fQuery + "ORDER BY Staff.[LastName], History.DetailDate "
 
@@ -7333,7 +7333,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (casenotecat != "") {
             lblcriteria = " Case Notes: " + casenotecat.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Case NOtes," }
+        else { lblcriteria = lblcriteria + "All Case Notes," }
 
 
         fQuery = fQuery + " ORDER BY Staff.[LastName], History.DetailDate   "

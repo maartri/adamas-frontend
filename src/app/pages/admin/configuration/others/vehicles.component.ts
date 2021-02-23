@@ -52,6 +52,7 @@ export class VehiclesComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
       this.loading = false;
@@ -80,12 +81,12 @@ export class VehiclesComponent implements OnInit {
       this.modalOpen = true;
       const { 
         name,
-        expiry,
+        end_date,
         recordNumber,
       } = this.tableData[index-1];
       this.inputForm.patchValue({
         name: name,
-        end_date:expiry,
+        end_date:end_date,
         recordNumber:recordNumber,
       });
     }
@@ -102,10 +103,9 @@ export class VehiclesComponent implements OnInit {
     }
     loadData(){
       this.loading = true;
-      this.menuS.getlistvehicles().subscribe(data => {
+      this.menuS.getDataDomainByType("VEHICLES",this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
-        this.cd.detectChanges();
       });
     }
     fetchAll(e){
@@ -113,7 +113,7 @@ export class VehiclesComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }

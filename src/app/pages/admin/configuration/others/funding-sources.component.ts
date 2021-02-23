@@ -50,8 +50,8 @@ export class FundingSourcesComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
-      // this.populateDropdowns();
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();

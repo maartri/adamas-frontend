@@ -35,7 +35,7 @@ export class DestinationaddressComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;  
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
   
   constructor(
     private globalS: GlobalService,
@@ -52,6 +52,7 @@ export class DestinationaddressComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
       this.loading = false;
@@ -66,7 +67,7 @@ export class DestinationaddressComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -103,7 +104,7 @@ export class DestinationaddressComponent implements OnInit {
         fax:'',
         mobile:'',
         email:'',
-        date:'',
+        end_date:'',
         recordNumber:null,
       });
     }
@@ -136,8 +137,8 @@ export class DestinationaddressComponent implements OnInit {
         phone2,
         fax,
         mobile,
-        email,
-        date,
+        eMail,
+        endDate,
         recordNumber,
       } = this.tableData[index];
       this.inputForm.patchValue({
@@ -150,8 +151,8 @@ export class DestinationaddressComponent implements OnInit {
         phone2:phone2,
         fax:fax,
         mobile:mobile,
-        email:email,
-        date:date,
+        email:eMail,
+        end_date:endDate,
         recordNumber:recordNumber,
       });
       
@@ -165,27 +166,26 @@ export class DestinationaddressComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
-        let type     = 'DESTINATION';
-        let name     = group.get('name').value;
-        let address1 = group.get('address1').value;
-        let address2 = group.get('address2').value;
-        let suburb   = group.get('suburb').value;
-        let phone1   = group.get('phone1').value;
-        let phone2   = (group.get('phone2').value ==  null) ? '' : group.get('phone2').value;
-        let fax      = (group.get('fax').value ==  null) ? '' : group.get('fax').value;
-        let mobile   = group.get('mobile').value;
-        let email    = (group.get('email').value ==  null) ? '' : group.get('email').value;
-        let date     = group.get('date').value;
-        let postcode = '';
-        
-        let values = "DESTINATION"+"','"+type+"','"+name+"','"+address1+"','"+address2+"','"+suburb+"','"+postcode+"','"+phone1+"','"+phone2+"','"+fax+"','"+mobile+"','"+email+"','"+'2020-11-18';
-        let sql = "insert into HumanResourceTypes([Group],[Type],[Name],[Address1],[Address2],Suburb, Postcode,Phone1,Phone2,Fax,Mobile,email,EndDate) Values ('"+values+"')";
+        let type     = "'DESTINATION'";
+        let name     = this.globalS.isValueNull(group.get('name').value);
+        let address1 = this.globalS.isValueNull(group.get('address1').value);
+        let address2 = this.globalS.isValueNull(group.get('address2').value);
+        let suburb   = this.globalS.isValueNull(group.get('suburb').value);
+        let phone1   = this.globalS.isValueNull(group.get('phone1').value);
+        let phone2   = this.globalS.isValueNull(group.get('phone2').value);
+        let fax      = this.globalS.isValueNull(group.get('fax').value);
+        let mobile   = this.globalS.isValueNull(group.get('mobile').value);
+        let email    = this.globalS.isValueNull(group.get('email').value);
+        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let postcode = null;
+        let values = "'DESTINATION'"+","+type+","+name+","+address1+","+address2+","+suburb+","+postcode+","+phone1+","+phone2+","+fax+","+mobile+","+email+","+end_date;
+        let sql = "insert into HumanResourceTypes([Group],[Type],[Name],[Address1],[Address2],[Suburb],[Postcode],[Phone1],[Phone2],[Fax],[Mobile],[email],[EndDate]) Values ("+values+")";
+        console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
           this.globalS.sToast('Success', 'Saved successful');
-          // this.globalS.sToast('Unsuccess', 'not saved' + data);
           this.loadData();
           this.postLoading = false;          
           this.handleCancel();
@@ -193,20 +193,20 @@ export class DestinationaddressComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
-        let type     = 'DESTINATION';
-        let name     = group.get('name').value;
-        let address1 = group.get('address1').value;
-        let address2 = group.get('address2').value;
-        let suburb   = group.get('suburb').value;
-        let phone1   = group.get('phone1').value;
-        let phone2   = group.get('phone2').value;
-        let fax      = group.get('fax').value;
-        let mobile   = group.get('mobile').value;
-        let email    = group.get('email').value;
-        let date     = (group.get('date').value) ? this.globalS.convertDbDate(group.get('date').value) : '';
+        let type     = "'DESTINATION'";
+        let name     = this.globalS.isValueNull(group.get('name').value);
+        let address1 = this.globalS.isValueNull(group.get('address1').value);
+        let address2 = this.globalS.isValueNull(group.get('address2').value);
+        let suburb   = this.globalS.isValueNull(group.get('suburb').value);
+        let phone1   = this.globalS.isValueNull(group.get('phone1').value);
+        let phone2   = this.globalS.isValueNull(group.get('phone2').value);
+        let fax      = this.globalS.isValueNull(group.get('fax').value);
+        let mobile   = this.globalS.isValueNull(group.get('mobile').value);
+        let email    = this.globalS.isValueNull(group.get('email').value);
+        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let postcode = null;
         let recordnumber     = group.get('recordNumber').value;
-        let postcode = '';
-        let sql  = "Update HumanResourceTypes SET [Group]='DESTINATION',[Type] = '"+ type+ "',[Name] = '"+ name+ "',[Address1] = '"+ address1+ "',[Address2] = '"+ address2+ "',[Suburb] = '"+ suburb+ "',[Postcode] = '"+ postcode+ "',[Phone1] = '"+ phone1+ "',[Phone2] = '"+ phone2+ "',[Fax] = '"+ fax+ "',[Mobile] = '"+ mobile + "',[EMail] = '"+ email + "',[EndDate] = '"+ '' + "' WHERE [RecordNumber] ='"+recordnumber+"'";
+        let sql  = "Update HumanResourceTypes SET [Group]='DESTINATION',[Type] ="+ type+ ",[Name] ="+ name+ ",[Address1] ="+ address1+",[Address2] ="+ address2+",[Suburb] ="+ suburb+",[Postcode] ="+ postcode+",[Phone1] ="+ phone1+",[Phone2] ="+ phone2+",[Fax] ="+ fax+",[Mobile] ="+ mobile +",[EMail] ="+email+",[EndDate] ="+end_date+" WHERE [RecordNumber] ='"+recordnumber+"'";
         console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
@@ -273,7 +273,7 @@ export class DestinationaddressComponent implements OnInit {
           "head4" : "Address",
           "head5" : "Phone",
           "head6" : "Fax",
-          "head7" : "Date",
+          "head7" : "Expiry Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

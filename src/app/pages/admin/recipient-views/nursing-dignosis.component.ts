@@ -175,6 +175,18 @@ export class NursingDignosisComponent implements OnInit {
         }
       });
     }
+    activateNursingDiagnosis(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activatenursingDiagnosis(data.recordno)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
+    }
     activateDomain(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;

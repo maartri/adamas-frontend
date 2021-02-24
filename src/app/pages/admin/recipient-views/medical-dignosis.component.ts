@@ -183,10 +183,10 @@ export class MedicalDignosisComponent implements OnInit {
         }
       });
     }
-    activateDomain(data: any) {
+    activateMDiagnosisTypes(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.activeDomain(data.recordNumber)
+      this.menuS.activateMDiagnosisTypes(data.recordNumber)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Activated!');

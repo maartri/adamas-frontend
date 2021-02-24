@@ -19,7 +19,13 @@ import { takeUntil } from 'rxjs/operators';
     width:100%;
   },
   .ant-select-selection--single{
-    height:24px
+    height:24px;
+  },
+  .ant-modal{
+    top:50px;
+  },
+  .ant-modal-body{
+    padding-top:12px;
   }
   `],
 })

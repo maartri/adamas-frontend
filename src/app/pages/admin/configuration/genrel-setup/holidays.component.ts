@@ -33,9 +33,9 @@ export class HolidaysComponent implements OnInit {
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;  
-check : boolean = false;
-userRole:string="userrole";
-whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DeletedRecord, 0) = 0";
   
   constructor(
     private globalS: GlobalService,
@@ -52,6 +52,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
       this.loading = false;
@@ -63,10 +64,10 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
     }
     fetchAll(e){
       if(e.target.checked){
-        this.whereString = "WHERE";
+        this.whereString = "";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+        this.whereString = "Where ISNULL(DeletedRecord, 0) = 0";
         this.loadData();
       }
     }
@@ -83,11 +84,10 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
       });
     }
     loadData(){
-      let sql ="select * from PUBLIC_HOLIDAYS order by DATE desc";
+      let sql ="Select ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS row_num,RECORDNO,DATE,DESCRIPTION,Stats,PublicHolidayRegion,DELETEDRECORD as is_deleted from PUBLIC_HOLIDAYS "+this.whereString+" order by DATE desc";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
-        console.log(this.tableData);
         this.loading = false;
       });
       this.states = ['ALL','NSW','NT','QLD','SA','TAS','VIC','WA','ACT'];
@@ -132,23 +132,19 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group  = this.inputForm;
-        let description   = group.get('description').value;
-        let stats   = group.get('state').value;
-        let PublicHolidayRegion = group.get('region').value;
-        let date = this.globalS.convertDbDate(group.get('date').value);
-        if (!PublicHolidayRegion) {
-          PublicHolidayRegion = '';
-        }
+        let description   = this.globalS.isValueNull(group.get('description').value);
+        let stats         = this.globalS.isValueNull(group.get('state').value);
+        let PublicHolidayRegion = this.globalS.isValueNull(group.get('region').value);
+        let date          = !(this.globalS.isVarNull(group.get('date').value)) ?  "'"+this.globalS.convertDbDate(group.get('date').value)+"'" : null;
         
-        let values = date+"','"+description+"','"+stats+"','"+PublicHolidayRegion;
-        let sql = "insert into PUBLIC_HOLIDAYS (DATE,DESCRIPTION,Stats,PublicHolidayRegion) Values ('"+values+"')";
-        
+        let values = date+","+description+","+stats+","+PublicHolidayRegion;
+        let sql = "insert into PUBLIC_HOLIDAYS (DATE,DESCRIPTION,Stats,PublicHolidayRegion) Values ("+values+")";
+        console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
           this.globalS.sToast('Success', 'Saved successful');
-          // this.globalS.sToast('Unsuccess', 'not saved' + data);
           this.loadData();
           this.postLoading = false;          
           this.handleCancel();
@@ -156,12 +152,12 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
         });
       }else{
         const group = this.inputForm;
-        let description   = group.get('description').value;
-        let stats   = group.get('state').value;
-        let PublicHolidayRegion = group.get('region').value;
-        let date     = group.get('date').value;
+        let description   = this.globalS.isValueNull(group.get('description').value);
+        let stats         = this.globalS.isValueNull(group.get('state').value);
+        let PublicHolidayRegion = this.globalS.isValueNull(group.get('region').value);
+        let date          = !(this.globalS.isVarNull(group.get('date').value)) ?  "'"+this.globalS.convertDbDate(group.get('date').value)+"'" : null;
         let recordno = group.get('recordno').value;
-        let sql  = "Update PUBLIC_HOLIDAYS SET [DATE] = '"+ date+ "',[DESCRIPTION] = '"+ description+ "',[Stats] = '"+ stats+ "',[PublicHolidayRegion] = '"+ PublicHolidayRegion + "' WHERE [RECORDNO]='"+recordno+"'";
+        let sql  = "Update PUBLIC_HOLIDAYS SET [DATE] ="+ date+",[DESCRIPTION] ="+ description+",[Stats] ="+ stats+",[PublicHolidayRegion] ="+ PublicHolidayRegion +" WHERE [RECORDNO]='"+recordno+"'";
         console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
@@ -181,6 +177,18 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
       this.postLoading = true;     
       const group = this.inputForm;
       this.menuS.deleteholidayslist(data.recordno)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
+    }
+    activateHoliday(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activateholidayslist(data.recordno)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Deleted!');
@@ -213,7 +221,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,[DATE] as Field4 from PUBLIC_HOLIDAYS";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,CONVERT(varchar, [DATE],105) as Field4 from PUBLIC_HOLIDAYS "+this.whereString+" order by DATE desc";
       
       const headerDict = {
         'Content-Type': 'application/json',

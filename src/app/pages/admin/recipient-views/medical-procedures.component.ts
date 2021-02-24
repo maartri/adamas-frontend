@@ -179,10 +179,10 @@ export class MedicalProceduresComponent implements OnInit {
         }
       });
     }
-    activateDomain(data: any) {
+    activateMProcedure(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.activeDomain(data.recordNumber)
+      this.menuS.activateMProcedureTypes(data.recordNumber)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Activated!');

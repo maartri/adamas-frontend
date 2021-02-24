@@ -120,6 +120,10 @@ export class MenuService {
         deleteholidayslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/holidays/${recordNo}`)
         }
+        activateholidayslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/holidays/${recordNo}`)
+        }
+        
         deletemedicalContacts(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/medicalContacts/${recordNo}`)
         }
@@ -129,11 +133,20 @@ export class MenuService {
         deletenursingDiagnosis(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/nursingDiagnosis/${recordNo}`)
         }
+        activatenursingDiagnosis(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/nursingDiagnosis/${recordNo}`)
+        }
         deleteMDiagnosisTypes(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/MDiagnosisTypes/${recordNo}`)
         }
+        activateMDiagnosisTypes(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/MDiagnosisTypes/${recordNo}`)
+        }
         deleteMProcedureTypes(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/MProcedureTypes/${recordNo}`)
+        }
+        activateMProcedureTypes(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/MProcedureTypes/${recordNo}`)
         }
         deleteActivityServiceslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/ActivityServices/${recordNo}`)

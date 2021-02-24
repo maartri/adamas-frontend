@@ -99,7 +99,6 @@ export class MenuService {
         activeDomain(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/activate/datadomains/${recordNo}`)
         }
-        
         deleteDocumentTemplatelist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/documentTemplate/${recordNo}`)
         }
@@ -109,7 +108,9 @@ export class MenuService {
         deleteDistributionlist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/distribution/${recordNo}`)
         }
-        
+        activateDistributionlist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/distribution/${recordNo}`)
+        }
         deleteBudgetlist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/budgets/${recordNo}`)
         }
@@ -121,6 +122,9 @@ export class MenuService {
         }
         deletemedicalContacts(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/medicalContacts/${recordNo}`)
+        }
+        activatemedicalContacts(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/medicalContacts/${recordNo}`)
         }
         deletenursingDiagnosis(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/nursingDiagnosis/${recordNo}`)

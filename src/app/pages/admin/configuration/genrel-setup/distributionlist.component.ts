@@ -271,7 +271,7 @@ export class DistributionlistComponent implements OnInit {
     activateDomain(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.activeDomain(data.recordNumber)
+      this.menuS.activateDistributionlist(data.recordNo)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Activated!');

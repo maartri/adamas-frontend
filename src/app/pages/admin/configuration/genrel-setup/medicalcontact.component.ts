@@ -239,6 +239,18 @@ export class MedicalcontactComponent implements OnInit {
         }
       });
     }
+    activateMedical(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activatemedicalContacts(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
+    }
     handleOkTop() {
       this.generatePdf();
       this.tryDoctype = ""

@@ -62,6 +62,15 @@ export class BudgetsComponent implements OnInit {
   types:Array<any>;
   budgetTypes:Array<any>;
   programCordinates:Array<any>;
+  check : boolean = false;
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+  token:any;
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;  
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DeletedRecord, 0) = 0 ";
   private unsubscribe: Subject<void> = new Subject();
   constructor(
     private globalS: GlobalService,
@@ -73,6 +82,8 @@ export class BudgetsComponent implements OnInit {
     
     ngOnInit(): void {
       this.buildForm();
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.loading = false;
       this.loadData();
       this.populateDropdowns();
@@ -334,12 +345,8 @@ export class BudgetsComponent implements OnInit {
         
         let recordNumber = group.get('RecordNumber').value;
         
-        
         let sql = "Update Budgets SET [Name]="+name+", [Branch]="+ branch + ", [Funding Source]="+ funding_source + ", [Care Domain]="+ care_domain + ", [Budget Group]="+ budget_group + ", [Program]="+ prog + ",[Dataset Code]="+ dataset + ", [Activity]="+ traccs + ", [Staff Team]="+ staff_team + ", [Staff Category]="+ staff_cat +", [Staff]="+ staff +", [Recipient]="+ recepient +",[coordinator]="+ coordinator + ", [SPID]="+ spid + ", [State]="+ state + ", [CostCentre]="+ costcenter + ", [DSOutlet]="+ dsoutlet + ", [FundingRegion]="+ funding_region + ", [SvcDiscipline]="+ svcdicipline + ", [SvcRegion]="+ svcregion + ", [Hours]="+ hours + ", [Dollars]="+ dollars + ", [Places]="+ emoty + ", [O_Hours]="+ emoty + ", [O_Dollars]="+ emoty + ", [O_PlcPkg]="+ emoty + ", [Y_Hours]="+ emoty + ", [Y_Dollars]="+ emoty + ", [Y_PlcPkg]="+ emoty + ", [BudgetType]="+ input_type + ", [Unit]="+ unit + ", Undated="+ Undated + ",StartDate="+start+",EndDate="+end+"  WHERE [recordNumber] ='"+recordNumber+"'"; 
         console.log(sql);
-        // let recordNo      = group.get('recordNo').value;
-        // let sql  = "Update IM_DistributionLists SET [Recipient]='"+ recepient + "',[Activity] = '"+ service + "',[Program] = '"+ prgm + "',[Staff] = '"+ staff+ "',[Severity] = '"+ saverity + "',[ListName] = '"+ ltype+ "',[Location] = '"+ location+ "'  WHERE [recordNo] ='"+recordNo+"'";
-        
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     

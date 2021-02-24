@@ -117,6 +117,9 @@ export class MenuService {
         deletepostcodeslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/postcodes/${recordNo}`)
         }
+        activatepostcodeslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/postcodes/${recordNo}`)
+        }
         deleteholidayslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/holidays/${recordNo}`)
         }

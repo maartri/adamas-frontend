@@ -150,21 +150,20 @@ export class DocumentTemplateComponent implements OnInit {
     }
     save() {
       
-      if(!this.isUpdate){        
-        this.postLoading = true;   
-        const group    = this.inputForm;
-        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let staff      = this.globalS.isValueNull(group.get('staff').value);
-        let service    = this.globalS.isValueNull(group.get('service').value);
-        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-        let location   = this.globalS.isValueNull(group.get('location').value);
-        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
-        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-        let mandatory  = this.trueString(group.get('mandatory').value);
-        let assignee   = this.trueString(group.get('assignee').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let values = recepient+","+service+","+location+","+prgm+","+staff+","+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
-        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[EndDate]) Values ("+values+")"; 
+      if(!this.isUpdate){       
+        this.postLoading   = true;   
+        const group        = this.inputForm;
+        let title          = this.globalS.isValueNull(group.get('title').value);
+        let type           = this.globalS.isValueNull(group.get('type').value);
+        let description    = this.globalS.isValueNull(group.get('description').value);
+        let category       = this.globalS.isValueNull(group.get('category').value);
+        let template       = this.globalS.isValueNull(group.get('template').value);
+        let can_create     = this.trueString(group.get('can_create').value);
+        let end_date       = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let local_user     = "'Master'";
+
+        let values = title+","+type+","+description+","+category+","+template+","+can_create+","+local_user+","+end_date;
+        let sql = "insert into DOC_Associations([Title],[TRACCSType],[MainGroup],[MinorGroup],[Template],[CanCreateFile],[LocalUser],[EndDate]) Values ("+values+")"; 
         
         console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
@@ -181,18 +180,16 @@ export class DocumentTemplateComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
-        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let staff      = this.globalS.isValueNull(group.get('staff').value);
-        let service    = this.globalS.isValueNull(group.get('service').value);
-        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-        let location   = this.globalS.isValueNull(group.get('location').value);
-        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
-        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-        let mandatory  = this.trueString(group.get('mandatory').value);
-        let assignee   = this.trueString(group.get('assignee').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let title          = this.globalS.isValueNull(group.get('title').value);
+        let type           = this.globalS.isValueNull(group.get('type').value);
+        let description    = this.globalS.isValueNull(group.get('description').value);
+        let category       = this.globalS.isValueNull(group.get('category').value);
+        let template       = this.globalS.isValueNull(group.get('template').value);
+        let can_create     = this.trueString(group.get('can_create').value);
+        let end_date       = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let local_user     = "'Master'";
         let recordNo   = group.get('recordNo').value;
-        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[EndDate] = "+end_date+ ",[Location] ="+ location+ " WHERE [recordNo] ='"+recordNo+"'";
+        let sql  = "Update DOC_Associations SET [Title]="+ title + ",[TRACCSType] ="+ type + ",[MainGroup] ="+ category +",[MinorGroup] ="+ description+",[Template] ="+ template +",[CanCreateFile] ="+ can_create +",[LocalUser] ="+ local_user +",[EndDate] = "+end_date+ " WHERE [recordNo] ='"+recordNo+"'";
         console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 

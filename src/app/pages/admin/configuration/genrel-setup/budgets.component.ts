@@ -83,23 +83,24 @@ export class BudgetsComponent implements OnInit {
       this.states = ['ALL','NSW','NT','QLD','SA','TAS','VIC','WA','ACT'];
       this.types  = ['INPUT','OUTPUT'];
       this.budgetTypes  = ['HOURS'];
+
       this.listS.getlistbranches().subscribe(data => this.branches = data);
       this.listS.getcaredomain().subscribe(data => this.caredomain = data);
       this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
       
       
-      let funding = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDREGION' ORDER BY Description";
+      let funding = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDREGION' ORDER BY Description";
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
         this.loading = false;
       });
-      let sc = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
+      let sc = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(sc).subscribe(data => {
         this.staffCategory = data;
         this.loading = false;
       });
       
-      let fundingt = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDINGBODIES' ORDER BY Description";
+      let fundingt = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDINGBODIES' ORDER BY Description";
       this.listS.getlist(fundingt).subscribe(data => {
         this.fundingTypes = data;
         this.loading = false;
@@ -117,7 +118,7 @@ export class BudgetsComponent implements OnInit {
       this.listS.getlist(prog2).subscribe(data => {
         this.programz2 = data;
       });
-
+      
       let outp = "SELECT Distinct Title from ITEMTYPES WHERE ProcessClassification = 'OUTPUT'";
       this.listS.getlist(outp).subscribe(data => {
         this.output = data;
@@ -128,15 +129,15 @@ export class BudgetsComponent implements OnInit {
       });
       
       //end new
-      let bgroup = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
+      let bgroup = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(bgroup).subscribe(data => {
         this.budgetGroup = data;
       });
-      let dicip = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
+      let dicip = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
       this.listS.getlist(dicip).subscribe(data => {
         this.diciplines = data;
       });
-      let gagency = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
+      let gagency = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
       this.listS.getlist(gagency).subscribe(data => {
         this.groupAgency = data;
       });
@@ -149,7 +150,7 @@ export class BudgetsComponent implements OnInit {
       this.listS.getlist(reci).subscribe(data => {
         this.recepient = data;
       });
-      let progcor = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'CASE MANAGERS'";
+      let progcor = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'CASE MANAGERS'";
       this.listS.getlist(progcor).subscribe(data => {
         this.programCordinates = data;
       });
@@ -211,7 +212,7 @@ export class BudgetsComponent implements OnInit {
       this.inputForm.patchValue({
         title:description, 
         type:budgetType,
-        undated:undated,
+        undated:(undated == true) ? true : false,
         branch:branch,
         care:careDomain,
         cost:costCentre,
@@ -251,37 +252,43 @@ export class BudgetsComponent implements OnInit {
     next(): void {
       this.current += 1;
     }
+    trueString(data: any): string{
+      return data ? '1': '0';
+    }
     save() {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
-        let name     = group.get('title').value;
-        let branch   = group.get('branch').value;
-        let funding_source    = group.get('ftype').value; 
-        let care_domain    = group.get('care').value; 
-        let budget_group    = group.get('bcode').value; 
-        let prog    = group.get('prgrm').value; 
-        let dataset = group.get('mds').value;
-        let traccs  = group.get('tracss').value;
-        let staff_team = group.get('team').value;
-        let staff_cat = group.get('cat').value;
-        let staff = group.get('staff').value;
-        let recepient = group.get('recepient').value;
-        let coordinator = group.get('coordinator').value;
-        let spid        = group.get('spid').value;
-        let state        = group.get('state').value;
-        let costcenter        = group.get('cost').value;
-        let dsoutlet        = group.get('outlet').value;
-        let funding_region        = group.get('region').value;
-        let svcdicipline        = group.get('dicipline').value;
-        let svcregion        = group.get('sregion').value;
-        let hours        = group.get('total').value;
-        let dollars      = group.get('dollar').value;
-        let emoty        = '';
-        let input_type   = group.get('type').value;
-        let unit         = group.get('hours').value; 
-        let values = name+"','"+branch+"','"+funding_source+"','"+care_domain+"','"+budget_group+"','"+prog+"','"+dataset+"','"+traccs+"','"+staff_team+"','"+staff_cat+"','"+staff+"','"+recepient+"','"+coordinator+"','"+spid+"','"+state+"','"+costcenter+"','"+dsoutlet+"','"+funding_region+"','"+svcdicipline+"','"+svcregion+"','"+hours+"','"+dollars+"','"+emoty+"','"+emoty+"','"+emoty+"','"+emoty+"','"+emoty+"','"+emoty+"','"+emoty+"','"+input_type+"','"+unit+"','"+'1'+"','"+emoty+"','"+emoty;
-        let sql = "INSERT INTO Budgets([Name], [Branch], [Funding Source], [Care Domain], [Budget Group], [Program], [Dataset Code], [Activity], [Staff Team], [Staff Category], [Staff], [Recipient],[coordinator], [SPID], [State], [CostCentre], [DSOutlet], [FundingRegion], [SvcDiscipline], [SvcRegion], [Hours], [Dollars], [Places], [O_Hours], [O_Dollars], [O_PlcPkg], [Y_Hours], [Y_Dollars], [Y_PlcPkg], [BudgetType], [Unit], Undated, StartDate, EndDate) Values ('"+values+"');select @@IDENTITY"; 
+        let start             = !(this.globalS.isVarNull(group.get('start').value)) ?  "'"+this.globalS.convertDbDate(group.get('start').value)+"'" : null;
+        let end               = !(this.globalS.isVarNull(group.get('end').value)) ?  "'"+this.globalS.convertDbDate(group.get('end').value)+"'" : null;
+        let name              = this.globalS.isValueNull(group.get('title').value);
+        let branch            = this.globalS.isValueNull(group.get('branch').value);
+        let funding_source    = this.globalS.isValueNull(group.get('ftype').value); 
+        let care_domain       = this.globalS.isValueNull(group.get('care').value); 
+        let budget_group      = this.globalS.isValueNull(group.get('bcode').value); 
+        let prog              = this.globalS.isValueNull(group.get('prgrm').value); 
+        let dataset           = this.globalS.isValueNull(group.get('mds').value);
+        let traccs            = this.globalS.isValueNull(group.get('tracss').value);
+        let staff_team        = this.globalS.isValueNull(group.get('team').value);
+        let staff_cat         = this.globalS.isValueNull(group.get('cat').value);
+        let staff             = this.globalS.isValueNull(group.get('staff').value);
+        let recepient         = this.globalS.isValueNull(group.get('recepient').value);
+        let coordinator       = this.globalS.isValueNull(group.get('coordinator').value);
+        let spid              = this.globalS.isValueNull(group.get('spid').value);
+        let state             = this.globalS.isValueNull(group.get('state').value);
+        let costcenter        = this.globalS.isValueNull(group.get('cost').value);
+        let dsoutlet          = this.globalS.isValueNull(group.get('outlet').value);
+        let funding_region    = this.globalS.isValueNull(group.get('region').value);
+        let svcdicipline      = this.globalS.isValueNull(group.get('dicipline').value);
+        let svcregion         = this.globalS.isValueNull(group.get('sregion').value);
+        let hours             = this.globalS.isValueNull(group.get('total').value);
+        let dollars           = this.globalS.isValueNull(group.get('dollar').value);
+        let input_type        = this.globalS.isValueNull(group.get('type').value);
+        let unit              = this.globalS.isValueNull(group.get('hours').value); 
+        let Undated           = this.trueString(group.get('Undated').value);
+        let emoty             = null;
+        let values = name+","+branch+","+funding_source+","+care_domain+","+budget_group+","+prog+","+dataset+","+traccs+","+staff_team+","+staff_cat+","+staff+","+recepient+","+coordinator+","+spid+","+state+","+costcenter+","+dsoutlet+","+funding_region+","+svcdicipline+","+svcregion+","+hours+","+dollars+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+input_type+","+unit+","+Undated+","+start+","+end;
+        let sql = "INSERT INTO Budgets([Name], [Branch], [Funding Source], [Care Domain], [Budget Group], [Program], [Dataset Code], [Activity], [Staff Team], [Staff Category], [Staff], [Recipient],[coordinator], [SPID], [State], [CostCentre], [DSOutlet], [FundingRegion], [SvcDiscipline], [SvcRegion], [Hours], [Dollars], [Places], [O_Hours], [O_Dollars], [O_PlcPkg], [Y_Hours], [Y_Dollars], [Y_PlcPkg], [BudgetType], [Unit], Undated, StartDate, EndDate) Values ("+values+");select @@IDENTITY"; 
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{   
           
           if (data) 
@@ -296,52 +303,57 @@ export class BudgetsComponent implements OnInit {
       }else{
         this.postLoading = true;   
         const group = this.inputForm;
-        let name     = group.get('title').value;
-        let branch   = group.get('branch').value;
-        let funding_source    = group.get('ftype').value; 
-        let care_domain    = group.get('care').value; 
-        let budget_group    = group.get('bcode').value; 
-        let prog    = group.get('prgrm').value; 
-        let dataset = group.get('mds').value;
-        let traccs  = group.get('tracss').value;
-        let staff_team = group.get('team').value;
-        let staff_cat = group.get('cat').value;
-        let staff = group.get('staff').value;
-        let recepient = group.get('recepient').value;
-        let coordinator = group.get('coordinator').value;
-        let spid        = group.get('spid').value;
-        let state        = group.get('state').value;
-        let costcenter        = group.get('cost').value;
-        let dsoutlet        = group.get('outlet').value;
-        let funding_region        = group.get('region').value;
-        let svcdicipline        = group.get('dicipline').value;
-        let svcregion        = group.get('sregion').value;
-        let hours        = group.get('total').value;
-        let dollars      = group.get('dollar').value;
-        let emoty        = '';
-        let input_type   = group.get('type').value;
-        let unit         = group.get('hours').value; 
+        let start             = !(this.globalS.isVarNull(group.get('start').value)) ?  "'"+this.globalS.convertDbDate(group.get('start').value)+"'" : null;
+        let end               = !(this.globalS.isVarNull(group.get('end').value)) ?  "'"+this.globalS.convertDbDate(group.get('end').value)+"'" : null;
+        let name              = this.globalS.isValueNull(group.get('title').value);
+        let branch            = this.globalS.isValueNull(group.get('branch').value);
+        let funding_source    = this.globalS.isValueNull(group.get('ftype').value); 
+        let care_domain       = this.globalS.isValueNull(group.get('care').value); 
+        let budget_group      = this.globalS.isValueNull(group.get('bcode').value); 
+        let prog              = this.globalS.isValueNull(group.get('prgrm').value); 
+        let dataset           = this.globalS.isValueNull(group.get('mds').value);
+        let traccs            = this.globalS.isValueNull(group.get('tracss').value);
+        let staff_team        = this.globalS.isValueNull(group.get('team').value);
+        let staff_cat         = this.globalS.isValueNull(group.get('cat').value);
+        let staff             = this.globalS.isValueNull(group.get('staff').value);
+        let recepient         = this.globalS.isValueNull(group.get('recepient').value);
+        let coordinator       = this.globalS.isValueNull(group.get('coordinator').value);
+        let spid              = this.globalS.isValueNull(group.get('spid').value);
+        let state             = this.globalS.isValueNull(group.get('state').value);
+        let costcenter        = this.globalS.isValueNull(group.get('cost').value);
+        let dsoutlet          = this.globalS.isValueNull(group.get('outlet').value);
+        let funding_region    = this.globalS.isValueNull(group.get('region').value);
+        let svcdicipline      = this.globalS.isValueNull(group.get('dicipline').value);
+        let svcregion         = this.globalS.isValueNull(group.get('sregion').value);
+        let hours             = this.globalS.isValueNull(group.get('total').value);
+        let dollars           = this.globalS.isValueNull(group.get('dollar').value);
+        let input_type        = this.globalS.isValueNull(group.get('type').value);
+        let unit              = this.globalS.isValueNull(group.get('hours').value); 
+        let Undated           = this.trueString(group.get('Undated').value);
+        let emoty             = null;
+        
         let recordNumber = group.get('RecordNumber').value;
         
-        let sql = "Update Budgets SET [Name]='"+ name + "', [Branch]='"+ branch + "', [Funding Source]='"+ funding_source + "', [Care Domain]='"+ care_domain + "', [Budget Group]='"+ budget_group + "', [Program]='"+ prog + "',[Dataset Code]='"+ dataset + "', [Activity]='"+ traccs + "', [Staff Team]='"+ staff_team + "', [Staff Category]='"+ staff_cat + "', [Staff]='"+ staff + "', [Recipient]='"+ recepient + "',[coordinator]='"+ coordinator + "', [SPID]='"+ spid + "', [State]='"+ state + "', [CostCentre]='"+ costcenter + "', [DSOutlet]='"+ dsoutlet + "', [FundingRegion]='"+ funding_region + "', [SvcDiscipline]='"+ svcdicipline + "', [SvcRegion]='"+ svcregion + "', [Hours]='"+ hours + "', [Dollars]='"+ dollars + "', [Places]='"+ emoty + "', [O_Hours]='"+ emoty + "', [O_Dollars]='"+ emoty + "', [O_PlcPkg]='"+ emoty + "', [Y_Hours]='"+ emoty + "', [Y_Dollars]='"+ emoty + "', [Y_PlcPkg]='"+ emoty + "', [BudgetType]='"+ input_type + "', [Unit]='"+ unit + "', Undated='"+ '1' + "',StartDate='"+ ' ' + "', EndDate='"+ ' ' + "'  WHERE [recordNumber] ='"+recordNumber+"'"; 
+        
+        let sql = "Update Budgets SET [Name]="+name+", [Branch]="+ branch + ", [Funding Source]="+ funding_source + ", [Care Domain]="+ care_domain + ", [Budget Group]="+ budget_group + ", [Program]="+ prog + ",[Dataset Code]="+ dataset + ", [Activity]="+ traccs + ", [Staff Team]="+ staff_team + ", [Staff Category]="+ staff_cat +", [Staff]="+ staff +", [Recipient]="+ recepient +",[coordinator]="+ coordinator + ", [SPID]="+ spid + ", [State]="+ state + ", [CostCentre]="+ costcenter + ", [DSOutlet]="+ dsoutlet + ", [FundingRegion]="+ funding_region + ", [SvcDiscipline]="+ svcdicipline + ", [SvcRegion]="+ svcregion + ", [Hours]="+ hours + ", [Dollars]="+ dollars + ", [Places]="+ emoty + ", [O_Hours]="+ emoty + ", [O_Dollars]="+ emoty + ", [O_PlcPkg]="+ emoty + ", [Y_Hours]="+ emoty + ", [Y_Dollars]="+ emoty + ", [Y_PlcPkg]="+ emoty + ", [BudgetType]="+ input_type + ", [Unit]="+ unit + ", Undated="+ Undated + ",StartDate="+start+",EndDate="+end+"  WHERE [recordNumber] ='"+recordNumber+"'"; 
         console.log(sql);
         // let recordNo      = group.get('recordNo').value;
         // let sql  = "Update IM_DistributionLists SET [Recipient]='"+ recepient + "',[Activity] = '"+ service + "',[Program] = '"+ prgm + "',[Staff] = '"+ staff+ "',[Severity] = '"+ saverity + "',[ListName] = '"+ ltype+ "',[Location] = '"+ location+ "'  WHERE [recordNo] ='"+recordNo+"'";
-         
+        
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-        if (data) 
-        this.globalS.sToast('Success', 'Saved successful');     
-        else
-        this.globalS.sToast('Success', 'Update successful');
-        this.postLoading = false;      
-        this.loadData();
-        this.handleCancel();
-        this.resetModal();   
-        this.isUpdate = false; 
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Update successful');
+          this.postLoading = false;      
+          this.loadData();
+          this.handleCancel();
+          this.resetModal();   
+          this.isUpdate = false; 
         });
       }
     }
-
+    
     delete(data: any) {
       this.postLoading = true;     
       this.menuS.deleteBudgetlist(data.recordNumber)

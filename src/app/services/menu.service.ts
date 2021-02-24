@@ -100,9 +100,16 @@ export class MenuService {
             return this.auth.delete(`${menu}/configuration/activate/datadomains/${recordNo}`)
         }
         
+        deleteDocumentTemplatelist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/documentTemplate/${recordNo}`)
+        }
+        activateDocumentTemplatelist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/documentTemplate/${recordNo}`)
+        }
         deleteDistributionlist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/distribution/${recordNo}`)
         }
+        
         deleteBudgetlist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/budgets/${recordNo}`)
         }

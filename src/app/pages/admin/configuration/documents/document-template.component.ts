@@ -208,7 +208,7 @@ export class DocumentTemplateComponent implements OnInit {
     delete(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.deleteDistributionlist(data.recordNo)
+      this.menuS.deleteDocumentTemplatelist(data.recordNo)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Deleted!');
@@ -217,10 +217,10 @@ export class DocumentTemplateComponent implements OnInit {
         }
       });
     }    
-    activateDomain(data: any) {
+    activateDocument(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.activeDomain(data.recordNumber)
+      this.menuS.activateDocumentTemplatelist(data.recordNo)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Activated!');
@@ -255,9 +255,7 @@ export class DocumentTemplateComponent implements OnInit {
       this.drawerVisible = true;
       
       this.loading = true;
-      
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY MinorGroup) AS Field1,RecordNo, Title as Field2, TRACCSType AS Field3, MainGroup AS Field4, MinorGroup AS Field5,Template as Field6,,CONVERT(varchar, [EndDate],105) as Field7 FROM DOC_Associations "+this.whereString+" LocalUser = 'MASTER'";
-      
       const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

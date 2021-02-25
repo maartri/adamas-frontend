@@ -1,0 +1,6 @@
+<div>
+    <p>{{ program }}</p>
+    <nz-select [(ngModel)]="value">
+        <nz-option *ngFor="let list of lists$ | async" [ngValue]="list" [nzValue]="list" [nzLabel]="list"></nz-option>
+    </nz-select>
+</div>

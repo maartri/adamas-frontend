@@ -489,13 +489,12 @@ export class BookingClientManager implements OnInit, OnDestroy {
             )
         }
         this.finalBooking = booking;
-        console.log(this.finalBooking)
     }
 
     book() {
         if(this.globalS.isEmpty(this.finalBooking)) return;
 
-        if(this.slots.length == 0){
+        if(this.slots.length == 0 && this.permanent){
             return this.globalS.createMessage(TYPE_MESSAGE.error, 'You have no slots added in step 1');
         }
 
@@ -620,18 +619,10 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
 
     realBookings(): Array<PermanentBookings>{
 
-        if(!this.hideDateInPermanentBookings) return [];
-        // var sss = this.globalS.DIFFERENCE_DATE(this.publishedEndDate, this.date);
-        // console.log(sss);
-
-        // var diffWeeks = this.globalS.CALCULATE_WHAT_WEEK_FORTNIGHT(this.globalS.CONVERTSTRING_TO_DATETIME(this.payPeriod), this.date);
-        // console.log(diffWeeks);
-     
         var bbb: any = this.buildDateFrames(this.slots);
         var currDate = this.date;
 
         var payPeriod = this.globalS.CONVERTSTRING_TO_DATETIME(this.payPeriod);
-        console.log(this.payPeriod)
         var list: Array<PermanentBookings> = [];
         if(typeof this.slots === 'undefined') return [];
 
@@ -658,8 +649,10 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
         // Fortnight
         if(this.slots.length  == 2 ){
             while(currDate < this.publishedEndDate){
-
+                // console.log(payPeriod)
+                // console.log(currDate);
                 var noOfWeekSincePayPeriod = this.globalS.CALCULATE_WHAT_WEEK_FORTNIGHT(payPeriod, currDate);
+                // console.log(noOfWeekSincePayPeriod);
                 var currDay = getDay(currDate);
     
                 for(var a = 0 ; a < bbb.length; a++){

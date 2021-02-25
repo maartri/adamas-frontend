@@ -62,6 +62,9 @@ export const ROSTER_TYPE = {
     13: "UNAVAILABILITY",
     14: "ITEM"
 }
+export const quantity = [1,2,3,4,5,6,7,8,9,10,11];
+export const unit = ['EACH','PACK','CTN','PKT','ROLL/S']
+
 export const fundingDropDowns = {
     type: ['CACP', 'EACH', 'EACHD', 'DS', 'OTHER'],
     status: ['REFERRAL', 'WAITING LIST', 'ACTIVE', 'ON HOLD', 'INACTIVE'],
@@ -310,6 +313,7 @@ export class GlobalService {
     }
 
     serialize(obj: any): any {
+        
         if (obj == null)
             return {};
 

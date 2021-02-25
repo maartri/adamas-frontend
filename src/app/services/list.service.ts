@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { HttpParams } from '@angular/common/http';
 
 import { CallDeceaseProcedure, CallReferralOutProcedure } from '@modules/modules';
 
@@ -64,6 +65,14 @@ export class ListService {
 
     getfundingpackagepurposelist(): Observable<any>{
         return this.auth.get(`${list}/funding/package-purpose/list`);
+    }
+
+    getremindersrecipient(): Observable<any>{
+        return this.auth.get(`${list}/reminders-recipient`);
+    }
+
+    getreasons(): Observable<any>{
+        return this.auth.get(`${list}/reasons`);
     }
 
     getfundingprioritylist(): Observable<any>{
@@ -292,6 +301,10 @@ export class ListService {
 
     getlist(sqlString: string): Observable<any>{
         return this.auth.post(`${list}/get-list`, { Sql: sqlString})
+    }
+
+    getreferraltype(data: any): Observable<any>{
+        return this.auth.get(`${list}/referral-type-v2`, data);
     }
 
     getcoordinators(): Observable<any>{

@@ -46,6 +46,7 @@ import { IncidentPostComponent } from './incident-post/incident-post.component';
 import { AddStaffComponent } from './add-staff/add-staff.component';
 import { IncidentDocumentsComponent } from './incident-documents/incident-documents.component';
 import { RecipientsOptionsComponent } from './recipients-options/recipients-options.component';
+import { SelectListRecipientComponent } from './select-list-recipient/select-list-recipient.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { RecipientsOptionsComponent } from './recipients-options/recipients-opti
     IncidentPostComponent,
     AddStaffComponent,
     IncidentDocumentsComponent,
-    RecipientsOptionsComponent
+    RecipientsOptionsComponent,
+    SelectListRecipientComponent
   ],
   imports: [
     CommonModule,

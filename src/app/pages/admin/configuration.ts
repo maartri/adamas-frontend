@@ -296,7 +296,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             this.router.navigate(['/admin/document-categories']);
         }
         if(index == 31){
-            // this.router.navigate(['/admin/document-categories']);
+            this.router.navigate(['/admin/document-template']);
         }
         if(index == 32){
             this.router.navigate(['/admin/recipients-categories']);

@@ -27,7 +27,7 @@ import { NzTabPosition } from 'ng-zorro-antd/tabs';
   `]
 })
 export class CompaniesComponent implements OnInit {
-
+  
   private unsubscribe: Subject<void> = new Subject();
   branchList: Array<any>;
   sqlserverList:Array<any>;
@@ -59,6 +59,10 @@ export class CompaniesComponent implements OnInit {
   title:string = "Add New Company";
   workStartHour: Array<any>;
   workFinsihHour: Array<any>;
+  drawerVisible: boolean =  false;  
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
   tabs = [1, 2, 3];
   options = [
     { value: 'top', label: 'top' },
@@ -73,7 +77,7 @@ export class CompaniesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private menuS: MenuService) { }
-
+    
     
     ngOnInit(): void {
       
@@ -156,8 +160,29 @@ export class CompaniesComponent implements OnInit {
     }
     loadTitle()
     {
-      return this.title;
-    }     
+      return this.title
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
+    } 
     handleCancel() {
       this.modalOpen = false;
     }
@@ -172,81 +197,82 @@ export class CompaniesComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      this.postLoading = true;
+      // this.postLoading = true;
       if(!this.isUpdate){
-        const group = this.inputForm;
-        this.menuS.AddBranch({
-          name: group.get('name').value,
-          glRevene: group.get('glRevene').value,
-          glCost: group.get('glCost').value,
-          centerName: group.get('centerName').value,
-          addrLine1: group.get('addrLine1').value,
-          addrLine2: group.get('addrLine2').value,
-          Phone: group.get('Phone').value,
-          startHour: group.get('startHour').value,
-          finishHour: group.get('finishHour').value,
-          earlyStart: group.get('earlyStart').value,
-          lateStart: group.get('lateStart').value,
-          earlyFinish: group.get('earlyFinish').value,
-          lateFinish : group.get('lateFinish').value,
-          overstay: group.get('overstay').value,
-          understay: group.get('understay').value,
-          t2earlyStart: group.get('t2earlyStart').value,
-          t2lateStart: group.get('t2lateStart').value,
-          t2earlyFinish: group.get('t2earlyFinish').value,
-          t2lateFinish: group.get('t2lateFinish').value,
-          t2overstay: group.get('t2overstay').value,
-          t2understay: group.get('t2understay').value,
-          recordNumber: group.get('recordNumber').value
-        }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          if (data) 
-          this.globalS.sToast('Success', 'Saved successful');     
-          else
-          this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-
-          // this.loadBranches();
-          this.loadData();
-          this.handleCancel();
-          this.resetModal();    
-        });
+      //   const group = this.inputForm;
+      //   this.menuS.AddBranch({
+      //     name: group.get('name').value,
+      //     glRevene: group.get('glRevene').value,
+      //     glCost: group.get('glCost').value,
+          
+      //     centerName: group.get('centerName').value,
+      //     addrLine1: group.get('addrLine1').value,
+      //     addrLine2: group.get('addrLine2').value,
+      //     Phone: group.get('Phone').value,
+      //     startHour: group.get('startHour').value,
+      //     finishHour: group.get('finishHour').value,
+      //     earlyStart: group.get('earlyStart').value,
+      //     lateStart: group.get('lateStart').value,
+      //     earlyFinish: group.get('earlyFinish').value,
+      //     lateFinish : group.get('lateFinish').value,
+      //     overstay: group.get('overstay').value,
+      //     understay: group.get('understay').value,
+      //     t2earlyStart: group.get('t2earlyStart').value,
+      //     t2lateStart: group.get('t2lateStart').value,
+      //     t2earlyFinish: group.get('t2earlyFinish').value,
+      //     t2lateFinish: group.get('t2lateFinish').value,
+      //     t2overstay: group.get('t2overstay').value,
+      //     t2understay: group.get('t2understay').value,
+      //     recordNumber: group.get('recordNumber').value
+      //   }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+      //     if (data) 
+      //     this.globalS.sToast('Success', 'Saved successful');     
+      //     else
+      //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+          
+      //     // this.loadBranches();
+      //     this.loadData();
+      //     this.handleCancel();
+      //     this.resetModal();    
+      //   });
       }else{
-          const group = this.inputForm;
-          console.log(group.get('recordNumber').value);
-          // return false;
-          this.menuS.UpdateBranch({
-          name: group.get('name').value,
-          glRevene: group.get('glRevene').value,
-          glCost: group.get('glCost').value,
-          centerName: group.get('centerName').value,
-          addrLine1: group.get('addrLine1').value,
-          addrLine2: group.get('addrLine2').value,
-          Phone: group.get('Phone').value,
-          startHour: group.get('startHour').value,
-          finishHour: group.get('finishHour').value,
-          earlyStart: group.get('earlyStart').value,
-          lateStart: group.get('lateStart').value,
-          earlyFinish: group.get('earlyFinish').value,
-          lateFinish : group.get('lateFinish').value,
-          overstay: group.get('overstay').value,
-          understay: group.get('understay').value,
-          t2earlyStart: group.get('t2earlyStart').value,
-          t2lateStart: group.get('t2lateStart').value,
-          t2earlyFinish: group.get('t2earlyFinish').value,
-          t2lateFinish: group.get('t2lateFinish').value,
-          t2overstay: group.get('t2overstay').value,
-          t2understay: group.get('t2understay').value,
-          recordNumber: group.get('recordNumber').value,
-        }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          if (data) 
-          this.globalS.sToast('Success', 'Update successful');     
-          else
-          this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-
-          // this.loadBranches();
-          this.handleCancel();
-          this.resetModal();    
-        });
-      this.isUpdate = false;
+        // const group = this.inputForm;
+        // console.log(group.get('recordNumber').value);
+        // // return false;
+        // this.menuS.UpdateBranch({
+        //   name: group.get('name').value,
+        //   glRevene: group.get('glRevene').value,
+        //   glCost: group.get('glCost').value,
+        //   centerName: group.get('centerName').value,
+        //   addrLine1: group.get('addrLine1').value,
+        //   addrLine2: group.get('addrLine2').value,
+        //   Phone: group.get('Phone').value,
+        //   startHour: group.get('startHour').value,
+        //   finishHour: group.get('finishHour').value,
+        //   earlyStart: group.get('earlyStart').value,
+        //   lateStart: group.get('lateStart').value,
+        //   earlyFinish: group.get('earlyFinish').value,
+        //   lateFinish : group.get('lateFinish').value,
+        //   overstay: group.get('overstay').value,
+        //   understay: group.get('understay').value,
+        //   t2earlyStart: group.get('t2earlyStart').value,
+        //   t2lateStart: group.get('t2lateStart').value,
+        //   t2earlyFinish: group.get('t2earlyFinish').value,
+        //   t2lateFinish: group.get('t2lateFinish').value,
+        //   t2overstay: group.get('t2overstay').value,
+        //   t2understay: group.get('t2understay').value,
+        //   recordNumber: group.get('recordNumber').value,
+        // }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        //   if (data) 
+        //   this.globalS.sToast('Success', 'Update successful');     
+        //   else
+        //   this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+          
+        //   // this.loadBranches();
+        //   this.handleCancel();
+        //   this.resetModal();    
+        // });
+        // this.isUpdate = false;
       }
       // this.handleCancel();
       // this.resetModal();
@@ -302,7 +328,7 @@ export class CompaniesComponent implements OnInit {
       this.browsers = ['Google','Bing'];
     }
     loadData(){
-      let sql ="Select RecordNumber, Description From DataDomains Where Domain = 'COMPANY'  ORDER BY DESCRIPTION";
+      let sql ="Select RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'COMPANY'  ORDER BY DESCRIPTION";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.branchList = data;
@@ -320,5 +346,6 @@ export class CompaniesComponent implements OnInit {
     //     this.cd.detectChanges();
     //   });
     // }
-
-}
+    
+  }
+  

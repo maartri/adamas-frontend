@@ -1,0 +1,103 @@
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col>
+            <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus"></i> Add Document Template </button>
+            <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
+            <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
+            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                <thead>
+                    <tr>
+                        <th class="left">Title</th>
+                        <th class="left">Type</th>
+                        <th class="left">Category</th>
+                        <th class="left">Classification</th>
+                        <th class="left">Template</th>
+                        <th class="left">End Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of basicTable.data;let i = index;">
+                    <td class="left">{{ data.title  }} </td>
+                    <td class="left">{{ data.type  }} </td>
+                    <td class="left">{{ data.category  }} </td>
+                    <td class="left">{{ data.description }} </td>
+                    <td class="left">{{ data.template  }} </td>
+                    <td class="left">{{ data.end_date | date: 'dd/MM/y' }}</td>
+                    <td *ngIf="data.is_deleted == 'False' || data.is_deleted == 'false' || data.is_deleted == '' ">
+                        <a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Document Template List?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                    <td *ngIf="data.is_deleted == 'True' || data.is_deleted == 'true' ">
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to Include this in Document Template List?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="activateDocument(data)">Activate</a>
+                    </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+    </div>
+    <nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+        <div class="flexy">
+        <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+            <nz-step class="mini" nzTitle="Details" nzDescription=""></nz-step>
+        </nz-steps>
+        <nz-divider class="full-height" nzType="vertical"></nz-divider>
+            <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
+                <div *ngIf="current == 0">
+                    <div nz-row nzGutter="24" class="mrg-btm">
+                    <label for="End Date">Title:</label>
+                        <input nz-input placeholder="Title"  formControlName="title" required />
+                    </div>
+                    <div nz-row nzGutter="24" class="mrg-btm">
+                        <label for="CDC Item" col nzSpan="6">List Type:</label>
+                        <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="type" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="let ltype of listType" [nzValue]="ltype" [nzLabel]="ltype"></nz-option> 
+                        </nz-select>
+                    </div>
+                    <div nz-row nzGutter="24" class="mrg-btm">
+                        <label for="CDC Item" col nzSpan="6" >Filling Classification:</label>
+                        <nz-select col nzSpan="14" [nzDropdownMatchSelectWidth]="false" formControlName="description" nzShowSearch nzAllowClear style="width:100%;" ng-init="ALL = staff[0]" 
+                        ng-model="ALL" > 
+                        <nz-option *ngFor="let class of fileClass;let i = index;" [nzValue]="class.name" [nzLabel]="class.name" ></nz-option> 
+                        </nz-select>
+                    </div>
+                    <div nz-row nzGutter="24" class="mrg-btm">
+                        <label for="CDC Item" nzSpan="6" >Document Category:</label>
+                        <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="category" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="let cat of docCat;let i = index;" [nzValue]="cat.name" [nzLabel]="cat.name"></nz-option> 
+                        </nz-select>
+                    </div>
+                    <div nz-row nzGutter="24" class="mrg-btm">
+                        <label nz-checkbox nzSpan="14" ng-model="canCreate"  formControlName="can_create">Cane Create</label>
+                    </div>
+                    <div nz-row nzGutter="24" class="mrg-btm">
+                        <label for="Name">Template:</label>
+                        <textarea rows="4" nz-input  formControlName="template"></textarea>
+                    </div>
+                    <div nz-row nzGutter="24" class="mrg-btm">
+                        <label for="CDC Item" nzSpan="6" >Expiry Date:</label>
+                        <nz-date-picker nzSpan="14" [nzPlaceHolder]="'Expiry Date'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                </div>
+            </div>
+            <div *nzModalFooter>
+                    <ng-container>
+                        <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]= "!inputForm.get('title').value || !inputForm.get('type').value" (click)="save()" *ngIf="current === 0">
+                            <span>Save</span>
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+    </nz-modal>
+    <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+        <div class="col-md-12 spinner" *ngIf="loading">
+            <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
+        <div nz-row>
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        </div>
+    </nz-drawer>

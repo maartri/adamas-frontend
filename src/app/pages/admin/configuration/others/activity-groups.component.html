@@ -13,6 +13,7 @@
                     <th nzLeft nzBreakWord>Name/Title</th>
                     <th nzLeft nzBreakWord>Branch</th>
                     <th nzLeft nzBreakWord>Group</th>
+                    <th nzLeft nzBreakWord>Expiry</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -21,7 +22,7 @@
                 <td nzLeft nzBreakWord>{{ data.name   }} </td>
                 <td nzLeft nzBreakWord>{{ data.branch }} </td>
                 <td nzLeft nzBreakWord>{{ data.agroup }} </td>
-                <!-- <td class="left">{{ data.rate  }} </td> -->
+                <td nzLeft nzBreakWord>{{ data.expiry  }} </td>
                 <td nzLeft nzBreakWord><a (click)="showEditModal(data.row_num)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                     <nz-divider nzType="vertical"></nz-divider>
                     <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Activity Group List?"
@@ -55,6 +56,10 @@
                     <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="agroup" nzShowSearch nzAllowClear style="width:100%;">
                     <nz-option *ngFor="let group of groups" [nzValue]="group" [nzLabel]="group"></nz-option> 
                     </nz-select>
+                </div>
+                <div nz-row nzGutter="24" class="mrg-btm">
+                    <label for="End Date">Expiry Date:</label>
+                    <nz-date-picker [nzPlaceHolder]="'Expiry Date'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
                 </div>
             </div>
         </div>

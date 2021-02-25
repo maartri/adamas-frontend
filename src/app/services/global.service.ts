@@ -272,7 +272,12 @@ export class GlobalService {
         }
         return null;
     }
-
+    isValueNull(data: any){
+        if (!this.isVarNull(data)) {
+            return "'"+data+"'";
+        }
+        return null;
+    }
     decode(token: string = this.token) {
         return helper.decodeToken(token);
     }

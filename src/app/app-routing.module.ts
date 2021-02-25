@@ -236,6 +236,7 @@ import { CaseMangementAdminComponent } from '@admin/configuration/services/case-
 import { StaffAdminActivitiesComponent } from '@admin/configuration/services/staff-admin-activities.component';
 import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
 import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
+import { DocumentTemplateComponent } from '@admin/configuration/documents/document-template.component';
 
 const routes: Routes = [
   {
@@ -627,6 +628,10 @@ const routes: Routes = [
       {
         path:"document-categories",
         component:DocumentcategoriesComponent,
+      },
+      {
+        path:"document-template",
+        component:DocumentTemplateComponent,
       },
       {
         path:"recipients-categories",
@@ -1123,6 +1128,7 @@ export const PAGE_COMPONENTS = [
   LocationCategoriesComponent,
   FillingclassificationComponent,
   DocumentcategoriesComponent,
+  DocumentTemplateComponent,
   RecipientsCategoryComponent,
   RecipientsGroupComponent,
   RecipientsMinorGroupComponent,

@@ -6,6 +6,7 @@ import { GlobalService, ListService, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
   selector: 'app-award-details',
@@ -33,6 +34,10 @@ export class AwardDetailsComponent implements OnInit {
   inputForm: FormGroup;
   modalVariables:any;
   inputVariables:any;
+  dateFormat: string ='dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   postLoading: boolean = false;
   isUpdate: boolean = false;
   title:string = "Add New Award Details";
@@ -57,8 +62,10 @@ export class AwardDetailsComponent implements OnInit {
     ){}
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
+      this.populateDropDown();
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -89,6 +96,7 @@ export class AwardDetailsComponent implements OnInit {
         category,
         level,
         notes,
+        end_date,
         recordNumber
       } = this.tableData[index];
       this.inputForm.patchValue({
@@ -97,6 +105,7 @@ export class AwardDetailsComponent implements OnInit {
         category:category,
         level:level,
         notes:notes,
+        end_date:end_date,
         recordNumber:recordNumber
       });
     }
@@ -112,67 +121,14 @@ export class AwardDetailsComponent implements OnInit {
       this.current += 1;
     }
     delete(data: any) {
-      // this.postLoading = true;     
-      // const group = this.inputForm;
-      // this.menuS.deleteDomain(data.recordNumber)
-      // .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      //   if (data) {
           this.globalS.sToast('Failure', 'Data Deleted!');
-          // this.loadData();
-          // return;
-        // }
-      // });
     }
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        // this.switchS.addData(  
-        //   this.modalVariables={
-        //     title: 'CDC Claim Rates'
-        //   }, 
-        //   this.inputVariables = {
-        //     item: group.get('item').value,
-        //     rate: group.get('rate').value,
-        //     domain: 'PACKAGERATES', 
-        //   }
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Saved successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-        //     this.loadData();
-        //     this.postLoading = false;          
-        //     this.handleCancel();
-        //     this.resetModal();
-        //   });
       }else{
-        this.postLoading = true;     
-        const group = this.inputForm;
-        // console.log(group.get('item').value);
-        // this.switchS.updateData(  
-        //   this.modalVariables={
-        //     title: 'CDC Claim Rates'
-        //   }, 
-        //   this.inputVariables = {
-        //     item: group.get('item').value,
-        //     rate: group.get('rate').value,
-        //     recordNumber:group.get('recordNumber').value,
-        //     domain: 'PACKAGERATES',
-        //   }
-        
-        //   ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        //     if (data) 
-        //     this.globalS.sToast('Success', 'Updated successful');     
-        //     else
-        //     this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-        //     this.loadData();
-        //     this.postLoading = false;          
-        //     this.handleCancel();
-        //     this.resetModal();
-        //   });
       }
-      
     }
     loadData(){
       let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) as row_num,RecordNo, Code, Description, Category, Level FROM AwardPos";
@@ -181,15 +137,35 @@ export class AwardDetailsComponent implements OnInit {
         this.tableData = data;
         this.loading = false;
       });
-      
-      let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'AWARDLEVEL' ORDER BY Description";
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
+      }
+    }
+    populateDropDown(){  
+      let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'AWARDLEVEL' ORDER BY Description";
       this.listS.getlist(branch).subscribe(data => {
         this.items = data;
         this.loading = false;
-      });
-      
+      });  
     }
-    
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
+    }
     buildForm() {
       this.inputForm = this.formBuilder.group({
         item: '',
@@ -197,6 +173,7 @@ export class AwardDetailsComponent implements OnInit {
         category: '',
         level: '',
         notes: '',
+        end_date:'',
         recordNumber:null
       });
     }
@@ -214,7 +191,7 @@ export class AwardDetailsComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Code as Field3, Category as Field4,Level as Field5 FROM AwardPos";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,Code as Field3, Category as Field4,Level as Field5,CONVERT(varchar, [enddate],105) as Field6 FROM AwardPos";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -237,7 +214,7 @@ export class AwardDetailsComponent implements OnInit {
           "head3" : "Code",
           "head4" : "Category",
           "head5" : "Level",
-          "head6" : "Name",
+          "head6" : "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

@@ -30,7 +30,8 @@ export class ClaimratesComponent implements OnInit {
   modalOpen: boolean = false;
   current: number = 0;
   inputForm: FormGroup;
-  modalVariables:any;
+  modalVariables: any;
+  dateFormat: string ='dd/MM/yyyy';
   inputVariables:any;
   postLoading: boolean = false;
   isUpdate: boolean = false;
@@ -41,7 +42,10 @@ export class ClaimratesComponent implements OnInit {
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
-  drawerVisible: boolean =  false;
+  drawerVisible: boolean =  false;  
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -57,8 +61,9 @@ export class ClaimratesComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
-      this.items = ["LEVEL 1","LEVEL 2","LEVEL 3","LEVEL 4","DEMENTIA/CONGNITION VET 1","DEMENTIA/CONGNITION VET 2","DEMENTIA/CONGNITION VET 3","DEMENTIA/CONGNITION VET 4","OXYGEN"]
+      this.PopulateData();
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
@@ -71,7 +76,30 @@ export class ClaimratesComponent implements OnInit {
     }
     loadTitle()
     {
-      return this.title;
+      return this.title
+    }
+    
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
+      }
+    }
+
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
     }
     resetModal() {
       this.current = 0;
@@ -86,12 +114,14 @@ export class ClaimratesComponent implements OnInit {
       this.modalOpen = true;
       const { 
         name,
-        rate,
+        user1,
+        end_date,
         recordNumber
       } = this.tableData[index];
       this.inputForm.patchValue({
         item: name,
-        rate:rate,
+        rate:user1,
+        end_date:end_date,
         recordNumber:recordNumber
       });
     }
@@ -124,6 +154,7 @@ export class ClaimratesComponent implements OnInit {
           this.inputVariables = {
             item: group.get('item').value,
             rate: group.get('rate').value,
+            end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             domain: 'PACKAGERATES', 
           }
           ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -147,6 +178,7 @@ export class ClaimratesComponent implements OnInit {
             this.inputVariables = {
               item: group.get('item').value,
               rate: group.get('rate').value,
+              end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
               recordNumber:group.get('recordNumber').value,
               domain: 'PACKAGERATES',
             } 
@@ -156,17 +188,24 @@ export class ClaimratesComponent implements OnInit {
               else
               this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
-              this.postLoading = false;          
+              this.postLoading = false;   
+              this.isUpdate = false;       
               this.handleCancel();
               this.resetModal();
             });
           } 
         }
         loadData(){
-          let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, Description as name,User1 as rate,recordNumber from DataDomains where Domain='PACKAGERATES'";
           this.loading = true;
-          this.listS.getlist(sql).subscribe(data => {
+          this.menuS.getDataDomainByType("PACKAGERATES",this.check).subscribe(data => {
             this.tableData = data;
+            this.loading = false;
+          });
+        }
+        PopulateData(){
+          this.loading = true;
+          this.menuS.getDataDomainByType("PACKAGERATES",this.check).subscribe(data => {
+            this.items = data;
             this.loading = false;
           });
         }
@@ -187,17 +226,17 @@ export class ClaimratesComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,recordNumber as Field4 from DataDomains where Domain='PACKAGERATES'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,CONVERT(varchar, [enddate],105) as Field4,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='PACKAGERATES'";
           
           const headerDict = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           }
-         
+          
           const requestOptions = {
             headers: new HttpHeaders(headerDict)
           };
-         
+          
           const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -208,6 +247,7 @@ export class ClaimratesComponent implements OnInit {
               "head1" : "Sr#",
               "head2" : "Name",
               "head3" : "Rate",
+              "head4" : "End Date",
             }
           }
           this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
@@ -231,11 +271,12 @@ export class ClaimratesComponent implements OnInit {
           this.tryDoctype = "";
           this.pdfTitle = "";
         }
-
+        
         buildForm() {
           this.inputForm = this.formBuilder.group({
             item: '',
             rate: '',
+            end_date:'',
             recordNumber:null
           });
         }

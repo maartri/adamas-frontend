@@ -40,7 +40,11 @@ export class DistributionlistComponent implements OnInit {
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
-  drawerVisible: boolean =  false;
+  drawerVisible: boolean =  false;  
+  dateFormat: string = 'dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
   
   constructor(
     private globalS: GlobalService,
@@ -56,14 +60,24 @@ export class DistributionlistComponent implements OnInit {
     private unsubscribe: Subject<void> = new Subject();
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.populateDropdowns();
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
     }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
+        this.loadData();
+      }
+    }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity FROM IM_DistributionLists order by recipient";
+      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,DeletedRecord as is_deleted,EndDate as end_date from IM_DistributionLists "+this.whereString+" order by Recipient";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -143,6 +157,7 @@ export class DistributionlistComponent implements OnInit {
         activity,
         severity,
         mandatory,
+        end_date,
         recordNo,
         
       } = this.tableData[index];
@@ -150,12 +165,13 @@ export class DistributionlistComponent implements OnInit {
         ltype:ltype,
         staff:staff,
         service:activity,
-        assignee:(assignee) ? true : false,
+        assignee:(assignee == true) ? true : false,
         prgm:program,
         location:location,
         recepient:recipient,
         saverity:severity,
-        mandatory:(mandatory) ? true : false,
+        mandatory:(mandatory == true) ? true : false,
+        end_date:end_date,
         recordNo:recordNo,
       });
     }
@@ -165,9 +181,11 @@ export class DistributionlistComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    loadtitle(){
-      return this.heading
+    loadTitle()
+    {
+      return this.heading;
     }
+    
     handleCancel() {
       this.modalOpen = false;
     }
@@ -182,19 +200,21 @@ export class DistributionlistComponent implements OnInit {
       
       if(!this.isUpdate){        
         this.postLoading = true;   
-        const group = this.inputForm;
-        let ltype     = group.get('ltype').value;
-        let staff = group.get('staff').value;
-        let service = group.get('service').value;
-        let prgm   = group.get('prgm').value;
-        let location   = group.get('location').value;
-        let recepient   = group.get('recepient').value;
-        let saverity      = group.get('saverity').value;
-        let mandatory     = this.trueString(group.get('mandatory').value);
-        let assignee     = this.trueString(group.get('assignee').value);
+        const group    = this.inputForm;
+        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
+        let staff      = this.globalS.isValueNull(group.get('staff').value);
+        let service    = this.globalS.isValueNull(group.get('service').value);
+        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
+        let location   = this.globalS.isValueNull(group.get('location').value);
+        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
+        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
+        let mandatory  = this.trueString(group.get('mandatory').value);
+        let assignee   = this.trueString(group.get('assignee').value);
+        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let values = recepient+","+service+","+location+","+prgm+","+staff+","+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
+        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[EndDate]) Values ("+values+")"; 
         
-        let values = recepient+"','"+service+"','"+location+"','"+prgm+"','"+staff+"','"+mandatory+"','"+assignee+"','"+saverity+"','"+ltype;
-        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName]) Values ('"+values+"')"; 
+        console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
           if (data) 
@@ -209,19 +229,19 @@ export class DistributionlistComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
-        let ltype         = group.get('ltype').value;
-        let staff         = group.get('staff').value;
-        let service       = group.get('service').value;
-        let prgm          = group.get('prgm').value;
-        let location      = group.get('location').value;
-        let recepient     = group.get('recepient').value;
-        let saverity      = group.get('saverity').value;
-        let recordNo      = group.get('recordNo').value;
-        let mandatory     = this.trueString(group.get('mandatory').value);
-        let assignee     = this.trueString(group.get('assignee').value);
-        let sql  = "Update IM_DistributionLists SET [Recipient]='"+ recepient + "',[Activity] = '"+ service + "',[Program] = '"+ prgm + "',[Staff] = '"+ staff+ "',[Severity] = '"+ saverity + "',[ListName] = '"+ ltype+ "',[Location] = '"+ location+ "'  WHERE [recordNo] ='"+recordNo+"'";
-        // console.log(sql);
-        // return false;
+        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
+        let staff      = this.globalS.isValueNull(group.get('staff').value);
+        let service    = this.globalS.isValueNull(group.get('service').value);
+        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
+        let location   = this.globalS.isValueNull(group.get('location').value);
+        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
+        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
+        let mandatory  = this.trueString(group.get('mandatory').value);
+        let assignee   = this.trueString(group.get('assignee').value);
+        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let recordNo   = group.get('recordNo').value;
+        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[EndDate] = "+end_date+ ",[Location] ="+ location+ " WHERE [recordNo] ='"+recordNo+"'";
+        console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
@@ -247,7 +267,19 @@ export class DistributionlistComponent implements OnInit {
           return;
         }
       });
-    }     
+    }    
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activateDistributionlist(data.recordNo)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
+    } 
     buildForm() {
       this.inputForm = this.formBuilder.group({
         ltype:'',
@@ -258,6 +290,7 @@ export class DistributionlistComponent implements OnInit {
         location:'',
         recepient:'',
         saverity:'',
+        end_date:'',
         mandatory:false,
         recordNo:null,
       });
@@ -277,9 +310,9 @@ export class DistributionlistComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY RecordNo) AS Field1," +
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
       "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-      "ListName as  Field7,Severity as Field8 FROM IM_DistributionLists order by recipient";
+      "ListName as  Field7,Severity as Field8,CONVERT(varchar, [EndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -305,6 +338,7 @@ export class DistributionlistComponent implements OnInit {
           "head6": "Staff",
           "head7": "ItemType",
           "head8": "Severity",
+          "head9": "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
@@ -327,8 +361,6 @@ export class DistributionlistComponent implements OnInit {
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";
-    }
-    
-    
+    }    
   }
   

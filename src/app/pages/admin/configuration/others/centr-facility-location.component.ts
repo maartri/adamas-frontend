@@ -385,7 +385,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         this.cd.detectChanges();
       });
       
-      let branch = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'BRANCHES' ORDER BY Description";
+      let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'BRANCHES' ORDER BY Description";
       this.listS.getlist(branch).subscribe(data => {
         this.branches = data;
         this.loading = false;
@@ -395,7 +395,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         this.staffList = data;
         this.loading = false;
       });
-      let compet = "SELECT Description FROM DATADOMAINS WHERE Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+      let compet = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       
       this.listS.getlist(compet).subscribe(data => {
         this.competencyList = data;

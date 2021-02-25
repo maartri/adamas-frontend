@@ -87,14 +87,29 @@ export class MenuService {
         InsertRecord(sqlString: string): Observable<any>{
             return this.auth.post(`${menu}/insertSql-list`, { Sql: sqlString})
         }
+        getDataDomainByType(domain: string,is_where:boolean):Observable<any>{
+            return this.auth.get(`${menu}/getDomains/${domain}/${is_where}`)
+        }
         InsertDomain(sqlString: string): Observable<any>{
             return this.auth.post(`${menu}/addDomain`, { Sql: sqlString})
         }
         deleteDomain(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/datadomains/${recordNo}`)
         }
+        activeDomain(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/datadomains/${recordNo}`)
+        }
+        deleteDocumentTemplatelist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/documentTemplate/${recordNo}`)
+        }
+        activateDocumentTemplatelist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/documentTemplate/${recordNo}`)
+        }
         deleteDistributionlist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/distribution/${recordNo}`)
+        }
+        activateDistributionlist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/distribution/${recordNo}`)
         }
         deleteBudgetlist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/budgets/${recordNo}`)
@@ -102,20 +117,39 @@ export class MenuService {
         deletepostcodeslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/postcodes/${recordNo}`)
         }
+        activatepostcodeslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/postcodes/${recordNo}`)
+        }
         deleteholidayslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/holidays/${recordNo}`)
         }
+        activateholidayslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/holidays/${recordNo}`)
+        }
+        
         deletemedicalContacts(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/medicalContacts/${recordNo}`)
+        }
+        activatemedicalContacts(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/medicalContacts/${recordNo}`)
         }
         deletenursingDiagnosis(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/nursingDiagnosis/${recordNo}`)
         }
+        activatenursingDiagnosis(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/nursingDiagnosis/${recordNo}`)
+        }
         deleteMDiagnosisTypes(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/MDiagnosisTypes/${recordNo}`)
         }
+        activateMDiagnosisTypes(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/MDiagnosisTypes/${recordNo}`)
+        }
         deleteMProcedureTypes(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/MProcedureTypes/${recordNo}`)
+        }
+        activateMProcedureTypes(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/MProcedureTypes/${recordNo}`)
         }
         deleteActivityServiceslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/ActivityServices/${recordNo}`)

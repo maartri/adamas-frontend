@@ -16,23 +16,27 @@ import { NzModalService } from 'ng-zorro-antd';
   styles: []
 })
 export class ContacttypesComponent implements OnInit {
-    tableData: Array<any>;
-    contactGroups:Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    inputForm: FormGroup;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    heading:string = "Add New Contact Type"
-    private unsubscribe: Subject<void> = new Subject();
-    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
-    token:any;
-    tocken: any;
-    pdfTitle: string;
-    tryDoctype: any;
-    drawerVisible: boolean =  false;
-   
+  tableData: Array<any>;
+  contactGroups:Array<any>;
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  dateFormat: string ='dd/MM/yyyy';
+  inputForm: FormGroup;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  heading:string = "Add New Contact Type"
+  private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+  token:any;
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;  
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -44,12 +48,14 @@ export class ContacttypesComponent implements OnInit {
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
-  ){}
+    ){}
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
       this.loadData();
+      this.populateDropDown();
       this.loading = false;
       this.cd.detectChanges();
     }
@@ -71,18 +77,42 @@ export class ContacttypesComponent implements OnInit {
       this.current = 0;
       this.modalOpen = true;
       const { 
-        pgroup,
+        staff,
         title,
-
+        end_date,
+        recordNumber,
       } = this.tableData[index];
-        this.inputForm.patchValue({
-          title: title,
-          pgroup:pgroup,
-          
-     });
+      this.inputForm.patchValue({
+        title: title,
+        pgroup:staff,
+        end_date:end_date,
+        recordNumber:recordNumber,
+      });
     }
-    loadtitle(){
+    loadTitle()
+    {
       return this.heading
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
+      }
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
     }
     handleCancel() {
       this.modalOpen = false;
@@ -113,16 +143,16 @@ export class ContacttypesComponent implements OnInit {
         }
       });
     }
-
+    
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num,Description as title,HACCCode as pgroup,recordNumber from DataDomains where Domain='CONTACTSUBGROUP' ";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.getDataDomainByType("CONTACTSUBGROUP",this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });
-
-      let sql2 = "select distinct Description from DataDomains WHERE Domain = 'CONTACTGROUP'";
+    }
+    populateDropDown(){
+      let sql2 = "select distinct Description from DataDomains "+this.whereString+" Domain = 'CONTACTGROUP'";
       this.listS.getlist(sql2).subscribe(data => {
         this.contactGroups = data;
         this.loading = false;
@@ -131,6 +161,7 @@ export class ContacttypesComponent implements OnInit {
     buildForm() {
       this.inputForm = this.formBuilder.group({
         pgroup:'',
+        end_date:'',
         title:'',
       });
     }
@@ -148,17 +179,17 @@ export class ContacttypesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3 from DataDomains where Domain='CONTACTSUBGROUP'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3,CONVERT(varchar, [enddate],105) as Field4 from DataDomains "+this.whereString+" Domain='CONTACTSUBGROUP'";
       
       const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
-     
+      
       const requestOptions = {
         headers: new HttpHeaders(headerDict)
       };
-     
+      
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {
@@ -169,6 +200,7 @@ export class ContacttypesComponent implements OnInit {
           "head1" : "Sr#",
           "head2" : "Title",
           "head3" : "Group",
+          "head4" : "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
@@ -192,5 +224,6 @@ export class ContacttypesComponent implements OnInit {
       this.tryDoctype = "";
       this.pdfTitle = "";
     }
-
-}
+    
+  }
+  

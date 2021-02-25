@@ -186,7 +186,7 @@ export class PostcodesComponent implements OnInit {
       this.menuS.activatepostcodeslist(data.recnum)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
-          this.globalS.sToast('Success', 'Data Deleted!');
+          this.globalS.sToast('Success', 'Data Activated!');
           this.loadData();
           return;
         }

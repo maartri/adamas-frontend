@@ -107,8 +107,8 @@
                             <label for="Name">Cost Center :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="cost" nzPlaceHolder="" nzShowSearch nzAllowClear>
-                                <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="let costcenter of programz2" [nzValue]="costcenter.fax" [nzLabel]="costcenter.fax"></nz-option> 
                             </nz-select>
                         </div>
                     </div>
@@ -117,8 +117,8 @@
                             <label for="Name">DS Outlet :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="outlet" nzPlaceHolder="" nzShowSearch nzAllowClear>
-                                <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="let outlet of CSTDAOutlet" [nzValue]="outlet.cstdaOutlet" [nzLabel]="outlet.cstdaOutlet"></nz-option> 
                             </nz-select>
                         </div>
                     </div>
@@ -187,8 +187,8 @@
                             <label for="Name">Service Type MDS :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="mds" nzPlaceHolder="" nzShowSearch nzAllowClear>
-                                <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="let serviceType of hACCType" [nzValue]="serviceType.haccType" [nzLabel]="serviceType.haccType"></nz-option> 
                             </nz-select>
                         </div>
                     </div>
@@ -197,8 +197,8 @@
                             <label for="Name">Service Type TRACCS :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="tracss" nzPlaceHolder="" nzShowSearch nzAllowClear>
-                                <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="let tracss of output" [nzValue]="tracss.title" [nzLabel]="tracss.title"></nz-option> 
                             </nz-select>
                         </div>
                     </div>
@@ -207,8 +207,8 @@
                             <label for="Name">SPID :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="spid" nzPlaceHolder="" nzShowSearch nzAllowClear>
-                                <nz-option *ngFor="" [nzLabel]="" [nzValue]=""></nz-option>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="let prog1 of programz1" [nzValue]="prog1.agencyID" [nzLabel]="prog1.agencyID"></nz-option> 
                             </nz-select>
                         </div>
                     </div>

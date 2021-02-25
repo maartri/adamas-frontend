@@ -62,6 +62,11 @@ export class BudgetsComponent implements OnInit {
   types:Array<any>;
   budgetTypes:Array<any>;
   programCordinates:Array<any>;
+  SPID:Array<any>;
+  CostCenter:Array<any>;
+  CSTDAOutlet:Array<any>;
+  ServiceTypeMDS:Array<any>;
+  ServiceTypeTraccs:Array<any>; 
   check : boolean = false;
   rpthttp = 'https://www.mark3nidad.com:5488/api/report'
   token:any;
@@ -116,29 +121,6 @@ export class BudgetsComponent implements OnInit {
         this.fundingTypes = data;
         this.loading = false;
       });
-      let prog = "SELECT Distinct [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
-      this.listS.getlist(prog).subscribe(data => {
-        this.programz = data;
-      });
-      //new 
-      let prog1 = "SELECT Distinct Address1 AS AgencyID FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
-      this.listS.getlist(prog1).subscribe(data => {
-        this.programz1 = data;
-      });
-      let prog2 = "SELECT DISTINCT UPPER(FAX) FROM HumanResourceTypes WHERE [Group] = 'PROGRAMS'";
-      this.listS.getlist(prog2).subscribe(data => {
-        this.programz2 = data;
-      });
-      
-      let outp = "SELECT Distinct Title from ITEMTYPES WHERE ProcessClassification = 'OUTPUT'";
-      this.listS.getlist(outp).subscribe(data => {
-        this.output = data;
-      });
-      let hACType = "select Distinct HACCType from ITEMTYPES WHERE ProcessClassification = 'OUTPUT'";
-      this.listS.getlist(hACType).subscribe(data => {
-        this.hACCType = data;
-      });
-      
       //end new
       let bgroup = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(bgroup).subscribe(data => {
@@ -152,6 +134,40 @@ export class BudgetsComponent implements OnInit {
       this.listS.getlist(gagency).subscribe(data => {
         this.groupAgency = data;
       });
+      let progcor = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'CASE MANAGERS'";
+      this.listS.getlist(progcor).subscribe(data => {
+        this.programCordinates = data;
+      });
+
+      let prog = "SELECT Distinct [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
+      this.listS.getlist(prog).subscribe(data => {
+        this.programz = data;
+      });
+
+      let spid = "SELECT Distinct Address1 AS AgencyID FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS'";
+      this.listS.getlist(spid).subscribe(data => {
+        this.programz1 = data;
+      });
+
+      let costcenter = "SELECT DISTINCT UPPER(FAX) as fax FROM HumanResourceTypes WHERE [Group] = 'PROGRAMS'";
+      this.listS.getlist(costcenter).subscribe(data => {
+        this.programz2 = data;
+      });
+      
+      let CSTDAOutlet = "SELECT DISTINCT UPPER([ServiceOutletID]) as CSTDAOutlet FROM CSTDAOutlets WHERE (EndDate IS NULL OR EndDate > GetDate()) AND CSTDA = 1";
+      this.listS.getlist(CSTDAOutlet).subscribe(data => {
+        this.CSTDAOutlet = data;
+      });
+
+      let Traccs = "SELECT Distinct Title from ITEMTYPES WHERE ProcessClassification = 'OUTPUT'";
+      this.listS.getlist(Traccs).subscribe(data => {
+        this.output = data;
+      });
+      let mds = "select Distinct HACCType from ITEMTYPES WHERE ProcessClassification = 'OUTPUT'";
+      this.listS.getlist(mds).subscribe(data => {
+        this.hACCType = data;
+      });
+      
       
       let staf = "SELECT Distinct ACCOUNTNO as name FROM STAFF WHERE CommencementDate IS NOT NULL AND TerminationDate IS NULL AND ACCOUNTNO > '!Z'";
       this.listS.getlist(staf).subscribe(data => {
@@ -161,13 +177,10 @@ export class BudgetsComponent implements OnInit {
       this.listS.getlist(reci).subscribe(data => {
         this.recepient = data;
       });
-      let progcor = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'CASE MANAGERS'";
-      this.listS.getlist(progcor).subscribe(data => {
-        this.programCordinates = data;
-      });
+      
     }
     loadData(){
-      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description, Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,undated from Budgets WHERE ISNULL(Budgets.DeletedRecord, 0) = 0 ORDER BY [recordNumber] desc";
+      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description, Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,Undated,StartDate as start, EndDate as end_date from Budgets WHERE ISNULL(Budgets.DeletedRecord, 0) = 0 ORDER BY [recordNumber] desc";
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data
         console.log(this.tableData);
@@ -193,6 +206,8 @@ export class BudgetsComponent implements OnInit {
         description,
         budgetType,
         undated,
+        start,
+        end_date,
         branch,
         careDomain,
         costCentre,
@@ -224,6 +239,8 @@ export class BudgetsComponent implements OnInit {
         title:description, 
         type:budgetType,
         undated:(undated == true) ? true : false,
+        start:start,
+        end_date:end_date,
         branch:branch,
         care:careDomain,
         cost:costCentre,
@@ -296,7 +313,7 @@ export class BudgetsComponent implements OnInit {
         let dollars           = this.globalS.isValueNull(group.get('dollar').value);
         let input_type        = this.globalS.isValueNull(group.get('type').value);
         let unit              = this.globalS.isValueNull(group.get('hours').value); 
-        let Undated           = this.trueString(group.get('Undated').value);
+        let Undated           = this.trueString(group.get('undated').value);
         let emoty             = null;
         let values = name+","+branch+","+funding_source+","+care_domain+","+budget_group+","+prog+","+dataset+","+traccs+","+staff_team+","+staff_cat+","+staff+","+recepient+","+coordinator+","+spid+","+state+","+costcenter+","+dsoutlet+","+funding_region+","+svcdicipline+","+svcregion+","+hours+","+dollars+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+input_type+","+unit+","+Undated+","+start+","+end;
         let sql = "INSERT INTO Budgets([Name], [Branch], [Funding Source], [Care Domain], [Budget Group], [Program], [Dataset Code], [Activity], [Staff Team], [Staff Category], [Staff], [Recipient],[coordinator], [SPID], [State], [CostCentre], [DSOutlet], [FundingRegion], [SvcDiscipline], [SvcRegion], [Hours], [Dollars], [Places], [O_Hours], [O_Dollars], [O_PlcPkg], [Y_Hours], [Y_Dollars], [Y_PlcPkg], [BudgetType], [Unit], Undated, StartDate, EndDate) Values ("+values+");select @@IDENTITY"; 
@@ -340,7 +357,7 @@ export class BudgetsComponent implements OnInit {
         let dollars           = this.globalS.isValueNull(group.get('dollar').value);
         let input_type        = this.globalS.isValueNull(group.get('type').value);
         let unit              = this.globalS.isValueNull(group.get('hours').value); 
-        let Undated           = this.trueString(group.get('Undated').value);
+        let Undated           = this.trueString(group.get('undated').value);
         let emoty             = null;
         
         let recordNumber = group.get('RecordNumber').value;

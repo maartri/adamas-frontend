@@ -88,7 +88,7 @@
                         </div>
                         <div nz-col nzSpan="16">
                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="branch" nzPlaceHolder="" nzShowSearch nzAllowClear>
-                                <nz-option *ngFor="let branch of branches" [nzLabel]="branch" [nzValue]="branch"></nz-option>
+                                <nz-option *ngFor="let branch of branches" [nzLabel]="branch.description" [nzValue]="branch.description"></nz-option>
                             </nz-select>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                         </div>
                         <div nz-col nzSpan="16">
                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="care" nzPlaceHolder="" nzShowSearch nzAllowClear>
-                                <nz-option *ngFor="let domain of caredomain" [nzLabel]="domain" [nzValue]="domain"></nz-option>
+                                <nz-option *ngFor="let domain of caredomain" [nzLabel]="domain.description" [nzValue]="domain.description"></nz-option>
                             </nz-select>
                         </div>
                     </div>
@@ -187,7 +187,7 @@
                             <label for="Name">Service Type MDS :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="mds" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let serviceType of hACCType" [nzValue]="serviceType.haccType" [nzLabel]="serviceType.haccType"></nz-option> 
                             </nz-select>
                         </div>
@@ -197,7 +197,7 @@
                             <label for="Name">Service Type TRACCS :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="tracss" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let tracss of output" [nzValue]="tracss.title" [nzLabel]="tracss.title"></nz-option> 
                             </nz-select>
                         </div>
@@ -207,7 +207,7 @@
                             <label for="Name">SPID :</label>
                         </div>
                         <div nz-col nzSpan="16">
-                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="state" nzPlaceHolder="" nzShowSearch nzAllowClear>
+                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="spid" nzPlaceHolder="" nzShowSearch nzAllowClear>
                                 <nz-option *ngFor="let prog1 of programz1" [nzValue]="prog1.agencyID" [nzLabel]="prog1.agencyID"></nz-option> 
                             </nz-select>
                         </div>
@@ -228,7 +228,7 @@
                         </div>
                         <div nz-col nzSpan="16">
                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="team" nzPlaceHolder="" nzShowSearch nzAllowClear>
-                                <nz-option *ngFor="let steam of staffTeams" [nzValue]="steam" [nzLabel]="steam"></nz-option>
+                                <nz-option *ngFor="let steam of staffTeams" [nzValue]="steam.description" [nzLabel]="steam.description"></nz-option>
                             </nz-select>
                         </div>
                     </div>

@@ -99,42 +99,53 @@ export class BudgetsComponent implements OnInit {
       this.states = ['ALL','NSW','NT','QLD','SA','TAS','VIC','WA','ACT'];
       this.types  = ['INPUT','OUTPUT'];
       this.budgetTypes  = ['HOURS'];
-
-      this.listS.getlistbranches().subscribe(data => this.branches = data);
-      this.listS.getcaredomain().subscribe(data => this.caredomain = data);
-      this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
+      let domainWhere = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
+      let branch = "SELECT Distinct Description from DataDomains "+domainWhere+" Domain =  'BRANCHES' ORDER BY Description";
+      this.listS.getlist(branch).subscribe(data => {
+        this.branches = data;
+        this.loading = false;
+      });
+      let care = "SELECT Distinct Description from DataDomains "+domainWhere+" Domain =  'CAREDOMAIN' ORDER BY Description";
+      this.listS.getlist(care).subscribe(data => {
+        this.caredomain = data;
+        this.loading = false;
+      });
+      let team = "SELECT Distinct Description from DataDomains "+domainWhere+" Domain =  'STAFFTEAM' ORDER BY Description";
+      this.listS.getlist(team).subscribe(data => {
+        this.staffTeams = data;
+        this.loading = false;
+      });
       
-      
-      let funding = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDREGION' ORDER BY Description";
+      let funding = "SELECT Distinct Description from DataDomains "+domainWhere+" Domain =  'FUNDREGION' ORDER BY Description";
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
         this.loading = false;
       });
-      let sc = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
+      let sc = "Select Distinct Description from DataDomains "+domainWhere+" Domain = 'STAFFGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(sc).subscribe(data => {
         this.staffCategory = data;
         this.loading = false;
       });
       
-      let fundingt = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDINGBODIES' ORDER BY Description";
+      let fundingt = "SELECT Distinct Description from DataDomains "+domainWhere+" Domain =  'FUNDINGBODIES' ORDER BY Description";
       this.listS.getlist(fundingt).subscribe(data => {
         this.fundingTypes = data;
         this.loading = false;
       });
       //end new
-      let bgroup = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
+      let bgroup = "Select Distinct Description from DataDomains "+domainWhere+" Domain = 'BUDGETGROUP'  ORDER BY DESCRIPTION";
       this.listS.getlist(bgroup).subscribe(data => {
         this.budgetGroup = data;
       });
-      let dicip = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
+      let dicip = "Select Distinct Description from DataDomains "+domainWhere+" Domain = 'DISCIPLINE'  ORDER BY DESCRIPTION";
       this.listS.getlist(dicip).subscribe(data => {
         this.diciplines = data;
       });
-      let gagency = "Select Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
+      let gagency = "Select Distinct Description from DataDomains "+domainWhere+" Domain = 'GROUPAGENCY'  ORDER BY DESCRIPTION";
       this.listS.getlist(gagency).subscribe(data => {
         this.groupAgency = data;
       });
-      let progcor = "SELECT Distinct Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'CASE MANAGERS'";
+      let progcor = "SELECT Distinct Description from DataDomains "+domainWhere+" Domain =  'CASE MANAGERS'";
       this.listS.getlist(progcor).subscribe(data => {
         this.programCordinates = data;
       });
@@ -309,13 +320,16 @@ export class BudgetsComponent implements OnInit {
         let funding_region    = this.globalS.isValueNull(group.get('region').value);
         let svcdicipline      = this.globalS.isValueNull(group.get('dicipline').value);
         let svcregion         = this.globalS.isValueNull(group.get('sregion').value);
-        let hours             = this.globalS.isValueNull(group.get('total').value);
-        let dollars           = this.globalS.isValueNull(group.get('dollar').value);
         let input_type        = this.globalS.isValueNull(group.get('type').value);
-        let unit              = this.globalS.isValueNull(group.get('hours').value); 
+        let unit              = this.globalS.isValueNull(group.get('hours').value);
+        let total             = this.globalS.isValueNull(group.get('total').value);
+        let older             = this.globalS.isValueNull(group.get('older').value);
+        let younger           = this.globalS.isValueNull(group.get('younger').value);
+        let dollars           = this.globalS.isValueNull(group.get('dollar').value);
+        let packages          = this.globalS.isValueNull(group.get('packages').value);
         let Undated           = this.trueString(group.get('undated').value);
         let emoty             = null;
-        let values = name+","+branch+","+funding_source+","+care_domain+","+budget_group+","+prog+","+dataset+","+traccs+","+staff_team+","+staff_cat+","+staff+","+recepient+","+coordinator+","+spid+","+state+","+costcenter+","+dsoutlet+","+funding_region+","+svcdicipline+","+svcregion+","+hours+","+dollars+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+emoty+","+input_type+","+unit+","+Undated+","+start+","+end;
+        let values = name+","+branch+","+funding_source+","+care_domain+","+budget_group+","+prog+","+dataset+","+traccs+","+staff_team+","+staff_cat+","+staff+","+recepient+","+coordinator+","+spid+","+state+","+costcenter+","+dsoutlet+","+funding_region+","+svcdicipline+","+svcregion+","+total+","+dollars+","+packages+","+older+","+emoty+","+emoty+","+younger+","+emoty+","+emoty+","+input_type+","+unit+","+Undated+","+start+","+end;
         let sql = "INSERT INTO Budgets([Name], [Branch], [Funding Source], [Care Domain], [Budget Group], [Program], [Dataset Code], [Activity], [Staff Team], [Staff Category], [Staff], [Recipient],[coordinator], [SPID], [State], [CostCentre], [DSOutlet], [FundingRegion], [SvcDiscipline], [SvcRegion], [Hours], [Dollars], [Places], [O_Hours], [O_Dollars], [O_PlcPkg], [Y_Hours], [Y_Dollars], [Y_PlcPkg], [BudgetType], [Unit], Undated, StartDate, EndDate) Values ("+values+");select @@IDENTITY"; 
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{   
           

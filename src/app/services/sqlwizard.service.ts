@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { ListService } from '@services/index';
+import { ListService, GlobalService } from '@services/index';
 import { Observable, EMPTY } from 'rxjs';
 import * as moment from 'moment';
 
@@ -16,43 +16,50 @@ interface SqlWizardProperties{
 export class SqlWizardService {
     listS: any;
     constructor(
-        private injector: Injector
+        private injector: Injector,
+        private globalS: GlobalService
     ) {
         this.listS = this.injector.get(ListService)
+    }
+
+    GETREFERRALTYPE_V2(data: any): Observable<any>{
+        return this.listS.getreferraltype(data);        
     }
 
     GetReferralType(data: SqlWizardProperties): Observable<any>{
         const tab = data.tab;
         const date = moment().format('MM-DD-YYYY');
 
+        //REFER-IN
         if(tab == 1){
             return this.listS.getwizardreferraltypes({ Program: data.program, TabType: 'REFERRAL-IN'})
         }
-
+        //REFER-ON
         if(tab == 2){
             return this.listS.getlist(`SELECT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid WHERE SO.serviceprogram = '${ data.program }' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] IN ( 'ADMISSION' ) AND ITM.[minorgroup] IN ( 'REFERRAL-OUT' ) AND ( ITM.enddate IS NULL OR ITM.enddate >= '${date}' )) ORDER BY [service type]`)
         }
 
+        // NOT-PROCEED
         if(tab == 3){
             return this.listS.getlist(`SELECT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid WHERE HRT.[name] = '${ data.program }' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] IN ( 'ADMISSION' ) AND ITM.[minorgroup] IN ( 'NOT PROCEEDING' ) AND ( ITM.enddate IS NULL OR ITM.enddate >= '${date}' )) ORDER BY [service type]`)
         }
-
+        // ASSESS
         if(tab == 4){
             return this.listS.getlist(`SELECT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid WHERE HRT.[name] = '${ data.program }' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] IN ( 'ADMISSION' ) AND ITM.[minorgroup] IN ( 'ASSESSMENT' ) AND ( ITM.enddate IS NULL OR ITM.enddate >= '${date}' )) ORDER BY [service type]`)
         }
-
+        // ADMIT
         if(tab == 10){
             return this.listS.getlist(`SELECT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid WHERE HRT.[name] = '${data.program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] IN ( 'ADMISSION' ) AND ITM.[minorgroup] IN ( 'ADMISSION' ) AND ( ITM.enddate IS NULL OR ITM.enddate >= '${date}' )) ORDER BY [service type]`)
         }
-
+        // ADMIN
         if(tab == 8){
             return this.listS.getlist(`SELECT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid WHERE HRT.[name] = '${data.program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] IN ( 'ADMISSION' ) AND ITM.[minorgroup] IN ( 'OTHER', 'REVIEW' ) AND ( ITM.enddate IS NULL OR ITM.enddate >= '${date}' )) ORDER BY [service type]`)
         }
-
+        // DISCHARGE
         if(tab == 6){
             return this.listS.getlist(`SELECT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid WHERE HRT.[name] = '${ data.program }' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] IN ( 'ADMISSION' ) AND ITM.[minorgroup] IN ( 'DISCHARGE' ) AND ( ITM.enddate IS NULL OR ITM.enddate >= '${date}' )) ORDER BY [service type]`)
         }
-
+        // ITEM
         if(tab == 9){
             return this.listS.getlist(`SELECT [Title] AS activity FROM ItemTypes WHERE ProcessClassification = 'OUTPUT' AND [RosterGroup] IN ('ITEM') AND (EndDate Is Null OR EndDate >= '${date}') ORDER BY [Title]`)
         }

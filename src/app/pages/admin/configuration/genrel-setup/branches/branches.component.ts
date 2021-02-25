@@ -266,7 +266,7 @@ export class BranchesComponent implements OnInit {
     }
     loadBranches(){
       this.loading = true;
-      this.menuS.getlistbranches().subscribe(data => {
+      this.menuS.getlistbranches(this.check).subscribe(data => {
         this.branchList = data;
         this.tableData = data;
         console.log(this.branchList);
@@ -310,7 +310,7 @@ export class BranchesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='BRANCHES'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains "+this.whereString+" Domain='BRANCHES'";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -330,6 +330,7 @@ export class BranchesComponent implements OnInit {
           "userid":this.tocken.user,
           "head1" : "Sr#",
           "head2" : "Name",
+          "head3" : "End Date",
         }
       }
       this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

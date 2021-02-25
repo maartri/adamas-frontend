@@ -72,8 +72,8 @@ export class MenuService {
         getlistserviceNotesCat():Observable<any>{
             return this.auth.get(`${menu}/serviceNotesCat`)
         }
-        getlistbranches(): Observable<any>{
-            return this.auth.get(`${menu}/branches`)
+        getlistbranches(is_where:boolean): Observable<any>{
+            return this.auth.get(`${menu}/branches/${is_where}`)
         }
         AddBranch(brnch: Branch): Observable<any> {
             return this.auth.put(`${menu}/addBranch`, brnch)

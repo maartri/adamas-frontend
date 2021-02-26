@@ -17,6 +17,12 @@
                                                     </button> 
                                                 </div>
                                                 <div>                                        
+                                                    <button nz-button nzType="default"  nzJustify="start"  id="btn-waitinglist" (click)="showModal(this.id)"  >
+                                                        <i nz-icon nzType="printer"  ></i>
+                                                        Waiting List
+                                                    </button> 
+                                                </div>
+                                                <div>                                        
                                                     <button nz-button nzType="default" id="btn-activerecipient" (click)="showModal(this.id)" >
                                                     <i nz-icon nzType="printer"></i>
                                                     Active Recipient List
@@ -1206,6 +1212,8 @@
             <nz-modal
             [nzWidth]="modelwidth" 
             [(nzVisible)]="FOReports"
+            [nzStyle]="{ top: '50px' }"
+            [nzBodyStyle]=  "{ height:'400px', overflow: 'auto'} "
             [(nzTitle)]="FORptModelTitle"
             [nzContent]="modalContent"
             [nzFooter]="modalFooter"      

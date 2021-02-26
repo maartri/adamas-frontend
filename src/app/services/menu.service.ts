@@ -54,8 +54,8 @@ export class MenuService {
         GetlistagencyPayTypes():Observable<any>{
             return this.auth.get(`${menu}/agencyPayTypes`)
         }
-        getlistFundingSource(): Observable<any>{
-            return this.auth.get(`${menu}/fundingSource`)
+        getlistFundingSource(is_where: boolean): Observable<any>{
+            return this.auth.get(`${menu}/fundingSource/${is_where}`)
         }
         getlistProgramPackages():Observable<any>{
             return this.auth.get(`${menu}/programPackages`)
@@ -63,8 +63,8 @@ export class MenuService {
         getlistvehicles():Observable<any>{
             return this.auth.get(`${menu}/vehicles`)
         }
-        getlistactivityGroups():Observable<any>{
-            return this.auth.get(`${menu}/activityGroups`)
+        getlistactivityGroups(is_where:boolean):Observable<any>{
+            return this.auth.get(`${menu}/activityGroups/${is_where}`)
         }
         getlistcenterFacilityLoc():Observable<any>{
             return this.auth.get(`${menu}/centerFacilityLoc`)

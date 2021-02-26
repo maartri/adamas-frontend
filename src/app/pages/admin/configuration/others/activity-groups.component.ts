@@ -55,7 +55,9 @@ export class ActivityGroupsComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.buildForm();
+      this.populateDropdown();
       this.groups = ["MEALS","MAINT/MOD","SOCIAL"];
       this.loadData();
       this.loading = false;
@@ -91,7 +93,7 @@ export class ActivityGroupsComponent implements OnInit {
       this.inputForm.patchValue({
         item: branch,
         rate:name,
-        agroup:(agroup == null) ? '' : agroup,
+        agroup:(agroup == null) ? null : agroup,
         end_date:expiry,
         recordNumber:recordNumber
       });
@@ -155,13 +157,15 @@ export class ActivityGroupsComponent implements OnInit {
       }
     }
     loadData(){
-      this.menuS.getlistactivityGroups().subscribe(data => {
+      this.loading = true;
+      this.menuS.getlistactivityGroups(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
       });
-      
-      let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'BRANCHES' ORDER BY Description";
+    }
+    populateDropdown(){
+      let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'BRANCHES' ORDER BY Description";
       this.listS.getlist(branch).subscribe(data => {
         this.items = data;
         this.loading = false;

@@ -59,7 +59,7 @@ export class FundingSourcesComponent implements OnInit {
     
     loadData(){
       this.loading = true;
-      this.menuS.getlistFundingSource().subscribe(data => {
+      this.menuS.getlistFundingSource(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
@@ -110,7 +110,7 @@ export class FundingSourcesComponent implements OnInit {
         endDate,
         recordNumber,
         
-      } = this.tableData[index];
+      } = this.tableData[index-1];
       this.inputForm.patchValue({
         name:description,
         glrevnue:user1,
@@ -222,7 +222,7 @@ export class FundingSourcesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,User2 as Field4,CONVERT(varchar, [enddate],105) as Field5 from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain='FUNDINGBODIES'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,User1 as Field3,User2 as Field4,CONVERT(varchar, [enddate],105) as Field5 from DataDomains "+this.whereString+" Domain='FUNDINGBODIES'";
       
       const headerDict = {
         'Content-Type': 'application/json',

@@ -92,7 +92,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
       PersonId: this.token.uniqueID,
       DocPath: this.token.recipientDocFolder,
       SourceDocPath: "\\\\sjcc-sydgw01\\portal$\\document",
-      DestinationDocPath: "C:\\Users\\mark\\Desktop\\Programming\\Adamas\\adamasv3\\WebHookFile"
+      DestinationDocPath: "\\\\SJCC.local\\CompanyData\\Corp\\CLIENT FILES\\CAIRNS\\TESTRECIPIENT D"
     }))
 
     const req = new HttpRequest('POST', item.action!, formData, {

@@ -39,6 +39,9 @@ export class PayTypeComponent implements OnInit {
   current: number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   inputForm: FormGroup;
   modalVariables:any;
   inputVariables:any; 

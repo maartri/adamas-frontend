@@ -25,6 +25,9 @@ export class EquipmentsComponent implements OnInit {
   isVisible: boolean = false;
   current: number = 0;
   dateFormat: string = 'dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   inputForm: FormGroup;
   modalVariables:any;
   inputVariables:any;
@@ -51,10 +54,10 @@ export class EquipmentsComponent implements OnInit {
     private ModalS: NzModalService,
     ){}
     
-    
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.loadData();
+      this.populateDropdown();
       this.buildForm();
       this.loading = false;
       this.cd.detectChanges();
@@ -157,28 +160,28 @@ export class EquipmentsComponent implements OnInit {
     }
     save(){
       if(!this.isUpdate){
-        
         this.postLoading = true;
         const group = this.inputForm;
-        
         if(group.get('type').value){
-          let type            = group.get('type').value;
-          let description     = (group.get('description').value == null || group.get('description').value == '') ? null : group.get('description').value;
-          let asset           = (group.get('asset_no').value == null    || group.get('asset_no').value == '') ? null : group.get('asset_no').value;
-          let serial_no       = (group.get('serial_no').value == null   || group.get('serial_no').value == '') ? null : group.get('serial_no').value;
-          let purchase_am     = (group.get('purchase_am').value == null || group.get('purchase_am').value == '') ? null : group.get('purchase_am').value;
-          let purchase_date   = (group.get('purchase_date').value != null && group.get('purchase_date').value != '') ? this.globalS.convertDbDate(group.get('purchase_date').value) : null;
-          let last_service    = (group.get('last_service').value != null  && group.get('last_service').value != '') ? this.globalS.convertDbDate(group.get('last_service').value) : null;
-          let lockloct        = (group.get('lockloct').value == null || group.get('lockloct').value == '') ? null : group.get('lockloct').value ;
-          let lockcode        = (group.get('lockcode').value == null || group.get('lockcode').value == '') ? null : group.get('lockcode').value;
-          let disposal        = (group.get('disposal').value != null && group.get('disposal').value != '') ? this.globalS.convertDbDate(group.get('disposal').value) : null;
-          let notes           = (group.get('notes').value == null    || group.get('notes').value == '') ? null : group.get('notes').value;
-          
-          let values = type+"','"+description+"',"+disposal+","+last_service+",'"+asset+"','"+serial_no+"',"+purchase_date+",'"+purchase_am+"','"+lockcode+"','"+lockloct+"','"+notes;
-          let sql = "insert into Equipment ([Type],[ItemID],[DateDisposed],[LastService],[EquipCode],[SerialNo],[PurchaseDate],[PurchaseAmount],[LockBoxCode],[LockBoxLocation],[Notes]) values('"+values+"');select @@IDENTITY"; 
-          console.log(sql);
-          this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          let type            = this.globalS.isValueNull(group.get('type').value);
+          let description     = this.globalS.isValueNull(group.get('description').value);
+          let asset           = this.globalS.isValueNull(group.get('asset_no').value);
+          let serial_no       = this.globalS.isValueNull(group.get('serial_no').value);
+          let purchase_am     = this.globalS.isValueNull(group.get('purchase_am').value);
+          let last_service    = !(this.globalS.isVarNull(group.get('purchase_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('purchase_date').value)+"'" : null
+          let purchase_date   = !(this.globalS.isVarNull(group.get('last_service').value)) ?  "'"+this.globalS.convertDbDate(group.get('last_service').value)+"'" : null
+          let lockloct        = this.globalS.isValueNull(group.get('lockloct').value);
+          let lockcode        = this.globalS.isValueNull(group.get('lockcode').value);
+          let disposal        = !(this.globalS.isVarNull(group.get('disposal').value)) ?  "'"+this.globalS.convertDbDate(group.get('disposal').value)+"'" : null
+          let notes           = this.globalS.isValueNull(group.get('notes').value);
+          let values = type+","+description+","+disposal+","+last_service+","+asset+","+serial_no+","+purchase_date+","+purchase_am+","+lockcode+","+lockloct+","+notes;
+          let sql_last_id = "insert into Equipment ([Type],[ItemID],[DateDisposed],[LastService],[EquipCode],[SerialNo],[PurchaseDate],[PurchaseAmount],[LockBoxCode],[LockBoxLocation],[Notes]) values("+values+");select @@IDENTITY"; 
+          var person_id ;
+          this.menuS.InsertDomain(sql_last_id).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
             if (data){
+              person_id = data;
+              group.setValue({'type':''});
+              this.resetModal();
               this.globalS.sToast('Success', 'Saved successful');
             }
             else{
@@ -193,16 +196,16 @@ export class EquipmentsComponent implements OnInit {
         }
         
         if(group.get('category').value){
+          let item_id             = person_id;
+          let category            = this.globalS.isValueNull(group.get('category').value);
+          let service_date        = !(this.globalS.isVarNull(group.get('service_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('service_date').value)+"'" : null
+          let reminder_date       = !(this.globalS.isVarNull(group.get('reminder_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('reminder_date').value)+"'" : null
+          let due_date            = !(this.globalS.isVarNull(group.get('due_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('due_date').value)+"'" : null
+          let details             = this.globalS.isValueNull(group.get('details').value);
           
-          let item_id             = '';
-          let category            = group.get('category').value;
-          let service_date        = this.globalS.convertDbDate(group.get('service_date').value);
-          let reminder_date       = this.globalS.convertDbDate(group.get('reminder_date').value);
-          let due_date            = this.globalS.convertDbDate(group.get('due_date').value);
-          let details             = group.get('details').value;
-          
-          let values = category+"','"+item_id+"','"+details+"','"+service_date+"','"+reminder_date;
-          let sql = "insert into [dbo].[EquipmentDetails] ([Category],[ItemID],[Details],[ServiceDate],[ReminderDate]) values('"+values+"');select @@IDENTITY"; 
+          let values = category+","+item_id+","+details+","+service_date+","+due_date+","+reminder_date;
+          let sql = "insert into [dbo].[EquipmentDetails] ([Category],[ItemID],[Details],[ServiceDate],[DueDate],[ReminderDate]) values("+values+");select @@IDENTITY"; 
+          console.log(sql);
           this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
             if (data){
               this.globalS.sToast('Success', 'Saved successful');
@@ -223,35 +226,37 @@ export class EquipmentsComponent implements OnInit {
         this.postLoading  = true;   
         const group       = this.inputForm;
         
-        let type            = group.get('type').value;
-        let description     = (group.get('description').value == null || group.get('description').value == '') ? '' : group.get('description').value;
-        let asset           = (group.get('asset_no').value == null    || group.get('asset_no').value == '') ? '' : group.get('asset_no').value;
-        let serial_no       = (group.get('serial_no').value == null   || group.get('serial_no').value == '') ? '' : group.get('serial_no').value;
-        let purchase_am     = (group.get('purchase_am').value == null || group.get('purchase_am').value == '') ? '' : group.get('purchase_am').value;
-        let purchase_date   = (group.get('purchase_date').value != null && group.get('purchase_date').value != '') ? this.globalS.convertDbDate(group.get('purchase_date').value) : '';
-        let last_service    = (group.get('last_service').value != null  && group.get('last_service').value != '') ? this.globalS.convertDbDate(group.get('last_service').value) : '';
-        let lockloct        = (group.get('lockloct').value == null || group.get('lockloct').value == '') ? '' : group.get('lockloct').value ;
-        let lockcode        = (group.get('lockcode').value == null || group.get('lockcode').value == '') ? '' : group.get('lockcode').value;
-        let disposal        = (group.get('disposal').value == null || group.get('disposal').value == '') ? '' : this.globalS.convertDbDate(group.get('disposal').value);
-        let notes           = (group.get('notes').value == null    || group.get('notes').value == '') ? '' : group.get('notes').value;
+        let type            = this.globalS.isValueNull(group.get('type').value);
+        let description     = this.globalS.isValueNull(group.get('description').value);
+        let asset           = this.globalS.isValueNull(group.get('asset_no').value);
+        let serial_no       = this.globalS.isValueNull(group.get('serial_no').value);
+        let purchase_am     = this.globalS.isValueNull(group.get('purchase_am').value);
+        let last_service    = !(this.globalS.isVarNull(group.get('purchase_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('purchase_date').value)+"'" : null
+        let purchase_date   = !(this.globalS.isVarNull(group.get('last_service').value)) ?  "'"+this.globalS.convertDbDate(group.get('last_service').value)+"'" : null
+        let lockloct        = this.globalS.isValueNull(group.get('lockloct').value);
+        let lockcode        = this.globalS.isValueNull(group.get('lockcode').value);
+        let disposal        = !(this.globalS.isVarNull(group.get('disposal').value)) ?  "'"+this.globalS.convertDbDate(group.get('disposal').value)+"'" : null
+        let notes           = this.globalS.isValueNull(group.get('notes').value);
+        
         let recordnumber    = group.get('recordnumber').value;        
         
         let item_id             = '';
-        let category            = group.get('category').value;
-        let service_date        = group.get('service_date').value;
-        let reminder_date       = group.get('reminder_date').value;
-        let due_date            = group.get('due_date').value;
-        let details             = group.get('details').value;
+        let category            = this.globalS.isValueNull(group.get('category').value);
+        let service_date        = !(this.globalS.isVarNull(group.get('service_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('service_date').value)+"'" : null
+        let reminder_date       = !(this.globalS.isVarNull(group.get('reminder_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('reminder_date').value)+"'" : null
+        let due_date            = !(this.globalS.isVarNull(group.get('due_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('due_date').value)+"'" : null
+        let details             = this.globalS.isValueNull(group.get('details').value);
         let recordnumberdetail  = group.get('myrecordnumber').value;      
         
         if(recordnumberdetail){
-          let detailsUpdate  = "Update [dbo].[EquipmentDetails] SET [Category]='"+ category + "',[ItemID] = '"+ item_id + "',[Details] = '"+ details + "',[ServiceDate] = '"+ service_date+ "',[ReminderDate] = '"+ reminder_date + "' WHERE [RecordNumber] ='"+recordnumberdetail+"'";
+          let detailsUpdate  = "Update [dbo].[EquipmentDetails] SET [Category]="+ category +",[ItemID] ="+ item_id +",[Details] ="+ details +",[ServiceDate] ="+ service_date+",[DueDate] ="+ due_date +",[ReminderDate] ="+ reminder_date + " WHERE [RecordNumber] ='"+recordnumberdetail+"'";
           this.menuS.InsertDomain(detailsUpdate).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{ 
             if (data){
               this.globalS.sToast('Success', 'Service Updated successful');            
             }
             else
             this.globalS.sToast('Success', 'Saved successful');
+            
             this.loadData();
             this.postLoading = false;          
             this.handleSCancel();
@@ -259,7 +264,8 @@ export class EquipmentsComponent implements OnInit {
           });
         }
         if(recordnumber && !recordnumberdetail){
-          let sql  = "Update Equipment SET [Type]='"+ type + "',[ItemID] = '"+ description + "',[DateDisposed] = '"+ disposal + "',[LastService] = '"+ last_service+ "',[EquipCode] = '"+ asset + "',[SerialNo] = '"+ serial_no + "',[PurchaseDate] = '"+ purchase_date+ "',[PurchaseAmount] = '"+ purchase_am+ "',[LockBoxLocation] = '"+ lockloct + "',[LockBoxCode] = '"+ lockcode + "',[Notes] = '"+ notes+ "' WHERE [RecordNumber] ='"+recordnumber+"'";
+          let sql  = "Update Equipment SET [Type]="+ type + ",[ItemID] = "+ description + ",[DateDisposed] ="+ disposal +",[LastService] ="+ last_service+",[EquipCode] ="+ asset + ",[SerialNo] ="+ serial_no +",[PurchaseDate] ="+ purchase_date+",[PurchaseAmount] ="+ purchase_am+",[LockBoxLocation] ="+ lockloct +",[LockBoxCode] ="+ lockcode +",[Notes] ="+ notes+" WHERE [RecordNumber] ='"+recordnumber+"'";
+          console.log(sql);
           this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
             if (data) 
             this.globalS.sToast('Success', 'Saved successful');     
@@ -276,14 +282,24 @@ export class EquipmentsComponent implements OnInit {
     }
     
     loadData(){
-      
       this.loading = true;
       this.menuS.Getlistequipments().subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
       });
-      
+    }
+    
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
+      }
+    }
+    populateDropdown(){
       let Ssql = "SELECT [RecordNumber] As [RecordNumber],[Category] As [Category],[Details] As [Details],[ServiceDate] As [ServiceDate],[DueDate] As [DueDate],[ReminderDate] As [ReminderDate],[ItemID] as [ItemID] FROM EquipmentDetails WHERE ItemId = ''"
       this.loading = true;
       this.listS.getlist(Ssql).subscribe(data => {
@@ -291,7 +307,7 @@ export class EquipmentsComponent implements OnInit {
         console.log(this.tableSData);
       });
       
-      let type = "SELECT DISTINCT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'GOODS' ORDER BY Description";
+      let type = "SELECT DISTINCT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'GOODS' ORDER BY Description";
       this.listS.getlist(type).subscribe(data => {
         this.groups = data;
         this.loading = false;
@@ -347,7 +363,7 @@ export class EquipmentsComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [itemid]) AS Field1,[type] AS Field2, [itemid] AS Field3, [datedisposed] AS Field4, [lastservice] AS Field5, [equipcode] AS Field6, [serialno] AS Field7, [purchasedate] AS Field8, [purchaseamount] AS Field9, [lockboxcode] AS Field10, [lockboxlocation] AS [LockBoxLocation], [notes] AS [Notes] FROM equipment";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [itemid]) AS Field1,[type] AS Field2, [itemid] AS Field3, CONVERT(varchar, [datedisposed],105) AS Field4,CONVERT(varchar, [lastservice],105) AS Field5, [equipcode] AS Field6, [serialno] AS Field7, CONVERT(varchar, [purchasedate],105) AS Field8, [purchaseamount] AS Field9, [lockboxcode] AS Field10, [lockboxlocation] AS [LockBoxLocation], [notes] AS [Notes] FROM equipment";
       
       const headerDict = {
         'Content-Type': 'application/json',
@@ -398,6 +414,6 @@ export class EquipmentsComponent implements OnInit {
       this.tryDoctype = "";
       this.pdfTitle = "";
     } 
-
+    
   }
   

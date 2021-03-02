@@ -29,6 +29,7 @@ export class EquipmentsComponent implements OnInit {
   userRole:string="userrole";
   whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   inputForm: FormGroup;
+  serviceForm:FormGroup;
   modalVariables:any;
   inputVariables:any;
   postLoading: boolean = false;
@@ -57,6 +58,7 @@ export class EquipmentsComponent implements OnInit {
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.loadData();
+      this.loadEquipmentDetails();
       this.populateDropdown();
       this.buildForm();
       this.loading = false;
@@ -81,6 +83,10 @@ export class EquipmentsComponent implements OnInit {
       this.inputForm.reset();
       this.postLoading = false;
     }
+    resetSCategory(){
+      this.serviceForm.reset();
+      this.postLoading = false;
+    }
     showEditServiceModal(index:any){
       
       this.isUpdate = true;
@@ -94,7 +100,7 @@ export class EquipmentsComponent implements OnInit {
         dueDate,
         recordNumber,
       } = this.tableSData[index];
-      this.inputForm.patchValue({
+      this.serviceForm.patchValue({
         category:category,
         details:details,
         service_date:serviceDate,
@@ -194,34 +200,6 @@ export class EquipmentsComponent implements OnInit {
             this.resetModal();
           });
         }
-        
-        if(group.get('category').value){
-          let item_id             = person_id;
-          let category            = this.globalS.isValueNull(group.get('category').value);
-          let service_date        = !(this.globalS.isVarNull(group.get('service_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('service_date').value)+"'" : null
-          let reminder_date       = !(this.globalS.isVarNull(group.get('reminder_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('reminder_date').value)+"'" : null
-          let due_date            = !(this.globalS.isVarNull(group.get('due_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('due_date').value)+"'" : null
-          let details             = this.globalS.isValueNull(group.get('details').value);
-          
-          let values = category+","+item_id+","+details+","+service_date+","+due_date+","+reminder_date;
-          let sql = "insert into [dbo].[EquipmentDetails] ([Category],[ItemID],[Details],[ServiceDate],[DueDate],[ReminderDate]) values("+values+");select @@IDENTITY"; 
-          console.log(sql);
-          this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-            if (data){
-              this.globalS.sToast('Success', 'Saved successful');
-            }
-            else{
-              this.globalS.sToast('Success', 'Saved successful');
-            }
-            this.loadData();
-            this.postLoading = false;      
-            this.handleSCancel();    
-            this.handleCancel();
-            this.resetModal();
-          });
-        }
-        
-        
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
@@ -240,32 +218,9 @@ export class EquipmentsComponent implements OnInit {
         
         let recordnumber    = group.get('recordnumber').value;        
         
-        let item_id             = '';
-        let category            = this.globalS.isValueNull(group.get('category').value);
-        let service_date        = !(this.globalS.isVarNull(group.get('service_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('service_date').value)+"'" : null
-        let reminder_date       = !(this.globalS.isVarNull(group.get('reminder_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('reminder_date').value)+"'" : null
-        let due_date            = !(this.globalS.isVarNull(group.get('due_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('due_date').value)+"'" : null
-        let details             = this.globalS.isValueNull(group.get('details').value);
-        let recordnumberdetail  = group.get('myrecordnumber').value;      
         
-        if(recordnumberdetail){
-          let detailsUpdate  = "Update [dbo].[EquipmentDetails] SET [Category]="+ category +",[ItemID] ="+ item_id +",[Details] ="+ details +",[ServiceDate] ="+ service_date+",[DueDate] ="+ due_date +",[ReminderDate] ="+ reminder_date + " WHERE [RecordNumber] ='"+recordnumberdetail+"'";
-          this.menuS.InsertDomain(detailsUpdate).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{ 
-            if (data){
-              this.globalS.sToast('Success', 'Service Updated successful');            
-            }
-            else
-            this.globalS.sToast('Success', 'Saved successful');
-            
-            this.loadData();
-            this.postLoading = false;          
-            this.handleSCancel();
-            this.resetModal();
-          });
-        }
-        if(recordnumber && !recordnumberdetail){
+        if(recordnumber){
           let sql  = "Update Equipment SET [Type]="+ type + ",[ItemID] = "+ description + ",[DateDisposed] ="+ disposal +",[LastService] ="+ last_service+",[EquipCode] ="+ asset + ",[SerialNo] ="+ serial_no +",[PurchaseDate] ="+ purchase_date+",[PurchaseAmount] ="+ purchase_am+",[LockBoxLocation] ="+ lockloct +",[LockBoxCode] ="+ lockcode +",[Notes] ="+ notes+" WHERE [RecordNumber] ='"+recordnumber+"'";
-          console.log(sql);
           this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
             if (data) 
             this.globalS.sToast('Success', 'Saved successful');     
@@ -280,7 +235,56 @@ export class EquipmentsComponent implements OnInit {
         }
       }
     }
-    
+    saveService(){
+      if(!this.isUpdate){
+        this.postLoading  = true;   
+        const group       = this.serviceForm;
+        let item_id             = "''";
+        let category            = this.globalS.isValueNull(group.get('category').value);
+        let service_date        = !(this.globalS.isVarNull(group.get('service_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('service_date').value)+"'" : null
+        let reminder_date       = !(this.globalS.isVarNull(group.get('reminder_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('reminder_date').value)+"'" : null
+        let due_date            = !(this.globalS.isVarNull(group.get('due_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('due_date').value)+"'" : null
+        let details             = this.globalS.isValueNull(group.get('details').value);
+        let values = category+","+item_id+","+details+","+service_date+","+due_date+","+reminder_date;
+        let sql = "insert into [dbo].[EquipmentDetails] ([Category],[ItemID],[Details],[ServiceDate],[DueDate],[ReminderDate]) values("+values+");select @@IDENTITY"; 
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+          if (data){
+            this.globalS.sToast('Success', 'Saved successful');
+          }
+          else{
+            this.globalS.sToast('Success', 'Saved successful');
+          }
+          this.loadEquipmentDetails();
+          this.postLoading = false;      
+          this.handleSCancel();
+          this.resetSCategory();
+        });
+      }else{
+        const group             = this.serviceForm;
+        let item_id             = "''";
+        let category            = this.globalS.isValueNull(group.get('category').value);
+        let service_date        = !(this.globalS.isVarNull(group.get('service_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('service_date').value)+"'" : null
+        let reminder_date       = !(this.globalS.isVarNull(group.get('reminder_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('reminder_date').value)+"'" : null
+        let due_date            = !(this.globalS.isVarNull(group.get('due_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('due_date').value)+"'" : null
+        let details             = this.globalS.isValueNull(group.get('details').value);
+        let recordnumberdetail  = group.get('myrecordnumber').value;
+        if(recordnumberdetail){
+          let detailsUpdate  = "Update [dbo].[EquipmentDetails] SET [Category]="+ category +",[ItemID] ="+ item_id +",[Details] ="+ details +",[ServiceDate] ="+ service_date+",[DueDate] ="+ due_date +",[ReminderDate] ="+ reminder_date + " WHERE [RecordNumber] ='"+recordnumberdetail+"'";
+          this.menuS.InsertDomain(detailsUpdate).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{ 
+            if (data){
+              this.globalS.sToast('Success', 'Service Updated successful');            
+            }
+            else
+            this.globalS.sToast('Success', 'Saved successful');
+            
+            this.loadEquipmentDetails();
+            this.postLoading = false;          
+            this.handleSCancel();
+            this.resetSCategory();
+          });
+        }
+      }
+    }
     loadData(){
       this.loading = true;
       this.menuS.Getlistequipments().subscribe(data => {
@@ -299,21 +303,23 @@ export class EquipmentsComponent implements OnInit {
         this.loadData();
       }
     }
-    populateDropdown(){
+    
+    loadEquipmentDetails(){
       let Ssql = "SELECT [RecordNumber] As [RecordNumber],[Category] As [Category],[Details] As [Details],[ServiceDate] As [ServiceDate],[DueDate] As [DueDate],[ReminderDate] As [ReminderDate],[ItemID] as [ItemID] FROM EquipmentDetails WHERE ItemId = ''"
       this.loading = true;
       this.listS.getlist(Ssql).subscribe(data => {
         this.tableSData = data;
-        console.log(this.tableSData);
+        this.loading = false;
       });
-      
+    }
+    
+    populateDropdown(){
       let type = "SELECT DISTINCT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'GOODS' ORDER BY Description";
       this.listS.getlist(type).subscribe(data => {
         this.groups = data;
         this.loading = false;
       });
     }
-    
     delete(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
@@ -339,14 +345,16 @@ export class EquipmentsComponent implements OnInit {
         lockcode:'',
         disposal:'',
         notes:'',
+        recordnumber:null,
+      });
+      this.serviceForm = this.formBuilder.group({
         category:'',
         service_date:'',
         reminder_date:'',
         due_date:'',
         details:'',
-        recordnumber:null,
         myrecordnumber:null,
-      });
+      })
     }
     
     handleOkTop() {

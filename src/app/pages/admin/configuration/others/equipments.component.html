@@ -48,7 +48,7 @@
             </div>
         </div>
         
-        <nz-modal [nzWidth]="620" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+        <nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
             <div class="flexy">
                 <form nz-form [formGroup]="inputForm">
                     <div nz-row nzGutter="24" class="mrg-btm" >
@@ -161,6 +161,7 @@
                                             <th nzLeft nzBreakWord>Service Date</th>
                                             <th nzLeft nzBreakWord>Reminder Date</th>
                                             <th nzLeft nzBreakWord>Due Date</th>
+                                            <th nzLeft nzBreakWord>ItemID</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -168,13 +169,14 @@
                                         <tr *ngFor="let dataa of tableSData;let i = index;">
                                             <td nzLeft nzBreakWord>{{ dataa.category  }} </td>
                                             <td nzLeft nzBreakWord>{{ dataa.details  }} </td>
-                                            <td nzLeft nzBreakWord>{{ dataa.serviceDate  }} </td>
-                                            <td nzLeft nzBreakWord>{{ dataa.reminderDate  }} </td>
-                                            <td nzLeft nzBreakWord>{{ dataa.dueDate  }} </td>
-                                            <td nzLeft nzBreakWord><a (click)="showEditServiceModal(i)">Update</a>
+                                            <td nzLeft nzBreakWord>{{ dataa.serviceDate | date:'dd/MM/y'  }} </td>
+                                            <td nzLeft nzBreakWord>{{ dataa.reminderDate | date:'dd/MM/y' }} </td>
+                                            <td nzLeft nzBreakWord>{{ dataa.dueDate | date:'dd/MM/y'  }} </td>
+                                            <td nzLeft nzBreakWord>{{ dataa.dueDate | date:'dd/MM/y'  }} </td>
+                                            <td nzLeft nzBreakWord><a (click)="showEditServiceModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                                                 <nz-divider nzType="vertical"></nz-divider>
                                                 <a nz-popconfirm nzPopconfirmTitle="Are you sure You want to delete This Service History ?"
-                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(dataa)">Delete</a></td>
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(dataa)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
                                             </tr>
                                         </tbody>
                                     </nz-table>
@@ -192,8 +194,8 @@
                 </div>
             </nz-modal>
             
-            <nz-modal [nzWidth]="400"  [(nzVisible)]="isVisible" nzTitle="Service Detail ADD\CHANGE" (nzOnCancel)="handleSCancel()" (nzOnOk)="handleOk()">
-                <form nz-form [formGroup]="inputForm" >
+            <nz-modal [nzWidth]="500"  [(nzVisible)]="isVisible" nzTitle="Service Detail ADD\CHANGE" (nzOnCancel)="handleSCancel()" (nzOnOk)="handleOk()">
+                <form nz-form [formGroup]="serviceForm" >
                     <div nz-row nzGutter="24">  
                         <div nz-row nzJustify class="mrg-btm">
                             <div nz-col nzSpan="7" class="text-right pad-r-5">
@@ -239,12 +241,15 @@
                 </form>
                 <div *nzModalFooter>
                     <ng-container>
-                        <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" [disabled]="!this.inputForm.get('category').value">
+                        <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="saveService()" [disabled]="!this.serviceForm.get('category').value">
                             <span>Save</span>
                         </button>
                     </ng-container>
                 </div>
             </nz-modal>
+
+
+
             <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
                 <div class="col-md-12 spinner" *ngIf="loading">
                     <nz-spin nzSimple [nzSize]="'large'"></nz-spin>

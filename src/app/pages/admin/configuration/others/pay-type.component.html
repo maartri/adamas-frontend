@@ -60,39 +60,71 @@
                             <h2 style="color:#1890FF;">Pay Type Details</h2>
                         </div>
                         <div nz-col nzSpan="24" class="mrg-btm">
-                            <div nz-col nzSpan="16" class="mrg-btm">
-                                
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <input nz-input placeholder="Code"  formControlName="code" />
+                            <div nz-col nzSpan="18" class="mrg-btm">
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="5" class="text-right pad-r-5">
+                                        <label nzFor="Code">Code:</label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <input nz-input placeholder="Code"  formControlName="code" />
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <textarea rows="4" nz-input placeholder="Description" formControlName="description"></textarea>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="5" class="text-right pad-r-5">
+                                        <label nzFor="Code">Description:</label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <textarea rows="4" nz-input placeholder="Description" formControlName="description"></textarea>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let payt of paytypes" [nzLabel]="payt" [nzValue]="payt"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="5" class="text-right pad-r-5">
+                                        <label nzFor="Type">Type:</label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let payt of paytypes" [nzLabel]="payt" [nzValue]="payt"></nz-option>
+                                        </nz-select>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="subgroup" nzPlaceHolder="SubGroup" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub" [nzValue]="sub"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="5" class="text-right pad-r-5">
+                                        <label nzFor="SubGroup">SubGroup:</label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="subgroup" nzPlaceHolder="SubGroup" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub" [nzValue]="sub"></nz-option>
+                                        </nz-select>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <input nz-input placeholder="Pay Rate"  formControlName="payrate" />
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="5" class="text-right pad-r-5">
+                                        <label nzFor="Pay Rate">Pay Rate:</label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <input nz-input placeholder="Rate"  formControlName="payrate" />
+                                    </div>
                                 </div>
-                                <div nz-col nzSpan="8" class="mrg-btm">
-                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="unit" nzPlaceHolder="Unit" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let unit of units" [nzLabel]="unit" [nzValue]="unit"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="5" class="text-right pad-r-5">
+                                        <label nzFor="Unit">Unit:</label>
+                                    </div>
+                                    <div nz-col nzSpan="7">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="unit" nzPlaceHolder="Unit" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let unit of units" [nzLabel]="unit" [nzValue]="unit"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                    <div nz-col nzSpan="10" class="mrg-btm" style="margin-left:20px;">
+                                        <label nz-checkbox  formControlName="casuals">Applicable to Casuals</label>
+                                    </div>
                                 </div>
-                                <div nz-col nzSpan="12" class="mrg-btm">
-                                    <label nz-checkbox  formControlName="casuals">Applicable to Casuals</label>
-                                </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-date-picker [nzPlaceHolder]="'End Date'" formControlName="end" [nzFormat]="dateFormat"></nz-date-picker>
-                                </div>
-                                <div nz-col nzSpan="4">
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="5" class="text-right pad-r-5">
+                                        <label nzFor="End Date">End Date:</label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <nz-date-picker [nzPlaceHolder]="'End Date'" formControlName="end" [nzFormat]="dateFormat"></nz-date-picker>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -105,6 +137,7 @@
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <div nz-col nzSpan="16" class="mrg-btm">
                             <div class="mrg-btm" nz-col nzSpan="16">
+                                <label nzFor="Pay Code">Pay Code:</label>
                                 <input nz-input placeholder="PAY CODE"  formControlName="payid" />
                             </div>
                             <div nz-col nzSpan="12">

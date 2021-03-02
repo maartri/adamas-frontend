@@ -117,7 +117,7 @@ export class PayTypeComponent implements OnInit {
         payCategory,
         payID,
         payAmount,
-        enddate,
+        endDate,
         noPayExport,
         conflict,
         day0,
@@ -143,7 +143,7 @@ export class PayTypeComponent implements OnInit {
         subgroup:subGroup,
         payrate:payAmount,
         unit:payUnit,
-        end:enddate,
+        end:endDate,
         payid:payID,
         exportfrompay:noPayExport,
         casuals:'',
@@ -195,33 +195,38 @@ export class PayTypeComponent implements OnInit {
     }
     save() {
       if(!this.isUpdate){
+
         this.postLoading = true;
         const group = this.inputForm;
         
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let casuals           = group.get('casuals').value;
-        let exportfrompay     = group.get('exportfrompay').value;
-        let conflict          = group.get('conflict').value;
-        let day0              = group.get('day1').value;
-        let day1              = group.get('day2').value;
-        let day2              = group.get('day3').value;
-        let day3              = group.get('day4').value;
-        let day4              = group.get('day5').value;
-        let day5              = group.get('day6').value;
-        let day6              = group.get('day7').value;
+        let status            = "'NONATTRIBUTABLE'";
+        let process           = "'INPUT'";
+        let mainGroup         = "'DIRECT SERVICE'";
+
+        let code              = this.globalS.isValueNull(group.get('code').value);
+        let description       = this.globalS.isValueNull(group.get('description').value);
+        let type              = this.globalS.isValueNull(group.get('type').value);
+        let subgroup          = this.globalS.isValueNull(group.get('subgroup').value);
+        let payrate           = this.globalS.isValueNull(group.get('payrate').value);
+        let end               = !(this.globalS.isVarNull(group.get('end').value)) ?  "'"+this.globalS.convertDbDate(group.get('end').value)+"'" : null;
+        let unit              = this.globalS.isValueNull(group.get('unit').value);
+        let payid             = this.globalS.isValueNull(group.get('payid').value);
         
-        let values = status+"','"+process+"','"+code+"','"+description+"','"+type+"','"+payrate+"','"+unit+"','"+payid+"','"+mainGroup+"','"+subgroup+"','"+end;
-        let sqlz = "insert into itemtypes ([Status],[ProcessClassification],[Title],[billText],[RosterGroup],[Amount],[Unit],[AccountingIdentifier],[MainGroup],[MinorGroup],[EndDate]) values('"+values+"');select @@IDENTITY"; 
+        let casuals           = this.trueString(group.get('casuals').value);
+        let exportfrompay     = this.trueString(group.get('exportfrompay').value);
+
+        let conflict          = this.globalS.isValueNull(group.get('conflict').value);
+        let day0              = this.globalS.isValueNull(group.get('day1').value);
+        let day1              = this.globalS.isValueNull(group.get('day2').value);
+        let day2              = this.globalS.isValueNull(group.get('day3').value);
+        let day3              = this.globalS.isValueNull(group.get('day4').value);
+        let day4              = this.globalS.isValueNull(group.get('day5').value);
+        let day5              = this.globalS.isValueNull(group.get('day6').value);
+        let day6              = this.globalS.isValueNull(group.get('day7').value);
+        
+        let values = status+","+process+","+code+","+description+","+type+","+payrate+","+unit+","+payid+","+mainGroup+","+subgroup+","+end;
+        let sqlz = "insert into itemtypes ([Status],[ProcessClassification],[Title],[billText],[RosterGroup],[Amount],[Unit],[AccountingIdentifier],[MainGroup],[MinorGroup],[EndDate]) values("+values+");select @@IDENTITY"; 
+        console.log(sqlz);
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');
@@ -243,24 +248,38 @@ export class PayTypeComponent implements OnInit {
       }
       else{
         this.postLoading = true;     
+        
         const group = this.inputForm;
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let unitCostUom       = "EACH/SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
+        let status            = "'NONATTRIBUTABLE'";
+        let process           = "'INPUT'";
+        let mainGroup         = "'DIRECT SERVICE'";
+        let unitCostUom       = "'EACH/SERVICE'";
+        
+        let code              = this.globalS.isValueNull(group.get('code').value);
+        let description       = this.globalS.isValueNull(group.get('description').value);
+        let type              = this.globalS.isValueNull(group.get('type').value);
+        let subgroup          = this.globalS.isValueNull(group.get('subgroup').value);
+        let payrate           = this.globalS.isValueNull(group.get('payrate').value);
+        let end               = !(this.globalS.isVarNull(group.get('end').value)) ?  "'"+this.globalS.convertDbDate(group.get('end').value)+"'" : null;
+        let unit              = this.globalS.isValueNull(group.get('unit').value);
+        let payid             = this.globalS.isValueNull(group.get('payid').value);
+
+        let casuals           = this.trueString(group.get('casuals').value);
+        let exportfrompay     = this.trueString(group.get('exportfrompay').value);
+
+        let conflict          = this.globalS.isValueNull(group.get('conflict').value);
+        let day0              = this.globalS.isValueNull(group.get('day1').value);
+        let day1              = this.globalS.isValueNull(group.get('day2').value);
+        let day2              = this.globalS.isValueNull(group.get('day3').value);
+        let day3              = this.globalS.isValueNull(group.get('day4').value);
+        let day4              = this.globalS.isValueNull(group.get('day5').value);
+        let day5              = this.globalS.isValueNull(group.get('day6').value);
+        let day6              = this.globalS.isValueNull(group.get('day7').value);
+
         let recordNumber      = group.get('recordNumber').value;
-        
-        
-        let sql  = "Update itemtypes SET [Status]='"+ status + "',[ProcessClassification] = '"+ process + "',[Title] = '"+ code + "',[billText] = '"+ description+ "',[RosterGroup] = '"+ type + "',[Amount] = '"+ payrate + "',[Unit] = '"+ unit+ "',[AccountingIdentifier] = '"+ payid+ "',[MainGroup] = '"+ mainGroup + "',[MinorGroup] = '"+ subgroup + "' WHERE [Recnum] ='"+recordNumber+"'";
-        // console.log(sql);
+
+        let sql  = "Update itemtypes SET [Status]="+status+",[ProcessClassification]="+process+",[Title]="+code+",[billText]="+description+",[RosterGroup]="+type+",[Amount]="+payrate+",[Unit]="+unit+",[AccountingIdentifier]="+payid+",[MainGroup]="+mainGroup+",[MinorGroup]="+subgroup+",[EndDate]="+end+" WHERE [Recnum] ='"+recordNumber+"'";
+        console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');

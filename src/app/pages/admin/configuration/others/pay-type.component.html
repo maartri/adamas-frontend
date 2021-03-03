@@ -175,16 +175,16 @@
                                         <label>Between</label>
                                     </div>
                                     <div nz-col nzSpan="4">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="startTimeLimit" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let time of timesteps" [nzLabel]="time" [nzValue]="time"></nz-option>
                                         </nz-select>
                                     </div>
                                     <div nz-col nzSpan="4">
                                         <label style="margin-left:20px;">AND</label>
                                     </div>
                                     <div nz-col nzSpan="4">
-                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub.description" [nzValue]="sub.description"></nz-option>
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="endTimeLimit" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let time of timesteps" [nzLabel]="time" [nzValue]="time"></nz-option>
                                         </nz-select>
                                     </div>
                                 </div>
@@ -249,7 +249,7 @@
                             Exclude From Higher Rate Calculation : <label nz-checkbox formControlName="award1"></label><br>
                             </div>
                             <div class="mrg-btm">
-                            No Overtime Accoumnodation : <label nz-checkbox formControlName="award2"></label><br>
+                            No Overtime Accumulation : <label nz-checkbox formControlName="award2"></label><br>
                             </div>
                             <div class="mrg-btm">
                             Pay As Rostered : <label nz-checkbox formControlName="award3"></label><br>

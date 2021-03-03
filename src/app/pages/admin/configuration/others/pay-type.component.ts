@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService } from '@services/index';
+import { GlobalService, ListService, MenuService,timeSteps} from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { EMPTY, Subject } from 'rxjs';
@@ -35,7 +35,6 @@ export class PayTypeComponent implements OnInit {
   staffApproved: boolean = false;
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
-  
   current: number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
@@ -44,7 +43,8 @@ export class PayTypeComponent implements OnInit {
   whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   inputForm: FormGroup;
   modalVariables:any;
-  inputVariables:any; 
+  inputVariables:any;
+  timesteps:Array<any>;
   postLoading: boolean = false;
   isUpdate: boolean = false;
   
@@ -118,22 +118,31 @@ export class PayTypeComponent implements OnInit {
         payID,
         payAmount,
         endDate,
+        applicableCasulas,
         noPayExport,
-        conflict,
-        day0,
-        day1,
-        day2,
-        day3,
-        day4,
-        day5,
-        day6,
-        day7,
-        min,
-        max,
-        forceRostedTime,
-        rostedDay,
+        excludeFromConflicts,
+        noPubHol,
+        noMonday,
+        noTuesday,
+        noWednesday,
+        noThursday,
+        noFriday,
+        noSaturday,
+        noSunday,
+        startTimeLimit,
+        endTimeLimit,
+        minDurtn,
+        maxDurtn,
         rostedTime,
-        orignalminute,
+        nochangeDate,
+        nochangeTime,
+        timeChangeLimit,
+        excludeFromHigherPayCalculation,
+        noOvertimeAccumulation,
+        payAsRostered,
+        excludeFromTimebands,
+        excludeFromInterpretation,
+
         recordNumber,
       } = this.tableData[index-1];
       this.inputForm.patchValue({
@@ -145,23 +154,30 @@ export class PayTypeComponent implements OnInit {
         unit:payUnit,
         end:endDate,
         payid:payID,
-        exportfrompay:noPayExport,
-        casuals:'',
-        conflict:conflict,
-        day0:day0,
-        day1:day1,
-        day2:day2,
-        day3:day3,
-        day4:day4,
-        day5:day5,
-        day6:day6,
-        day7:day7,
-        min:min,
-        max:max,
-        forceRostedTime:forceRostedTime,
-        rostedDay:rostedDay,
-        rostedTime:rostedTime,
-        orignalminute:orignalminute,
+        exportfrompay:(noPayExport) ? true:false,
+        casuals:(applicableCasulas) ? true:false,
+        conflict:(excludeFromConflicts) ? true:false,
+        day0:(noPubHol) ? false : true,
+        day1:(noMonday) ? false : true,
+        day2:(noTuesday) ? false : true,
+        day3:(noWednesday) ? false : true,
+        day4:(noThursday) ? false : true,
+        day5:(noFriday) ? false : true,
+        day6:(noSaturday) ? false : true,
+        day7:(noSunday) ? false : true,
+        startTimeLimit:startTimeLimit,
+        endTimeLimit:endTimeLimit,
+        min:minDurtn,
+        max:maxDurtn,
+        forceRostedTime:rostedTime,
+        rostedDay:(nochangeDate) ? true : false,
+        rostedTime:nochangeTime  ? true : false,
+        orignalminute:timeChangeLimit,
+        award1:(excludeFromHigherPayCalculation) ? true : false,
+        award2:(noOvertimeAccumulation) ? true : false,
+        award3:(payAsRostered) ? true : false,
+        award4:(excludeFromTimebands) ? true : false,
+        award5:(excludeFromInterpretation) ? true:false,
         recordNumber:recordNumber,
       });
     }
@@ -185,6 +201,9 @@ export class PayTypeComponent implements OnInit {
     trueString(data: any): string{
       return data ? '1': '0';
     }
+    trueStringOposite(data: any): string{
+      return data ? '0': '1';
+    }
     
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
@@ -202,7 +221,7 @@ export class PayTypeComponent implements OnInit {
         let status            = "'NONATTRIBUTABLE'";
         let process           = "'INPUT'";
         let mainGroup         = "'DIRECT SERVICE'";
-
+        let unitCostUom       = "'EACH/SERVICE'";
         let code              = this.globalS.isValueNull(group.get('code').value);
         let description       = this.globalS.isValueNull(group.get('description').value);
         let type              = this.globalS.isValueNull(group.get('type').value);
@@ -212,21 +231,47 @@ export class PayTypeComponent implements OnInit {
         let unit              = this.globalS.isValueNull(group.get('unit').value);
         let payid             = this.globalS.isValueNull(group.get('payid').value);
         
-        let casuals           = this.trueString(group.get('casuals').value);
-        let exportfrompay     = this.trueString(group.get('exportfrompay').value);
-
-        let conflict          = this.globalS.isValueNull(group.get('conflict').value);
-        let day0              = this.globalS.isValueNull(group.get('day1').value);
-        let day1              = this.globalS.isValueNull(group.get('day2').value);
-        let day2              = this.globalS.isValueNull(group.get('day3').value);
-        let day3              = this.globalS.isValueNull(group.get('day4').value);
-        let day4              = this.globalS.isValueNull(group.get('day5').value);
-        let day5              = this.globalS.isValueNull(group.get('day6').value);
-        let day6              = this.globalS.isValueNull(group.get('day7').value);
+        let casuals           = this.trueString(group.get('casuals').value);//AutoApprove
+        let exportfrompay     = this.trueString(group.get('exportfrompay').value);//ExcludeFromPayExport
         
-        let values = status+","+process+","+code+","+description+","+type+","+payrate+","+unit+","+payid+","+mainGroup+","+subgroup+","+end;
-        let sqlz = "insert into itemtypes ([Status],[ProcessClassification],[Title],[billText],[RosterGroup],[Amount],[Unit],[AccountingIdentifier],[MainGroup],[MinorGroup],[EndDate]) values("+values+");select @@IDENTITY"; 
-        console.log(sqlz);
+
+        let ExcludeFromConflicts        = this.trueString(group.get('conflict').value);//ExcludeFromConflicts
+        let NoMonday                    = this.trueStringOposite(group.get('day1').value);
+        let NoTuesday                   = this.trueStringOposite(group.get('day2').value);
+        let NoWednesday                 = this.trueStringOposite(group.get('day3').value);
+        let NoThursday                  = this.trueStringOposite(group.get('day4').value);
+        let NoFriday                    = this.trueStringOposite(group.get('day5').value);
+        let NoSaturday                  = this.trueStringOposite(group.get('day6').value);
+        let NoSunday                    = this.trueStringOposite(group.get('day7').value);
+        let NoPubHol                    = this.trueStringOposite(group.get('day0').value);
+        let NoChangeDate                = this.trueString(group.get('rostedDay').value);//ExcludeFromInterpretation
+        let NoChangeTime                = this.trueString(group.get('rostedTime').value);//ExcludeFromInterpretation
+        // let ExcludeFromRecipSummarySheet = this.trueString(group.get('ExcludeFromRecipSummarySheet').value);//
+        let ExcludeFromHigherPayCalculation    = this.trueString(group.get('award1').value);//ExcludeFromInterpretation
+        let NoOvertimeAccumulation             = this.trueString(group.get('award2').value);//NoOvertimeAccumulation
+        let PayAsRostered                      = this.trueString(group.get('award3').value);//ExcludeFromInterpretation
+        let ExcludeFromTimebands               = this.trueString(group.get('award4').value);//ExcludeFromTimebands
+        let ExcludeFromInterpretation          = this.trueString(group.get('award5').value);//ExcludeFromInterpretation
+        // let ExcludeFromClientPortalDisplay     = this.trueString(group.get('ExcludeFromClientPortalDisplay').value);//
+        let jobType                            = this.globalS.isValueNull(group.get('specialShift').value);//JobType
+        let StartTimeLimit                     = this.globalS.isValueNull(group.get('startTimeLimit').value);//StartTimeLimit
+        let EndTimeLimit                       = this.globalS.isValueNull(group.get('endTimeLimit').value);//EndTimeLimit
+        let MinDurtn                           = this.globalS.isValueNull(group.get('min').value);//MinDurtn
+        let MaxDurtn                           = this.globalS.isValueNull(group.get('max').value);//MaxDurtn
+        let FixedTime                          = this.globalS.isValueNull(group.get('forceRostedTime').value);//FixedTime
+        let TimeChangeLimit                    = this.globalS.isValueNull(group.get('orignalminute').value);//TimeChangeLimit
+        
+        let values = status+","+process+","+code+","+description+","+type+","+payrate+","+unit+","+payid
+                     +","+mainGroup+","+subgroup+","+unitCostUom+","+casuals+","+exportfrompay+","+end+","+ExcludeFromConflicts+","+NoMonday
+                     +","+NoTuesday+","+NoWednesday+","+NoThursday+","+NoFriday+","+NoSaturday+","+NoSunday+","+NoPubHol+","+NoChangeDate+","+NoChangeTime
+                     +","+StartTimeLimit+","+EndTimeLimit+","+MinDurtn+","+MaxDurtn+","+FixedTime+","+TimeChangeLimit+","+jobType
+                     +","+ExcludeFromHigherPayCalculation+","+NoOvertimeAccumulation+","+PayAsRostered+","+ExcludeFromTimebands+","+ExcludeFromInterpretation;
+        let sqlz = "insert into itemtypes ([Status],[ProcessClassification],[Title],[billText],[RosterGroup],[Amount],[Unit],[AccountingIdentifier],"+
+                   "[MainGroup],[MinorGroup],[UnitCostUOM],[AutoApprove],[ExcludeFromPayExport],[EndDate],[ExcludeFromConflicts],[NoMonday],[NoTuesday],[NoWednesday],"+
+                   "[NoThursday],[NoFriday],[NoSaturday],[NoSunday],[NoPubHol],[NoChangeDate],[NoChangeTime],[StartTimeLimit],[EndTimeLimit],[MinDurtn],[MaxDurtn],[FixedTime],"+
+                   "[TimeChangeLimit],[jobType],[ExcludeFromHigherPayCalculation],[NoOvertimeAccumulation],[PayAsRostered],[ExcludeFromTimebands],[ExcludeFromInterpretation])"+
+                   "values("+values+");select @@IDENTITY"; 
+        // console.log(sqlz);
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');
@@ -247,14 +292,13 @@ export class PayTypeComponent implements OnInit {
         });
       }
       else{
-        this.postLoading = true;     
-        
+        this.postLoading = true;
+
         const group = this.inputForm;
         let status            = "'NONATTRIBUTABLE'";
         let process           = "'INPUT'";
         let mainGroup         = "'DIRECT SERVICE'";
-        let unitCostUom       = "'EACH/SERVICE'";
-        
+
         let code              = this.globalS.isValueNull(group.get('code').value);
         let description       = this.globalS.isValueNull(group.get('description').value);
         let type              = this.globalS.isValueNull(group.get('type').value);
@@ -264,22 +308,45 @@ export class PayTypeComponent implements OnInit {
         let unit              = this.globalS.isValueNull(group.get('unit').value);
         let payid             = this.globalS.isValueNull(group.get('payid').value);
 
-        let casuals           = this.trueString(group.get('casuals').value);
-        let exportfrompay     = this.trueString(group.get('exportfrompay').value);
-
-        let conflict          = this.globalS.isValueNull(group.get('conflict').value);
-        let day0              = this.globalS.isValueNull(group.get('day1').value);
-        let day1              = this.globalS.isValueNull(group.get('day2').value);
-        let day2              = this.globalS.isValueNull(group.get('day3').value);
-        let day3              = this.globalS.isValueNull(group.get('day4').value);
-        let day4              = this.globalS.isValueNull(group.get('day5').value);
-        let day5              = this.globalS.isValueNull(group.get('day6').value);
-        let day6              = this.globalS.isValueNull(group.get('day7').value);
-
+        let casuals           = this.trueString(group.get('casuals').value);//AutoApprove
+        let exportfrompay     = this.trueString(group.get('exportfrompay').value);//ExcludeFromPayExport
+        
+        let ExcludeFromConflicts = this.trueString(group.get('conflict').value);//ExcludeFromConflicts
+        let NoMonday                    = this.trueStringOposite(group.get('day1').value);
+        let NoTuesday                   = this.trueStringOposite(group.get('day2').value);
+        let NoWednesday                 = this.trueStringOposite(group.get('day3').value);
+        let NoThursday                  = this.trueStringOposite(group.get('day4').value);
+        let NoFriday                    = this.trueStringOposite(group.get('day5').value);
+        let NoSaturday                  = this.trueStringOposite(group.get('day6').value);
+        let NoSunday                    = this.trueStringOposite(group.get('day7').value);
+        let NoPubHol                    = this.trueStringOposite(group.get('day0').value);
+        let NoChangeDate                = this.trueString(group.get('rostedDay').value);//rostedDay
+        let NoChangeTime                = this.trueString(group.get('rostedTime').value);//rostedTime
+        // let ExcludeFromRecipSummarySheet = this.trueString(group.get('ExcludeFromRecipSummarySheet').value);//ExcludeFromConflicts
+        let ExcludeFromHigherPayCalculation    = this.trueString(group.get('award1').value);//ExcludeFromInterpretation
+        let NoOvertimeAccumulation             = this.trueString(group.get('award2').value);//NoOvertimeAccumulation
+        let PayAsRostered                      = this.trueString(group.get('award3').value);//ExcludeFromInterpretation
+        let ExcludeFromTimebands               = this.trueString(group.get('award4').value);//ExcludeFromTimebands
+        let ExcludeFromInterpretation          = this.trueString(group.get('award5').value);//ExcludeFromInterpretation
+        // let ExcludeFromClientPortalDisplay     = this.trueString(group.get('ExcludeFromClientPortalDisplay').value);//ExcludeFromConflicts
+        let jobType                            = this.globalS.isValueNull(group.get('specialShift').value);//JobType
+        let StartTimeLimit                     = this.globalS.isValueNull(group.get('startTimeLimit').value);//StartTimeLimit
+        let EndTimeLimit                       = this.globalS.isValueNull(group.get('endTimeLimit').value);//EndTimeLimit
+        let MinDurtn                           = this.globalS.isValueNull(group.get('min').value);//MinDurtn
+        let MaxDurtn                           = this.globalS.isValueNull(group.get('max').value);//MaxDurtn
+        let FixedTime                          = this.globalS.isValueNull(group.get('forceRostedTime').value);//FixedTime
+        let TimeChangeLimit                    = this.globalS.isValueNull(group.get('orignalminute').value);//TimeChangeLimit
         let recordNumber      = group.get('recordNumber').value;
 
-        let sql  = "Update itemtypes SET [Status]="+status+",[ProcessClassification]="+process+",[Title]="+code+",[billText]="+description+",[RosterGroup]="+type+",[Amount]="+payrate+",[Unit]="+unit+",[AccountingIdentifier]="+payid+",[MainGroup]="+mainGroup+",[MinorGroup]="+subgroup+",[EndDate]="+end+" WHERE [Recnum] ='"+recordNumber+"'";
-        console.log(sql);
+        let sql  = "Update itemtypes SET [Status]="+status+",[ProcessClassification]="+process+",[Title]="+code+",[billText]="+description+",[RosterGroup]="+type+
+        ",[Amount]="+payrate+",[Unit]="+unit+",[AccountingIdentifier]="+payid+",[MainGroup]="+mainGroup+",[MinorGroup]="+subgroup+",[EndDate]="+end+",[AutoApprove]="+casuals+
+        ",[ExcludeFromPayExport]="+exportfrompay+",[ExcludeFromConflicts]="+ExcludeFromConflicts+",[NoMonday]="+NoMonday+",[NoTuesday]="+NoTuesday+",[NoWednesday]="+NoWednesday+
+        ",[NoThursday]="+NoThursday+",[NoFriday]="+NoFriday+",[NoSaturday]="+NoSaturday+",[NoSunday]="+NoSunday+",[NoPubHol]="+NoPubHol+",[NoChangeDate]="+NoChangeDate+
+        ",[NoChangeTime]="+NoChangeTime+",[StartTimeLimit]="+StartTimeLimit+",[EndTimeLimit]="+EndTimeLimit+",[MinDurtn]="+MinDurtn+",[MaxDurtn]="+MaxDurtn+
+        ",[FixedTime]="+FixedTime+",[TimeChangeLimit]="+TimeChangeLimit+",[jobType]="+jobType+
+        ",[ExcludeFromHigherPayCalculation]="+ExcludeFromHigherPayCalculation+",[NoOvertimeAccumulation]="+NoOvertimeAccumulation+",[PayAsRostered]="+PayAsRostered+
+        ",[ExcludeFromTimebands]="+ExcludeFromTimebands+",[ExcludeFromInterpretation]="+ExcludeFromInterpretation+" WHERE [Recnum] ='"+recordNumber+"'";
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');
@@ -303,7 +370,7 @@ export class PayTypeComponent implements OnInit {
       this.paytypes  = ['SALARY','ALLOWANCE'];
       this.units  = ['HOUR','SERVICE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
-      
+      this.timesteps = timeSteps;
       this.loading = true;
       this.menuS.GetlistagencyPayTypes().subscribe(data => {
         this.tableData = data;
@@ -358,6 +425,8 @@ export class PayTypeComponent implements OnInit {
         award5:false,
         specialShift:'',
         branch:'',
+        startTimeLimit:'',
+        endTimeLimit:'',
         recordNumber:null
       });
     }

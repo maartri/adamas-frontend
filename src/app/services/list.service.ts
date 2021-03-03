@@ -106,6 +106,11 @@ export class ListService {
     GetVehicles(): Observable<any>{
         return this.auth.get(`${list}/vehicles`);
     } 
+    GetAllPrograms(): Observable<any>{
+        return this.auth.get(`${list}/CriterialistPrograms`);
+    }
+
+    
     GetRecipientAll(): Observable<any>{
         return this.auth.get(`${list}/intake/recipients/all`);
     }

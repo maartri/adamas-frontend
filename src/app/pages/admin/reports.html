@@ -788,6 +788,7 @@
             <nz-modal
                 nzWidth="600px"
                 [nzStyle]="{ top: '20px' }"
+            
                 [(nzVisible)]="isVisibleTop"
                 [(nzTitle)]="ModalName"
                 (nzOnCancel)="handleCancelTop()"
@@ -1170,6 +1171,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_grpbyCoordinators" ><label class="checks" nz-checkbox formControlName="groupbyCoordinators"   >Group by Coordinators</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_inactivestaff" ><label class="checks" nz-checkbox formControlName="excludeinactivestaff"   >Exclude InActive Staff</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_staffondate" ><label class="checks" nz-checkbox formControlName="exclude_staff_shiftondate"   >Exclude Staff having shift on date</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_include_enddated" ><label class="checks" nz-checkbox formControlName="include_enddated"   >Include EndDated Programs</label></div>
                                         
                                        
                                     </div>

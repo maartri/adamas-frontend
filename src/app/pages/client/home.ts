@@ -189,8 +189,6 @@ export class HomeClient implements OnInit {
             localStorage.removeItem('settings');
 
             this.globalS.settings = data;
-
-            console.log(this.globalS.settings);
             setTimeout(() => {
                 this._settings = this.settingS; 
             }, 100);

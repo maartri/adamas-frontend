@@ -59,7 +59,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
       this.msg.success(`${file.name} file uploaded successfully.`);
       this.loadFiles();
     } else if (status === 'error') {
-      this.msg.error(`${file.name} file upload failed.`);
+      // this.msg.error(`${file.name} file upload failed.`);
     }
   }
 
@@ -85,7 +85,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   }
 
   customReq = (item: UploadXHRArgs) => {
-    console.log(item);
+
     const formData = new FormData();
     formData.append('file', item.file as any);
     formData.append('data', JSON.stringify({
@@ -111,7 +111,8 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
           item.onSuccess!(event.body, item.file!, event);
         }
       },
-      err => {
+      (err: HttpErrorResponse) => {
+        this.globalS.eToast('Error', err.error);
         item.onError!(err, item.file!);
       }
     );

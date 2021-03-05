@@ -14,7 +14,7 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
 import { tr } from 'date-fns/locale';
 
-//Sets defaults of Criteria Model
+//Sets defaults of Criteria Model     
 const inputFormDefault = {
     statesArr: [[]],
     allState: [true],
@@ -124,13 +124,15 @@ const inputFormDefault = {
     frm_options: [false],
     frm_add_inclusion: [false],
 
-    whowhat: [],
+    whowhat: [''],
+    description: [''],
+
     mta_time_late: [10],
     mta_time_overstayed: [10],
     mta_time_early: [10],
 
 
-    description: [],
+    
 
     RecipientLeave: [false],
     RecipientUR: [true],
@@ -184,6 +186,7 @@ const inputFormDefault = {
 
 
     exclude_staff_shiftondate: [false],
+    include_enddated: [false],
 
     radioFormat: ['Summary'],
 
@@ -285,8 +288,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     validateForm!: FormGroup;
     tocken :any;
 
-
-
+    bodystyle:object;
+    FOReportsbodystyle : object;
+    //{ height:'500px', overflow: 'auto'} 
     //Modals visibility
     isVisibleTop = false;
     FOReports = false;
@@ -357,6 +361,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     chkbx_incl_activeClients: boolean;
     chkbx_grpbyCoordinators: boolean;
     chkbx_incl_activeStaff: boolean;
+    chkbx_include_enddated;
+
     frm_options: boolean;
     frm_add_inclusion: boolean;
 
@@ -404,6 +410,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     forcedlogon: [false];
     exclude_staff_shiftondate: [false];
+    include_enddated: [false];
 
     radioFormat: ['Summary'];
 
@@ -846,10 +853,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.listS.Getrptactivity().subscribe(x => this.activityArr = x);
 
 
-
+        
+    //    this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
         this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
-            includeInactive: false
+            includeInactive: true,
         }).subscribe(x => this.programsArr = x);
 
         this.listS.getreportcriterialist({
@@ -952,6 +960,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.chkbx_asAddressLabel = false;
         this.chkbx_incl_additionalInfo = false;
         this.chkbx_incl_activeClients = false;
+        this.chkbx_include_enddated = false;
         this.chkbx_grpbyCoordinators = false;
         this.chkbx_incl_activeStaff = false;
         this.frm_options = false;
@@ -969,13 +978,15 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     toggle() {
         this.show = !this.show;
         this.showoption = !this.showoption;
-    /*    if (this.show == true) {
+        if (this.show == true) {
             this.modelwidth = "680";
+            this.FOReportsbodystyle = { height:'500px', overflow: 'auto' }
             
         }
         else {
             this.modelwidth = "680px";
-        } */
+            this.FOReportsbodystyle = { height:'300px', overflow: 'auto' }
+        } 
     }
     showUserReport() {
 
@@ -1009,6 +1020,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         switch (this.btnid) {
             case 'btn-refferallist':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "REFERRAL LIST CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1020,6 +1032,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
                 case 'btn-waitinglist':
+                    this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "WAITING LIST CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1031,12 +1044,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-activepackagelist':
+                this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "ACTIVE PACKAGE CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Funders = true;
                 break;
             case 'btn-recipientroster':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "RECIPIENT ROSTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
@@ -1048,6 +1063,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_additionalInfo = true;
                 break;
             case 'btn-suspendedrecipient':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "SUSPENDED RECIPIENT REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1058,12 +1074,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-vouchersummary':
+                this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "VOUCHER SUMMARY REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-packageusage':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "PACKAGE USAGE REPORT CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1074,10 +1092,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-timelength':
+                this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "RECIPIENTS TIME LENGTH REPORT"
                 this.frm_Date = true;
                 break;
             case 'btn-unallocatedbookings':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "UNFILLED BOOKINGS REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1085,6 +1105,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_SVCTypes = true;
                 break;
             case 'btn-transportsummary':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "TRANSPORT SUMMARY REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1092,6 +1113,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_vehicles = true;
                 break;
             case 'btn-refferalduringperiod':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = " REFERRALS DURING PERIOD"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1100,6 +1122,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Categories = true;
                 break;
             case 'btn-recipientMasterroster':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "RECIPINT MASTER ROSTER CRITERIA"
                 this.frm_MasterRosterCycles = true;
                 this.frm_Recipients = true;
@@ -1112,6 +1135,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_additionalInfo = true;
                 break;
             case 'btn-activerecipient':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ACTIVE RECIPIENT REPORT"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1124,6 +1148,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_approvedPrograms = true;
                 break;
             case 'btn-inactiverecipient':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "INACTIVE RECIPIENT REPORT"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1134,6 +1159,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_Contacts = true;
                 break;
             case 'btn-adminduringperiod':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ADMISSIONS DURING PERIOD REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1142,6 +1168,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Categories = true;
                 break;
             case 'btn-dischargeduringperiod':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "DISCHARGES DURING PERIOD"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1150,6 +1177,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-absentclient':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ABSENT CLIENT STATUS REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1158,6 +1186,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Categories = true;
                 break;
             case 'btn-careerlist':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "CARER LIST CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1169,6 +1198,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-onlybillingclients':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ONLY BILLING CLIENTS REPORT"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1180,6 +1210,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-associatelist':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ASSOCIATE LIST CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1191,6 +1222,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-unserviced':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "UNSERVICED RECIPIENTS REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1200,6 +1232,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_activeClients = true;
                 break;
             case 'btn-staff-Activestaff':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ACTIVE STAFF REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1210,6 +1243,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;                
                 case 'btn-staff-competencyRegister':
+                    this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF COMPETENCY REGISTER"
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1223,6 +1257,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_Broker = true;
                 break;
             case 'btn-staff-ActiveBrokerage':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ACTIVE BROKERAGE REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1233,6 +1268,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-staff-Activevolunteers':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ACTIVE VOLUNTEERS REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1243,6 +1279,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-staff-InactiveBrokerage':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "INACTIVE BROKERAGE REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1252,6 +1289,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-staff-InactiveVolunteer':
+                this.bodystyle = { height:'400px', overflow: 'auto'}    
                 this.ModalName = "INACTIVE VOLUNTEER REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1262,6 +1300,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
 
             case 'btn-staff-Inactivestaff':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "INACTIVE STAFF CRITERIA"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1271,6 +1310,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-staff-Userpermissions':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF USER PERMISSIONS"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1280,34 +1320,40 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-Regis-mealregisterreport':
+                this.bodystyle = { height:'250px', overflow: 'auto'}
                 this.ModalName = "MEAL ORDER REPORT"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 break;
                 case 'btn-Regis-masterrosteredhoursreport':
+                this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "MASTER ROSTERED HOURS REPORT"
                 this.frm_MasterRosterCycles = true;
                 this.frm_Programs = true;
                 break;
                 
             case 'btn-Regis-hasreport':
+                this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "HAS REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-cdcleavereport':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "CDC LEAVE REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-cdcpackagebalance':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "CDC PACKAGE BALANCE REPORT"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-incidentregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "INCIDENT REGISTER"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1318,6 +1364,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-Regis-loanregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "LOAN REGISTER"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1330,10 +1377,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_outstanding = true;
                 break;
             case 'btn-staff-leaveregister':
+                this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "LEAVE REGISTER"
                 this.frm_Date = true;
                 break;
             case 'btn-staff-staffnotworked':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF NOT WORKED REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1343,6 +1392,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_activeStaff = true;
                 break;
             case 'btn-staff-competencyrenewal':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "COMPETENCY RENEWAL REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1361,6 +1411,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_Broker = true;
                 break;
             case 'btn-staff-unavailability':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF UNAVAILABILITY REPORT"
                 this.frm_Date = true;
                 this.frm_Staff = true;
@@ -1370,6 +1421,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-staff-Roster':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF ROSTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Staff = true;
@@ -1378,6 +1430,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_StaffGroup = true;
                 break;
             case 'btn-staff-MasterRoster':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF MASTER ROSTER"
                 this.frm_MasterRosterCycles = true;
                 this.frm_Staff = true;
@@ -1386,17 +1439,19 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_StaffGroup = true;
                 break;
             case 'btn-staff-loanregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "LOAN REGISTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Staff = true;
                 this.frm_Items = true;
-                this.frm_StaffGroup = true;
+                this.frm_StaffGroup = true;                
                 this.frm_options = true;
                 this.chkbx_incl_outstanding = true;
                 break;
             case 'btn-Regis-progcasenotes':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "RECIPIENT CASE/PROGRESS NOTES CRITERIA  "
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1409,6 +1464,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Managers = true;
                 break;
             case 'btn-Regis-servicenotesreg':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "SERVICE NOTES CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1419,6 +1475,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-opnotesregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "OP NOTES CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1430,12 +1487,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-Regis-careplanstatus':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "CARER PLAN STATUS REPORT"
                 this.frm_Date = true;
                 this.frm_PlanTypes = true;
                 this.frm_Recipients = true;
                 break;
             case 'btn-staff-availability':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "STAFF AVAILABILITY REPORT"
                 this.frm_OneDate = true;
                 this.frm_Branches = true;
@@ -1444,6 +1503,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_exclude_staffondate = true;
                 break;
             case 'btn-staff-timeattandencecomp':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "TIME & ATTENDANCE COMPARISON REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1452,6 +1512,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-staff-hrnotesregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "HR NOTES CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1461,6 +1522,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_pagebreak = true;
                 break;
             case 'btn-staff-opnotes':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF OP NOTES REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1471,6 +1533,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Programs = true;
                 break;
             case 'btn-staff-incidentregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "INCIDENT REGISTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1480,6 +1543,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Incidents = true;
                 break;
             case 'btn-staff-training':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF TRAINING REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1494,6 +1558,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-competenciesrenewal':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "COMPETENCIES RENEWAL REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1512,6 +1577,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_Broker = true;
                 break;
             case 'btn-Systm-AuditRegister':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "AUDIT REGISTER REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_TraccsUsers = true;
@@ -1519,10 +1585,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Description = true;
                 break;
             case 'btn-Systm-ActivityStatusAudit':
+                this.bodystyle = { height:'250px', overflow: 'auto', top:'50px'}
                 this.ModalName = "PROGRAM ACTIVITY STATUS AUDIT REPORT"
                 this.frm_Programs = true;
+                this.chkbx_include_enddated = true;
+                this.frm_options = true;
                 break;
             case 'btn-Systm-MTARegister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "MTA REGISTER CRITERIA CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
@@ -1540,6 +1610,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_forcedlogon = true;
                 break;
             case 'btn-Systm-RosterOverlap':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ROSTER OVERLAP REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1547,14 +1618,23 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Staff = true;
                 this.frm_Programs = true;
                 break;
-            case 'btn-Systm- MTAVerification':
+            case 'btn-Systm-MTAVerification':
                 this.ModalName = "MTA VERIFICATION REPORT CRITERIA"
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 this.frm_StaffGroup = true;
                 this.frm_Recipients = true;
                 this.frm_Staff = true;
+
+                this.frm_mta_options = true;
+                this.chkbx_late = true;
+
+                this.chkbx_leftearly = true;
+                this.chkbx_overstayed = true;
+                this.chkbx_not_logon = true;
+                this.chkbx_forcedlogon = true;
                 break;
             case 'btn-UnsedFunding':
                 this.ModalName = "RECIPIENT UNUSED FUNDING REPORT CRITERIA"
@@ -1576,10 +1656,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Categories = true;
                 break;
             case 'btn-report-fundingAuditReport':
+                this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "FUNDING AUDIT REPORT CRITERIA"
                 this.frm_Date = true;
                 break;
             case 'btn-report-UnbilledItems':
+                this.bodystyle = { height:'450px', overflow: 'auto'}
                 this.ModalName = "UNBILLED ITEMS REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1587,6 +1669,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_SVCTypes = true;
                 break;
             case 'btn-report-DatasetUnitCost':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "DATASET RECIPIENT UNIT COST REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
@@ -1614,9 +1697,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              case 'btn-FORPT-ActivityGroupRpt':
                 this.FORptModelTitle = "ACTIVITY GROUP REPORT CRITERIA" ;
              break;
-             case 'btn-FORPT-fundingAuditReport':
+            /* case 'btn-FORPT-fundingAuditReport':
                 this.FORptModelTitle = "FUNDING AUDIT REPORT CRITERIA" ;
-             break;
+             break;*/
              case 'btn-FORPT-DatasetActivityAnalysis':
                 this.FORptModelTitle = "DATA ACTIVITY ANALYSIS REPORT CRITERIA" ;
              break;
@@ -1813,8 +1896,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         var s_HRCaseNotes = "";
         var s_TrainingType = this.inputForm.value.trainingtypeArr;
         var s_TraccsUser = this.inputForm.value.traccsuserArr;
-        var s_who =this.inputForm.value.whowhat;
-        var s_Description = this.inputForm.value.description;
+        var s_who =(this.inputForm.value.whowhat).toString();
+        var s_Description = (this.inputForm.value.description).toString();
         var s_RosterType = this.inputForm.value.rostertypeArr
 
 
@@ -2172,7 +2255,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.StaffMasterRoster(s_Branches, s_StfGroup, s_Staff, s_Stafftype, strdate, endate)
                 break;
             case 'btn-staff-loanregister':
-                this.StaffLoanRegister(s_Branches, s_Programs, s_Staff, s_LoanItems, s_ServiceRegions, strdate, endate, tempsdate, tempedate)
+                this.StaffLoanRegister(s_Branches, s_Programs, s_Staff, s_LoanItems, s_StfGroup, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-Regis-progcasenotes':
                 this.RecipientProg_CaseReport(s_Branches, s_Programs, s_CaseNotes, s_Recipient, s_Descipiline, s_CareDomain, s_ServiceRegions, s_Managers, strdate, endate, tempsdate, tempedate)
@@ -2208,6 +2291,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.StaffCompetencyRenewal(s_Branches, s_Staff, s_Competencies, s_Managers, s_StaffTeam, s_CompetencyGroups, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-Systm-AuditRegister':
+                console.log(s_Description)
                 this.AuditRegister(s_who, s_Description, s_TraccsUser, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-Systm-ActivityStatusAudit':
@@ -2219,7 +2303,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             case 'btn-Systm-RosterOverlap':
                 this.RosterOverlapRegister(s_Programs, s_Branches, s_Staff, s_Recipient, strdate, endate, tempsdate, tempedate)
                 break;
-            case 'btn-Systm- MTAVerification':
+            case 'btn-Systm-MTAVerification':
                 this.MTAVerificationAudit(s_Programs, s_Managers, s_Staff, s_StfGroup, s_Recipient, strdate, endate, tempsdate, tempedate, s_XXLate, s_XXEarly, s_XXOverstayed)
                 break;
             case 'btn-FORPT-ProgramUtilisation':
@@ -2384,7 +2468,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         else { lblcriteria = lblcriteria + "All Programs." }
 
 
-        fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'REFERRAL') ORDER BY R.[Surname/Organisation], R.FirstName"
+        fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'REFERRAL') "
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
+        fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName "
 
 
 //          console.log(fQuery)
@@ -2407,6 +2493,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
                 "txtTitle": Title,
+                "count":sQl_Count,
                 
             }
         }
@@ -2502,9 +2589,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         else { lblcriteria = lblcriteria + "All Programs." }
 
 
-        fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'WAITING LIST' ) ORDER BY R.[Surname/Organisation], R.FirstName"
-
-
+        fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'WAITING LIST' ) "
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
+        fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
         //    console.log(fQuery)
         //  console.log(this.inputForm.value.printaslabel)
         
@@ -2526,6 +2613,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
                 "txtTitle": Title,
+                "count":sQl_Count,
                 
                 
             }
@@ -2835,7 +2923,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             lblcriteria = lblcriteria + " Programs " + program.join(",") + "; "
         }
         else { lblcriteria = lblcriteria + "All Programs." }
-
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
         fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
         /*   
         console.log(s_BranchSQL)
@@ -2853,6 +2941,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "count":sQl_Count,
             }
         }
         this.loading = true;
@@ -3755,7 +3844,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             lblcriteria = lblcriteria + " Programs " + program.join(",") + "; "
         }
         else { lblcriteria = lblcriteria + "All Programs." }
-
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
         fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
         /*   
         console.log(s_BranchSQL)
@@ -3780,6 +3869,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "count":sQl_Count,
             }
         }
         this.loading = true;
@@ -3869,6 +3959,8 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Programs." }
 
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
+
         fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
         /*   
         console.log(s_BranchSQL)
@@ -3891,6 +3983,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "count":sQl_Count,
             }
         }
         this.loading = true;
@@ -3977,6 +4070,8 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Programs." }
 
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
+
         fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
         /*   
         console.log(s_BranchSQL)
@@ -3999,6 +4094,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "count":sQl_Count,
             }
         }
         this.loading = true;
@@ -4515,6 +4611,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Programs." }
 
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
 
         fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
 
@@ -4539,6 +4636,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "count":sQl_Count,
             }
         }
         this.loading = true;
@@ -5781,6 +5879,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         var fQuery = "SELECT HumanResources.Name,HumanResources.PersonID,HumanResources.[Type],HumanResources.[Address1],HumanResources.[Group],format(HumanResources.Date1,'dd/MM/yyyy') as Date1, format(HumanResources.Date2,'dd/MM/yyyy') as Date2,Recipients.AccountNo,        Recipients.Branch FROM HumanResources INNER JOIN Recipients on HumanResources.PersonID = Recipients.UniqueID  WHERE   HumanResources.[Group] = 'LOANITEMS' "
         var lblcriteria;
 
+        var Title = "RECIPIENT LOAN REGISTER"; 
 
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = " ((Date1 < '" + temsdate + ("') AND ((Date2 Is Null) OR(Date2 >'") + tempedate + "' )) )";
@@ -5832,9 +5931,19 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Recipients," }
 
+        if(this.inputForm.value.incl_outstanding == true ){
+            fQuery = fQuery + " AND Date2 IS Null "
+        }
+        
+        
+        if(this.inputForm.value.incl_outstanding == true ){
+            fQuery = fQuery + " AND Date2 IS Null "
+            lblcriteria = lblcriteria + " Only Outstanding "
+        }
+
         fQuery = fQuery + " ORDER BY HumanResources.Name "
 
-        ////console.log(fQuery)
+        //console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -5846,6 +5955,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "txtTitle": Title,
 
 
             }
@@ -6522,19 +6632,20 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                   });
             });
     }
-    StaffLoanRegister(branch, program, staff, loanitems, loancategory, startdate, enddate, tempsdate, tempedate) {
+    StaffLoanRegister(branch, program, staff, loanitems,jobcategory, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT HumanResources.Name,HumanResources.PersonID,HumanResources.[Type],HumanResources.[Address1],HumanResources.[Group],format(HumanResources.Date1,'dd/MM/yyyy') as Date1, format(HumanResources.Date2,'dd/MM/yyyy') as Date2,Recipients.AccountNo,        Recipients.Branch FROM HumanResources INNER JOIN Recipients on HumanResources.PersonID = Recipients.UniqueID  WHERE   HumanResources.[Group] = 'LOANITEMS' "
+        var fQuery = "SELECT HumanResources.Name,HumanResources.PersonID,HumanResources.[Type],HumanResources.[Address1],HumanResources.[Group],format(HumanResources.Date1,'dd/MM/yyyy') as Date1, format(HumanResources.Date2,'dd/MM/yyyy') as Date2,Staff.AccountNo, Staff.STF_DEPARTMENT FROM HumanResources INNER JOIN Staff ON HumanResources.PersonID = Staff.UniqueID  WHERE   HumanResources.[Group] = 'LOANITEMS' "
         var lblcriteria;
 
+        var Title = "STAFF LOAN REGISTER"; 
 
         if (startdate != "" || enddate != "") {
-            this.s_DateSQL = " ((Date1 < '" + tempsdate + ("') AND ((Date2 Is Null) OR(Date2 >'") + tempedate + "' )) )";
+            this.s_DateSQL = " ((Date1 >= '" + tempsdate + ("') AND ((Date2 Is Null) OR(Date2 <= '") + tempedate + "' )) )";
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND  " + this.s_DateSQL };
         }
         if (branch != "") {
-            this.s_BranchSQL = "Branch  in ('" + branch.join("','") + "')";
+            this.s_BranchSQL = "STF_DEPARTMENT  in ('" + branch.join("','") + "')";
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
         }
         if (program != "") {
@@ -6549,15 +6660,15 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             this.s_IncedentTypeSQL = "([Name] in ('" + loanitems.join("','") + "'))";
             if (this.s_loanitemsSQL != "") { fQuery = fQuery + " AND " + this.s_loanitemsSQL };
         }
-        if (loancategory != "") {
-            this.s_loancategorySQL = "(i.[Status] in ('" + loancategory.join("','") + "'))";
-            if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_loancategorySQL };
+        if (jobcategory != "") {
+            this.s_StfGroupSQL = "( StaffGroup in ('" + jobcategory.join("','") + "'))";
+            if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
         }
 
-        if (loancategory != "") {
-            lblcriteria = " Incident Category: " + loancategory.join(",") + "; "
+        if (jobcategory != "") {
+            lblcriteria = " Job Category: " + jobcategory.join(",") + "; "
         }
-        else { lblcriteria = "All Categories," }
+        else { lblcriteria = "All Job Categories," }
         if (loanitems != "") {
             lblcriteria = lblcriteria + " Loan Items: " + loanitems.join(",") + "; "
         }
@@ -6569,19 +6680,25 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (program != "") {
             lblcriteria = lblcriteria + " Programs " + program.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Programs." }
+        else { lblcriteria = lblcriteria + "All Programs," }
         if (branch != "") {
             lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + " All Branches " }
+        else { lblcriteria = lblcriteria + " All Branches, " }
         if (staff != "") {
-            lblcriteria = " Staff: " + staff.join(",") + "; "
+            lblcriteria = lblcriteria + " Staff: " + staff.join(",") + "; "
         }
         else { lblcriteria = lblcriteria + "All Staff," }
 
+        if(this.inputForm.value.incl_outstanding == true ){
+            fQuery = fQuery + " AND Date2 IS Null "
+            lblcriteria = lblcriteria + " Only Outstanding "
+        }
+
         fQuery = fQuery + " ORDER BY HumanResources.Name "
 
-        //////console.log(fQuery)
+        console.log(fQuery)
+
 
         this.drawerVisible = true;
 
@@ -6593,7 +6710,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
-
+                "txtTitle": Title,
 
             }
         }
@@ -7772,7 +7889,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     }
     AuditRegister(who, descibe, traccsuser, startdate, enddate, tempsdate, tempedate) {
             
-        var fQuery = "SELECT RecordNumber,format( ActionDate,'dd/MM/yyyy') as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
+        var fQuery = "SELECT RecordNumber,format( ActionDate,'dd/MM/yyyy HH:mm') as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {
@@ -7780,7 +7897,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_DateSQL != "") { fQuery = fQuery + "  " + this.s_DateSQL };
         }
         if (traccsuser != "") {
-            this.s_TraccsuserSQL = "R.[RECIPIENT_COOrdinator] in ('" + traccsuser.join("','") + "')";
+            this.s_TraccsuserSQL = "TraccsUser in ('" + traccsuser.join("','") + "')";
             if (this.s_TraccsuserSQL != "") { fQuery = fQuery + " AND " + this.s_TraccsuserSQL };
         }
         if (descibe != "" && descibe != null) {
@@ -7814,7 +7931,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY ActionDate "
 
-    //    console.log(fQuery)
+        console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -7866,7 +7983,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     }
     ProgramActivityStatusAudit(program) {
 
-        var fQuery = "SELECT H.[NAME], H.[TYPE], S.[SERVICE TYPE], S.SERVICESTATUS FROM HUMANRESOURCETYPES H INNER JOIN SERVICEOVERVIEW S ON CONVERT(VARCHAR(15),H.RECORDNUMBER) = S.PERSONID WHERE [GROUP] = 'PROGRAMS' AND (ENDDATE >= getDate() OR ENDDATE IS NULL) ";
+        var fQuery = "SELECT H.[NAME], H.[TYPE], S.[SERVICE TYPE], S.SERVICESTATUS FROM HUMANRESOURCETYPES H INNER JOIN SERVICEOVERVIEW S ON CONVERT(VARCHAR(15),H.RECORDNUMBER) = S.PERSONID WHERE [GROUP] = 'PROGRAMS'  ";
         var lblcriteria;
 
 
@@ -7875,6 +7992,11 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             this.s_ProgramSQL = " ([Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
         }
+
+        if (this.inputForm.value.include_enddated == false){
+            fQuery = fQuery + "AND (H.ENDDATE >= format (getDate(),'yyyy/MM/dd') OR H.ENDDATE IS NULL)"
+        }
+
         if (program != "") {
             lblcriteria = " Programs " + program.join(",") + "; "
         }
@@ -7883,7 +8005,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY H.[NAME], S.[SERVICE TYPE] "
 
-        //////console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -8083,7 +8205,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     RosterOverlapRegister(program, branch, Staff, recipient, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT RECORDNO, [CLIENT CODE], [CARER CODE], [SERVICE TYPE], PROGRAM, [DATE], [START TIME], DURATION * 5 as DURATION,  ST.[STAFFGROUP] ,[STF_DEPARTMENT] AS BRANCH  FROM ROSTER ro INNER JOIN STAFF ST ON ro.[CARER CODE] = ST.[ACCOUNTNO] LEFT JOIN ITEMTYPES IT ON  IT.Title = RO.[Service Type] Where Exists ( SELECT * FROM ROSTER ro2 Where ro.[CARER CODE] = ro2.[CARER CODE] AND ro.RECORDNO <> ro2.RECORDNO AND ro.[DATE] = ro2.[DATE] AND ro.BLOCKNO >= ro2.BLOCKNO AND ro.BLOCKNO < ro2.BLOCKNO+ro2.DURATION AND TYPE NOT IN (13) )    AND ro.[Type] NOT IN (13) AND ro.[CARER CODE] > '!z'     AND st.[STAFFGROUP] <> 'NON-STAFF' AND  ST.CATEGORY = 'STAFF'    AND InfoOnly <> 1    ";
+        var fQuery = "SELECT RECORDNO, [CLIENT CODE], [CARER CODE], [SERVICE TYPE], PROGRAM,CONVERT(varchar, convert(datetime,[DATE]),103) as [DATE], [START TIME], DURATION * 5 as DURATION,  ST.[STAFFGROUP] ,[STF_DEPARTMENT] AS BRANCH  FROM ROSTER ro INNER JOIN STAFF ST ON ro.[CARER CODE] = ST.[ACCOUNTNO] LEFT JOIN ITEMTYPES IT ON  IT.Title = RO.[Service Type] Where Exists ( SELECT * FROM ROSTER ro2 Where ro.[CARER CODE] = ro2.[CARER CODE] AND ro.RECORDNO <> ro2.RECORDNO AND ro.[DATE] = ro2.[DATE] AND ro.BLOCKNO >= ro2.BLOCKNO AND ro.BLOCKNO < ro2.BLOCKNO+ro2.DURATION AND TYPE NOT IN (13) )    AND ro.[Type] NOT IN (13) AND ro.[CARER CODE] > '!z'     AND st.[STAFFGROUP] <> 'NON-STAFF' AND  ST.CATEGORY = 'STAFF'    AND InfoOnly <> 1    ";
         var lblcriteria;
 
 
@@ -8140,9 +8262,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         else { lblcriteria = lblcriteria + " All Branches " }
 
 
-        fQuery = fQuery + " ORDER BY [Carer Code], [Date], [Start Time], [Client Code]  "
-
-        ////console.log(fQuery)
+        fQuery = fQuery + " ORDER BY [Carer Code],[START TIME]  "
+//
+        // console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -8276,9 +8398,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Recipients," }
         if (startdate != "") {
-            lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+            lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
         }
-        else { lblcriteria = " All Dated " }
+        else { lblcriteria =lblcriteria + " All Dated " }
 
 
         fQuery = fQuery + "  ORDER BY staffcode, [Date], [Start Time] "
@@ -8795,7 +8917,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 break;
             case 'btn-FORPT-RecipientserviceReport':
-                var Title = "RECIPIENT SERVICE REPORT";
+                var Title = "RECIPIENT SERVICE REPORT"; 
                 var Report_Definer = "This report summarises all services delivered to Recipients by the Agency, (either by Agency Staff or Brokered organisations acting on behalf of the Agency, and Travel Time Attributable to Recipients), during the selected period."
                 fQuery = fQuery + "AND ([Roster].[Type] = 2 OR ([Roster].[Type] = 4 AND [Roster].[Carer Code] = '!INTERNAL') OR  [Roster].[Type]=1 OR [Roster].[Type] = 3 OR [Roster].[Type] = 5 OR [Roster].[Type] = 7 OR [Roster].[Type] = 8 OR [Roster].[Type] = 10 OR [Roster].[Type] = 11 OR [Roster].[Type] = 14 OR [Roster].[Type] = 12) AND ([Client Code] > '!MULTIPLE') ";
                 fQuery = fQuery + "ORDER BY [Client Code], [Service Type], Date, [Start Time]"

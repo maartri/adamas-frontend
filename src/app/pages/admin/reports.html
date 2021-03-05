@@ -765,7 +765,7 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-Systm- MTAVerification" (click)="showModal(this.id)"  >
+                                            <button nz-button nzType="default" id="btn-Systm-MTAVerification" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 MTA Attendance  Verification
                                                 </button>
@@ -788,6 +788,7 @@
             <nz-modal
                 nzWidth="600px"
                 [nzStyle]="{ top: '20px' }"
+                [nzBodyStyle]=  "bodystyle"
                 [(nzVisible)]="isVisibleTop"
                 [(nzTitle)]="ModalName"
                 (nzOnCancel)="handleCancelTop()"
@@ -1170,6 +1171,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_grpbyCoordinators" ><label class="checks" nz-checkbox formControlName="groupbyCoordinators"   >Group by Coordinators</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_inactivestaff" ><label class="checks" nz-checkbox formControlName="excludeinactivestaff"   >Exclude InActive Staff</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_staffondate" ><label class="checks" nz-checkbox formControlName="exclude_staff_shiftondate"   >Exclude Staff having shift on date</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_include_enddated" ><label class="checks" nz-checkbox formControlName="include_enddated"   >Include EndDated Programs</label></div>
                                         
                                        
                                     </div>
@@ -1212,8 +1214,8 @@
             <nz-modal
             [nzWidth]="modelwidth" 
             [(nzVisible)]="FOReports"
-            [nzStyle]="{ top: '50px' }"
-            [nzBodyStyle]=  "{ height:'400px', overflow: 'auto'} "
+            [nzStyle]="{ top: '20px' }"
+            [nzBodyStyle]=  "FOReportsbodystyle"
             [(nzTitle)]="FORptModelTitle"
             [nzContent]="modalContent"
             [nzFooter]="modalFooter"      

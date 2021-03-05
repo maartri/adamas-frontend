@@ -765,7 +765,7 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-Systm- MTAVerification" (click)="showModal(this.id)"  >
+                                            <button nz-button nzType="default" id="btn-Systm-MTAVerification" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 MTA Attendance  Verification
                                                 </button>
@@ -788,7 +788,7 @@
             <nz-modal
                 nzWidth="600px"
                 [nzStyle]="{ top: '20px' }"
-            
+                [nzBodyStyle]=  "bodystyle"
                 [(nzVisible)]="isVisibleTop"
                 [(nzTitle)]="ModalName"
                 (nzOnCancel)="handleCancelTop()"
@@ -1214,8 +1214,8 @@
             <nz-modal
             [nzWidth]="modelwidth" 
             [(nzVisible)]="FOReports"
-            [nzStyle]="{ top: '50px' }"
-            [nzBodyStyle]=  "{ height:'400px', overflow: 'auto'} "
+            [nzStyle]="{ top: '20px' }"
+            [nzBodyStyle]=  "FOReportsbodystyle"
             [(nzTitle)]="FORptModelTitle"
             [nzContent]="modalContent"
             [nzFooter]="modalFooter"      

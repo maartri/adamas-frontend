@@ -14,7 +14,7 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
 import { tr } from 'date-fns/locale';
 
-//Sets defaults of Criteria Model     [nzBodyStyle]=  "bodystyle"
+//Sets defaults of Criteria Model     
 const inputFormDefault = {
     statesArr: [[]],
     allState: [true],
@@ -289,7 +289,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     tocken :any;
 
     bodystyle:object;
-    //{ height:'500px', overflow: 'auto'}
+    FOReportsbodystyle : object;
+    //{ height:'500px', overflow: 'auto'} 
     //Modals visibility
     isVisibleTop = false;
     FOReports = false;
@@ -977,13 +978,15 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     toggle() {
         this.show = !this.show;
         this.showoption = !this.showoption;
-    /*    if (this.show == true) {
+        if (this.show == true) {
             this.modelwidth = "680";
+            this.FOReportsbodystyle = { height:'500px', overflow: 'auto' }
             
         }
         else {
             this.modelwidth = "680px";
-        } */
+            this.FOReportsbodystyle = { height:'300px', overflow: 'auto' }
+        } 
     }
     showUserReport() {
 
@@ -1017,6 +1020,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         switch (this.btnid) {
             case 'btn-refferallist':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "REFERRAL LIST CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1028,6 +1032,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
                 case 'btn-waitinglist':
+                    this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "WAITING LIST CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1039,12 +1044,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-activepackagelist':
+                this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "ACTIVE PACKAGE CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Funders = true;
                 break;
             case 'btn-recipientroster':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "RECIPIENT ROSTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
@@ -1056,6 +1063,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_additionalInfo = true;
                 break;
             case 'btn-suspendedrecipient':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "SUSPENDED RECIPIENT REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1066,12 +1074,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-vouchersummary':
+                this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "VOUCHER SUMMARY REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-packageusage':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "PACKAGE USAGE REPORT CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1082,10 +1092,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-timelength':
+                this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "RECIPIENTS TIME LENGTH REPORT"
                 this.frm_Date = true;
                 break;
             case 'btn-unallocatedbookings':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "UNFILLED BOOKINGS REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1093,6 +1105,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_SVCTypes = true;
                 break;
             case 'btn-transportsummary':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "TRANSPORT SUMMARY REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1100,6 +1113,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_vehicles = true;
                 break;
             case 'btn-refferalduringperiod':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = " REFERRALS DURING PERIOD"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1108,6 +1122,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Categories = true;
                 break;
             case 'btn-recipientMasterroster':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "RECIPINT MASTER ROSTER CRITERIA"
                 this.frm_MasterRosterCycles = true;
                 this.frm_Recipients = true;
@@ -1120,6 +1135,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_additionalInfo = true;
                 break;
             case 'btn-activerecipient':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ACTIVE RECIPIENT REPORT"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1132,6 +1148,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_approvedPrograms = true;
                 break;
             case 'btn-inactiverecipient':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "INACTIVE RECIPIENT REPORT"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1142,6 +1159,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_Contacts = true;
                 break;
             case 'btn-adminduringperiod':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ADMISSIONS DURING PERIOD REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1150,6 +1168,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Categories = true;
                 break;
             case 'btn-dischargeduringperiod':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "DISCHARGES DURING PERIOD"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1158,6 +1177,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-absentclient':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ABSENT CLIENT STATUS REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1166,6 +1186,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Categories = true;
                 break;
             case 'btn-careerlist':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "CARER LIST CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1177,6 +1198,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-onlybillingclients':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ONLY BILLING CLIENTS REPORT"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1188,6 +1210,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-associatelist':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ASSOCIATE LIST CRITERIA"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1199,6 +1222,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-unserviced':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "UNSERVICED RECIPIENTS REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1208,6 +1232,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_activeClients = true;
                 break;
             case 'btn-staff-Activestaff':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ACTIVE STAFF REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1218,6 +1243,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;                
                 case 'btn-staff-competencyRegister':
+                    this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF COMPETENCY REGISTER"
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1231,6 +1257,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_Broker = true;
                 break;
             case 'btn-staff-ActiveBrokerage':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ACTIVE BROKERAGE REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1241,6 +1268,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-staff-Activevolunteers':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ACTIVE VOLUNTEERS REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1251,6 +1279,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-staff-InactiveBrokerage':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "INACTIVE BROKERAGE REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1260,6 +1289,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-staff-InactiveVolunteer':
+                this.bodystyle = { height:'400px', overflow: 'auto'}    
                 this.ModalName = "INACTIVE VOLUNTEER REPORT"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1270,6 +1300,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
 
             case 'btn-staff-Inactivestaff':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "INACTIVE STAFF CRITERIA"
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
@@ -1279,6 +1310,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-staff-Userpermissions':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF USER PERMISSIONS"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1288,34 +1320,40 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_asAddressLabel = true;
                 break;
             case 'btn-Regis-mealregisterreport':
+                this.bodystyle = { height:'250px', overflow: 'auto'}
                 this.ModalName = "MEAL ORDER REPORT"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 break;
                 case 'btn-Regis-masterrosteredhoursreport':
+                this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "MASTER ROSTERED HOURS REPORT"
                 this.frm_MasterRosterCycles = true;
                 this.frm_Programs = true;
                 break;
                 
             case 'btn-Regis-hasreport':
+                this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "HAS REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-cdcleavereport':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "CDC LEAVE REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-cdcpackagebalance':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "CDC PACKAGE BALANCE REPORT"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-incidentregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "INCIDENT REGISTER"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1326,6 +1364,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-Regis-loanregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "LOAN REGISTER"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1338,10 +1377,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_outstanding = true;
                 break;
             case 'btn-staff-leaveregister':
+                this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "LEAVE REGISTER"
                 this.frm_Date = true;
                 break;
             case 'btn-staff-staffnotworked':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF NOT WORKED REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1351,6 +1392,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_activeStaff = true;
                 break;
             case 'btn-staff-competencyrenewal':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "COMPETENCY RENEWAL REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1369,6 +1411,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_Broker = true;
                 break;
             case 'btn-staff-unavailability':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF UNAVAILABILITY REPORT"
                 this.frm_Date = true;
                 this.frm_Staff = true;
@@ -1378,6 +1421,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-staff-Roster':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF ROSTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Staff = true;
@@ -1386,6 +1430,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_StaffGroup = true;
                 break;
             case 'btn-staff-MasterRoster':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF MASTER ROSTER"
                 this.frm_MasterRosterCycles = true;
                 this.frm_Staff = true;
@@ -1394,6 +1439,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_StaffGroup = true;
                 break;
             case 'btn-staff-loanregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "LOAN REGISTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1405,6 +1451,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_outstanding = true;
                 break;
             case 'btn-Regis-progcasenotes':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "RECIPIENT CASE/PROGRESS NOTES CRITERIA  "
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1417,6 +1464,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Managers = true;
                 break;
             case 'btn-Regis-servicenotesreg':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "SERVICE NOTES CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1427,6 +1475,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-opnotesregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "OP NOTES CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1438,12 +1487,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-Regis-careplanstatus':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "CARER PLAN STATUS REPORT"
                 this.frm_Date = true;
                 this.frm_PlanTypes = true;
                 this.frm_Recipients = true;
                 break;
             case 'btn-staff-availability':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "STAFF AVAILABILITY REPORT"
                 this.frm_OneDate = true;
                 this.frm_Branches = true;
@@ -1452,6 +1503,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_exclude_staffondate = true;
                 break;
             case 'btn-staff-timeattandencecomp':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "TIME & ATTENDANCE COMPARISON REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1460,6 +1512,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_inactive = true;
                 break;
             case 'btn-staff-hrnotesregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "HR NOTES CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1469,6 +1522,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_pagebreak = true;
                 break;
             case 'btn-staff-opnotes':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF OP NOTES REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1479,6 +1533,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Programs = true;
                 break;
             case 'btn-staff-incidentregister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "INCIDENT REGISTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1488,6 +1543,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Incidents = true;
                 break;
             case 'btn-staff-training':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF TRAINING REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1502,6 +1558,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-competenciesrenewal':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "COMPETENCIES RENEWAL REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1520,6 +1577,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_incl_Broker = true;
                 break;
             case 'btn-Systm-AuditRegister':
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "AUDIT REGISTER REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_TraccsUsers = true;
@@ -1527,12 +1585,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Description = true;
                 break;
             case 'btn-Systm-ActivityStatusAudit':
+                this.bodystyle = { height:'250px', overflow: 'auto', top:'50px'}
                 this.ModalName = "PROGRAM ACTIVITY STATUS AUDIT REPORT"
                 this.frm_Programs = true;
                 this.chkbx_include_enddated = true;
                 this.frm_options = true;
                 break;
             case 'btn-Systm-MTARegister':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "MTA REGISTER CRITERIA CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
@@ -1550,6 +1610,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_forcedlogon = true;
                 break;
             case 'btn-Systm-RosterOverlap':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "ROSTER OVERLAP REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1557,7 +1618,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Staff = true;
                 this.frm_Programs = true;
                 break;
-            case 'btn-Systm- MTAVerification':
+            case 'btn-Systm-MTAVerification':
                 this.ModalName = "MTA VERIFICATION REPORT CRITERIA"
                 this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.frm_Date = true;
@@ -1595,10 +1656,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Categories = true;
                 break;
             case 'btn-report-fundingAuditReport':
+                this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "FUNDING AUDIT REPORT CRITERIA"
                 this.frm_Date = true;
                 break;
             case 'btn-report-UnbilledItems':
+                this.bodystyle = { height:'450px', overflow: 'auto'}
                 this.ModalName = "UNBILLED ITEMS REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1606,6 +1669,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_SVCTypes = true;
                 break;
             case 'btn-report-DatasetUnitCost':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "DATASET RECIPIENT UNIT COST REPORT CRITERIA"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
@@ -1633,9 +1697,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              case 'btn-FORPT-ActivityGroupRpt':
                 this.FORptModelTitle = "ACTIVITY GROUP REPORT CRITERIA" ;
              break;
-             case 'btn-FORPT-fundingAuditReport':
+            /* case 'btn-FORPT-fundingAuditReport':
                 this.FORptModelTitle = "FUNDING AUDIT REPORT CRITERIA" ;
-             break;
+             break;*/
              case 'btn-FORPT-DatasetActivityAnalysis':
                 this.FORptModelTitle = "DATA ACTIVITY ANALYSIS REPORT CRITERIA" ;
              break;
@@ -2239,7 +2303,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             case 'btn-Systm-RosterOverlap':
                 this.RosterOverlapRegister(s_Programs, s_Branches, s_Staff, s_Recipient, strdate, endate, tempsdate, tempedate)
                 break;
-            case 'btn-Systm- MTAVerification':
+            case 'btn-Systm-MTAVerification':
                 this.MTAVerificationAudit(s_Programs, s_Managers, s_Staff, s_StfGroup, s_Recipient, strdate, endate, tempsdate, tempedate, s_XXLate, s_XXEarly, s_XXOverstayed)
                 break;
             case 'btn-FORPT-ProgramUtilisation':

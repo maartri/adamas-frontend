@@ -31,118 +31,206 @@
         </div>
     </div>
     <nz-modal [nzWidth]="900" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
-        <div class="flexy">
-            <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+        <div class="">
+            <nz-steps [nzSize]="'small'" [nzCurrent]="current" (nzIndexChange)="onIndexChange($event)">
                 <nz-step class="mini" nzTitle="General" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Time & Attendance" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Staff" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="competencies" nzDescription=""></nz-step>
             </nz-steps>
-            <nz-divider class="full-height" nzType="vertical"></nz-divider>
+            <nz-divider class="full-height" nzType="horizontal" style="margin-right:0px;"></nz-divider>
             <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
                 <div *ngIf="current == 0">
                     <div nz-row nzGutter="24" class="mrg-btm">
                         <div nz-col nzSpan="24" class="mrg-btm">
-                            <div nz-col nzSpan="9" class="mrg-btm">
-                                <span>Facility/Service Outlet Details</span>
+                            <div nz-col nzSpan="10" class="mrg-btm" style="text-align:center;">
+                                <h2 style="color:#1890FF;">Item/Activity Details</h2>
                             </div>    
-                            <div nz-col nzSpan="4" class="mrg-btm">
-                                <input nz-input  placeholder="Outlet ID"  formControlName="outletid" />
-                            </div>   
-                            <div nz-col nzSpan="6" class="mrg-btm">
-                                <label nz-checkbox  formControlName="cstdaoutlet">CSTDA OUTLET</label>
+                            <div nz-col nzSpan="3" class="mrg-btm text-right pad-r-5" >
+                                <label>Outlet ID:</label>
                             </div>
-                            <div nz-col nzSpan="5" class="mrg-btm">
-                                <label nz-checkbox  formControlName="dsci">DCSI</label>
+                            <div nz-col nzSpan="3" class="mrg-btm">
+                                <input nz-input [nzSize]="'small'" formControlName="outletid" />
+                            </div>   
+                            <div nz-col nzSpan="4" class="mrg-btm">
+                                CSTDA OUTLET: <label nz-checkbox  formControlName="cstdaoutlet"></label>
+                            </div>
+                            <div nz-col nzSpan="4" class="mrg-btm">
+                                DCSI: <label nz-checkbox  formControlName="dsci"></label>
                             </div>
                         </div>
                         <div nz-col nzSpan="24" class="mrg-btm">
-                            <div nz-col nzSpan="16" class="mrg-btm">
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Branch" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of branches" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
-                                    </nz-select>
+                            <div nz-col nzSpan="17" class="mrg-btm">
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Branch">Branch:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="branch" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let l of branches" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
+                                        </nz-select>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <input nz-input placeholder="Name"  formControlName="name" />
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Name">Name:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <input nz-input  [nzSize]="'small'" formControlName="name" [(ngModel)]="inputValue" />
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="8">
-                                    <input  nz-input placeholder="places"  formControlName="places" />
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="places">places:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <nz-input-number [nzSize]="'small'" formControlName="places" [nzMin]="0" style="width: 100%;"></nz-input-number>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="16">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzPlaceHolder="Category" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Category">Category:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <nz-select  [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let l of branches" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
+                                        </nz-select>
+                                    </div>
                                 </div>
-                                <div  nz-col nzSpan="24">
-                                    <input nz-input placeholder="Adress"  formControlName="adress" />
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Adress">Adress:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <input nz-input  [nzSize]="'small'" formControlName="adress" />
+                                    </div>
                                 </div>
-                                <div  nz-col nzSpan="24">
-                                    <input nz-input placeholder="Subrub"  formControlName="subrub" />
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Subrub">Subrub:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <input nz-input [nzSize]="'small'"  formControlName="subrub" />
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="12">
-                                    <input  nz-input placeholder="PostCode"  formControlName="postcode" />
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="PostCode">PostCode:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <input  nz-input [nzSize]="'small'" formControlName="postcode" />
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="12">
-                                    <input  nz-input placeholder="SLA"  formControlName="sla" />
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="SLA">SLA:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <input  nz-input [nzSize]="'small'" formControlName="sla" />
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="agencysector" nzPlaceHolder="Agency Sector" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let agency of agencySector" [nzLabel]="agency.name" [nzValue]="agency.id"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Agency Sector">Agency Sector:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <nz-select  [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="agencysector" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let agency of agencySector" [nzLabel]="agency.name" [nzValue]="agency.id"></nz-option>
+                                        </nz-select>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="servicetype" nzPlaceHolder="Service Type" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let service of serviceType" [nzLabel]="service" [nzValue]="service"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Service Type">Service Type:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <nz-select  [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="servicetype"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let service of serviceType" [nzLabel]="service" [nzValue]="service"></nz-option>
+                                        </nz-select>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="fundingjunc" nzPlaceHolder="Funding Jurisdiction" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let juri of jurisdiction" [nzLabel]="juri.name" [nzValue]="juri.id"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Funding Jurisdiction">Funding Jurisdiction:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <nz-select  [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="fundingjunc"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let juri of jurisdiction" [nzLabel]="juri.name" [nzValue]="juri.id"></nz-option>
+                                        </nz-select>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="fundingtype" nzPlaceHolder="Funding Type" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let fun of fundTypes" [nzLabel]="fun" [nzValue]="fun"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Funding Type">Funding Type:</label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <nz-select  [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="fundingtype"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let fun of fundTypes" [nzLabel]="fun" [nzValue]="fun"></nz-option>
+                                        </nz-select>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="24">
-                                    <textarea rows="4" nz-input nzPlaceHolder="Runsheet Alerts" formControlName="sheetalert"></textarea>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label nzFor="Runsheet Alerts">Runsheet Alerts : </label>
+                                    </div>
+                                    <div nz-col nzSpan="17">
+                                        <textarea rows="4" nz-input  formControlName="sheetalert"></textarea>
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="8">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="hour" nzPlaceHolder="Hours Per day" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
-                                    </nz-select>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label>Hours Per day : </label>
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <nz-select   [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="hour" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
+                                        </nz-select>
+                                        
+                                    </div>
+                                     <div nz-col nzSpan="5" class="text-right">
+                                        No Pattern : <label nz-checkbox formControlName="hourPatern"></label>
+                                    </div>
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label for="No. Service Users">No. Service Users : </label>
+                                    </div>
+                                    <div nz-col nzSpan="2">
+                                        <input  nz-input  [nzSize]="'small'"  formControlName="serviceUsers" />
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="8">
-                                    <label nz-checkbox formControlName="hourPatern">No Pattern</label>
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label>Days Per week : </label>
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <nz-select   [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="day" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let days_per_w of numbers" [nzLabel]="days_per_w" [nzValue]="days_per_w"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                     <div nz-col nzSpan="5" class="text-right">
+                                        No Pattern : <label nz-checkbox formControlName="dayPatern"></label>
+                                    </div>
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label for="No. Service Users">Service Anual Hours : </label>
+                                    </div>
+                                    <div nz-col nzSpan="2">
+                                        <input  nz-input  [nzSize]="'small'"  formControlName="anualhours" />
+                                    </div>
                                 </div>
-                                <div class="mrg-btm" nz-col nzSpan="8">
-                                    <input  nz-input placeholder="No. Service Users"  formControlName="serviceUsers" />
-                                </div>
-                                <div class="mrg-btm" nz-col nzSpan="8">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="day" nzPlaceHolder="Days Per week" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
-                                    </nz-select>
-                                </div>
-                                <div class="mrg-btm" nz-col nzSpan="8">
-                                    <label nz-checkbox formControlName="dayPatern">No Pattern</label>
-                                </div>
-                                <div class="mrg-btm" nz-col nzSpan="8">
-                                    <input  nz-input placeholder="Service Anual Hours"  formControlName="anualhours" />
-                                </div>
-                                <div class="mrg-btm" nz-col nzSpan="8">
-                                    <nz-select  [nzDropdownMatchSelectWidth]="false" formControlName="week" nzPlaceHolder="Weeks Per year" nzShowSearch nzAllowClear style="width:100%;">
-                                        <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
-                                    </nz-select>
-                                </div>
-                                <div nz-col nzSpan="8">
-                                    <label nz-checkbox formControlName="weekPatern">No Pattern</label>
-                                </div>
-                                <div nz-col nzSpan="8">
+                                <div nz-row nzJustify class="mrg-btm">
+                                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                        <label>Weeks Per year : </label>
+                                    </div>
+                                    <div nz-col nzSpan="4">
+                                        <nz-select  [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="week" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                     <div nz-col nzSpan="5" class="text-right">
+                                        No Pattern : <label nz-checkbox formControlName="weekPatern"></label>
+                                    </div>
                                 </div>
                             </div>
-                            <div nz-col nzSpan="8" class="mrg-btm">
+                            <div nz-col nzSpan="7" class="mrg-btm">
                                 <div nz-row nzGutter="24" class="mrg-btm">
                                     <div nz-col nzSpan="24">
                                         <label for="Name" style="color:red;font-weight:700;">WEEKLY HOUR LIMITS:</label>
@@ -155,12 +243,12 @@
                                         <nz-divider style="margin:4px 0px"></nz-divider>
                                         <div nz-col nzSpan="12">
                                             <label for="Name" style="color:red">MINIMUM:</label>
-                                            <input  nz-input placeholder=""  formControlName="minUserWeek" style="
+                                            <input  nz-input [nzSize]="'small'" placeholder=""  formControlName="minUserWeek" style="
                                             color: red;"/>
                                         </div>
                                         <div nz-col nzSpan="12">
                                             <label for="Name" style="color:red">MAXIMUM:</label>
-                                            <input  nz-input placeholder=""  formControlName="maxUserWeek" />   
+                                            <input  nz-input [nzSize]="'small'" placeholder=""  formControlName="maxUserWeek" />   
                                         </div>
                                         <div nz-col nzSpan="24">
                                             <label for="Name" style="color:red">WEEKLY Staff Hours:</label>
@@ -168,26 +256,26 @@
                                         
                                         <div nz-col nzSpan="12">
                                             <label for="Name" style="color:red">MINIMUM:</label>
-                                            <input  nz-input placeholder=""  formControlName="minStaffHour" style="
+                                            <input  nz-input [nzSize]="'small'" placeholder=""  formControlName="minStaffHour" style="
                                             color: red;"/>
                                         </div>
                                         <div nz-col nzSpan="12">
                                             <label for="Name" style="color:red">MAXIMUM:</label>
-                                            <input  nz-input placeholder=""  formControlName="maxStaffHour" />   
+                                            <input  nz-input [nzSize]="'small'" placeholder=""  formControlName="maxStaffHour" />   
                                         </div>
                                     </div> 
                                     <div style="border:1px solid;min-height:150px; margin-top:10px;">
                                         <div nz-col nzSpan="24">
                                             <label for="Name">GL REVENUE ACCOUNT:</label>
-                                            <input  nz-input placeholder=""  formControlName="glRevene" style="
+                                            <input  nz-input [nzSize]="'small'" placeholder=""  formControlName="glRevene" style="
                                             color: red;"/>
                                         </div>
                                         <div nz-col nzSpan="24">
                                             <label for="Name">GL COST ACCOUNT:</label>
-                                            <input  nz-input placeholder=""  formControlName="glCost" />   
+                                            <input  nz-input [nzSize]="'small'" placeholder=""  formControlName="glCost" />   
                                         </div>
                                         <div nz-col nzSpan="24">
-                                            <label nz-checkbox  formControlName="gloveride">GL Override</label>
+                                            GL Override: <label nz-checkbox  formControlName="gloveride"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -322,12 +410,12 @@
                         </div>
                         <div *nzModalFooter>
                             <ng-container>
-                                <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                                <!-- <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
                                     <span>Previous</span>
                                 </button>
                                 <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" >
                                     <span>Next</span>
-                                </button>
+                                </button> -->
                                 <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
                                     <span>Save</span>
                                 </button>

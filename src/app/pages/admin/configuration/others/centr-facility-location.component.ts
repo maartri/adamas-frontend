@@ -47,6 +47,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
   current: number = 0;
+  disabled:boolean = false;
   checkedflag:boolean = true;
   checkedStaff:boolean = false;
   checkedUnapprStaff:boolean = false;
@@ -59,6 +60,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   isUpdate: boolean = false;
   
   title:string = "Add New Facility/Location";
+  inputValue: string = 'NEW OUTLET';
   private unsubscribe: Subject<void> = new Subject();
   tocken: any;
   pdfTitle: string;
@@ -147,12 +149,13 @@ export class CentrFacilityLocationComponent implements OnInit {
         daysPerWeek,
         daysPerWeekOfOperation_NoPattern,
         dcsi,
+        postcode,
         fundingSource,
         fundingType,
         glCost,
         glOverride,
         glRevenue,
-        hoursPerDay,
+        hour,
         hoursPerDayOfOperation_NoPattern,
         jurisdiction,
         maxWeeklyRecipientHours,
@@ -170,17 +173,18 @@ export class CentrFacilityLocationComponent implements OnInit {
         weeksPerCollectionPeriodOfOperation_NoPattern,
         weeksPerYear,
       } = this.tableData[index-1];
-      this.inputForm.patchValue({
+        this.inputForm.patchValue({
         branch : branch,
         adress : address,
         subrub : suburb,
         sla    : cstdasla,
-        dcsi:dcsi,
+        postcode:postcode,
+        dsci:(dcsi) ? true : false,
         fundingType:fundingType,
-        cstdaoutlet:cstda,
+        cstdaoutlet:(cstda) ? true : false,
         glRevene:glRevenue,
         glCost:glCost,
-        glOverride:glOverride,
+        gloveride:(glOverride) ? true : false,
         name : name,
         fundingjunc:jurisdiction,
         fundingtype:fundingType,
@@ -207,13 +211,13 @@ export class CentrFacilityLocationComponent implements OnInit {
         maxStaffHour:maxWeeklyStaffHours,
         week:weeksPerYear,
         day:daysPerWeek,
-        hour:hoursPerDay,    
-        hourPatern:hoursPerDayOfOperation_NoPattern,
-        dayPatern:daysPerWeekOfOperation_NoPattern,
-        weekPatern:weeksPerCollectionPeriodOfOperation_NoPattern,
+        hour:parseInt(hour, 10),//hoursPerDay,    
+        hourPatern:(hoursPerDayOfOperation_NoPattern) ? true : false,
+        dayPatern: (daysPerWeekOfOperation_NoPattern) ? true : false,
+        weekPatern:(weeksPerCollectionPeriodOfOperation_NoPattern) ? true : false,
         serviceUsers:noServiceUsers,       
         anualhours:serviceAnnualHours,         
-
+        
         recordNumber:recordNumber,
       });
     }
@@ -230,77 +234,74 @@ export class CentrFacilityLocationComponent implements OnInit {
     handleUnAprfCancel(){
       this.staffUnApproved = false;
     }
-    pre(): void {
-      this.current -= 1;
-    }
-    
-    next(): void {
-      this.current += 1;
+    onIndexChange(index: number): void {
+      this.current = index;
     }
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      if(!this.isUpdate){         
+      if(!this.isUpdate){
         
         const group = this.inputForm;
-        let branch             = group.get('branch').value;
-        let adress             = group.get('adress').value;
-        let subrub             = group.get('subrub').value;
-        let sla                = group.get('sla').value;
-        let name               = group.get('name').value;
-        let outletid           = group.get('outletid').value;
-        //start from
-        let jurisdiction       = group.get('fundingjunc').value;
-        let agencysector       = group.get('agencysector').value;
-        let fundingtype        = group.get('fundingtype').value;
-        // let fullFinacialYear   = group.get('fullFinacialYear').value;
-        // let fullFinacialYear   = group.get('OperationStartDate').value;
-        // let fullFinacialYear   = group.get('OpertaionEndDate').value;
-        let weeksYear          = group.get('week').value;
-        let dayweeks           = group.get('day').value;
-        let hourYears          = group.get('hour').value;
-        let serviceUsers       = group.get('serviceUsers').value;
-        let anualhours         = group.get('anualhours').value;
-        let servicetype        = group.get('servicetype').value;
+        
+        let branch             = this.globalS.isValueNull(group.get('branch').value);
+        let adress             = this.globalS.isValueNull(group.get('adress').value);
+        let subrub             = this.globalS.isValueNull(group.get('subrub').value);
+        let sla                = this.globalS.isValueNull(group.get('sla').value);
+        let name               = this.globalS.isValueNull(group.get('name').value);
+        let outletid           = this.globalS.isValueNull(group.get('outletid').value);
+        let postcode           = this.globalS.isValueNull(group.get('postcode').value);
+
+        let jurisdiction       = this.globalS.isValueNull(group.get('fundingjunc').value);
+        let agencysector       = this.globalS.isValueNull(group.get('agencysector').value);
+        let fundingtype        = this.globalS.isValueNull(group.get('fundingtype').value);
+        let weeksYear          = this.globalS.isValueNull(group.get('week').value);
+        let dayweeks           = this.globalS.isValueNull(group.get('day').value);
+        let hourYears          = this.globalS.isValueNull(group.get('hour').value);
+        let serviceUsers       = this.globalS.isValueNull(group.get('serviceUsers').value);
+        let anualhours         = this.globalS.isValueNull(group.get('anualhours').value);
+        let servicetype        = this.globalS.isValueNull(group.get('servicetype').value);
         
         let hourPatern         = this.trueString(group.get('hourPatern').value);
         let dayPatern          = this.trueString(group.get('dayPatern').value);
         let weekPatern         = this.trueString(group.get('weekPatern').value);
-        let maxUserWeek        = group.get('maxUserWeek').value;
-        let minUserWeek        = group.get('minUserWeek').value;
-        let maxStaffHour       = group.get('maxStaffHour').value;
-        let minStaffHour       = group.get('minStaffHour').value;
-        let glrevenue          = group.get('glRevene').value;
-        let glcost             = group.get('glCost').value;
         let gloveride          = this.trueString(group.get('gloveride').value);
         let cstdaoutlet        = this.trueString(group.get('cstdaoutlet').value);
         let dsci               = this.trueString(group.get('dsci').value);
-        let places             = group.get('places').value;
         
-        let earlyStart         = group.get('earlyStart').value;
-        let lateStart          = group.get('lateStart').value;
-        let earlyFinish        = group.get('earlyFinish').value;
-        let lateFinish         = group.get('lateFinish').value;
-        let overstay           = group.get('overstay').value;
-        let understay          = group.get('understay').value;
+        let maxUserWeek        = this.globalS.isValueNull(group.get('maxUserWeek').value);
+        let minUserWeek        = this.globalS.isValueNull(group.get('minUserWeek').value);
+        let maxStaffHour       = this.globalS.isValueNull(group.get('maxStaffHour').value);
+        let minStaffHour       = this.globalS.isValueNull(group.get('minStaffHour').value);
+        let glrevenue          = this.globalS.isValueNull(group.get('glRevene').value);
+        let glcost             = this.globalS.isValueNull(group.get('glCost').value);
+        let places             = this.globalS.isValueNull(group.get('places').value);
         
-        let t2earlyStart       = group.get('t2earlyStart').value;
-        let t2lateStart        = group.get('t2lateStart').value;
-        let t2earlyFinish      = group.get('t2earlyFinish').value;
-        let t2lateFinish       = group.get('t2lateFinish').value;
-        let t2overstay         = group.get('t2overstay').value;
-        let t2understay        = group.get('t2understay').value;
-        let sheetalert         = group.get('sheetalert').value;
+        let earlyStart         = this.globalS.isValueNull(group.get('earlyStart').value);
+        let lateStart          = this.globalS.isValueNull(group.get('lateStart').value);
+        let earlyFinish        = this.globalS.isValueNull(group.get('earlyFinish').value);
+        let lateFinish         = this.globalS.isValueNull(group.get('lateFinish').value);
+        let overstay           = this.globalS.isValueNull(group.get('overstay').value);
+        let understay          = this.globalS.isValueNull(group.get('understay').value);
         
+        let t2earlyStart       = this.globalS.isValueNull(group.get('t2earlyStart').value);
+        let t2lateStart        = this.globalS.isValueNull(group.get('t2lateStart').value);
+        let t2earlyFinish      = this.globalS.isValueNull(group.get('t2earlyFinish').value);
+        let t2lateFinish       = this.globalS.isValueNull(group.get('t2lateFinish').value);
+        let t2overstay         = this.globalS.isValueNull(group.get('t2overstay').value);
+        let t2understay        = this.globalS.isValueNull(group.get('t2understay').value);
         
-        let vari               = (jurisdiction == 'FEDERAL') ? '93' : '13';
+        let sheetalert         = this.globalS.isValueNull(group.get('sheetalert').value);
         
-        let values = jurisdiction+"','"+vari+"','"+agencysector+"','"+weeksYear+"','"+dayweeks+"','"+hourYears+"','"+serviceUsers+"','"+servicetype+"','"+anualhours+"','"+weekPatern+"','"+dayPatern+"','"+hourPatern+"','"+maxUserWeek+"','"+minUserWeek+"','"+maxStaffHour+"','"+minStaffHour+"','"+glrevenue+"','"+glcost+"','"+gloveride+"','"+cstdaoutlet+"','"+dsci+"','"+branch+"','"+places+"','"+earlyStart+"','"+lateStart+"','"+earlyFinish+"','"+lateFinish+"','"+overstay+"','"+understay+"','"+t2earlyStart+"','"+t2lateStart+"','"+t2earlyFinish+"','"+t2lateFinish+"','"+t2overstay+"','"+t2understay+"','"+fundingtype+"','"+sheetalert+"','"+name+"','"+outletid+"','"+adress+"','"+subrub+"','"+sla;
-        let sqlz = "insert into CSTDAOutlets ([FundingSource],[Jurisdiction],[AgencySector],[WeeksPerYear],[DaysPerWeek],[HoursPerDay],[NoServiceUsers],[CSTDAServiceType],[ServiceAnnualHours],[WeeksPerCollectionPeriodOfOperation_NoPattern],[DaysPerWeekOfOperation_NoPattern],[HoursPerDayOfOperation_NoPattern],[MAXWeeklyRecipientHours],[MINWeeklyRecipientHours],[MAXWeeklyStaffHours],[MINWeeklyStaffHours],[GLRevenue],[GLCost],[GLOverride],[CSTDA],[DCSI],[Branch],[Places],[BH_EarlyStart],[BH_LateStart],[BH_EarlyFinish],[BH_LateFinish],[BH_OverStay],[BH_UndrStay],[AH_EarlyStart],[AH_LateStart],[AH_EarlyFinish],[AH_LateFinish],[AH_OverStay],[AH_UndrStay],[FundingType],[RunsheetAlerts],[Name],[ServiceOutletID],[AddressLine1],[Suburb],[CSTDASLA]) values('"+values+"');select @@IDENTITY"; 
-        // console.log(sqlz);
+        let vari               = (jurisdiction == 'FEDERAL') ? "'93'" : "'13'";
+
+        let values = jurisdiction+","+vari+","+agencysector+","+weeksYear+","+dayweeks+","+hourYears+","+serviceUsers+","+servicetype+","+anualhours+","+weekPatern+","+dayPatern+","+hourPatern+","+maxUserWeek+","+minUserWeek+","+maxStaffHour+","+minStaffHour+","+glrevenue+","+glcost+","+gloveride+","+cstdaoutlet+","+dsci+","+branch+","+places+","+earlyStart+","+lateStart+","+earlyFinish+","+lateFinish+","+overstay+","+understay+","+t2earlyStart+","+t2lateStart+","+t2earlyFinish+","+t2lateFinish+","+t2overstay+","+t2understay+","+fundingtype+","+sheetalert+","+name+","+outletid+","+postcode+","+adress+","+subrub+","+sla;
+        let sqlz = "insert into CSTDAOutlets ([FundingSource],[Jurisdiction],[AgencySector],[WeeksPerYear],[DaysPerWeek],[HoursPerDay],[NoServiceUsers],[CSTDAServiceType],[ServiceAnnualHours],[WeeksPerCollectionPeriodOfOperation_NoPattern],[DaysPerWeekOfOperation_NoPattern],[HoursPerDayOfOperation_NoPattern],[MAXWeeklyRecipientHours],[MINWeeklyRecipientHours],[MAXWeeklyStaffHours],[MINWeeklyStaffHours],[GLRevenue],[GLCost],[GLOverride],[CSTDA],[DCSI],[Branch],[Places],[BH_EarlyStart],[BH_LateStart],[BH_EarlyFinish],[BH_LateFinish],[BH_OverStay],[BH_UndrStay],[AH_EarlyStart],[AH_LateStart],[AH_EarlyFinish],[AH_LateFinish],[AH_OverStay],[AH_UndrStay],[FundingType],[RunsheetAlerts],[Name],[ServiceOutletID],[Postcode],[AddressLine1],[Suburb],[CSTDASLA]) values("+values+");select @@IDENTITY"; 
+        
+        console.log(sqlz);
+        
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
-            // console.log("aaaaaaaaaaaaa");
             this.globalS.sToast('Success', 'Saved successful');
             this.loadData();
             this.postLoading = false;   
@@ -309,7 +310,6 @@ export class CentrFacilityLocationComponent implements OnInit {
             this.resetModal();
           }
           else{
-            // console.log("bbbbbbbbbbbbb");
             this.globalS.sToast('Success', 'Saved successful');
             this.loadData();
             this.loading = false;   
@@ -321,15 +321,59 @@ export class CentrFacilityLocationComponent implements OnInit {
       }else{
         this.postLoading = true;     
         const group = this.inputForm;
-        let branch             = group.get('branch').value;
-        let adress             = group.get('adress').value;
-        let subrub             = group.get('subrub').value;
-        let sla                = group.get('sla').value;
-        let name               = group.get('name').value;
-        let outletid           = group.get('outletid').value;
-        let recordNumber       = group.get('recordNumber').value;
         
-        let sqlz = "Update CSTDAOutlets SET [Branch]='"+ branch + "',[Name]='"+ name + "',[ServiceOutletID]='"+ outletid + "',[AddressLine1]='"+ adress + "',[Suburb]='"+ subrub + "',[CSTDASLA]='"+ sla + "' WHERE [RecordNumber] ='"+recordNumber+"'"; 
+        let branch             = this.globalS.isValueNull(group.get('branch').value);
+        let adress             = this.globalS.isValueNull(group.get('adress').value);
+        let subrub             = this.globalS.isValueNull(group.get('subrub').value);
+        let sla                = this.globalS.isValueNull(group.get('sla').value);
+        let name               = this.globalS.isValueNull(group.get('name').value);
+        let outletid           = this.globalS.isValueNull(group.get('outletid').value);
+        let postcode           = this.globalS.isValueNull(group.get('postcode').value);
+        let jurisdiction       = this.globalS.isValueNull(group.get('fundingjunc').value);
+        let agencysector       = this.globalS.isValueNull( group.get('agencysector').value);
+        let fundingtype        = this.globalS.isValueNull(group.get('fundingtype').value);
+        let weeksYear          = this.globalS.isValueNull(group.get('week').value);
+        let dayweeks           = this.globalS.isValueNull(group.get('day').value);
+        let hourYears          = this.globalS.isValueNull(group.get('hour').value);
+        let serviceUsers       = this.globalS.isValueNull(group.get('serviceUsers').value);
+        let anualhours         = this.globalS.isValueNull(group.get('anualhours').value);
+        let servicetype        = this.globalS.isValueNull(group.get('servicetype').value);
+        
+        let hourPatern         = this.trueString(group.get('hourPatern').value);
+        let dayPatern          = this.trueString(group.get('dayPatern').value);
+        let weekPatern         = this.trueString(group.get('weekPatern').value);
+        let gloveride          = this.trueString(group.get('gloveride').value);
+        let cstdaoutlet        = this.trueString(group.get('cstdaoutlet').value);
+        let dsci               = this.trueString(group.get('dsci').value);
+        
+        let maxUserWeek        = this.globalS.isValueNull(group.get('maxUserWeek').value);
+        let minUserWeek        = this.globalS.isValueNull(group.get('minUserWeek').value);
+        let maxStaffHour       = this.globalS.isValueNull(group.get('maxStaffHour').value);
+        let minStaffHour       = this.globalS.isValueNull(group.get('minStaffHour').value);
+        let glrevenue          = this.globalS.isValueNull(group.get('glRevene').value);
+        let glcost             = this.globalS.isValueNull(group.get('glCost').value);
+        let places             = this.globalS.isValueNull(group.get('places').value);
+        
+        let earlyStart         = this.globalS.isValueNull(group.get('earlyStart').value);
+        let lateStart          = this.globalS.isValueNull(group.get('lateStart').value);
+        let earlyFinish        = this.globalS.isValueNull(group.get('earlyFinish').value);
+        let lateFinish         = this.globalS.isValueNull(group.get('lateFinish').value);
+        let overstay           = this.globalS.isValueNull(group.get('overstay').value);
+        let understay          = this.globalS.isValueNull(group.get('understay').value);
+        
+        let t2earlyStart       = this.globalS.isValueNull(group.get('t2earlyStart').value);
+        let t2lateStart        = this.globalS.isValueNull(group.get('t2lateStart').value);
+        let t2earlyFinish      = this.globalS.isValueNull(group.get('t2earlyFinish').value);
+        let t2lateFinish       = this.globalS.isValueNull(group.get('t2lateFinish').value);
+        let t2overstay         = this.globalS.isValueNull(group.get('t2overstay').value);
+        let t2understay        = this.globalS.isValueNull(group.get('t2understay').value);
+
+        let sheetalert         = this.globalS.isValueNull(group.get('sheetalert').value);
+
+        let vari               = (jurisdiction == 'FEDERAL') ? "'93'" : "'13'";
+        let recordNumber       = group.get('recordNumber').value;
+
+        let sqlz = "Update CSTDAOutlets SET [FundingSource]="+jurisdiction+",[Jurisdiction]="+vari+",[AgencySector]="+agencysector+",[WeeksPerYear]="+weeksYear+",[DaysPerWeek]="+dayweeks+",[HoursPerDay]="+hourYears+",[NoServiceUsers]="+serviceUsers+",[CSTDAServiceType]="+servicetype+",[ServiceAnnualHours]="+anualhours+",[WeeksPerCollectionPeriodOfOperation_NoPattern]="+weekPatern+",[DaysPerWeekOfOperation_NoPattern]="+dayPatern+",[HoursPerDayOfOperation_NoPattern]="+hourPatern+",[MAXWeeklyRecipientHours]="+maxUserWeek+",[MINWeeklyRecipientHours]="+minUserWeek+",[MAXWeeklyStaffHours]="+maxStaffHour+",[MINWeeklyStaffHours]="+minStaffHour+",[GLRevenue]="+glrevenue+",[GLCost]="+glcost+",[GLOverride]="+gloveride+",[CSTDA]="+cstdaoutlet+",[DCSI]="+dsci+",[Branch]="+branch+",[Places]="+places+",[BH_EarlyStart]="+earlyStart+",[BH_LateStart]="+lateStart+",[BH_EarlyFinish]="+earlyFinish+",[BH_LateFinish]="+lateFinish+",[BH_OverStay]="+overstay+",[BH_UndrStay]="+understay+",[AH_EarlyStart]="+t2earlyStart+",[AH_LateStart]="+t2lateStart+",[AH_EarlyFinish]="+t2earlyFinish+",[AH_LateFinish]="+t2lateFinish+",[AH_OverStay]="+t2overstay+",[AH_UndrStay]="+t2understay+",[FundingType]="+fundingtype+",[RunsheetAlerts]="+sheetalert+",[Name]="+name+",[ServiceOutletID]="+outletid+",[Postcode]="+postcode+",[AddressLine1]="+adress+",[Suburb]="+subrub+",[CSTDASLA]="+sla+" WHERE [RecordNumber] ='"+recordNumber+"'"; 
         
         console.log(sqlz);
         
@@ -372,8 +416,8 @@ export class CentrFacilityLocationComponent implements OnInit {
       this.serviceType  = ['1.01-LARGE RESIDENTIAL/INSTITUTION (>20 PEOPLE) - 24 HOUR CARE','1.014-ADDITIONAL ACCOMMODATION SUPPORT – LARGE RESIDENTIAL/INSTITUTION (>20 PLACES)','1.02-SMALL RESIDENTIAL/INSTITUTION (7-20 PEOPLE) - 24 HOUR CARE','1.024-ADDITIONAL ACCOMMODATION SUPPORT – SMALL RESIDENTIAL/INSTITUTION (7-20 PLACES)','1.03-HOSTELS - GENERALLY NOT 24 HOUR CARE','1.041-GROUP HOME (<7 PLACES)','1.042-GROUP HOME (<7 PLACES) – NO DIRECT FINANCIAL CONTROL','1.044-ADDITIONAL ACCOMMODATION SUPPORT – GROUP HOME (<7 PLACES)','1.05-ATTENDANT CARE/PERSONAL CARE','1.06-IN-HOME ACCOMMODATION SUPPORT','1.07-ALTERNATIVE FAMILY PLACEMENT','1.081-ACCOMMODATION PROVIDED SO THAT INDIVIDUALS CAN ACCESS SPECIALIST SERVICES OR FURTHER EDUCATION','1.082-EMERGENCY OR CRISIS ACCOMMODATION SUPPORT (E.G. FOLLOWING THE DEATH OF A PARENT OR CARER)','1.083-HOUSES OR FLATS FOR HOLIDAY ACCOMMODATION','2.01-THERAPY SUPPORT FOR INDIVIDUALS','2.02-EARLY CHILDHOOD INTERVENTION','2.021-EARLY INTERVENTION','2.03-BEHAVIOUR/SPECIALIST INTERVENTION','2.04-COUNSELLING (INDIVIDUAL/FAMILY/GROUP)','2.05-REGIONAL RESOURCE AND SUPPORT TEAMS','2.061-PROGRAM SUPPORTS FACILITATION','2.062-CASE MANAGEMENT','2.063-LOCAL AREA COORDINATION','2.064-COMMUNITY DEVELOPMENT','2.066-SELF DIRECTED SUPPORT-MANAGEMENT','2.067-SELF DIRECTED SUPPORT-ESTABLISHMENT','2.071-OTHER COMMUNITY SUPPORT','2.072-OTHER COMMUNITY SUPPORT','2.073-OTHER COMMUNITY SUPPORT']
       this.fundTypes    = ['Block Funded','Both','Individually Funded','N/A'];
       
-      let arr = [1,2,3,4,5];
-      for(let i=6;i<=90;i++)
+      let arr = [];
+      for(let i=1;i<=90;i++)
       {
         arr.push(i);
       }
@@ -440,9 +484,9 @@ export class CentrFacilityLocationComponent implements OnInit {
       this.inputForm = this.formBuilder.group({
         
         type: '',
-        outletid:'',
-        cstdaoutlet:'',
-        dsci:'',
+        outletid:0,
+        cstdaoutlet:false,
+        dsci:false,
         name:'',
         branch:'',
         adress:'',
@@ -484,7 +528,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         notes:'',
         glRevene:'',
         glCost:'',
-        gloveride:'',
+        gloveride:false,
         centerName:'',
         addrLine1:'',
         addrLine2:'',

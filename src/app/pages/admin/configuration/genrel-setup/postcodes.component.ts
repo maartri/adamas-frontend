@@ -215,7 +215,7 @@ export class PostcodesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT SELECT ROW_NUMBER() OVER(ORDER BY Suburb) AS Field1,[Suburb] as Field2, [State] as Field3, [Postcode] as Field4 FROM Pcodes "+this.whereString+" Order By Suburb desc";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Suburb) AS Field1,[Suburb] as Field2, [State] as Field3, [Postcode] as Field4 FROM Pcodes "+this.whereString+" Order By Suburb desc";
       
       const headerDict = {
         'Content-Type': 'application/json',

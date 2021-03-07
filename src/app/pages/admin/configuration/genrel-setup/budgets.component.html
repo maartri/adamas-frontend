@@ -2,7 +2,7 @@
     <div nz-row>
         <div nz-col>
             <button class="botton success" (click)="showAddModal()">Add Budget</button>
-            <nz-table #fixedTable  [nzScroll]="{ x: '1050px', y: '500px' }" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <nz-table #fixedTable nzBordered [nzScroll]="{ x: '1050px', y: '500px' }" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
                 <thead>
                     <tr>
                         <th nz-left>Budget Type</th>

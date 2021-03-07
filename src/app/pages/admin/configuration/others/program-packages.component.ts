@@ -18,6 +18,9 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
   textarea{
     resize:none;
   },
+  ant-modal{
+    top:50px
+  },
   .staff-wrapper{
     height: 10rem;
     width: 100%;
@@ -98,7 +101,7 @@ export class ProgramPackagesComponent implements OnInit {
   inputVariables:any; 
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  
+  radioSelcted = 'program'
   title:string = "Add New Program/Packages";
   private unsubscribe: Subject<void> = new Subject();
   tocken: any;
@@ -111,7 +114,7 @@ export class ProgramPackagesComponent implements OnInit {
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
-    private listS:ListService,
+    private listS:ListService, 
     private menuS:MenuService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -432,12 +435,15 @@ export class ProgramPackagesComponent implements OnInit {
       this.modalOpen = false;
     }
     
-    pre(): void {
-      this.current -= 1;
-    }
+    // pre(): void {
+    //   this.current -= 1;
+    // }
     
-    next(): void {
-      this.current += 1;
+    // next(): void {
+    //   this.current += 1;
+    // }
+    onIndexChange(index: number): void {
+      this.current = index;
     }
     save() {
       this.postLoading = true;     
@@ -855,8 +861,8 @@ export class ProgramPackagesComponent implements OnInit {
         funding_region:'',
         funding_type:'',
         close_date:'',
-        radioValue:'program',
-        radioValue2:'non_specific',
+        radioValue:'',
+        radioValue2:'',
         template:false,
         continguency:'',
         mods:'',

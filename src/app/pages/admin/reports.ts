@@ -854,12 +854,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
         
-    //    this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
-        this.listS.getreportcriterialist({
+        this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
+     /*   this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
             includeInactive:false
         }).subscribe(x => this.programsArr = x);
-
+        */
         this.listS.getreportcriterialist({
             listType: 'BRANCHES',
             includeInactive: false
@@ -7229,7 +7229,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             this.s_DateSQL = " format(convert(datetime,  '" + tempsdate + ("' ),'dd/MM/yyyy') AS [DATE],");
             if (this.s_DateSQL != "") { fQuery = fQuery + this.s_DateSQL };
         }
-        fQuery = fQuery + "CONVERT(TIME, '00:00') AS STARTTIME, CONVERT(TIME, '00:00') AS STARTFREETIME FROM STAFF WHERE ACCOUNTNO > '!Z' AND ACCOUNTNO <> 'BOOKED' AND COMMENCEMENTDATE IS NOT NULL AND TerminationDate IS NULL UNION SELECT [CARER CODE], [DATE], CONVERT(TIME, [START TIME]) AS STARTTIME, CASE WHEN DATEADD(MINUTE, DURATION * 5,  CONVERT(TIME, [START TIME])) = '00:00' THEN '23:59:59.99' ELSE CONVERT(TIME,DATEADD(MINUTE, DURATION * 5, CONVERT(TIME, [START TIME]))) END AS STARTFREETIME FROM ROSTER WHERE [CARER CODE] > '!Z' AND [CARER CODE] <> 'BOOKED'"
+        fQuery = fQuery + "CONVERT(TIME, '00:00') AS STARTTIME, CONVERT(TIME, '00:00') AS STARTFREETIME FROM STAFF WHERE ACCOUNTNO > '!Z' AND ACCOUNTNO <> 'BOOKED' AND COMMENCEMENTDATE IS NOT NULL AND TerminationDate IS NULL UNION SELECT [CARER CODE], format(convert(datetime,[DATE]),'dd/MM/yyyy') AS [DATE], CONVERT(TIME, [START TIME]) AS STARTTIME, CASE WHEN DATEADD(MINUTE, DURATION * 5,  CONVERT(TIME, [START TIME])) = '00:00' THEN '23:59:59.99' ELSE CONVERT(TIME,DATEADD(MINUTE, DURATION * 5, CONVERT(TIME, [START TIME]))) END AS STARTFREETIME FROM ROSTER WHERE [CARER CODE] > '!Z' AND [CARER CODE] <> 'BOOKED'"
 
         this.s_DateSQL = " AND [DATE] IN ('" + tempsdate + ("')  UNION SELECT ACCOUNTNO, '" + tempsdate + "' AS [DATE], ");
         if (this.s_DateSQL != "") { fQuery = fQuery + " " + this.s_DateSQL };
@@ -7247,7 +7247,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_StaffSQL != "") { fQuery = fQuery + " AND " + this.s_StaffSQL };
         }
 
-        fQuery = fQuery + "AND COMMENCEMENTDATE IS NOT NULL AND TerminationDate IS NULL ) SELECT ACCOUNTNO, [DATE], LEFT(STARTFREETIME,8) AS STARTTIME, LEFT(ENDFREETIME,8) AS ENDTIME FROM (SELECT T.*, LEAD(STARTTIME) OVER (PARTITION BY ACCOUNTNO ORDER BY DATE,STARTTIME,STARTFREETIME) AS ENDFREETIME FROM T ) T WHERE ENDFREETIME IS NOT NULL AND STARTFREETIME <> ENDFREETIME "
+        fQuery = fQuery + "AND COMMENCEMENTDATE IS NOT NULL AND TerminationDate IS NULL ) SELECT ACCOUNTNO, format(convert(datetime,[DATE]),'dd/MM/yyyy') as [DATE], LEFT(STARTFREETIME,8) AS STARTTIME, LEFT(ENDFREETIME,8) AS ENDTIME FROM (SELECT T.*, LEAD(STARTTIME) OVER (PARTITION BY ACCOUNTNO ORDER BY DATE,STARTTIME,STARTFREETIME) AS ENDFREETIME FROM T ) T WHERE ENDFREETIME IS NOT NULL AND STARTFREETIME <> ENDFREETIME "
 
         if (this.inputForm.value.exclude_staff_shiftondate == true) {
             fQuery = fQuery + "AND NOT EXISTS (SELECT * FROM   roster R WHERE  T.[accountno] = R.[carer code] AND R.[type] IN ( 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12 ) AND [date] = '" + tempsdate+"') "

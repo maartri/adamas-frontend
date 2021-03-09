@@ -4,8 +4,9 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService, MenuService} from '@services/index';
 import { SwitchService } from '@services/switch.service';
+import { isEmpty } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd';
-import { Subject } from 'rxjs';
+import { empty, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
@@ -234,6 +235,7 @@ export class ProgramPackagesComponent implements OnInit {
       
       const {
         fundingSource,
+        type,
         title,
         agencyID,
         state,
@@ -241,9 +243,9 @@ export class ProgramPackagesComponent implements OnInit {
         rate,
         glExp,
         fundingRegion,
-        glRev,
-        glSuper,
-        budget$,
+        gLRev,
+        gLSuper,
+        budgetdollar,
         budgetHrs,
         careDomain,
         closeDate,
@@ -326,18 +328,18 @@ export class ProgramPackagesComponent implements OnInit {
         recordNumber,
       } = this.tableData[index-1];
       this.inputForm.patchValue({
-        funding_source:fundingSource,
+        funding_source:type,
         name:title,
         agency_id:agencyID,
         state:state,
-        gst:gst,
+        gst:(gst) ? true : false,
         gst_Percent:rate,
         coordinator:cordinators,
-        glrev:glExp,
-        glexp:glRev,
-        glsuper:glSuper,
+        glrev:gLRev,
+        glexp:glExp,
+        glsuper:gLSuper,
         period:bgtCycle,
-        bamount:budget$,
+        bamount:budgetdollar,
         bhrs:budgetHrs,
         care:careDomain,
         funding_region:fundingRegion,
@@ -430,18 +432,9 @@ export class ProgramPackagesComponent implements OnInit {
         return '';
       }
     }
-
     handleCancel() {
       this.modalOpen = false;
     }
-    
-    // pre(): void {
-    //   this.current -= 1;
-    // }
-    
-    // next(): void {
-    //   this.current += 1;
-    // }
     onIndexChange(index: number): void {
       this.current = index;
     }
@@ -450,125 +443,128 @@ export class ProgramPackagesComponent implements OnInit {
       const group = this.inputForm;
       if(!this.isUpdate){
         
-        let fundingSource =  group.get('funding_source').value;
-        let title         =  group.get('name').value;
-        let agencyID      =  group.get('agency_id').value;
-        let state =group.get('state').value;
-        let gst = this.trueString(group.get('gst').value);
-        let rate = group.get('gst_Percent').value;
-        let cordinators = group.get('coordinator').value;
-        let glExp = group.get('glrev').value;
-        let glRev =group.get('glexp').value;
-        let glSuper = group.get('glsuper').value;
-        let bgtCycle = group.get('period').value;
-        let budget$ =group.get('bamount').value;
-        let budgetHrs = group.get('bhrs').value;
-        let careDomain = group.get('care').value;
-        let fundingRegion = group.get('funding_region').value;
-        let fundingType = group.get('funding_type').value;
-        let closeDate = (group.get('close_date').value) ? this.globalS.convertDbDate(group.get('close_date').value) : '';
-        let budgetEnforcement = group.get('budget_enfor').value;
-        let budgetRosterEnforcement = group.get('roster_enfor').value;
-        let level = group.get('level').value;
-        let targetGroup = group.get('target_g').value;
-        let template = this.trueString(group.get('template').value);
-        let individuallyFunded = this.trueString(group.get('individual').value);
-        let programJob = group.get('radioValue').value;
-        let contiguency = group.get('radioValue2').value;
-        let agedCarePackage = this.trueString(group.get('aged').value);
-        let conguencyPackage = group.get('contigency').value; 
-        let user8 = "RECURRENT FUNDING";
-        let user9 = "AT FUNDING EXPIRY";
-        let User11              = '';
-        let User12              = group.get('cycle').value;
-        let P_Def_Alert_Type    = group.get('p_alert_type').value;
-        let P_Def_Alert_Period  = group.get('p_alert_period').value;
-        let allowed             = group.get('allowed').value;
-        let yellow              = group.get('yellow').value;
-        let green               = group.get('green').value;
-        let red                 = group.get('red').value;
-        let expire_amount       = group.get('expire_amount').value;
-        let expire_costType     = group.get('expire_costType').value;
-        let expire_unit         = group.get('expire_unit').value;
-        let expire_period       = group.get('expire_period').value;
-        let expire_length       = group.get('expire_length').value;
-        let defaultbasiccarefee = group.get('defaultbasiccarefee').value;
-        let expire_using        = group.get('expire_using').value;
-        let adminType           = group.get('adminType').value;
-        let admin_parc_amt      = group.get('admin_parc_amt').value; 
-        let admin_cm_parc_amt   = group.get('admin_cm_parc_amt').value; 
-        let adminFrequency      = group.get('adminFrequency').value;
-        let cmFrequency         = group.get('cmFrequency').value;
-        let admincmType         = group.get('admincmType').value;
-        let standard_quote      = group.get('standard_quote').value;
-        let defaultdailyfee     = group.get('defaultdailyfee').value;
-        let max_contiguency     = group.get('max_contiguency').value;
-        let perc_amt            = group.get('perc_amt').value;
-        let adminDay            = group.get('adminDay').value;
-        let cmday               = group.get('cmday').value;
-        let default_daily_fees  = group.get('default_daily_fees').value;
-        let IncludeTopUp = this.trueString(group.get('IncludeTopUp').value);
-        let IncludeCare = this.trueString(group.get('IncludeCare').value);
-        let includetested = this.trueString(group.get('includetested').value);
+        let fundingSource =  this.globalS.isValueNull(group.get('funding_source').value);
+        let title         =  this.globalS.isValueNull(group.get('name').value);
+        let agencyID      =  this.globalS.isValueNull(group.get('agency_id').value);
+        let state         =  this.globalS.isValueNull(group.get('state').value);
+        let gst           =  this.trueString(group.get('gst').value);
+        let rate          =  this.globalS.isValueNull(group.get('gst_Percent').value);
+        let cordinators   =  this.globalS.isValueNull(group.get('coordinator').value);
+        let glExp         =  this.globalS.isValueNull(group.get('glrev').value);
+        let glRev         =  this.globalS.isValueNull(group.get('glexp').value);
+        let glSuper       =  this.globalS.isValueNull(group.get('glsuper').value);
+        let bgtCycle      =  this.globalS.isValueNull(group.get('period').value);
+        let budget$       =  this.globalS.isValueNull(group.get('bamount').value);
+        let budgetHrs     =  this.globalS.isValueNull(group.get('bhrs').value);
+        let careDomain    =  this.globalS.isValueNull(group.get('care').value);
+        let fundingRegion =  this.globalS.isValueNull(group.get('funding_region').value);
+        let fundingType   =  this.globalS.isValueNull(group.get('funding_type').value);
+        let end_date      =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let closeDate     =  !(this.globalS.isVarNull(group.get('close_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('close_date').value)+"'" : null;
+        let budgetEnforcement       = this.globalS.isValueNull(group.get('budget_enfor').value);
+        let budgetRosterEnforcement = this.globalS.isValueNull(group.get('roster_enfor').value);
+        let level                   = this.globalS.isValueNull(group.get('level').value);
+        let targetGroup             = this.globalS.isValueNull(group.get('target_g').value);
+        let template                = this.trueString(group.get('template').value);
+        let individuallyFunded      = this.trueString(group.get('individual').value);
+        let programJob              = this.globalS.isValueNull(group.get('radioValue').value);
+        let contiguency             = this.globalS.isValueNull(group.get('radioValue2').value);
+        let agedCarePackage         = this.trueString(group.get('aged').value);
+        let conguencyPackage        = this.globalS.isValueNull(group.get('contigency').value); 
+        let user8                   = "'RECURRENT FUNDING'";
+        let user9                   = "'AT FUNDING EXPIRY'";
+        let User11                  = "''";
+        let User12                  = this.globalS.isValueNull(group.get('cycle').value);
+        let P_Def_Alert_Type    = this.globalS.isValueNull(group.get('p_alert_type').value);
+        let P_Def_Alert_Period  = this.globalS.isValueNull(group.get('p_alert_period').value);
+        let allowed             = this.globalS.isValueNull(group.get('allowed').value);
+        let yellow              = this.globalS.isValueNull(group.get('yellow').value);
+        let green               = this.globalS.isValueNull(group.get('green').value);
+        let red                 = this.globalS.isValueNull(group.get('red').value);
+        let expire_amount       = this.globalS.isValueNull(group.get('expire_amount').value);
+        let expire_costType     = this.globalS.isValueNull(group.get('expire_costType').value);
+        let expire_unit         = this.globalS.isValueNull(group.get('expire_unit').value);
+        let expire_period       = this.globalS.isValueNull(group.get('expire_period').value);
+        let expire_length       = this.globalS.isValueNull(group.get('expire_length').value);
+        let defaultbasiccarefee = this.globalS.isValueNull(group.get('defaultbasiccarefee').value);
+        let expire_using        = this.globalS.isValueNull(group.get('expire_using').value);
+        let adminType           = this.globalS.isValueNull(group.get('adminType').value);
+        let admin_parc_amt      = this.globalS.isValueNull(group.get('admin_parc_amt').value); 
+        let admin_cm_parc_amt   = this.globalS.isValueNull(group.get('admin_cm_parc_amt').value); 
+        let adminFrequency      = this.globalS.isValueNull(group.get('adminFrequency').value);
+        let cmFrequency         = this.globalS.isValueNull(group.get('cmFrequency').value);
+        let admincmType         = this.globalS.isValueNull(group.get('admincmType').value);
+        let standard_quote      = this.globalS.isValueNull(group.get('standard_quote').value);
+        let defaultdailyfee     = this.globalS.isValueNull(group.get('defaultdailyfee').value);
+        let max_contiguency     = this.globalS.isValueNull(group.get('max_contiguency').value);
+        let perc_amt            = this.globalS.isValueNull(group.get('perc_amt').value);
+        let adminDay            = this.globalS.isValueNull(group.get('adminDay').value);
+        let cmday               = this.globalS.isValueNull(group.get('cmday').value);
+        let default_daily_fees  = this.globalS.isValueNull(group.get('default_daily_fees').value);
+        let IncludeTopUp        = this.trueString(group.get('IncludeTopUp').value);
+        let IncludeCare         = this.trueString(group.get('IncludeCare').value);
+        let includetested       = this.trueString(group.get('includetested').value);
         let includeClientFeesCont = this.trueString(group.get('includeClientFeesCont').value);
-        let quoute_template = group.get('quoute_template').value; 
-        let line1           = group.get('line1').value;
-        let line2           = group.get('line2').value;
-        let text1           = line1+" || "+line2;
-        let nprogram = group.get('nprogram').value; 
-        let nactivity = group.get('nactivity').value; 
-        let npay = group.get('npay').value; 
-        let cprogram = group.get('cprogram').value; 
-        let cactivity = group.get('cactivity').value; 
-        let cpay = group.get('cpay').value; 
-        let wnprogram = group.get('wnprogram').value; 
-        let wnactivity = group.get('wnactivity').value; 
-        let wnpay = group.get('wnpay').value; 
-        let wcprogram = group.get('wnprogram').value; 
-        let wcactivity = group.get('wcactivity').value; 
-        let wcpay = group.get('wcpay').value; 
-        let  defaultNoNoticeBillProgram =  group.get('defaultNoNoticeBillProgram').value;
-        let  defaultNoNoticeCancel =  group.get('defaultNoNoticeCancel').value;
-        let  defaultNoNoticePayProgram =  group.get('defaultNoNoticePayProgram').value;
-        let  defaultWithNoticeCancel =  group.get('defaultWithNoticeCancel').value;
-        let  defaultWithNoticeProgram =  group.get('defaultWithNoticeProgram').value;
-        let  noNoticeCancelRate       =  group.get('noNoticeCancelRate').value;
-        let  noNoticeLeadTime        =  group.get('noNoticeLeadTime').value;
-        let  noNoticeLeaveActivity    =  group.get('noNoticeLeaveActivity').value;
-        let  shortNoticeCancelRate    =  group.get('shortNoticeCancelRate').value;
-        let  shortNoticeLeadTime      =  group.get('shortNoticeLeadTime').value;
-        let  shortNoticeLeaveActivity =  group.get('shortNoticeLeaveActivity').value;
-        let  defaultShortNoticePayType     = group.get('defaultShortNoticePayType').value;
-        let  defaultShortNoticePayProgram  = group.get('defaultShortNoticePayProgram').value;
-        let  defaultShortNoticeBillProgram = group.get('defaultShortNoticeBillProgram').value;
-        let  defaultShortNoticeCancel      = group.get('defaultShortNoticeCancel').value;
-        let  defaultNoNoticePayType         = group.get('defaultNoNoticePayType').value;
+        let quoute_template = this.globalS.isValueNull(group.get('quoute_template').value); 
+        let line1           = this.globalS.isValueNull(group.get('line1').value);
+        line1 = isEmpty(line1) ? "Unused funds are returned to the Department on package cessation" : line1;        
+        let line2           = this.globalS.isValueNull(group.get('line2').value);
+        line2 = isEmpty(line2) ? "For Queries and Inquiries Please Phone" : line2;  
+        let text1           =  line1+"||"+line2;
+        let nprogram        =  this.globalS.isValueNull(group.get('nprogram').value); 
+        let nactivity       =  this.globalS.isValueNull(group.get('nactivity').value); 
+        let npay            =  this.globalS.isValueNull(group.get('npay').value); 
+        let cprogram        =  this.globalS.isValueNull(group.get('cprogram').value); 
+        let cactivity       =  this.globalS.isValueNull(group.get('cactivity').value); 
+        let cpay            =  this.globalS.isValueNull(group.get('cpay').value); 
+        let wnprogram       =  this.globalS.isValueNull(group.get('wnprogram').value); 
+        let wnactivity      =  this.globalS.isValueNull(group.get('wnactivity').value); 
+        let wnpay           =  this.globalS.isValueNull(group.get('wnpay').value); 
+        let wcprogram       =  this.globalS.isValueNull(group.get('wnprogram').value); 
+        let wcactivity      =  this.globalS.isValueNull(group.get('wcactivity').value); 
+        let wcpay           =  this.globalS.isValueNull(group.get('wcpay').value); 
+        let  defaultNoNoticeBillProgram    =   this.globalS.isValueNull(group.get('defaultNoNoticeBillProgram').value);
+        let  defaultNoNoticeCancel         =   this.globalS.isValueNull(group.get('defaultNoNoticeCancel').value);
+        let  defaultNoNoticePayProgram     =   this.globalS.isValueNull(group.get('defaultNoNoticePayProgram').value);
+        let  defaultWithNoticeCancel       =   this.globalS.isValueNull(group.get('defaultWithNoticeCancel').value);
+        let  defaultWithNoticeProgram      =   this.globalS.isValueNull(group.get('defaultWithNoticeProgram').value);
+        let  noNoticeCancelRate            =   this.globalS.isValueNull(group.get('noNoticeCancelRate').value);
+        let  noNoticeLeadTime              =   this.globalS.isValueNull(group.get('noNoticeLeadTime').value);
+        let  noNoticeLeaveActivity         =   this.globalS.isValueNull(group.get('noNoticeLeaveActivity').value);
+        let  shortNoticeCancelRate         =   this.globalS.isValueNull(group.get('shortNoticeCancelRate').value);
+        let  shortNoticeLeadTime           =   this.globalS.isValueNull(group.get('shortNoticeLeadTime').value);
+        let  shortNoticeLeaveActivity      =   this.globalS.isValueNull(group.get('shortNoticeLeaveActivity').value);
+        let  defaultShortNoticePayType     =   this.globalS.isValueNull(group.get('defaultShortNoticePayType').value);
+        let  defaultShortNoticePayProgram  =   this.globalS.isValueNull(group.get('defaultShortNoticePayProgram').value);
+        let  defaultShortNoticeBillProgram =   this.globalS.isValueNull(group.get('defaultShortNoticeBillProgram').value);
+        let  defaultShortNoticeCancel      =   this.globalS.isValueNull(group.get('defaultShortNoticeCancel').value);
+        let  defaultNoNoticePayType        =   this.globalS.isValueNull(group.get('defaultNoNoticePayType').value);
         
-        let values = "PROGRAMS"+"','"+title+"','"+fundingSource+"','"+agencyID+"','"+cordinators+"','"+fundingRegion
-        +"','"+careDomain+"','"+fundingType+"','"+state+"','"+gst
-        +"','"+rate+"','"+budget$+"','"+budgetHrs+"','"+bgtCycle
-        +"','"+glExp+"','"+glRev+"','"+glSuper+"','"+closeDate
-        +"','"+programJob+"','"+template+"','"+contiguency+"','"+level
-        +"','"+targetGroup+"','"+conguencyPackage+"','"+budgetEnforcement
-        +"','"+budgetRosterEnforcement+"','"+agedCarePackage
-        +"','"+individuallyFunded
-        +"','"+user8+"','"+user9+"','"+User11+"','"+User12+"','"+P_Def_Alert_Type+"','"+P_Def_Alert_Period
-        +"','"+allowed+"','"+yellow+"','"+green+"','"+red
-        +"','"+expire_amount+"','"+expire_costType+"','"+expire_unit+"','"+expire_period+"','"+expire_length
-        +"','"+defaultbasiccarefee+"','"+perc_amt+"','"+adminType
-        +"','"+admincmType+"','"+admin_cm_parc_amt+"','"+admin_parc_amt+"','"+standard_quote
-        +"','"+adminFrequency+"','"+cmFrequency+"','"+adminDay+"','"+cmday+"','"+expire_using+"','"+max_contiguency
-        +"','"+wcactivity+"','"+wcpay+"','"+wnprogram+"','"+wnactivity+"','"+wnpay
-        +"','"+cactivity+"','"+cpay+"','"+nprogram
-        +"','"+nactivity+"','"+npay+"','"+cprogram+"','"+wcprogram
-        +"','"+includeClientFeesCont+"','"+includetested+"','"+IncludeCare+"','"+IncludeTopUp
-        +"','"+text1+"','"+default_daily_fees+"','"+noNoticeLeadTime+"','"+shortNoticeLeadTime+"','"+noNoticeLeaveActivity
-        +"','"+shortNoticeLeaveActivity+"','"+defaultNoNoticeCancel+"','"+defaultNoNoticeBillProgram+"','"+defaultNoNoticePayProgram+"','"+defaultNoNoticePayType
-        +"','"+defaultShortNoticeCancel+"','"+defaultShortNoticeBillProgram+"','"+defaultShortNoticePayProgram+"','"+defaultShortNoticePayType
-        +"','"+defaultWithNoticeCancel+"','"+noNoticeCancelRate+"','"+shortNoticeCancelRate+"','"+defaultWithNoticeProgram;
+        let values = "'PROGRAMS'"+","+title+","+fundingSource+","+agencyID+","+cordinators+","+fundingRegion
+        +","+careDomain+","+fundingType+","+state+","+gst
+        +","+rate+","+budget$+","+budgetHrs+","+bgtCycle
+        +","+glExp+","+glRev+","+glSuper+","+closeDate
+        +","+programJob+","+template+","+contiguency+","+level
+        +","+targetGroup+","+conguencyPackage+","+budgetEnforcement
+        +","+budgetRosterEnforcement+","+agedCarePackage
+        +","+individuallyFunded
+        +","+user8+","+user9+","+User11+","+User12+","+P_Def_Alert_Type+","+P_Def_Alert_Period
+        +","+allowed+","+yellow+","+green+","+red
+        +","+expire_amount+","+expire_costType+","+expire_unit+","+expire_period+","+expire_length
+        +","+defaultbasiccarefee+","+perc_amt+","+adminType
+        +","+admincmType+","+admin_cm_parc_amt+","+admin_parc_amt+","+standard_quote
+        +","+adminFrequency+","+cmFrequency+","+adminDay+","+cmday+","+expire_using+","+max_contiguency
+        +","+wcactivity+","+wcpay+","+wnprogram+","+wnactivity+","+wnpay
+        +","+cactivity+","+cpay+","+nprogram
+        +","+nactivity+","+npay+","+cprogram+","+wcprogram
+        +","+includeClientFeesCont+","+includetested+","+IncludeCare+","+IncludeTopUp
+        +",'"+text1+"',"+default_daily_fees+","+noNoticeLeadTime+","+shortNoticeLeadTime+","+noNoticeLeaveActivity
+        +","+shortNoticeLeaveActivity+","+defaultNoNoticeCancel+","+defaultNoNoticeBillProgram+","+defaultNoNoticePayProgram+","+defaultNoNoticePayType
+        +","+defaultShortNoticeCancel+","+defaultShortNoticeBillProgram+","+defaultShortNoticePayProgram+","+defaultShortNoticePayType
+        +","+defaultWithNoticeCancel+","+noNoticeCancelRate+","+shortNoticeCancelRate+","+defaultWithNoticeProgram;
         
-        let sqlz = "insert into humanresourcetypes ([Group],[Name],[type],[address1],[address2],[Suburb],[HRT_DATASET],[USER1],[Phone2],[gst],[GSTRate],[budgetamount],[budget_1],[budgetperiod],[fax],[email],[phone1],[CloseDate],[Postcode],[UserYesNo3],[User2],[User3],[User4],[User10],[BudgetEnforcement],[BudgetRosterEnforcement],[UserYesNo1],[UserYesNo2],[User8],[User9],[User11],[User12],[P_Def_Alert_Type],[P_Def_Alert_Period],[P_Def_Alert_Allowed],[P_Def_Alert_Yellow],[P_Def_Alert_Orange],[P_Def_Alert_Red],[P_Def_Expire_Amount],[P_Def_Expire_CostType],[P_Def_Expire_Unit],[P_Def_Expire_Period],[P_Def_Expire_Length],[P_Def_Fee_BasicCare],[P_Def_Contingency_PercAmt],[P_Def_Admin_AdminType],[P_Def_Admin_CMType],[P_Def_Admin_CM_PercAmt],[p_Def_Admin_Admin_PercAmt],[P_Def_StdDisclaimer],[P_Def_Admin_AdminFrequency],[P_Def_Admin_CMFrequency],[P_Def_Admin_AdminDay] ,[P_Def_Admin_CMDay],[P_Def_Expire_Using],[P_Def_Contingency_Max],[DefaultCHGTravelWithinActivity],[DefaultCHGTravelWithinPayType],[DefaultNCTravelWithinProgram],[DefaultNCTravelWithinActivity],[DefaultNCTravelWithinPayType],[DefaultCHGTravelBetweenActivity],[DefaultCHGTravelBetweenPayType],[DefaultNCTravelBetweenProgram],[DefaultNCTravelBetweenActivity],[DefaultNCTravelBetweenPayType],[DefaultCHGTRAVELBetweenProgram],[DefaultCHGTRAVELWithInProgram],[P_Def_IncludeClientFeesInCont],[P_Def_IncludeIncomeTestedFeeInAdmin],[P_Def_IncludeBasicCareFeeInAdmin],[P_Def_IncludeTopUpFeeInAdmin],[CDCStatementText1],[DefaultDailyFee],[NoNoticeLeadTime],[ShortNoticeLeadTime],[NoNoticeLeaveActivity],[ShortNoticeLeaveActivity],[DefaultNoNoticeCancel],[DefaultNoNoticeBillProgram],[DefaultNoNoticePayProgram],[DefaultNoNoticePayType],[DefaultShortNoticeCancel],[DefaultShortNoticeBillProgram],[DefaultShortNoticePayProgram],[DefaultShortNoticePayType],[DefaultWithNoticeCancel],[NoNoticeCancelRate],[ShortNoticeCancelRate],[DefaultWithNoticeProgram]) values('"+values+"');select @@IDENTITY";
-        // console.log(sqlz);
+        let sqlz = "insert into humanresourcetypes ([Group],[Name],[type],[address1],[address2],[Suburb],[HRT_DATASET],[USER1],[Phone2],[gst],[GSTRate],[budgetamount],[budget_1],[budgetperiod],[fax],[email],[phone1],[CloseDate],[Postcode],[UserYesNo3],[User2],[User3],[User4],[User10],[BudgetEnforcement],[BudgetRosterEnforcement],[UserYesNo1],[UserYesNo2],[User8],[User9],[User11],[User12],[P_Def_Alert_Type],[P_Def_Alert_Period],[P_Def_Alert_Allowed],[P_Def_Alert_Yellow],[P_Def_Alert_Orange],[P_Def_Alert_Red],[P_Def_Expire_Amount],[P_Def_Expire_CostType],[P_Def_Expire_Unit],[P_Def_Expire_Period],[P_Def_Expire_Length],[P_Def_Fee_BasicCare],[P_Def_Contingency_PercAmt],[P_Def_Admin_AdminType],[P_Def_Admin_CMType],[P_Def_Admin_CM_PercAmt],[p_Def_Admin_Admin_PercAmt],[P_Def_StdDisclaimer],[P_Def_Admin_AdminFrequency],[P_Def_Admin_CMFrequency],[P_Def_Admin_AdminDay] ,[P_Def_Admin_CMDay],[P_Def_Expire_Using],[P_Def_Contingency_Max],[DefaultCHGTravelWithinActivity],[DefaultCHGTravelWithinPayType],[DefaultNCTravelWithinProgram],[DefaultNCTravelWithinActivity],[DefaultNCTravelWithinPayType],[DefaultCHGTravelBetweenActivity],[DefaultCHGTravelBetweenPayType],[DefaultNCTravelBetweenProgram],[DefaultNCTravelBetweenActivity],[DefaultNCTravelBetweenPayType],[DefaultCHGTRAVELBetweenProgram],[DefaultCHGTRAVELWithInProgram],[P_Def_IncludeClientFeesInCont],[P_Def_IncludeIncomeTestedFeeInAdmin],[P_Def_IncludeBasicCareFeeInAdmin],[P_Def_IncludeTopUpFeeInAdmin],[CDCStatementText1],[DefaultDailyFee],[NoNoticeLeadTime],[ShortNoticeLeadTime],[NoNoticeLeaveActivity],[ShortNoticeLeaveActivity],[DefaultNoNoticeCancel],[DefaultNoNoticeBillProgram],[DefaultNoNoticePayProgram],[DefaultNoNoticePayType],[DefaultShortNoticeCancel],[DefaultShortNoticeBillProgram],[DefaultShortNoticePayProgram],[DefaultShortNoticePayType],[DefaultWithNoticeCancel],[NoNoticeCancelRate],[ShortNoticeCancelRate],[DefaultWithNoticeProgram]) values("+values+");select @@IDENTITY";
+        console.log(sqlz);
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');
@@ -592,104 +588,111 @@ export class ProgramPackagesComponent implements OnInit {
       {
         this.postLoading = true;     
         const group = this.inputForm;
-        let fundingSource =  group.get('funding_source').value;
-        let title         =  group.get('name').value;
-        let agencyID      =  group.get('agency_id').value;
-        let state =group.get('state').value;
-        let gst = this.trueString(group.get('gst').value);
-        let rate = group.get('gst_Percent').value;
-        let cordinators = group.get('coordinator').value;
-        let glExp = group.get('glrev').value;
-        let glRev =group.get('glexp').value;
-        let glSuper = group.get('glsuper').value;
-        let bgtCycle = group.get('period').value;
-        let budget$ =group.get('bamount').value;
-        let budgetHrs = group.get('bhrs').value;
-        let careDomain = group.get('care').value;
-        let fundingRegion = group.get('funding_region').value;
-        let fundingType = group.get('funding_type').value;
-        let closeDate = (group.get('close_date').value) ? this.globalS.convertDbDate(group.get('close_date').value) : '';
-        let budgetEnforcement = group.get('budget_enfor').value;
-        let budgetRosterEnforcement = group.get('roster_enfor').value;
-        let level = group.get('level').value;
-        let targetGroup = group.get('target_g').value;
-        let template = this.trueString(group.get('template').value);
-        let individuallyFunded = this.trueString(group.get('individual').value);
-        let programJob = group.get('radioValue').value;
-        let contiguency = group.get('radioValue2').value;
-        let agedCarePackage = this.trueString(group.get('aged').value);
-        let conguencyPackage = group.get('contigency').value; 
-        let user8 = "RECURRENT FUNDING";
-        let user9 = "AT FUNDING EXPIRY";
-        let User11              = '';
-        let User12              = group.get('cycle').value;
-        let P_Def_Alert_Type    = group.get('p_alert_type').value;
-        let P_Def_Alert_Period  = group.get('p_alert_period').value;
-        let allowed             = group.get('allowed').value;
-        let yellow              = group.get('yellow').value;
-        let green               = group.get('green').value;
-        let red                 = group.get('red').value;
-        let expire_amount       = group.get('expire_amount').value;
-        let expire_costType     = group.get('expire_costType').value;
-        let expire_unit         = group.get('expire_unit').value;
-        let expire_period       = group.get('expire_period').value;
-        let expire_length       = group.get('expire_length').value;
-        let defaultbasiccarefee = group.get('defaultbasiccarefee').value;
-        let expire_using        = group.get('expire_using').value;
-        let adminType           = group.get('adminType').value;
-        let admin_parc_amt      = group.get('admin_parc_amt').value; 
-        let admin_cm_parc_amt   = group.get('admin_cm_parc_amt').value; 
-        let adminFrequency      = group.get('adminFrequency').value;
-        let cmFrequency         = group.get('cmFrequency').value;
-        let admincmType         = group.get('admincmType').value;
-        let standard_quote      = group.get('standard_quote').value;
-        let defaultdailyfee     = group.get('defaultdailyfee').value;
-        let max_contiguency     = group.get('max_contiguency').value;
-        let perc_amt            = group.get('perc_amt').value;
-        let adminDay            = group.get('adminDay').value;
-        let cmday               = group.get('cmday').value;
-        let default_daily_fees  = group.get('default_daily_fees').value;
-        let IncludeTopUp = this.trueString(group.get('IncludeTopUp').value);
-        let IncludeCare = this.trueString(group.get('IncludeCare').value);
-        let includetested = this.trueString(group.get('includetested').value);
+        let fundingSource =  this.globalS.isValueNull(group.get('funding_source').value);
+        let title         =  this.globalS.isValueNull(group.get('name').value);
+        let agencyID      =  this.globalS.isValueNull(group.get('agency_id').value);
+        let state         =  this.globalS.isValueNull(group.get('state').value);
+        let gst           =  this.trueString(group.get('gst').value);
+        let rate          =  this.globalS.isValueNull(group.get('gst_Percent').value);
+        let cordinators   =  this.globalS.isValueNull(group.get('coordinator').value);
+        let glExp         =  this.globalS.isValueNull(group.get('glrev').value);
+        let glRev         =  this.globalS.isValueNull(group.get('glexp').value);
+        let glSuper       =  this.globalS.isValueNull(group.get('glsuper').value);
+        let bgtCycle      =  this.globalS.isValueNull(group.get('period').value);
+        let budget$       =  this.globalS.isValueNull(group.get('bamount').value);
+        let budgetHrs     =  this.globalS.isValueNull(group.get('bhrs').value);
+        let careDomain    =  this.globalS.isValueNull(group.get('care').value);
+        let fundingRegion =  this.globalS.isValueNull(group.get('funding_region').value);
+        let fundingType   =  this.globalS.isValueNull(group.get('funding_type').value);
+        let end_date      =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let closeDate     =  !(this.globalS.isVarNull(group.get('close_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('close_date').value)+"'" : null;
+        let budgetEnforcement       = this.globalS.isValueNull(group.get('budget_enfor').value);
+        let budgetRosterEnforcement = this.globalS.isValueNull(group.get('roster_enfor').value);
+        let level                   = this.globalS.isValueNull(group.get('level').value);
+        let targetGroup             = this.globalS.isValueNull(group.get('target_g').value);
+        let template                = this.trueString(group.get('template').value);
+        let individuallyFunded      = this.trueString(group.get('individual').value);
+        let programJob              = this.globalS.isValueNull(group.get('radioValue').value);
+        let contiguency             = this.globalS.isValueNull(group.get('radioValue2').value);
+        let agedCarePackage         = this.trueString(group.get('aged').value);
+        let conguencyPackage        = this.globalS.isValueNull(group.get('contigency').value); 
+        let user8                   = "'RECURRENT FUNDING'";
+        let user9                   = "'AT FUNDING EXPIRY'";
+        let User11                  = "''";
+        let User12                  = this.globalS.isValueNull(group.get('cycle').value);
+        let P_Def_Alert_Type    = this.globalS.isValueNull(group.get('p_alert_type').value);
+        let P_Def_Alert_Period  = this.globalS.isValueNull(group.get('p_alert_period').value);
+        let allowed             = this.globalS.isValueNull(group.get('allowed').value);
+        let yellow              = this.globalS.isValueNull(group.get('yellow').value);
+        let green               = this.globalS.isValueNull(group.get('green').value);
+        let red                 = this.globalS.isValueNull(group.get('red').value);
+        let expire_amount       = this.globalS.isValueNull(group.get('expire_amount').value);
+        let expire_costType     = this.globalS.isValueNull(group.get('expire_costType').value);
+        let expire_unit         = this.globalS.isValueNull(group.get('expire_unit').value);
+        let expire_period       = this.globalS.isValueNull(group.get('expire_period').value);
+        let expire_length       = this.globalS.isValueNull(group.get('expire_length').value);
+        let defaultbasiccarefee = this.globalS.isValueNull(group.get('defaultbasiccarefee').value);
+        let expire_using        = this.globalS.isValueNull(group.get('expire_using').value);
+        let adminType           = this.globalS.isValueNull(group.get('adminType').value);
+        let admin_parc_amt      = this.globalS.isValueNull(group.get('admin_parc_amt').value); 
+        let admin_cm_parc_amt   = this.globalS.isValueNull(group.get('admin_cm_parc_amt').value); 
+        let adminFrequency      = this.globalS.isValueNull(group.get('adminFrequency').value);
+        let cmFrequency         = this.globalS.isValueNull(group.get('cmFrequency').value);
+        let admincmType         = this.globalS.isValueNull(group.get('admincmType').value);
+        let standard_quote      = this.globalS.isValueNull(group.get('standard_quote').value);
+        let defaultdailyfee     = this.globalS.isValueNull(group.get('defaultdailyfee').value);
+        let max_contiguency     = this.globalS.isValueNull(group.get('max_contiguency').value);
+        let perc_amt            = this.globalS.isValueNull(group.get('perc_amt').value);
+        let adminDay            = this.globalS.isValueNull(group.get('adminDay').value);
+        let cmday               = this.globalS.isValueNull(group.get('cmday').value);
+        let default_daily_fees  = this.globalS.isValueNull(group.get('default_daily_fees').value);
+        let IncludeTopUp        = this.trueString(group.get('IncludeTopUp').value);
+        let IncludeCare         = this.trueString(group.get('IncludeCare').value);
+        let includetested       = this.trueString(group.get('includetested').value);
         let includeClientFeesCont = this.trueString(group.get('includeClientFeesCont').value);
-        let quoute_template = group.get('quoute_template').value; 
-        let line1           = group.get('line1').value;
-        let line2           = group.get('line2').value;
-        let text1           = line1+" || "+line2;
-        let nprogram = group.get('nprogram').value; 
-        let nactivity = group.get('nactivity').value; 
-        let npay = group.get('npay').value; 
-        let cprogram = group.get('cprogram').value; 
-        let cactivity = group.get('cactivity').value; 
-        let cpay = group.get('cpay').value; 
-        let wnprogram = group.get('wnprogram').value; 
-        let wnactivity = group.get('wnactivity').value; 
-        let wnpay = group.get('wnpay').value; 
-        let wcprogram = group.get('wnprogram').value; 
-        let wcactivity = group.get('wcactivity').value; 
-        let wcpay = group.get('wcpay').value; 
-        let  defaultNoNoticeBillProgram =  group.get('defaultNoNoticeBillProgram').value;
-        let  defaultNoNoticeCancel =  group.get('defaultNoNoticeCancel').value;
-        let  defaultNoNoticePayProgram =  group.get('defaultNoNoticePayProgram').value;
-        let  defaultWithNoticeCancel =  group.get('defaultWithNoticeCancel').value;
-        let  defaultWithNoticeProgram =  group.get('defaultWithNoticeProgram').value;
-        let  noNoticeCancelRate       =  group.get('noNoticeCancelRate').value;
-        let  noNoticeLeadTime        =  group.get('noNoticeLeadTime').value;
-        let  noNoticeLeaveActivity    =  group.get('noNoticeLeaveActivity').value;
-        let  shortNoticeCancelRate    =  group.get('shortNoticeCancelRate').value;
-        let  shortNoticeLeadTime      =  group.get('shortNoticeLeadTime').value;
-        let  shortNoticeLeaveActivity =  group.get('shortNoticeLeaveActivity').value;
-        let  defaultShortNoticePayType     = group.get('defaultShortNoticePayType').value;
-        let  defaultShortNoticePayProgram  = group.get('defaultShortNoticePayProgram').value;
-        let  defaultShortNoticeBillProgram = group.get('defaultShortNoticeBillProgram').value;
-        let  defaultShortNoticeCancel      = group.get('defaultShortNoticeCancel').value;
-        let  defaultNoNoticePayType         = group.get('defaultNoNoticePayType').value;
-        let  recordNumber                  = group.get('recordNumber').value;  
-        let prog = "PROGRAMS";
+        let quoute_template = this.globalS.isValueNull(group.get('quoute_template').value); 
         
-        let sqlUpdate = "Update humanresourcetypes SET [Group]='"+ prog + "',[Name]='"+ title + "',[type]='"+ fundingSource + "',[address1]='"+ agencyID + "',[address2]='"+ cordinators + "', [Suburb]='"+ fundingRegion + "',[HRT_DATASET]='"+ careDomain + "',[USER1]='"+ fundingType + "',[Phone2]='"+ state + "',[gst]='"+ gst + "',[GSTRate]='"+ rate + "',[budgetamount]='"+ budget$ + "',[budget_1]='"+ budgetHrs + "',[budgetperiod]='"+bgtCycle+"',[fax]='"+ glExp + "',[email]='"+ glRev + "',[phone1]='"+ glSuper + "',[CloseDate]='"+ closeDate + "',[Postcode]='"+ programJob + "',[UserYesNo3]='"+ template + "',[User2]='"+ contiguency + "',[User3]='"+ level + "',[User4]='"+ targetGroup + "',[User10]='"+ conguencyPackage + "',[BudgetEnforcement]='"+ budgetEnforcement + "',[BudgetRosterEnforcement]='"+ budgetRosterEnforcement + "',[UserYesNo1]='"+ agedCarePackage + "',[UserYesNo2]='"+ individuallyFunded + "',[User8]='"+ user8 + "',[User9]='"+ user9 + "',[User11]='"+ User11 + "',[User12]='"+ User12 + "',[P_Def_Alert_Type]='"+ P_Def_Alert_Type + "',[P_Def_Alert_Period]='"+ P_Def_Alert_Period + "',[P_Def_Alert_Allowed]='"+ allowed + "',[P_Def_Alert_Yellow]='"+ yellow + "',[P_Def_Alert_Orange]='"+ green + "',[P_Def_Alert_Red]='"+ red + "',[P_Def_Expire_Amount]='"+ expire_amount + "',[P_Def_Expire_CostType]='"+ expire_costType + "',[P_Def_Expire_Unit]='"+ expire_unit + "',[P_Def_Expire_Period]='"+ expire_period + "',[P_Def_Expire_Length]='"+ expire_length + "',[P_Def_Fee_BasicCare]='"+ defaultbasiccarefee + "',[P_Def_Contingency_PercAmt]='"+ perc_amt + "',[P_Def_Admin_AdminType]='"+ adminType + "',[P_Def_Admin_CMType]='"+ admincmType + "',[P_Def_Admin_CM_PercAmt]='"+admin_cm_parc_amt+"',[p_Def_Admin_Admin_PercAmt]='"+admin_parc_amt+"',[P_Def_StdDisclaimer]='"+standard_quote+"',[P_Def_Admin_AdminFrequency]='"+adminFrequency+"',[P_Def_Admin_CMFrequency]='"+cmFrequency+"',[P_Def_Admin_AdminDay]='"+adminDay+"',[P_Def_Admin_CMDay]='"+cmday+"',[P_Def_Expire_Using]='"+expire_using+"',[P_Def_Contingency_Max]='"+max_contiguency+"',[DefaultCHGTravelWithinActivity]='"+wcactivity+"',[DefaultCHGTravelWithinPayType]='"+wcpay+"',[DefaultNCTravelWithinProgram]='"+wnprogram+"',[DefaultNCTravelWithinActivity]='"+wnactivity+"',[DefaultNCTravelWithinPayType]='"+wnpay+"',[DefaultCHGTravelBetweenActivity]='"+cactivity+"',[DefaultCHGTravelBetweenPayType]='"+cpay+"',[DefaultNCTravelBetweenProgram]='"+nprogram+"',[DefaultNCTravelBetweenActivity]='"+nactivity+"',[DefaultNCTravelBetweenPayType]='"+npay+"',[DefaultCHGTRAVELBetweenProgram]='"+cprogram+"',[DefaultCHGTRAVELWithInProgram]='"+wcprogram+"',[P_Def_IncludeClientFeesInCont]='"+includeClientFeesCont+"',[P_Def_IncludeIncomeTestedFeeInAdmin]='"+includetested+"',[P_Def_IncludeBasicCareFeeInAdmin]='"+IncludeCare+"',[P_Def_IncludeTopUpFeeInAdmin]='"+IncludeTopUp+"',[CDCStatementText1]='"+text1+"',[DefaultDailyFee]='"+default_daily_fees+"',[NoNoticeLeadTime]='"+noNoticeLeadTime+"',[ShortNoticeLeadTime]='"+shortNoticeLeadTime+"',[NoNoticeLeaveActivity]='"+noNoticeLeaveActivity+"',[ShortNoticeLeaveActivity]='"+shortNoticeLeaveActivity+"',[DefaultNoNoticeCancel]='"+defaultNoNoticeCancel+"',[DefaultNoNoticeBillProgram]='"+defaultNoNoticeBillProgram+"',[DefaultNoNoticePayProgram]='"+defaultNoNoticePayProgram+"',[DefaultNoNoticePayType]='"+defaultNoNoticePayType+"',[DefaultShortNoticeCancel]='"+defaultShortNoticeCancel+"',[DefaultShortNoticeBillProgram]='"+defaultShortNoticeBillProgram+"',[DefaultShortNoticePayProgram]='"+defaultShortNoticePayProgram+"',[DefaultShortNoticePayType]='"+defaultShortNoticePayType+"',[DefaultWithNoticeCancel]='"+defaultWithNoticeCancel+"',[NoNoticeCancelRate]='"+noNoticeCancelRate+"',[ShortNoticeCancelRate]='"+shortNoticeCancelRate+"',[DefaultWithNoticeProgram]='"+defaultWithNoticeProgram+"' WHERE [RecordNumber] ='"+recordNumber+"'";
-        // console.log(sqlUpdate);
+        let line1           = this.globalS.isValueNull(group.get('line1').value);
+        line1 = isEmpty(line1) ? "Unused funds are returned to the Department on package cessation" : line1;        
+        
+        let line2           = this.globalS.isValueNull(group.get('line2').value);
+        line2 = isEmpty(line2) ? "For Queries and Inquiries Please Phone" : line2;  
+        
+        let text1           =  line1+"||"+line2;
+        
+        let nprogram        =  this.globalS.isValueNull(group.get('nprogram').value); 
+        let nactivity       =  this.globalS.isValueNull(group.get('nactivity').value); 
+        let npay            =  this.globalS.isValueNull(group.get('npay').value); 
+        let cprogram        =  this.globalS.isValueNull(group.get('cprogram').value); 
+        let cactivity       =  this.globalS.isValueNull(group.get('cactivity').value); 
+        let cpay            =  this.globalS.isValueNull(group.get('cpay').value); 
+        let wnprogram       =  this.globalS.isValueNull(group.get('wnprogram').value); 
+        let wnactivity      =  this.globalS.isValueNull(group.get('wnactivity').value); 
+        let wnpay           =  this.globalS.isValueNull(group.get('wnpay').value); 
+        let wcprogram       =  this.globalS.isValueNull(group.get('wnprogram').value); 
+        let wcactivity      =  this.globalS.isValueNull(group.get('wcactivity').value); 
+        let wcpay           =  this.globalS.isValueNull(group.get('wcpay').value); 
+        let  defaultNoNoticeBillProgram    =   this.globalS.isValueNull(group.get('defaultNoNoticeBillProgram').value);
+        let  defaultNoNoticeCancel         =   this.globalS.isValueNull(group.get('defaultNoNoticeCancel').value);
+        let  defaultNoNoticePayProgram     =   this.globalS.isValueNull(group.get('defaultNoNoticePayProgram').value);
+        let  defaultWithNoticeCancel       =   this.globalS.isValueNull(group.get('defaultWithNoticeCancel').value);
+        let  defaultWithNoticeProgram      =   this.globalS.isValueNull(group.get('defaultWithNoticeProgram').value);
+        let  noNoticeCancelRate            =   this.globalS.isValueNull(group.get('noNoticeCancelRate').value);
+        let  noNoticeLeadTime              =   this.globalS.isValueNull(group.get('noNoticeLeadTime').value);
+        let  noNoticeLeaveActivity         =   this.globalS.isValueNull(group.get('noNoticeLeaveActivity').value);
+        let  shortNoticeCancelRate         =   this.globalS.isValueNull(group.get('shortNoticeCancelRate').value);
+        let  shortNoticeLeadTime           =   this.globalS.isValueNull(group.get('shortNoticeLeadTime').value);
+        let  shortNoticeLeaveActivity      =   this.globalS.isValueNull(group.get('shortNoticeLeaveActivity').value);
+        let  defaultShortNoticePayType     =   this.globalS.isValueNull(group.get('defaultShortNoticePayType').value);
+        let  defaultShortNoticePayProgram  =   this.globalS.isValueNull(group.get('defaultShortNoticePayProgram').value);
+        let  defaultShortNoticeBillProgram =   this.globalS.isValueNull(group.get('defaultShortNoticeBillProgram').value);
+        let  defaultShortNoticeCancel      =   this.globalS.isValueNull(group.get('defaultShortNoticeCancel').value);
+        let  defaultNoNoticePayType        =   this.globalS.isValueNull(group.get('defaultNoNoticePayType').value); 
+        let  recordNumber       = group.get('recordNumber').value;
+        let prog = "'PROGRAMS'";
+        
+        let sqlUpdate = "Update humanresourcetypes SET [Group]="+ prog + ",[Name]="+ title + ",[type]="+ fundingSource + ",[address1]="+ agencyID + ",[address2]="+ cordinators + ", [Suburb]="+ fundingRegion + ",[HRT_DATASET]="+ careDomain + ",[USER1]="+ fundingType + ",[Phone2]="+ state + ",[gst]="+ gst + ",[GSTRate]="+ rate + ",[budgetamount]="+ budget$ + ",[budget_1]="+ budgetHrs + ",[budgetperiod]="+bgtCycle+",[fax]="+ glExp + ",[email]="+ glRev + ",[phone1]="+ glSuper + ",[CloseDate]="+ closeDate + ",[Postcode]="+ programJob + ",[UserYesNo3]="+ template + ",[User2]="+ contiguency + ",[User3]="+ level + ",[User4]="+ targetGroup + ",[User10]="+ conguencyPackage + ",[BudgetEnforcement]="+ budgetEnforcement + ",[BudgetRosterEnforcement]="+ budgetRosterEnforcement + ",[UserYesNo1]="+ agedCarePackage + ",[UserYesNo2]="+ individuallyFunded + ",[User8]="+ user8 + ",[User9]="+ user9 + ",[User11]="+ User11 + ",[User12]="+ User12 + ",[P_Def_Alert_Type]="+ P_Def_Alert_Type + ",[P_Def_Alert_Period]="+ P_Def_Alert_Period + ",[P_Def_Alert_Allowed]="+ allowed + ",[P_Def_Alert_Yellow]="+ yellow + ",[P_Def_Alert_Orange]="+ green + ",[P_Def_Alert_Red]="+ red + ",[P_Def_Expire_Amount]="+ expire_amount + ",[P_Def_Expire_CostType]="+ expire_costType + ",[P_Def_Expire_Unit]="+ expire_unit + ",[P_Def_Expire_Period]="+ expire_period + ",[P_Def_Expire_Length]="+ expire_length + ",[P_Def_Fee_BasicCare]="+ defaultbasiccarefee + ",[P_Def_Contingency_PercAmt]="+ perc_amt + ",[P_Def_Admin_AdminType]="+ adminType + ",[P_Def_Admin_CMType]="+ admincmType + ",[P_Def_Admin_CM_PercAmt]="+admin_cm_parc_amt+",[p_Def_Admin_Admin_PercAmt]="+admin_parc_amt+",[P_Def_StdDisclaimer]="+standard_quote+",[P_Def_Admin_AdminFrequency]="+adminFrequency+",[P_Def_Admin_CMFrequency]="+cmFrequency+",[P_Def_Admin_AdminDay]="+adminDay+",[P_Def_Admin_CMDay]="+cmday+",[P_Def_Expire_Using]="+expire_using+",[P_Def_Contingency_Max]="+max_contiguency+",[DefaultCHGTravelWithinActivity]="+wcactivity+",[DefaultCHGTravelWithinPayType]="+wcpay+",[DefaultNCTravelWithinProgram]="+wnprogram+",[DefaultNCTravelWithinActivity]="+wnactivity+",[DefaultNCTravelWithinPayType]="+wnpay+",[DefaultCHGTravelBetweenActivity]="+cactivity+",[DefaultCHGTravelBetweenPayType]="+cpay+",[DefaultNCTravelBetweenProgram]="+nprogram+",[DefaultNCTravelBetweenActivity]="+nactivity+",[DefaultNCTravelBetweenPayType]="+npay+",[DefaultCHGTRAVELBetweenProgram]="+cprogram+",[DefaultCHGTRAVELWithInProgram]="+wcprogram+",[P_Def_IncludeClientFeesInCont]="+includeClientFeesCont+",[P_Def_IncludeIncomeTestedFeeInAdmin]="+includetested+",[P_Def_IncludeBasicCareFeeInAdmin]="+IncludeCare+",[P_Def_IncludeTopUpFeeInAdmin]="+IncludeTopUp+",[CDCStatementText1]='"+text1+"',[DefaultDailyFee]="+default_daily_fees+",[NoNoticeLeadTime]="+noNoticeLeadTime+",[ShortNoticeLeadTime]="+shortNoticeLeadTime+",[NoNoticeLeaveActivity]="+noNoticeLeaveActivity+",[ShortNoticeLeaveActivity]="+shortNoticeLeaveActivity+",[DefaultNoNoticeCancel]="+defaultNoNoticeCancel+",[DefaultNoNoticeBillProgram]="+defaultNoNoticeBillProgram+",[DefaultNoNoticePayProgram]="+defaultNoNoticePayProgram+",[DefaultNoNoticePayType]="+defaultNoNoticePayType+",[DefaultShortNoticeCancel]="+defaultShortNoticeCancel+",[DefaultShortNoticeBillProgram]="+defaultShortNoticeBillProgram+",[DefaultShortNoticePayProgram]="+defaultShortNoticePayProgram+",[DefaultShortNoticePayType]="+defaultShortNoticePayType+",[DefaultWithNoticeCancel]="+defaultWithNoticeCancel+",[NoNoticeCancelRate]="+noNoticeCancelRate+",[ShortNoticeCancelRate]="+shortNoticeCancelRate+",[DefaultWithNoticeProgram]="+defaultWithNoticeProgram+" WHERE [RecordNumber] ='"+recordNumber+"'";
+        console.log(sqlUpdate);
         this.menuS.InsertDomain(sqlUpdate).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');
@@ -737,7 +740,6 @@ export class ProgramPackagesComponent implements OnInit {
       this.budgetEnforcement = ['HARD','SOFT'];
       this.alerts   = ['HOURS', 'DOLLARS', 'SERVICES'];
       this.DefPeriod = ['DAY','WEEK','FORTNIGHT','4 WEEKS','MONTHS','6 MONTHS','QUARTER','6 MONTHS','YEAR']
-      
       this.expireUsing   = ['Activity AVG COST','CHARGE RATE','PAY UNIT RATE']
       this.unitsArray    = ['PER','TOTAL'];
       this.dailyArry     = ['DAILY'];
@@ -861,6 +863,7 @@ export class ProgramPackagesComponent implements OnInit {
         funding_region:'',
         funding_type:'',
         close_date:'',
+        end_date:'',
         radioValue:'',
         radioValue2:'',
         template:false,

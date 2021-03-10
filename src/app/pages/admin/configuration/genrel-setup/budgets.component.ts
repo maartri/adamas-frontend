@@ -1,8 +1,11 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder} from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService } from '@services/global.service';
 import { ListService } from '@services/list.service';
 import { MenuService } from '@services/menu.service';
+import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 @Component({
@@ -75,7 +78,7 @@ export class BudgetsComponent implements OnInit {
   tryDoctype: any;
   drawerVisible: boolean =  false;  
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord, 0) = 0 ";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
   private unsubscribe: Subject<void> = new Subject();
   constructor(
     private globalS: GlobalService,
@@ -83,6 +86,9 @@ export class BudgetsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private menuS:MenuService,
     private listS: ListService,
+    private http: HttpClient,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService
     ){}
     
     ngOnInit(): void {
@@ -188,27 +194,24 @@ export class BudgetsComponent implements OnInit {
       this.listS.getlist(reci).subscribe(data => {
         this.recepient = data;
       });
-      
     }
+
     loadData(){
-      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description, Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,Undated,StartDate as start, EndDate as end_date from Budgets WHERE ISNULL(Budgets.DeletedRecord, 0) = 0 ORDER BY [recordNumber] desc";
+      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description,Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,Undated,StartDate as start, EndDate as end_date from Budgets "+this.whereString+" ORDER BY [Name]";
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data
-        console.log(this.tableData);
       });
     }
+
     showAddModal() {
       this.resetModal();
       this.modalOpen = true;
     }
-    
     resetModal() {
       this.current = 0;
       this.inputForm.reset();
       this.postLoading = false;
     }
-    
-    
     showEditModal(index: any) {
       this.isUpdate = true;
       this.current = 0;
@@ -438,6 +441,92 @@ export class BudgetsComponent implements OnInit {
         packages:'',
         RecordNumber:null,
       });
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
+      }
+    }
+
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
+    }
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] AS Field2,[Branch] as Field3,[Funding Source] as Field4, [Care Domain] as Field5,[Budget Group] as Field6,[Program] as Field7, [Dataset Code] as Field8,Activity as Field9, [Staff Team] as Field10,CONVERT(varchar, [EndDate],105) as Field11 from Budgets "+this.whereString+" ORDER BY [Name]";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+     
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+     
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Budget List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Name",
+          "head3" : "Branch",
+          "head4" : "Funding Source",
+          "head5" : "Care Domain",
+          "head6" : "Budget Group",
+          "head7" : "Program",
+          "head9" : "Activity",
+          "head11": "End Date",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
     }
     
   }

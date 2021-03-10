@@ -749,24 +749,24 @@ export class ProgramPackagesComponent implements OnInit {
       this.listS.getcaredomain().subscribe(data => this.caredomain = data);
       this.listS.getliststaffteam().subscribe(data=>this.staffTeams= data);
       let todayDate  = this.globalS.curreentDate();
-      let funding = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDREGION' ORDER BY Description";
+      let funding = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDREGION' ORDER BY Description";
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
         this.loading = false;
       });
       
-      let fundings = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'FUNDINGBODIES' ORDER BY Description";
+      let fundings = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDINGBODIES' ORDER BY Description";
       this.listS.getlist(fundings).subscribe(data => {
         this.fundingSources = data;
         this.loading = false;
       });
       
-      let progcor = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'CASE MANAGERS' ORDER BY Description";
+      let progcor = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'CASE MANAGERS' ORDER BY Description";
       this.listS.getlist(progcor).subscribe(data => {
         this.programCordinates = data;
       });
       
-      let target = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'CDCTARGETGROUPS' ORDER BY Description";
+      let target = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'CDCTARGETGROUPS' ORDER BY Description";
       
       this.listS.getlist(target).subscribe(data => {
         this.targetGroups = data;
@@ -788,7 +788,7 @@ export class ProgramPackagesComponent implements OnInit {
       this.listS.getlist(ptype).subscribe(data => {
         this.paytypes = data;
       });
-      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > '"+todayDate+"'))";
+      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > GETDATE()))";
       this.listS.getlist(prog).subscribe(data => {
         this.programz = data;
       });
@@ -799,7 +799,7 @@ export class ProgramPackagesComponent implements OnInit {
         this.loading = false;
       });
       
-      let pckg_type_profile = "SELECT DISTINCT [Title] FROM ItemTypes WHERE ProcessClassification IN ('OUTPUT', 'EVENT') AND (EndDate Is Null OR EndDate >= '"+todayDate+"') ORDER BY [Title]"
+      let pckg_type_profile = "SELECT DISTINCT [Title] FROM ItemTypes WHERE ProcessClassification IN ('OUTPUT', 'EVENT') AND (EndDate Is Null OR EndDate >= GETDATE()) ORDER BY [Title]"
       this.listS.getlist(pckg_type_profile).subscribe(data => {
         this.packedTypeProfile = data;
         this.loading = false;
@@ -817,13 +817,13 @@ export class ProgramPackagesComponent implements OnInit {
         this.loading = false;
       });
       
-      let activity = "select distinct Title from ItemTypes WHERE ProcessClassification = 'EVENT' AND ((EndDate IS NULL) OR (EndDate > '"+todayDate+"')) AND RosterGroup = 'RECPTABSENCE'";
+      let activity = "select distinct Title from ItemTypes WHERE ProcessClassification = 'EVENT' AND ((EndDate IS NULL) OR (EndDate > GETDATE())) AND RosterGroup = 'RECPTABSENCE'";
       this.listS.getlist(activity).subscribe(data => {
         this.activityTypes = data;
         this.loading = false;
       });
       
-      let timesheet = "select distinct Title from ItemTypes WHERE ProcessClassification = 'OUTPUT' AND ((EndDate IS NULL) OR (EndDate > '"+todayDate+"')) AND RosterGroup = 'ADMINISTRATION'"
+      let timesheet = "select distinct Title from ItemTypes WHERE ProcessClassification = 'OUTPUT' AND ((EndDate IS NULL) OR (EndDate > GETDATE())) AND RosterGroup = 'ADMINISTRATION'"
       this.listS.getlist(timesheet).subscribe(data => {
         this.activityTimeSheet = data;
         this.loading = false;

@@ -31,11 +31,13 @@ export class ContacttypesComponent implements OnInit {
   token:any;
   tocken: any;
   pdfTitle: string;
+  modalVariables: any;
+  inputVariables:any;
   tryDoctype: any;
   drawerVisible: boolean =  false;  
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   
   constructor(
     private globalS: GlobalService,
@@ -98,7 +100,7 @@ export class ContacttypesComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -125,11 +127,56 @@ export class ContacttypesComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      this.postLoading = true;
-      this.globalS.sToast('Success', 'Changes saved');
-      this.handleCancel();
-      this.resetModal();
-    }
+      this.postLoading = true;     
+      const group = this.inputForm;
+      if(!this.isUpdate){         
+        this.switchS.addData(  
+          this.modalVariables={
+            title: 'Contact Type'
+          }, 
+          this.inputVariables = {
+            display : group.get('title').value,
+            contact_group : group.get('pgroup').value,
+            end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
+            domain: 'CONTACTSUBGROUP',
+          }
+          ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) 
+            this.globalS.sToast('Success', 'Saved successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
+            this.loadData();
+            this.postLoading = false;          
+            this.handleCancel();
+            this.resetModal();
+          });
+        }else{
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.switchS.updateData(  
+            this.modalVariables={
+              title: 'Funding Regions'
+            }, 
+            this.inputVariables = {
+              display: group.get('title').value,
+              contact_group: group.get('pgroup').value,
+              primaryId:group.get('recordNumber').value,
+              end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
+              domain: 'CONTACTSUBGROUP',
+            }
+            ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              this.loadData();
+              this.isUpdate = false;
+              this.postLoading = false;          
+              this.handleCancel();
+              this.resetModal();
+            });
+          } 
+        }
     
     delete(data: any) {
       this.postLoading = true;     
@@ -163,6 +210,7 @@ export class ContacttypesComponent implements OnInit {
         pgroup:'',
         end_date:'',
         title:'',
+        recordNumber:null,
       });
     }
     handleOkTop() {

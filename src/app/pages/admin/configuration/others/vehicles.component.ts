@@ -144,7 +144,7 @@ export class VehiclesComponent implements OnInit {
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
-          this.globalS.sToast('Unsuccess', 'Saved successful' + data);
+          this.globalS.sToast('Unsuccess', 'Saved successful');
           this.loadData();
           this.postLoading = false;          
           this.handleCancel();
@@ -162,7 +162,7 @@ export class VehiclesComponent implements OnInit {
             if (data) 
             this.globalS.sToast('Success', 'Updated successful');     
             else
-            this.globalS.sToast('Unsuccess', 'Updated successful' + data);
+            this.globalS.sToast('Unsuccess', 'Updated successful');
             this.loadData();
             this.postLoading = false;          
             this.isUpdate = false;

@@ -808,6 +808,21 @@ export class SwitchService {
                     table: 'DataDomains'
                 }
                 break;
+                case 'Contact Type':
+                this.anyVariable = {
+                    variables: {
+                        Description: (inputVariables.display).toUpperCase(),
+                        domain: 'CONTACTSUBGROUP',
+                        dataset: 'USER',
+                        embedded: 0,
+                        HACCCODe:inputVariables.contact_group,
+                        user1: '',
+                        user2: '',
+                        endDate: inputVariables.end_date
+                    },
+                    table: 'DataDomains'
+                }
+                break;
                 case 'CDC Claim Rates':
                 this.anyVariable = {
                     variables: {
@@ -1754,6 +1769,17 @@ export class SwitchService {
                     variables: {
                         description: inputVariables.item,
                         user1: inputVariables.rate,
+                        endDate: inputVariables.end_date,
+                    },
+                    table: 'DataDomains',
+                    where: `WHERE RecordNumber = ${inputVariables.recordNumber}`
+                }
+                break;
+                case 'Contact Type':
+                this.anyVariable = {
+                    variables: {
+                        description: inputVariables.title,
+                        HACCCODe: inputVariables.contact_group,
                         endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains',

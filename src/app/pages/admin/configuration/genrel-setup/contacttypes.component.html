@@ -17,7 +17,7 @@
                 <tr *ngFor="let data of basicTable.data;let i = index;">
                 <td class="left">{{ data.staff  }} </td>
                 <td class="left">{{ data.title  }} </td>
-                <td class="left">{{ data.endDate  }} </td>
+                <td class="left">{{ data.end_date | date: 'dd/MM/y' }}</td>
                 <td *ngIf="!data.is_deleted">
                     <a (click)="showEditModal(i)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>

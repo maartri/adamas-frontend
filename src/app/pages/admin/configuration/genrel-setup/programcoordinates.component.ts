@@ -25,7 +25,7 @@ export class ProgramcoordinatesComponent implements OnInit {
   postLoading: boolean = false;
   isUpdate: boolean = false;
   dateFormat: string ='dd/MM/yyyy';
-  heading:string = "Add New Program Coordinates"
+  heading:string = "Add New Managers Coordinators"
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report'
   token:any;
@@ -214,7 +214,7 @@ export class ProgramcoordinatesComponent implements OnInit {
     generatePdf(){
       this.drawerVisible = true;
       this.loading = true;
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,HACCCode as Field3,CONVERT(varchar, [enddate],105) as Field4 DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='CASE MANAGERS'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,HACCCode as Field3,CONVERT(varchar, [enddate],105) as Field4,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='CASE MANAGERS'";
       const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

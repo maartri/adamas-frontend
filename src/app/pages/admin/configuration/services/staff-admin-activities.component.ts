@@ -57,7 +57,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   staffApproved: boolean = false;
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
-  
+  check : boolean = false;
   current: number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
@@ -68,6 +68,8 @@ export class StaffAdminActivitiesComponent implements OnInit {
   isUpdate: boolean = false;
   title:string = "Add New Staff Admin Activities";
   tocken: any;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;
@@ -90,7 +92,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
-      
+      this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.loadData();
       this.buildForm();
@@ -198,9 +200,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
     handleCompetencyCancel(){
       this.competencymodal = false;
     }
-    pre(): void {
-      this.current -= 1;
-    }
+    // pre(): void {
+    //   this.current -= 1;
+    // }
     
     trueString(data: any): string{
       return data ? '1': '0';
@@ -217,8 +219,11 @@ export class StaffAdminActivitiesComponent implements OnInit {
         this.checkedList = this.checkedList.filter(m=>m!= option.name)
       }
     }
-    next(): void {
-      this.current += 1;
+    // next(): void {
+    //   this.current += 1;
+    // }
+    onIndexChange(index: number): void {
+      this.current = index;
     }
     save() {
       if(!this.isUpdate){
@@ -307,61 +312,70 @@ export class StaffAdminActivitiesComponent implements OnInit {
     }
     loadData(){
       this.loading = true;
-      this.menuS.GetlistStaffAdminActivities().subscribe(data => {
+      this.menuS.GetlistStaffAdminActivities(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
       });
     }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE ProcessClassification <> 'INPUT' ";
+        this.loadData();
+      }else{
+        this.whereString = "WHERE ProcessClassification <> 'INPUT' AND ISNULL(DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
+        this.loadData();
+      }
+    }
+
     clearStaff(){
       this.listStaff.forEach(x => {
         x.checked = false
       });
-      
       this.selectedStaff = [];
     }
     populateDropdowns(): void {
-      this.mainGroupList = ['ONE ON ONE','CENTER BASED ACTIVITY','GROUP ACTIVITY','TRANSPORT','SLEEPOVER'];
-      this.subGroupList = ['GENERAL','MEAL','TRAINING','STAFF DEVELOPMENT'];
-      this.status  = ['ATTRIBUTABLE','NON ATTRIBUTABLE'];
-      this.units  = ['HOUR','SERVICE'];
-      let todayDate  = this.globalS.curreentDate();
+      this.mainGroupList  = ['ONE ON ONE','CENTER BASED ACTIVITY','GROUP ACTIVITY','TRANSPORT','SLEEPOVER'];
+      this.subGroupList   = ['GENERAL','MEAL','TRAINING','STAFF DEVELOPMENT'];
+      this.status         = ['ATTRIBUTABLE','NON ATTRIBUTABLE'];
+      this.units          = ['HOUR','SERVICE'];
+      let todayDate       = this.globalS.curreentDate();
       
-      let sql ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'LIFECYCLEEVENTS'";
+      let sql ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND EndDate is NULL OR EndDate >= Getdate() AND Domain = 'LIFECYCLEEVENTS'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.lifeCycleList = data;
       });
       
-      let sql3 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'ADDRESSTYPE'";
+      let sql3 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND EndDate is NULL OR EndDate >= Getdate() AND Domain = 'ADDRESSTYPE'";
       this.loading = true;
       this.listS.getlist(sql3).subscribe(data => {
         this.addressTypes = data;
       });
-      let sql4 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'CONTACTTYPE'";
+      let sql4 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND EndDate is NULL OR EndDate >= Getdate() AND Domain = 'CONTACTTYPE'";
       this.loading = true;
       this.listS.getlist(sql4).subscribe(data => {
         this.addressTypes = data;
       });
-      let sql1 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'BUDGETGROUP'";
+      let sql1 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND EndDate is NULL OR EndDate >= Getdate() AND Domain = 'BUDGETGROUP'";
       this.loading = true;
       this.listS.getlist(sql1).subscribe(data => {
         this.budgetGroupList = data;
       });
       
-      let sql2 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'DISCIPLINE'";
+      let sql2 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND EndDate is NULL OR EndDate >= Getdate() AND Domain = 'DISCIPLINE'";
       this.loading = true;
       this.listS.getlist(sql1).subscribe(data => {
         this.diciplineList = data;
       });
       
-      let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+      let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND EndDate is NULL OR EndDate >= Getdate() AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
         this.loading = false;
       });  
       
-      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > '"+todayDate+"'))";
+      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
       this.listS.getlist(prog).subscribe(data => {
         this.programz = data;
       });
@@ -369,6 +383,18 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.mtaAlerts = ['No Alert','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
       this.paytypes  = ['SALARY','ALLOWANCE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
+    }
+    activateDomain(data: any) {
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activeDomain(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
+          this.loadData();
+          return;
+        }
+      });
     }
     delete(data: any) {
       this.postLoading = true;     
@@ -408,6 +434,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
         payrate:'',
         casuals:false,
         end:'',
+        end_date:'',
         payid:'',
         exportfrompay:false,
         conflict:false,
@@ -446,10 +473,8 @@ export class StaffAdminActivitiesComponent implements OnInit {
     }
     generatePdf(){
       this.drawerVisible = true;
-      
       this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [Title]) AS Field1,[Title] As [Field2], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup END As [Field3],[MinorGroup] As [Field4],[HACCType] As [Field5],[DatasetGroup] As [Field6],  [NDIA_ID] As [Field7],[Amount] As [Field8],[Unit] As [Field9] FROM ItemTypes WHERE ProcessClassification <> 'INPUT' AND (EndDate Is Null OR EndDate >= '12-22-2020')  AND (RosterGroup IN ('ITEM')) ORDER BY Title";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [Title]) AS Field1,[Title] As [Field2], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup END As [Field3],[MinorGroup] As [Field4],[HACCType] As [Field5],[DatasetGroup] As [Field6],  [NDIA_ID] As [Field7],[Amount] As [Field8],[Unit] As [Field9] FROM ItemTypes "+this.whereString+"  AND (RosterGroup IN ('ADMINISTRATION', 'TRAVELTIME')) ORDER BY Title";
       
       const headerDict = {
         'Content-Type': 'application/json',

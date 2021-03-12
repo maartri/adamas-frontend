@@ -42,8 +42,8 @@ export class MenuService {
         GetlistcaseManagement():Observable<any>{
             return this.auth.get(`${menu}/caseManagement`)
         }
-        GetlistStaffAdminActivities():Observable<any>{
-            return this.auth.get(`${menu}/staffAdminActivities`)
+        GetlistStaffAdminActivities(is_where: boolean):Observable<any>{
+            return this.auth.get(`${menu}/staffAdminActivities/${is_where}`)
         }
         GetlistRecipientAbsenses():Observable<any>{
             return this.auth.get(`${menu}/recipientAbsenses`)
@@ -153,6 +153,9 @@ export class MenuService {
         }
         deleteActivityServiceslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/ActivityServices/${recordNo}`)
+        }
+        activateActivityServiceslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/ActivityServices/${recordNo}`)
         }
         deleteEquipmentslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/Equipments/${recordNo}`)

@@ -308,6 +308,12 @@
                                                 </button>
                                         </div>
                                         <div>
+                                            <button nz-button nzType="default" id="btn-staff-Activevolunteers" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Active Volunteers 
+                                                </button>
+                                        </div>
+                                        <div>
                                             <button nz-button nzType="default" id="btn-staff-ActiveBrokerage" (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
                                                 Active Brokerage/Contractor List
@@ -331,18 +337,8 @@
                                                 InActive Brokerage/Contractor 
                                                 </button>
                                         </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-staff-Activevolunteers" (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Active Volunteers 
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-staff-Userpermissions" (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff User Permissions 
-                                                </button>
-                                        </div>
+                                        
+                                        
                                         <div>
                                             <button nz-button nzType="default" id="btn-staff-unavailability" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
@@ -492,6 +488,12 @@
                                             <button nz-button nzType="default" id="btn-staff-availability" (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Availability Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-staff-Userpermissions" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff User Permissions 
                                                 </button>
                                         </div>
                                                                                                                 
@@ -839,7 +841,7 @@
                     <div nz-row *ngIf="frm_Managers">
                         <div nz-col nzSpan="20">
                             <div class="form-group">
-                                <label><i nz-icon nzType="user" nzTheme="outline"></i> Managers </label>
+                                <label><i nz-icon nzType="user" nzTheme="outline"></i> Coordinator/Manager </label>
                                 <label class="checks" nz-checkbox formControlName="allManager">All Managers</label>
                                 <nz-select formControlName="managersArr" nzMode="multiple" [nzDisabled]="inputForm.value.allManager">
                                     <nz-option *ngFor="let option of managersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
@@ -1154,6 +1156,16 @@
                                             </div>                                   
                                         </div>
                                     </div>
+                                    <div nz-row *ngIf="frm_RosterFormat"> 
+                                        <div nz-col nzSpan = "12">                                   
+                                            <div class="form-group">
+                                                <label><i nz-icon nzType="solution" nzTheme="outline"></i> Report Format </label>
+                                                <nz-select formControlName="Rpt_Format" nzMode="default" >
+                                                    <nz-option *ngFor="let option of Rpt_Format" [nzLabel]="option" [nzValue]="option"></nz-option> 
+                                                </nz-select>                                    
+                                            </div>                                   
+                                        </div>
+                                    </div>
                                     <div nz-row> 
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_staff" ><label class="checks" nz-checkbox formControlName="includestaff"   >Include Staff</label></div>                                        
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_Broker"><label class="checks" nz-checkbox formControlName="includebroker"   >Include Brokers</label></div>
@@ -1172,6 +1184,11 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_inactivestaff" ><label class="checks" nz-checkbox formControlName="excludeinactivestaff"   >Exclude InActive Staff</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_staffondate" ><label class="checks" nz-checkbox formControlName="exclude_staff_shiftondate"   >Exclude Staff having shift on date</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_enddated" ><label class="checks" nz-checkbox formControlName="include_enddated"   >Include EndDated Programs</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_include_PrimarySkills" ><label class="checks" nz-checkbox formControlName="include_PrimarySkills"   >Include Primary Skills and Other Qualifications</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_MandatoryChecking" ><label class="checks" nz-checkbox formControlName="exclude_MandatoryChecking"   >Only Staff excluded from Mandatory Checking</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_include_AdditionalInfo" ><label class="checks" nz-checkbox formControlName="include_AdditionalInfo"   >Include Additional Information</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_include_unavailability" ><label class="checks" nz-checkbox formControlName="include_unavailability"   >Include Unavailability</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_activeStaffonly" ><label class="checks" nz-checkbox formControlName="activeStaffonly"   >Active Staff Only</label></div>
                                         
                                        
                                     </div>
@@ -1370,7 +1387,7 @@
                         <div nz-row>
                             <div nz-col nzSpan="16">
                                 <div class="form-group">
-                                    <label><i nz-icon nzType="user" nzTheme="outline"></i> Managers </label>
+                                    <label><i nz-icon nzType="user" nzTheme="outline"></i> Coordinator/Manager </label>
                                     <label class="checks" nz-checkbox formControlName="allManager">All Managers</label>
                                     <nz-select formControlName="managersArr" nzMode="multiple" [nzDisabled]="inputForm.value.allManager">
                                         <nz-option *ngFor="let option of managersArr" [nzLabel]="option" [nzValue]="option"></nz-option>

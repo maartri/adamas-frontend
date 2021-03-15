@@ -374,7 +374,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     chkbx_exclude_expirydates: boolean;
     chkbx_incl_Contacts: boolean;
     chkbx_asAddressLabel: boolean;
-    //chkbx_incl_additionalInfo: boolean;
+    chkbx_incl_additionalInfo: boolean;
     chkbx_incl_activeClients: boolean;
     chkbx_grpbyCoordinators: boolean;
     chkbx_incl_activeStaff: boolean;

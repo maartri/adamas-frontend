@@ -991,7 +991,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.chkbx_exclude_expirydates = false;
         this.chkbx_incl_Contacts = false;
         this.chkbx_asAddressLabel = false;
-       this.chkbx_incl_additionalInfo = false;
+//       this.chkbx_incl_additionalInfo = false;
         this.chkbx_incl_activeClients = false;
         this.chkbx_include_enddated = false;
         this.chkbx_exclude_MandatoryChecking = false;

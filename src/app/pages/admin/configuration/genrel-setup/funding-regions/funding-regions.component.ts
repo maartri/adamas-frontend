@@ -28,8 +28,8 @@ export class FundingRegionsComponent implements OnInit {
   postLoading: boolean = false;
   isUpdate: boolean = false;
   modalVariables: any;
-  dateFormat: string = 'dd/MM/yyyy';
   inputVariables:any;
+  dateFormat: string = 'dd/MM/yyyy';
   title:string = "Add Funding Regions";
   tocken: any;
   pdfTitle: string;

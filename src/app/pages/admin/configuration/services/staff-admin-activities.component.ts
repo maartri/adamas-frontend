@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService } from '@services/index';
+import { GlobalService, ListService, MenuService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -52,6 +52,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   ServiceData:Array<any>;
   items:Array<any>;
   jurisdiction:Array<any>;
+  timesteps:Array<any>;
   loading: boolean = false;
   modalOpen: boolean = false;
   staffApproved: boolean = false;
@@ -379,7 +380,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.listS.getlist(prog).subscribe(data => {
         this.programz = data;
       });
-      
+      this.timesteps = timeSteps;
       this.mtaAlerts = ['No Alert','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
       this.paytypes  = ['SALARY','ALLOWANCE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];

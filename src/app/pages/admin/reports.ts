@@ -887,12 +887,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
         
-        this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
-     /*   this.listS.getreportcriterialist({
+    //    this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
+        this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
             includeInactive:false
         }).subscribe(x => this.programsArr = x);
-        */
+        
         this.listS.getreportcriterialist({
             listType: 'BRANCHES',
             includeInactive: false

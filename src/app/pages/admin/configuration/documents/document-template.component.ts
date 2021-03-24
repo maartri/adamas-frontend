@@ -37,7 +37,7 @@ export class DocumentTemplateComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   
   constructor(
     private globalS: GlobalService,
@@ -65,12 +65,12 @@ export class DocumentTemplateComponent implements OnInit {
         this.whereString = "where";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY MinorGroup) AS row_num,RecordNo, Title, TRACCSType AS [Type], MainGroup AS [Category], MinorGroup AS Description,Template,EndDate as end_date,CanCreateFile as can_create,DeletedRecord as is_deleted FROM DOC_Associations "+this.whereString+" LocalUser = 'MASTER'";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY MinorGroup) AS row_num,RecordNo, Title, TRACCSType AS [Type], MainGroup AS [Category], MinorGroup AS Description,Template,EndDate as end_date,CanCreateFile as can_create,xDeletedRecord as is_deleted FROM DOC_Associations "+this.whereString+" LocalUser = 'MASTER'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;

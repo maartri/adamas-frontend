@@ -82,7 +82,7 @@ export class ProgramcoordinatesComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      this.heading  = "Edit Programe Coordinates"
+      this.heading  = "Edit Managers Coordinators"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
@@ -141,14 +141,14 @@ export class ProgramcoordinatesComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group  = this.inputForm;
-        let domain = 'CASE MANAGERS';
-        let code   = group.get('code').value;
-        let name   = group.get('name').value;
-        let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let domain = "'CASE MANAGERS'";
+        let code   = this.globalS.isValueNull(group.get('code').value);
+        let name   = this.globalS.isValueNull(group.get('name').value);
+        let end_date      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         
-        let values = domain+"','"+code+"','"+end_date+"','"+name;
-        let sql = "insert into DataDomains (Domain,HACCCode,EndDate,Description) Values ('"+values+"')";
-        
+        let values = domain+","+code+","+end_date+","+name;
+        let sql = "insert into DataDomains (Domain,HACCCode,EndDate,Description) Values ("+values+")";
+          console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
@@ -162,11 +162,11 @@ export class ProgramcoordinatesComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
-        let code   = group.get('code').value;
-        let name   = group.get('name').value;
+        let code   = this.globalS.isValueNull(group.get('code').value);
+        let name   = this.globalS.isValueNull(group.get('name').value);
         let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let recordNumber = group.get('recordNumber').value;
-        let sql  = "Update DataDomains SET [HACCCode] = '"+ code+ "',[EndDate] = '"+ end_date+ "',[Description] = '"+ name+ "' WHERE [RecordNumber]='"+recordNumber+"'";
+        let sql  = "Update DataDomains SET [HACCCode] ="+ code+",[EndDate] ="+ end_date+",[Description]="+ name+" WHERE [RecordNumber]='"+recordNumber+"'";
         console.log(sql);
         
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{

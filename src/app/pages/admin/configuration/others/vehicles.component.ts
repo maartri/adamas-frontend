@@ -135,9 +135,17 @@ export class VehiclesComponent implements OnInit {
       if(!this.isUpdate){  
         const group     = this.inputForm;
         let domain      = "'VEHICLES'";
-        let name        = this.globalS.isValueNull(group.get('name').value);
+        let name        = this.globalS.isValueNull(group.get('name').value).trim().toUpperCase();
+        let is_exist    = this.globalS.userExists(this.tableData,name);
+        
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
+
         let expiry      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let values = domain+","+name+","+expiry;
+        let values = domain+","+name.toUpperCase()+","+expiry;
         let sql = "insert into DataDomains([Domain],[Description],[EndDate]) Values ("+values+")";
 
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{

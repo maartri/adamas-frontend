@@ -50,10 +50,10 @@
             <div *ngIf="current == 0">
                 <div nz-row nzJustify class="mrg-btm">
                     <div nz-col nzSpan="8" class="text-right pad-r-5">
-                        <label nzFor="title">Suburb:</label>
+                        <label nzFor="title">Title:</label>
                     </div>
                     <div nz-col nzSpan="12">
-                        <input nz-input placeholder="Title" [nzSize]="'small'" formControlName="title" required />
+                        <input nz-input [nzSize]="'small'" formControlName="title" required />
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -100,7 +100,7 @@
                     <label for="Template" >Template:</label>
                 </div>
                 <div nz-col nzSpan="16">
-                    <textarea rows="3" nz-input  formControlName="template"></textarea>
+                    <textarea rows="2" nz-input  formControlName="template"></textarea>
                 </div>
             </div>
             <div nz-row nzJustify class="mrg-btm">

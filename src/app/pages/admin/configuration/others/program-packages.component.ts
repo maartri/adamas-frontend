@@ -739,7 +739,7 @@ export class ProgramPackagesComponent implements OnInit {
       this.cycles = ['CYCLE 1','CYCLE 2','CYCLE 3','CYCLE 4','CYCLE 5','CYCLE 6','CYCLE 7','CYCLE 8','CYCLE 9','CYCLE 10'];
       this.budgetEnforcement = ['HARD','SOFT'];
       this.alerts   = ['HOURS', 'DOLLARS', 'SERVICES'];
-      this.DefPeriod = ['DAY','WEEK','FORTNIGHT','4 WEEKS','MONTHS','6 MONTHS','QUARTER','6 MONTHS','YEAR']
+      this.DefPeriod = ['DAY','WEEK','FORTNIGHT','4 WEEKS','MONTH','6 WEEKS','QUARTER','6 MONTHS','YEAR']
       this.expireUsing   = ['Activity AVG COST','CHARGE RATE','PAY UNIT RATE']
       this.unitsArray    = ['PER','TOTAL'];
       this.dailyArry     = ['DAILY'];

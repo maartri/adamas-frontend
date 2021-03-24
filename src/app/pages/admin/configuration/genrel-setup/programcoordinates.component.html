@@ -7,16 +7,16 @@
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
-                    <th class="left">Staff Code</th>
                     <th class="left">Name</th>
+                    <th class="left">Staff Code</th>
                     <th class="left">End Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                <td class="left">{{ data.staff  }} </td>
-                <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.name  }} </td>
+                    <td class="left">{{ data.staff  }} </td>
                 <td class="left">{{ data.end_date | date: 'dd/MM/y' }} </td>
                 <td *ngIf="!data.is_deleted">
                     <a (click)="showEditModal(i)">Update</a>
@@ -26,7 +26,7 @@
                 </td>
                 <td *ngIf="data.is_deleted">
                     <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to Include this from Managers Coordinates List?"
-                    nzPopconfirmPlacement="bottom" (click)="activateDomain(data)">Activate</a>
+                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="activateDomain(data)">Activate</a>
                 </td>
                 </tr>
             </tbody>

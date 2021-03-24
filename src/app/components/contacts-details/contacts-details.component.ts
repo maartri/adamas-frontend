@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, ViewChild, OnDestroy, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ViewChild, OnDestroy, Inject, ChangeDetectionStrategy, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
@@ -28,7 +28,7 @@ const noop = () => {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
   
-export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,ControlValueAccessor {
   private unsubscribe: Subject<void> = new Subject();
 
   @Input() user: any;  
@@ -62,9 +62,15 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
     private titleCase: TitleCasePipe
   ) { }
 
-  ngOnInit(): void {
-    
+  ngOnInit(): void {    
     this.buildForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    for (let property in changes) {
+      console.log(this.user)
+        this.searchKin(this.user);      
+    }
   }
 
   buildForm(): void {
@@ -127,7 +133,18 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
     this.loading = true;
 
     if (token.view == view.recipient) {
-      
+        this.timeS.getcontactskinrecipient(token.id)
+        .subscribe(data => {
+          this.kinsArray = data;
+
+          if (data.length > 0) {
+            this.selected = data[0];
+            this.showDetails(data[0]);
+          }
+          this.loading = false
+          this.cd.markForCheck();
+          this.cd.detectChanges();
+        });
     }
 
     if (token.view == view.staff) {
@@ -178,6 +195,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
+    console.log(value)
     if (value != null) {
       this.innerValue = value;
       this.searchKin(this.innerValue);
@@ -259,7 +277,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
 
   add() {
     
-
+    console.log(this.user);
 
     if (this.inputForm.controls['suburbcode'].dirty) {
       var rs = this.inputForm.get('suburbcode').value;
@@ -277,10 +295,10 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
     } else if (this.inputForm.get('oni2').value) {
       this.inputForm.controls['ecode'].setValue('PERSON2')
     }
-
+    
     this.timeS.postcontactskinstaffdetails(
       this.inputForm.value,
-      this.innerValue.id
+      this.user.id
     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.globalS.sToast('Success', 'Contact Inserted');
       this.searchKin(this.innerValue);
@@ -288,13 +306,10 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, ControlValue
   }
 
   delete() {
-    this.timeS.deletecontactskin(this.kindetailsGroup.value.recordNumber).subscribe(data => {
-      
-      if (data) {
-        this.globalS.sToast('Success', 'Contact Deleted');
-      }
+    this.timeS.deletecontactskin(this.kindetailsGroup.value.recordNumber).subscribe(data => {      
+      if (data)
+        this.globalS.sToast('Success', 'Contact Deleted');      
       this.searchKin(this.innerValue);
-
     });
   }
 

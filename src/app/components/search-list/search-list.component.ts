@@ -153,7 +153,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
       SearchString: ''
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.listsAll = data;
-      // this.lists = data.slice(0, 200);
+      // this.lists = data.slice(0, 10);
       this.lists = data;
       this.loading = false;
       this.cd.markForCheck();

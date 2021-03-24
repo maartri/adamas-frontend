@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
-import { RECIPIENT_OPTION, ModalVariables } from '../../modules/modules';
+import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure } from '../../modules/modules';
 import { ListService, GlobalService, quantity, unit } from '@services/index';
 import { SqlWizardService } from '@services/sqlwizard.service';
 
@@ -8,6 +8,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import {mergeMap,takeUntil,debounceTime, distinctUntilChanged, map, switchMap, skip, startWith } from 'rxjs/operators';
 import { EMPTY, combineLatest, Observable } from 'rxjs';
 import { startsWith } from 'lodash';
+
 
 // import * as RECIPIENT_OPTION from '../../modules/modules';
 
@@ -25,6 +26,11 @@ import { startsWith } from 'lodash';
 //   ADMIN = "ADMIN",
 //   ITEM = "ITEM",
 // }
+const NOTE_TYPE: { } = {
+  'case': 'CASENOTE',
+  'op': 'OPNOTE',
+  'clinical': 'CLINICALNOTE'
+}
 
 @Component({
   selector: 'app-recipients-options',
@@ -39,6 +45,27 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   @Input() user: any;
 
   CURRENT_DATE: Date = new Date();
+
+  gwapo: Array<any> = [
+    {
+      program: 'hello',
+      checked: true,
+      selected: '',
+      type: null
+    },
+    {
+      program: 'aaaa',
+      checked: true,
+      selected: '',
+      type: null
+    },
+    {
+      program: 'bbbb',
+      checked: true,
+      selected: '',
+      type: null
+    }
+  ]
 
 
   itemGroup: FormGroup;
@@ -76,6 +103,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   inputValue: any;
   radioValue: any = 'case';
   checkedPrograms: any;
+  uncheckedPrograms: Array<any>;
 
   checked: boolean = false;
   noteArray: Array<any> = []; 
@@ -95,6 +123,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   quantity: Array<any> = quantity;
   unit: Array<any> = unit;
 
+  token: UserToken;
+
   constructor(
     private listS: ListService,
     private fb: FormBuilder,
@@ -105,6 +135,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   ngOnInit(): void {
     this.buildForm();
+    this.token = this.globalS.decode();
+
+    console.log(this.user);
   }  
 
   ngOnDestroy(){
@@ -146,6 +179,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     this.itemGroup = this.fb.group({
       programs: this.fb.array([]),
       referralType: null,
+      suppliedDate: null,
+
       date: null,
       refNo: null,
       quantity: null,
@@ -155,7 +190,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       radioGroup: 'case',
       notes: null,
-      caseCategory: null,
+      caseCategory: 'ITEM',
       publishToApp: false,
 
       reminderDate: null,
@@ -358,6 +393,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.referOnGroup.get('caseCategory').disable();
       return;
     }
+
+    if(this.option == RECIPIENT_OPTION.ITEM){
+      this.noteArray = ['ITEM'];
+      this.itemGroup.get('caseCategory').disable();
+      return;
+    }
     
     combineLatest([
       this.adminGroup.get('radioGroup').valueChanges.pipe(startWith('case')),
@@ -389,6 +430,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   done(){
+
+    var finalRoster: Array<ProcedureRoster> = [];
+
+    // console.log(this.itemGroup.getRawValue());
+    // console.log(this.token);
+    // console.log(this.checkedPrograms);
+    // console.log(this.gwapo)
+
+    var checkedPrograms = this.checkedPrograms;
 
 
     if(this.option == RECIPIENT_OPTION.REFER_IN){
@@ -433,12 +483,169 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
     if(this.option == RECIPIENT_OPTION.ADMIN){
       console.log(this.adminGroup.value)
+
+      const { 
+        referralType,
+        quantity,
+        unit,
+        radioGroup,
+        notes,
+        charge,
+        suppliedDate,
+        date,
+        referralDate,
+        refNo,
+        time,
+        timeSpent,
+        reminderDate,
+        caseCategory,
+        publishToApp,
+        reminderTo
+      } = this.adminGroup.getRawValue()
+
+      const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+      const timeInMinutes = this.globalS.getMinutes(timeSpent)
+      const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString()
+
+      for(var checkProgram of checkedPrograms){
+        console.log(checkProgram);
+        let data: ProcedureRoster = {
+              clientCode: this.user.code,
+              carerCode: this.token.code,
+              serviceType: checkProgram.selected,
+              date: referralDate,
+              time: time,
+
+              creator: this.token.user,
+              editer: this.token.user,
+
+              billUnit: 'HOUR',
+              agencyDefinedGroup: this.user.agencyDefinedGroup,
+              referralCode: '',
+              timePercent: timePercentage,
+              Notes: notes,
+              type: 7,
+              duration: timeInMinutes / 5,
+              blockNo: blockNoTime,
+              reasonType: '',
+              program: checkProgram.program,
+              tabType: caseCategory       
+          }
+          finalRoster.push(data);
+      }
+
+      let data: CallAssessmentProcedure = {
+        roster: finalRoster,
+        note: {
+            personId: this.user.id,
+            program: this.globalS.isVarious(this.checkedPrograms),
+            detailDate: reminderDate ? reminderDate : '',
+            extraDetail1: NOTE_TYPE[radioGroup],
+            extraDetail2: caseCategory,
+            whoCode: this.user.code,
+            publishToApp: publishToApp ? 1 : 0,                    
+            creator: this.token.user,
+            note: notes,
+            alarmDate: reminderDate ? reminderDate : '',
+            reminderTo: reminderTo
+        }
+      }
+
+      console.log(data);
     }
 
     if(this.option == RECIPIENT_OPTION.ITEM){
-      console.log(this.itemGroup.value)
+
+      const { 
+        referralType,
+        quantity,
+        unit,
+        radioGroup,
+        notes,
+        charge,
+        suppliedDate,
+        date,
+        refNo,
+        reminderDate,
+        caseCategory,
+        publishToApp,
+        reminderTo
+      } = this.itemGroup.getRawValue()
+      
+      for(var checkProgram of checkedPrograms){
+        let data: ProcedureRoster = {
+            clientCode: this.user.code,
+            carerCode: this.token.code,
+            serviceType: referralType,
+            date: date,
+
+            // NO TIME IN ITEM
+            time: '00:00',
+
+            creator: this.token.user,
+            editer: this.token.user,
+
+            billUnit: 'SERVICE',
+            agencyDefinedGroup: this.user.agencyDefinedGroup,
+
+            referralCode: '',
+
+            timePercent: quantity.toString(),
+            costUnit: unit,
+
+            Notes: `${caseCategory}-${notes}`,
+            billDesc: `${notes}`,
+            unitBillRate: charge,
+
+            // type 14 in item
+            type: 14, 
+
+            duration: 0,
+
+            //item 0 in item
+            blockNo: 0, 
+
+            apiInvoiceDate: suppliedDate  ? suppliedDate : '',
+            apiInvoiceNumber: refNo,
+
+            reasonType: '',
+            program: checkProgram.program,
+            tabType: 'ITEM'
+        }
+        finalRoster.push(data);
+      }
+
+      let data: CallAssessmentProcedure = {
+          roster: finalRoster,
+          note: {
+              personId: this.user.id,
+              program: this.globalS.isVarious(this.checkedPrograms),
+              detailDate: reminderDate ? reminderDate : '',
+              extraDetail1: NOTE_TYPE[radioGroup],
+              extraDetail2: caseCategory,
+              whoCode: this.user.code,
+              publishToApp: publishToApp ? 1 : 0,                    
+              creator: this.token.user,
+              note: notes,
+              alarmDate: reminderDate ? reminderDate : '',
+              reminderTo: reminderTo
+          }
+      }
+
+      console.log(data);
+
+      this.listS.postitem(data).subscribe(data => {
+          this.globalS.sToast('Success','Item Added');
+      });
+      
     }
   }
+
+  // GETCHECKED_PROGRAMS(list: Array<any>){
+  //   return list.filter(x => x.checked);
+  // }
+
+  
 
   populate(){
 
@@ -447,7 +654,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
       switch(this.option){
         case RECIPIENT_OPTION.REFER_IN:
-          this.listS.getwizardprograms(this.user).subscribe(data => {
+          this.listS.getwizardprograms(this.user.id).subscribe(data => {
             this.whatOptionVar = {
               title: 'Referral In Wizard',
               wizardTitle: '',
@@ -465,7 +672,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           })
           break;
         case RECIPIENT_OPTION.REFER_ON:
-          this.listS.getlist(`SELECT DISTINCT UPPER(rp.[Program]) AS Program, hr.[type] FROM RecipientPrograms rp INNER JOIN HumanResourceTypes hr ON hr.NAME = rp.program WHERE rp.PersonID = '${this.user}' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''                 `)
+          this.listS.getlist(`SELECT DISTINCT UPPER(rp.[Program]) AS Program, hr.[type] FROM RecipientPrograms rp INNER JOIN HumanResourceTypes hr ON hr.NAME = rp.program WHERE rp.PersonID = '${this.user.id}' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''                 `)
                     .subscribe(data => {
                         this.whatOptionVar = {
                             title: 'Referral Out Registration Wizard',
@@ -483,7 +690,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     })
           break;
         case RECIPIENT_OPTION.NOT_PROCEED:
-          this.listS.getlist(`SELECT DISTINCT UPPER(rp.[Program]) AS Program, hr.[type] FROM RecipientPrograms rp INNER JOIN HumanResourceTypes hr ON hr.NAME = rp.program WHERE rp.PersonID = '${this.user}' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''                 `)
+          this.listS.getlist(`SELECT DISTINCT UPPER(rp.[Program]) AS Program, hr.[type] FROM RecipientPrograms rp INNER JOIN HumanResourceTypes hr ON hr.NAME = rp.program WHERE rp.PersonID = '${this.user.id}' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''                 `)
                     .subscribe(data => {
                         this.whatOptionVar = {
                             title: 'Referral Not Proceeding Wizard',
@@ -501,7 +708,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     })
           break;
         case RECIPIENT_OPTION.ASSESS:
-          this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user }' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''`)
+          this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''`)
                     .subscribe(data => {
                         this.whatOptionVar = {
                             title: 'Assessment Registration Wizard',
@@ -521,7 +728,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     })
           break;
         case RECIPIENT_OPTION.WAIT_LIST:
-          this.listS.getlist(`SELECT DISTINCT UPPER( [Service Type] + ' (Pgm): ' + [ServiceProgram]) AS Program FROM  ServiceOverview SO INNER JOIN RecipientPrograms RP ON RP.PersonID = SO.PersonID WHERE  SO.PersonID = '${ this.user }' AND  (ProgramStatus IN  ('ACTIVE', 'WAITING LIST') AND ServiceStatus IN ('ACTIVE', 'WAIT LIST'))  AND isnull([Program], '') <> ''`)
+          this.listS.getlist(`SELECT DISTINCT UPPER( [Service Type] + ' (Pgm): ' + [ServiceProgram]) AS Program FROM  ServiceOverview SO INNER JOIN RecipientPrograms RP ON RP.PersonID = SO.PersonID WHERE  SO.PersonID = '${ this.user.id }' AND  (ProgramStatus IN  ('ACTIVE', 'WAITING LIST') AND ServiceStatus IN ('ACTIVE', 'WAIT LIST'))  AND isnull([Program], '') <> ''`)
           .subscribe(data => {
               this.whatOptionVar = {
                   title: 'Waitlist Management Wizard',
@@ -540,7 +747,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           })
           break;
         case RECIPIENT_OPTION.ADMIT:
-            this.listS.getadmitprograms(this.user).subscribe(data => {
+            this.listS.getadmitprograms(this.user.id).subscribe(data => {
                 this.whatOptionVar = {
                     title: 'Admission Wizard',
                     wizardTitle: '',
@@ -557,7 +764,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
             })
           break;
         case RECIPIENT_OPTION.DISCHARGE:
-          this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program, HumanResourceTypes.[Type] AS Type FROM RecipientPrograms LEFT JOIN HumanResourceTypes ON RecipientPrograms.Program = HumanResourceTypes.Name WHERE PersonID = '${this.user}' AND ProgramStatus IN ('ACTIVE', 'WAITING LIST') AND isnull([Program], '') <> '' AND ISNULL([UserYesNo3], 0) <> 1 AND ISNULL([User2], '') <> 'Contingency' `)
+          this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program, HumanResourceTypes.[Type] AS Type FROM RecipientPrograms LEFT JOIN HumanResourceTypes ON RecipientPrograms.Program = HumanResourceTypes.Name WHERE PersonID = '${this.user.id}' AND ProgramStatus IN ('ACTIVE', 'WAITING LIST') AND isnull([Program], '') <> '' AND ISNULL([UserYesNo3], 0) <> 1 AND ISNULL([User2], '') <> 'Contingency' `)
                     .subscribe(data => {
                         this.whatOptionVar = {
                             title: 'Discharge Registration Wizard',
@@ -578,7 +785,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     })
           break;
         case RECIPIENT_OPTION.SUSPEND:
-          this.listS.getlist(`SELECT DISTINCT '[' + CASE WHEN ([serviceprogram] <> '') AND ([serviceprogram] IS NOT NULL) THEN [serviceprogram] ELSE '?' END + '] ~> ' + [service type] AS Program FROM serviceoverview INNER JOIN recipientprograms ON serviceoverview.personid = recipientprograms.personid WHERE serviceoverview.personid = '${ this.user }' AND programstatus = 'ACTIVE' AND servicestatus = 'ACTIVE'`)
+          this.listS.getlist(`SELECT DISTINCT '[' + CASE WHEN ([serviceprogram] <> '') AND ([serviceprogram] IS NOT NULL) THEN [serviceprogram] ELSE '?' END + '] ~> ' + [service type] AS Program FROM serviceoverview INNER JOIN recipientprograms ON serviceoverview.personid = recipientprograms.personid WHERE serviceoverview.personid = '${ this.user.id }' AND programstatus = 'ACTIVE' AND servicestatus = 'ACTIVE'`)
                     .subscribe(data => {
                         this.whatOptionVar = {
                             title: 'Service Suspension Wizard',
@@ -606,7 +813,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           FROM   recipientprograms 
                  LEFT JOIN humanresourcetypes 
                         ON recipientprograms.program = humanresourcetypes.NAME 
-          WHERE  personid = '${this.user }' 
+          WHERE  personid = '${this.user.id }' 
                  AND programstatus IN ( 'ACTIVE', 'WAITING LIST' ) 
                  AND Isnull([program], '') <> '' 
                  AND Isnull([useryesno3], 0) <> 1 
@@ -638,7 +845,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                  })
           break;
         case RECIPIENT_OPTION.ADMIN:
-          this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
+          this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
                         .subscribe(data => {
                             this.whatOptionVar = {
                                 title: 'Admin Registration Wizard',
@@ -646,7 +853,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                                 programsArr: data.map(x => {
                                     return {
                                         program: x.program,
-                                        checked: false
+                                        checked: false,
+                                        selected: ''
                                     }
                                 })
                             }
@@ -656,7 +864,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                         })
                     break;
         case RECIPIENT_OPTION.ITEM:
-          this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
+          this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
                         .subscribe(data => {
                             this.whatOptionVar = {
                                 title: 'Record Items Wizard',
@@ -692,10 +900,13 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       var prog = this.itemGroup.get('programs') as FormArray;
       data.programsArr.map(x => prog.push(this.createProgramForm(x)));
       this.globalFormGroup = this.itemGroup;
+
+      this.noteArray = ['ITEM'];
+      return;
     }
 
     if(type == RECIPIENT_OPTION.ADMIN){
-      var prog = this.adminGroup.get('programs') as FormArray;
+      var prog = this.adminGroup.get('programs') as FormArray;      
       data.programsArr.map(x => prog.push(this.createProgramForm(x)));
       this.globalFormGroup = this.adminGroup;
     }
@@ -794,7 +1005,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     return this.fb.group({
       program: new FormControl(data.program),
       checked: new FormControl(data.checked),
-      type: new FormControl(data.type)
+      type: new FormControl(data.type),
+      selected: new FormControl(data.selected)
     });
   }
 
@@ -810,6 +1022,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   next() {
 
+    // console.log(this.checkedPrograms)
     if(this.adminOpen){
       if(this.current < 4){
         this.current += 1;
@@ -884,7 +1097,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.populateOtherDetails();      
     }
 
-    this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
+    // this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
   }
 
   populateOtherDetails(){
@@ -894,7 +1107,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.referralSource$ = this.listS.getwizardreferralsource('default');
 
       this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
-      console.log(this.checkedPrograms)
 
       var haccList: Array<any> = this.checkedPrograms.filter(x => x.type == 'HACC');
       if(haccList && haccList.length > 0) 
@@ -930,14 +1142,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       }
       this.itemTypes$ = this.sqlWiz.GETREFERRALTYPE_V2(_input);
     }
+    // this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
+    this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
+    console.log(this.checkedPrograms);
   }
   
 
   GET_CHECKEDPROGRAMS(){
     var programs: Array<any> = this.globalFormGroup.get('programs').value || [];
-    console.log(programs);
     if(programs.length == 0)  return [];
-
     let checked = programs.filter(x => x.checked);
 
     return checked;

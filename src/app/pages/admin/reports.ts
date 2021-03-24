@@ -12,7 +12,7 @@ import { getDate } from 'date-fns';
 import { concat, now } from 'lodash';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
-import { tr } from 'date-fns/locale';
+
 
 //Sets defaults of Criteria Model     
 const inputFormDefault = {
@@ -374,7 +374,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     chkbx_exclude_expirydates: boolean;
     chkbx_incl_Contacts: boolean;
     chkbx_asAddressLabel: boolean;
-    chkbx_incl_additionalInfo: boolean;
+//    chkbx_incl_additionalInfo: boolean;
     chkbx_incl_activeClients: boolean;
     chkbx_grpbyCoordinators: boolean;
     chkbx_incl_activeStaff: boolean;
@@ -887,12 +887,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
         
-        this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
-     /*   this.listS.getreportcriterialist({
+    //    this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
+        this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
             includeInactive:false
         }).subscribe(x => this.programsArr = x);
-        */
+        
         this.listS.getreportcriterialist({
             listType: 'BRANCHES',
             includeInactive: false
@@ -991,7 +991,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.chkbx_exclude_expirydates = false;
         this.chkbx_incl_Contacts = false;
         this.chkbx_asAddressLabel = false;
-       this.chkbx_incl_additionalInfo = false;
+//       this.chkbx_incl_additionalInfo = false;
         this.chkbx_incl_activeClients = false;
         this.chkbx_include_enddated = false;
         this.chkbx_exclude_MandatoryChecking = false;
@@ -1087,7 +1087,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-activepackagelist':
-                this.bodystyle = { height:'300px', overflow: 'auto'}
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "ACTIVE PACKAGE CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;

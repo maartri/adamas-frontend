@@ -37,7 +37,7 @@ export class DocumentTemplateComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   
   constructor(
     private globalS: GlobalService,
@@ -65,12 +65,12 @@ export class DocumentTemplateComponent implements OnInit {
         this.whereString = "where";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY MinorGroup) AS row_num,RecordNo, Title, TRACCSType AS [Type], MainGroup AS [Category], MinorGroup AS Description,Template,EndDate as end_date,DeletedRecord as is_deleted FROM DOC_Associations "+this.whereString+" LocalUser = 'MASTER'";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY MinorGroup) AS row_num,RecordNo, Title, TRACCSType AS [Type], MainGroup AS [Category], MinorGroup AS Description,Template,EndDate as end_date,CanCreateFile as can_create,xDeletedRecord as is_deleted FROM DOC_Associations "+this.whereString+" LocalUser = 'MASTER'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -122,7 +122,7 @@ export class DocumentTemplateComponent implements OnInit {
         end_date:end_date,
         template:template,
         title:title,
-        can_create:(can_create == true) ? true : false,
+        can_create:(can_create == "True") ? true : false,
         type:type,
         recordNo:recordNo,
       });
@@ -160,14 +160,12 @@ export class DocumentTemplateComponent implements OnInit {
         let template       = this.globalS.isValueNull(group.get('template').value);
         let can_create     = this.trueString(group.get('can_create').value);
         let end_date       = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let local_user     = "'Master'";
+        let local_user     = "'MASTER'";
 
         let values = title+","+type+","+description+","+category+","+template+","+can_create+","+local_user+","+end_date;
         let sql = "insert into DOC_Associations([Title],[TRACCSType],[MainGroup],[MinorGroup],[Template],[CanCreateFile],[LocalUser],[EndDate]) Values ("+values+")"; 
-        
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
@@ -187,7 +185,7 @@ export class DocumentTemplateComponent implements OnInit {
         let template       = this.globalS.isValueNull(group.get('template').value);
         let can_create     = this.trueString(group.get('can_create').value);
         let end_date       = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let local_user     = "'Master'";
+        let local_user     = "'MASTER'";
         let recordNo   = group.get('recordNo').value;
         let sql  = "Update DOC_Associations SET [Title]="+ title + ",[TRACCSType] ="+ type + ",[MainGroup] ="+ category +",[MinorGroup] ="+ description+",[Template] ="+ template +",[CanCreateFile] ="+ can_create +",[LocalUser] ="+ local_user +",[EndDate] = "+end_date+ " WHERE [recordNo] ='"+recordNo+"'";
         console.log(sql);
@@ -255,7 +253,7 @@ export class DocumentTemplateComponent implements OnInit {
       this.drawerVisible = true;
       
       this.loading = true;
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY MinorGroup) AS Field1,RecordNo, Title as Field2, TRACCSType AS Field3, MainGroup AS Field4, MinorGroup AS Field5,Template as Field6,,CONVERT(varchar, [EndDate],105) as Field7 FROM DOC_Associations "+this.whereString+" LocalUser = 'MASTER'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY MinorGroup) AS Field1,RecordNo, Title as Field2, TRACCSType AS Field3, MainGroup AS Field4, MinorGroup AS Field5,Template as Field6,CONVERT(varchar, [EndDate],105) as Field7 FROM DOC_Associations "+this.whereString+" LocalUser = 'MASTER'";
       const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

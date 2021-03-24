@@ -278,6 +278,12 @@ export class GlobalService {
         }
         return null;
     }
+    userExists(tableData,username) {
+        return tableData.some(function(el) {
+          username = username.replace(/'/g, '');
+          return el.title.trim() === username.trim();
+        }); 
+    }
     decode(token: string = this.token) {
         return helper.decodeToken(token);
     }

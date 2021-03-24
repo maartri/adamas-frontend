@@ -33,7 +33,7 @@ export class MedicalDignosisComponent implements OnInit {
   dateFormat: string ='dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="WHERE ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND RecordNumber > 35000";
+  whereString :string="WHERE ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND RecordNumber > 35000";
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   
@@ -59,7 +59,7 @@ export class MedicalDignosisComponent implements OnInit {
       this.cd.detectChanges();
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, [RecordNumber], [Description],[Code],[ICDCode],[EndDate] as end_date,[DeletedRecord] as is_deleted FROM MDiagnosisTypes " +this.whereString+ " Order BY [Description]";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Description) AS row_num, [RecordNumber], [Description],[Code],[ICDCode],[EndDate] as end_date,[xDeletedRecord] as is_deleted FROM MDiagnosisTypes " +this.whereString+ " Order BY [Description]";
       console.log(sql);
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
@@ -74,7 +74,7 @@ export class MedicalDignosisComponent implements OnInit {
         this.whereString = "Where RecordNumber > 35000";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND RecordNumber > 35000";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND RecordNumber > 35000";
         this.loadData();
       }
     }

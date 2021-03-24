@@ -242,7 +242,7 @@
                     <button nz-button nzType="default" (click)="next()" *ngIf="current < 1" >
                         <span>Next</span>
                     </button>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" *ngIf="current === 1">
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!inputForm.get('name').value" (click)="save()" *ngIf="current === 1">
                         <span>Done</span>
                     </button>
                 </ng-container>

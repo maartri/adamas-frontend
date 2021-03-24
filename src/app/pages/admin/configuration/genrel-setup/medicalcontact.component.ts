@@ -37,7 +37,7 @@ export class MedicalcontactComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   
   constructor(
     private globalS: GlobalService,
@@ -70,7 +70,7 @@ export class MedicalcontactComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -103,7 +103,7 @@ export class MedicalcontactComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,DeletedRecord as is_deleted FROM HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
+      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,xDeletedRecord as is_deleted FROM HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -175,7 +175,7 @@ export class MedicalcontactComponent implements OnInit {
         let fax      = this.globalS.isValueNull(group.get('fax').value);
         let mobile   = this.globalS.isValueNull(group.get('mobile').value);
         let email    = this.globalS.isValueNull(group.get('email').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let end_date = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         
         let postcode = null; 
         let values = "'3-Medical'"+","+type+","+name+","+address1+","+address2+","+suburb+","+postcode+","+phone1+","+phone2+","+fax+","+mobile+","+email+","+end_date;

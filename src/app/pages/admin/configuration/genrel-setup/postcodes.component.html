@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
-                <td class="left">{{ data.subrub +" "+ data.state +" "+ data.postcode }} </td>
+                <td class="left">{{ data.postcode  +" "+ data.subrub +", "+ data.state }} </td>
                 <td *ngIf="data.is_deleted == 'False' || data.is_deleted == 'false' || data.is_deleted == '' ">
                     <a (click)="showEditModal(i)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
@@ -40,7 +40,7 @@
             <div *ngIf="current == 0">
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <div nz-col nzSpan="24" class="mrg-btm">
-                        <label nzFor="SubRub">Subrub</label>
+                        <label nzFor="SubRub">Suburb</label>
                         <input nz-input placeholder=""  formControlName="suburb" required />
                     </div>
                     <div nz-col nzSpan="12" class="mrg-btm">

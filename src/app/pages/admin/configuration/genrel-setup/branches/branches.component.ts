@@ -151,6 +151,42 @@ export class BranchesComponent implements OnInit {
       if(!this.isUpdate){
         const group = this.inputForm;
         this.menuS.AddBranch({
+          name:         group.get('name').value,
+          glRevene:     group.get('glRevene').value,
+          glCost:       group.get('glCost').value,
+          end_date :    !(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
+          centerName:   group.get('centerName').value,
+          addrLine1:    group.get('addrLine1').value,
+          addrLine2:    group.get('addrLine2').value,
+          Phone:        group.get('Phone').value,
+          startHour:    group.get('startHour').value,
+          finishHour:   group.get('finishHour').value,
+          earlyStart:   group.get('earlyStart').value,
+          lateStart:    group.get('lateStart').value,
+          earlyFinish:  group.get('earlyFinish').value,
+          lateFinish :  group.get('lateFinish').value,
+          overstay:     group.get('overstay').value,
+          understay:    group.get('understay').value,
+          t2earlyStart: group.get('t2earlyStart').value,
+          t2lateStart:  group.get('t2lateStart').value,
+          t2earlyFinish:group.get('t2earlyFinish').value,
+          t2lateFinish: group.get('t2lateFinish').value,
+          t2overstay:   group.get('t2overstay').value,
+          t2understay:  group.get('t2understay').value,
+          recordNumber: group.get('recordNumber').value,
+        }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
+          this.loadBranches();
+          this.handleCancel();
+          this.resetModal();    
+        });
+      }else{
+          const group = this.inputForm;
+          console.log(group.get('recordNumber').value);
+          this.menuS.UpdateBranch({
           name: group.get('name').value,
           glRevene: group.get('glRevene').value,
           glCost: group.get('glCost').value,
@@ -176,52 +212,18 @@ export class BranchesComponent implements OnInit {
           recordNumber: group.get('recordNumber').value,
         }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           if (data) 
-          this.globalS.sToast('Success', 'Saved successful');     
-          else
-          this.globalS.sToast('Unsuccess', 'Saved successful' + data);
-
+          {
+            this.globalS.sToast('Success','Update successful');     
+          }
+          else{ 
+          this.globalS.sToast('Success','Update successful');
           this.loadBranches();
           this.handleCancel();
-          this.resetModal();    
+          this.resetModal();
+        }    
+        this.isUpdate = false;
         });
-      }else{
-          const group = this.inputForm;
-          console.log(group.get('recordNumber').value);
-          this.menuS.UpdateBranch({
-          name: group.get('name').value,
-          glRevene: group.get('glRevene').value,
-          glCost: group.get('glCost').value,
-          end_date: this.globalS.isValueNull(group.get('end_date').value),
-          centerName: group.get('centerName').value,
-          addrLine1: group.get('addrLine1').value,
-          addrLine2: group.get('addrLine2').value,
-          Phone: group.get('Phone').value,
-          startHour: group.get('startHour').value,
-          finishHour: group.get('finishHour').value,
-          earlyStart: group.get('earlyStart').value,
-          lateStart: group.get('lateStart').value,
-          earlyFinish: group.get('earlyFinish').value,
-          lateFinish : group.get('lateFinish').value,
-          overstay: group.get('overstay').value,
-          understay: group.get('understay').value,
-          t2earlyStart: group.get('t2earlyStart').value,
-          t2lateStart: group.get('t2lateStart').value,
-          t2earlyFinish: group.get('t2earlyFinish').value,
-          t2lateFinish: group.get('t2lateFinish').value,
-          t2overstay: group.get('t2overstay').value,
-          t2understay: group.get('t2understay').value,
-          recordNumber: group.get('recordNumber').value,
-        }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          if (data) 
-          this.globalS.sToast('Success', 'Update successful');     
-          else
-          this.globalS.sToast('Unsuccess', 'Update successful' + data);
-
-          this.loadBranches();
-          this.handleCancel();
-          this.resetModal();    
-        });
-      this.isUpdate = false;
+      
       }
     }
     
@@ -310,7 +312,7 @@ export class BranchesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains "+this.whereString+" Domain='BRANCHES'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains "+this.whereString+" Domain='BRANCHES'";
       
       const headerDict = {
         'Content-Type': 'application/json',

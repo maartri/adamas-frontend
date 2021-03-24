@@ -214,7 +214,7 @@ export class OccupationComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='OCCUPATIONS'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 , DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='OCCUPATIONS'";
           
           const headerDict = {
             'Content-Type': 'application/json',

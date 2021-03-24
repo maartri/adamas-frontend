@@ -24,7 +24,7 @@
                 </td>
                 <td *ngIf="data.is_deleted">
                     <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to Include this from Financial Classification List?"
-                    nzPopconfirmPlacement="bottom" (click)="activateDomain(data)">Activate</a>
+                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="activateDomain(data)">Activate</a>
                 </td>
                 </tr>
             </tbody>

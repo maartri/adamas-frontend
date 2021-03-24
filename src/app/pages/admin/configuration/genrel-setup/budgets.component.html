@@ -2,10 +2,12 @@
     <div nz-row>
         <div nz-col>
             <button class="botton success" (click)="showAddModal()">Add Budget</button>
-            <nz-table #fixedTable nzBordered [nzScroll]="{ x: '1050px', y: '500px' }" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
+            <nz-table #basicTable nzBordered [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                <!-- (click)="handleOkTop()"  -->
                 <thead>
                     <tr>
-                        <th nz-left>Budget Type</th>
+                        <!-- <th nz-left>Budget Type</th> -->
                         <th nzLeft>Name</th>
                         <th class="left">Branch</th>
                         <th class="left">Funding Source</th>
@@ -17,17 +19,18 @@
                         <th class="left">Staff Team</th>
                         <th class="left">Staff Category</th>
                         <th class="left">Staff</th>
-                        <th class="left">Recepient</th>
-                        <th class="left">Hours</th>
+                        <th class="left">End Date</th>
+                        <!-- <th class="left">Recepient</th> -->
+                        <!-- <th class="left">Hours</th>
                         <th class="left">Dollars</th>
                         <th class="left">SPID</th>
-                        <th class="left">STATE</th>
+                        <th class="left">STATE</th> -->
                         <th class="left" nzRight>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of fixedTable.data;let i = index;">
-                        <td  nzLeft>{{ data.budgetType  }} </td>
+                    <tr *ngFor="let data of basicTable.data;let i = index;">
+                        <!-- <td  nzLeft>{{ data.budgetType  }} </td> -->
                         <td  nzLeft>{{ data.description  }} </td>
                         <td class="left">{{ data.branch  }} </td>
                         <td class="left">{{ data.fundingSource  }} </td>
@@ -39,11 +42,12 @@
                         <td class="left">{{ data.staffTeam}} </td>
                         <td class="left">{{ data.staffCategory  }} </td>
                         <td class="left">{{ data.staff  }} </td>
-                        <td class="left">{{ data.recipient  }} </td>
+                        <td class="left">{{ data.end_date | date: 'dd/MM/y'  }} </td>
+                        <!-- <td class="left">{{ data.recipient  }} </td>
                         <td class="left">{{ data.hours  }} </td>
                         <td class="left">{{ data.dollars  }} </td>
                         <td class="left">{{data.spid === 'null' ? '' : data.spid}} </td>
-                        <td class="left">{{ data.state }}</td>
+                        <td class="left">{{ data.state }}</td> -->
                         <td nzRight><a (click)="showEditModal(i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
                             <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Budget List ?"
@@ -320,4 +324,12 @@
             </form>
         </div>
     </nz-modal>
+    <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+        <div class="col-md-12 spinner" *ngIf="loading">
+            <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
+        <div nz-row>
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        </div>
+    </nz-drawer>    
 </div>

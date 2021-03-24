@@ -12,7 +12,7 @@ import { getDate } from 'date-fns';
 import { concat, now } from 'lodash';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
-import { tr } from 'date-fns/locale';
+
 
 //Sets defaults of Criteria Model     
 const inputFormDefault = {
@@ -123,6 +123,8 @@ const inputFormDefault = {
 
     frm_options: [false],
     frm_add_inclusion: [false],
+    frm_RosterFormat: [false],
+    
 
     whowhat: [''],
     description: [''],
@@ -172,7 +174,8 @@ const inputFormDefault = {
     leftearly: [false],
     excludeinactivestaff: [false],
 
-
+    activestaff: [false],
+    
 
     DBO: [false],
     splitonHyphen: [false],
@@ -187,6 +190,16 @@ const inputFormDefault = {
 
     exclude_staff_shiftondate: [false],
     include_enddated: [false],
+    exclude_MandatoryChecking : [false],
+    include_PrimarySkills: [true],
+    include_AdditionalInfo : [false],
+    include_unavailability: [false],
+    activeStaffonly: [false],
+    
+    
+
+
+    
 
     radioFormat: ['Summary'],
 
@@ -195,6 +208,8 @@ const inputFormDefault = {
     branchprimacyArr: ['Automatic'],
     AGE_ATSI_StatusArr: ['Over 64 OR ATSI Over 49   '],
     Additional_inclusion: ['Default Display'],
+    Rpt_Format: ['Detail'],
+    
 
     monthArr: [[]],
     yearArr: [[]],
@@ -345,7 +360,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     chkbx_incl_staff: boolean;
     incl_unapproved_services  : boolean;
     incl_actuals : boolean;
-    Incl_inactive: boolean;    
+    Incl_inactive: boolean; 
+    activestaff: boolean;
+      
     chkbx_incl_Broker: boolean;
     chkbx_incl_Volunteer: boolean;
     chkbx_incl_approvedPrograms: boolean;
@@ -357,14 +374,25 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     chkbx_exclude_expirydates: boolean;
     chkbx_incl_Contacts: boolean;
     chkbx_asAddressLabel: boolean;
-    chkbx_incl_additionalInfo: boolean;
+//    chkbx_incl_additionalInfo: boolean;
     chkbx_incl_activeClients: boolean;
     chkbx_grpbyCoordinators: boolean;
     chkbx_incl_activeStaff: boolean;
-    chkbx_include_enddated;
+    chkbx_include_enddated : boolean;
+    chkbx_exclude_MandatoryChecking : boolean;
+    chkbx_include_PrimarySkills : boolean;
+    chkbx_include_AdditionalInfo: boolean;
+    chkbx_include_unavailability: boolean;
+    chkbx_activeStaffonly: boolean;
+    activeStaffonly: boolean;
+    
+    
 
     frm_options: boolean;
     frm_add_inclusion: boolean;
+    frm_RosterFormat: boolean;
+
+    
 
     frm_mta_options: boolean;
     chkbx_forcedlogon: boolean;
@@ -413,7 +441,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     include_enddated: [false];
 
     radioFormat: ['Summary'];
-
+    exclude_MandatoryChecking : [false];
+    include_PrimarySkills: [true];
+    include_AdditionalInfo : [false];
+    include_unavailability: [false];
+   
 
 
 
@@ -490,6 +522,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     incidentcategoryArr: Array<any> = ['Open', 'Close'];
     Additional_inclusion: Array<any> = [];
     RosterCategory: Array<any> = []; 
+    Rpt_Format : Array<any> = [];
 
     monthArr: Array<any> = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     yearArr: Array<any> = [];
@@ -854,12 +887,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
         
-        this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
-     /*   this.listS.getreportcriterialist({
+    //    this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
+        this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
             includeInactive:false
         }).subscribe(x => this.programsArr = x);
-        */
+        
         this.listS.getreportcriterialist({
             listType: 'BRANCHES',
             includeInactive: false
@@ -958,13 +991,23 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.chkbx_exclude_expirydates = false;
         this.chkbx_incl_Contacts = false;
         this.chkbx_asAddressLabel = false;
-        this.chkbx_incl_additionalInfo = false;
+//       this.chkbx_incl_additionalInfo = false;
         this.chkbx_incl_activeClients = false;
         this.chkbx_include_enddated = false;
+        this.chkbx_exclude_MandatoryChecking = false;
+        this.chkbx_include_PrimarySkills= false;
+        this.chkbx_include_AdditionalInfo = false;
+        this.chkbx_include_unavailability = false;
+        this.chkbx_activeStaffonly= false;
+        
+
+        
+        
         this.chkbx_grpbyCoordinators = false;
         this.chkbx_incl_activeStaff = false;
         this.frm_options = false;
         this.frm_add_inclusion = false;
+        this.frm_RosterFormat= false;
 
         this.frm_mta_options = false;
 
@@ -1044,7 +1087,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 break;
             case 'btn-activepackagelist':
-                this.bodystyle = { height:'300px', overflow: 'auto'}
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "ACTIVE PACKAGE CRITERIA"
                 this.frm_Date = true;
                 this.frm_Programs = true;
@@ -1060,7 +1103,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
                 this.chkbx_pagebreak = true;
-                this.chkbx_incl_additionalInfo = true;
+                this.chkbx_include_AdditionalInfo = true;
+                this.frm_RosterFormat = true;
+                this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
+               
                 break;
             case 'btn-suspendedrecipient':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1132,7 +1178,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
                 this.chkbx_pagebreak = true;
-                this.chkbx_incl_additionalInfo = true;
+                this.chkbx_include_AdditionalInfo = true;
+                this.frm_RosterFormat = true;
+                this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
+               
                 break;
             case 'btn-activerecipient':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1251,7 +1300,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Competencies = true;
                 this.frm_options = true;
                 this.frm_add_inclusion = true;
-                this.Additional_inclusion = ['Default Display']
+                this.Additional_inclusion = ['Default Display']                
+                this.chkbx_exclude_MandatoryChecking = true;
+                this.chkbx_include_PrimarySkills= true;
                 this.chkbx_incl_staff = true;
                 this.chkbx_incl_Volunteer = true;
                 this.chkbx_incl_Broker = true;
@@ -1389,7 +1440,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Staff = true;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
-                this.chkbx_incl_activeStaff = true;
+                this.chkbx_activeStaffonly = true;
                 break;
             case 'btn-staff-competencyrenewal':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1399,7 +1450,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Staff = true;
                 this.frm_Competencies = true;
                 this.frm_Managers = true;
-                this.frm_StaffTeam = true;
+                this.frm_StaffTeam = true;                
                 this.frm_CompetenciesGroups = true;
                 this.frm_options = true;
                 this.chkbx_asAddressLabel = true;
@@ -1428,6 +1479,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Branches = true;
                 this.frm_StaffType = true;
                 this.frm_StaffGroup = true;
+                this.frm_options = true;
+                this.chkbx_include_AdditionalInfo = true;
+                this.chkbx_include_unavailability = true;
+                
                 break;
             case 'btn-staff-MasterRoster':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1437,6 +1492,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Branches = true;
                 this.frm_StaffType = true;
                 this.frm_StaffGroup = true;
+                this.frm_options = true;
+                this.chkbx_include_AdditionalInfo = true;
                 break;
             case 'btn-staff-loanregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1566,6 +1623,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Competencies = true;
                 this.frm_Managers = true;
                 this.frm_StaffTeam = true;
+                this.frm_StaffGroup = true;
                 this.frm_CompetenciesGroups = true;
                 this.frm_options = true;
                 this.chkbx_asAddressLabel = true;
@@ -1898,7 +1956,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         var s_TraccsUser = this.inputForm.value.traccsuserArr;
         var s_who =(this.inputForm.value.whowhat).toString();
         var s_Description = (this.inputForm.value.description).toString();
-        var s_RosterType = this.inputForm.value.rostertypeArr
+        var s_RosterType = this.inputForm.value.rostertypeArr;
+        var s_RosterFormat = (this.inputForm.value.Rpt_Format).toString();
 
 
         var s_Funders = this.inputForm.value.fundersArr;
@@ -2037,7 +2096,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.ActivePackage_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate);
                 break;
             case 'btn-recipientroster':
-                this.RecipientRoster(s_Branches, s_StfGroup, s_Recipient, s_Stafftype, strdate, endate, tempsdate, tempedate);
+                this.RecipientRoster(s_Branches, s_StfGroup, s_Recipient, s_Stafftype, strdate, endate, tempsdate, tempedate,s_RosterFormat);
                 break;
             case 'btn-suspendedrecipient':
                 this.SuspendedRecipient(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate, tempsdate, tempedate);
@@ -2111,7 +2170,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                         break;
                 }
 
-                this.RecipientMasterRoster(s_Branches, s_StfGroup, s_Recipient, s_Stafftype, strdate, endate,s_Cycle);
+                this.RecipientMasterRoster(s_Branches, s_StfGroup, s_Recipient, s_Stafftype, strdate, endate,s_Cycle,s_RosterFormat);
                 break;
             case 'btn-activerecipient':
                 this.ActiveRecipientList(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
@@ -2187,10 +2246,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.StaffLeaveRegister(strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-staff-staffnotworked':
-                this.StaffNotWorkedReport(s_Branches, s_StfGroup, s_Staff, strdate, endate)
+                this.StaffNotWorkedReport(s_Branches, s_StfGroup, s_Staff, strdate, endate,tempsdate, tempedate)
                 break;
             case 'btn-staff-competencyrenewal':
-                this.StaffCompetencyRenewal(s_Branches, s_Staff, s_Competencies, s_Managers, s_StaffTeam, s_CompetencyGroups, strdate, endate, tempsdate, tempedate)
+                this.StaffCompetencyRenewal(s_Branches, s_Staff, s_Competencies, s_Managers, s_StaffTeam, s_StfGroup, s_CompetencyGroups, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-staff-unavailability':
                 this.StaffUnavailability(s_Branches, s_StfGroup, s_Staff, s_Stafftype, strdate, endate, tempsdate, tempedate)
@@ -2288,7 +2347,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.StaffTraining(s_Branches, s_Managers, s_ServiceRegions, s_Programs, s_StaffTeam, s_TrainingType, s_StfGroup, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-competenciesrenewal':
-                this.StaffCompetencyRenewal(s_Branches, s_Staff, s_Competencies, s_Managers, s_StaffTeam, s_CompetencyGroups, strdate, endate, tempsdate, tempedate)
+                this.StaffCompetencyRenewal(s_Branches, s_Staff, s_Competencies, s_Managers, s_StaffTeam,s_StfGroup, s_CompetencyGroups, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-Systm-AuditRegister':
                 console.log(s_Description)
@@ -2418,7 +2477,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         var lblcriteria;
         var fQuery = "SELECT DISTINCT R.Title, R.UniqueID, R.AccountNo,Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE (SELECT DISTINCT MinorGroup FROM ItemTypes WHERE Title = Roster.[Service Type]) = 'REFERRAL-IN' AND [Client Code] = R.AccountNo ORDER BY Date DESC)),'dd/MM/yyyy') as RefferalDate ,CAST(ONIMainIssues.Description AS NVARCHAR(MAX)) as Reason , R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, "
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Address2, NA.Suburb, NA.Postcode, "}
+        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,  NA.Suburb, NA.Postcode, "}
         fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID left join ONIMainIssues on  R.UniqueID = ONIMainIssues.PersonID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID   "} 
         fQuery = fQuery + "WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)"
@@ -2469,15 +2528,18 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
         fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'REFERRAL') "
-        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr "
         fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName "
 
 
 //          console.log(fQuery)
         //  console.log(this.inputForm.value.printaslabel)
         
-        if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+        if (this.inputForm.value.printaslabel == true){
+            
+            this.reportid = "6dfbj72obyLi9qxJ"
+           
+        }
         else {
             this.reportid   = "zrBLd931LZblcnNH" 
         }
@@ -2539,7 +2601,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var lblcriteria;
         var fQuery = "SELECT DISTINCT R.Title, R.UniqueID, R.AccountNo,Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE (SELECT DISTINCT MinorGroup FROM ItemTypes WHERE Title = Roster.[Service Type]) = 'REFERRAL-IN' AND [Client Code] = R.AccountNo ORDER BY Date DESC)),'dd/MM/yyyy') as RefferalDate ,CAST(ONIMainIssues.Description AS NVARCHAR(MAX)) as Reason , R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, "
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Address2, NA.Suburb, NA.Postcode, "}
+        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Suburb, NA.Postcode, "}
         fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID left join ONIMainIssues on  R.UniqueID = ONIMainIssues.PersonID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID   "} 
         fQuery = fQuery + "WHERE R.[AccountNo] > '!MULTIPLE' "
@@ -2766,7 +2828,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
     }
 
-    RecipientRoster(branch, stfgroup, recipient, stafftype, startdate, enddate, tempsdate, tempedate) {
+    RecipientRoster(branch, stfgroup, recipient, stafftype, startdate, enddate, tempsdate, tempedate,format) {
 
         var lblcriteria;
         var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')   "
@@ -2817,23 +2879,39 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + " All Dated " }
 
-        fQuery = fQuery + "ORDER BY [Client Code], Date, [Start Time]  "
+        fQuery = fQuery + "ORDER BY [Client Code], convert(datetime,[Roster].[Date]), [Start Time]  "
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
-        console.log(s_CoordinatorSQL)*/
-    //    console.log(fQuery)
+        console.log(s_CoordinatorSQL)
+      console.log(format) */
+    switch (format) {
+        case 'Presentation - with Activity':
+            this.reportid = "C51kE1CQtifE100c"
+            lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+            break;
+        case 'Presentation - with No Activity':
+            this.reportid = "DOwrJxslBMOigZgq"
+            lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+            break;
+    
+        default:
+            this.reportid = "2orGpoorz20XztFV"
+            console.log("default case")
+            break;
+    }
 
         this.drawerVisible = true;
 
         const data = {
-            "template": { "_id": "2orGpoorz20XztFV" },
+            "template": { "_id": this.reportid },
             "options": {
                 "reports": { "save": false },
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "notes":this.inputForm.value.include_AdditionalInfo,
             }
         }
         this.loading = true;
@@ -3299,7 +3377,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Programs." }
 
-        fQuery = fQuery + "ORDER BY [Client Code], Date, [Start Time]"
+        fQuery = fQuery + "ORDER BY [Client Code], convert(datetime,[Roster].[Date]), [Start Time]"
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
@@ -3564,7 +3642,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
     }
 
-    RecipientMasterRoster(branch, stfgroup, recipient, stafftype, startdate, enddate ,s_Cycle) {
+    RecipientMasterRoster(branch, stfgroup, recipient, stafftype, startdate, enddate ,s_Cycle,format) {
 
         var lblcriteria;
         var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration], case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME , [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = Recipients.[Accountno]  LEFT JOIN STAFF ON [CARER CODE] = STAFF.ACCOUNTNO  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')  "
@@ -3615,23 +3693,41 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + " Dated: Cycle 1 " }
 
-        fQuery = fQuery + "  ORDER BY [Client Code], Date, [Start Time] "
+        fQuery = fQuery + "  ORDER BY [Client Code], convert(datetime,[Roster].[Date]), [Start Time] "
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
      //   console.log(fQuery)
 
+     switch (format) {
+        case 'Presentation - with Activity':
+            this.reportid = "C51kE1CQtifE100c"
+            lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+            break;
+        case 'Presentation - with No Activity':
+            this.reportid = "DOwrJxslBMOigZgq"
+            lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+            break;
+    
+        default:
+            this.reportid = "rRjFTClorpcjSauz"
+            
+            break;
+    }
+
+
         this.drawerVisible = true;
 
         const data = {
-            "template": { "_id": "rRjFTClorpcjSauz" },
+            "template": { "_id": this.reportid },
             "options": {
                 "reports": { "save": false },
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "notes":this.inputForm.value.include_AdditionalInfo,
             }
         }
         this.loading = true;
@@ -3801,7 +3897,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         var fQuery = "SELECT DISTINCT R.UniqueID,R.Title, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,format(R.AdmissionDate,'dd/MM/yyyy') As [ActivationDate],format( R.DischargeDate,'dd/MM/yyyy')  As [DeActivationDate], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus,   "
 
          
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Address2, NA.Suburb, NA.Postcode, "}        
+        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Suburb, NA.Postcode, "}        
         fQuery = fQuery  +" CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID  "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery  + " WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT')  AND (RecipientPrograms.ProgramStatus = 'ACTIVE')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL)) "       
@@ -3852,12 +3948,13 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)*/
     //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+        }
         else {
             this.reportid   = "4ohDCZRbiaKS4ocK" 
         }
        
-        
+    
 
         this.drawerVisible = true;
 
@@ -3910,7 +4007,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
         var fQuery = "SELECT DISTINCT R.UniqueID,R.Title, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, format(R.AdmissionDate,'dd/MM/yyyy')  As [ActivationDate], format(R.DischargeDate,'dd/MM/yyyy')  As [DeActivationDate], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus,  "
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Address2, NA.Suburb, NA.Postcode, "}        
+        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,   NA.Suburb, NA.Postcode, "}        
         fQuery = fQuery +" CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
 
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
@@ -4025,7 +4122,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var fQuery = "SELECT DISTINCT R.UniqueID,R.Title, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,format(R.AdmissionDate ,'dd/MM/yyyy') As [Activation Date],format(R.DischargeDate,'dd/MM/yyyy')  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus,  "
 
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Address2, NA.Suburb, NA.Postcode, "}        
+        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,   NA.Suburb, NA.Postcode, "}        
         fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery + " WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'CARER' OR [R].[Type] = 'CARER/RECIPIENT')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL)) "
@@ -4136,7 +4233,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var fQuery = "SELECT DISTINCT R.UniqueID, R.Title, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, format(R.AdmissionDate,'dd/MM/yyyy') As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus,  "
 
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Address2, NA.Suburb, NA.Postcode, "}        
+        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,   NA.Suburb, NA.Postcode, "}        
         fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery + " WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] IN ('BILLING CLIENTS', 'BILLING CLIENT ONLY'))  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL))"
@@ -4564,7 +4661,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus,  "
 
 
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Address2, NA.Suburb, NA.Postcode, "}        
+        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,   NA.Suburb, NA.Postcode, "}        
         fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery + " WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'ASSOCIATE')  AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL)) "
@@ -4783,7 +4880,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Upper (Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s  "
 
-    //    if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " NA.Address1, NA.Address2, NA.Suburb, NA.Postcode, "}        
+    //    if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " NA.Address1,  NA.Suburb, NA.Postcode, "}        
     //    fQuery = fQuery + "  "
     //    if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery + " WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is null) "
@@ -4879,7 +4976,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     InActiveStaffListing(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is not null) "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is not null) "
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -4915,7 +5012,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
         fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+        
         //    console.log(fQuery)
+
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"}
         else {
@@ -5064,7 +5163,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     InActiveBrokerage_Contractor(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, upper(Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is not null)  "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, upper(Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is not null)  "
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -5247,7 +5346,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     InActiveVolunteers(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is not null)  "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is not null)  "
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -6061,14 +6160,14 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
     }
 
-    StaffNotWorkedReport(branch, stfgroup, staff, startdate, enddate) {
+    StaffNotWorkedReport(branch, stfgroup, staff, startdate, enddate,tempsdate, tempedate) {
 
 
         var fQuery = "SELECT  ST.AccountNo, ST.STF_CODE as Staff#, ST.STF_DEPARTMENT as StaffBranch, ST.StaffGroup as JobCategory, ST.SubCategory as AdminCategory, ST.ServiceRegion  FROM STAFF ST Where NOT Exists ( SELECT [Carer Code]  FROM Roster WHERE [Carer Code]  = ST.AccountNo AND [Carer Code]  >'!z' AND Roster.[TYPE] BETWEEN 2 AND 12   "
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {
-            this.s_DateSQL = " Roster.[DATE] BETWEEN '" + startdate + ("'AND'") + enddate + "')";
+            this.s_DateSQL = " Roster.[DATE] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
         }
         if (branch != "") {
@@ -6090,11 +6189,11 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = "All Branches," }
         if (staff != "") {
             lblcriteria = " Staff:" + staff.join(",") + "; "
         }
-        else { lblcriteria = "All Staff" }
+        else { lblcriteria = "All Staff," }
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Assigned To: " + stfgroup.join(",") + "; "
         }
@@ -6104,10 +6203,13 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + " All Dated " }
 
-
+        if (this.inputForm.value.activeStaffonly == true){
+            fQuery = fQuery +" AND (COmmencementDate IS NOT NULL and TerminationDate IS NULL) "
+            lblcriteria = lblcriteria + "Active Staff Only  "+ "; "
+        }
         fQuery = fQuery + " ORDER BY [AccountNo], [STF_DEPARTMENT], [StaffGroup] "
 
-        //console.log(fQuery)
+       // console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -6157,10 +6259,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
     }
 
-    StaffCompetencyRenewal(branch, staff, competency, manager, staffteam, competencygroup, startdate, enddate, tempsdate, tempedate) {
+    StaffCompetencyRenewal(branch, staff, competency, manager, staffteam,stfgroup, competencygroup, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT  IsNull([PAN_MANAGER],'') as Coordinator , UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName,Staff.StaffGroup,Staff.Category,Staff.STF_DEPARTMENT,HumanResources.Name as Competency,CASE WHEN HumanResources.Date1 IS NULL THEN 'MISSING' ELSE CAST(HumanResources.Date1 as VARCHAR(20)) END AS [Expiry Date],HumanResources.Notes FROM Staff INNER JOIN HumanResources ON Staff.UniqueID = HumanResources.PersonID WHERE (HumanResources.[Type] = 'STAFFATTRIBUTE')   "
+        var fQuery = "SELECT  IsNull([PAN_MANAGER],'') as Coordinator , UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName,Staff.StaffGroup,Staff.Category,Staff.STF_DEPARTMENT,HumanResources.Name as Competency,CASE WHEN HumanResources.Date1 IS NULL THEN 'MISSING' ELSE format (HumanResources.Date1, 'dd/MM/yyyy mm:hh') END AS [Expiry Date],HumanResources.Notes FROM Staff INNER JOIN HumanResources ON Staff.UniqueID = HumanResources.PersonID WHERE (HumanResources.[Type] = 'STAFFATTRIBUTE')   "
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {
@@ -6177,6 +6279,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (staffteam != "") {
             this.s_StfTeamSQL = "([STAFFTEAM] in ('" + staffteam.join("','") + "'))";
             if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+        }
+        if (stfgroup != "") {
+            this.s_StfGroupSQL = "(StaffGroup in ('" + stfgroup.join("','") + "'))";
+            if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
         }
         if (staff != "") {
             this.s_StaffSQL = "[AccountNo] in ('" + staff.join("','") + "')";
@@ -6252,7 +6358,12 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (staffteam != "") {
             lblcriteria = lblcriteria + " Staff Team: " + staffteam.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + " All Staff Groups," }
+        
+        else { lblcriteria = lblcriteria + " All Staff Team," }
+        if (stfgroup != "") {
+            lblcriteria = lblcriteria + " Job Category: " + stfgroup.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + " All Job Categories," }
         if (startdate != "") {
             lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
         }
@@ -6426,9 +6537,11 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     StaffRoster(branch, stfgroup, staff, stafftype, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME,  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Carer Code] > '!MULTIPLE') AND Type <> 1  AND (Type <> 13)   "
+        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME,  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Carer Code] > '!MULTIPLE') AND Type <> 1     "
         var lblcriteria;
-
+        if (this.inputForm.value.include_unavailability == false){
+            fQuery = fQuery + " AND (Type <> 13) "
+        }
         //AND (Date BETWEEN '2020/08/01' AND '2020/08/31')
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = "( Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
@@ -6457,28 +6570,28 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = "All Branches," }
         if (stafftype != "") {
-            lblcriteria = " Branches:" + stafftype.join(",") + "; "
+            lblcriteria = lblcriteria + " Staff type:" + stafftype.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Branches" }
+        else { lblcriteria = lblcriteria + "All Staff Types," }
         if (staff != "") {
-            lblcriteria = " Staff:" + staff.join(",") + "; "
+            lblcriteria =lblcriteria + " Staff:" + staff.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff" }
+        else { lblcriteria = lblcriteria + "All Staff," }
         if (stfgroup != "") {
-            lblcriteria = lblcriteria + " Assigned To: " + stfgroup.join(",") + "; "
+            lblcriteria = lblcriteria + " Job Category: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = lblcriteria + "All Job Categories," }
         if (startdate != "") {
             lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
         }
         else { lblcriteria = lblcriteria + " All Dated " }
 
 
-        fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time]  "
+        fQuery = fQuery + " ORDER BY [Carer Code], convert(datetime,[Roster].[Date]), [Start Time]  "
 
-        //console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -6490,6 +6603,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "notes":this.inputForm.value.include_AdditionalInfo,
 
 
             }
@@ -6531,9 +6645,11 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     StaffMasterRoster(branch, stfgroup, staff, stafftype, startdate, enddate) {
 
 
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME,  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE')  AND (Type <> 13)  "
+        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME,  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE')    "
         var lblcriteria;
-
+        if (this.inputForm.value.include_unavailability == false){
+            fQuery = fQuery + " AND (Type <> 13) "
+        }
         //AND Date BETWEEN '1900/01/01' AND '1900/01/28'
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = "( Date BETWEEN '" + startdate + ("'AND'") + enddate + "')";
@@ -6581,7 +6697,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         else { lblcriteria = lblcriteria + " All Dated " }
 
 
-        fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time]  "
+        fQuery = fQuery + " ORDER BY [Carer Code], convert(datetime,[Roster].[Date]), [Start Time]  "
 
         // //////console.log(fQuery)
 
@@ -6595,6 +6711,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "notes":this.inputForm.value.include_AdditionalInfo,
 
 
             }
@@ -7273,7 +7390,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY ACCOUNTNO, DATE,STARTTIME ASC "
 
-          console.log(fQuery)
+          //console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -7326,7 +7443,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     TimeattandanceComparison(branch, staff, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName], Format(DateTime,'dd/MM/yyyy') , Format(RosteredStart,'dd/MM/yyyy')  ,  Format (ActualDateTime,'dd/MM/yyyy')  , DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, Format(RosteredEnd,'dd/MM/yyyy') ,  Format(LOActualDateTime,'dd/MM/yyyy'), DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  getdate()) ";
+        var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName], Format(DateTime,'dd/MM/yyyy') as DateTime , Format(RosteredStart,'dd/MM/yyyy hh:mm') as RosteredStart  ,  Format (ActualDateTime,'dd/MM/yyyy')  as ActualDateTime, DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, Format(RosteredEnd,'dd/MM/yyyy hh:mm') as RosteredEnd ,  Format(LOActualDateTime,'dd/MM/yyyy') as LOActualDateTime, DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  getdate()) ";
         var lblcriteria;
 
 
@@ -17430,7 +17547,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
 
     var lblcriteria;
     //SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName], UPPER(Staff.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1], Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35 ,HumanResources.RecordNumber,HumanResources.[Type] ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail] FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE    Staff.[Category] = 'STAFF'  OR Staff.[Category] = 'STAFF'  OR Staff.[Category] = 'BROKERAGE ORGANISATION'   AND (Staff.[commencementdate] is not null and Staff.[terminationdate] is null)  ORDER BY Staff.[LastName]
-    var fQuery = "SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName], UPPER(Staff.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1], Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35 ,HumanResources.RecordNumber,HumanResources.[Type] ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail],case when SB1 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0022')  end as Skill22 ,case when SB2 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0023')   end as Skill23 ,case when SB3 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0024')   end as Skill24 ,case when SB4 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0025')   end as Skill25,case when SB5 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0026')   end as Skill26,case when SB6 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0027')   end as Skill27 ,case when SB7 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0028')   end as Skill28 ,case when SB8 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0029')   end as Skill29 ,case when SB9 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0030')   end as Skill30 ,case when SB10 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0031')   end as Skill31 ,case when SB11 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0032')   end as Skill32 ,case when SB12 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0033')   end as Skill33 ,case when SB13 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0034')   end as Skill34,case when SB14 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0036')   end as Skill36 ,case when SB15 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0040')   end as Skill40 ,case when SB16 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0041')   end as Skill41 ,case when SB17 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0042')   end as Skill42 ,case when SB18 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0043')   end as Skill43 ,case when SB19 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0044')    end as Skill44 ,case when SB20 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0045')   end as Skill45 ,case when SB21 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0046')   end as Skill46 ,case when SB22 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0047')   end as Skill47 ,case when SB23 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0048')   end as Skill48 ,case when SB24 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0049')   end as Skill49 ,case when SB25 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0050')   end as Skill50 ,case when SB26 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0051')   end as Skill51 ,case when SB27 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0052')   end as Skill52 ,case when SB28 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0053')   end as Skill53 ,case when SB29 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0054')   end as Skill54 ,case when SB30 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0055')   end as Skill55 ,case when SB31 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0056')   end as Skill56 ,case when SB32 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0057')   end as Skill57 ,case  when SB33 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0058')   end as Skill58  ,case when SB34 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0059')    end as Skill59 ,case when SB35 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0060')   end as Skill60  FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE  ([commencementdate] is not null and [terminationdate] is null)  "
+    var fQuery = "SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName], UPPER(Staff.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1], Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35  ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail],case when SB1 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0022')  end as Skill22 ,case when SB2 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0023')   end as Skill23 ,case when SB3 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0024')   end as Skill24 ,case when SB4 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0025')   end as Skill25,case when SB5 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0026')   end as Skill26,case when SB6 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0027')   end as Skill27 ,case when SB7 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0028')   end as Skill28 ,case when SB8 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0029')   end as Skill29 ,case when SB9 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0030')   end as Skill30 ,case when SB10 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0031')   end as Skill31 ,case when SB11 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0032')   end as Skill32 ,case when SB12 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0033')   end as Skill33 ,case when SB13 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0034')   end as Skill34,case when SB14 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0036')   end as Skill36 ,case when SB15 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0040')   end as Skill40 ,case when SB16 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0041')   end as Skill41 ,case when SB17 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0042')   end as Skill42 ,case when SB18 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0043')   end as Skill43 ,case when SB19 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0044')    end as Skill44 ,case when SB20 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0045')   end as Skill45 ,case when SB21 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0046')   end as Skill46 ,case when SB22 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0047')   end as Skill47 ,case when SB23 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0048')   end as Skill48 ,case when SB24 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0049')   end as Skill49 ,case when SB25 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0050')   end as Skill50 ,case when SB26 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0051')   end as Skill51 ,case when SB27 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0052')   end as Skill52 ,case when SB28 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0053')   end as Skill53 ,case when SB29 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0054')   end as Skill54 ,case when SB30 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0055')   end as Skill55 ,case when SB31 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0056')   end as Skill56 ,case when SB32 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0057')   end as Skill57 ,case  when SB33 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0058')   end as Skill58  ,case when SB34 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0059')    end as Skill59 ,case when SB35 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0060')   end as Skill60  FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE  ([commencementdate] is not null and [terminationdate] is null)  "
     
     
 
@@ -17479,8 +17596,8 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         lblcriteria = lblcriteria + " Competency:" + competency.join(",") + "; "
     }
     else { lblcriteria = lblcriteria + " All Competencies, " }
-
-
+    if(this.inputForm.value.exclude_MandatoryChecking == true){
+    fQuery = fQuery + "AND [COMPETENCYEXCEPTION]= 1"}
     fQuery = fQuery + " ORDER BY Staff.[LastName]"
 
 
@@ -17497,6 +17614,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
             "sql": fQuery,
             "Criteria": lblcriteria,
             "userid": this.tocken.user,
+            "otherSkills": this.inputForm.value.include_PrimarySkills,
             
         }
     }

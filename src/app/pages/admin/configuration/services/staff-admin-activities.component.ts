@@ -460,6 +460,8 @@ export class StaffAdminActivitiesComponent implements OnInit {
         award5:false,
         specialShift:'',
         branch:'',
+        startTimeLimit:'',
+        endTimeLimit:'',
         recordNumber:null
       });
     }

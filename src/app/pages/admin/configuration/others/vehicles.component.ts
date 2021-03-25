@@ -136,6 +136,7 @@ export class VehiclesComponent implements OnInit {
         const group     = this.inputForm;
         let domain      = "'VEHICLES'";
         let name        = this.globalS.isValueNull(group.get('name').value).trim().toUpperCase();
+        
         let is_exist    = this.globalS.userExists(this.tableData,name);
         
         if(is_exist){

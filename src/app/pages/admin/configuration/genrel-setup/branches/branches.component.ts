@@ -94,18 +94,18 @@ export class BranchesComponent implements OnInit {
         addrphone,
         startHour,
         finishHour,
-        lateStart,
-        lateFinish,
-        earlyStart,
-        earlyFinish,
-        overstay,
-        understay,
-        t2earlyStart,
-        t2lateStart,
-        t2earlyFinish,
-        t2lateFinish,
-        t2overstay,
-        t2understay,
+        bH_LateStart,
+        bH_LateFinish,
+        bH_EarlyStart,
+        bH_EarlyFinish,
+        bH_OverStay,
+        bH_UndrStay,
+        aH_EarlyStart,
+        aH_LateStart,
+        aH_EarlyFinish,
+        aH_LateFinish,
+        aH_OverStay,
+        aH_UndrStay,
         end_date,
       }= this.tableData[index];
       this.inputForm.patchValue({
@@ -120,18 +120,18 @@ export class BranchesComponent implements OnInit {
         Phone:addrphone,
         startHour:startHour,
         finishHour:finishHour,
-        earlyStart:earlyStart,
-        lateStart:lateStart,
-        earlyFinish:earlyFinish,
-        lateFinish:lateFinish,
-        overstay:overstay,
-        understay:understay,
-        t2earlyStart:t2earlyStart,
-        t2lateStart:t2lateStart,
-        t2earlyFinish:t2earlyFinish,
-        t2lateFinish:t2lateFinish,
-        t2overstay:t2overstay,
-        t2understay:t2understay,
+        earlyStart:bH_EarlyStart,
+        lateStart:bH_LateStart,
+        earlyFinish:bH_EarlyFinish,
+        lateFinish:bH_LateFinish,
+        overstay:bH_OverStay,
+        understay:bH_UndrStay,
+        t2earlyStart:aH_EarlyStart,
+        t2lateStart:aH_LateStart,
+        t2earlyFinish:aH_EarlyFinish,
+        t2lateFinish:aH_LateFinish,
+        t2overstay:aH_OverStay,
+        t2understay:aH_UndrStay,
       })      
     }
     
@@ -220,7 +220,7 @@ export class BranchesComponent implements OnInit {
           this.loadBranches();
           this.handleCancel();
           this.resetModal();
-        }    
+         }    
         this.isUpdate = false;
         });
       

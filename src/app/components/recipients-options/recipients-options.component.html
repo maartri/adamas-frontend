@@ -40,7 +40,7 @@
                            <div nz-row>
                                 <div nz-col nzSpan="8">
                                     <div class="form-group">
-                                        <nz-date-picker formControlName="date" (ngModelChange)="onChange($event)" nzPlaceHolder="Supplied Date"></nz-date-picker>
+                                        <nz-date-picker formControlName="suppliedDate" (ngModelChange)="onChange($event)" nzPlaceHolder="Supplied Date"></nz-date-picker>
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="8">
@@ -209,7 +209,7 @@
                     <p>Referral Type</p>
                     <div style="margin-left: 1rem">
                         <ng-container *ngFor="let program of checkedPrograms">
-                            <app-select-list-recipient [program]="program.program" [option]="option"></app-select-list-recipient>
+                            <app-select-list-recipient [(ngModel)]="program.selected" [program]="program.program" [option]="option"></app-select-list-recipient>
                         </ng-container>
                     </div>
                 </div>

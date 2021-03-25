@@ -141,13 +141,13 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit(): void {
 
-        this.listChange({
-            "agencyDefinedGroup":"ARUNDEL",
-            "accountNo":"3CDC STEPH",
-            "uniqueID":"T0100005508",
-            "sysmgr":true,
-            "view":"recipient"
-        });
+        // this.listChange({
+        //     "agencyDefinedGroup":"ARUNDEL",
+        //     "accountNo":"3CDC STEPH",
+        //     "uniqueID":"T0100005508",
+        //     "sysmgr":true,
+        //     "view":"recipient"
+        // });
         
         // this.listChange({
         //     accountNo: "ABBOTS MORGANICA",

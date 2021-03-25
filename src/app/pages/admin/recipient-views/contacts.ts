@@ -13,14 +13,14 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-
 export class RecipientContactsAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     inputForm: FormGroup;
-
-    checked: boolean = false;
+    
     isDisabled: boolean = false;
+
+    visible: boolean = false;
 
     constructor(
         private timeS: TimeSheetService,
@@ -29,8 +29,11 @@ export class RecipientContactsAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        private cd: ChangeDetectorRef,
     ) {
+        // this.cd.detectChanges();
+        
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -44,13 +47,17 @@ export class RecipientContactsAdmin implements OnInit, OnDestroy {
                 this.user = data;
             }
         });
+        
     }
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
+        this.visible = true;
+        this.cd.markForCheck();
     }
 
     ngOnDestroy(): void {
+        this.visible = false;
         this.unsubscribe.next();
         this.unsubscribe.complete();
     }

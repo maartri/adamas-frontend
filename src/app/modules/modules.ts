@@ -750,6 +750,22 @@ export interface User{
     view: string
 }
 
+export interface UserToken{
+    aud: string,
+    canChooseProvider: string,
+    code: string,
+    exp: number,
+    iat: number,
+    iss: string,
+    jti: string,
+    nameid: string,
+    nbf: number,
+    recipientDocFolder: string,
+    role: string,
+    uniqueID: string,
+    user: string,
+}
+
 export interface IM_Master {
     RecordNo?: number,
     PersonId: string,

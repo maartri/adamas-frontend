@@ -97,8 +97,8 @@
                                             Main Group:
                                         </div>
                                         <div nz-col nzSpan="12" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="mainGroup" nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let main of mainGroupList" [nzLabel]="main" [nzValue]="main"></nz-option>
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="mainGroup"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let main of mainGroupList" [nzLabel]="main"  [nzValue]="main"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@
                                         </div>
                                         <div nz-col nzSpan="12" class="text-right pad-r-5"> 
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="subgroup" nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let sub of subgroups" [nzLabel]="sub" [nzValue]="sub"></nz-option>
+                                                <nz-option *ngFor="let subGroup of subGroupList" [nzLabel]="subGroup" [nzValue]="subGroup"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@
                                             Status:
                                         </div>
                                         <div nz-col nzSpan="10" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="status" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="status"  nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let st of status" [nzLabel]="st" [nzValue]="st"></nz-option>
                                             </nz-select>
                                         </div>

@@ -8,6 +8,13 @@ import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+
+const inputFormDefault = {
+    mainGroupList: ['STAFF ADMINISTRATION'],
+    subGroupList : ['NOT APPLICABLE'],
+    status       : ['NONATTRIBUTABLE'],
+}
+
 @Component({
   selector: 'app-staff-admin-activities',
   templateUrl: './staff-admin-activities.component.html',
@@ -43,6 +50,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
   contactTypes:Array<any>;//populate dropdown
   subgroups:Array<any>;//populate dropdown
   status:Array<any>;//populate dropdown
+  selectedMainGrouo:string = 'STAFF ADMINISTRATION';
+  selectedsubGroup:string = 'NOT APPLICABLE';
+  selectedStatus:string= 'NONATTRIBUTABLE';
   units:Array<any>;//populate dropdown
   mainGroupList:Array<any>;//populate dropdown
   subGroupList:Array<any>;//populate dropdown
@@ -85,7 +95,6 @@ export class StaffAdminActivitiesComponent implements OnInit {
     private menuS:MenuService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
-    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     ){}
@@ -94,6 +103,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
+
+      this.inputForm = this.formBuilder.group(inputFormDefault);
+
       this.checkedList = new Array<string>();
       this.loadData();
       this.buildForm();
@@ -201,10 +213,6 @@ export class StaffAdminActivitiesComponent implements OnInit {
     handleCompetencyCancel(){
       this.competencymodal = false;
     }
-    // pre(): void {
-    //   this.current -= 1;
-    // }
-    
     trueString(data: any): string{
       return data ? '1': '0';
     }
@@ -220,9 +228,6 @@ export class StaffAdminActivitiesComponent implements OnInit {
         this.checkedList = this.checkedList.filter(m=>m!= option.name)
       }
     }
-    // next(): void {
-    //   this.current += 1;
-    // }
     onIndexChange(index: number): void {
       this.current = index;
     }
@@ -336,9 +341,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.selectedStaff = [];
     }
     populateDropdowns(): void {
-      this.mainGroupList  = ['ONE ON ONE','CENTER BASED ACTIVITY','GROUP ACTIVITY','TRANSPORT','SLEEPOVER'];
-      this.subGroupList   = ['GENERAL','MEAL','TRAINING','STAFF DEVELOPMENT'];
-      this.status         = ['ATTRIBUTABLE','NON ATTRIBUTABLE'];
+
+      this.mainGroupList  = ['STAFF ADMINISTRATION','TRAVEL TIME'];
+      this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','TRAINING','NOT APPLICABLE'];
+      this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
       this.units          = ['HOUR','SERVICE'];
       let todayDate       = this.globalS.curreentDate();
       

@@ -47,7 +47,8 @@ import {
   ShareService,
   SettingsService,
   VersionCheckService,
-  MenuService
+  MenuService,
+  
 } from './services/index';
 
 import { IconsProviderModule } from './icons-provider.module';
@@ -89,7 +90,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     PAGE_COMPONENTS,
     BranchesComponent,
     FundingRegionsComponent,
-    DocusignComponent
+    DocusignComponent,
+    ReplaceNullWithTextPipe
     
   ],
   imports: [
@@ -127,6 +129,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     FullCalendarModule,
     SpreadSheetsModule,
     FlexLayoutModule
+    
     
   ],
   providers: [

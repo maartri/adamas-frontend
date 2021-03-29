@@ -3,7 +3,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { UploadChangeParam } from 'ng-zorro-antd/upload';
 
 import { UploadXHRArgs } from 'ng-zorro-antd/upload';
-import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { TimeSheetService, GlobalService, UploadService } from '@services/index';
@@ -59,7 +59,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
       this.msg.success(`${file.name} file uploaded successfully.`);
       this.loadFiles();
     } else if (status === 'error') {
-      this.msg.error(`${file.name} file upload failed.`);
+      // this.msg.error(`${file.name} file upload failed.`);
     }
   }
 
@@ -85,12 +85,14 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   }
 
   customReq = (item: UploadXHRArgs) => {
-    console.log(item);
+
     const formData = new FormData();
     formData.append('file', item.file as any);
     formData.append('data', JSON.stringify({
-      PersonID: this.token.uniqueID,
-      DocPath: this.token.recipientDocFolder
+      PersonId: this.token.uniqueID,
+      DocPath: this.token.recipientDocFolder,
+      SourceDocPath: "\\\\sjcc-sydgw01\\portal$\\document",
+      DestinationDocPath: "\\\\SJCC.local\\CompanyData\\Corp\\CLIENT FILES\\CAIRNS\\TESTRECIPIENT D"
     }))
 
     const req = new HttpRequest('POST', item.action!, formData, {
@@ -109,7 +111,8 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
           item.onSuccess!(event.body, item.file!, event);
         }
       },
-      err => {
+      (err: HttpErrorResponse) => {
+        this.globalS.eToast('Error', err.error);
         item.onError!(err, item.file!);
       }
     );
@@ -134,24 +137,34 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   downloadDocument(index: number) {
     const { docID, filename, type, originalLocation } = this.loadedFiles[index];
 
-    console.log(this.loadedFiles[index])
-    this.uploadS.downloadFileDocumentInProjectDirectory({
+    console.log(this.loadedFiles[index]);
+
+
+
+    this.uploadS.downloadFileDocumentRemoteServer({
       PersonID: this.token.id,
       Extension: type,
       FileName: filename,
-      DocPath: originalLocation
+      SourceDocPath: originalLocation,
+      DestinationDocPath: "\\\\sjcc-sydgw01\\portal$\\document"
     }).subscribe(blob => {
-      // console.log(blob);
-      let data = window.URL.createObjectURL(blob);
-      let link = document.createElement('a');
-      link.href = data;
-      link.download = filename;
-      link.click();
+        // console.log(blob);
+        let data = window.URL.createObjectURL(blob);
+        let link = document.createElement('a');
+        link.href = data;
+        link.download = filename;
+        link.click();
 
-      setTimeout(() => {
-        window.URL.revokeObjectURL(data);
-      }, 100);
-    });
+        setTimeout(() => {
+          window.URL.revokeObjectURL(data);
+        }, 100);
+        
+        this.globalS.sToast('Success','Download Successful')
+
+      }, (err: HttpErrorResponse) => {
+        this.globalS.eToast('Error','Failed to download')
+      });
+
   }
 
   //From ControlValueAccessor interface
@@ -159,7 +172,7 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
     if (value != null) {
       this.innerValue = value;
       this.token = value.token;
-      this.urlPath = `api/v2/file/upload-document-procedure`;
+      this.urlPath = `api/v2/file/upload-document-remote`;
 
       this.loadFiles();
       // this.pathForm(this.innerValue);

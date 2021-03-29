@@ -850,8 +850,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         if (index == 3) {
             this.modalService.confirm({
-                nzTitle: '<b>Do you want to delete all unapproved items?</b>',
-                nzContent: '<b></b>',
+                nzTitle: '<b>TRACCS</b>',
+                nzContent: '<b>Do you want to delete all unapproved items?</b>',
                 nzOnOk: () => this.process(index)
             });
         }

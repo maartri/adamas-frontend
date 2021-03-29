@@ -1,43 +1,49 @@
+<div style="padding:8px;">
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()"><i nz-icon nzType="plus" nzTheme="outline"></i> Items/Consumables</button>
+            <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
+        </div>
+    </div>
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Items/Consumables</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable nzBordered [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
-                    <th class="left">Title</th>
-                    <th class="left">Roaster Group</th>
-                    <th class="left">Sub Group</th>
-                    <th class="left">DataSet</th>
-                    <th class="left">DataSet Code</th>
-                    <th class="left">Outlet ID</th>
-                    <th class="left">DataSet Group</th>
-                    <th class="left">NDIA ID</th>
-                    <th class="left">Accounting Code</th>
-                    <th class="left">Bill Amount</th>
-                    <th class="left">Bill Unit</th>
-                    <th class="left">End Date</th>
+                    <th nzLeft nzBreakWord>Title</th>
+                    <th nzLeft nzBreakWord>Roaster Group</th>
+                    <th nzLeft nzBreakWord>Sub Group</th>
+                    <th nzLeft nzBreakWord>DataSet</th>
+                    <th nzLeft nzBreakWord>DataSet Code</th>
+                    <th nzLeft nzBreakWord>Outlet ID</th>
+                    <th nzLeft nzBreakWord>DataSet Group</th>
+                    <th nzLeft nzBreakWord>NDIA ID</th>
+                    <th nzLeft nzBreakWord>Accounting Code</th>
+                    <th nzLeft nzBreakWord>Bill Amount</th>
+                    <th nzLeft nzBreakWord>Bill Unit</th>
+                    <th nzLeft nzBreakWord>End Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
                     
-                    <td class="left">{{data.title}}</td>
-                    <td class="left">{{data.rosterGroup}}</td>
-                    <td class="left">{{data.subGroup}}</td>
-                    <td class="left">{{data.dataset}}</td>
-                    <td class="left">{{data.datasetCode}}</td>
-                    <td class="left">{{data.outletID}}</td>
-                    <td class="left">{{data.datasetGroup}}</td>
-                    <td class="left">{{data.ndiaid}}</td>
-                    <td class="left">{{data.accountingCode}}</td>
-                    <td class="left">{{data.billAmount}}</td>
-                    <td class="left">{{data.billUnit}}</td>
-                    <td class="left">{{data.endDate}}</td>
-                    <td class="left"><a (click)="showEditModal(i)">Update</a>
+                    <td nzLeft nzBreakWord>{{data.title}}</td>
+                    <td nzLeft nzBreakWord>{{data.rosterGroup}}</td>
+                    <td nzLeft nzBreakWord>{{data.subGroup}}</td>
+                    <td nzLeft nzBreakWord>{{data.dataset}}</td>
+                    <td nzLeft nzBreakWord>{{data.datasetCode}}</td>
+                    <td nzLeft nzBreakWord>{{data.outletID}}</td>
+                    <td nzLeft nzBreakWord>{{data.datasetGroup}}</td>
+                    <td nzLeft nzBreakWord>{{data.ndiaid}}</td>
+                    <td nzLeft nzBreakWord>{{data.accountingCode}}</td>
+                    <td nzLeft nzBreakWord>{{data.billAmount}}</td>
+                    <td nzLeft nzBreakWord>{{data.billUnit}}</td>
+                    <td nzLeft nzBreakWord>{{data.endDate | date: 'dd/MM/y' }}</td>
+                    <td nzLeft nzBreakWord><a (click)="showEditModal(data.row_num)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Item & Consumables List ?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
                     </tr>
                 </tbody>
             </nz-table>
@@ -733,3 +739,12 @@
             </ng-container>
         </div>
     </nz-modal>
+    <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+        <div class="col-md-12 spinner" *ngIf="loading">
+            <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
+        <div nz-row>
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        </div>
+    </nz-drawer>
+</div>    

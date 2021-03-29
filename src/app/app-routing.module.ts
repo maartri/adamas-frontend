@@ -83,7 +83,8 @@ import {
   LandingAdmin,
   SideMainMenu,
   RecipientsAdmin,
-  ReportsAdmin,  
+  ReportsAdmin,
+  UserReports,  
   SessionsAdmin,
   StaffAdmin,
   TimesheetAdmin,
@@ -235,6 +236,11 @@ import { ProgramPackagesComponent } from '@admin/configuration/others/program-pa
 import { ServicesComponent } from '@admin/configuration/services/services.component';
 import { ItemsConsumablesComponent } from '@admin/configuration/services/items-consumables.component';
 import { MenuMealsComponent } from '@admin/configuration/services/menu-meals.component';
+import { CaseMangementAdminComponent } from '@admin/configuration/services/case-mangement-admin.component';
+import { StaffAdminActivitiesComponent } from '@admin/configuration/services/staff-admin-activities.component';
+import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
+import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
+import { DocumentTemplateComponent } from '@admin/configuration/documents/document-template.component';
 
 const routes: Routes = [
   {
@@ -496,8 +502,16 @@ const routes: Routes = [
         component: ReportsAdmin
       },
       {
+        path: 'user-reports',
+        component: UserReports
+      },
+      {
         path: 'configuration',
         component: ConfigurationAdmin
+      },
+      {
+        path: 'companies',
+        component: CompaniesComponent,
       },
       {
         path: 'branches',
@@ -618,6 +632,10 @@ const routes: Routes = [
       {
         path:"document-categories",
         component:DocumentcategoriesComponent,
+      },
+      {
+        path:"document-template",
+        component:DocumentTemplateComponent,
       },
       {
         path:"recipients-categories",
@@ -842,6 +860,18 @@ const routes: Routes = [
         component:MenuMealsComponent,
       },
       {
+        path:"case-management-admin",
+        component:CaseMangementAdminComponent
+      },
+      {
+        path:"staff-admin-activities",
+        component:StaffAdminActivitiesComponent
+      },
+      {
+        path:"recipient-absences",
+        component:RecipientAbsenceComponent,
+      },
+      {
         path: 'rosters',
         component: RostersAdmin
       },
@@ -1060,7 +1090,7 @@ export const PAGE_COMPONENTS = [
   LandingAdmin,
   RecipientsAdmin,
   ReportsAdmin,
-  
+  UserReports,
   SessionsAdmin,
   StaffAdmin,
   TimesheetAdmin,
@@ -1072,6 +1102,7 @@ export const PAGE_COMPONENTS = [
   RostersAdmin,
   
   //Configuration
+  CompaniesComponent,
   BranchesComponent,
   FundingRegionsComponent,
   ClaimratesComponent,
@@ -1102,6 +1133,7 @@ export const PAGE_COMPONENTS = [
   LocationCategoriesComponent,
   FillingclassificationComponent,
   DocumentcategoriesComponent,
+  DocumentTemplateComponent,
   RecipientsCategoryComponent,
   RecipientsGroupComponent,
   RecipientsMinorGroupComponent,
@@ -1157,6 +1189,9 @@ export const PAGE_COMPONENTS = [
   ServicesComponent,
   ItemsConsumablesComponent,
   MenuMealsComponent,
+  CaseMangementAdminComponent,
+  StaffAdminActivitiesComponent,
+  RecipientAbsenceComponent,
   // Staff Views
   StaffAttendanceAdmin,
   StaffCompetenciesAdmin,

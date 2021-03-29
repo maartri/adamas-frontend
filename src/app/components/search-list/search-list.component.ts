@@ -49,7 +49,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   lists: Array<any> = [];
   loading: boolean = false;
 
-  nzFilterOption  = () => true;
+  // nzFilterOption  = () => true;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -128,9 +128,9 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     }
   }
 
-  searchChange(data: any){
-    this.searchChangeEmit.next(data);
-  }
+  // searchChange(data: any){
+  //   this.searchChangeEmit.next(data);
+  // }
 
   searchStaff(initLoad: boolean = false) {
     this.lists = []
@@ -153,8 +153,8 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
       SearchString: ''
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.listsAll = data;
-      this.lists = data.slice(0, 200);
-
+      // this.lists = data.slice(0, 10);
+      this.lists = data;
       this.loading = false;
       this.cd.markForCheck();
     });

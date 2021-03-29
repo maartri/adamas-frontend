@@ -8,7 +8,8 @@
     "post-build": "node ./build/post-build.js ",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-prod": "node --max_old_space_size=10000 ./node_modules/@angular/cli/bin/ng build --prod --aot --outputHashing=all"
   },
   "private": true,
   "dependencies": {
@@ -35,8 +36,11 @@
     "bootstrap-css-only": "^4.4.1",
     "cropperjs": "^1.5.7",
     "date-fns": "^2.8.0",
+    "faker": "^5.1.0",
     "file-saver": "^2.0.2",
     "jquery": "^3.3.1",
+    "jspdf": "^2.3.0",
+    "jspdf-autotable": "^3.5.13",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "ng-zorro-antd": "^8.5.2",

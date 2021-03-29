@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { LoginService, GlobalService } from '@services/index';
+import { LoginService, GlobalService, TYPE_MESSAGE } from '@services/index';
 import { SettingsService } from '@services/settings.service';
 import { ApplicationUser } from '@modules/modules';
 
@@ -77,6 +77,8 @@ export class LoginComponent implements OnInit {
         this.reset();
       }, (error: HttpErrorResponse) => {
         this.unauthorized = true;
+
+        this.globalS.createMessage(TYPE_MESSAGE.error,'The credentials you entered is incorrect');
         if (error.status == 401) this.unauthorizedStr = 'Invalid user name or password';
         if (error.status == 400) this.unauthorizedStr = error.error.message;
         this.reset();

@@ -521,8 +521,6 @@ export class BookingClient implements OnInit, OnDestroy {
         var id = this.globalS.loadingMessage('Processing booking...');
         this.bookingModalOpen = false;
 
-        console.log(booking)
-
         this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let resultRows = parseInt(data);            
             if (resultRows == 1) {

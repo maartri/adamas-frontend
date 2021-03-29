@@ -1,21 +1,30 @@
+<div style="padding:8px">
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add Care Plan Types</button>
+        <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus"></i> Add Care Plan Type </button>
+        <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
+        <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
                     <th class="left">Name</th>
+                    <th class="left">End Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
                 <td class="left">{{ data.name  }} </td>
-                        
-                <td><a (click)="showEditModal(i)">Update</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Care Plan Types?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                <td class="left">{{ data.end_date | date: 'dd/MM/y' }} </td>
+                <td *ngIf="!data.is_deleted">
+                    <a (click)="showEditModal(i)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Care Plan Type List?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                </td>
+                <td *ngIf="data.is_deleted">
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to Include this from Care Plan Type List?"
+                    nzPopconfirmPlacement="bottom" (click)="activateDomain(data)">Activate</a>
                 </td>
                 </tr>
             </tbody>
@@ -25,7 +34,7 @@
         </nz-table>
     </div>
 </div>
-
+</div>
 <nz-modal [nzWidth]="600" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">
     <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
@@ -34,10 +43,13 @@
     <nz-divider class="full-height" nzType="vertical"></nz-divider>
         <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
             <div *ngIf="current == 0">
-                <div nz-row nzGutter="24" class="mrg-btm">
-                    <div nz-col nzSpan="24" class="mrg-btm">
-                        <input nz-input placeholder="Name/Title"  formControlName="name" required />
-                    </div>
+                <div nz-row nzGutter class="mrg-btm">
+                    <label for="End Date">Name/Title :</label>
+                    <input nz-input placeholder="Name/Title"  formControlName="name" required />
+                </div>
+                <div nz-row nzGutter class="mrg-btm">
+                    <label for="End Date">Expiry Date :</label>
+                    <nz-date-picker [nzPlaceHolder]="'Expiry Date'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
                 </div>
             </div>
         </div>
@@ -50,3 +62,11 @@
             </div>
         </div>
 </nz-modal>
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loading">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    </div>
+</nz-drawer>

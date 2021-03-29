@@ -13,8 +13,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { AppRoutingModule, PAGE_COMPONENTS } from './app-routing.module';
 import { AppComponent } from './app.component';
-
-import { registerLocaleData, CommonModule, CurrencyPipe, DatePipe, TitleCasePipe ,DecimalPipe, HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { registerLocaleData, CommonModule, CurrencyPipe, DatePipe, TitleCasePipe ,DecimalPipe, HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {ReplaceNullWithTextPipe} from '@pipes/pipes';
 import en from '@angular/common/locales/en';
 
 import { LoginComponent } from './pages/login/login.component';

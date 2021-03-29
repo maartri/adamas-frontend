@@ -803,7 +803,22 @@ export class SwitchService {
                         HACCCODe:1,
                         user1: '',
                         user2: '',
-                        endDate: null
+                        endDate: inputVariables.end_date
+                    },
+                    table: 'DataDomains'
+                }
+                break;
+                case 'Contact Type':
+                this.anyVariable = {
+                    variables: {
+                        Description: (inputVariables.display).toUpperCase(),
+                        domain: 'CONTACTSUBGROUP',
+                        dataset: 'USER',
+                        embedded: 0,
+                        HACCCODe:inputVariables.contact_group,
+                        user1: '',
+                        user2: '',
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains'
                 }
@@ -814,7 +829,8 @@ export class SwitchService {
                         description: inputVariables.item,
                         domain: 'PACKAGERATES',
                         dataset: 'CDC',
-                        user1: inputVariables.rate
+                        user1: inputVariables.rate,
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains'
                 }
@@ -828,7 +844,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains'
                 }
@@ -842,7 +858,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains'
                 }
@@ -856,7 +872,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains'
                 }
@@ -870,7 +886,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains'
                 }
@@ -884,7 +900,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains'
                 }
@@ -898,7 +914,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains'
                 }
@@ -912,7 +928,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -926,7 +942,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -940,7 +956,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -954,7 +970,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -968,7 +984,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -982,7 +998,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -996,7 +1012,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1010,7 +1026,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1024,7 +1040,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1038,7 +1054,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1052,7 +1068,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1066,7 +1082,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1080,7 +1096,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1094,7 +1110,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1108,7 +1124,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1122,7 +1138,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1136,7 +1152,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1150,7 +1166,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1164,7 +1180,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1178,7 +1194,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1192,7 +1208,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1206,7 +1222,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1220,7 +1236,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1234,7 +1250,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1248,7 +1264,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1262,7 +1278,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1276,7 +1292,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1290,7 +1306,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1304,7 +1320,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1318,7 +1334,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1332,7 +1348,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1346,7 +1362,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1360,7 +1376,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1374,7 +1390,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1388,7 +1404,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1402,7 +1418,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1416,7 +1432,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1430,7 +1446,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: (inputVariables.expiry),
                     },
                     table: 'DataDomains'
                 }
@@ -1444,7 +1460,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1458,7 +1474,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1472,7 +1488,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1486,7 +1502,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1500,7 +1516,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1514,7 +1530,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1528,7 +1544,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1542,7 +1558,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1556,7 +1572,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1570,7 +1586,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1584,7 +1600,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1598,7 +1614,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1612,7 +1628,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1626,7 +1642,21 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
+                    },
+                    table: 'DataDomains'
+                }
+                break;
+                case 'Staff Teams':
+                this.anyVariable = {
+                    variables: {
+                        description: (inputVariables.display).toUpperCase(),
+                        domain: 'STAFFTEAM',
+                        dataset: 'USER',
+                        embedded: 0,
+                        user1: inputVariables.rate,
+                        user2: '',
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1640,7 +1670,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
-                        endDate: null,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
                 }
@@ -1726,17 +1756,31 @@ export class SwitchService {
                 case 'Funding Regions':
                 this.anyVariable = {
                     variables: {
-                        description: (inputVariables.display).toUpperCase()
+                        description: (inputVariables.display).toUpperCase(),
+                        endDate: inputVariables.end_date
                     },
                     table: 'DataDomains',
                     where: `WHERE RecordNumber = ${inputVariables.primaryId}`
                 }
                 break;
                 case 'CDC Claim Rates':
+                case 'Staff Teams':
                 this.anyVariable = {
                     variables: {
                         description: inputVariables.item,
-                        user1: inputVariables.rate
+                        user1: inputVariables.rate,
+                        endDate: inputVariables.end_date,
+                    },
+                    table: 'DataDomains',
+                    where: `WHERE RecordNumber = ${inputVariables.recordNumber}`
+                }
+                break;
+                case 'Contact Type':
+                this.anyVariable = {
+                    variables: {
+                        description: inputVariables.title,
+                        HACCCODe: inputVariables.contact_group,
+                        endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains',
                     where: `WHERE RecordNumber = ${inputVariables.recordNumber}`

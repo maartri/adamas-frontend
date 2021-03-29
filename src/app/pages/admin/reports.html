@@ -1,10 +1,9 @@
-Commented temporarily
-<!-- <div nz-layout>
+<div nz-layout>
     <div >
         <div nz-col nzSpan="24">
             <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'" >            
                 <nz-tab nzTitle="Recipient Listings"   >                     
-                        <div nz row>
+                        <div nz row>a
                             <div nz-col [nzSpan]="24">
                                 <div nz-col [nzSpan]="8">
                                     <ul nz-menu nzMode="horizontal">
@@ -150,7 +149,27 @@ Commented temporarily
                                                     <i nz-icon nzType="plus"></i>
                                                 USER REPORTS
                                             </button> 
-                                            </div>                                           
+                                            </div>    <!--
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled  >
+                                                <i nz-icon nzType="printer"></i>
+                                                Approved Staff Listing
+                                            </button> 
+                                            </div> 
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
+                                                <i nz-icon nzType="printer"></i>
+                                                Ashmore Client List
+                                            </button> 
+                                            </div>
+                                            
+                                            
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
+                                                <i nz-icon nzType="printer"></i>
+                                                Palm Beach Client List
+                                            </button> 
+                                            </div> -->                                           
                                                                                                                                                                                      
                                         </li>                  
                                     </ul>
@@ -166,7 +185,19 @@ Commented temporarily
                                                 USER REPORTS
                                             </button> 
                                             </div>
-                                                                                                                                                                     
+                                            <!--
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
+                                                <i nz-icon nzType="printer"></i>
+                                                Approved Service Coordinator
+                                            </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
+                                                <i nz-icon nzType="printer"></i>
+                                                UnApproved Service Coordinator
+                                            </button> 
+                                            </div>       -->                                                                                                                             
                                         </li>                  
                                     </ul>
                                 </div>
@@ -186,7 +217,12 @@ Commented temporarily
                                         Incident Register
                                     </button> 
                                     </div>
-                               
+                                <!--    <div>                                        
+                                        <button nz-button nzType="default" id="btn-r-LagTimeRegister" (click)="showModal(this.id)" disabled >
+                                        <i nz-icon nzType="printer"></i>
+                                        Lag Time Register
+                                    </button> 
+                                    </div> -->
                                     <div>                                        
                                         <button nz-button nzType="default" id="btn-Regis-loanregister" (click)="showModal(this.id)" >
                                         <i nz-icon nzType="printer"></i>
@@ -205,7 +241,12 @@ Commented temporarily
                                         Recipient Service Notes Register
                                     </button> 
                                     </div>
-                                 
+                                    <!-- <div>                                        
+                                        <button nz-button nzType="default" id="btn-regis-serviceplan" (click)="showModal(this.id)" disabled >
+                                        <i nz-icon nzType="printer"></i>
+                                        Service Plans Register
+                                    </button> 
+                                    </div> -->
                                     <div>                                        
                                         <button nz-button nzType="default" id="btn-Regis-careplanstatus" (click)="showModal(this.id)"  >
                                         <i nz-icon nzType="printer"></i>
@@ -353,7 +394,19 @@ Commented temporarily
                                             <i nz-icon nzType="plus"></i>
                                         USER REPORTS
                                     </button> 
-                                    </div>
+                                    </div><!--
+                                    <div>
+                                        <button nz-button nzType="default" (click)="showModal(this.id)" disabled >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Competency Expiry
+                                            </button>
+                                    </div>                                    
+                                    <div>
+                                        <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Hours
+                                            </button>
+                                    </div> -->
                                                                                                                                       
                                 </li>                  
                             </ul>
@@ -368,7 +421,14 @@ Commented temporarily
                                             <i nz-icon nzType="plus"></i>
                                         USER REPORTS
                                     </button> 
-                                    </div>                                                                                       
+                                    </div> <!--
+                                    <div>
+                                        <button nz-button nzType="default" (click)="showModal(this.id)" disabled >
+                                            <i nz-icon nzType="printer"></i>
+                                            Competencies
+                                            </button>
+                                    </div>
+                                -->                                                                                        
                                 </li>                  
                             </ul>
                         </div>
@@ -553,7 +613,12 @@ Commented temporarily
                                             Staff Pays
                                             </button>
                                     </div>
-                               
+                                <!--    <div>
+                                        <button nz-button nzType="default" id = "btn-FORPT-StaffProgramPayType"  (click)="showModal(this.id)" disabled >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Program Pay Type
+                                            </button>
+                                    </div> -->
                                     <div>
                                         <button nz-button nzType="default" id = "btn-FORPT-StaffunderPayrollRpt"  (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
@@ -566,7 +631,12 @@ Commented temporarily
                                             Funder Payroll Type
                                             </button>
                                     </div>
-                               
+                                <!--    <div>
+                                        <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Date Program
+                                            </button>
+                                    </div> -->
                                     <div>
                                         <button nz-button nzType="default" id = "btn-FORPT-StaffAllowanceRpt"  (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
@@ -603,7 +673,18 @@ Commented temporarily
                                             Staff Daily Hours Report
                                             </button>
                                     </div> 
-                               
+                                <!--    <div>
+                                        <button nz-button nzType="default" disabled >
+                                            <i nz-icon nzType="printer"></i>
+                                            Award Staff Pay Report
+                                            </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" disabled >
+                                            <i nz-icon nzType="printer"></i>
+                                            Award Staff Program Pay Report
+                                            </button>
+                                    </div> -->
                                     <div>
                                         <button nz-button nzType="default" id = "btn-FORPT-PayTypeProgram"  (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
@@ -1096,7 +1177,7 @@ Commented temporarily
                                     <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_expirydates" ><label class="checks" nz-checkbox formControlName="excl_missing"   >Exclude Missing Expiry Dates</label></div>
                                     <div nz-col nzSpan = "20" *ngIf="chkbx_incl_Contacts" ><label class="checks" nz-checkbox formControlName="incl_Contacts"   >Include Contacts</label></div>
                                     <div nz-col nzSpan = "20" *ngIf="chkbx_asAddressLabel" ><label class="checks" nz-checkbox formControlName="printaslabel"  >Print as Address Label</label></div>
-                                    
+                                    <!-- <div nz-col nzSpan = "20" *ngIf="chkbx_incl_additionalInfo"><label class="checks" nz-checkbox formControlName="additionalinfo"   >Include Additional Information</label></div> -->
                                     <div nz-col nzSpan = "20" *ngIf="chkbx_incl_activeClients"><label class="checks" nz-checkbox formControlName="activeclients"   >Include Active Clients</label></div>
                                     <div nz-col nzSpan = "20" *ngIf="chkbx_incl_activeStaff" ><label class="checks" nz-checkbox formControlName="activestaff"    >Include Active Staff</label></div>
                                     <div nz-col nzSpan = "20" *ngIf="chkbx_grpbyCoordinators" ><label class="checks" nz-checkbox formControlName="groupbyCoordinators"   >Group by Coordinators</label></div>
@@ -1146,7 +1227,7 @@ Commented temporarily
         </nz-modal>            
     </div>
 
-    <div > 
+    <div > <!--nzWidth="768px"-->
         <nz-modal
         [nzWidth]="modelwidth" 
         [(nzVisible)]="FOReports"
@@ -1409,7 +1490,7 @@ Commented temporarily
                                 <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Roster Type</label>
                                 <label class="checks" nz-checkbox formControlName="allRostertypes">All Roster Types</label>
                                 <nz-select formControlName="rostertypeArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allRostertypes">
-                                
+                                    <!-- <nz-option *ngFor="let option of rostertypeArr" [nzLabel]="option" [nzValue]="option"></nz-option> -->
                                     <nz-option *ngFor="let option of rostertypeArr" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
                                 </nz-select> 
                             </div>
@@ -1546,6 +1627,7 @@ Commented temporarily
 </div>
 
 
+
     
 <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loading">
@@ -1554,5 +1636,4 @@ Commented temporarily
     <div nz-row>
         <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
     </div>
-</nz-drawer> 
--->
+</nz-drawer>

@@ -402,6 +402,7 @@ recordNumber:number,
 name: string,
 glRevene: string,
 glCost: string,
+end_date: string,
 centerName: string,
 addrLine1: string,
 addrLine2: string,
@@ -747,6 +748,22 @@ export interface User{
     id: string,
     sysmgr: boolean,
     view: string
+}
+
+export interface UserToken{
+    aud: string,
+    canChooseProvider: string,
+    code: string,
+    exp: number,
+    iat: number,
+    iss: string,
+    jti: string,
+    nameid: string,
+    nbf: number,
+    recipientDocFolder: string,
+    role: string,
+    uniqueID: string,
+    user: string,
 }
 
 export interface IM_Master {

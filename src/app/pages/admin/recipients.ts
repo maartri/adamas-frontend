@@ -100,7 +100,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             //this.view(6);
             this.isFirstLoad = true;
         }
-        console.log(event);
+        console.log(JSON.stringify(event));
+
+  
         // this.user = {
         //     agencyDefinedGroup: "GRAFTON",
         //     code: "ABERKIRDO TYBI",
@@ -138,7 +140,30 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        //this.listChange({});
+
+        // this.listChange({
+        //     "agencyDefinedGroup":"ARUNDEL",
+        //     "accountNo":"3CDC STEPH",
+        //     "uniqueID":"T0100005508",
+        //     "sysmgr":true,
+        //     "view":"recipient"
+        // });
+        
+        // this.listChange({
+        //     accountNo: "ABBOTS MORGANICA",
+        //     agencyDefinedGroup: "GRAFTON",
+        //     sysmgr: true,
+        //     uniqueID: "T0100004652",
+        //     view: "recipient"
+        // });
+
+        // this.listChange({
+        //         "agencyDefinedGroup":"ARUNDEL",
+        //         "accountNo":"ABBERTON G T",
+        //         "uniqueID":"T0100005186",
+        //         "sysmgr":true,
+        //         "view":"recipient"
+        //     })
     }
 
     ngOnDestroy(): void {

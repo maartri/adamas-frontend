@@ -108,4 +108,13 @@ export class MonthPeriodFilter implements PipeTransform {
         return startOfMonth + ' ' + endOfMonth;
     }
 }
+@Pipe({ name: 'replaceNullWithText' })
+  export class ReplaceNullWithTextPipe implements PipeTransform {
+    transform(value: any, repleceText: string = " "): any {
+      if (typeof value === 'undefined' || value === null) {
+        return repleceText;
+      }
+      return value;
+    }
+  }
 

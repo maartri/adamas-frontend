@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { HttpParams } from '@angular/common/http';
 
 import { CallDeceaseProcedure, CallReferralOutProcedure } from '@modules/modules';
 
@@ -66,6 +67,14 @@ export class ListService {
         return this.auth.get(`${list}/funding/package-purpose/list`);
     }
 
+    getremindersrecipient(): Observable<any>{
+        return this.auth.get(`${list}/reminders-recipient`);
+    }
+
+    getreasons(): Observable<any>{
+        return this.auth.get(`${list}/reasons`);
+    }
+
     getfundingprioritylist(): Observable<any>{
         return this.auth.get(`${list}/funding/priority/list`);
     }
@@ -97,8 +106,22 @@ export class ListService {
     GetVehicles(): Observable<any>{
         return this.auth.get(`${list}/vehicles`);
     } 
+    GetAllPrograms(): Observable<any>{
+        return this.auth.get(`${list}/CriterialistPrograms`);
+    }
+
+    
     GetRecipientAll(): Observable<any>{
         return this.auth.get(`${list}/intake/recipients/all`);
+    }
+    GetRecipientActive(): Observable<any>{
+        return this.auth.get(`${list}/recipients/active`);
+    }
+    GetBatchNo(): Observable<any>{
+        return this.auth.get(`${list}/batchnumbers`);
+    }
+    Getpackages(): Observable<any>{
+        return this.auth.get(`${list}/packages`);
     }
     Getrptcasenotes(): Observable<any>{
         return this.auth.get(`${list}/casenotesgroup`);
@@ -115,6 +138,10 @@ export class ListService {
     
     GetStaffServiceTypes(): Observable<any>{ 
         return this.auth.get(`${list}/staffservices`);
+    }
+
+    GetActiveRecipientAccountNo(): Observable<any>{ 
+        return this.auth.get(`${list}/AccountNumbers`);
     }
 
     getimlocation(): Observable<any>{
@@ -239,7 +266,7 @@ export class ListService {
 
     getwizardnote(whatnote: string): Observable<any>{
         return this.auth.get(`${list}/wizards-note/${whatnote}`)
-    }
+    }  
 
     getwizardreferralcode(): Observable<any>{
         return this.auth.get(`${list}/wizards-referral-code`)
@@ -279,6 +306,10 @@ export class ListService {
 
     getlist(sqlString: string): Observable<any>{
         return this.auth.post(`${list}/get-list`, { Sql: sqlString})
+    }
+
+    getreferraltype(data: any): Observable<any>{
+        return this.auth.get(`${list}/referral-type-v2`, data);
     }
 
     getcoordinators(): Observable<any>{

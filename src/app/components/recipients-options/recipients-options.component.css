@@ -1,6 +1,22 @@
 ul{
     list-style: none;
+    height: 20rem;
+    overflow: auto;
 }
 li{
     margin-bottom: 5px;
+}
+
+nz-time-picker, nz-select, nz-date-picker{
+    width:100% !important;
+}
+.space-btm{
+    margin-bottom:1rem;
+}
+
+.space-top{
+    margin-top:1rem;
+}
+.no-padding{
+    padding: 0;
 }

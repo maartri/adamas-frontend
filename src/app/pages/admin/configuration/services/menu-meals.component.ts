@@ -1,7 +1,10 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService, MenuService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
+import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -10,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './menu-meals.component.html',
   styles: [`
   .mrg-btm{
-    margin-bottom:0.5rem;
+    margin-bottom:0.3rem;
   },
   textarea{
     resize:none;
@@ -34,8 +37,10 @@ export class MenuMealsComponent implements OnInit {
   paytypes:Array<any>;
   checkedList:string[];//competency 
   competencyList:Array<any>//list competency;
-  programz:Array<any>;
-  mtaAlerts:Array<any>;
+  programz:Array<any>;//populate dropdown
+  mtaAlerts:Array<any>;//populate dropdown
+  addressTypes:Array<any>;//populate dropdown
+  contactTypes:Array<any>;//populate dropdown
   subgroups:Array<any>;//populate dropdown
   status:Array<any>;//populate dropdown
   units:Array<any>;//populate dropdown
@@ -62,18 +67,29 @@ export class MenuMealsComponent implements OnInit {
   postLoading: boolean = false;
   isUpdate: boolean = false;
   title:string = "Add New Menu/Meals";
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
-    private formBuilder: FormBuilder,
-    private listS: ListService,
     private switchS:SwitchService,
+    private listS:ListService,
     private menuS:MenuService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService,
     ){}
     
+    
     ngOnInit(): void {
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       
       this.checkedList = new Array<string>();
       this.loadData();
@@ -290,10 +306,11 @@ export class MenuMealsComponent implements OnInit {
       }
     }
     loadData(){
-      let sql ="SELECT [Recnum] As [RecordNumber],[Title] As [Title], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup        END As [RosterGroup],    [MinorGroup] As [Sub Group],    [IT_Dataset] As [Dataset],      [HACCType] As [Dataset Code], [CSTDAOutletID] As [OutletID],  [DatasetGroup] As [Dataset Group],  [NDIA_ID] As [NDIA ID],  [AccountingIdentifier] As [Accounting Code],        [Amount] As [Bill Amount],          [Unit] As [Bill Unit],     [EndDate] As [End Date] FROM ItemTypes WHERE ProcessClassification <> 'INPUT' AND (EndDate Is Null OR EndDate >= '12-24-2020')  AND (MinorGroup IN ('MEALS')) ORDER BY Title";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.getlistMenuMeals().subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+        this.cd.detectChanges();
       });
     }
     clearStaff(){
@@ -310,25 +327,35 @@ export class MenuMealsComponent implements OnInit {
       this.units  = ['HOUR','SERVICE'];
       let todayDate  = this.globalS.curreentDate();
       
-      let sql ="SELECT * FROM DataDomains WHERE Domain = 'LIFECYCLEEVENTS'";
+      let sql ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'LIFECYCLEEVENTS'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.lifeCycleList = data;
       });
       
-      let sql1 ="SELECT * FROM DataDomains WHERE Domain = 'BUDGETGROUP'";
+      let sql3 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'ADDRESSTYPE'";
+      this.loading = true;
+      this.listS.getlist(sql3).subscribe(data => {
+        this.addressTypes = data;
+      });
+      let sql4 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'CONTACTTYPE'";
+      this.loading = true;
+      this.listS.getlist(sql4).subscribe(data => {
+        this.addressTypes = data;
+      });
+      let sql1 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'BUDGETGROUP'";
       this.loading = true;
       this.listS.getlist(sql1).subscribe(data => {
         this.budgetGroupList = data;
       });
       
-      let sql2 ="SELECT * FROM DataDomains WHERE Domain = 'DISCIPLINE'";
+      let sql2 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'DISCIPLINE'";
       this.loading = true;
       this.listS.getlist(sql1).subscribe(data => {
         this.diciplineList = data;
       });
       
-      let comp = "SELECT Description as name FROM Datadomains WHERE Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+      let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
         this.loading = false;
@@ -344,7 +371,16 @@ export class MenuMealsComponent implements OnInit {
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
     }
     delete(data: any) {
-      this.globalS.sToast('Success', 'Data Deleted!');
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.deleteActivityServiceslist(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
     }
     
     buildForm() {
@@ -400,5 +436,68 @@ export class MenuMealsComponent implements OnInit {
         recordNumber:null
       });
     }
-
+    handleOkTop() {
+      this.generatePdf();
+      this.tryDoctype = ""
+      this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+    }
+    generatePdf(){
+      this.drawerVisible = true;
+      
+      this.loading = true;
+      
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [Title]) AS Field1,[Title] As [Field2], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup END As [Field3],[MinorGroup] As [Field4],[HACCType] As [Field5],[DatasetGroup] As [Field6],  [NDIA_ID] As [Field7],[Amount] As [Field8],[Unit] As [Field9] FROM ItemTypes WHERE ProcessClassification <> 'INPUT' AND (EndDate Is Null OR EndDate >= '12-22-2020')  AND (RosterGroup IN ('ITEM')) ORDER BY Title";
+      
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+      
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+      
+      const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+          "reports": { "save": false },
+          "txtTitle": "Menu Meals List",
+          "sql": fQuery,
+          "userid":this.tocken.user,
+          "head1" : "Sr#",
+          "head2" : "Title",
+          "head3" : "Roaster Group",
+          "head4" : "Sub Group",
+          "head5" : "DataSet Code",
+          "head6" : "DataSet Group",
+          "head7" : "NDIA ID",
+          "head8" : "Bill Amount",
+          "head9" : "Bill Unit",
+        }
+      }
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+      }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+          nzTitle: 'TRACCS',
+          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+          nzOnOk: () => {
+            this.drawerVisible = false;
+          },
+        });
+      });
+      this.loading = true;
+      this.tryDoctype = "";
+      this.pdfTitle = "";
+    }
 }

@@ -1,3 +1,4 @@
+<div style="padding:8px;">
 <div nz-row>
     <div nz-col nzSpan="24">
         <button class="botton success" (click)="showAddModal()">Add Goal</button>
@@ -21,7 +22,7 @@
                     <td>{{ data.status }}</td>
                     <td>{{ data.serviceProfile}}</td>
                     <td>
-                        <a (click)="showEditModal(i)">Update</a>
+                        <a (click)="showEditModal(data.row_num)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?" nzPopconfirmPlacement="bottom"
                             (nzOnConfirm)="delete(i)">Delete</a>
@@ -31,7 +32,7 @@
         </nz-table>
     </div>
 </div>
-
+</div>
 <!-- <nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOREdit == 1 ? 'Add Branch' : 'Edit Branch'"
     (nzOnCancel)="handleCancel()">
     <div [formGroup]="inputForm">

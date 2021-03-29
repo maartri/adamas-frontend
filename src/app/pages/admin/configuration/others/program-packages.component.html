@@ -1,7 +1,7 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Program/Packages</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
                     <th class="left">Title</th>

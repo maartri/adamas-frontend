@@ -10,7 +10,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of branchList;let i = index;">
+                <tr *ngFor="let data of branchList; let i = index;">
                 <td class="left">{{ data.description  }}</td>
                     <td>
                         <a (click)="showEditModal(i)">Update</a>

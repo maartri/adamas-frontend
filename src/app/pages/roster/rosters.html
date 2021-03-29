@@ -1,0 +1,379 @@
+<div nz-row style="padding:8px">
+
+    <div nz-row >
+        
+        <div nz-col nzSpan="8" style="margin-top: 10px;">
+            <div class="calendar-title">            
+                <app-search-timesheet [view]="0" (selected)="picked($event)"></app-search-timesheet>
+            </div>
+        </div>
+            <div nz-col nzSpan="6" style="margin-top: 1px;">
+                <div class="date-title">
+                    {{ date | date: 'MMMM yyyy'}}
+                 </div>
+            </div>
+            <div  nz-col nzSpan="10" style="margin-top: 1px;">
+            <nz-button-group >
+                <button  nz-button nzType="primary" (click)="prev_date()"><i nz-icon nzType="left"></i></button>
+                <button  nz-button nzType="primary" (click)="next_date()"><i nz-icon nzType="right"></i></button>
+                
+            </nz-button-group>        
+           </div>
+    </div>
+
+    <div nz-row>
+        
+        <div  class="nz-button" >
+            <nz-button-group >
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="add_Shift()"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="check-circle" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="select" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="form"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="edit"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="contacts"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="diff"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="prev_date()"><i nz-icon nzType="left"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="next_date()"><i nz-icon nzType="right"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="appstore"></i></button>
+            
+            </nz-button-group>     
+        </div>
+    </div>
+
+    <div nz-row>
+        
+  <gc-spread-sheets  
+  [backColor]="spreadBackColor"  
+  [hostStyle]="hostStyle"  
+  (workbookInitialized)="workbookInit($event)"  
+>   
+  <gc-worksheet [name]="sheetName" [dataSource]="data">  
+    <gc-column dataField="Date1" width="40px"></gc-column>  
+    <gc-column dataField="Date2" width="40px"></gc-column>  
+    <gc-column dataField="Date3" width="40px"></gc-column>  
+    <gc-column dataField="Date4" width="40px"></gc-column>  
+    <gc-column dataField="Date5" width="40px"></gc-column>  
+    <gc-column dataField="Date6" width="40px"></gc-column>  
+    <gc-column dataField="Date7" width="40px"></gc-column>  
+    <gc-column dataField="Date8" width="40px"></gc-column>  
+    <gc-column dataField="Date9" width="40px"></gc-column>  
+    <gc-column dataField="Date10" width="40px"></gc-column>  
+    <gc-column dataField="Date11" width="40px"></gc-column>  
+    <gc-column dataField="Date12" width="40px"></gc-column>  
+    <gc-column dataField="Date13" width="40px"></gc-column>  
+    <gc-column dataField="Date14" width="40px"></gc-column>  
+    <gc-column dataField="Date15" width="40px"></gc-column>  
+    <gc-column dataField="Date16" width="40px"></gc-column>  
+    <gc-column dataField="Date17" width="40px"></gc-column>  
+    <gc-column dataField="Date18" width="40px"></gc-column>  
+    <gc-column dataField="Date19" width="40px"></gc-column>  
+    <gc-column dataField="Date20" width="40px"></gc-column>  
+    <gc-column dataField="Date21" width="40px"></gc-column>  
+    <gc-column dataField="Date22" width="40px"></gc-column>  
+    <gc-column dataField="Date23" width="40px"></gc-column>  
+    <gc-column dataField="Date24" width="40px"></gc-column>  
+    <gc-column dataField="Date25" width="40px"></gc-column>  
+    <gc-column dataField="Date26" width="40px"></gc-column>  
+    <gc-column dataField="Date27" width="40px"></gc-column>  
+    <gc-column dataField="Date28" width="40px"></gc-column>  
+    <gc-column dataField="Date29" width="40px"></gc-column>  
+    <gc-column dataField="Date30" width="40px"></gc-column> 
+    <gc-column dataField="Date31" width="columnWidth"></gc-column> 
+  </gc-worksheet>  
+</gc-spread-sheets>
+        
+    </div>
+
+</div>
+
+<nz-modal class="options" [nzStyle]="{ top: '15px' }" [(nzVisible)]="optionsModal" nzTitle="" (nzOnCancel)="optionsModal = false">
+        <div nz-row>
+        <ul>
+           
+            <li (click)="handleClick(2)"> View Roster Details</li>
+            <li>View Service Shift Notes</li>
+            <hr/>
+            <li>Copy</li>
+            <li>Cut</li>
+            <li>Past</li>
+            <hr/>
+            <li>Delete</li>
+            <hr/>
+            <li>Re-Allocate Staff</li>
+            <li>Un-allocate Staff</li>
+            <hr/>
+            <li>Set Multishift</li>
+            <li>Clear Multishift</li>
+            <hr/>
+            <li>View Staff Details</li>
+            <li (click)="changeViewRecipientDetails.next(1)">View Recipient Details</li>
+            <li>View Service Details</li>
+            <li>View Additional Information (Xtra Info)</li>
+            <!-- <li>Change <i nz-icon nzType="right" nzTheme="outline"></i>
+               <ul>
+                    <li (click)="changeModalView.next(1)">Change Output Type</li>
+                    <li (click)="changeModalView.next(2)">Change Program</li>
+                    <li (click)="changeModalView.next(3)">Change Activity</li>
+                    <li (click)="changeModalView.next(4)">Change Pay Type</li>
+                    <li (click)="changeModalView.next(5)">Change Bill Amount</li>
+                    <li (click)="changeModalView.next(6)">Change Bill Quantity</li>
+                    <li (click)="changeModalView.next(7)">Change Pay Quantity</li>
+                    <li (click)="changeModalView.next(8)">Set Unit Cost</li>
+                </ul> 
+            </li> -->
+        </ul>
+    </div>
+    <div *nzModalFooter>
+        <!-- <span>Modal Footer: </span> -->
+        <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button> -->
+        <!-- <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>  -->
+      </div>
+    </nz-modal>
+
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="recipientDetailsModal" nzTitle="Recipients Details" (nzOnCancel)="recipientDetailsModal = false" >
+        <div nz-row>
+            sd
+        </div>
+        <div *nzModalFooter>
+            <button nz-button nzType="default" >Cancel</button>
+        </div>
+	</nz-modal>
+   
+    
+<!-- Add Timesheet -->
+
+<nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Add Timesheet"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+    <div class="flexy" style="min-height:21rem">
+
+            <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">
+                <nz-step nzTitle="Service Type & Date"></nz-step>
+                <nz-step nzTitle="Recipient Details"></nz-step>
+                <nz-step nzTitle="Pay Details"></nz-step>
+                <!-- <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Time"></nz-step> -->
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Pay"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup) && rosterGroup != 'ADMINISTRATION' "nzTitle="Bills"></nz-step>
+            </nz-steps>
+    
+            <nz-divider class="full-height" nzType="vertical"></nz-divider>
+ 
+            <div class="steps-content">
+                <div *ngIf="current == 0" [formGroup]="rosterForm">
+                    
+                    <div nz-row>
+                        <div class="form-group">
+                            <label for="">Date</label>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="date"></nz-date-picker>
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <label for="">Service Type</label>
+                            <nz-select nzShowSearch nzAllowClear formControlName="serviceType" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                                <nz-option *ngFor="let list of modalTimesheetValues" [nzValue]="list.name" [nzLabel]="list.name"></nz-option>
+                            </nz-select>
+                            
+                        </div>
+                    </div>
+                   
+                    <div nz-row *ngIf="multipleRecipientShow">
+                        <label for="">Multiple Recipients</label>
+                        <nz-switch nzSize="small" formControlName="isMultipleRecipient"></nz-switch>
+                    </div>
+                    <div nz-row *ngIf="isTravelTimeChargeable">
+                        <label for="">Is Travel Time Chargeable</label>
+                        <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch>
+                    </div>
+                    <div nz-row *ngIf="isSleepOver">
+                        <label for="">Select the End Time on the following day for the sleepover</label>
+                        <nz-time-picker formControlName="sleepOverTime" [nzDefaultOpenValue]="defaultOpenValue" nzFormat="HH:mm"></nz-time-picker>
+
+                        <!-- <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker> -->
+                        <!-- <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch> -->
+                    </div>
+                    <div nz-row nzGutter="8" style="margin-top:1rem" *ngIf="showTime">
+                        <div nz-col nzSpan="6">
+                            <div class="form-group">
+                                <label for="">Start Time</label>
+                                <nz-time-picker [(ngModel)]="defaultStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="6">
+                            <div class="form-group" *ngIf="showEndTime">
+                                <label for="">End Time</label>
+                                <nz-time-picker [(ngModel)]="defaultEndTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Duration</label>
+                                <nz-alert *ngIf="durationObject?.error" nzType="error" [nzMessage]="durationObject?.durationStr"></nz-alert>
+                                <nz-alert *ngIf="!durationObject?.error" nzType="success" [nzMessage]="durationObject?.durationStr"></nz-alert>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="current == 1" [formGroup]="rosterForm">
+                    <div class="form-group" >
+                        <label for="">Recipient</label>
+                        <app-recipient-popup formControlName="recipientCode"></app-recipient-popup>
+                    </div>
+                    <div class="form-group" >
+                        <label for="">Debtor</label>
+                        <app-recipient-popup formControlName="debtor"></app-recipient-popup>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="">Program</label>
+                        <nz-select nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of programsList" [nzValue]="list.progName" [nzLabel]="list.progName"></nz-option>
+                            <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
+                        </nz-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Service/Activity/Item</label>
+                        <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list.activity" [nzLabel]="list.activity"></nz-option>
+                            <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
+                        </nz-select>                        
+                        <div>
+                            <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="rosterForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
+                            <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="selected?.option === 1">
+                        <label for="">Staff/Contractor</label>
+                        <app-staff-popup formControlName="staffCode"></app-staff-popup>
+                    </div>
+                </div>
+                
+                <div *ngIf="current == 2" [formGroup]="rosterForm">
+                    <div class="form-group">
+                        <label for="">Pay Type</label>
+                        <nz-select formControlName="payType"
+                            [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of payTypeList" [nzValue]="list.title" [nzLabel]="list.title">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">Category</label>
+                        <nz-select formControlName="analysisCode"
+                            [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of analysisCodeList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultCategory" [nzValue]="defaultCategory" nzHide></nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+
+                <!-- <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 3" style="width: 30rem;">
+                    <ng-container>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Start Time</label>
+                                <nz-time-picker [(ngModel)]="defaultStartTime" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">End Time</label>
+                                <nz-time-picker [(ngModel)]="defaultEndTime" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Duration</label>
+                                <p class="time-duration">{{ durationObject?.durationStr }}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div> -->
+
+                <div nz-row nzSpan="24" nzGutter="8" [formGroup]="rosterForm" *ngIf="current == 3" style="width: 30rem;">
+                    <ng-container formGroupName="pay">
+                        <div nz-row>
+                            <div nz-col nzSpan="10">
+                                <div class="form-group">
+                                    <label for="">Unit</label>
+                                    <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list"></nz-option> 
+                                    </nz-select>
+                                </div>
+                            </div>
+                        </div>
+                       <div nz-row>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Rate</label>
+                                    <nz-input-number formControlName="rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        [nzParser]="parserDollar"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Quantity</label>
+                                    <nz-input-number formControlName="quantity" [nzMin]="0"  [nzStep]="1"></nz-input-number>
+                                </div>
+                            </div>
+                       </div>
+                    </ng-container>
+                </div>
+
+                <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 4" [formGroup]="rosterForm" style="width: 30rem;">
+                    <ng-container formGroupName="bill">
+                        <div nz-row>
+                            <div nz-col nzSpan="8">
+                                <div class="form-group">
+                                    <label for="">Unit</label>
+                                    <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
+                                        </nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                        </div>
+                       <div nz-row>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Rate</label>
+                                    <nz-input-number formControlName="rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        [nzParser]="parserDollar"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Quantity</label>
+                                    <nz-input-number formControlName="quantity" [nzMin]="0" [nzStep]="1"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Tax %</label>
+                                    <nz-input-number formControlName="tax" [nzMin]="-1" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
+                                        [nzParser]="parserPercent"></nz-input-number>
+                                </div>
+                            </div>
+                       </div>
+                    </ng-container>
+                </div>
+
+            </div>
+   
+    </div>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+            <span>Previous</span>
+        </button>
+        <button nz-button nzType="default" (click)="next()" *ngIf="nextCondition" [disabled]="nextDisabled">
+            <span>Next</span>
+        </button>
+        <button nz-button nzType="primary" (click)="done()" [disabled]="!isFormValid" *ngIf="showDone">
+            <span>Done</span>
+        </button>
+        <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>
+        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button> -->
+    </ng-template>
+
+</nz-modal>
+

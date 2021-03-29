@@ -83,8 +83,7 @@ import {
   LandingAdmin,
   SideMainMenu,
   RecipientsAdmin,
-  ReportsAdmin,
-  RostersAdmin,
+  ReportsAdmin,  
   SessionsAdmin,
   StaffAdmin,
   TimesheetAdmin,
@@ -140,6 +139,11 @@ import {
   IntakeServices,
   IntakeStaff
 } from '@intakes/index';
+
+
+import {  
+  RostersAdmin
+} from './pages/roster/index';
 
 import { ExtraComponent } from './pages/extra/extra';
 
@@ -1056,7 +1060,7 @@ export const PAGE_COMPONENTS = [
   LandingAdmin,
   RecipientsAdmin,
   ReportsAdmin,
-  RostersAdmin,
+  
   SessionsAdmin,
   StaffAdmin,
   TimesheetAdmin,
@@ -1064,6 +1068,8 @@ export const PAGE_COMPONENTS = [
   
   // Components
   ProfilePage,
+  //Roster Module
+  RostersAdmin,
   
   //Configuration
   BranchesComponent,

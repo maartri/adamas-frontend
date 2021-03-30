@@ -7443,7 +7443,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     TimeattandanceComparison(branch, staff, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName], Format(DateTime,'dd/MM/yyyy') as DateTime , Format(RosteredStart,'dd/MM/yyyy hh:mm') as RosteredStart  ,  Format (ActualDateTime,'dd/MM/yyyy')  as ActualDateTime, DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, Format(RosteredEnd,'dd/MM/yyyy hh:mm') as RosteredEnd ,  Format(LOActualDateTime,'dd/MM/yyyy') as LOActualDateTime, DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  getdate()) ";
+        var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName], Format(DateTime,'dd/MM/yyyy') as DateTime , Format(RosteredStart,'dd/MM/yyyy hh:mm tt') as RosteredStart  ,  Format (ActualDateTime,'dd/MM/yyyy')  as ActualDateTime, DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, Format(RosteredEnd,'dd/MM/yyyy hh:mm tt') as RosteredEnd ,  Format(LOActualDateTime,'dd/MM/yyyy') as LOActualDateTime, DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  getdate()) ";
         var lblcriteria;
 
 
@@ -8007,7 +8007,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     }
     AuditRegister(who, descibe, traccsuser, startdate, enddate, tempsdate, tempedate) {
             
-        var fQuery = "SELECT RecordNumber,format( ActionDate,'dd/MM/yyyy HH:mm') as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
+        var fQuery = "SELECT RecordNumber,format( ActionDate,'dd/MM/yyyy HH:mm tt') as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {

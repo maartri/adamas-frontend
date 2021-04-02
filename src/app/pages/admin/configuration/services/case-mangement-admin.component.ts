@@ -57,7 +57,6 @@ export class CaseMangementAdminComponent implements OnInit {
   staffApproved: boolean = false;
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
-  
   current: number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
@@ -65,9 +64,12 @@ export class CaseMangementAdminComponent implements OnInit {
   modalVariables:any;
   inputVariables:any; 
   postLoading: boolean = false;
+  check : boolean = false;
   isUpdate: boolean = false;
   title:string = "Add New Case Management / Client Admin";
   tocken: any;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;
@@ -89,6 +91,7 @@ export class CaseMangementAdminComponent implements OnInit {
   
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.loadData();
       this.buildForm();
@@ -305,11 +308,20 @@ export class CaseMangementAdminComponent implements OnInit {
     }
     loadData(){
       this.loading = true;
-      this.menuS.GetlistcaseManagement().subscribe(data => {
+      this.menuS.GetlistcaseManagement(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
       });
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE ProcessClassification <> 'INPUT' ";
+        this.loadData();
+      }else{
+        this.whereString = "WHERE ProcessClassification <> 'INPUT' AND ISNULL(DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
+        this.loadData();
+      }
     }
     clearStaff(){
       this.listStaff.forEach(x => {

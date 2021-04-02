@@ -42,11 +42,11 @@ const inputFormDefault = {
 }
 
 @Component({
-    host: {
-        '[style.display]': 'flex',
-        '[style.flex-direction]': 'column',
-        '[style.overflow]': 'auto'
-      },
+    // host: {
+    //     '[style.display]': 'flex',
+    //     '[style.flex-direction]': 'column',
+    //     '[style.overflow]': 'auto'
+    //   },
     styles: [`
         
         button{

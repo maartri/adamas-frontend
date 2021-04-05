@@ -92,7 +92,7 @@ export class ProgramPackagesComponent implements OnInit {
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
   packageLeaveModal:boolean = false;
-  
+  check : boolean = false;
   current: number = 0;
   checked:boolean=false;
   checkedflag:boolean = true;
@@ -104,7 +104,9 @@ export class ProgramPackagesComponent implements OnInit {
   isUpdate: boolean = false;
   radioSelcted = 'program'
   title:string = "Add New Program/Packages";
+  whereString:string = "WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate()) )";
   private unsubscribe: Subject<void> = new Subject();
+  userRole:string="userrole";
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
@@ -127,6 +129,7 @@ export class ProgramPackagesComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.checkedListExcluded =new Array<string>();
       this.checkedListApproved =new Array<string>();
@@ -729,6 +732,15 @@ export class ProgramPackagesComponent implements OnInit {
         this.loading = false;
         this.cd.detectChanges();
       });
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) ";
+        this.loadData();
+      }else{
+        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate()) ) ";
+        this.loadData();
+      }
     }
     populateDropdowns(): void {
       

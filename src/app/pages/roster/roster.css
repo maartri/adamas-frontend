@@ -1,0 +1,101 @@
+
+        .calendar{
+            height:80vh;
+            position:relative;
+        }
+        .date-title{
+            font-family: 'Marmelad', sans-serif;
+            text-align: center;
+            font-size: 2rem;
+        }
+        nz-button-group{
+            float: left;
+            margin: 1rem 0 0 0;
+        }
+   
+    .dm-input{
+        margin-bottom:1rem;
+    }
+    nz-modal.options >>> div div div.ant-modal div.ant-modal-content div.ant-modal-body{
+        padding:0;
+    }
+    nz-modal.options >>> div div div.ant-modal div.ant-modal-content div.ant-modal-footer{
+        padding:0;
+    }
+    ul{
+        list-style: none;
+        padding: 5px 0 5px 15px;
+        margin: 0;
+    }
+    li {
+        padding: 4px 0 4px 10px;
+        font-size: 13px;
+        position:relative;
+        cursor:pointer;
+    }
+    li:hover{
+        background:#f2f2f2;
+    }
+    li i {
+        float:right;
+        margin-right:7px;
+    }
+    hr{
+        border: none;
+        height: 1px;
+        background: #e5e5e5;
+        margin: 2px 0;
+    }
+    li > ul{
+        position: absolute;
+        display:none;         
+        right: -192px;
+        padding: 2px 5px;
+        background: #fff;
+        top: -6px;
+        width: 192px;
+        transition: all 0.5s ease 3s;
+    }
+    li:hover > ul{           
+        display:block;
+        transition: all 0.5s ease 0s;
+    }
+
+   
+        .selected td{
+            background: #d5ffca;
+        }
+        nz-step >>> .ant-steps-item-container .ant-steps-item-content{
+            width: auto !important;
+        }
+        nz-select{
+            width: 11.4rem;
+        }
+        .time-duration{
+            font-weight: 500; 
+            margin-top: 8px;
+        }
+
+        nz-descriptions >>> .ant-descriptions-view tr td.ant-descriptions-item-label{
+            padding: 4px 16px;
+        }
+        nz-descriptions >>> div table tbody tr:last-child td:last-child {
+            background: #e1ffdc;
+        }
+        nz-descriptions >>> div table tbody tr td{
+            font-size:11px;
+        }
+        .notes{
+            max-height: 3rem;
+            overflow: hidden;            
+        }
+        .atay {
+            font-size: 10px !important;
+            white-space: break-spaces !important;
+            height: 8rem !important;
+            overflow: auto !important;
+        }
+        nz-alert >>> .ant-alert.ant-alert-no-icon{
+            padding:4px 15px;
+        }
+    

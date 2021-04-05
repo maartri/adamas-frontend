@@ -10,6 +10,8 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, DayManagerPopulate } from '@pipes/pipes';
 import { ProfileComponent } from './profile/profile.component'
 
+import { NgSelectModule } from '@ng-select/ng-select';
+
 import {
   SuburbComponent
 } from '@components/index';
@@ -47,6 +49,7 @@ import { AddStaffComponent } from './add-staff/add-staff.component';
 import { IncidentDocumentsComponent } from './incident-documents/incident-documents.component';
 import { RecipientsOptionsComponent } from './recipients-options/recipients-options.component';
 import { SelectListRecipientComponent } from './select-list-recipient/select-list-recipient.component';
+
 
 @NgModule({
   declarations: [
@@ -87,6 +90,7 @@ import { SelectListRecipientComponent } from './select-list-recipient/select-lis
   imports: [
     CommonModule,
     RouterModule,
+    NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
     NgZorroAntdModule,
@@ -123,7 +127,8 @@ import { SelectListRecipientComponent } from './select-list-recipient/select-lis
     IncidentPostComponent,
     AddStaffComponent,
     IncidentDocumentsComponent,
-    RecipientsOptionsComponent
+    RecipientsOptionsComponent,
+    NgSelectModule
   ],
   providers: [
     

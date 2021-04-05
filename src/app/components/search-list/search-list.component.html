@@ -1,3 +1,42 @@
-<nz-select nzShowSearch nzAllowClear [nzLoading]="loading" [nzPlaceHolder]="viewResult()" [nzMaxTagCount]="1000" [(ngModel)]="searchModel" (ngModelChange)="change($event)" >
+<!-- <nz-select nzShowSearch nzAllowClear [nzLoading]="loading" [nzPlaceHolder]="viewResult()" [nzMaxTagCount]="1000" [(ngModel)]="searchModel" (ngModelChange)="change($event)" >
     <nz-option *ngFor="let l of lists" [nzLabel]="l.accountNo" [nzValue]="l"></nz-option>   
-</nz-select>
+</nz-select> -->
+
+<div class="search-container">
+    <ng-select 
+        [items]="lists" 
+        [virtualScroll]="true"
+        bindLabel="accountNo" 
+        [dropdownPosition]="'bottom'"
+        [clearable]="false"
+
+        [closeOnSelect]="true"
+        (focus)="isOpen=true"
+        (ngModelChange)="change($event)"
+        [(ngModel)]="searchModel">
+    </ng-select>
+
+    <i nz-icon nzType="phone" nzTheme="outline" (click)="phoneModal=true" nz-tooltip nzTooltipTitle="Phone Search"></i>
+    <!-- <i nz-icon nzType="close-circle" nzTheme="outline" nz-tooltip nzTooltipTitle="Clear Phone Filter"></i> -->
+</div>
+
+
+
+
+<nz-modal [(nzVisible)]="phoneModal" nzTitle="Phone Search" [nzFooter]="modalFooter" (nzOnCancel)="clearPhoneModal()">
+    <div nz-row>
+        <input nz-input placeholder="Phone #" [(ngModel)]="phoneSearch" />
+        <button nz-button nzType="primary" (click)="searchPhone()" nzShape="circle"><i nz-icon nzType="search"></i></button>
+    </div>
+
+    <div nz-row>
+        <ul *ngIf="listPhoneRecipientsList?.length > 0">
+            <li *ngFor="let list of listPhoneRecipientsList;let i = index" (click)="selected(i)" [class.selected]="selectedIndex == i">{{ list.accountNo}}</li>
+        </ul>
+    </div>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="clearPhoneModal()">Cancel</button>
+        <button nz-button nzType="primary" (click)="gotoRecipient()">Submit</button>
+    </ng-template>
+</nz-modal>

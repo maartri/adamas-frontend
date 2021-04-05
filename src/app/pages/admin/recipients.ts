@@ -55,6 +55,38 @@ import { RECIPIENT_OPTION } from '../../modules/modules';
             background: #ffffff00;
             float: left;
         }
+        .status{
+            font-size: 11px;
+            padding: 3px 5px;
+            border-radius: 11px;
+            color: #fff;
+
+            margin-right: 10px;
+        }
+        .status.active{            
+            background: #42ca46;
+        }
+        .status.inactive{            
+            background: #c70000;
+        }
+        .status.type{
+            background:#c8f2ff;
+            color: black;
+        }
+        .status-program{
+            display: inline-block;
+            float: left;
+            margin-right:1rem;
+        }
+        .status-program i{
+            font-size: 1.4rem;
+            color: #bfbfbf;
+            margin-right:10px;
+            cursor:pointer;
+        }
+        .status-program i:hover{
+            color: #000;
+        }
     `],
     templateUrl: './recipients.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -65,6 +97,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     user: any = null;
     nzSelectedIndex: number = 0;
     isFirstLoad: boolean = false;
+    programModalOpen: boolean = false;
 
     sample: any;
 
@@ -86,6 +119,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     
     RECIPIENT_OPTION = RECIPIENT_OPTION;
 
+    recipientStatus: string = null;
+    recipientType: any;
+    selectedRecipient: any; 
+
+    programs: Array<any> = [];
+
     listChange(event: any) {
 
         if (event == null) {
@@ -100,6 +139,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             //this.view(6);
             this.isFirstLoad = true;
         }
+
         console.log(JSON.stringify(event));
 
   
@@ -136,7 +176,22 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         private cd: ChangeDetectorRef,
         private listS: ListService
     ) {
+        this.sharedS.emitProfileStatus$.subscribe(data => {
+            console.log(data);
+            this.selectedRecipient = data;
+            this.recipientType = data.type == null || data.type.trim() == "" ? null : data.type;
+            // if(data.admissionDate == null && data.dischargeDate == null){
+            //     this.recipientStatus = null;
+            //     return;
+            // }
 
+            if(data.admissionDate != null && data.dischargeDate == null){
+                this.recipientStatus = 'active';
+            } else {
+                this.recipientStatus ='inactive';
+            }
+            
+        })
     }
 
     ngOnInit(): void {
@@ -221,6 +276,26 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     handleOk() {
         
+    }
+
+    detectChanges(){
+        this.cd.markForCheck();
+        this.cd.detectChanges();
+    }
+
+    closeProgram(){
+        this.programModalOpen = false;
+    }
+
+    loadPrograms(){
+        if(!this.selectedRecipient){
+            return;
+        }
+        this.listS.getrecipientprograms(this.selectedRecipient.uniqueID)
+        .subscribe(data => {
+            this.programs = data;
+            this.detectChanges();
+        })
     }
 
     openReferInModal: any;

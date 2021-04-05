@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import { DomSanitizer } from '@angular/platform-browser';
 
 
-import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
+import { TimeSheetService, GlobalService, view, ClientService, ShareService , StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
 import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap, map } from 'rxjs/operators';
 import { forkJoin, Observable, EMPTY } from 'rxjs';
@@ -114,6 +114,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     private settings: SettingsService,
     private cd: ChangeDetectorRef,
     private uploadS: UploadService,
+    private shareS: ShareService,
     private ds: DomSanitizer
   ) {
 
@@ -325,6 +326,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       this.clientS.getprofile(token.name).pipe(
         concatMap(data => {
           this.user = data;
+        
+          this.shareS.emitRecipientStatus(this.user);
           
           this.patchTheseValuesInForm(data);
           return this.getUserData(data.uniqueID);

@@ -287,7 +287,9 @@ export interface GetStaff {
     User: string,
     SearchString?: string,
     IncludeInactive?: boolean,
-    Status?: string
+    Status?: string,
+    Skip?: number,
+    Take?: number
 }
 
 export interface GetRecipient {

@@ -16,6 +16,9 @@
 @import '~@fullcalendar/daygrid/main.css';
 @import '~@fullcalendar/timegrid/main.css'; */
 
+@import "~@ng-select/ng-select/themes/default.theme.css";
+/* @import "~@ng-select/ng-select/themes/material.theme.css"; */
+
 html{
     height:100%;
 }

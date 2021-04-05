@@ -10,3 +10,56 @@ nz-select >>> div.ant-select-selection{
 nz-select >>> input[type="text"]{
     text-transform: "uppercase";
 }
+
+div{
+    display:flex;
+}
+
+div.search-container ng-select{
+    flex:90%;
+}
+
+div.search-container i{
+    flex: 10%;
+    font-size: 1.1rem;
+    padding: 8px;
+    margin-left: 10px;
+    border: 1px solid #dadada;
+    border-radius: 7px;
+    cursor:pointer;
+    color:#afafaf;
+}
+
+div.search-containeri:hover{
+    background: #ececec;
+    border-color: #cacaca;
+    color:#5d5d5d;
+}
+
+ul{
+    list-style: none;
+    margin: 10px 0 0 0;
+    padding: 0;
+    width: 100%;
+    border: 1px solid #d2d2d2;
+    border-radius: 3px;
+    overflow: auto;
+    max-height: 13rem;
+}
+li{
+    padding:10px;
+    border-bottom: 1px solid #d2d2d2;
+    cursor:pointer;
+}
+li:not(.selected):hover{
+    background-color:#efefef;
+}
+li:last-child{
+    border:0;
+}
+button{
+    margin-left: 10px;
+}
+.selected{
+    background:#d2d2d2;
+}

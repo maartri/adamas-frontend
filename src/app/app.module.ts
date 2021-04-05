@@ -24,6 +24,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { JwtModule } from '@auth0/angular-jwt';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
+// import { NgSelectModule } from '@ng-select/ng-select';
+
 import {
   AuthService,
   LoginService,
@@ -90,6 +92,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   ],
   imports: [
     BrowserModule,
+    // NgSelectModule,
     FormsModule,
     CommonModule,
     ReactiveFormsModule,

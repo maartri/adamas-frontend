@@ -4603,12 +4603,14 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Programs." }
 
+        var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
+
         fQuery = fQuery + "   ORDER BY R.[Surname/Organisation], FirstName"
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-        // //////console.log(fQuery)
+        //console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -4620,6 +4622,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "count":sQl_Count,
             }
         }
         this.loading = true;

@@ -24,7 +24,6 @@ export class DocumentTemplateComponent implements OnInit {
   loading: boolean = false;
   modalOpen: boolean = false;
   current: number = 0;
-  user: any;
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
@@ -39,6 +38,7 @@ export class DocumentTemplateComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -59,11 +59,6 @@ export class DocumentTemplateComponent implements OnInit {
       this.loadData();
       this.loading = false;
       this.cd.detectChanges();
-    }
-    reload(reload: boolean){
-      if(reload){
-
-      }
     }
     fetchAll(e){
       if(e.target.checked){

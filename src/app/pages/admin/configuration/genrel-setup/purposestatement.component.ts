@@ -145,19 +145,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-
-      if(!this.isUpdate){      
-        
-        let name        = this.globalS.isValueNull(group.get('porpose').value).trim().toUpperCase();
-        
-        let is_exist    = this.globalS.userExists(this.tableData,name);
-        
-        if(is_exist){
-          this.globalS.sToast('Unsuccess', 'Title Already Exist');
-          this.postLoading = false;
-          return false;   
-        }
-
+      if(!this.isUpdate){         
         this.switchS.addData(  
           this.modalVariables={
             title: 'Package Purpose Statements'

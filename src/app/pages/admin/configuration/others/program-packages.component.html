@@ -1,7 +1,6 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Program/Packages</button>
-        <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
         <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>

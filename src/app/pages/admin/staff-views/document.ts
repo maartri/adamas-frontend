@@ -241,6 +241,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     }
 
     save(){
+
         var inp = {
             User: this.globalS.decode().user,
             PersonID: this.user.id,
@@ -248,6 +249,8 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
             NewFileName: this.fileObject.newFile,
             Path:  this.fileObject.path
         };
+
+
         this.uploadS.postdocumentstafftemplate(inp).subscribe(data => {
             this.globalS.sToast('Success','Document has been added');
             this.search();

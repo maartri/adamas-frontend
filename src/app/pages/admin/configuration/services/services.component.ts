@@ -65,10 +65,8 @@ export class ServicesComponent implements OnInit {
   inputVariables:any; 
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  check : boolean = false;
+  
   title:string = "Add New Services";
-  userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
@@ -92,7 +90,7 @@ export class ServicesComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
-      this.userRole = this.tocken.role;
+      
       this.checkedList = new Array<string>();
       this.loadData();
       this.buildForm();
@@ -309,20 +307,11 @@ export class ServicesComponent implements OnInit {
     }
     loadData(){
       this.loading = true;
-      this.menuS.getlistServices(this.check).subscribe(data => {
+      this.menuS.getlistServices().subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
       });
-    }
-    fetchAll(e){
-      if(e.target.checked){
-        this.whereString = "WHERE ProcessClassification <> 'INPUT' ";
-        this.loadData();
-      }else{
-        this.whereString = "WHERE ProcessClassification <> 'INPUT' AND ISNULL(DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
-        this.loadData();
-      }
     }
     clearStaff(){
       this.listStaff.forEach(x => {

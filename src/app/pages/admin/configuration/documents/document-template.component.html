@@ -99,12 +99,8 @@
                 <div nz-col nzSpan="8" class="text-right pad-r-5">
                     <label for="Template" >Template:</label>
                 </div>
-                
-                <div nz-col nzSpan="11">
+                <div nz-col nzSpan="16">
                     <textarea rows="2" nz-input  formControlName="template"></textarea>
-                </div>
-                <div nz-col nzSpan="3">
-                    <app-upload-shared [(ngModel)]="user" (reload)="reload($event)" [ngModelOptions]="{standalone: true}"></app-upload-shared>
                 </div>
             </div>
             <div nz-row nzJustify class="mrg-btm">

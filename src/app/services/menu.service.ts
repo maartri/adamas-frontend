@@ -30,23 +30,23 @@ export class MenuService {
         private ModalS: NzModalService,
         ){ }
        
-        getlistServices(is_where: boolean):Observable<any>{
-            return this.auth.get(`${menu}/Services/${is_where}`)
+        getlistServices():Observable<any>{
+            return this.auth.get(`${menu}/Services`)
         }
-        getlistItemConsumables(is_where: boolean):Observable<any>{
-            return this.auth.get(`${menu}/itemConsumable/${is_where}`)
+        getlistItemConsumables():Observable<any>{
+            return this.auth.get(`${menu}/itemConsumable`)
         }
-        getlistMenuMeals(is_where: boolean):Observable<any>{
-            return this.auth.get(`${menu}/menuMeals/${is_where}`)
+        getlistMenuMeals():Observable<any>{
+            return this.auth.get(`${menu}/menuMeals`)
         }
-        GetlistcaseManagement(is_where: boolean):Observable<any>{
-            return this.auth.get(`${menu}/caseManagement/${is_where}`)
+        GetlistcaseManagement():Observable<any>{
+            return this.auth.get(`${menu}/caseManagement`)
         }
         GetlistStaffAdminActivities(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/staffAdminActivities/${is_where}`)
         }
-        GetlistRecipientAbsenses(is_where: boolean):Observable<any>{
-            return this.auth.get(`${menu}/recipientAbsenses/${is_where}`)
+        GetlistRecipientAbsenses():Observable<any>{
+            return this.auth.get(`${menu}/recipientAbsenses`)
         }
         Getlistequipments():Observable<any>{
             return this.auth.get(`${menu}/equipments`)

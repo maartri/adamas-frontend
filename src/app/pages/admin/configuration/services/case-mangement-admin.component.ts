@@ -639,6 +639,9 @@ export class CaseMangementAdminComponent implements OnInit {
       this.tryDoctype = ""
       this.pdfTitle = ""
     }
+    onIndexChange(index: number): void {
+      this.current = index;
+    }
     handleCancelTop(): void {
       this.drawerVisible = false;
       this.pdfTitle = ""

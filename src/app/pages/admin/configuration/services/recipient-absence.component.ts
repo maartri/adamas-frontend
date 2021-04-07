@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService } from '@services/index';
+import { GlobalService, ListService, MenuService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -57,7 +57,7 @@ export class RecipientAbsenceComponent implements OnInit {
   staffApproved: boolean = false;
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
-  
+  check : boolean = false;
   current: number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
@@ -68,11 +68,19 @@ export class RecipientAbsenceComponent implements OnInit {
   isUpdate: boolean = false;
   title:string = "Add New Recipient Absences";
   tocken: any;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  budgetUomList: string[];
+  ndiaList: string[];
+  datasetList: string[];
+  shiftTypes: string[];
+  mobileLogModes: { "0": string; "3": string; "1": string; "2": string; };
+  timesteps: string[];
   
   constructor(
     private globalS: GlobalService,
@@ -90,7 +98,7 @@ export class RecipientAbsenceComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
-      
+      this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.loadData();
       this.buildForm();
@@ -102,6 +110,23 @@ export class RecipientAbsenceComponent implements OnInit {
     showAddModal() {
       this.title = "Add New Recipient Absences"
       this.resetModal();
+      this.inputForm.patchValue({
+        mainGroup :'RECIPIENT ABSENCE',
+        subgroup  :'OTHER',
+        unit      :'HOUR',
+        min       :'0',
+        max       :'0',
+        forceRostedTime:'0',
+        chargeRate1:'$0.0000',
+        minimumChargeRate:'$0.0000',
+        commercial:'$0.0000',
+        price2:'$0.0000',
+        price3:'$0.0000',
+        price4:'$0.0000',
+        price5:'$0.0000',
+        price6:'$0.0000',
+      });
+
       this.modalOpen = true;
     }
     log(value: string[]): void {
@@ -124,59 +149,179 @@ export class RecipientAbsenceComponent implements OnInit {
       this.current = 0;
       this.modalOpen = true;
       const {
-        code,
-        description,
+        title,
+        billText,
+        rosterGroup,
         subGroup,
-        payUnit,
-        payCategory,
-        payID,
-        payAmount,
-        enddate,
-        noPayExport,
-        conflict,
-        day0,
-        day1,
-        day2,
-        day3,
-        day4,
-        day5,
-        day6,
-        day7,
-        min,
-        max,
-        forceRostedTime,
-        rostedDay,
-        rostedTime,
-        orignalminute,
+        status,
+        billAmount,
+        billUnit,
+        minChargeRate,
+        lifecycle,
+        budgetGroup,
+        dataSet,
+        autoApprove,
+        excludeFromAutoLeave,
+        infoOnly,
+        accountingCode,
+        glRevenue,
+        job,
+        glCost,
+        unitCostUOM,
+        unitCost,
+        mainGroup,
+        excludeFromPayExport,
+        excludeFromUsageStatements,
+        price2,
+        price3,
+        price4,
+        price5,
+        price6,
+        excludeFromConflicts,
+        noMonday,
+        noTuesday,
+        noWednesday,
+        noThursday,
+        noFriday,
+        noSaturday,
+        noSunday,
+        noPubHol,
+        dtartTimeLimit,
+        endTimeLimit,
+        minDurtn,
+        maxDurtn,
+        fixedTime,
+        noChangeDate,
+        noChangeTime,
+        timeChangeLimit,
+        defaultAddress,
+        defaultPhone,
+        autoActivityNotes,
+        autoRecipientDetails,
+        jobSheetPrompt,
+        activityNotes,
+        jobType,
+        excludeFromHigherPayCalculation,
+        noOvertimeAccumulation,
+        payAsRostered,
+        excludeFromTimebands,
+        excludeFromInterpretation,
+        excludeFromClientPortalDisplay,
+        excludeFromTravelCalc,
+        tA_EXCLUDEGEOLOCATION,
+        appExclude1,
+        taexclude1,
+        tA_LOGINMODE,
+        taEarlyStartTHEmail,
+        taEarlyStartTH,
+        taEarlyStartTHWho,
+        taLateStartTHEmail,
+        taLateStartTH,
+        taLateStartTHWho,
+        taNoGoResend,
+        taNoShowResend,
+        taEarlyFinishTHEmail,
+        taLateFinishTHEmail,
+        taEarlyFinishTH,
+        taLateFinishTH,
+        taLateFinishTHWho,
+        taEarlyFinishTHWho,
+        taOverstayTHEmail,
+        taUnderstayTHEmail,
+        taNoWorkTHEmail,
+        taOverstayTH,
+        taUnderstayTH,
+        taNoWorkTH,
+        endDate,
         recordNumber,
-      } = this.tableData[index];
+      } = this.tableData[index-1];
       this.inputForm.patchValue({
-        code:code,
-        description:description,
-        type:payCategory,
+        title:title,
+        billingText:billText,
+        mainGroup:rosterGroup,
         subgroup:subGroup,
-        payrate:payAmount,
-        unit:payUnit,
-        end:enddate,
-        payid:payID,
-        exportfrompay:noPayExport,
-        casuals:'',
-        conflict:conflict,
-        day0:day0,
-        day1:day1,
-        day2:day2,
-        day3:day3,
-        day4:day4,
-        day5:day5,
-        day6:day6,
-        day7:day7,
-        min:min,
-        max:max,
-        forceRostedTime:forceRostedTime,
-        rostedDay:rostedDay,
-        rostedTime:rostedTime,
-        orignalminute:orignalminute,
-        recordNumber:recordNumber,
+        status:status,
+        chargeRate1:billAmount,
+        minimumChargeRate:minChargeRate,
+        unit:billUnit,
+        lifeCycleEvent:lifecycle,
+        budgetGroup:budgetGroup,
+        dicipline:dataSet,
+        AutoApprove:autoApprove,
+        excludeFromAuto:(excludeFromAutoLeave == true) ? true : false,
+        Informational:(infoOnly == true) ? true : false,
+        recordNumber:(recordNumber == true) ? true : false,
+        accountingCode:accountingCode,
+        glRevenue:glRevenue,
+        job:job,
+        glCost:glCost,
+        buom:unitCostUOM,
+        unitCost:unitCost,
+        nida:mainGroup,
+        commercial:billAmount,
+        excludeFromPayExport:(excludeFromPayExport == true) ? true : false,
+        excludeFromUsageStatements:(excludeFromUsageStatements == true) ? true : false,
+        price2:price2,
+        price3:price3,
+        price4:price4,
+        price5:price5,
+        price6:price6,
+        conflict:excludeFromConflicts,
+        day1:(noMonday    == false) ? true : false,
+        day2:(noTuesday   == false) ? true : false,
+        day3:(noWednesday == false) ? true : false,
+        day4:(noThursday  == false) ? true : false,
+        day5:(noFriday    == false) ? true : false,
+        day6:(noSaturday  == false) ? true : false,
+        day7:(noSunday    == false) ? true : false,
+        day0:(noPubHol    == false) ? true : false,
+        startTimeLimit:dtartTimeLimit,
+        endTimeLimit:endTimeLimit,
+        min:minDurtn,
+        max:maxDurtn,
+        rostedDay:(noChangeDate == true) ? true : false,
+        rostedTime:(noChangeTime== true) ? true : false,
+        forceRostedTime:fixedTime,
+        orignalminute:timeChangeLimit,
+        address:defaultAddress,
+        contact:defaultPhone,
+        autoActivityNotes:(autoActivityNotes == true) ? true : false,
+        autoRecipientDetails:(autoRecipientDetails== true) ? true : false,
+        jobSheetPrompt:(jobSheetPrompt == true ) ? true : false,
+        activityNotes:activityNotes,
+        specialShift:jobType,
+        award1:(excludeFromHigherPayCalculation == true) ? true : false,
+        award2:(noOvertimeAccumulation== true) ? true : false,
+        award3:(payAsRostered== true) ? true : false,
+        award4:(excludeFromTimebands== true) ? true : false,
+        award5:(excludeFromInterpretation== true) ? true : false,
+        excludeFromClientPortalDisplay:(excludeFromClientPortalDisplay == true) ?  true : false,
+        excludeFromTravelCalc:(excludeFromTravelCalc ==  true) ? true : false,
+        tA_EXCLUDEGEOLOCATION:(tA_EXCLUDEGEOLOCATION == true) ? true : false,
+        appExclude1:(appExclude1 == true) ? true : false,
+        taexclude1:(taexclude1 == true) ?  true : false,
+        mode:tA_LOGINMODE,
+        taEarlyStartTHEmail:(taEarlyStartTHEmail == true) ?  true : false,
+        taEarlyStartTH:taEarlyStartTH,
+        taEarlyStartTHWho:taEarlyStartTHWho,
+        taLateStartTHEmail:(taLateStartTHEmail == true) ?  true : false,
+        taLateStartTH:taLateStartTH,
+        taLateStartTHWho:taLateStartTHWho,
+        taEarlyFinishTHEmail:(taEarlyFinishTHEmail == true) ?  true : false,
+        taLateFinishTHEmail :(taLateFinishTHEmail == true) ? true : false,
+        taNoGoResend:taNoGoResend,
+        taNoShowResend:taNoShowResend,
+        taEarlyFinishTH:taEarlyFinishTH,
+        taLateFinishTH:taLateFinishTH,
+        taLateFinishTHWho:taLateFinishTHWho,
+        taEarlyFinishTHWho:taEarlyFinishTHWho,
+        taOverstayTHEmail:(taOverstayTHEmail == true) ? true : false,
+        taUnderstayTHEmail:(taUnderstayTHEmail == true) ? true : false,
+        taNoWorkTHEmail:(taNoWorkTHEmail == true) ? true : false,
+        taOverstayTH:taOverstayTH,
+        taUnderstayTH:taUnderstayTH,
+        taNoWorkTH:taNoWorkTH,
+        end_date:endDate,
       });
     }
     
@@ -216,6 +361,9 @@ export class RecipientAbsenceComponent implements OnInit {
       } else {
         this.checkedList = this.checkedList.filter(m=>m!= option.name)
       }
+    }
+    onIndexChange(index: number): void {
+      this.current = index;
     }
     next(): void {
       this.current += 1;
@@ -307,11 +455,20 @@ export class RecipientAbsenceComponent implements OnInit {
     }
     loadData(){
       this.loading = true;
-      this.menuS.GetlistRecipientAbsenses().subscribe(data => {
+      this.menuS.GetlistRecipientAbsenses(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
       });
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE ProcessClassification <> 'INPUT' ";
+        this.loadData();
+      }else{
+        this.whereString = "WHERE ProcessClassification <> 'INPUT' AND ISNULL(DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
+        this.loadData();
+      }
     }
     clearStaff(){
       this.listStaff.forEach(x => {
@@ -321,52 +478,64 @@ export class RecipientAbsenceComponent implements OnInit {
       this.selectedStaff = [];
     }
     populateDropdowns(): void {
-      this.mainGroupList = ['ONE ON ONE','CENTER BASED ACTIVITY','GROUP ACTIVITY','TRANSPORT','SLEEPOVER'];
-      this.subGroupList = ['GENERAL','MEAL','TRAINING','STAFF DEVELOPMENT'];
-      this.status  = ['ATTRIBUTABLE','NON ATTRIBUTABLE'];
-      this.units  = ['HOUR','SERVICE'];
-      let todayDate  = this.globalS.curreentDate();
+
+      this.mainGroupList  = ['RECIPIENT ABSENCE'];
+      this.subGroupList   = ['FULL DAY-RESPITE','FULL DAY-HOSPITAL','FULL DAY-TRANSITION','FULL DAY-SOCIAL LEAVE','OTHER','ALTERNATIVE','ALTERNATIVE'];
+      this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
+      this.units          = ['HOUR','SERVICE'];
+      this.budgetUomList  = ['EACH/SERVICE','HOURS','PLACE','DOLLARS'];
+      this.ndiaList       = ['DIRECT SERVICE','PACKAGE ADMIN','CASE MANAGEMENT','GOODS/EQUIPMENT'];
+      this.datasetList    = ['CACP','CTP','DEX','DFC','DVA','HACC','HAS','ICTD','NDIS','NRCP','NRCP-SAR','OTHER','QCSS'];
+      this.shiftTypes     = ['EXCURSION','MEAL BREAK','SLEEPOVER','TEA BREAK'];
+      this.mobileLogModes = {
+                              "0":'BUTTONS',
+                              "3":'PIN CODE',
+                              "1":'QRCODE',
+                              "2":'SIGNATURE',
+                            };
       
-      let sql ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'LIFECYCLEEVENTS'";
+      let todayDate       = this.globalS.curreentDate();
+      
+      let sql ="SELECT distinct Description from DataDomains Where  Domain = 'LIFECYCLEEVENTS'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.lifeCycleList = data;
       });
       
-      let sql3 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'ADDRESSTYPE'";
+      let sql3 ="SELECT distinct Description from DataDomains Where  Domain = 'ADDRESSTYPE'";
       this.loading = true;
       this.listS.getlist(sql3).subscribe(data => {
         this.addressTypes = data;
       });
-      let sql4 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'CONTACTTYPE'";
+      let sql4 ="SELECT distinct Description from DataDomains Where  Domain = 'CONTACTTYPE'";
       this.loading = true;
       this.listS.getlist(sql4).subscribe(data => {
-        this.addressTypes = data;
+        this.contactTypes = data;
       });
-      let sql1 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'BUDGETGROUP'";
+      let sql1 ="SELECT distinct Description from DataDomains Where  Domain = 'BUDGETGROUP'";
       this.loading = true;
       this.listS.getlist(sql1).subscribe(data => {
         this.budgetGroupList = data;
       });
       
-      let sql2 ="SELECT * from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'DISCIPLINE'";
+      let sql2 ="SELECT distinct Description from DataDomains Where  Domain = 'DISCIPLINE'";
       this.loading = true;
-      this.listS.getlist(sql1).subscribe(data => {
+      this.listS.getlist(sql2).subscribe(data => {
         this.diciplineList = data;
       });
       
-      let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+      let comp = "SELECT distinct Description as name from DataDomains Where  Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
         this.loading = false;
       });  
       
-      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > '"+todayDate+"'))";
+      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
       this.listS.getlist(prog).subscribe(data => {
         this.programz = data;
       });
-      
-      this.mtaAlerts = ['No Alert','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
+      this.timesteps = timeSteps;
+      this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
       this.paytypes  = ['SALARY','ALLOWANCE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
     }
@@ -396,18 +565,31 @@ export class RecipientAbsenceComponent implements OnInit {
         budgetGroup:'',
         dicipline:'',
         colorCode:'',
-        AutoApprove:'',
-        excludeFromAuto:'',
-        Informational:'',
-        datasetMapping:'',
+        AutoApprove:false,
+        excludeFromAuto:false,
+        Informational:false,
+        dataset:'',
         groupMapping:'',
-        typeMapping:'',
-        code:'',
-        description:'',
+        nida:'',
+        accountingCode:'',
+        glRevenue:'',
+        job:'',
+        glCost:'',
+        buom:'',
+        unitCost:'',
+        commercial:'',
+        price2:'',
+        price3:'',
+        price4:'',
+        price5:'',
+        price6:'',
+        excludeFromPayExport:false,
+        excludeFromUsageStatements:false,
         type: '',
         payrate:'',
         casuals:false,
         end:'',
+        end_date:'',
         payid:'',
         exportfrompay:false,
         conflict:false,
@@ -419,19 +601,57 @@ export class RecipientAbsenceComponent implements OnInit {
         day5:false,
         day6:false,
         day7:false,
+        startTimeLimit:'',
+        endTimeLimit:'',
         min:0,
         max:0,
         forceRostedTime:0,
         rostedDay:false,
         rostedTime:false,
         orignalminute:0,
+        address:'',
+        contact:'',
+        autoActivityNotes:false,
+        autoRecipientDetails:false,
+        jobSheetPrompt:false,
+        activityNotes:'',
         award1:false,
         award2:false,
         award3:false,
         award4:false,
         award5:false,
         specialShift:'',
-        branch:'',
+        mtacode:'',
+        mode:'',
+        excludeFromClientPortalDisplay: false,
+        excludeFromTravelCalc: false,
+        tA_EXCLUDEGEOLOCATION:false,
+        appExclude1:false,
+        taexclude1:false,
+        taEarlyStartTHEmail:false,
+        taEarlyStartTH:false,
+        taEarlyStartTHWho:'',
+        taLateStartTHEmail:false,
+        taLateStartTH:false,
+        taLateStartTHWho:'',
+        taNoGoResend:'',
+        taNoShowResend:'',
+        taEarlyFinishTHEmail:false,
+        taLateFinishTHEmail:false,
+        taEarlyFinishTH:'',
+        taLateFinishTH:'',
+        taLateFinishTHWho:'',
+        taEarlyFinishTHWho:'',
+        taOverstayTHEmail:false,
+        taUnderstayTHEmail:false,
+        taNoWorkTHEmail:false,
+        taOverstayTH:'',
+        taUnderstayTH:'',
+        taNoWorkTH:'',
+        taUnderstayTHWho:'',
+        taOverstayTHWho:'',
+        taNoWorkTHWho:'',
+        branch:'',        
         recordNumber:null
       });
     }

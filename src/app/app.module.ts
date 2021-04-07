@@ -68,7 +68,6 @@ import { BranchesComponent } from './pages/admin/configuration/genrel-setup/bran
 import { FundingRegionsComponent } from './pages/admin/configuration/genrel-setup/funding-regions/funding-regions.component';
 import { SpreadSheetsModule } from "@grapecity/spread-sheets-angular";
 import {DocusignComponent} from './pages/docusign/docusign'
-import {FlexLayoutModule} from "@angular/flex-layout";
 
 registerLocaleData(en);
 
@@ -127,10 +126,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     AgGridModule.withComponents([]),
     InfiniteScrollModule,
     FullCalendarModule,
-    SpreadSheetsModule,
-    FlexLayoutModule
-    
-    
+    SpreadSheetsModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

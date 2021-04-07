@@ -58,11 +58,13 @@ export class CentrFacilityLocationComponent implements OnInit {
   inputVariables:any; 
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  
+  check: boolean = false;
   title:string = "Add New Facility/Location";
+  whereString:string = " WHERE ( [group] = 'PROGRAMS' ) ";
   inputValue: string = 'NEW OUTLET';
   private unsubscribe: Subject<void> = new Subject();
   tocken: any;
+  userRole:string="userrole";
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;
@@ -84,6 +86,7 @@ export class CentrFacilityLocationComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.checkedListExcluded =new Array<string>();
       this.checkedListApproved =new Array<string>();
@@ -445,6 +448,15 @@ export class CentrFacilityLocationComponent implements OnInit {
         this.competencyList = data;
         this.loading = false;
       });    
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) ";
+        this.loadData();
+      }else{
+        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate()) ) ";
+        this.loadData();
+      }
     }
     delete(data: any) { 
       this.postLoading = true;     

@@ -109,6 +109,23 @@ export class CaseMangementAdminComponent implements OnInit {
     showAddModal() {
       this.title = "Add New Case Management / Client Admin"
       this.resetModal();
+      this.inputForm.patchValue({
+        mainGroup :'RECIPIENT ADMINISTRATION',
+        subgroup  :'REFERRAL-IN',
+        status    :'ATTRIBUTABLE',
+        unit      :'HOUR',
+        min       :'0',
+        max       :'0',
+        forceRostedTime:'0',
+        chargeRate1:'$0.0000',
+        minimumChargeRate:'$0.0000',
+        commercial:'$0.0000',
+        price2:'$0.0000',
+        price3:'$0.0000',
+        price4:'$0.0000',
+        price5:'$0.0000',
+        price6:'$0.0000',
+      });
       this.modalOpen = true;
     }
     log(value: string[]): void {
@@ -232,7 +249,6 @@ export class CaseMangementAdminComponent implements OnInit {
         AutoApprove:autoApprove,
         excludeFromAuto:(excludeFromAutoLeave == true) ? true : false,
         Informational:(infoOnly == true) ? true : false,
-        recordNumber:(recordNumber == true) ? true : false,
         accountingCode:accountingCode,
         glRevenue:glRevenue,
         job:job,
@@ -457,8 +473,9 @@ export class CaseMangementAdminComponent implements OnInit {
     }
     populateDropdowns(): void {
 
-      this.mainGroupList  = ['STAFF ADMINISTRATION','TRAVEL TIME'];
-      this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','TRAINING','NOT APPLICABLE'];
+      this.mainGroupList  = ['RECIPIENT ADMINISTRATION','TRAVEL TIME','RECIPIENT ABSENCE'];
+      //this.subGroupList   = ['FULL DAY-RESPITE','FULL DAY-HOSPITAL','FULL DAY-TRANSITION','FULL DAY-SOCIAL LEAVE','ALTERNATIVE','HOSPITAL','OTHER','TRANSITION'];
+      this.subGroupList   = ['REFERRAL-IN','REFERRAL-OUT','ASSESSMENT','ADMISSION','REVIEW','DISCHARGE','DATA UPDATE','FEE','NOT PROCEEDING','OTHER','NOT APPLICABLE','REVIEW','INQUIRY','ADMISSION','DATA UPDATE']
       this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
       this.units          = ['HOUR','SERVICE'];
       this.budgetUomList  = ['EACH/SERVICE','HOURS','PLACE','DOLLARS'];

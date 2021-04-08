@@ -1,48 +1,8 @@
-<div nz-row>
-    <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Program/Packages</button>
-        <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
-        <nz-table #basicTable [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
-            <thead>
-                <tr>
-                    <th class="left">Title</th>
-                    <th class="left">Funding Source</th>
-                    <th class="left">AgencyID</th>
-                    <th class="left">GST</th>
-                    <th class="left">Rate</th>
-                    <th class="left">Budget $</th>
-                    <th class="left">Budget Hrs</th>
-                    <th class="left">Budget Cycle</th>
-                    <th class="left">GL EXP A/C</th>
-                    <th class="left">GL EXP A/C</th>
-                    <th class="left">GL Super A/C</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td class="left">{{ data.title  }} </td> 
-                    <td class="left">{{ data.fundingSource  }} </td>
-                    <td class="left">{{ data.agencyID  }} </td>
-                    <td class="left"><label nz-checkbox nzDisabled nzDisabled ></label></td>
-                    <td class="left">{{ data.rate  }} </td>
-                    <td class="left">{{ data.budget$  }} </td>
-                    <td class="left">{{ data.budgetHrs  }} </td>
-                    <td class="left">{{ data.bgtCycle  }} </td>
-                    <td class="left">{{ data.glExp  }} </td>
-                    <td class="left">{{ data.glRev  }} </td>
-                    <td class="left">{{ data.glSuper  }} </td>
-                    <td class="left"><a (click)="showEditModal(i)">Update</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a></td>
-                    </tr>
-                </tbody>
-            </nz-table>
 <div style="padding:8px;">
     <div nz-row>
         <div nz-col nzSpan="24">
-            <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus" nzTheme="outline"></i> Program/Packages </button>
+            <button class="botton success" (click)="showAddModal()">Program/Packages</button>
+        <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
             <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         </div>
     </div>

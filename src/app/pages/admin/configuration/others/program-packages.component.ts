@@ -104,7 +104,7 @@ export class ProgramPackagesComponent implements OnInit {
   isUpdate: boolean = false;
   radioSelcted = 'program'
   title:string = "Add New Program/Packages";
-  whereString:string = "WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate()) )";
+  whereString:string = "WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate() )";
   private unsubscribe: Subject<void> = new Subject();
   userRole:string="userrole";
   tocken: any;
@@ -727,7 +727,7 @@ export class ProgramPackagesComponent implements OnInit {
     
     loadData(){
       this.loading = true;
-      this.menuS.getlistProgramPackages().subscribe(data => {
+      this.menuS.getlistProgramPackages(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
@@ -738,7 +738,7 @@ export class ProgramPackagesComponent implements OnInit {
         this.whereString = " WHERE ( [group] = 'PROGRAMS' ) ";
         this.loadData();
       }else{
-        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate()) ) ";
+        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate() ) ";
         this.loadData();
       }
     }

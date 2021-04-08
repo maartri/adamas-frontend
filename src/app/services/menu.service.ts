@@ -57,8 +57,8 @@ export class MenuService {
         getlistFundingSource(is_where: boolean): Observable<any>{
             return this.auth.get(`${menu}/fundingSource/${is_where}`)
         }
-        getlistProgramPackages():Observable<any>{
-            return this.auth.get(`${menu}/programPackages`)
+        getlistProgramPackages(is_where: boolean):Observable<any>{
+            return this.auth.get(`${menu}/programPackages/${is_where}`)
         }
         getlistvehicles():Observable<any>{
             return this.auth.get(`${menu}/vehicles`)

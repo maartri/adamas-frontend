@@ -206,7 +206,7 @@ const inputFormDefault = {
     DatetypeArr: ['Service Date'],
     statuscategoryArr: ['All services'],
     branchprimacyArr: ['Automatic'],
-    AGE_ATSI_StatusArr: ['Over 64 OR ATSI Over 49   '],
+    AGE_ATSI_StatusArr: ['ALL'],
     Additional_inclusion: ['Default Display'],
     Rpt_Format: ['Detail'],
     
@@ -2529,22 +2529,28 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'REFERRAL') "
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr "
-        fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName "
+
+        if (this.inputForm.value.printaslabel == true){
+            
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+           
+        }
+        else {
+            this.reportid   = "zrBLd931LZblcnNH" 
+            fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName "
+        }
+
+
+        
 
 
 //          console.log(fQuery)
         //  console.log(this.inputForm.value.printaslabel)
         
-        if (this.inputForm.value.printaslabel == true){
-            
-            this.reportid = "6dfbj72obyLi9qxJ"
-           
-        }
-        else {
-            this.reportid   = "zrBLd931LZblcnNH" 
-        }
+        
         var Title = "RECIPIENT REFERRAL LISTING"
-
+    //    console.log(this.tocken.user)
         const data = {
 
             "template": { "_id": this.reportid },
@@ -2653,14 +2659,17 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " AND (RecipientPrograms.ProgramStatus = 'WAITING LIST' ) "
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
-        fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
+        
         //    console.log(fQuery)
         //  console.log(this.inputForm.value.printaslabel)
         
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "zrBLd931LZblcnNH" 
+            fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
         }
 
         var Title = "RECIPIENT WAITING LIST";
@@ -3941,7 +3950,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Programs." }
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
-        fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
+        
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
@@ -3949,9 +3958,11 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
         }
         else {
             this.reportid   = "4ohDCZRbiaKS4ocK" 
+            fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
         }
        
     
@@ -4058,16 +4069,19 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
 
-        fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
+        
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
         //console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "EqrRIePxJeNTXk0b" 
+            fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
         }
 
         this.drawerVisible = true;
@@ -4169,7 +4183,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
 
-        fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
+        
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
@@ -4179,6 +4193,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             this.reportid = "6dfbj72obyLi9qxJ"}
         else {
             this.reportid   = "pFy5Ej2Zdy6OhMKs" 
+            fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
         }
 
         this.drawerVisible = true;
@@ -4277,7 +4292,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + "All Programs." }
 
-        fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
+        
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
@@ -4285,9 +4300,12 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         // //////console.log(fQuery)
 
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "0BnEO8OTruJxvLwX" 
+            fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
         }
 
         this.drawerVisible = true;
@@ -4713,7 +4731,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
 
-        fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
+        
 
         /*   
     console.log(s_BranchSQL)
@@ -4723,9 +4741,12 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         // console.log(lblcriteria)
 
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "69u2ZyBtQbSyxVxf" 
+            fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
         }
 
         const data = {
@@ -4921,13 +4942,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
 
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+        
 
         //  console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "LQO71slAArEu36fo" 
+            fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
         }
 
         this.drawerVisible = true;
@@ -5013,15 +5037,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
 
-        fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+        
         
         //    console.log(fQuery)
 
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "6NauxB95CSDc096v" 
+            fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
         }
         this.drawerVisible = true;
 
@@ -5108,13 +5135,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
 
-        fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+        
         //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "3zUoVBKOkYhdU8Z5" 
+            fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
         }
         this.drawerVisible = true;
 
@@ -5200,13 +5230,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
 
-        fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+        
         //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "htp5rccUteYVbXt6" 
+            fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
         }
         this.drawerVisible = true;
 
@@ -5290,14 +5323,15 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         else { lblcriteria = lblcriteria + "All Staff Groups," }
 
 
-        fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
-
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+       
         //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"}
         else {
             this.reportid   = "JlsnP7fNb9LOGeVw" 
+            fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+
+            fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
         }
         this.drawerVisible = true;
 
@@ -5382,14 +5416,17 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         else { lblcriteria = lblcriteria + "All Staff Groups," }
 
 
-        fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
-
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+        
         // console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+        }
         else {
             this.reportid   = "lcl6jxcRDYzgs7kJ" 
+            fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+
+        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
         }
         this.drawerVisible = true;
 
@@ -7008,7 +7045,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     ServiceNotesRegister(branch, program, casenotecat, recipient, discipline, caredomain, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail,Convert (nvarchar,History.DetailDate,22) AS DateCreated , History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join Recipients as R ON R.AccountNo = Ro.[Client Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE "
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail,format(Convert (datetime,History.DetailDate,22),'dd/MM/yyyy MM:HH tt') AS DateCreated , History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join Recipients as R ON R.AccountNo = Ro.[Client Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE "
         var lblcriteria;
 
         // History. DetailDate Between '08-01-2019' AND '08-31-2020 23:59:59' 
@@ -7078,7 +7115,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         fQuery = fQuery + "AND ExtraDetail1 = 'SVCNOTE'  AND (History.DeletedRecord = 0)  ) ROP "
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated   "
 
-        //  //////console.log(fQuery)
+        console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -8775,7 +8812,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -9273,7 +9310,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL" ) {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -9490,7 +9527,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + "ORDER BY [Service Description], [Program], Date, [Start Time]";
 
-        //////console.log(fQuery)
+        console.log(fQuery)
 
         switch (format) {
             case "Detailed":
@@ -9498,9 +9535,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 this.reportid = "DeKVDYBlePosUVbB";
                 break;
             case "Standard":
-                //    Title = Title + "-Standard"
-                    this.reportid = "gHY4F0UbTNzf4oPk";
-
+                    Title = Title + "-Standard"
+                    //this.reportid = "bzsYqppVdYW4XLK6"; 
+                    this.reportid = "hQVGJjKxbUIpACYu"; 
                     break;
             default:
                 Title = Title + "-Summary"
@@ -9683,7 +9720,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -10106,7 +10143,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -10577,7 +10614,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -10986,7 +11023,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -11578,7 +11615,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -11985,7 +12022,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -12391,7 +12428,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -12796,7 +12833,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -13200,7 +13237,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -13603,7 +13640,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -13999,7 +14036,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -14395,7 +14432,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -14872,7 +14909,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -15261,7 +15298,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -15764,7 +15801,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -16163,7 +16200,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -16570,7 +16607,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -17070,7 +17107,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "") {
+        if (Age != "" && Age != "ALL") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":

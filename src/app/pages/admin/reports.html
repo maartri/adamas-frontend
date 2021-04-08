@@ -973,7 +973,7 @@
                     <div nz-row *ngIf="frm_HRNotes" >
                         <div nz-col nzSpan="20">
                             <div class="form-group">
-                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> HR Notes  </label>
+                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> HR Notes Category </label>
                                 <label class="checks" nz-checkbox formControlName="allhrNotes">All Case Notes </label>
                                 <nz-select formControlName="hrnotesArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allhrNotes">
                                     <nz-option *ngFor="let option of hrnotesArr" [nzLabel]="option" [nzValue]="option"></nz-option>

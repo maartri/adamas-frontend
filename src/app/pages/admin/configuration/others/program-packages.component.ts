@@ -40,6 +40,7 @@ export class ProgramPackagesComponent implements OnInit {
   budgetEnforcement:Array<any>;
   budgetRoasterEnforcement:Array<any>;
   packedTypeProfile:Array<any>;
+  packedTypeProfileCopy:Array<any>;
   careWorkers:Array<any>;
   expireUsing:Array<any>;
   dailyArry:Array<any>;
@@ -73,6 +74,7 @@ export class ProgramPackagesComponent implements OnInit {
   staffCategory:Array<any>;
   staff:Array<any>;
   recepients:Array<any>;
+  recepitnt_copy:Array<any>;
   activities:Array<any>;
   types:Array<any>;
   fundingTypes:Array<any>;
@@ -97,6 +99,7 @@ export class ProgramPackagesComponent implements OnInit {
   checked:boolean=false;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
+  inputvalueSearch:string;
   inputForm: FormGroup;
   modalVariables:any;
   inputVariables:any; 
@@ -191,9 +194,26 @@ export class ProgramPackagesComponent implements OnInit {
         this.checkedPackageProfile.filter(m=>m != option.title);
       }
     }
+    searchPackageLeaves(event){
+      if(event.target.value != ""){
+        this.recepients = this.recepients.filter(res=>{
+          return res.name.toLowerCase().match(event.target.value.toLowerCase());
+        })
+      }else if(event.target.value == ""){
+        this.recepients = this.recepitnt_copy;
+      }
+    }
+    searchApprovedServices(event){
+      if(this.inputvalueSearch != ""){
+        this.packedTypeProfile = this.packedTypeProfile.filter(res=>{
+          return res.title.toLowerCase().match(this.inputvalueSearch.toLowerCase());
+        })
+      }else if(this.inputvalueSearch == ""){
+        this.packedTypeProfile = this.packedTypeProfileCopy;
+      }
+    }
     onCheckboxChange(option, event) {
       if(event.target.checked){
-        console.log(option);
         this.checkedList.push(option.name);
       } else {
         this.checkedList = this.checkedList.filter(m=>m!= option.name)
@@ -788,6 +808,7 @@ export class ProgramPackagesComponent implements OnInit {
       let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
       this.listS.getlist(reci).subscribe(data => {
         this.recepients = data;
+        this.recepitnt_copy = this.recepients;
       });
       
       
@@ -814,6 +835,7 @@ export class ProgramPackagesComponent implements OnInit {
       let pckg_type_profile = "SELECT DISTINCT [Title] FROM ItemTypes WHERE ProcessClassification IN ('OUTPUT', 'EVENT') AND (EndDate Is Null OR EndDate >= GETDATE()) ORDER BY [Title]"
       this.listS.getlist(pckg_type_profile).subscribe(data => {
         this.packedTypeProfile = data;
+        this.packedTypeProfileCopy = data;
         this.loading = false;
       });
       let careWorker = "SELECT DISTINCT [Accountno] FROM Staff WHERE CommencementDate is not null and terminationdate is null ORDER BY [AccountNo]";

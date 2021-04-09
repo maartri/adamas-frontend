@@ -216,10 +216,13 @@ export class ProgramPackagesComponent implements OnInit {
       this.inputvalueSearch = "";
     }
     searchCompetenncy(event){
+      this.temp = [];
+      this.competencyList = this.competencyListCopy;
       if(this.inputvalueSearch != ""){
-        this.competencyList = this.competencyList.filter(res=>{
+        this.temp = this.competencyList.filter(res=>{
           return res.name.toLowerCase().indexOf(this.inputvalueSearch.toLowerCase()) > -1;
         })
+        this.competencyList = this.temp;
       }else if(this.inputvalueSearch == ""){
         this.competencyList = this.competencyListCopy;
       }

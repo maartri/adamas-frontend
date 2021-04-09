@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder,FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService, MenuService} from '@services/index';
 import { SwitchService } from '@services/switch.service';
@@ -34,6 +34,7 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 })
 export class ProgramPackagesComponent implements OnInit {
   
+  temp:Array<any>;
   period: Array<any>;
   tableData: Array<any>;
   targetGroups:Array<any>;
@@ -50,6 +51,7 @@ export class ProgramPackagesComponent implements OnInit {
   unitsArray:Array<any>;
   quoutetemplates:Array<any>;
   competencyList:Array<any>;
+  competencyListCopy:Array<any>;
   careWorkersExcluded:Array<any>
   checkedList:string[];
   checkedListExcluded:string[];
@@ -203,13 +205,23 @@ export class ProgramPackagesComponent implements OnInit {
         this.recepients = this.recepitnt_copy;
       }
     }
-    searchApprovedServices(event){
+    searchApprovedServices(){
       if(this.inputvalueSearch != ""){
         this.packedTypeProfile = this.packedTypeProfile.filter(res=>{
           return res.title.toLowerCase().match(this.inputvalueSearch.toLowerCase());
         })
       }else if(this.inputvalueSearch == ""){
         this.packedTypeProfile = this.packedTypeProfileCopy;
+      }
+      this.inputvalueSearch = "";
+    }
+    searchCompetenncy(event){
+      if(this.inputvalueSearch != ""){
+        this.competencyList = this.competencyList.filter(res=>{
+          return res.name.toLowerCase().indexOf(this.inputvalueSearch.toLowerCase()) > -1;
+        })
+      }else if(this.inputvalueSearch == ""){
+        this.competencyList = this.competencyListCopy;
       }
     }
     onCheckboxChange(option, event) {
@@ -848,6 +860,7 @@ export class ProgramPackagesComponent implements OnInit {
       let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
+        this.competencyListCopy = data;
         this.loading = false;
       });
       

@@ -1025,7 +1025,7 @@
                 <div nz-row nzGutter="24">
                     <h3 style="text-align:center;color:#1890FF">Tick The Checkbox Next To the Service Approved For Use For The Displayed Program</h3>    
                     <nz-input-group [nzSuffix]="suffixIconSearchh">
-                        <input type="text" nz-input placeholder="search text" [(ngModel)]="inputvalueSearch" [ngModelOptions]="{standalone: true}" (keydown)="searchApprovedServices($event)"/>
+                        <input type="text" nz-input placeholder="search text" [(ngModel)]="inputvalueSearch" [ngModelOptions]="{standalone: true}" (keyup)="searchApprovedServices()"/>
                     </nz-input-group>
                     <ng-template #suffixIconSearchh>
                             <i nz-icon nzType="search"></i>
@@ -1131,12 +1131,12 @@
                 <div nz-row nzGutter="24">    
                     <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                         <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Competencies Required For Work in This Program</h4>
-                        <!-- <nz-input-group [nzSuffix]="suffixIconSearch">
-                            <input type="text" nz-input placeholder="input search text" />
-                          </nz-input-group> -->
-                          <!-- <ng-template #suffixIconSearch>
+                        <nz-input-group [nzSuffix]="suffixIconSearch">
+                            <input type="text" nz-input placeholder="search text" [(ngModel)]="inputvalueSearch" (keyup)="searchCompetenncy($event)" [ngModelOptions]="{standalone: true}" />
+                        </nz-input-group>
+                        <ng-template #suffixIconSearch>
                             <i nz-icon nzType="search"></i>
-                          </ng-template> -->
+                        </ng-template>
                         <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                             <div nz-row>
                                 <div nz-col nzSpan="24" *ngFor="let comp of competencyList">

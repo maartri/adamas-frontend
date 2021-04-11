@@ -206,10 +206,13 @@ export class ProgramPackagesComponent implements OnInit {
       }
     }
     searchApprovedServices(){
+      this.temp = [];
+      this.packedTypeProfile = this.packedTypeProfileCopy;
       if(this.inputvalueSearch != ""){
-        this.packedTypeProfile = this.packedTypeProfile.filter(res=>{
+        this.temp = this.packedTypeProfile.filter(res=>{
           return res.title.toLowerCase().match(this.inputvalueSearch.toLowerCase());
         })
+        this.packedTypeProfile = this.temp;
       }else if(this.inputvalueSearch == ""){
         this.packedTypeProfile = this.packedTypeProfileCopy;
       }

@@ -130,7 +130,14 @@ export class MedicalDignosisComponent implements OnInit {
       if(!this.isUpdate){         
         this.postLoading = true;   
         const group = this.inputForm;
-        let name             = this.globalS.isValueNull(group.get('name').value);
+        let name        = group.get('name').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
+        name             = this.globalS.isValueNull(group.get('name').value);
         let icdcode          = this.globalS.isValueNull(group.get('icdcode').value);
         let usercode         = this.globalS.isValueNull(group.get('usercode').value);
         let end_date         = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;

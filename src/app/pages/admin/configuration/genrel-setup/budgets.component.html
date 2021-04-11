@@ -65,7 +65,7 @@
                 <div nz-row nzGutter="24" class="mrg-btm" >
                     <div nz-row nzJustify>
                     <div nz-col nzSpan="24" class="mrg-btm">
-                        <input nz-input placeholder="Name"  formControlName="title" [nzSize]="'small'" />
+                        <input nz-input placeholder="Name"  formControlName="title" oninput="this.value = this.value.toUpperCase()" [nzSize]="'small'" />
                     </div>
                     </div>
                     <div nz-row nzJustify>

@@ -165,8 +165,15 @@ export class MedicalcontactComponent implements OnInit {
       
       if(!this.isUpdate){       
         const group = this.inputForm;
+        let name        = group.get('name').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
         let type     = this.globalS.isValueNull(group.get('type').value);
-        let name     = this.globalS.isValueNull(group.get('name').value);
+            name     = this.globalS.isValueNull(group.get('name').value);
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
         let suburb   = this.globalS.isValueNull(group.get('suburb').value);

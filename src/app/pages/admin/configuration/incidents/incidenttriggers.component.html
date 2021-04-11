@@ -42,7 +42,7 @@
             <div *ngIf="current == 0">
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <label for="End Date">Name/Title :</label>
-                    <input nz-input placeholder="Name/Title"  formControlName="name" required />    
+                    <input nz-input placeholder="Name/Title"  formControlName="name" oninput="this.value = this.value.toUpperCase()" required />    
                 </div>
                 <div nz-row nzGutter class="mrg-btm">
                     <label for="End Date">Expiry Date :</label>

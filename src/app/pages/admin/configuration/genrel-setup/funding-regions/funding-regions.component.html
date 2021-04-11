@@ -44,7 +44,7 @@
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <label for="End Date">Name/Title:</label>
-                        <input nz-input placeholder="Name/Title"  formControlName="description" required />
+                        <input nz-input placeholder="Name/Title"  formControlName="description" oninput="this.value = this.value.toUpperCase()" required />
                     </div>
                 </div>
                 <div nz-row nzGutter="24" class="mrg-btm">

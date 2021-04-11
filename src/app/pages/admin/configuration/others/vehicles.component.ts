@@ -137,7 +137,7 @@ export class VehiclesComponent implements OnInit {
         let domain      = "'VEHICLES'";
         let name        = this.globalS.isValueNull(group.get('name').value).trim().toUpperCase();
         
-        let is_exist    = this.globalS.userExists(this.tableData,name);
+        let is_exist    = this.globalS.isTitleExists(this.tableData,name);
         
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');

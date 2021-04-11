@@ -301,9 +301,16 @@ export class BudgetsComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
+        let name        = group.get('title').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
         let start             = !(this.globalS.isVarNull(group.get('start').value)) ?  "'"+this.globalS.convertDbDate(group.get('start').value)+"'" : null;
         let end               = !(this.globalS.isVarNull(group.get('end').value)) ?  "'"+this.globalS.convertDbDate(group.get('end').value)+"'" : null;
-        let name              = this.globalS.isValueNull(group.get('title').value);
+        name                  = this.globalS.isValueNull(group.get('title').value);
         let branch            = this.globalS.isValueNull(group.get('branch').value);
         let funding_source    = this.globalS.isValueNull(group.get('ftype').value); 
         let care_domain       = this.globalS.isValueNull(group.get('care').value); 

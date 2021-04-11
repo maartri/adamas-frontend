@@ -149,9 +149,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
       if(!this.isUpdate){      
         
         let name        = this.globalS.isValueNull(group.get('porpose').value).trim().toUpperCase();
-        
-        let is_exist    = this.globalS.userExists(this.tableData,name);
-        
+        let is_exist    = this.globalS.isTitleExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
           this.postLoading = false;

@@ -114,8 +114,14 @@ export class StaffCompetenciesComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
+        let name        = group.get('name').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
         let domain       = 'STAFFATTRIBUTE';
-        let name         = group.get('name').value;
         let groupz       = group.get('group').value;
         let mandatory    = (group.get('mandatory').value) ? 1 : 0 ;
         let undated      = (group.get('undated').value) ? 1 : 0 ;

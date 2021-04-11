@@ -131,6 +131,13 @@ this.buildForm();
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
+        let name        = group.get('name').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
         this.switchS.addData(  
           this.modalVariables={
             title: 'OP Notes Categories'

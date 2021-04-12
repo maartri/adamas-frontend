@@ -39,6 +39,7 @@ export class AddresstypesComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,

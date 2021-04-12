@@ -126,6 +126,7 @@ export class IncidentsubcatComponent implements OnInit {
         incident_type:staff,
         recordNumber:recordNumber
    });
+   this.temp_title = name;
   }
   loadtitle(){
     return this.heading

@@ -37,6 +37,7 @@ export class IncidenttriggersComponent implements OnInit {
   whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,

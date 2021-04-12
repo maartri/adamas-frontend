@@ -37,6 +37,7 @@ export class LocationCategoriesComponent implements OnInit {
   drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,

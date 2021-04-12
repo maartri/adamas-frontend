@@ -80,6 +80,7 @@ export class BudgetsComponent implements OnInit {
   userRole:string="userrole";
   whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
   private unsubscribe: Subject<void> = new Subject();
+  temp_title: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -282,6 +283,7 @@ export class BudgetsComponent implements OnInit {
         packages:packages,
         RecordNumber:recordNumber,
       });
+      this.temp_title = description;
     }
     
     handleCancel() {

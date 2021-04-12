@@ -46,6 +46,7 @@ export class ClaimratesComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  temp_title: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -124,6 +125,7 @@ export class ClaimratesComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber
       });
+      this.temp_title = name;
     }
     handleCancel() {
       this.modalOpen = false;

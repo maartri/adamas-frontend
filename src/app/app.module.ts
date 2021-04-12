@@ -49,7 +49,8 @@ import {
   ShareService,
   SettingsService,
   VersionCheckService,
-  MenuService
+  MenuService,
+  
 } from './services/index';
 
 import { IconsProviderModule } from './icons-provider.module';
@@ -67,7 +68,8 @@ import { ComponentModule } from '@components/component.module'
 import { AgGridModule } from 'ag-grid-angular';
 import { BranchesComponent } from './pages/admin/configuration/genrel-setup/branches/branches.component';
 import { FundingRegionsComponent } from './pages/admin/configuration/genrel-setup/funding-regions/funding-regions.component';
-
+import { SpreadSheetsModule } from "@grapecity/spread-sheets-angular";
+import {DocusignComponent} from './pages/docusign/docusign'
 
 registerLocaleData(en);
 
@@ -89,6 +91,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     PAGE_COMPONENTS,
     BranchesComponent,
     FundingRegionsComponent,
+    DocusignComponent,
+    ReplaceNullWithTextPipe
+    
   ],
   imports: [
     BrowserModule,
@@ -123,7 +128,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     AgGridModule.withComponents([]),
     InfiniteScrollModule,
-    FullCalendarModule
+    FullCalendarModule,
+    SpreadSheetsModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

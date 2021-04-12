@@ -31,7 +31,7 @@ const inputFormDefault = {
     allPackages: [true],
 
     BatchNoArr: [[]],
-    
+   
 
     filterArr : ['Invoiced Only'],
 
@@ -42,11 +42,11 @@ const inputFormDefault = {
 }
 
 @Component({
-    host: {
-        '[style.display]': 'flex',
-        '[style.flex-direction]': 'column',
-        '[style.overflow]': 'auto'
-      },
+    // host: {
+    //     '[style.display]': 'flex',
+    //     '[style.flex-direction]': 'column',
+    //     '[style.overflow]': 'auto'
+    //   },
     styles: [`
         
         button{
@@ -100,7 +100,7 @@ const inputFormDefault = {
 })
 export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     
-    drawerVisible: boolean = false;
+    // drawerVisible: boolean = false;
     
     tabset = false;
     isVisibleTop =false;
@@ -114,7 +114,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     show =false ;
     showoption = true;
     tryDoctype: any;
-
+    drawerVisible:boolean;
 
     //MUFEED's START
     id: string;
@@ -191,7 +191,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     }
     handleCancelTop(): void {
         this.isVisibleTop = false;          
-        this.drawerVisible = false;
+      //  this.drawerVisible = false;
         //MUFEED's START
         this.Single_input_integer = false; //modal 
         this.isVisible = false;             //modal
@@ -1228,7 +1228,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
         console.log(fQuery)
 
-        this.drawerVisible = true;
+     //   this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "PEsoPqmbOzdz6shH" },
@@ -1412,7 +1412,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
         console.log(fQuery)
 
-        this.drawerVisible = true;
+        //this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "FMdcJXxcL2qmptzt" },

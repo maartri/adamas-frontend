@@ -50,7 +50,7 @@
                 </div>
                 <div nz-row nzGutter="24" class="mrg-btm">
                         <label for="Title">Name/Title:</label>
-                        <input nz-input placeholder=""  formControlName="name" />
+                        <input nz-input placeholder=""  formControlName="name" oninput="this.value = this.value.toUpperCase()" />
                 </div>
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <label for="End Date">Expiry Date:</label>

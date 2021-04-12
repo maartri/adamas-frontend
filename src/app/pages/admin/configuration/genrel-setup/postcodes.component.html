@@ -41,7 +41,7 @@
                 <div nz-row nzGutter="24" class="mrg-btm">
                     <div nz-col nzSpan="24" class="mrg-btm">
                         <label nzFor="SubRub">Suburb</label>
-                        <input nz-input placeholder=""  formControlName="suburb" required />
+                        <input nz-input placeholder=""  formControlName="suburb" oninput="this.value = this.value.toUpperCase()" required />
                     </div>
                     <div nz-col nzSpan="12" class="mrg-btm">
                         <label nzFor="Postcode">Postcode</label>

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder,FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService, MenuService} from '@services/index';
 import { SwitchService } from '@services/switch.service';
@@ -34,12 +34,14 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 })
 export class ProgramPackagesComponent implements OnInit {
   
+  temp:Array<any>;
   period: Array<any>;
   tableData: Array<any>;
   targetGroups:Array<any>;
   budgetEnforcement:Array<any>;
   budgetRoasterEnforcement:Array<any>;
   packedTypeProfile:Array<any>;
+  packedTypeProfileCopy:Array<any>;
   careWorkers:Array<any>;
   expireUsing:Array<any>;
   dailyArry:Array<any>;
@@ -49,6 +51,7 @@ export class ProgramPackagesComponent implements OnInit {
   unitsArray:Array<any>;
   quoutetemplates:Array<any>;
   competencyList:Array<any>;
+  competencyListCopy:Array<any>;
   careWorkersExcluded:Array<any>
   checkedList:string[];
   checkedListExcluded:string[];
@@ -73,6 +76,7 @@ export class ProgramPackagesComponent implements OnInit {
   staffCategory:Array<any>;
   staff:Array<any>;
   recepients:Array<any>;
+  recepitnt_copy:Array<any>;
   activities:Array<any>;
   types:Array<any>;
   fundingTypes:Array<any>;
@@ -92,11 +96,12 @@ export class ProgramPackagesComponent implements OnInit {
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
   packageLeaveModal:boolean = false;
-  
+  check : boolean = false;
   current: number = 0;
   checked:boolean=false;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
+  inputvalueSearch:string;
   inputForm: FormGroup;
   modalVariables:any;
   inputVariables:any; 
@@ -104,7 +109,9 @@ export class ProgramPackagesComponent implements OnInit {
   isUpdate: boolean = false;
   radioSelcted = 'program'
   title:string = "Add New Program/Packages";
+  whereString:string = "WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate() )";
   private unsubscribe: Subject<void> = new Subject();
+  userRole:string="userrole";
   tocken: any;
   pdfTitle: string;
   tryDoctype: any;
@@ -127,6 +134,7 @@ export class ProgramPackagesComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.checkedListExcluded =new Array<string>();
       this.checkedListApproved =new Array<string>();
@@ -188,9 +196,42 @@ export class ProgramPackagesComponent implements OnInit {
         this.checkedPackageProfile.filter(m=>m != option.title);
       }
     }
+    searchPackageLeaves(event){
+      if(event.target.value != ""){
+        this.recepients = this.recepients.filter(res=>{
+          return res.name.toLowerCase().match(event.target.value.toLowerCase());
+        })
+      }else if(event.target.value == ""){
+        this.recepients = this.recepitnt_copy;
+      }
+    }
+    searchApprovedServices(){
+      this.temp = [];
+      this.packedTypeProfile = this.packedTypeProfileCopy;
+      if(this.inputvalueSearch != ""){
+        this.temp = this.packedTypeProfile.filter(res=>{
+          return res.title.toLowerCase().match(this.inputvalueSearch.toLowerCase());
+        })
+        this.packedTypeProfile = this.temp;
+      }else if(this.inputvalueSearch == ""){
+        this.packedTypeProfile = this.packedTypeProfileCopy;
+      }
+      this.inputvalueSearch = "";
+    }
+    searchCompetenncy(event){
+      this.temp = [];
+      this.competencyList = this.competencyListCopy;
+      if(this.inputvalueSearch != ""){
+        this.temp = this.competencyList.filter(res=>{
+          return res.name.toLowerCase().indexOf(this.inputvalueSearch.toLowerCase()) > -1;
+        })
+        this.competencyList = this.temp;
+      }else if(this.inputvalueSearch == ""){
+        this.competencyList = this.competencyListCopy;
+      }
+    }
     onCheckboxChange(option, event) {
       if(event.target.checked){
-        console.log(option);
         this.checkedList.push(option.name);
       } else {
         this.checkedList = this.checkedList.filter(m=>m!= option.name)
@@ -724,11 +765,20 @@ export class ProgramPackagesComponent implements OnInit {
     
     loadData(){
       this.loading = true;
-      this.menuS.getlistProgramPackages().subscribe(data => {
+      this.menuS.getlistProgramPackages(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
       });
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) ";
+        this.loadData();
+      }else{
+        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate() ) ";
+        this.loadData();
+      }
     }
     populateDropdowns(): void {
       
@@ -776,6 +826,7 @@ export class ProgramPackagesComponent implements OnInit {
       let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
       this.listS.getlist(reci).subscribe(data => {
         this.recepients = data;
+        this.recepitnt_copy = this.recepients;
       });
       
       
@@ -802,6 +853,7 @@ export class ProgramPackagesComponent implements OnInit {
       let pckg_type_profile = "SELECT DISTINCT [Title] FROM ItemTypes WHERE ProcessClassification IN ('OUTPUT', 'EVENT') AND (EndDate Is Null OR EndDate >= GETDATE()) ORDER BY [Title]"
       this.listS.getlist(pckg_type_profile).subscribe(data => {
         this.packedTypeProfile = data;
+        this.packedTypeProfileCopy = data;
         this.loading = false;
       });
       let careWorker = "SELECT DISTINCT [Accountno] FROM Staff WHERE CommencementDate is not null and terminationdate is null ORDER BY [AccountNo]";
@@ -814,6 +866,7 @@ export class ProgramPackagesComponent implements OnInit {
       let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
+        this.competencyListCopy = data;
         this.loading = false;
       });
       

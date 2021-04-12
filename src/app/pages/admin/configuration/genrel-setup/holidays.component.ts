@@ -132,6 +132,14 @@ export class HolidaysComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group  = this.inputForm;
+        let name        = group.get('name').value.trim();
+        let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
+
         let description   = this.globalS.isValueNull(group.get('description').value);
         let stats         = this.globalS.isValueNull(group.get('state').value);
         let PublicHolidayRegion = this.globalS.isValueNull(group.get('region').value);

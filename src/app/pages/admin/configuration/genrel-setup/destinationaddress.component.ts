@@ -35,7 +35,7 @@ export class DestinationaddressComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;  
   userRole:string="userrole";
-  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
+  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
   
   constructor(
     private globalS: GlobalService,
@@ -67,7 +67,7 @@ export class DestinationaddressComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -84,7 +84,7 @@ export class DestinationaddressComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,xDeletedRecord as is_deleted from HumanResourceTypes "+this.whereString+" [Group] like 'DESTINATION'";
+      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,DeletedRecord as is_deleted from HumanResourceTypes "+this.whereString+" [Group] like 'DESTINATION'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -166,8 +166,15 @@ export class DestinationaddressComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
+        let name        = group.get('name').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
         let type     = "'DESTINATION'";
-        let name     = this.globalS.isValueNull(group.get('name').value);
+            name     = this.globalS.isValueNull(group.get('name').value);
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
         let suburb   = this.globalS.isValueNull(group.get('suburb').value);
@@ -261,7 +268,7 @@ export class DestinationaddressComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 ,xDeletedRecord as is_deleted from HumanResourceTypes "+this.whereString+" [Group] like 'DESTINATION'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 ,DeletedRecord as is_deleted from HumanResourceTypes "+this.whereString+" [Group] like 'DESTINATION'";
       
       const headerDict = {
         'Content-Type': 'application/json',

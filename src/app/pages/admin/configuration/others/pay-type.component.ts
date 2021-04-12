@@ -72,6 +72,7 @@ export class PayTypeComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.loadData();
       this.buildForm();
       this.loading = false;
@@ -364,6 +365,15 @@ export class PayTypeComponent implements OnInit {
             this.resetModal();
           }
         });
+      }
+    }
+    fetchAll(e){
+      if(e.target.checked){
+        this.whereString = "WHERE";
+        this.loadData();
+      }else{
+        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.loadData();
       }
     }
     loadData(){

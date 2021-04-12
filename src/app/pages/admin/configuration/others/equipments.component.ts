@@ -57,6 +57,7 @@ export class EquipmentsComponent implements OnInit {
     
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      this.userRole = this.tocken.role;
       this.loadData();
       this.loadEquipmentDetails();
       this.populateDropdown();

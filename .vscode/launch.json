@@ -4,16 +4,9 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "Attach to Chrome",
-            "port": 4400,
-            "request": "attach",
-            "type": "pwa-chrome",
-            "webRoot": "${workspaceFolder}"
-        },
+        
        
-      
-        {
+         {
             "name": "Launch Chrome",
             "request": "launch",
             "type": "pwa-chrome",
@@ -25,7 +18,8 @@
                 "--remote-debugging-port:4400"
             ],
             "webRoot": "${workspaceFolder}/src",
-            "sourceMaps": true
+            "sourceMaps": true,
+           
         }
         
     ]

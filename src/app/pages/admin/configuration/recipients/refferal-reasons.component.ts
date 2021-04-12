@@ -119,6 +119,7 @@ export class RefferalReasonsComponent implements OnInit {
     activateDomain(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
+      
       this.menuS.activeDomain(data.recordNumber)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
@@ -131,6 +132,14 @@ export class RefferalReasonsComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
+      
+      let name        = group.get('name').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
       if(!this.isUpdate){         
         this.switchS.addData(  
           this.modalVariables={

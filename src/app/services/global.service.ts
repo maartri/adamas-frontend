@@ -278,7 +278,19 @@ export class GlobalService {
         }
         return null;
     }
-    userExists(tableData,username) {
+    isTitleExists(tableData,username) {
+        return tableData.some(function(el) {
+          username = username.replace(/'/g, '');
+          return el.title.trim() === username.trim();
+        }); 
+    }
+    isNameExists(tableData,username) {
+        return tableData.some(function(el) {
+          username = username.replace(/'/g, '');
+          return el.title.trim() === username.trim();
+        }); 
+    }
+    isDescriptionExists(tableData,username) {
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
           return el.title.trim() === username.trim();

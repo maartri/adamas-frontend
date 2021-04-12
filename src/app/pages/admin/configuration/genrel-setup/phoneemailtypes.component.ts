@@ -196,6 +196,7 @@ export class PhoneemailtypesComponent implements OnInit {
         buildForm() {
           this.inputForm = this.formBuilder.group({
             name: '',
+            end_date:null,
             recordNumber:null
           });
         }

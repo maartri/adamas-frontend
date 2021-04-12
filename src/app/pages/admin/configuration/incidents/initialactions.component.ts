@@ -32,6 +32,7 @@ export class InitialactionsComponent implements OnInit {
   drawerVisible: boolean =  false;
   dateFormat: string ='dd/MM/yyyy';
   check : boolean = false;
+  temp_title : string;
   userRole:string="userrole";
   whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   private unsubscribe: Subject<void> = new Subject();
@@ -80,6 +81,7 @@ export class InitialactionsComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
+      
       const { 
         name,
         end_date,
@@ -90,6 +92,9 @@ export class InitialactionsComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber,
       });
+
+      this.temp_title = name;
+
     }
     
     handleCancel() {
@@ -133,7 +138,16 @@ export class InitialactionsComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      if(!this.isUpdate){         
+      if(!this.isUpdate){     
+        
+        let name        = group.get('name').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
+        
         this.switchS.addData(  
           this.modalVariables={
             title: 'Initial Actions'
@@ -156,6 +170,16 @@ export class InitialactionsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
+          let name        = group.get('name').value.trim();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
+          
           this.switchS.updateData(  
             this.modalVariables={
               title: 'Initial Actions'

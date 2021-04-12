@@ -37,6 +37,7 @@ export class OngoingactionsComponent implements OnInit {
   drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -166,6 +167,15 @@ export class OngoingactionsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
+          let name        = group.get('name').value.trim();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
           this.switchS.updateData(  
             this.modalVariables={
               title: 'Ongoing Actions'

@@ -55,7 +55,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.1200.0-next.8",
     "@angular/cli": "^11.2.6",
-    "@angular/compiler-cli": "^9.0.7",
+    "@angular/compiler-cli": "^11.2.6",
     "@angular/flex-layout": "^10.0.0-beta.32",
     "@angular/language-service": "~9.0.0",
     "@types/jasmine": "~3.5.0",

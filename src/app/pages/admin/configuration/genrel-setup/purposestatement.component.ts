@@ -131,6 +131,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
         end_date:end_date,
         recordNumber:recordNumber
       });
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -179,7 +180,7 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          let name        = group.get('name').value.trim();
+          let name        = group.get('porpose').value.trim();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){

@@ -90,6 +90,7 @@ export class ServiceNoteCategoriesComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber,
       });
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -164,6 +165,7 @@ export class ServiceNoteCategoriesComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
+
           let name        = group.get('name').value.trim();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
@@ -173,7 +175,6 @@ export class ServiceNoteCategoriesComponent implements OnInit {
               return false;   
             }
           }
-          
           this.switchS.updateData(  
             this.modalVariables={
               title: 'Service Note Categories'

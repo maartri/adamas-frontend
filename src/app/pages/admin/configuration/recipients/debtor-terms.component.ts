@@ -88,6 +88,7 @@ whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
           end_date:end_date,
           recordNumber:recordNumber,
         });
+        this.temp_title = name;
     }
     
     handleCancel() {

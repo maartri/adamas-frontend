@@ -86,6 +86,7 @@ this.buildForm();
           name: name,
           recordNumber:recordNumber,
         });
+        this.temp_title = name;
     }
     
     handleCancel() {

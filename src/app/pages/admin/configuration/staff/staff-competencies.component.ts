@@ -36,6 +36,7 @@ export class StaffCompetenciesComponent implements OnInit {
   drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -96,6 +97,7 @@ export class StaffCompetenciesComponent implements OnInit {
         enddate:end_date,
         recordNumber:recordNumber
       });
+      this.temp_title = description;
     }
     
     handleCancel() {
@@ -115,7 +117,7 @@ export class StaffCompetenciesComponent implements OnInit {
         this.postLoading = true;   
         const group = this.inputForm;
         let name        = group.get('name').value.trim();
-        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
           this.postLoading = false;
@@ -144,6 +146,14 @@ export class StaffCompetenciesComponent implements OnInit {
         const group       = this.inputForm;
         let domain       = 'STAFFATTRIBUTE';
         let name         = group.get('name').value;
+        let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
+        if(this.temp_title != name){
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+         }
+        }
         let groupz       = group.get('group').value;
         let mandatory    = group.get('mandatory').value;
         let undated      = group.get('undated').value;

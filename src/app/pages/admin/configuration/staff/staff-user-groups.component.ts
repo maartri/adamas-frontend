@@ -88,6 +88,7 @@ export class StaffUserGroupsComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber,
       });
+      this.temp_title = name;
     }
     
     handleCancel() {

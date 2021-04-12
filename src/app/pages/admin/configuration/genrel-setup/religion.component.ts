@@ -114,6 +114,7 @@ dateFormat: string ='dd/MM/yyyy';
         end_date: end_date,
         recordNumber:recordNumber
       });
+      this.temp_title = name;
     }
     
     handleCancel() {

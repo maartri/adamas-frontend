@@ -38,6 +38,7 @@ export class TargetgroupsComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -118,7 +119,7 @@ export class TargetgroupsComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber
       });
-      
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -165,6 +166,15 @@ export class TargetgroupsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
+          let name        = group.get('name').value.trim();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
           this.switchS.updateData(  
             this.modalVariables={
               title: 'CDC Target Groups'

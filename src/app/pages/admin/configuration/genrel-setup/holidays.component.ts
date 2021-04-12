@@ -36,6 +36,7 @@ export class HolidaysComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DeletedRecord, 0) = 0";
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -121,6 +122,7 @@ export class HolidaysComponent implements OnInit {
         state:stats,
         recordno:recordno,
       });
+      this.temp_title = description;
     }
     
     handleCancel() {
@@ -132,7 +134,7 @@ export class HolidaysComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group  = this.inputForm;
-        let name        = group.get('name').value.trim();
+        let name        = group.get('description').value.trim();
         let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -160,6 +162,15 @@ export class HolidaysComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
+        let name        = group.get('description').value.trim();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
         let description   = this.globalS.isValueNull(group.get('description').value);
         let stats         = this.globalS.isValueNull(group.get('state').value);
         let PublicHolidayRegion = this.globalS.isValueNull(group.get('region').value);

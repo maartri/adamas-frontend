@@ -39,6 +39,7 @@ export class DocumentTemplateComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  temp_title: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -131,6 +132,7 @@ export class DocumentTemplateComponent implements OnInit {
         type:type,
         recordNo:recordNo,
       });
+      this.temp_title = title;
     }
     trueString(data: any): string{
       return data ? '1': '0';
@@ -158,6 +160,13 @@ export class DocumentTemplateComponent implements OnInit {
       if(!this.isUpdate){       
         this.postLoading   = true;   
         const group        = this.inputForm;
+        let name        = group.get('title').value.trim();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
         let title          = this.globalS.isValueNull(group.get('title').value);
         let type           = this.globalS.isValueNull(group.get('type').value);
         let description    = this.globalS.isValueNull(group.get('description').value);
@@ -183,6 +192,15 @@ export class DocumentTemplateComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
+        let name        = group.get('title').value.trim();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
         let title          = this.globalS.isValueNull(group.get('title').value);
         let type           = this.globalS.isValueNull(group.get('type').value);
         let description    = this.globalS.isValueNull(group.get('description').value);

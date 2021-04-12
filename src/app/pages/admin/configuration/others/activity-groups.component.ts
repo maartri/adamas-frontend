@@ -39,6 +39,7 @@ export class ActivityGroupsComponent implements OnInit {
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;
+  temp_title: any;
 
   constructor(
     private globalS: GlobalService,
@@ -113,6 +114,16 @@ export class ActivityGroupsComponent implements OnInit {
       if(!this.isUpdate){         
         this.postLoading = true;   
         const group = this.inputForm;
+        let name        = group.get('rate').value.trim();
+          // if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+        // }
+
         let domain       = "'ACTIVITYGROUPS'";
         let item         = this.globalS.isValueNull(group.get('item').value);
         let rate         = this.globalS.isValueNull(group.get('rate').value);
@@ -135,6 +146,15 @@ export class ActivityGroupsComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
+        let name          = group.get('rate').value.trim();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+        }
         let item          = this.globalS.isValueNull(group.get('item').value);
         let rate          = this.globalS.isValueNull(group.get('rate').value);
         let agroup        = this.globalS.isValueNull(group.get('agroup').value); 

@@ -35,6 +35,7 @@ export class ConsentTypesComponent implements OnInit {
     whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
     private unsubscribe: Subject<void> = new Subject();
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  temp_title: any;
   
     constructor(
     private globalS: GlobalService,
@@ -85,6 +86,7 @@ this.buildForm();
           name: name,
           recordNumber:recordNumber,
         });
+        this.temp_title = name;
     }
     
     handleCancel() {
@@ -159,6 +161,15 @@ this.buildForm();
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
+          let name        = group.get('name').value.trim();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
           this.switchS.updateData(  
             this.modalVariables={
               title: 'Recipient Consents'

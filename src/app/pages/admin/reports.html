@@ -1387,11 +1387,11 @@
                     <div nz-row>
                         <div nz-col nzSpan="16">
                             <div class="form-group">
-                                <label><i nz-icon nzType="user" nzTheme="outline"></i> Coordinator/Manager </label>
-                                <label class="checks" nz-checkbox formControlName="allManager">All Managers</label>
-                                <nz-select formControlName="managersArr" nzMode="multiple" [nzDisabled]="inputForm.value.allManager">
-                                    <nz-option *ngFor="let option of managersArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                </nz-select>                                        
+                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> HR Notes Category </label>
+                                <label class="checks" nz-checkbox formControlName="allhrNotes">All Case Notes </label>
+                                <nz-select formControlName="hrnotesArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allhrNotes">
+                                    <nz-option *ngFor="let option of hrnotesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>                                    
                             </div>
                         </div>
                     </div>

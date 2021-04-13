@@ -8,7 +8,7 @@
     </div>
     <div nz-row>
         <div nz-col>
-            <nz-table #basicTable nzBordered [nzShowPagination]="true" [nzSize]="'small'" [nzResponsive]="true" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
+            <nz-table #basicTable nzBordered [nzShowPagination]="false" [nzSize]="'small'" [nzResponsive]="true" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
                 <thead>
                     <tr>
                         <th class="left">Title</th>
@@ -30,7 +30,7 @@
                         <td nzLeft>{{ data.title  }} </td> 
                         <td nzLeft nzBreakWord>{{ data.type  }} </td>
                         <td nzLeft nzBreakWord>{{ data.agencyID  }} </td>
-                        <td nzLeft><label nz-checkbox nzDisabled nzDisabled ></label></td>
+                        <td nzLeft><label nz-checkbox nzDisabled [ngModel]="data.gst" nzDisabled ></label></td>
                         <td nzLeft nzBreakWord>{{ data.rate  }} </td>
                         <td nzLeft nzBreakWord >{{ data.budget$  }} </td>
                         <td nzLeft nzBreakWord>{{ data.budgetHrs  }} </td>

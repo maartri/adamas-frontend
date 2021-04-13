@@ -206,9 +206,9 @@ export class ClaimratesComponent implements OnInit {
         }
         PopulateData(){
           this.loading = true;
-          this.menuS.getDataDomainByType("PACKAGERATES",this.check).subscribe(data => {
+          let prog = "SELECT Distinct Description as name from DataDomains Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'PACKAGERATES' ORDER BY Description";
+            this.listS.getlist(prog).subscribe(data => {
             this.items = data;
-            this.loading = false;
           });
         }
         delete(data: any) {

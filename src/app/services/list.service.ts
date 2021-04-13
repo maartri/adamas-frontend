@@ -20,6 +20,14 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getclientportalmethod(): Observable<any>{
+        return this.auth.get(`${list}/clientportalmethod`);
+    }
+
+    updateclientportalmethod(data: boolean): Observable<any>{
+        return this.auth.put(`${list}/clientportalmethod/${data}`);
+    }
+
     getrecipientprograms(id: string): Observable<any>{
         return this.auth.get(`${list}/programs-recipient/${id}`);
     }

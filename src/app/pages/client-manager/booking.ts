@@ -272,6 +272,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
             this.services = [];
 
             this.getApprovedServices();
+            console.log(this.slots);
+            // return;
         }
 
         if (this.current == 1) {
@@ -500,6 +502,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
 
         var id = this.globalS.loadingMessage('Processing booking...');
         this.bookingModalOpen = false;
+
+        console.log(this.finalBooking)
 
         this.clientS.addbooking(this.finalBooking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let resultRows = parseInt(data);            

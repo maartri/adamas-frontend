@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GlobalService, LoginService, roles, ShareService } from '@services/index';
+import { GlobalService, LoginService, roles, ShareService, ListService } from '@services/index';
 import { Router } from '@angular/router'
 
 @Component({
@@ -18,10 +18,14 @@ export class HeaderNavComponent implements OnInit {
   
   pickedUser: any;
 
+  settingsDrawerVisible: boolean = false;
+  clientPortalMethod: boolean = false;
+
   constructor(
     private globalS: GlobalService,
     private loginS: LoginService,
     private sharedS: ShareService,
+    private listS: ListService,
     private router: Router,
   ) { 
     // this.sharedS.emitMemberPicked$.subscribe(data => {
@@ -41,6 +45,8 @@ export class HeaderNavComponent implements OnInit {
     }
     else if (this.tempRole == roles.manager) {
         this.ifClientManager = this.tempRole == roles.manager ? true : false;
+
+        this.listS.getclientportalmethod().subscribe(data => console.log(data));
     }
     else if (this.tempRole == roles.provider) {
     }
@@ -64,8 +70,18 @@ export class HeaderNavComponent implements OnInit {
   toClientMembers() {
     var tempRole = this.globalS.isRole();
     if (tempRole == roles.manager) {
-        this.router.navigate(['client/members']);
+        // this.router.navigate(['client-manager/settings']);
     }
+  }
+
+  close(){
+    this.settingsDrawerVisible = false;
+  }
+
+  methodChange(event: boolean){
+    this.listS.updateclientportalmethod(event).subscribe(data => {
+      this.globalS.sToast('Success','Client Method changed')
+    });
   }
 
   

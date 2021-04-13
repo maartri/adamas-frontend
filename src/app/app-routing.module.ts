@@ -21,7 +21,7 @@ import { NotesClientManager } from './pages/client-manager/notes';
 import { PackageClientManager } from './pages/client-manager/package';
 import { PreferencesClientManager } from './pages/client-manager/preferences';
 import { ShiftClientManager } from './pages/client-manager/shift';
-
+import { SettingsClientManager } from './pages/client-manager/settings';
 // Docusign
 import {  DocusignComponent } from './pages/docusign/docusign';
 
@@ -355,6 +355,10 @@ const routes: Routes = [
       {
         path: 'unauthorized',
         component: UnauthorizedComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsClientManager
       }
     ]
   },

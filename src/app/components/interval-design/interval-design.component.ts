@@ -116,10 +116,13 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
 
   calculateDuration(data: Array<any>){
     data.forEach(x => {
-      var earlier = new Date(x['monday']['time']);
-      var later = new Date(x['monday']['endTime']);
-      var diff = differenceInMinutes(later, earlier);
-      x['monday']['quantity'] = diff;
+      x['monday']['quantity'] = differenceInMinutes(new Date(x['monday']['endTime']), new Date(x['monday']['time']));
+      x['tuesday']['quantity'] = differenceInMinutes(new Date(x['tuesday']['endTime']), new Date(x['tuesday']['time']));
+      x['wednesday']['quantity'] = differenceInMinutes(new Date(x['wednesday']['endTime']), new Date(x['wednesday']['time']));
+      x['thursday']['quantity'] = differenceInMinutes(new Date(x['thursday']['endTime']), new Date(x['thursday']['time']));
+      x['friday']['quantity'] = differenceInMinutes(new Date(x['friday']['endTime']), new Date(x['friday']['time']));
+      x['saturday']['quantity'] = differenceInMinutes(new Date(x['saturday']['endTime']), new Date(x['saturday']['time']));
+      x['sunday']['quantity'] = differenceInMinutes(new Date(x['sunday']['endTime']), new Date(x['sunday']['time']));
     })
   }
 
@@ -247,6 +250,7 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
       this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {     
         this.innerValue = data;
         console.log(this.innerValue)
+        this.calculateDuration(data);
         this.onChangeCallback(this.innerValue);      
         this.cd.markForCheck();
       });

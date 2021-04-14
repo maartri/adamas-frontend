@@ -661,7 +661,6 @@ export class GlobalService {
     }
 
     START_DATE_ZEROHOURSMINUTES(date: Date): Date{
-        console.log(date);
         return new Date(date.getFullYear(),date.getMonth(),date.getDate(), 0, 0);
     }
 
@@ -684,9 +683,8 @@ export class GlobalService {
     }
 
     CALCULATE_WHAT_WEEK_FORTNIGHT(payperiod: Date, dateToBeCalculated: Date){
-        console.log(payperiod)
-
-        console.log(dateToBeCalculated)
+        // console.log(payperiod)
+        // console.log(dateToBeCalculated)
 
         var _laterDate = this.END_DATE_MAXHOURSMINUTES(dateToBeCalculated);
         var _earlierDate = this.START_DATE_ZEROHOURSMINUTES(payperiod);

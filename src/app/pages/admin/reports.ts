@@ -124,6 +124,7 @@ const inputFormDefault = {
     frm_options: [false],
     frm_add_inclusion: [false],
     frm_RosterFormat: [false],
+    frm_RosterInclusion: [false],
     
 
     whowhat: [''],
@@ -209,6 +210,7 @@ const inputFormDefault = {
     AGE_ATSI_StatusArr: ['ALL'],
     Additional_inclusion: ['Default Display'],
     Rpt_Format: ['Detail'],
+    Roster_staffinclusion : ['Show Staff Code']    ,
     
 
     monthArr: [[]],
@@ -391,6 +393,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_options: boolean;
     frm_add_inclusion: boolean;
     frm_RosterFormat: boolean;
+    frm_RosterInclusion:boolean;
 
     
 
@@ -523,7 +526,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     Additional_inclusion: Array<any> = [];
     RosterCategory: Array<any> = []; 
     Rpt_Format : Array<any> = [];
-
+    Roster_staffinclusion   : Array<any> = [];
+    
     monthArr: Array<any> = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     yearArr: Array<any> = [];
     FYEnd_MonthArr : Array<any> = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1008,7 +1012,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.frm_options = false;
         this.frm_add_inclusion = false;
         this.frm_RosterFormat= false;
-
+        this.frm_RosterInclusion = false;
         this.frm_mta_options = false;
 
         this.RosterCategory = []; 
@@ -1105,7 +1109,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_pagebreak = true;
                 this.chkbx_include_AdditionalInfo = true;
                 this.frm_RosterFormat = true;
+                this.frm_RosterInclusion = true;
                 this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
+                this.Roster_staffinclusion   = ['Show Staff Code','Show Staff First Name','Show Staff #'] ;
+               
                
                 break;
             case 'btn-suspendedrecipient':
@@ -1180,8 +1187,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_pagebreak = true;
                 this.chkbx_include_AdditionalInfo = true;
                 this.frm_RosterFormat = true;
+                this.frm_RosterInclusion = true;
                 this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
-               
+                this.Roster_staffinclusion   = ['Show Staff Code','Show Staff First Name','Show Staff #'] ;
+                
                 break;
             case 'btn-activerecipient':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1509,7 +1518,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Regis-progcasenotes':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "RECIPIENT CASE/PROGRESS NOTES CRITERIA  "
+                this.ModalName = "RECIPIENT CASE/PROGRESS NOTES CRITERIA  " 
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_CaseNots = true;
@@ -1570,7 +1579,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-hrnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "HR NOTES CRITERIA"
+                this.ModalName = "HR NOTES REGISTER CRITERIA"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_HRNotes = true;
@@ -1886,7 +1895,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     handleOk() {
         this.reportRender(this.btnid);
         this.tryDoctype = "";        
-        this.FOReports = false;
+    //    this.FOReports = false;
         
         
 
@@ -2839,10 +2848,31 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
     RecipientRoster(branch, stfgroup, recipient, stafftype, startdate, enddate, tempsdate, tempedate,format) {
 
-        var lblcriteria;
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')   "
+        var lblcriteria; 
+        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting],   "
+        var tempkey = (this.inputForm.value.Roster_staffinclusion).toString();
+        console.log(tempkey)
+        switch (tempkey) { 
+            case 'Show Staff First Name':
+                fQuery = fQuery + "ISNULL([Staff].[FirstName],[CARER CODE]) as [Carer Code], "
+                fQuery = fQuery + "CASE WHEN [CARER CODE] = 'BOOKED' THEN 'BOOKED' ELSE STAFF.FIRSTNAME END as [CARER CODE], "
+               console.log('SHOW STAFF FIRST NAME')
+                break;
+                case 'Show Staff #':
+                    fQuery = fQuery + "ISNULL([Staff].[STF_CODE],[CARER CODE]) as [Carer Code], "
+                    console.log("SHOW STAFF #")
+                break;
+            default:
+                fQuery = fQuery + "[Roster].[Carer Code],"
+                console.log("default")
+                break;
+        }
+
+     
+        fQuery = fQuery + " [Roster].[Start Time], (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108  AS ENDTIME, [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')"
         //Condtion to be added on dynamic input   
         //HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END) <= '2020-07-01'  AND MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) >'2020-07-31' 
+       
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = "( Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
@@ -2906,10 +2936,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     
         default:
             this.reportid = "2orGpoorz20XztFV"
-            console.log("default case")
+        //    console.log("default case")
             break;
     }
-
+    console.log(fQuery)
         this.drawerVisible = true;
 
         const data = {
@@ -7026,7 +7056,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 let _blob: Blob = blob;
 
                 let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Recipient Case Note.pdf"
+                this.pdfTitle = "Recipient Case Notes Register.pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
 
@@ -7483,7 +7513,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     TimeattandanceComparison(branch, staff, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName], Format(DateTime,'dd/MM/yyyy') as DateTime , Format(RosteredStart,'dd/MM/yyyy hh:mm') as RosteredStart  ,  Format (ActualDateTime,'dd/MM/yyyy')  as ActualDateTime, DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, Format(RosteredEnd,'dd/MM/yyyy hh:mm') as RosteredEnd ,  Format(LOActualDateTime,'dd/MM/yyyy') as LOActualDateTime, DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  getdate()) ";
+        var fQuery = " SELECT DISTINCT S.LastName + ' ' + S.FirstName As StaffName, CASE WHEN R.[FirstName] <> '' Then R.[FirstName] + ' ' ELSE '' END + CASE WHEN R.[Surname/Organisation] <> '' THEN R.[Surname/Organisation] ELSE '' END AS [RecipientName], Format(DateTime,'dd/MM/yyyy') as DateTime , Format(RosteredStart,'dd/MM/yyyy hh:mm tt') as RosteredStart  ,  Format (ActualDateTime,'dd/MM/yyyy')  as ActualDateTime, DATEDIFF(n, RosteredStart, ActualDateTime) AS StartVAR, Format(RosteredEnd,'dd/MM/yyyy hh:mm tt') as RosteredEnd ,  Format(LOActualDateTime,'dd/MM/yyyy') as LOActualDateTime, DATEDIFF(n, RosteredEnd, LOActualDateTime) As EndVAR, DATEDIFF(n, Rosteredstart, Rosteredend) As RosterDur, Round(WorkDuration * 60, 0) As ActualDur,  Round(WorkDuration * 60, 0) - DATEDIFF(n, Rosteredstart, Rosteredend) as DurVAR FROM EZITRACKER_LOG E INNER JOIN STAFF S ON E.Peopleid = S.Uniqueid INNER JOIN RECIPIENTS R ON E.SiteLoginID = R.Uniqueid  WHERE  CommencementDate is not null AND (TerminationDate is null OR TerminationDate >  getdate()) ";
         var lblcriteria;
 
 

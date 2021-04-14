@@ -232,7 +232,7 @@
                                         <div>                                        
                                             <button nz-button nzType="default" id="btn-Regis-progcasenotes" (click)="showModal(this.id)"  >
                                             <i nz-icon nzType="printer"></i>
-                                            Progress Notes Register
+                                            Recipient Case Notes Register
                                         </button> 
                                         </div>
                                         <div>                                        
@@ -1166,6 +1166,16 @@
                                             </div>                                   
                                         </div>
                                     </div>
+                                    <div nz-row *ngIf="frm_RosterInclusion"> 
+                                        <div nz-col nzSpan = "12">                                   
+                                            <div class="form-group">
+                                                <label><i nz-icon nzType="solution" nzTheme="outline"></i>Incusion for Staff  </label>
+                                                <nz-select formControlName="Roster_staffinclusion" nzMode="default" >
+                                                    <nz-option *ngFor="let option of Roster_staffinclusion" [nzLabel]="option" [nzValue]="option"></nz-option> 
+                                                </nz-select>                                 
+                                            </div>                                   
+                                        </div>
+                                    </div>
                                     <div nz-row> 
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_staff" ><label class="checks" nz-checkbox formControlName="includestaff"   >Include Staff</label></div>                                        
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_Broker"><label class="checks" nz-checkbox formControlName="includebroker"   >Include Brokers</label></div>
@@ -1183,7 +1193,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_grpbyCoordinators" ><label class="checks" nz-checkbox formControlName="groupbyCoordinators"   >Group by Coordinators</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_inactivestaff" ><label class="checks" nz-checkbox formControlName="excludeinactivestaff"   >Exclude InActive Staff</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_staffondate" ><label class="checks" nz-checkbox formControlName="exclude_staff_shiftondate"   >Exclude Staff having shift on date</label></div>
-                                        <div nz-col nzSpan = "20" *ngIf="chkbx_include_enddated" ><label class="checks" nz-checkbox formControlName="include_enddated"   >Include EndDated Programs</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_include_enddated" ><label class="checks" nz-checkbox formControlName="include_enddated"   >Include End Dated Programs</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_PrimarySkills" ><label class="checks" nz-checkbox formControlName="include_PrimarySkills"   >Include Primary Skills and Other Qualifications</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_MandatoryChecking" ><label class="checks" nz-checkbox formControlName="exclude_MandatoryChecking"   >Only Staff excluded from Mandatory Checking</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_AdditionalInfo" ><label class="checks" nz-checkbox formControlName="include_AdditionalInfo"   >Include Additional Information</label></div>

@@ -134,7 +134,7 @@ export class HolidaysComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group  = this.inputForm;
-        let name        = group.get('description').value.trim();
+        let name        = group.get('description').value.trim().uppercase();
         let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -162,7 +162,7 @@ export class HolidaysComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
-        let name        = group.get('description').value.trim();
+        let name        = group.get('description').value.trim().uppercase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){

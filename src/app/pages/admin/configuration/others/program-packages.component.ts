@@ -77,6 +77,8 @@ export class ProgramPackagesComponent implements OnInit {
   staff:Array<any>;
   recepients:Array<any>;
   recepitnt_copy:Array<any>;
+  leaveTypes:Array<any>;
+  leaveTypes_copy:Array<any>;
   activities:Array<any>;
   types:Array<any>;
   fundingTypes:Array<any>;
@@ -190,19 +192,21 @@ export class ProgramPackagesComponent implements OnInit {
     }
     onCheckboxServiceChange(option,event){
       if(event.target.checked){
-        console.log(option);
         this.checkedPackageProfile.push(option.title);
       }else{
         this.checkedPackageProfile.filter(m=>m != option.title);
       }
     }
     searchPackageLeaves(event){
+      this.temp = [];
+      this.leaveTypes = this.leaveTypes_copy;
       if(event.target.value != ""){
-        this.recepients = this.recepients.filter(res=>{
-          return res.name.toLowerCase().match(event.target.value.toLowerCase());
+        this.temp = this.leaveTypes.filter(res=>{
+          return res.title.toLowerCase().match(event.target.value.toLowerCase());
         })
+        this.leaveTypes = this.temp;
       }else if(event.target.value == ""){
-        this.recepients = this.recepitnt_copy;
+        this.leaveTypes = this.leaveTypes_copy;
       }
     }
     searchApprovedServices(){
@@ -828,6 +832,11 @@ export class ProgramPackagesComponent implements OnInit {
         this.recepients = data;
         this.recepitnt_copy = this.recepients;
       });
+      let leavetype = "SELECT Title FROM ItemTypes WHERE RosterGroup = 'RECPTABSENCE' AND EndDate IS NULL or EndDate > GETDate() ORDER BY Title";
+      this.listS.getlist(leavetype).subscribe(data => {
+        this.leaveTypes = data;
+        this.leaveTypes_copy = this.leaveTypes;
+      });
       
       
       let acti = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
@@ -997,8 +1006,8 @@ export class ProgramPackagesComponent implements OnInit {
         shortNoticeLeadTime:'',
         shortNoticeLeaveActivity:'',
         no_notice:'',
-        recurant:'',
-        packg_balance:'',
+        recurant:false,
+        packg_balance:false,
         type: '',
         vehicledef:false,
         outletid:'',

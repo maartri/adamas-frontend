@@ -303,7 +303,7 @@ export class BudgetsComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
-        let name        = group.get('title').value.trim();
+        let name        = group.get('title').value.trim().uppercase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');

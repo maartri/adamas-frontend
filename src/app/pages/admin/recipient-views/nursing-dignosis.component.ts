@@ -104,7 +104,7 @@ export class NursingDignosisComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      let name        = group.get('name').value.trim();
+      let name        = group.get('name').value.trim().uppercase();
         let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -133,7 +133,7 @@ export class NursingDignosisComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group          = this.inputForm;
-        let name        = group.get('name').value.trim();
+        let name        = group.get('name').value.trim().uppercase();
         if(this.temp_title != name){
         let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){

@@ -160,7 +160,7 @@ export class DocumentTemplateComponent implements OnInit {
       if(!this.isUpdate){       
         this.postLoading   = true;   
         const group        = this.inputForm;
-        let name        = group.get('title').value.trim();
+        let name        = group.get('title').value.trim().uppercase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -192,7 +192,7 @@ export class DocumentTemplateComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
-        let name        = group.get('title').value.trim();
+        let name        = group.get('title').value.trim().uppercase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){

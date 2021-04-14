@@ -8,7 +8,7 @@
     </div>
     <div nz-row>
         <div nz-col>
-            <nz-table #basicTable nzBordered [nzShowPagination]="false" [nzSize]="'small'" [nzResponsive]="true" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+            <nz-table #basicTable nzBordered [nzShowPagination]="true" [nzSize]="'small'" [nzResponsive]="true" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
                 <thead>
                     <tr>
                         <th class="left">Title</th>
@@ -452,13 +452,13 @@
                                                         <label for="BASE ON"><b>BASE ON</b></label>
                                                     </div>
                                                     <div nz-col nzSpan="10" class="text-center">
-                                                        <label nz-checkbox nzDisabled="!inputForm.get('p_alert_type').value" formControlName="packg_balance">Package Balance</label>
+                                                        <label nz-checkbox  formControlName="packg_balance">Package Balance</label>
                                                     </div>
                                                     <div nz-col nzSpan="10">
-                                                        <label nz-checkbox nzDisabled="!inputForm.get('p_alert_type').value" formControlName="recurant">Recurrant Usage</label>
+                                                        <label nz-checkbox  formControlName="recurant">Recurrent Usage</label>
                                                     </div>
                                                 </div>
-                                                <div nz-row class="mrg-btm">
+                                                <div nz-row class="mrg-btm" *ngif="packg_balance">
                                                     <div nz-col nzOffset = "6" nzSpan="6" class="pad-r-5">
                                                         <label for="period">period</label>
                                                         <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="p_alert_period"  nzShowSearch nzAllowClear style="width:100%;">
@@ -1064,8 +1064,8 @@
                         </ng-template>
                         <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                             <div nz-row>
-                                <div nz-col nzSpan="24" *ngFor="let staff of recepients">
-                                    <label nz-checkbox [nzValue]="staff.name" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{ staff.name }}</label>
+                                <div nz-col nzSpan="24" *ngFor="let leavetype of leaveTypes">
+                                    <label nz-checkbox [nzValue]="leavetype.title" [(ngModel)]="leavetype.checked" [ngModelOptions]="{standalone: true}">{{ leavetype.title }}</label>
                                 </div>
                             </div>
                         </nz-checkbox-wrapper>
@@ -1074,8 +1074,8 @@
             </form>
             <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                        <span>Save</span>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading">
+                        <span>ADD</span>
                     </button>
                 </ng-container>
             </div>

@@ -284,16 +284,16 @@ export class GlobalService {
           return el.title.trim() === username.trim();
         }); 
     }
-    isNameExists(tableData,username) {
+    isNameExists(tableData,username) { 
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
-          return el.title.trim() === username.trim();
+          return el.name.trim() === username.trim();
         }); 
     }
     isDescriptionExists(tableData,username) {
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
-          return el.title.trim() === username.trim();
+          return el.description.trim() === username.trim();
         }); 
     }
     decode(token: string = this.token) {

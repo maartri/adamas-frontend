@@ -162,7 +162,7 @@ export class FundingRegionsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          let name        = group.get('name').value.trim();
+          let name        = group.get('name').value.trim().uppercase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){

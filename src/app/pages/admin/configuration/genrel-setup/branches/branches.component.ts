@@ -151,28 +151,28 @@ export class BranchesComponent implements OnInit {
       if(!this.isUpdate){
         const group = this.inputForm;
         this.menuS.AddBranch({
-          name:         group.get('name').value,
-          glRevene:     !(this.globalS.isVarNull(group.get('glRevene').value)) ? group.get('glRevene').value : null,
-          glCost:       !(this.globalS.isVarNull(group.get('glCost').value)) ? group.get('glCost').value : null,
+          name:         group.get('name').value.trim().toUpperCase(),
+          glRevene:     !(this.globalS.isVarNull(group.get('glRevene').value)) ? group.get('glRevene').value : '',
+          glCost:       !(this.globalS.isVarNull(group.get('glCost').value)) ? group.get('glCost').value : '',
           end_date :    !(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
-          centerName:   !(this.globalS.isVarNull(group.get('centerName').value)) ? group.get('centerName').value : null,
-          addrLine1:    !(this.globalS.isVarNull(group.get('addrLine1').value)) ? group.get('addrLine1').value : null,
-          addrLine2:    !(this.globalS.isVarNull(group.get('addrLine2').value)) ? group.get('addrLine2').value : null,
-          Phone:        !(this.globalS.isVarNull(group.get('Phone').value)) ? group.get('Phone').value : null,
-          startHour:    !(this.globalS.isVarNull(group.get('startHour').value)) ? group.get('startHour').value : null,
-          finishHour:   !(this.globalS.isVarNull(group.get('finishHour').value)) ? group.get('finishHour').value : null,
-          earlyStart:   !(this.globalS.isVarNull(group.get('earlyStart').value)) ? group.get('earlyStart').value : null,
-          lateStart:    !(this.globalS.isVarNull(group.get('lateStart').value)) ? group.get('lateStart').value : null,
-          earlyFinish:  !(this.globalS.isVarNull(group.get('earlyFinish').value)) ? group.get('earlyFinish').value : null,
-          lateFinish :  !(this.globalS.isVarNull(group.get('lateFinish').value)) ? group.get('lateFinish').value : null,
-          overstay:     !(this.globalS.isVarNull(group.get('overstay').value)) ? group.get('overstay').value : null,
-          understay:    !(this.globalS.isVarNull(group.get('understay').value)) ? group.get('understay').value : null,
-          t2earlyStart: !(this.globalS.isVarNull(group.get('t2earlyStart').value)) ? group.get('t2earlyStart').value : null,
-          t2lateStart:  !(this.globalS.isVarNull(group.get('t2lateStart').value)) ? group.get('t2lateStart').value : null,
-          t2earlyFinish:!(this.globalS.isVarNull(group.get('t2earlyFinish').value)) ? group.get('t2earlyFinish').value : null,
-          t2lateFinish: !(this.globalS.isVarNull(group.get('t2lateFinish').value)) ? group.get('t2lateFinish').value : null,
-          t2overstay:   !(this.globalS.isVarNull(group.get('t2overstay').value)) ? group.get('t2overstay').value : null,
-          t2understay:  !(this.globalS.isVarNull(group.get('t2understay').value)) ? group.get('t2understay').value : null,
+          centerName:   !(this.globalS.isVarNull(group.get('centerName').value)) ? group.get('centerName').value : '',
+          addrLine1:    !(this.globalS.isVarNull(group.get('addrLine1').value)) ? group.get('addrLine1').value : '',
+          addrLine2:    !(this.globalS.isVarNull(group.get('addrLine2').value)) ? group.get('addrLine2').value : '',
+          Phone:        !(this.globalS.isVarNull(group.get('Phone').value)) ? group.get('Phone').value : '',
+          startHour:    !(this.globalS.isVarNull(group.get('startHour').value)) ? group.get('startHour').value : '',
+          finishHour:   !(this.globalS.isVarNull(group.get('finishHour').value)) ? group.get('finishHour').value : '',
+          earlyStart:   !(this.globalS.isVarNull(group.get('earlyStart').value)) ? group.get('earlyStart').value : '',
+          lateStart:    !(this.globalS.isVarNull(group.get('lateStart').value)) ? group.get('lateStart').value : '',
+          earlyFinish:  !(this.globalS.isVarNull(group.get('earlyFinish').value)) ? group.get('earlyFinish').value : '',
+          lateFinish :  !(this.globalS.isVarNull(group.get('lateFinish').value)) ? group.get('lateFinish').value : '',
+          overstay:     !(this.globalS.isVarNull(group.get('overstay').value)) ? group.get('overstay').value : '',
+          understay:    !(this.globalS.isVarNull(group.get('understay').value)) ? group.get('understay').value : '',
+          t2earlyStart: !(this.globalS.isVarNull(group.get('t2earlyStart').value)) ? group.get('t2earlyStart').value : '',
+          t2lateStart:  !(this.globalS.isVarNull(group.get('t2lateStart').value)) ? group.get('t2lateStart').value : '',
+          t2earlyFinish:!(this.globalS.isVarNull(group.get('t2earlyFinish').value)) ? group.get('t2earlyFinish').value : '',
+          t2lateFinish: !(this.globalS.isVarNull(group.get('t2lateFinish').value)) ? group.get('t2lateFinish').value : '',
+          t2overstay:   !(this.globalS.isVarNull(group.get('t2overstay').value)) ? group.get('t2overstay').value : '',
+          t2understay:  !(this.globalS.isVarNull(group.get('t2understay').value)) ? group.get('t2understay').value : '',
           recordNumber: group.get('recordNumber').value,
         }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           if (data) 
@@ -180,6 +180,7 @@ export class BranchesComponent implements OnInit {
           else
           this.globalS.sToast('Success', 'Saved successful');
           this.loadBranches();
+          this.postLoading = false;
           this.handleCancel();
           this.resetModal();    
         });
@@ -187,7 +188,7 @@ export class BranchesComponent implements OnInit {
           const group = this.inputForm;
           console.log(group.get('recordNumber').value);
           this.menuS.UpdateBranch({
-          name: group.get('name').value,
+          name: group.get('name').value.trim().toUpperCase(),
           glRevene: group.get('glRevene').value,
           glCost: group.get('glCost').value,
           end_date : !(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
@@ -214,15 +215,15 @@ export class BranchesComponent implements OnInit {
           if (data) 
           {
             this.globalS.sToast('Success','Update successful');  
-            this.isUpdate = false;   
           }
           else{
           this.globalS.sToast('Success','Update successful');
           this.loadBranches();
+          this.postLoading = false;
+          this.isUpdate = false;
           this.handleCancel();
           this.resetModal();
         }    
-        this.isUpdate = false;
         });
       }
     }
@@ -271,7 +272,7 @@ export class BranchesComponent implements OnInit {
       this.menuS.getlistbranches(this.check).subscribe(data => {
         this.branchList = data;
         this.tableData = data;
-        console.log(this.branchList);
+        // console.log(this.branchList);
         this.loading = false;
         this.cd.detectChanges();
       });

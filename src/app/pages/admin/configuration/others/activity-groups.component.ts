@@ -114,16 +114,15 @@ export class ActivityGroupsComponent implements OnInit {
       if(!this.isUpdate){         
         this.postLoading = true;   
         const group = this.inputForm;
-        let name        = group.get('rate').value.trim();
-          // if(this.temp_title != name){
+        console.log(group.get('rate').value);
+        let name        = group.get('rate').value.trim().uppercase().uppercase();
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
               this.globalS.sToast('Unsuccess', 'Title Already Exist');
               this.postLoading = false;
               return false;   
             }
-        // }
-
+            console.log(group.get('rate').value);
         let domain       = "'ACTIVITYGROUPS'";
         let item         = this.globalS.isValueNull(group.get('item').value);
         let rate         = this.globalS.isValueNull(group.get('rate').value);
@@ -146,7 +145,7 @@ export class ActivityGroupsComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
-        let name          = group.get('rate').value.trim();
+        let name          = group.get('rate').value.trim().uppercase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
@@ -156,9 +155,9 @@ export class ActivityGroupsComponent implements OnInit {
             }
         }
         let item          = this.globalS.isValueNull(group.get('item').value);
-        let rate          = this.globalS.isValueNull(group.get('rate').value);
+        let rate          = this.globalS.isValueNull(group.get('rate').value.trim().uppercase());
         let agroup        = this.globalS.isValueNull(group.get('agroup').value); 
-        let end_date      =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let end_date      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let recordNumber  = group.get('recordNumber').value;
         
         let sql  = "Update DataDomains SET [Description]="+rate+",[User1]="+item+",[User2]="+agroup+",[EndDate]="+end_date+" WHERE [RecordNumber] ='"+recordNumber+"'";

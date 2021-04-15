@@ -86,6 +86,7 @@ export class ProgramPackagesComponent implements OnInit {
   programCordinates:Array<any>;
   individual:boolean= false;
   aged:boolean= false;
+  visibleRecurrent:boolean=false;
   template:boolean=false;
   packageLevel:boolean=false;
   ServiceData:Array<any>;
@@ -766,7 +767,15 @@ export class ProgramPackagesComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    
+    packgChange(e){
+    }
+    recurrentChange(e){
+      if(e.target.checked){
+        this.visibleRecurrent = true;
+      }else{
+        this.visibleRecurrent = false;
+      }
+    }
     loadData(){
       this.loading = true;
       this.menuS.getlistProgramPackages(this.check).subscribe(data => {
@@ -1044,6 +1053,14 @@ export class ProgramPackagesComponent implements OnInit {
         Phone:'',
         recordNumber:null
       });
+
+      // this.inputForm.get('packg_balance').valueChanges.subscribe(data => {
+      //   if(!data){
+      //       this.inputForm.controls['recurant'].enable()
+      //   } else {
+      //       this.inputForm.controls['packg_balance'].enable()
+      //   }
+      // })
     }
     handleOkTop() {
       this.generatePdf();

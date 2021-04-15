@@ -36,6 +36,7 @@ export class HolidaysComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DeletedRecord, 0) = 0";
+  whereLive   :string="Where ISNULL(xDeletedRecord, 0) = 0";
   temp_title: any;
   
   constructor(
@@ -66,9 +67,11 @@ export class HolidaysComponent implements OnInit {
     fetchAll(e){
       if(e.target.checked){
         this.whereString = "";
+        this.whereLive = "";
         this.loadData();
       }else{
         this.whereString = "Where ISNULL(DeletedRecord, 0) = 0";
+        this.whereLive   = "Where ISNULL(xDeletedRecord, 0) = 0";
         this.loadData();
       }
     }
@@ -85,7 +88,7 @@ export class HolidaysComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="Select ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS row_num,RECORDNO,DATE,DESCRIPTION,Stats,PublicHolidayRegion,DELETEDRECORD as is_deleted from PUBLIC_HOLIDAYS "+this.whereString+" order by DATE desc";
+      let sql ="Select ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS row_num,RECORDNO,DATE,DESCRIPTION,Stats,PublicHolidayRegion,DeletedRecord as is_deleted from PUBLIC_HOLIDAYS "+this.whereString+" order by DATE desc";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -239,8 +242,8 @@ export class HolidaysComponent implements OnInit {
       this.drawerVisible = true;
       
       this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,CONVERT(varchar, [DATE],105) as Field4 from PUBLIC_HOLIDAYS "+this.whereString+" order by DATE desc";
+      // xDeletedRecord
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,CONVERT(varchar, [DATE],105) as Field4 from PUBLIC_HOLIDAYS  order by DATE desc";
       
       const headerDict = {
         'Content-Type': 'application/json',

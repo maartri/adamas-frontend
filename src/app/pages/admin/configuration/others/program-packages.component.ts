@@ -210,31 +210,31 @@ export class ProgramPackagesComponent implements OnInit {
         this.leaveTypes = this.leaveTypes_copy;
       }
     }
-    searchApprovedServices(){
+    searchApprovedServices(event){
       this.temp = [];
       this.packedTypeProfile = this.packedTypeProfileCopy;
-      if(this.inputvalueSearch != ""){
+      if(event.target.value != ""){
         this.temp = this.packedTypeProfile.filter(res=>{
-          return res.title.toLowerCase().match(this.inputvalueSearch.toLowerCase());
+          return res.title.toLowerCase().match(event.target.value.toLowerCase());
         })
         this.packedTypeProfile = this.temp;
-      }else if(this.inputvalueSearch == ""){
+      }else if(event.target.value == ""){
         this.packedTypeProfile = this.packedTypeProfileCopy;
       }
-      this.inputvalueSearch = "";
     }
     searchCompetenncy(event){
       this.temp = [];
       this.competencyList = this.competencyListCopy;
-      if(this.inputvalueSearch != ""){
+      if(event.target.value != ""){
         this.temp = this.competencyList.filter(res=>{
-          return res.name.toLowerCase().indexOf(this.inputvalueSearch.toLowerCase()) > -1;
+          return res.name.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
         })
         this.competencyList = this.temp;
-      }else if(this.inputvalueSearch == ""){
+      }else if(event.target.value == ""){
         this.competencyList = this.competencyListCopy;
       }
     }
+    
     onCheckboxChange(option, event) {
       if(event.target.checked){
         this.checkedList.push(option.name);

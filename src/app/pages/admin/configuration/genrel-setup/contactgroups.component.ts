@@ -131,7 +131,7 @@ export class ContactgroupsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        let name        = group.get('name').value;
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -143,7 +143,7 @@ export class ContactgroupsComponent implements OnInit {
             title: 'Contact Group'
           }, 
           this.inputVariables = {
-            display: group.get('name').value,
+            display: group.get('name').value.trim().toUpperCase(),
             end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             domain: 'CONTACTGROUP', 
           }

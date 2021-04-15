@@ -46,6 +46,7 @@ export class BranchesComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  temp_title: any;
   constructor(
     private globalS: GlobalService,
     private listS: ListService,    
@@ -133,6 +134,7 @@ export class BranchesComponent implements OnInit {
         t2overstay:aH_OverStay,
         t2understay:aH_UndrStay,
       })      
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -150,6 +152,13 @@ export class BranchesComponent implements OnInit {
       this.postLoading = true;
       if(!this.isUpdate){
         const group = this.inputForm;
+        let name        = group.get('name').value.trim().toUpperCase();
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
         this.menuS.AddBranch({
           name:         group.get('name').value.trim().toUpperCase(),
           glRevene:     !(this.globalS.isVarNull(group.get('glRevene').value)) ? group.get('glRevene').value : '',
@@ -186,6 +195,15 @@ export class BranchesComponent implements OnInit {
         });
       }else{
           const group = this.inputForm;
+          let name        = group.get('name').value.trim().uppercase();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
           console.log(group.get('recordNumber').value);
           this.menuS.UpdateBranch({
           name: group.get('name').value.trim().toUpperCase(),

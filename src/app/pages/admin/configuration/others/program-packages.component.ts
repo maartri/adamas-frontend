@@ -77,6 +77,8 @@ export class ProgramPackagesComponent implements OnInit {
   staff:Array<any>;
   recepients:Array<any>;
   recepitnt_copy:Array<any>;
+  leaveTypes:Array<any>;
+  leaveTypes_copy:Array<any>;
   activities:Array<any>;
   types:Array<any>;
   fundingTypes:Array<any>;
@@ -84,6 +86,7 @@ export class ProgramPackagesComponent implements OnInit {
   programCordinates:Array<any>;
   individual:boolean= false;
   aged:boolean= false;
+  visibleRecurrent:boolean=false;
   template:boolean=false;
   packageLevel:boolean=false;
   ServiceData:Array<any>;
@@ -190,46 +193,48 @@ export class ProgramPackagesComponent implements OnInit {
     }
     onCheckboxServiceChange(option,event){
       if(event.target.checked){
-        console.log(option);
         this.checkedPackageProfile.push(option.title);
       }else{
         this.checkedPackageProfile.filter(m=>m != option.title);
       }
     }
     searchPackageLeaves(event){
+      this.temp = [];
+      this.leaveTypes = this.leaveTypes_copy;
       if(event.target.value != ""){
-        this.recepients = this.recepients.filter(res=>{
-          return res.name.toLowerCase().match(event.target.value.toLowerCase());
+        this.temp = this.leaveTypes.filter(res=>{
+          return res.title.toLowerCase().match(event.target.value.toLowerCase());
         })
+        this.leaveTypes = this.temp;
       }else if(event.target.value == ""){
-        this.recepients = this.recepitnt_copy;
+        this.leaveTypes = this.leaveTypes_copy;
       }
     }
-    searchApprovedServices(){
+    searchApprovedServices(event){
       this.temp = [];
       this.packedTypeProfile = this.packedTypeProfileCopy;
-      if(this.inputvalueSearch != ""){
+      if(event.target.value != ""){
         this.temp = this.packedTypeProfile.filter(res=>{
-          return res.title.toLowerCase().match(this.inputvalueSearch.toLowerCase());
+          return res.title.toLowerCase().match(event.target.value.toLowerCase());
         })
         this.packedTypeProfile = this.temp;
-      }else if(this.inputvalueSearch == ""){
+      }else if(event.target.value == ""){
         this.packedTypeProfile = this.packedTypeProfileCopy;
       }
-      this.inputvalueSearch = "";
     }
     searchCompetenncy(event){
       this.temp = [];
       this.competencyList = this.competencyListCopy;
-      if(this.inputvalueSearch != ""){
+      if(event.target.value != ""){
         this.temp = this.competencyList.filter(res=>{
-          return res.name.toLowerCase().indexOf(this.inputvalueSearch.toLowerCase()) > -1;
+          return res.name.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
         })
         this.competencyList = this.temp;
-      }else if(this.inputvalueSearch == ""){
+      }else if(event.target.value == ""){
         this.competencyList = this.competencyListCopy;
       }
     }
+    
     onCheckboxChange(option, event) {
       if(event.target.checked){
         this.checkedList.push(option.name);
@@ -762,7 +767,15 @@ export class ProgramPackagesComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    
+    packgChange(e){
+    }
+    recurrentChange(e){
+      if(e.target.checked){
+        this.visibleRecurrent = true;
+      }else{
+        this.visibleRecurrent = false;
+      }
+    }
     loadData(){
       this.loading = true;
       this.menuS.getlistProgramPackages(this.check).subscribe(data => {
@@ -827,6 +840,11 @@ export class ProgramPackagesComponent implements OnInit {
       this.listS.getlist(reci).subscribe(data => {
         this.recepients = data;
         this.recepitnt_copy = this.recepients;
+      });
+      let leavetype = "SELECT Title FROM ItemTypes WHERE RosterGroup = 'RECPTABSENCE' AND EndDate IS NULL or EndDate > GETDate() ORDER BY Title";
+      this.listS.getlist(leavetype).subscribe(data => {
+        this.leaveTypes = data;
+        this.leaveTypes_copy = this.leaveTypes;
       });
       
       
@@ -997,8 +1015,8 @@ export class ProgramPackagesComponent implements OnInit {
         shortNoticeLeadTime:'',
         shortNoticeLeaveActivity:'',
         no_notice:'',
-        recurant:'',
-        packg_balance:'',
+        recurant:false,
+        packg_balance:false,
         type: '',
         vehicledef:false,
         outletid:'',
@@ -1035,6 +1053,14 @@ export class ProgramPackagesComponent implements OnInit {
         Phone:'',
         recordNumber:null
       });
+
+      // this.inputForm.get('packg_balance').valueChanges.subscribe(data => {
+      //   if(!data){
+      //       this.inputForm.controls['recurant'].enable()
+      //   } else {
+      //       this.inputForm.controls['packg_balance'].enable()
+      //   }
+      // })
     }
     handleOkTop() {
       this.generatePdf();

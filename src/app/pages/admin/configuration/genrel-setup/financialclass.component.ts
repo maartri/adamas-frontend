@@ -39,6 +39,7 @@ export class FinancialclassComponent implements OnInit {
   check : boolean = false; 
   userRole:string="userrole";
   whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -114,6 +115,7 @@ export class FinancialclassComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber
       });
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -123,7 +125,7 @@ export class FinancialclassComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        let name        = group.get('name').value.trim();
+        let name        = group.get('fclass').value.trim().uppercase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -152,6 +154,15 @@ export class FinancialclassComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
+          let name        = group.get('fclass').value.trim().uppercase();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
           this.switchS.updateData(  
             this.modalVariables={
               title: 'Financial Classification'

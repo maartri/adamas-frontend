@@ -281,19 +281,19 @@ export class GlobalService {
     isTitleExists(tableData,username) {
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
-          return el.title.trim() === username.trim();
+          return el.title.trim().toUpperCase() === username.trim().toUpperCase();
         }); 
     }
-    isNameExists(tableData,username) {
+    isNameExists(tableData,username) { 
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
-          return el.title.trim() === username.trim();
+          return el.name.trim().toUpperCase() === username.trim().toUpperCase();
         }); 
     }
     isDescriptionExists(tableData,username) {
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
-          return el.title.trim() === username.trim();
+          return el.description.trim().toUpperCase() === username.trim().toUpperCase();
         }); 
     }
     decode(token: string = this.token) {

@@ -30,7 +30,7 @@
                         <td nzLeft>{{ data.title  }} </td> 
                         <td nzLeft nzBreakWord>{{ data.type  }} </td>
                         <td nzLeft nzBreakWord>{{ data.agencyID  }} </td>
-                        <td nzLeft><label nz-checkbox nzDisabled nzDisabled ></label></td>
+                        <td nzLeft><label nz-checkbox nzDisabled [ngModel]="data.gst" nzDisabled ></label></td>
                         <td nzLeft nzBreakWord>{{ data.rate  }} </td>
                         <td nzLeft nzBreakWord >{{ data.budget$  }} </td>
                         <td nzLeft nzBreakWord>{{ data.budgetHrs  }} </td>
@@ -351,7 +351,7 @@
                                     <nz-divider nzText="Approved /Exclude Workers" nzOrientation="left" style="color:#1890FF;margin-top:0px !important;"></nz-divider>
                                     <div nz-row nzGutter=24>
                                         <div nz-col nzSpan="12">
-                                            <button class="botton success" (click)="showstaffApprovedModal()">Approved Care Workers</button>
+                                            <button class="botton success" (click)="showstaffApprovedModal()">Approved STAFF</button>
                                             <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedListApproved">
                                                 <thead>
                                                     <tr>
@@ -374,7 +374,7 @@
                                             </nz-table>
                                         </div>
                                         <div nz-col nzSpan="12">
-                                            <button class="botton success" (click)="showstaffUnApprovedModal()">Excluded Care Workers</button>
+                                            <button class="botton success" (click)="showstaffUnApprovedModal()">Excluded STAFF</button>
                                             <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedListExcluded">
                                                 <thead>
                                                     <tr>
@@ -452,22 +452,22 @@
                                                         <label for="BASE ON"><b>BASE ON</b></label>
                                                     </div>
                                                     <div nz-col nzSpan="10" class="text-center">
-                                                        <label nz-checkbox nzDisabled="!inputForm.get('p_alert_type').value" formControlName="packg_balance">Package Balance</label>
+                                                        <label nz-checkbox (change)="packgChange($event)"      formControlName="packg_balance">Package Balance</label>
                                                     </div>
                                                     <div nz-col nzSpan="10">
-                                                        <label nz-checkbox nzDisabled="!inputForm.get('p_alert_type').value" formControlName="recurant">Recurrant Usage</label>
+                                                        <label nz-checkbox (change)="recurrentChange($event)"  formControlName="recurant">Recurrent Usage</label>
                                                     </div>
                                                 </div>
-                                                <div nz-row class="mrg-btm">
-                                                    <div nz-col nzOffset = "6" nzSpan="6" class="pad-r-5">
+                                                <div nz-row class="mrg-btm" *ngIf="visibleRecurrent">
+                                                    <div nz-col nzOffset = "6" nzSpan="8" class="pad-r-5">
                                                         <label for="period">period</label>
                                                         <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="p_alert_period"  nzShowSearch nzAllowClear style="width:100%;">
                                                             <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                                         </nz-select>
                                                     </div>
-                                                    <div nz-col nzSpan="6">
+                                                    <div nz-col nzSpan="8">
                                                         <label for="Commencing">Commencing</label>
-                                                        <input nz-input placeholder="Package Start Date" [nzSize]="'small'" formControlName="name" />
+                                                        <input nz-input placeholder="Package Start Date" [nzSize]="'small'" nzDisabled formControlName="name" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1025,7 +1025,7 @@
                 <div nz-row nzGutter="24">
                     <h3 style="text-align:center;color:#1890FF">Tick The Checkbox Next To the Service Approved For Use For The Displayed Program</h3>    
                     <nz-input-group [nzSuffix]="suffixIconSearchh">
-                        <input type="text" nz-input placeholder="search text" [(ngModel)]="inputvalueSearch" [ngModelOptions]="{standalone: true}" (keyup)="searchApprovedServices()"/>
+                        <input type="text" nz-input placeholder="search text" [(ngModel)]="inputvalueSearch" [ngModelOptions]="{standalone: true}" (keyup)="searchApprovedServices($event)"/>
                     </nz-input-group>
                     <ng-template #suffixIconSearchh>
                             <i nz-icon nzType="search"></i>
@@ -1064,8 +1064,8 @@
                         </ng-template>
                         <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                             <div nz-row>
-                                <div nz-col nzSpan="24" *ngFor="let staff of recepients">
-                                    <label nz-checkbox [nzValue]="staff.name" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{ staff.name }}</label>
+                                <div nz-col nzSpan="24" *ngFor="let leavetype of leaveTypes">
+                                    <label nz-checkbox [nzValue]="leavetype.title" [(ngModel)]="leavetype.checked" [ngModelOptions]="{standalone: true}">{{ leavetype.title }}</label>
                                 </div>
                             </div>
                         </nz-checkbox-wrapper>
@@ -1074,8 +1074,8 @@
             </form>
             <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                        <span>Save</span>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading">
+                        <span>ADD</span>
                     </button>
                 </ng-container>
             </div>

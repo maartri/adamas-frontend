@@ -36,6 +36,7 @@ export class NursingDignosisComponent implements OnInit {
   whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -87,6 +88,7 @@ export class NursingDignosisComponent implements OnInit {
         end_date: end_date,
         recordNumber: recordno
       });
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -102,8 +104,8 @@ export class NursingDignosisComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      let name        = group.get('name').value.trim();
-        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+      let name        = group.get('name').value.trim().uppercase();
+        let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
           this.postLoading = false;
@@ -131,7 +133,16 @@ export class NursingDignosisComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group          = this.inputForm;
-        let name             = this.globalS.isValueNull(group.get('name').value);
+        let name        = group.get('name').value.trim().uppercase();
+        if(this.temp_title != name){
+        let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
+        if(is_exist){
+          this.globalS.sToast('Unsuccess', 'Title Already Exist');
+          this.postLoading = false;
+          return false;   
+        }
+        }
+        name             = this.globalS.isValueNull(group.get('name').value);
         let icdcode          = this.globalS.isValueNull(group.get('icdcode').value);
         let usercode         = this.globalS.isValueNull(group.get('usercode').value);
         let end_date         = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;

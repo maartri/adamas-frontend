@@ -63,6 +63,9 @@ export class MenuService {
         getlistvehicles():Observable<any>{
             return this.auth.get(`${menu}/vehicles`)
         }
+        getlistPackageLeaveTypes():Observable<any>{
+            return this.auth.get(`${menu}/packgeLeaveTypes`);
+        }
         getlistactivityGroups(is_where:boolean):Observable<any>{
             return this.auth.get(`${menu}/activityGroups/${is_where}`)
         }

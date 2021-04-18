@@ -52,7 +52,8 @@ export class ProgramPackagesComponent implements OnInit {
   quoutetemplates:Array<any>;
   competencyList:Array<any>;
   competencyListCopy:Array<any>;
-  careWorkersExcluded:Array<any>
+  careWorkersExcluded:Array<any>;
+  PackgeLeaveTypecheckedList:Array<any>;
   checkedList:string[];
   checkedListExcluded:string[];
   checkedListApproved:string[];
@@ -120,6 +121,8 @@ export class ProgramPackagesComponent implements OnInit {
   tryDoctype: any;
   drawerVisible: boolean =  false;
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  isUpdatePackageType: boolean = false;
+  tableDataPackageLeaveTypes: any;
   
   constructor(
     private globalS: GlobalService,
@@ -139,17 +142,18 @@ export class ProgramPackagesComponent implements OnInit {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
+      this.PackgeLeaveTypecheckedList = new Array <string>();
       this.checkedListExcluded =new Array<string>();
       this.checkedListApproved =new Array<string>();
       this.checkedPackageProfile =new Array<string>();
       this.loadData();
+      this.loadPackageLeaveTypes();
       this.populateDropdowns();
       this.buildForm();
       this.loading = false;
       this.cd.detectChanges();
     }
-    
-    //open modals
+
     showAddModal() {
       this.title = "Add New Program/Packages"
       this.resetModal();
@@ -160,6 +164,7 @@ export class ProgramPackagesComponent implements OnInit {
     }
     showPackageLeaveModal(){
       this.packageLevel = true;
+      this.PackgeLeaveTypecheckedList = [];
     }
     handleServicesCancel() {
       this.servicesModal = false;
@@ -234,7 +239,40 @@ export class ProgramPackagesComponent implements OnInit {
         this.competencyList = this.competencyListCopy;
       }
     }
-    
+    onCheckboxChangePackageTypes(option,event){
+      if(event.target.checked){
+        this.PackgeLeaveTypecheckedList.push(option.title);
+      } else {
+        this.PackgeLeaveTypecheckedList = this.PackgeLeaveTypecheckedList.filter(m=>m!= option.title)
+      }
+    }
+    savePackageTypes(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      if(!this.isUpdatePackageType){
+        
+        this.PackgeLeaveTypecheckedList.forEach( (element) => {
+          let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('', 'PROG_LEAVE', 'PROG_LEAVE','"+element+"', '')";
+          this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+          });
+         });
+        this.globalS.sToast('Success', 'Saved successful');
+        this.PackgeLeaveTypecheckedList = [];
+        this.handlePackageLevelCancel();
+        this.postLoading = false;
+        this.loadPackageLeaveTypes();
+        this.loading = false;
+      }else{
+        this.isUpdatePackageType = false;
+      }
+    }
+    loadPackageLeaveTypes(){
+      this.menuS.getlistPackageLeaveTypes().subscribe(data => {
+        this.tableDataPackageLeaveTypes = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
     onCheckboxChange(option, event) {
       if(event.target.checked){
         this.checkedList.push(option.name);

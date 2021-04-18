@@ -286,6 +286,7 @@
                                 <nz-divider nzOrientation="left" style="color:#1890FF;margin:0px !important;"></nz-divider>  
                                 <div class="mrg-btm" *ngIf="aged">
                                     <button class="botton success" (click)="showPackageLeaveModal()">Package Leave Type</button>
+                                    <div class="staff-wrapper" style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                                     <nz-table #basicTablein [nzData]="tableData" [nzShowPagination]="false" [nzFrontPagination]="false" [nzResponsive]="true">
                                         <thead>
                                             <tr>
@@ -297,19 +298,19 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td class="left">dummyText</td>
-                                                <td class="left">dummyText</td>
-                                                <td class="left">dummyText</td>
-                                                <td class="left">dummyText</td>
-                                                <!-- <td class="left">{{ data.rate  }} </td> -->
-                                                <td class="left"><a (click)="showEditModal(1)">Update</a>
+                                            <tr *ngFor="let packageLeaveTypeList of tableDataPackageLeaveTypes">
+                                                <td nzLeft>{{ packageLeaveTypeList.leaveActivityCode  }} </td>
+                                                <td nzLeft>{{ packageLeaveTypeList.claimReducedTo}}</td>
+                                                <td nzLeft>{{ packageLeaveTypeList.maxDays}}</td>
+                                                <td nzLeft>{{packageLeaveTypeList.accumulatedBy}}</td>
+                                                <td nzLeft><a (click)="showEditModal(packageLeaveTypeList.recordNumber)">Update</a>
                                                     <nz-divider nzType="vertical"></nz-divider>
                                                     <a nz-popconfirm nzPopconfirmTitle="Are you sure You want to delete This Service History ?"
-                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(1)">Delete</a></td>
-                                                </tr>
-                                            </tbody>
-                                        </nz-table>
+                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(packageLeaveTypeList.recordNumber)">Delete</a></td>
+                                            </tr>
+                                         </tbody>
+                                    </nz-table>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -1065,7 +1066,7 @@
                         <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                             <div nz-row>
                                 <div nz-col nzSpan="24" *ngFor="let leavetype of leaveTypes">
-                                    <label nz-checkbox [nzValue]="leavetype.title" [(ngModel)]="leavetype.checked" [ngModelOptions]="{standalone: true}">{{ leavetype.title }}</label>
+                                    <label nz-checkbox [nzValue]="leavetype.title" [(ngModel)]="leavetype.checked" (change)="onCheckboxChangePackageTypes(leavetype,$event)" [ngModelOptions]="{standalone: true}">{{ leavetype.title }}</label>
                                 </div>
                             </div>
                         </nz-checkbox-wrapper>
@@ -1074,8 +1075,8 @@
             </form>
             <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading">
-                        <span>ADD</span>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="savePackageTypes()">
+                        <span>SAVE</span>
                     </button>
                 </ng-container>
             </div>

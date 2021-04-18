@@ -170,8 +170,19 @@ button.other{
     background: #b74c4c;
     color: #fff;    
 }
+
 button.other:not(:disabled):hover{
     background:#e15a5a;
+}
+button.find{
+    background: #ff8787;
+    color: #fff;
+    width: 8rem;
+    float:right;
+}
+
+button.find:not(:disabled):hover{
+    background: #ff5f5f;
 }
 
 .flexy{

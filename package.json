@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-prod": "node --max_old_space_size=10000 ./node_modules/@angular/cli/bin/ng build --prod --aot --outputHashing=all"
+    "build-prod": "node --max_old_space_size=10000 ./node_modules/@angular/cli/bin/ng build --prod --aot --outputHashing=all",
+    "aot-run": "node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve --port=4400 --proxy-config=.\\proxy.conf.json"
   },
   "private": true,
   "dependencies": {

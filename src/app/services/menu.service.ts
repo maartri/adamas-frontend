@@ -169,6 +169,9 @@ export class MenuService {
         deleteProgarmPackageslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/ProgarmPackages/${recordNo}`)
         }
+        deletePackageLeaveTypelist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/ProgarmPackages/packageLeaveType/${recordNo}`)
+        }
         deleteCenterFacilityLoclist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/CenterFacilityLoc/${recordNo}`)
         }

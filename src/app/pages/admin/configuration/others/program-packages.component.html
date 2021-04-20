@@ -286,7 +286,8 @@
                                 <nz-divider nzOrientation="left" style="color:#1890FF;margin:0px !important;"></nz-divider>  
                                 <div class="mrg-btm" *ngIf="aged">
                                     <button class="botton success" (click)="showPackageLeaveModal()">Package Leave Type</button>
-                                    <nz-table #basicTablein [nzData]="tableData" [nzShowPagination]="false" [nzFrontPagination]="false" [nzResponsive]="true">
+                                    <div class="staff-wrapper" style="height: 10rem; width: 100%; overflow: auto;border: 1px solid #e9e9e9; border-radius: 3px;">
+                                    <nz-table #basicTablein [nzData]="tableData" [nzShowPagination]="false" style="margin-top:0px im !important;" [nzFrontPagination]="false" [nzLoading]="loading" [nzResponsive]="true">
                                         <thead>
                                             <tr>
                                                 <th class="left">Leave Activity Code</th>
@@ -297,19 +298,19 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td class="left">dummyText</td>
-                                                <td class="left">dummyText</td>
-                                                <td class="left">dummyText</td>
-                                                <td class="left">dummyText</td>
-                                                <!-- <td class="left">{{ data.rate  }} </td> -->
-                                                <td class="left"><a (click)="showEditModal(1)">Update</a>
+                                            <tr *ngFor="let packageLeaveTypeList of tableDataPackageLeaveTypes;let j = index;">
+                                                <td nzLeft>{{ packageLeaveTypeList.leaveActivityCode  }} </td>
+                                                <td nzLeft>{{ packageLeaveTypeList.claimReducedTo}}</td>
+                                                <td nzLeft>{{ packageLeaveTypeList.maxDays}}</td>
+                                                <td nzLeft>{{packageLeaveTypeList.accumulatedBy}}</td>
+                                                <td nzLeft><a (click)="showPackageLeaveEditModal(j)">Update</a>
                                                     <nz-divider nzType="vertical"></nz-divider>
-                                                    <a nz-popconfirm nzPopconfirmTitle="Are you sure You want to delete This Service History ?"
-                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(1)">Delete</a></td>
-                                                </tr>
-                                            </tbody>
-                                        </nz-table>
+                                                    <a nz-popconfirm nzPopconfirmTitle="Are you sure You want to delete This Package Leave Type ?"
+                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="deletePackageLeaveType(packageLeaveTypeList)">Delete</a></td>
+                                            </tr>
+                                         </tbody>
+                                    </nz-table>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -348,7 +349,7 @@
                         <div *ngIf="current == 3">
                             <div nz-row nzGutter=24>
                                 <div nz-col nzSpan="24" class="mrg-btm">
-                                    <nz-divider nzText="Approved /Exclude Workers" nzOrientation="left" style="color:#1890FF;margin-top:0px !important;"></nz-divider>
+                                    <nz-divider nzText="Approved /Exclude Staff" nzOrientation="left" style="color:#1890FF;margin-top:0px !important;"></nz-divider>
                                     <div nz-row nzGutter=24>
                                         <div nz-col nzSpan="12">
                                             <button class="botton success" (click)="showstaffApprovedModal()">Approved STAFF</button>
@@ -364,8 +365,7 @@
                                                     <tr *ngFor="let approvedlist of checkedListApproved;let k = index;">
                                                         <td>{{approvedlist}}</td>
                                                         <td></td>
-                                                        <td class="left"><a (click)="showEditModal(k)">Update</a>
-                                                            <nz-divider nzType="vertical"></nz-divider>
+                                                        <td class="left">
                                                             <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
                                                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(approvedlist)">Delete</a>
                                                         </td>
@@ -387,8 +387,7 @@
                                                     <tr *ngFor="let excludedlist of checkedListExcluded;let l = index;">
                                                         <td>{{excludedlist}}</td>
                                                         <td></td>
-                                                        <td class="left"><a (click)="showEditModal(l)">Update</a>
-                                                            <nz-divider nzType="vertical"></nz-divider>
+                                                        <td class="left">
                                                             <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
                                                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(excludedlist)">Delete</a>
                                                         </td>
@@ -407,7 +406,8 @@
                                     <div nz-row nzGutter=24>
                                         <div nz-col nzSpan="24">
                                             <button class="botton success" (click)="showCompetencyModal()">Competencies</button>
-                                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedList">
+                                            <!-- <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto;border: 1px solid #e9e9e9; border-radius: 3px;"> -->
+                                            <nz-table #headerTable [nzShowPagination]="false" #headerTable [nzData]="listOfData" [nzScroll]="{ y: '240px' }" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="listCompetencyByPersonId">
                                                 <thead>
                                                     <tr>
                                                         <th class="left">Competency</th>
@@ -416,17 +416,18 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr *ngFor="let list of checkedList;let j = index;">
-                                                        <td>{{list}}</td>
-                                                        <td></td>
-                                                        <td class="left"><a (click)="showEditModal(j)">Update</a>
+                                                    <tr *ngFor="let competencyListByPerson of listCompetencyByPersonId;let j = index;">
+                                                        <td>{{competencyListByPerson.competency}}</td>
+                                                        <td nzLeft><label nz-checkbox nzDisabled [ngModel]="competencyListByPerson.mandatory" nzDisabled [ngModelOptions]="{standalone: true}"></label></td>
+                                                        <td class="left"><a (click)="showComptencyEditModal(j)">Update</a>
                                                             <nz-divider nzType="vertical"></nz-divider>
-                                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(list)">Delete</a>
+                                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this Competency?"
+                                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteCompetency(competencyListByPerson)">Delete</a>
                                                         </td>
                                                     </tr>
                                                 </tbody>
                                             </nz-table>
+                                            <!-- </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -1054,7 +1055,7 @@
             
             <form nz-form [formGroup]="inputForm" >
                 <div nz-row nzGutter="24">    
-                    <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                    <div *ngIf="!isUpdatePackageType" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                         <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To  The leave Types To Use For Home Care Package Leaves</h4>
                         <nz-input-group [nzSuffix]="suffixIconSearchh">
                         <input type="text" nz-input placeholder="search text" (keyup)="searchPackageLeaves($event)" />
@@ -1065,17 +1066,55 @@
                         <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                             <div nz-row>
                                 <div nz-col nzSpan="24" *ngFor="let leavetype of leaveTypes">
-                                    <label nz-checkbox [nzValue]="leavetype.title" [(ngModel)]="leavetype.checked" [ngModelOptions]="{standalone: true}">{{ leavetype.title }}</label>
+                                    <label nz-checkbox [nzValue]="leavetype.title" [(ngModel)]="leavetype.checked" (change)="onCheckboxChangePackageTypes(leavetype,$event)" [ngModelOptions]="{standalone: true}">{{ leavetype.title }}</label>
                                 </div>
                             </div>
                         </nz-checkbox-wrapper>
+                    </div>
+                    <div *ngIf="isUpdatePackageType">
+                        <div nz-row nzGutter="24" class="mrg-btm">
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label nzFor="Leave Type">Leave Type:</label>
+                                </div>
+                                <div nz-col nzSpan="14">
+                                    <input nz-input formControlName="leaveActivityCode" style="text-transform: uppercase;" required readonly />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label nzFor="Accomulation Type">Accomulation Type:</label>
+                                </div>
+                                <div nz-col nzSpan="10">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="accumulatedBy" nzShowSearch nzAllowClear style="width:100%;" required>
+                                        <nz-option *ngFor="let atype of accoumulationTypes" [nzValue]="atype" [nzLabel]="atype"></nz-option> 
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label nzFor="Reduce Claim After">Reduce Claim After:</label>
+                                </div>
+                                <div nz-col nzSpan="6">
+                                    <input nz-input formControlName="claimReducedTo" />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label nzFor="Reduce Rate Percent">Reduce Rate Percent:</label>
+                                </div>
+                                <div nz-col nzSpan="6">
+                                    <input nz-input formControlName="maxDays" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
             <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading">
-                        <span>ADD</span>
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="savePackageTypes()">
+                        <span>SAVE</span>
                     </button>
                 </ng-container>
             </div>
@@ -1129,7 +1168,7 @@
         <nz-modal [nzWidth]="400"  [(nzVisible)]="competencymodal" nzTitle="Required Competencies (MANDATORY)" (nzOnCancel)="handleCompetencyCancel()">
             <form nz-form [formGroup]="inputForm" >
                 <div nz-row nzGutter="24">    
-                    <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                    <div *ngIf="!isUpdatePackageType" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                         <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Competencies Required For Work in This Program</h4>
                         <nz-input-group [nzSuffix]="suffixIconSearch">
                             <input type="text" nz-input placeholder="search text" [(ngModel)]="inputvalueSearch" (keyup)="searchCompetenncy($event)" [ngModelOptions]="{standalone: true}" />
@@ -1140,16 +1179,36 @@
                         <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                             <div nz-row>
                                 <div nz-col nzSpan="24" *ngFor="let comp of competencyList">
-                                    <label nz-checkbox [nzValue]="comp.name" [(ngModel)]="comp.checked" (change)="onCheckboxChange(comp,$event)" [ngModelOptions]="{standalone: true}">{{ comp.name }}</label>
+                                    <label nz-checkbox [nzValue]="comp.name" [(ngModel)]="comp.checked" (change)="onCompetencyCheckboxChange(comp,$event)" [ngModelOptions]="{standalone: true}">{{ comp.name }}</label>
                                 </div>
                             </div>
                         </nz-checkbox-wrapper>
+                    </div>
+                    <div *ngIf="isUpdatePackageType">
+                        <div nz-row nzGutter="24" class="mrg-btm">
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                    <label nzFor="Name / Title">Name / Title:</label>
+                                </div>
+                                <div nz-col nzSpan="16">
+                                    <input nz-input formControlName="competency" style="text-transform: uppercase;" required readonly />
+                                </div>
+                            </div>
+                            <div nz-row nzJustify class="mrg-btm">
+                                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                                    <label nzFor="Mandatory">Mandatory:</label>
+                                </div>
+                                <div nz-col nzSpan="16">
+                                    <label nz-checkbox formControlName="mandatory"></label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
             <div *nzModalFooter>
                 <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
+                    <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="saveCompetency()">
                         <span>Save</span>
                     </button>
                 </ng-container>

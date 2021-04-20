@@ -52,7 +52,8 @@ export class ProgramPackagesComponent implements OnInit {
   quoutetemplates:Array<any>;
   competencyList:Array<any>;
   competencyListCopy:Array<any>;
-  careWorkersExcluded:Array<any>
+  careWorkersExcluded:Array<any>;
+  PackgeLeaveTypecheckedList:Array<any>;
   checkedList:string[];
   checkedListExcluded:string[];
   checkedListApproved:string[];
@@ -78,6 +79,7 @@ export class ProgramPackagesComponent implements OnInit {
   recepients:Array<any>;
   recepitnt_copy:Array<any>;
   leaveTypes:Array<any>;
+  accoumulationTypes:Array<any>;
   leaveTypes_copy:Array<any>;
   activities:Array<any>;
   types:Array<any>;
@@ -120,6 +122,11 @@ export class ProgramPackagesComponent implements OnInit {
   tryDoctype: any;
   drawerVisible: boolean =  false;
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  isUpdatePackageType: boolean = false;
+  tableDataPackageLeaveTypes: any;
+  personId:12728;
+  listCompetencyByPersonId: any;
+  CompetencycheckedList: any;
   
   constructor(
     private globalS: GlobalService,
@@ -138,34 +145,180 @@ export class ProgramPackagesComponent implements OnInit {
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
-      this.checkedList = new Array<string>();
+      this.CompetencycheckedList = new Array<string>();
+      this.PackgeLeaveTypecheckedList = new Array <string>();
       this.checkedListExcluded =new Array<string>();
       this.checkedListApproved =new Array<string>();
       this.checkedPackageProfile =new Array<string>();
       this.loadData();
+      this.loadPackageLeaveTypes();
       this.populateDropdowns();
+      this.loadCompetency();
       this.buildForm();
       this.loading = false;
       this.cd.detectChanges();
     }
-    
-    //open modals
     showAddModal() {
       this.title = "Add New Program/Packages"
       this.resetModal();
       this.modalOpen = true;
     }
-    showServicesModal(){
-      this.servicesModal  =true;
-    }
+
     showPackageLeaveModal(){
+      this.leaveTypes.forEach(x => {
+        x.checked = false
+      });
+      this.PackgeLeaveTypecheckedList = [];
       this.packageLevel = true;
     }
-    handleServicesCancel() {
-      this.servicesModal = false;
+    savePackageTypes(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.PackgeLeaveTypecheckedList.forEach( (element) => {
+          let is_exist   = this.globalS.isPackageLeaveTypeExists(this.tableDataPackageLeaveTypes,element);
+          if(!is_exist){
+            let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('', 'PROG_LEAVE', 'PROG_LEAVE','"+element+"', '')";
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+              insertOne = true;
+            });
+          }
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handlePackageLevelCancel();
+        this.loading = true;
+        this.loadPackageLeaveTypes();
+        this.PackgeLeaveTypecheckedList = [];
+      }else{
+        this.postLoading = true;
+        const group = this.inputForm;
+        let LeaverecordNumber  =  group.get('LeaverecordNumber').value;
+        let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+        let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+        let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+        let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+        let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+LeaverecordNumber+"'";
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+            if (data) 
+            this.globalS.sToast('Success', 'Updated successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Updated successful');
+            this.postLoading = false;
+            this.loadPackageLeaveTypes();     
+            this.handlePackageLevelCancel();  
+            this.PackgeLeaveTypecheckedList = [];
+            this.isUpdatePackageType = false;
+            this.loading = false;
+          });
+      }
+    }
+    saveCompetency(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.CompetencycheckedList.forEach( (element) => {
+          let is_exist   = this.globalS.isCompetencyExists(this.listCompetencyByPersonId,element);
+          if(!is_exist){
+            let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('12728', 'PROG_COMP', 'PROG_COMP', '"+element+"', '')";
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+              insertOne = true;
+            });
+          }
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handleCompetencyCancel();
+        this.loading = true;
+        this.loadCompetency();
+        this.CompetencycheckedList = [];
+      }else{
+        this.postLoading = true;
+        const group = this.inputForm;
+        let competenctNumber  =  group.get('competenctNumber').value;
+        let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+        let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+        let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+        let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+        let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+            if (data) 
+            this.globalS.sToast('Success', 'Updated successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Updated successful');
+            this.postLoading = false;
+            this.loadPackageLeaveTypes();     
+            this.handlePackageLevelCancel();  
+            this.PackgeLeaveTypecheckedList = [];
+            this.isUpdatePackageType = false;
+            this.loading = false;
+          });
+      }
+    }
+    loadPackageLeaveTypes(){
+      this.menuS.getlistPackageLeaveTypes().subscribe(data => {
+        this.tableDataPackageLeaveTypes = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadCompetency(){
+      this.menuS.getlistCompetencyByPersonId(12728).subscribe(data => {
+        this.listCompetencyByPersonId = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    showPackageLeaveEditModal(index: any){
+      this.packageLevel = true;
+      this.isUpdatePackageType = true;
+      const { 
+        leaveActivityCode,
+        claimReducedTo,
+        accumulatedBy,
+        maxDays,
+        recordNumber,
+      } = this.tableDataPackageLeaveTypes[index];
+      this.inputForm.patchValue({
+        claimReducedTo: claimReducedTo,
+        maxDays: maxDays,
+        leaveActivityCode: leaveActivityCode,
+        accumulatedBy:accumulatedBy,
+        LeaverecordNumber:recordNumber,
+      });
+    }
+    showComptencyEditModal(index: any){
+      this.competencymodal = true;
+      this.isUpdatePackageType = true;
+      const { 
+        competency,
+        mandatory,
+        personId,
+        recordNumber,
+      } = this.listCompetencyByPersonId[index];
+      this.inputForm.patchValue({
+        competency: competency,
+        mandatory: (mandatory == null) ? false : true,
+        personId: personId,
+        LeaverecordNumber:recordNumber,
+      });
     }
     handlePackageLevelCancel() {
       this.packageLevel = false;
+    }
+    showServicesModal(){
+      this.servicesModal  =true;
+    }
+    handleServicesCancel() {
+      this.servicesModal = false;
     }
     showstaffApprovedModal(){
       // this.resetModal();
@@ -181,10 +334,16 @@ export class ProgramPackagesComponent implements OnInit {
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
+      this.competencyList.forEach(x => {
+        x.checked = false
+      });
+      this.CompetencycheckedList = [];
       this.competencymodal = true;
+      this.isUpdatePackageType = false;
     }
     handleCompetencyCancel(){
       this.competencymodal = false;
+      // this.isUpdatePackageType = false;
     }
     //End Opening of All Modals
     loadTitle()
@@ -234,12 +393,19 @@ export class ProgramPackagesComponent implements OnInit {
         this.competencyList = this.competencyListCopy;
       }
     }
-    
-    onCheckboxChange(option, event) {
+    onCheckboxChangePackageTypes(option,event){
       if(event.target.checked){
-        this.checkedList.push(option.name);
+        this.PackgeLeaveTypecheckedList.push(option.title);
       } else {
-        this.checkedList = this.checkedList.filter(m=>m!= option.name)
+        this.PackgeLeaveTypecheckedList = this.PackgeLeaveTypecheckedList.filter(m=>m!= option.title)
+      }
+    }
+     
+    onCompetencyCheckboxChange(option, event) {
+      if(event.target.checked){
+        this.CompetencycheckedList.push(option.name);
+      } else {
+        this.CompetencycheckedList = this.CompetencycheckedList.filter(m=>m!= option.name)
       }
     }
     onCheckboxUnapprovedChange(option, event) {
@@ -807,6 +973,7 @@ export class ProgramPackagesComponent implements OnInit {
       this.unitsArray    = ['PER','TOTAL'];
       this.dailyArry     = ['DAILY'];
       this.quoutetemplates = ['CAREPLAN SAVED AS TEMPLATE.OD'];
+      this.accoumulationTypes = ['CONSECUTIVE DAYS','CUMULATIVE DAYS'];
       this.adminTypesArray = ['**CDC – CARE MGMT','**CDC FEE-ADMIN','~CASE MGT~','~PACKAGE ADMIN~','AGREED TOP UP FEE','BASIC CARE FEE','CDC  EXIT FEE','COORDINATION OF SUPPORTS','INCOME TESTED FEE','NDIA FAINANCIAL INTERMEDIATOR','YLYC CASE MAN. 2.066'];
       this.budgetRoasterEnforcement = ['NONE','NOTIFY','NOTIFY AND UNALLOCATE'];
       this.listS.getcaredomain().subscribe(data => this.caredomain = data);
@@ -903,8 +1070,7 @@ export class ProgramPackagesComponent implements OnInit {
     log(value: string[]): void {
       // console.log(value);
     }
-    delete(data: any) { 
-      this.postLoading = true;     
+    delete(data: any) {
       const group = this.inputForm;
       this.menuS.deleteProgarmPackageslist(data.recordNumber)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -914,6 +1080,30 @@ export class ProgramPackagesComponent implements OnInit {
           return;
         }
       });
+    }
+    deletePackageLeaveType(data:any){
+        const group = this.inputForm;
+        this.loading = true;
+        this.menuS.deletePackageLeaveTypelist(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadPackageLeaveTypes();
+            return;
+          }
+        });
+    }
+    deleteCompetency(data:any){
+      const group = this.inputForm;
+        this.loading = true;
+        this.menuS.deleteCompetency(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadCompetency();
+            return;
+          }
+        });
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
@@ -1051,7 +1241,16 @@ export class ProgramPackagesComponent implements OnInit {
         addrLine1:'',
         addrLine2:'',
         Phone:'',
-        recordNumber:null
+        recordNumber:null,
+        leaveActivityCode:'', //package leave types modal edit
+        claimReducedTo:'',
+        accumulatedBy:'',
+        maxDays:'',
+        LeaverecordNumber:null,
+        competency:'',//competency modal edit
+        mandatory:false,
+        personId:null,
+        competenctNumber:null,
       });
 
       // this.inputForm.get('packg_balance').valueChanges.subscribe(data => {

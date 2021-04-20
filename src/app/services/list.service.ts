@@ -20,6 +20,14 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    gethcpprograms(): Observable<any> {
+        return this.auth.get(`${list}/hcp-programs`);
+    }
+
+    getndiaprograms(): Observable<any> {
+        return this.auth.get(`${list}/ndia-programs`);
+    }
+
     getclientportalmethod(): Observable<any>{
         return this.auth.get(`${list}/clientportalmethod`);
     }

@@ -102,7 +102,7 @@ export class AddReferralComponent implements OnInit {
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),
-      middlename: new FormControl('', Validators.required),
+      middlename: new FormControl(''),
       tempaccountName: new FormControl(''),
       appendName: new FormControl(''),
       accountNo: new FormControl(''),
@@ -159,11 +159,11 @@ export class AddReferralComponent implements OnInit {
         this.verifyAccount.next();
       });
     
-    this.referralGroup.get('middlename').valueChanges
-      .pipe(debounceTime(300))
-      .subscribe(data => {
-        this.verifyAccount.next();
-      });
+    // this.referralGroup.get('middlename').valueChanges
+    //   .pipe(debounceTime(300))
+    //   .subscribe(data => {
+    //     this.verifyAccount.next();
+    //   });
 
     this.referralGroup.get('gender').valueChanges
       .pipe(debounceTime(300))

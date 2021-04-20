@@ -8,7 +8,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import {mergeMap,takeUntil,debounceTime, distinctUntilChanged, map, switchMap, skip, startWith } from 'rxjs/operators';
 import { EMPTY, combineLatest, Observable } from 'rxjs';
 import { startsWith } from 'lodash';
-
+import { Subject } from 'rxjs';
 
 // import * as RECIPIENT_OPTION from '../../modules/modules';
 
@@ -39,10 +39,35 @@ const NOTE_TYPE: { } = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy {
+  private unsubscribe$ = new Subject()
 
   @Input() open: any;
   @Input() option: RECIPIENT_OPTION;
   @Input() user: any;
+
+  referralRadioValue: any;
+  referralCheckOptions: Array<any> = [
+    {
+      name: 'NDIA Referral',
+      index: 1,
+      checked: false
+    },
+    {
+      name: 'HCP Referral',
+      index: 2,
+      checked: false
+    },
+    {
+      name: 'DEX Referral',
+      index: 3,
+      checked: false
+    },
+    {
+      name: 'Other',
+      index: 4,
+      checked: false
+    }
+  ]
 
   CURRENT_DATE: Date = new Date();
 
@@ -123,6 +148,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   quantity: Array<any> = quantity;
   unit: Array<any> = unit;
 
+  programs: Array<any> = [];
   token: UserToken;
 
   constructor(
@@ -372,6 +398,44 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       programs: this.fb.array([]),
     });
 
+  }
+
+  mutateToCheckboxes(list: Array<any>): Array<any> {
+    return list.map(x => {
+      return {
+        name: x
+      }
+    })
+  }
+
+  selectedProgram: any;
+  selectedProgramChange(name: any){
+    this.selectedProgram = name;
+  }
+
+  referralInChange(index: any){
+    
+    if(index == 1){
+      this.listS.getndiaprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {        
+        this.programs = this.mutateToCheckboxes(data);
+        this.changeDetection();
+      });
+    }
+
+    if(index == 2){
+      this.listS.gethcpprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
+        this.programs = data;
+        this.changeDetection();
+      })
+    }
+
+    if(index == 3){
+
+    }
+
+    if(index == 4){
+
+    }
   }
 
   VALUE_CHANGES(){

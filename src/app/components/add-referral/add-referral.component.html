@@ -104,14 +104,15 @@
                                         </nz-select>
                                     </div>
                                     <div class="form-group" nz-col nzSpan="12">
-                                        <label for="">Postcode & Suburb</label>
-                                        <suburb formControlName="suburb"></suburb>
+                                        <label for="">Address</label>
+                                        <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
                                     </div>
                                 </div>
                                 <div nz-row>
                                     <div nz-col nzSpan="24">
-                                        <label for="">Address</label>
-                                        <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        <label for="">Postcode & Suburb</label>
+                                        <suburb formControlName="suburb"></suburb>
+                                       
                                     </div>
                                 </div>
                             </div>

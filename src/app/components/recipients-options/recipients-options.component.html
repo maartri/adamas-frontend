@@ -1348,21 +1348,21 @@
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
         
             <div class="steps-content">
-                <div nz-row *ngIf="current == 0" >
+                <div nz-row *ngIf="current == 0" [formGroup]="referInGroup">
                     <div nz-row nzGutter="16">
                         <div nz-col >
-                            <nz-radio-group [(ngModel)]="referralRadioValue" (ngModelChange)="referralInChange($event)">
+                            <nz-radio-group formControlName="type" (ngModelChange)="referralInChange($event)">
                                 <label nz-radio [nzValue]="data.index" *ngFor="let data of referralCheckOptions">{{ data.name }}</label>
-                              </nz-radio-group>
+                            </nz-radio-group>
                         </div>
                     </div>
                     <div style="margin-top:1rem" nz-row nzGutter="32">
-                        <div nz-col nzSpan="12">
+                        <div nz-col nzSpan="12" *ngIf="referInGroup.get('type').value == 1 || referInGroup.get('type').value == 2">
                             <h5>Suggested Package Name(35 CHAR Max)</h5>
-                            <input nz-input placeholder="Basic usage" />
+                            <input nz-input placeholder="Package Name" formControlName="packageName" />
                             <h5>Available</h5>
                         </div>
-                        <div nz-col nzSpan="12">
+                        <div nz-col nzSpan="12" *ngIf="referInGroup.get('type').value == 1 || referInGroup.get('type').value == 2">
                             <h5>Package Type/Template</h5>
                             <ul class="no-margin no-padding program-list">
                                 <li *ngFor="let program of programs" (click)="selectedProgramChange(program.name)">{{ program.name }}</li>
@@ -1376,7 +1376,7 @@
                             </li>
                         </ul> -->
                     </div>
-                    <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
+                    <!-- <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin> -->
                 </div>
 
                 <div nz-row *ngIf="current == 1">

@@ -283,23 +283,26 @@ export class AddReferralComponent implements OnInit {
   }
 
   add() {
+    console.log(this.referralGroup.value);
     this.referralGroup.controls["dob"].setValue(this.referralGroup.value.dob ? moment(this.referralGroup.value.dob).format() : '')
-    var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
-    this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
+    // var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
+    // this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
 
     this.filterContacts(<FormArray>this.referralGroup.controls.contacts);
     this.filterAddress(<FormArray>this.referralGroup.controls.addresses);
 
     console.log(this.referralGroup.value);
+
+    this.openRefer.emit(this.referralGroup.value)
     
-    this.openRefer.emit({
-      address: "",
-      agencyDefinedGroup: "KYOGLE",
-      code: "SSSD ASDD (M)  20200620",
-      contact: "",
-      id: "T0100005782",
-      view: "recipient"
-    });
+    // this.openRefer.emit({
+    //   address: "",
+    //   agencyDefinedGroup: "KYOGLE",
+    //   code: "SSSD ASDD (M)  20200620",
+    //   contact: "",
+    //   id: "T0100005782",
+    //   view: "recipient"
+    // });
 
     // this.clientS.postprofile(this.referralGroup.value)
     //   .subscribe(data => {

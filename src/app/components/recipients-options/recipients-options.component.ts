@@ -173,6 +173,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   ngOnChanges(changes: SimpleChanges): void {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
+        console.log(changes[property].currentValue);
+        console.log(this.user)
         this.buildForm();
         this.populate();
         this.populateList();
@@ -395,6 +397,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     });
 
     this.referInGroup = this.fb.group({
+      type: null,
+      packageName: null,
       programs: this.fb.array([]),
     });
 
@@ -414,7 +418,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   referralInChange(index: any){
-    
+    this.referInGroup.patchValue({
+      packageName: 'sample'
+    })
     if(index == 1){
       this.listS.getndiaprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {        
         this.programs = this.mutateToCheckboxes(data);
@@ -715,25 +721,26 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
       this.whatOptionVar = {};
       this.loadPrograms = true;
-
+      console.log(this.user);
+      console.log()
       switch(this.option){
         case RECIPIENT_OPTION.REFER_IN:
-          this.listS.getwizardprograms(this.user.id).subscribe(data => {
-            this.whatOptionVar = {
-              title: 'Referral In Wizard',
-              wizardTitle: '',
-              programsArr: data.map(x => {
-                  return {
-                      program: x.program,
-                      type: x.type,
-                      status: false,
-                  }
-              })
-            }
+          // this.listS.getwizardprograms(this.user.id).subscribe(data => {
+          //   this.whatOptionVar = {
+          //     title: 'Referral In Wizard',
+          //     wizardTitle: '',
+          //     programsArr: data.map(x => {
+          //         return {
+          //             program: x.program,
+          //             type: x.type,
+          //             status: false,
+          //         }
+          //     })
+          //   }
 
-            this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.REFER_IN);
-            this.changeDetection();
-          })
+          //   this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.REFER_IN);
+          //   this.changeDetection();
+          // })
           break;
         case RECIPIENT_OPTION.REFER_ON:
           this.listS.getlist(`SELECT DISTINCT UPPER(rp.[Program]) AS Program, hr.[type] FROM RecipientPrograms rp INNER JOIN HumanResourceTypes hr ON hr.NAME = rp.program WHERE rp.PersonID = '${this.user.id}' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''                 `)
@@ -1036,6 +1043,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       var prog = this.referInGroup.get('programs') as FormArray;
       data.programsArr.map(x => prog.push(this.createProgramForm(x)));
       this.globalFormGroup = this.referInGroup;
+
+      this.globalFormGroup.get('type').valueChanges.subscribe(data => console.log(data))
     }
 
     this.changeDetection();

@@ -1341,10 +1341,10 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     
     openReferModal(user: any) {
         console.log(user);
-
         this.sharedS.emitOnSearchListNext(user.code);        
         this.profileData = user;
-        this.openReferInModal = {};
+        this.recipientOption =  this.RECIPIENT_OPTION.REFER_IN;
+        this.recipientOptionOpen = user;
     }
 
     clicky(index: number){

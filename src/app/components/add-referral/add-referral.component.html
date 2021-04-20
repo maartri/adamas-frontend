@@ -124,19 +124,19 @@
                     <div [formGroup]="referralGroup">
                         <div class="form-group">
                             <label for="">Branch</label>
-                            <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="branch">
+                            <nz-select nzAllowClear nzPlaceHolder="Branch" formControlName="branch">
                                 <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
                             </nz-select>
                         </div>
                         <div class="form-group">
                             <label for="">Agency Category</label>
-                            <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="agencyDefinedGroup">
+                            <nz-select nzAllowClear nzPlaceHolder="Agency Category" formControlName="agencyDefinedGroup">
                                 <nz-option *ngFor="let l of agencies" [nzLabel]="l" [nzValue]="l"></nz-option>
                             </nz-select>
                         </div>
                         <div class="form-group">
                             <label for="">Case Manager</label>
-                            <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="recipientCoordinator">
+                            <nz-select nzAllowClear nzPlaceHolder="Case Manager" formControlName="recipientCoordinator">
                                 <nz-option *ngFor="let l of managers;let i = index" [nzLabel]="l.description" [nzValue]="i"></nz-option>
                             </nz-select>
                         </div>

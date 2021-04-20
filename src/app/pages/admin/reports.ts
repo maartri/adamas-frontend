@@ -231,7 +231,7 @@ const inputFormDefault = {
     styles: [`
         
         button {
-            width: 200pt !important;
+            width: 220pt !important;
             text-align: left !important;
         }
         .inner-content{
@@ -1812,6 +1812,9 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
              case 'btn-FORPT-ProgramUtilisation':
                 this.FORptModelTitle = "PROGRAM UTILIZATION REPORT CRITERIA" ;
              break;
+             case 'btn-FORPT-RecipientserviceReport':
+                this.FORptModelTitle = "RECIPIENT SERVICE REPORT CRITERIA" ;
+                break;
             
  
             default:
@@ -10468,7 +10471,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
 
-        //////console.log(fQuery)
+        //console.log(fQuery)
 
 
         this.drawerVisible = true;
@@ -11270,7 +11273,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY [Program], [Client Code], Date, [Start Time]";
 
-//        console.log(fQuery)
+    //    console.log(fQuery)
 //        console.log(format)
         switch (format) {
             case "Detailed":
@@ -11290,7 +11293,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
         this.drawerVisible = true;
-
+        
         const data = {
             "template": { "_id": this.reportid },
             "options": {

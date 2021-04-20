@@ -1804,13 +1804,13 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.FORptModelTitle = "PAY TYPE PROGRAM REPORT CRITERIA" ;
              break;
              case 'btn-FORPT-StaffusageReport':
-                this.FORptModelTitle = "STAFF USAGE REPORT CRITERIA" ;
+                this.FORptModelTitle = "RECIPIENT STAFF USAGE REPORT CRITERIA" ;
              break;
              case 'btn-FORPT-PaytypeReport':
-                this.FORptModelTitle = "PAY TYPE REPORT CRITERIA" ;
+                this.FORptModelTitle = "RECIPIENT PAY TYPE REPORT CRITERIA" ;
              break;
              case 'btn-FORPT-ProgramUtilisation':
-                this.FORptModelTitle = "PROGRAM UTILIZATION REPORT CRITERIA" ;
+                this.FORptModelTitle = "RECIPIENT PROGRAM UTILIZATION REPORT CRITERIA" ;
              break;
              case 'btn-FORPT-RecipientserviceReport':
                 this.FORptModelTitle = "RECIPIENT SERVICE REPORT CRITERIA" ;

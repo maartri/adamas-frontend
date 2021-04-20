@@ -97,19 +97,19 @@
                             <div class="ref-form" [formGroupName]="i">
                                 <div class="close"><i nz-icon nzType="close" nzTheme="outline" (click)="deleteAdd(i)"></i></div>
                                 <div nz-row nzGutter="16">
-                                    <div class="form-group" nz-col nzSpan="8">
+                                    <div class="form-group" nz-col nzSpan="12">
                                         <label for="">Description</label>
                                         <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="type">
                                             <nz-option *ngFor="let _add of addressType" [nzLabel]="_add" [nzValue]="_add"></nz-option>
                                         </nz-select>
                                     </div>
-                                    <div class="form-group" nz-col nzSpan="16">
+                                    <div class="form-group" nz-col nzSpan="24">
                                         <label for="">Address</label>
                                         <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
                                     </div>
                                 </div>
                                 <div nz-row>
-                                    <div nz-col nzSpan="8">
+                                    <div nz-col nzSpan="24">
                                         <label for="">Postcode & Suburb</label>
                                         <suburb formControlName="suburb"></suburb>
                                        

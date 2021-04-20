@@ -1357,15 +1357,15 @@
                         </div>
                     </div>
                     <div style="margin-top:1rem" nz-row nzGutter="32">
-                        <div nz-col nzSpan="12" *ngIf="referInGroup.get('type').value == 1 || referInGroup.get('type').value == 2">
+                        <div nz-col nzSpan="14" *ngIf="referInGroup.get('type').value == 1 || referInGroup.get('type').value == 2">
                             <h5>Suggested Package Name(35 CHAR Max)</h5>
                             <input nz-input placeholder="Package Name" formControlName="packageName" />
-                            <h5>Available</h5>
+                            <h5 class="available">Available</h5>
                         </div>
-                        <div nz-col nzSpan="12" *ngIf="referInGroup.get('type').value == 1 || referInGroup.get('type').value == 2">
+                        <div nz-col nzSpan="10" *ngIf="referInGroup.get('type').value == 1 || referInGroup.get('type').value == 2">
                             <h5>Package Type/Template</h5>
                             <ul class="no-margin no-padding program-list">
-                                <li *ngFor="let program of programs" (click)="selectedProgramChange(program.name)">{{ program.name }}</li>
+                                <li *ngFor="let program of programs" (click)="selectedProgramChange(program.name)" [class.selected]="selectedProgram == program.name">{{ program.name }}</li>
                             </ul>
                         </div>
                         <!-- <ul [formGroup]="referInGroup">

@@ -144,6 +144,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   referralSource$: Observable<any>;
   
   globalFormGroup: FormGroup;
+
+  newReferralUser: any;
   
   quantity: Array<any> = quantity;
   unit: Array<any> = unit;
@@ -174,6 +176,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
         console.log(changes[property].currentValue);
+        this.newReferralUser = changes[property].currentValue
         console.log(this.user)
         this.buildForm();
         this.populate();
@@ -415,16 +418,28 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   selectedProgram: any;
   selectedProgramChange(name: any){
     this.selectedProgram = name;
+    console.log(name)
+    const { type } = this.referInGroup.getRawValue();
+
+    if(type == 2){
+      const level = name.trim().split(' ')[1];
+      this.referInGroup.patchValue({
+        packageName: `HCP-L${level}-${this.newReferralUser.accountNo}`
+      });
+    }
+
   }
 
   referralInChange(index: any){
-    this.referInGroup.patchValue({
-      packageName: 'sample'
-    })
+
     if(index == 1){
       this.listS.getndiaprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {        
         this.programs = this.mutateToCheckboxes(data);
         this.changeDetection();
+      });
+
+      this.referInGroup.patchValue({
+        packageName: `NDIA-${this.newReferralUser.accountNo}`
       });
     }
 
@@ -433,6 +448,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         this.programs = data;
         this.changeDetection();
       })
+
+      this.referInGroup.patchValue({
+        packageName: `HCP-L1-${this.newReferralUser.accountNo}`
+      });
     }
 
     if(index == 3){

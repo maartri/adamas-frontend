@@ -407,7 +407,7 @@
                                         <div nz-col nzSpan="24">
                                             <button class="botton success" (click)="showCompetencyModal()">Competencies</button>
                                             <!-- <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto;border: 1px solid #e9e9e9; border-radius: 3px;"> -->
-                                            <nz-table #headerTable [nzShowPagination]="false" #headerTable [nzData]="listOfData" [nzScroll]="{ y: '240px' }" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="listCompetencyByPersonId">
+                                            <nz-table #headerTable   [nzScroll]="{ y: '240px' }" [nzSize]="'small'"  [nzLoading]="loading" [nzData]="listCompetencyByPersonId">
                                                 <thead>
                                                     <tr>
                                                         <th class="left">Competency</th>

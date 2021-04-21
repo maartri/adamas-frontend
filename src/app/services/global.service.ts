@@ -284,6 +284,13 @@ export class GlobalService {
           return el.leaveActivityCode.trim().toUpperCase() === username.trim().toUpperCase();
         }); 
     }
+    isStaffexist(tableData,username) {
+        return tableData.some(function(el) {
+          username = username.replace(/'/g, '');
+          return el.name.trim().toUpperCase() === username.trim().toUpperCase();
+        }); 
+    }
+    
     isCompetencyExists(tableData,username){
         return tableData.some(function(el) {
             username = username.replace(/'/g, '');

@@ -257,11 +257,11 @@ const routes: Routes = [
         redirectTo: 'profile',
         pathMatch: 'full'
       },
-      // {
-      //   path: 'notes',
-      //   component: NotesClient,
-      //   canActivate: [RouteGuard],
-      // },
+      {
+        path: 'notes',
+        component: NotesClient,
+        canActivate: [RouteGuard],
+      },
       {
         path: 'history',
         component: HistoryClient,

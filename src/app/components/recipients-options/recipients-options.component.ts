@@ -421,9 +421,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       referralCode: null,
       referralType: null,
 
-      date: null,
-      time: null,
-      timeSpent: null,
+      date: new Date(),
+      time: new Date(),
+      timeSpent: new Date().setHours(0, 15),
 
       radioGroup: 'case',
       notes: null,

@@ -159,6 +159,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   date: any;
 
+  originalPackageName: string;
+
   constructor(
     private listS: ListService,
     private fb: FormBuilder,
@@ -173,6 +175,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
     this.date = format(new Date(), 'MM-dd-yyyy');
     // console.log(this.user);
+
+    
   }  
 
   ngOnDestroy(){
@@ -429,6 +433,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       notes: null,
       caseCategory: 'REFERRAL-IN',
       publishToApp: false,
+
+      reminderDate: null,
+      reminderTo: null,
+      emailNotif: null,
+      multipleStaff: null
     });
 
   }
@@ -464,8 +473,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         this.changeDetection();
       });
 
+      this.originalPackageName  =`NDIA-${this.user.code}`;
+
       this.referInGroup.patchValue({
-        packageName: `NDIA-${this.user.code}`
+        packageName: this.originalPackageName
       });
     }
 
@@ -475,8 +486,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         this.changeDetection();
       })
 
+      this.originalPackageName = `HCP-L1-${this.user.code}`;
+
       this.referInGroup.patchValue({
-        packageName: `HCP-L1-${this.user.code}`
+        packageName: this.originalPackageName
       });
     }
 
@@ -495,6 +508,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     }
   }
 
+  isPackageNameAvailable: boolean = null;
   VALUE_CHANGES(){
     
     if(this.option == RECIPIENT_OPTION.DISCHARGE){
@@ -524,6 +538,17 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     if(this.option == RECIPIENT_OPTION.REFER_IN){
       this.noteArray = ['REFERRAL-IN'];
       this.referInGroup.get('caseCategory').disable();
+
+      this.referInGroup.get('packageName')
+          .valueChanges
+          .pipe(
+            distinctUntilChanged(),
+            debounceTime(200),
+            switchMap(x => this.listS.checkIfPackageNameExists(x))
+          )
+          .subscribe(data => {
+            this.isPackageNameAvailable = data;
+          });
       return;
     }
     
@@ -573,7 +598,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
 
     if(this.option == RECIPIENT_OPTION.REFER_IN){
-      console.log(this.referInGroup.value)
+      
 
       const { 
         referralSource,
@@ -637,10 +662,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         carerCode: this.token.code,
 
         serviceType: referralType,
-        date: format(date,'YYYY/MM/DD'),
-        time: time,
+        date: format(date,'yyyy/MM/dd'),
+        time: format(time,'HH:mm'),
 
-        creator: this.token.user,
+        creator: this.token.code,
         editer: this.token.user,
 
         billUnit: defaultValues.billUnit,
@@ -648,11 +673,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         agencyDefinedGroup: this.user.agencyDefinedGroup,
         referralCode: referralCode,
         timePercent: timePercentage,
-        Notes: '',
+        notes: notes || "",
         type: defaultValues.type,
         duration: timeInMinutes / 5,
         blockNo: blockNoTime,
-        reasonType: this.IsNDIAorHCP() ? '' : '',
+        reasonType: '',
 
         tabType: 'REFERRAL-IN',
         program: packageName,
@@ -661,29 +686,31 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
       finalRoster.push(program);
       
-      // const data: CallProcedure = {
-      //   isNDIAHCP: this.IsNDIAorHCP(),
-      //   oldPackage: this.IsNDIAorHCP() ? this.packageCode : '',
-      //   newPackage: this.IsNDIAorHCP() ? this.packageCode : '',
-      //   level: this.IsNDIAorHCP() ? this.Level() : '',
-      //   type: this.IsNDIAorHCP() ? this.Type() : '',
-      //   roster: finalRoster,
-      //   staffNote: {
-      //     personId: this.user.id,
-      //     program: checkedPrograms.length > 1 ? 'VARIOUS' : checkedPrograms[0].program,
-      //     //this.globalS.isVarious(this.checkedPrograms)
-  
-      //     detailDate: moment(referralGroup.date).format('YYYY/MM/DD HH:mm:ss'),
-      //     extraDetail1: NOTE_TYPE[this.noteNumber],
-      //     extraDetail2: 'REFERRAL-IN',
-      //     whoCode: this.user.code,
-      //     publishToApp: referralGroup.publishToApp ? 1 : 0,
-      //     creator: user.user,
-      //     note: referralGroup.notes,
-      //     alarmDate: referralGroup.reminderDate == "" ? "" : moment(referralGroup.reminderDate).format('YYYY/MM/DD'),
-      //     reminderTo: referralGroup.reminderTo
-      //   }
-      // }
+      const data: CallProcedure = {
+        isNDIAHCP: this.IsNDIAorHCP(),
+        oldPackage: this.originalPackageName,
+        newPackage: packageName,
+        roster: finalRoster,
+        staffNote: {
+          personId: this.user.id,
+          program: 'VARIOUS',
+          detailDate: format(new Date,'yyyy/MM/dd'),
+          extraDetail1: 'ss',
+          extraDetail2: 'REFERRAL-IN',
+          whoCode: this.user.code,
+          publishToApp: publishToApp ? 1 : 0,
+          creator: this.token.user,
+          note: notes ,
+          alarmDate: format(new Date,'yyyy/MM/dd'),
+          reminderTo: 'ss'
+        }
+      }
+      // console.log(this.token)
+      // console.log(data);
+      // return;
+      this.listS.postreferralin(data).subscribe(x => {
+        this.globalS.sToast('Success', 'Package is saved');
+      });
 
 
     }
@@ -767,7 +794,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               agencyDefinedGroup: this.user.agencyDefinedGroup,
               referralCode: '',
               timePercent: timePercentage,
-              Notes: notes,
+              notes: notes,
               type: 7,
               duration: timeInMinutes / 5,
               blockNo: blockNoTime,
@@ -818,6 +845,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       for(var checkProgram of checkedPrograms){
         let data: ProcedureRoster = {
+
             clientCode: this.user.code,
             carerCode: this.token.code,
             serviceType: referralType,
@@ -837,7 +865,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
             timePercent: quantity.toString(),
             costUnit: unit,
 
-            Notes: `${caseCategory}-${notes}`,
+            notes: `${caseCategory}-${notes}`,
             billDesc: `${notes}`,
             unitBillRate: charge,
 
@@ -1216,7 +1244,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       data.programsArr.map(x => prog.push(this.createProgramForm(x)));
       this.globalFormGroup = this.referInGroup;
 
-      // this.globalFormGroup.get('type').valueChanges.subscribe(data => console.log(data))
+      
       this.noteArray = ['REFERRAL-IN'];
       return;
     }
@@ -1268,8 +1296,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   next() {
-
-    // console.log(this.checkedPrograms)
+    
     if(this.adminOpen){
       if(this.current < 4){
         this.current += 1;
@@ -1470,6 +1497,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   get canGoNext(): boolean {
+    if(this.option == RECIPIENT_OPTION.REFER_IN){
+      if(this.isPackageNameAvailable){
+        return false;
+      }
+    }
     return true;
   }
 

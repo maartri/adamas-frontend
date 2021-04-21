@@ -35,3 +35,7 @@ h5.available{
     color: #50c550;
     margin: 5px;
 }
+h5.unavailable{
+    color: #ff4949;
+    margin: 5px;
+}

@@ -1306,7 +1306,8 @@
                                 <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
                             </nz-select>
                         </div>                        
-                    </div>  
+                    </div>
+
                 </div>
 
 
@@ -1359,8 +1360,9 @@
                     <div style="margin-top:1rem" nz-row nzGutter="32">
                         <div nz-col nzSpan="14" *ngIf="referInGroup.get('type').value == 1 || referInGroup.get('type').value == 2">
                             <h5>Suggested Package Name(35 CHAR Max)</h5>
-                            <input nz-input placeholder="Package Name" formControlName="packageName" />
-                            <h5 class="available">Available</h5>
+                            <input nz-input placeholder="Package Name" formControlName="packageName" oninput="this.value = this.value.toUpperCase()" />
+                            <h5 class="available" *ngIf="!isPackageNameAvailable">Available</h5>
+                            <h5 class="unavailable" *ngIf="isPackageNameAvailable">Already Used</h5>
                         </div>
                         <div nz-col nzSpan="10" *ngIf="referInGroup.get('type').value == 1 || referInGroup.get('type').value == 2">
                             <h5>Package Type/Template</h5>
@@ -1368,13 +1370,7 @@
                                 <li *ngFor="let program of programs" (click)="selectedProgramChange(program.name)" [class.selected]="selectedProgram == program.name">{{ program.name }}</li>
                             </ul>
                         </div>
-                        <!-- <ul [formGroup]="referInGroup">
-                            <li formArrayName="programs" *ngFor="let program of referInGroup.get('programs')['controls'];let i = index">
-                                <div [formGroupName]="i">
-                                    <label nz-checkbox formControlName="checked"> {{ referInGroup.get('programs')['controls'][i].value.program }}</label>
-                                </div>                           
-                            </li>
-                        </ul> -->
+                        
                         <div nz-col nzSpan="24" *ngIf="referInGroup.get('type').value == 3 || referInGroup.get('type').value == 4">
                             <ul class="no-margin no-padding program-list">
                                 <li *ngFor="let program of programs" (click)="selectedProgramChange(program.name)" [class.selected]="selectedProgram == program.name">{{ program.name }}</li>
@@ -1459,6 +1455,42 @@
                         </div>
                     </div>
                 </div>
+
+                <div nz-row *ngIf="current == 4" [formGroup]="referInGroup">
+
+                    <div nz-row [nzGutter]="8" class="space-btm">
+                        <div nz-col nzSpan="8">
+                            <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
+                        </div>                        
+                    </div>  
+
+                    <div nz-row [nzGutter]="16" class="space-btm">
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <nz-select formControlName="reminderTo" nzAllowClear nzPlaceHolder="TRACCS Reminder To" style="width:8rem">
+                                    <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <nz-select formControlName="emailNotif" nzAllowClear nzPlaceHolder="Email Notification To" style="width:8rem">
+                                    <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-row [nzGutter]="8" >
+                        <div nz-col nzSpan="8">
+                            <nz-select formControlName="multipleStaff" nzAllowClear nzPlaceHolder="Multiple Staff" style="width:8rem">
+                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                            </nz-select>
+                        </div>                        
+                    </div>
+
+                </div>
+
+
             </div>
         </div>
 

@@ -79,6 +79,9 @@ export class AddReferralComponent implements OnInit {
       }
       if (next == 0) {
         this.accountTaken = true;
+        this.referralGroup.patchValue({
+          accountNo: this.generatedAccount
+        });
       }
     });
   }
@@ -253,7 +256,7 @@ export class AddReferralComponent implements OnInit {
     const fname = (this.referralGroup.get('firstname').value).trim();
     const lname = (this.referralGroup.get('lastname').value).trim();
     const birthdate = this.referralGroup.get('dob').value ? moment(this.referralGroup.get('dob').value).format('YYYYMMDD') : '';
-    const gender = this.referralGroup.get('gender').value ? ' (' + (this.referralGroup.get('gender').value).trim()[0] + ') ' : '';
+    const gender = this.referralGroup.get('gender').value ? ' (' + (this.referralGroup.get('gender').value).trim()[0] + ')' : '';
 
     var _account = this.type === 'referral' ? lname + ' ' + fname + gender + ' ' + birthdate : (this.referralGroup.get('organisation').value).trim();
     return _account.toUpperCase() || '';
@@ -283,17 +286,13 @@ export class AddReferralComponent implements OnInit {
   }
 
   add() {
-    console.log(this.referralGroup.value);
+
     this.referralGroup.controls["dob"].setValue(this.referralGroup.value.dob ? moment(this.referralGroup.value.dob).format() : '')
     // var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
     // this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
 
     this.filterContacts(<FormArray>this.referralGroup.controls.contacts);
     this.filterAddress(<FormArray>this.referralGroup.controls.addresses);
-
-    console.log(this.referralGroup.value);
-
-    this.openRefer.emit(this.referralGroup.value)
     
     // this.openRefer.emit({
     //   address: "",
@@ -304,12 +303,14 @@ export class AddReferralComponent implements OnInit {
     //   view: "recipient"
     // });
 
-    // this.clientS.postprofile(this.referralGroup.value)
-    //   .subscribe(data => {
-    //     this.handleCancel();
-    //     this.openRefer.emit(data);
-    //     this.globalS.sToast('Success', 'Recipient Added')        
-    //   });
+    // return;
+
+    this.clientS.postprofile(this.referralGroup.value)
+      .subscribe(data => {
+        this.handleCancel();
+        this.openRefer.emit(data);
+        this.globalS.sToast('Success', 'Recipient Added')        
+      });
   }
 
   clearFormArray = (formArray: FormArray) => {

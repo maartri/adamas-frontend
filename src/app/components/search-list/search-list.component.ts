@@ -121,18 +121,18 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
         view: this.view == 0 ? 'recipient' : 'staff'
       }
     }
-
+    this.searchModel = user.accountNo;
     this.onChangeCallback(user);
   }
 
-  search() {
+  search(search: string = null) {
     this.loading = true;
     if (this.view == 0) {
-      this.searchRecipient();
+      this.searchRecipient(search);
     }
 
     if (this.view == 1) {
-      this.searchStaff();
+      this.searchStaff(search);
     }
   }
 
@@ -140,7 +140,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   //   this.searchChangeEmit.next(data);
   // }
 
-  searchStaff(initLoad: boolean = false) {
+  searchStaff(search: any = null) {
     this.lists = [];   
 
     this.timeS.getstaff({
@@ -181,14 +181,17 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     });
   }
 
-  searchRecipient(initLoad: boolean = false, accountName: any = null): void {
+  searchRecipient(search: any = null): void {
     this.lists = []
     this.timeS.getrecipients({
       User: this.globalS.decode().nameid,
       SearchString: ''
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      this.listsAll = data;
-      // this.lists = data.slice(0, 200);
+      if(search){
+        var index = data.findIndex(x => x.uniqueID == search.id);
+        this.change(data[index]);
+      }
+
       this.lists = data;
       this.loading = false;
       this.cd.markForCheck();
@@ -199,7 +202,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   writeValue(value: any) {
     this.cd.detectChanges();
     if (value != null) {
-      this.searchModel = value;
+      this.search(value);
     }
 
     if (value instanceof Object) {

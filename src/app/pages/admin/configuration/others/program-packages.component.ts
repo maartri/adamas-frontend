@@ -281,13 +281,13 @@ export class ProgramPackagesComponent implements OnInit {
       let insertOne = false;
       if(!this.isUpdatePackageType){
         this.checkedPackageProfileServices.forEach( (element) => {
-          let is_exist   = this.globalS.isCompetencyExists(this.listApprovedServicesByPersonId,element);
-          if(!is_exist){
+          // let is_exist   = this.globalS.isCompetencyExists(this.listApprovedServicesByPersonId,element);
+          // if(!is_exist){
             let sql = "INSERT INTO ServiceOverview([Service Type], PersonID, [ServiceProgram], [ServiceStatus]) VALUES ('"+element+"', '12728', 'CAPACITY BUILDING - 31600', 'ACTIVE')";
             this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
               insertOne = true;
             });
-          }
+          // }
         });
         if(insertOne){
           this.globalS.sToast('Success', 'Saved successful');
@@ -498,7 +498,7 @@ export class ProgramPackagesComponent implements OnInit {
       this.servicesModal  =true;
     }
     handleServicesCancel() {
-      this.checkedPackageProfileServices.forEach(x => {
+      this.packedTypeProfile.forEach(x => {
         x.checked = false
       });
       this.servicesModal = false;

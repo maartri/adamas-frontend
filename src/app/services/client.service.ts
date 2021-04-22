@@ -16,6 +16,10 @@ export class ClientService {
         private auth: AuthService
     ) { }
 
+    getnotepermissions(id: string): Observable<any>{
+        return this.auth.get(`${client}/note-permissions/${id}`);
+    }
+
     getuserinfoname(accountNo: string): Observable<any>{
         return this.auth.get(`${client}/userinfo-name/${accountNo}`);
     }
@@ -174,6 +178,14 @@ export class ClientService {
         return this.auth.get(`${client}/opnotes-dates`, data);
     }
 
+    getcasenotes(id: string): Observable<any> {
+        return this.auth.get(`${client}/casenotes/${id}`);
+    }
+
+    getcasenoteswithdate(data: any): Observable<any> {
+        return this.auth.get(`${client}/casenotes-dates`, data);
+    }
+
     updateopnotes(data: any, recordNo: string): Observable<any> {
         return this.auth.put(`${client}/opnotes/${recordNo}`, data)
     }
@@ -208,10 +220,6 @@ export class ClientService {
 
     gethistory(name: string): Observable<any> {
         return this.auth.get(`${client}/history/${name}`);
-    }
-
-    getcasenotes(id: string): Observable<any> {
-        return this.auth.get(`${client}/casenotes/${id}`);
     }
 
     updatecasenotes(data: any, id: number): Observable<any> {

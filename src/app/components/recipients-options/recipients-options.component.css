@@ -23,3 +23,19 @@ nz-time-picker, nz-select, nz-date-picker{
 .no-margin{
     margin:0;
 }
+li.selected{
+    background:#cae9ff;
+}
+ul.program-list li{
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+}
+h5.available{
+    color: #50c550;
+    margin: 5px;
+}
+h5.unavailable{
+    color: #ff4949;
+    margin: 5px;
+}

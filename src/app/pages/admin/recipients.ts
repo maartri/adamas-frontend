@@ -1159,7 +1159,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     ];
 
     nzEvent(event: NzFormatEmitEvent): void {
-    console.log(event);
+      console.log(event);
     }
 
     listChange(event: any) {
@@ -1340,78 +1340,79 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     profileData: any;
     
     openReferModal(user: any) {
-        console.log(user);
+        this.sample = user;
         this.sharedS.emitOnSearchListNext(user.code);        
         this.profileData = user;
         this.recipientOption =  this.RECIPIENT_OPTION.REFER_IN;
-        this.recipientOptionOpen = user;
+        this.user = user;
+        this.recipientOptionOpen = {};
+        
     }
 
     clicky(index: number){
-
         if(index == 0){
             this.recipientOption =  this.RECIPIENT_OPTION.REFER_IN;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 1){
             this.recipientOption =  this.RECIPIENT_OPTION.REFER_ON;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 2){
             this.recipientOption =  this.RECIPIENT_OPTION.NOT_PROCEED;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 3){
             this.recipientOption =  this.RECIPIENT_OPTION.ASSESS;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 4){
             this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 5){
             this.recipientOption =  this.RECIPIENT_OPTION.WAIT_LIST;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 6){
             this.recipientOption =  this.RECIPIENT_OPTION.DISCHARGE;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 6){
             this.recipientOption =  this.RECIPIENT_OPTION.DISCHARGE;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 7){
             this.recipientOption =  this.RECIPIENT_OPTION.SUSPEND;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 8){
             this.recipientOption =  this.RECIPIENT_OPTION.REINSTATE;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 9){
             this.recipientOption =  this.RECIPIENT_OPTION.DECEASE;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
 
         if(index == 10){
             this.recipientOption =  this.RECIPIENT_OPTION.ADMIN;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
         
         if(index == 11){
             this.recipientOption =  this.RECIPIENT_OPTION.ITEM;
-            this.recipientOptionOpen = { };
+            this.recipientOptionOpen = {};
         }
     }
 

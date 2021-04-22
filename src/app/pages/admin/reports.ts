@@ -124,6 +124,7 @@ const inputFormDefault = {
     frm_options: [false],
     frm_add_inclusion: [false],
     frm_RosterFormat: [false],
+    frm_RosterInclusion: [false],
     
 
     whowhat: [''],
@@ -209,6 +210,7 @@ const inputFormDefault = {
     AGE_ATSI_StatusArr: ['ALL'],
     Additional_inclusion: ['Default Display'],
     Rpt_Format: ['Detail'],
+    Roster_staffinclusion : ['Show Staff Code']    ,
     
 
     monthArr: [[]],
@@ -221,17 +223,18 @@ const inputFormDefault = {
 }
 
 @Component({
-    // host: {
-    //     '[style.display]': 'flex',
-    //     '[style.flex-direction]': 'column',
-    //     '[style.overflow]': 'hidden'
-    // },
+    host: {
+        '[style.display]': 'flex',
+        '[style.flex-direction]': 'column',
+        '[style.overflow]': 'hidden'
+    },
     styles: [`
         
         button {
-            width: 200pt !important;
+            width: 220pt !important;
             text-align: left !important;
         }
+        
         .inner-content{
             padding: 0px !important;
         }
@@ -391,6 +394,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_options: boolean;
     frm_add_inclusion: boolean;
     frm_RosterFormat: boolean;
+    frm_RosterInclusion:boolean;
 
     
 
@@ -523,7 +527,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     Additional_inclusion: Array<any> = [];
     RosterCategory: Array<any> = []; 
     Rpt_Format : Array<any> = [];
-
+    Roster_staffinclusion   : Array<any> = [];
+    
     monthArr: Array<any> = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     yearArr: Array<any> = [];
     FYEnd_MonthArr : Array<any> = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1008,7 +1013,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.frm_options = false;
         this.frm_add_inclusion = false;
         this.frm_RosterFormat= false;
-
+        this.frm_RosterInclusion = false;
         this.frm_mta_options = false;
 
         this.RosterCategory = []; 
@@ -1064,7 +1069,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         switch (this.btnid) {
             case 'btn-refferallist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "REFERRAL LIST CRITERIA"
+                this.ModalName = "REFERRAL LIST  "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1076,7 +1081,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
                 case 'btn-waitinglist':
                     this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "WAITING LIST CRITERIA"
+                this.ModalName = "WAITING LIST  "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1088,14 +1093,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-activepackagelist':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
-                this.ModalName = "ACTIVE PACKAGE CRITERIA"
+                this.ModalName = "ACTIVE PACKAGE REPORT  "
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Funders = true;
                 break;
             case 'btn-recipientroster':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "RECIPIENT ROSTER CRITERIA"
+                this.ModalName = "RECIPIENT ROSTER "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Branches = true;
@@ -1105,12 +1110,15 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_pagebreak = true;
                 this.chkbx_include_AdditionalInfo = true;
                 this.frm_RosterFormat = true;
+                this.frm_RosterInclusion = true;
                 this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
+                this.Roster_staffinclusion   = ['Show Staff Code','Show Staff First Name','Show Staff #'] ;
+               
                
                 break;
             case 'btn-suspendedrecipient':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "SUSPENDED RECIPIENT REPORT CRITERIA"
+                this.ModalName = "SUSPENDED RECIPIENT REPORT  "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1121,14 +1129,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-vouchersummary':
                 this.bodystyle = { height:'300px', overflow: 'auto'}
-                this.ModalName = "VOUCHER SUMMARY REPORT CRITERIA"
+                this.ModalName = "VOUCHER SUMMARY REPORT "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-packageusage':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "PACKAGE USAGE REPORT CRITERIA"
+                this.ModalName = "PACKAGE USAGE REPORT"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1139,12 +1147,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-timelength':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
-                this.ModalName = "RECIPIENTS TIME LENGTH REPORT"
+                this.ModalName = "RECIPIENTS TIME LENGTH REPORT "
                 this.frm_Date = true;
                 break;
             case 'btn-unallocatedbookings':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
-                this.ModalName = "UNFILLED BOOKINGS REPORT CRITERIA"
+                this.ModalName = "UNFILLED BOOKINGS "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1152,7 +1160,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-transportsummary':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
-                this.ModalName = "TRANSPORT SUMMARY REPORT CRITERIA"
+                this.ModalName = "TRANSPORT SUMMARY REPORT "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1160,7 +1168,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-refferalduringperiod':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = " REFERRALS DURING PERIOD"
+                this.ModalName = " REFERRAL DURING PERIOD"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Managers = true;
@@ -1169,7 +1177,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-recipientMasterroster':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "RECIPINT MASTER ROSTER CRITERIA"
+                this.ModalName = "RECIPINT MASTER ROSTER  "
                 this.frm_MasterRosterCycles = true;
                 this.frm_Recipients = true;
                 this.frm_Branches = true;
@@ -1180,12 +1188,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_pagebreak = true;
                 this.chkbx_include_AdditionalInfo = true;
                 this.frm_RosterFormat = true;
+                this.frm_RosterInclusion = true;
                 this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
-               
+                this.Roster_staffinclusion   = ['Show Staff Code','Show Staff First Name','Show Staff #'] ;
+                
                 break;
             case 'btn-activerecipient':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "ACTIVE RECIPIENT REPORT"
+                this.ModalName = "ACTIVE RECIPIENT LIST  "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1198,7 +1208,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-inactiverecipient':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "INACTIVE RECIPIENT REPORT"
+                this.ModalName = "INACTIVE RECIPIENT LIST  "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1209,7 +1219,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-adminduringperiod':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "ADMISSIONS DURING PERIOD REPORT"
+                this.ModalName = "ADMISSIONS DURING PERIOD  "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Managers = true;
@@ -1218,7 +1228,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-dischargeduringperiod':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
-                this.ModalName = "DISCHARGES DURING PERIOD"
+                this.ModalName = "DISCHARGES DURING PERIOD  "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Managers = true;
@@ -1236,7 +1246,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-careerlist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "CARER LIST CRITERIA"
+                this.ModalName = "CARER LIST  "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1248,7 +1258,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-onlybillingclients':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "ONLY BILLING CLIENTS REPORT"
+                this.ModalName = "ONLY BILLING CLIENTS LIST "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1260,7 +1270,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-associatelist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "ASSOCIATE LIST CRITERIA"
+                this.ModalName = "ASSOCIATE LIST"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1282,7 +1292,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-Activestaff':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "ACTIVE STAFF REPORT"
+                this.ModalName = "ACTIVE STAFF LIST "
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
                 this.frm_Managers = true;
@@ -1293,7 +1303,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;                
                 case 'btn-staff-competencyRegister':
                     this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "STAFF COMPETENCY REGISTER"
+                this.ModalName = "STAFF COMPETENCY REGISTER "
                 this.frm_Branches = true;
                 this.frm_Staff = true;
                 this.frm_StaffGroup = true;
@@ -1309,7 +1319,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-ActiveBrokerage':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "ACTIVE BROKERAGE REPORT"
+                this.ModalName = "ACTIVE BROKERAGE/CONTRACTOR LIST "
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
                 this.frm_Managers = true;
@@ -1320,7 +1330,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-Activevolunteers':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "ACTIVE VOLUNTEERS REPORT"
+                this.ModalName = "ACTIVE VOLUNTEER REPORT "
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
                 this.frm_Managers = true;
@@ -1331,7 +1341,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-InactiveBrokerage':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
-                this.ModalName = "INACTIVE BROKERAGE REPORT"
+                this.ModalName = "INACTIVE BROKERAGE/CONTRACTOR LIST "
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
@@ -1341,7 +1351,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-InactiveVolunteer':
                 this.bodystyle = { height:'400px', overflow: 'auto'}    
-                this.ModalName = "INACTIVE VOLUNTEER REPORT"
+                this.ModalName = "INACTIVE VOLUNTEER "
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
@@ -1352,7 +1362,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
             case 'btn-staff-Inactivestaff':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
-                this.ModalName = "INACTIVE STAFF CRITERIA"
+                this.ModalName = "INACTIVE STAFF LIST  "
                 this.frm_Branches = true;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
@@ -1372,40 +1382,40 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Regis-mealregisterreport':
                 this.bodystyle = { height:'250px', overflow: 'auto'}
-                this.ModalName = "MEAL ORDER REPORT"
+                this.ModalName = "MEAL ORDER REPORT "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 break;
                 case 'btn-Regis-masterrosteredhoursreport':
                 this.bodystyle = { height:'300px', overflow: 'auto'}
-                this.ModalName = "MASTER ROSTERED HOURS REPORT"
+                this.ModalName = "MASTER ROSTERED HOURS REGISTER "
                 this.frm_MasterRosterCycles = true;
                 this.frm_Programs = true;
                 break;
                 
             case 'btn-Regis-hasreport':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
-                this.ModalName = "HAS REPORT CRITERIA"
+                this.ModalName = "HAS REPORT "
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-cdcleavereport':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
-                this.ModalName = "CDC LEAVE REPORT"
+                this.ModalName = "CDC LEAVE REPORT "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-cdcpackagebalance':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
-                this.ModalName = "CDC PACKAGE BALANCE REPORT"
+                this.ModalName = "CDC PACKAGE BALANCE REGISTER "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-Regis-incidentregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "INCIDENT REGISTER"
+                this.ModalName = "RECIPIENT INCIDENT REGISTER "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_SVCTypes = true;
@@ -1416,7 +1426,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Regis-loanregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "LOAN REGISTER"
+                this.ModalName = "RECIPIENT LOAN REGISTER "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1429,12 +1439,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-leaveregister':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
-                this.ModalName = "LEAVE REGISTER"
+                this.ModalName = "STAFF LEAVES REGISTER "
                 this.frm_Date = true;
                 break;
             case 'btn-staff-staffnotworked':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "STAFF NOT WORKED REPORT"
+                this.ModalName = "STAFF NOT WORKED REGISTER"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1444,7 +1454,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-competencyrenewal':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "COMPETENCY RENEWAL REPORT"
+                this.ModalName = "STAFF COMPETENCY RENEWAL "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1463,7 +1473,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-unavailability':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "STAFF UNAVAILABILITY REPORT"
+                this.ModalName = "STAFF UNAVAILABILITY "
                 this.frm_Date = true;
                 this.frm_Staff = true;
                 this.frm_Branches = true;
@@ -1486,7 +1496,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-MasterRoster':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "STAFF MASTER ROSTER"
+                this.ModalName = "STAFF MASTER ROSTER "
                 this.frm_MasterRosterCycles = true;
                 this.frm_Staff = true;
                 this.frm_Branches = true;
@@ -1497,7 +1507,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-loanregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "LOAN REGISTER CRITERIA"
+                this.ModalName = "STAFF LOAN REGISTER "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1509,7 +1519,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Regis-progcasenotes':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "RECIPIENT CASE/PROGRESS NOTES CRITERIA  "
+                this.ModalName = "RECIPIENT CASE/PROGRESS NOTES REGISTER " 
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_CaseNots = true;
@@ -1522,7 +1532,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Regis-servicenotesreg':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "SERVICE NOTES CRITERIA"
+                this.ModalName = "SERVICE NOTES REGISTER "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_CaseNots = true;
@@ -1533,7 +1543,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Regis-opnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "OP NOTES CRITERIA"
+                this.ModalName = "OPERATIONAL NOTES REGISTER "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_OPNotes = true;
@@ -1545,14 +1555,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Regis-careplanstatus':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
-                this.ModalName = "CARER PLAN STATUS REPORT"
+                this.ModalName = "CARER PLAN STATUS "
                 this.frm_Date = true;
                 this.frm_PlanTypes = true;
                 this.frm_Recipients = true;
                 break;
             case 'btn-staff-availability':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
-                this.ModalName = "STAFF AVAILABILITY REPORT"
+                this.ModalName = "STAFF AVAILABILITY REGISTER "
                 this.frm_OneDate = true;
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1561,7 +1571,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-timeattandencecomp':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
-                this.ModalName = "TIME & ATTENDANCE COMPARISON REPORT"
+                this.ModalName = "TIME & ATTENDANCE COMPARISON"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1570,7 +1580,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-hrnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "HR NOTES CRITERIA"
+                this.ModalName = "HR NOTES REGISTER "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_HRNotes = true;
@@ -1580,7 +1590,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-opnotes':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "STAFF OP NOTES REPORT CRITERIA"
+                this.ModalName = "STAFF OPERATIONAL NOTES REGISTER"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_OPNotes = true;
@@ -1591,7 +1601,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-incidentregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "INCIDENT REGISTER CRITERIA"
+                this.ModalName = "STAFF INCIDENT REGISTER "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_SVCTypes = true;
@@ -1601,7 +1611,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-staff-training':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "STAFF TRAINING REPORT CRITERIA"
+                this.ModalName = "STAFF TRAINING REGISTER "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1616,7 +1626,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-competenciesrenewal':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "COMPETENCIES RENEWAL REPORT CRITERIA"
+                this.ModalName = "STAFF COMPETENCIES RENEWAL "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Staff = true;
@@ -1636,7 +1646,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Systm-AuditRegister':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
-                this.ModalName = "AUDIT REGISTER REPORT CRITERIA"
+                this.ModalName = "AUDIT REGISTER "
                 this.frm_Date = true;
                 this.frm_TraccsUsers = true;
                 this.frm_WhoWhat = true;
@@ -1644,14 +1654,14 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Systm-ActivityStatusAudit':
                 this.bodystyle = { height:'250px', overflow: 'auto', top:'50px'}
-                this.ModalName = "PROGRAM ACTIVITY STATUS AUDIT REPORT"
+                this.ModalName = "PROGRAM ACTIVITY STATUS AUDIT "
                 this.frm_Programs = true;
                 this.chkbx_include_enddated = true;
                 this.frm_options = true;
                 break;
             case 'btn-Systm-MTARegister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "MTA REGISTER CRITERIA CRITERIA"
+                this.ModalName = "MTA REGISTER "
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1669,7 +1679,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-Systm-RosterOverlap':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
-                this.ModalName = "ROSTER OVERLAP REPORT CRITERIA"
+                this.ModalName = "ROSTER OVERLAP REGISTER"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Recipients = true;
@@ -1677,7 +1687,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.frm_Programs = true;
                 break;
             case 'btn-Systm-MTAVerification':
-                this.ModalName = "MTA VERIFICATION REPORT CRITERIA"
+                this.ModalName = "MTA ATTENDANCE VERIFICATION "
                 this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.frm_Date = true;
                 this.frm_Programs = true;
@@ -1695,19 +1705,19 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.chkbx_forcedlogon = true;
                 break;
             case 'btn-UnsedFunding':
-                this.ModalName = "RECIPIENT UNUSED FUNDING REPORT CRITERIA"
+                this.ModalName = "RECIPIENT UNUSED FUNDING REPORT "
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 this.frm_Categories = true;
                 break;
             case 'btn-BudgetAuditReport':
-                this.ModalName = "PROGRAM BUDGET AUDIT REPORT CRITERIA"
+                this.ModalName = "PROGRAM BUDGET AUDIT REPORT "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 break;
             case 'btn-ProgramSummaryRpt':
-                this.ModalName = "PROGRAM SUMMARY REPORT CRITERIA"
+                this.ModalName = "PROGRAM SUMMARY REPORT"
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
@@ -1715,12 +1725,12 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-report-fundingAuditReport':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
-                this.ModalName = "FUNDING AUDIT REPORT CRITERIA"
+                this.ModalName = "FUNDING AUDIT REPORT"
                 this.frm_Date = true;
                 break;
             case 'btn-report-UnbilledItems':
                 this.bodystyle = { height:'450px', overflow: 'auto'}
-                this.ModalName = "UNBILLED ITEMS REPORT CRITERIA"
+                this.ModalName = "UNBILLED ITEMS REPORT "
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
@@ -1728,84 +1738,88 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 break;
             case 'btn-report-DatasetUnitCost':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
-                this.ModalName = "DATASET RECIPIENT UNIT COST REPORT CRITERIA"
+                this.ModalName = "DATASET RECIPIENT UNIT COST"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_SVCTypes = true;
                 break;
             case 'btn-FORPT-ProgramActivitySpread':
-               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD REPORT CRITERIA" ;
+               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD " ;
+                 
             break;
             case 'btn-FORPT-ProgramStaffUtilized':
-                this.FORptModelTitle = "PROGRAM STAFF UTILIZED REPORT CRITERIA" ;
+                this.FORptModelTitle = "PROGRAM STAFF UTILIZED " ;
              break;
              case 'btn-FORPT-ProgramRecipientServiced':
-                this.FORptModelTitle = "PROGRAM RECIPIENT SERVICED REPORT CRITERIA" ;
+                this.FORptModelTitle = "PROGRAM RECIPIENT SERVICED " ;
              break;
              case 'btn-FORPT-ProgramBillingReport':
-                this.FORptModelTitle = "PROGRAM BILLING REPORT CRITERIA" ;
+                this.FORptModelTitle = "PROGRAM BILLING REPORT" ;
              break;
              case 'btn-FORPT-ActivityRecipientRpt':
-                this.FORptModelTitle = "ACTIVITY RECIPIENT REPORT CRITERIA" ;
+                this.FORptModelTitle = "ACTIVITY RECIPIENT REPORT" ;
              break;
              case 'btn-FORPT-ActivityStaff':
-                this.FORptModelTitle = "ACTIVITY STAFF REPORT CRITERIA" ;
+                this.FORptModelTitle = "ACTIVITY STAFF REPORT" ;
              break;
            
              case 'btn-FORPT-ActivityGroupRpt':
-                this.FORptModelTitle = "ACTIVITY GROUP REPORT CRITERIA" ;
+                this.FORptModelTitle = "ACTIVITY GROUP  REPORT" ;
              break;
             /* case 'btn-FORPT-fundingAuditReport':
                 this.FORptModelTitle = "FUNDING AUDIT REPORT CRITERIA" ;
              break;*/
              case 'btn-FORPT-DatasetActivityAnalysis':
-                this.FORptModelTitle = "DATA ACTIVITY ANALYSIS REPORT CRITERIA" ;
+                this.FORptModelTitle = "DATA SET ACTIVITY ANALYSIS  REPORT" ;
              break;
              case 'btn-FORPT-DatasetoutputSummary':
-                this.FORptModelTitle = "DATA SET OUTPUT REPORT CRITERIA" ;
+                this.FORptModelTitle = "DATA SET OUTPUT  REPORT" ;
              break;
              case 'btn-FORPT-DatasetUnitCost':
-                this.FORptModelTitle = "DATA SET UNIT COST REPORT CRITERIA" ;
+                this.FORptModelTitle = "DATA SET RECIPIENT UNIT COST  REPORT" ;
              break;
              case 'btn-FORPT-StaffPaysRpt':
-                this.FORptModelTitle = "STAFF PAY REPORT CRITERIA" ;
+                this.FORptModelTitle = "STAFF PAY  " ;
              break;             
              case 'btn-FORPT-FunderPayrollRpt':
-                this.FORptModelTitle = "FUNDER PAYROLL REPORT CRITERIA" ;
+                this.FORptModelTitle = "FUNDER PAYROLL R " ;
              break;
+             case 'btn-FORPT-StaffunderPayrollRpt':
+                this.FORptModelTitle = "STAFF FUNDER PAYROLL  " ;
+                break;
              case 'btn-FORPT-StaffAllowanceRpt':
-                this.FORptModelTitle = "STAFF ALLOWANCE REPORT CRITERIA" ;
+                this.FORptModelTitle = "STAFF ALLOWANCE  " ;
              break;
              case 'btn-FORPT-StaffProgramUtilisation':
-                this.FORptModelTitle = "STAFF PROGRAM UTILIZATION REPORT CRITERIA" ;
+                this.FORptModelTitle = "STAFF PROGRAM UTILIZATION  " ;
              break;            
              case 'btn-FORPT-StaffClientServiced':
-                this.FORptModelTitle = "STAFF CLIENT SERVICED REPORT CRITERIA" ;
+                this.FORptModelTitle = "STAFF CLIENT SERVICED  " ;
              break;
              case 'btn-FORPT-StaffAdminRpt':
-                this.FORptModelTitle = "STAFF ADMIN REPORT CRITERIA" ;
+                this.FORptModelTitle = "STAFF ADMIN REPORT" ;
              break;
              case 'btn-FORPT-StaffActivityRpt':
-                this.FORptModelTitle = "STAFF ACTIVITY REPORT CRITERIA" ;
+                this.FORptModelTitle = "STAFF ACTIVITY  REPORT" ;
              break;
              case 'btn-FORPT-DailyStaffHrs':
-                this.FORptModelTitle = "STAFF DAILY HOURS REPORT CRITERIA" ;
+                this.FORptModelTitle = "STAFF DAILY HOURS  REPORT" ;
              break;
              case 'btn-FORPT-PayTypeProgram':
-                this.FORptModelTitle = "PAY TYPE PROGRAM REPORT CRITERIA" ;
+                this.FORptModelTitle = "PAY TYPE PROGRAM  REPORT" ;
              break;
              case 'btn-FORPT-StaffusageReport':
-                this.FORptModelTitle = "STAFF USAGE REPORT CRITERIA" ;
+                this.FORptModelTitle = "RECIPIENT STAFF USAGE  REPORT" ;
              break;
              case 'btn-FORPT-PaytypeReport':
-                this.FORptModelTitle = "PAY TYPE REPORT CRITERIA" ;
+                this.FORptModelTitle = "RECIPIENT PAY TYPE  REPORT" ;
              break;
              case 'btn-FORPT-ProgramUtilisation':
-                this.FORptModelTitle = "PROGRAM UTILIZATION REPORT CRITERIA" ;
+                this.FORptModelTitle = "RECIPIENT PROGRAM UTILIZATION  " ;
              break;
-             case 'btn-FORPT-AwardStaffPayReport':
-                this.FORptModelTitle = "AWARD STAFF PAY REPORT CRITERIA" ;
-             break;
+             case 'btn-FORPT-RecipientserviceReport':
+                this.FORptModelTitle = "RECIPIENT SERVICE REPORT " ;
+                break;
             
  
             default:
@@ -1889,7 +1903,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     handleOk() {
         this.reportRender(this.btnid);
         this.tryDoctype = "";        
-        this.FOReports = false;
+    //    this.FOReports = false;
         
         
 
@@ -2466,9 +2480,6 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             case 'btn-FORPT-StaffDateProgram':
                 this.StaffDateProgram(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                 break;
-            case 'btn-FORPT-AwardStaffPayReport':
-                    this.AwardStaffPayReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
-                break;
             case 'btn-BUDGE-Recpientbudgetaudit':   
                 this.RecipientBudgetReport(s_Programs, s_incl_unapproved,s_incl_allowance,s_incl_inactive,s_Year, s_Month,s_FY_End_Month, s_FYear)
                 break;
@@ -2845,10 +2856,31 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
     RecipientRoster(branch, stfgroup, recipient, stafftype, startdate, enddate, tempsdate, tempedate,format) {
 
-        var lblcriteria;
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')   "
+        var lblcriteria; 
+        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting],   "
+        var tempkey = (this.inputForm.value.Roster_staffinclusion).toString();
+        console.log(tempkey)
+        switch (tempkey) { 
+            case 'Show Staff First Name':
+                fQuery = fQuery + "ISNULL([Staff].[FirstName],[CARER CODE]) as [Carer Code], "
+                fQuery = fQuery + "CASE WHEN [CARER CODE] = 'BOOKED' THEN 'BOOKED' ELSE STAFF.FIRSTNAME END as [CARER CODE], "
+               console.log('SHOW STAFF FIRST NAME')
+                break;
+                case 'Show Staff #':
+                    fQuery = fQuery + "ISNULL([Staff].[STF_CODE],[CARER CODE]) as [Carer Code], "
+                    console.log("SHOW STAFF #")
+                break;
+            default:
+                fQuery = fQuery + "[Roster].[Carer Code],"
+                console.log("default")
+                break;
+        }
+
+     
+        fQuery = fQuery + " [Roster].[Start Time], (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108  AS ENDTIME, [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')"
         //Condtion to be added on dynamic input   
         //HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END) <= '2020-07-01'  AND MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) >'2020-07-31' 
+       
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = "( Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
@@ -2912,10 +2944,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     
         default:
             this.reportid = "2orGpoorz20XztFV"
-            console.log("default case")
+        //    console.log("default case")
             break;
     }
-
+    console.log(fQuery)
         this.drawerVisible = true;
 
         const data = {
@@ -2966,12 +2998,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     SuspendedRecipient(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, "
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Suburb, NA.Postcode, "}        
-        fQuery = fQuery +"CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] "
-        if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
-        fQuery = fQuery +"WHERE R.[AccountNo] > '!MULTIPLE'   AND   (ServiceOverview.ServiceStatus = 'ON HOLD') "
-       
+        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE'   AND   (ServiceOverview.ServiceStatus = 'ON HOLD') "
         //Condtion to be added on dynamic input   
         //HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END) <= '2020-07-01'  AND MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) >'2020-07-31' 
         if (branch != "") {
@@ -3023,13 +3050,6 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         else { lblcriteria = lblcriteria + "All Programs." }
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
         fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
-
-        if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"
-        }
-        else {
-            this.reportid   = "AqAvj5SAJimxblUC" 
-        }
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
@@ -3039,7 +3059,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         this.drawerVisible = true;
 
         const data = {
-            "template": { "_id": this.reportid },
+            "template": { "_id": "AqAvj5SAJimxblUC" },
             "options": {
                 "reports": { "save": false },
 
@@ -7044,7 +7064,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 let _blob: Blob = blob;
 
                 let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Recipient Case Note.pdf"
+                this.pdfTitle = "Recipient Case Notes Register.pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
 
@@ -8065,7 +8085,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     }
     AuditRegister(who, descibe, traccsuser, startdate, enddate, tempsdate, tempedate) {
             
-        var fQuery = "SELECT RecordNumber,format( ActionDate,'dd/MM/yyyy HH:mm tt') as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
+        var fQuery = "SELECT RecordNumber,format( ActionDate,'dd/MM/yyyy HH:mm') as ActionDate, Operator, Actionon, whowhatcode, TraccsUser , AuditDescription FROM audit WHERE "
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {
@@ -10456,7 +10476,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
 
-        //////console.log(fQuery)
+        //console.log(fQuery)
 
 
         this.drawerVisible = true;
@@ -11258,7 +11278,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY [Program], [Client Code], Date, [Start Time]";
 
-//        console.log(fQuery)
+    //    console.log(fQuery)
 //        console.log(format)
         switch (format) {
             case "Detailed":
@@ -11278,7 +11298,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
         this.drawerVisible = true;
-
+        
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -17714,415 +17734,4 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
               });
         }); this.drawerVisible = true;
     }
-    AwardStaffPayReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
-        //"SELECT  FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE Round([Roster].[Duration] / 12,2) END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]    "
-                var fQuery = "SELECT [Date] , [MonthNo], [DayNo], [BlockNo], [Program], [Client Code], [Carer Code], [Service Type], [Anal], [Service Description], [Type], [ServiceSetting], [Start Time], [Duration], CASE WHEN [Type] = 9 THEN 0 ELSE [Duration] / 12 END AS [DecimalDuration], [CostQty], [CostUnit], CASE WHEN [Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Unit Pay Rate] as UnitPayRate, [Unit Pay Rate] * [CostQty] As [LineCost], [BillQty], [BillUnit], [Unit Bill Rate], [Unit Bill Rate] * [BillQty] As [LineBill], [Yearno] FROM Award_Roster_Rpt  "
-                var lblcriteria;
-        
-                if (funders != "" || mdsagencyID != "") {
-                    fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
-                }
-                if (stfgroup != "" || Staff != "" || staffteam != "" || stafftype != "") {
-                    var join = "INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo]";
-                    fQuery = fQuery + join;
-        
-                }
-                fQuery = fQuery + "WHERE  ";
-        
-                
-                if (startdate != "" || enddate != "") {
-        
-        
-                    let strkey = Datetype.toString();
-                    switch (strkey) {
-        
-                        case "Pay Period EndDate":
-        
-                            this.s_DateSQL = " ([Date Timesheet] >=  '" + tempsdate + ("' AND [Date Timesheet] <= '") + tempedate + "' )";
-                            break;
-                        case 'Billing Date':
-        
-                            this.s_DateSQL = " ([Date Invoice] >=  '" + tempsdate + ("' AND [Date Invoice] <= '") + tempedate + "' )";
-                            break;
-                        case 'Service Date':
-        
-                            this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
-                            break;
-                        default:
-                            this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
-        
-                            break;
-                    }
-        
-                     if (this.s_DateSQL != "") { fQuery = fQuery + "  " + this.s_DateSQL };
-                    // console.log("s_DateSQL" + this.s_DateSQL)            
-                }
-                if (branch != "") {
-                    this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
-                    if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
-                }
-                if (manager != "") {
-                    this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','") + "')";
-                    if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
-                }
-                if (region != "") {
-                    this.s_CategorySQL = "Anal in ('" + region.join("','") + "')";
-                    if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
-                }
-                if (stfgroup != "") {
-                    this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','") + "'))";
-                    if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
-                }
-                if (staffteam != "") {
-                    this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','") + "'))";
-                    if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
-                }
-                if (Staff != "") {
-                    this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','") + "'))";
-                    if (this.s_StfSQL != "") { fQuery = fQuery + " AND " + this.s_StfSQL };
-                }
-                if (status != "") {
-                    this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','") + "'))";
-                    if (this.s_statusSQL != "") { fQuery = fQuery + " AND " + this.s_statusSQL };
-                }
-                if (program != "") {
-                    this.s_ProgramSQL = " ([Program] in ('" + program.join("','") + "'))";
-                    if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
-                }
-        
-                if (funders != "") {
-                    this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','") + "')";
-                    if (this.s_FundersSQL != "") { fQuery = fQuery + " AND " + this.s_FundersSQL };
-                }
-                if (RosterCategory != "") {
-                    this.s_RosterCategorySQL = "[Roster].[Type] in ('" + RosterCategory.join("','") + "')";
-                    if (this.s_RosterCategorySQL != "") { fQuery = fQuery + " AND " + this.s_RosterCategorySQL };
-                }
-                if (HACCCategory != "") {
-                    this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','") + "')";
-                    if (this.s_HACCCategorySQL != "") { fQuery = fQuery + " AND " + this.s_HACCCategorySQL };
-                }
-                if (mdsagencyID != "") {
-                    this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','") + "')";
-                    if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
-                }
-        
-                if (Age != "") {
-                    let tempkay = (Age.toString()).substring(0, 8);
-                    switch (tempkay) {
-                        case "Under 65":
-                            this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
-                            break;
-                        case "Over 64 ":
-                            this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
-                            break;
-        
-                        default:
-                            break;
-                    }
-        
-                //    fQuery = fQuery + " AND " + this.s_AgeSQL;
-        
-                }
-        
-                if (outletid != "") {
-                    this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','") + "')";
-                    if (this.s_OutletIDSQL != "") { fQuery = fQuery + " AND " + this.s_OutletIDSQL };
-                }
-                if (recipient != "") {
-                    this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','") + "')";
-                    if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL };
-                }
-                if (stafftype != "") {
-                    this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','") + "')";
-                    if (this.s_StafftypeSQL != "") { fQuery = fQuery + " AND " + this.s_StafftypeSQL };
-                }
-                if (paytype != "") {
-                    this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','") + "')";
-                    if (this.s_paytypeSQL != "") { fQuery = fQuery + " AND " + this.s_paytypeSQL };
-                }
-                if (activity != "") {
-                    this.s_activitySQL = "[Service Type] in ('" + activity.join("','") + "')";
-                    if (this.s_activitySQL != "") { fQuery = fQuery + " AND " + this.s_activitySQL };
-                }
-                if (settings != "") {
-                    this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','") + "')";
-                    if (this.s_setting_vehicleSQL != "") { fQuery = fQuery + " AND " + this.s_setting_vehicleSQL };
-                }
-        
-        
-        
-        
-        
-                if (startdate != "") {
-                    lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
-                }
-                else { lblcriteria = " All Dated " }
-                if (branch != "") {
-                    lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
-                }
-                else { lblcriteria = lblcriteria + " All Branches " }
-        
-        
-                if (outletid != "") {
-                    var OutletID = outletid.join(",") + "; "
-                }
-                else {
-                    OutletID = " All "
-                }
-        
-        
-                if (Datetype != "") {
-                    var Datetypes = Datetype + "; "
-                }
-                else {
-                    Datetypes = " Service Date "
-                }
-        
-        
-                if (Age != "") {
-                    var Age_ATSI = Age + "; "
-                }
-                else {
-                    Age_ATSI = " All "
-                }
-        
-        
-        
-                if (mdsagencyID != "") {
-                    var mdsagency = mdsagencyID.join(",") + "; "
-                }
-                else {
-                    mdsagency = " All "
-                }
-        
-        
-        
-                if (HACCCategory != "") {
-                    var HACCCategories = HACCCategory.join(",") + "; "
-                }
-                else {
-                    HACCCategories = " All "
-                }
-        
-        
-        
-                if (RosterCategory != "") {
-                    var RosterCategories = RosterCategory.join(",") + "; "
-                }
-                else {
-                    RosterCategories = " All "
-                }
-        
-                if (program != "") {
-                    var programs = program.join(",") + "; "
-                }
-                else {
-                    programs = " All "
-                }
-        
-        
-        
-                if (Staff != "") {
-                    var Staffs = Staff.join(",") + "; "
-                }
-                else {
-                    Staffs = " All "
-                }
-        
-        
-        
-                if (staffteam != "") {
-                    var staffteams = staffteam.join(",") + "; "
-                }
-                else {
-                    staffteams = " All "
-                }
-        
-        
-        
-                if (stfgroup != "") {
-                    var stfgroups = stfgroup.join(",") + "; "
-                }
-                else {
-                    stfgroups = " All "
-                }
-        
-        
-        
-                if (region != "") {
-                    var regions = region.join(",") + "; "
-                }
-                else {
-                    regions = " All "
-                }
-        
-        
-        
-                if (manager != "") {
-                    var managers = manager.join(",") + "; "
-                }
-                else {
-                    managers = " All "
-                }
-        
-        
-                if (funders != "") {
-                    var fundingsource = funders.join(",") + "; "
-                }
-                else {
-                    fundingsource = " All "
-                }
-        
-        
-                if (status != "") {
-                    var statuscat = status + "; "
-                }
-                else {
-                    statuscat = " All "
-                }
-        
-        
-        
-                if (recipient != "") {
-                    var recipients = recipient.join(",") + "; "
-                }
-                else {
-                    recipients = " All "
-                }
-        
-        
-                if (stafftype != "") {
-                    var stafftypes = stafftype.join(",") + "; "
-                }
-                else {
-                    stafftypes = " All "
-                }
-        
-                if (paytype != "") {
-                    var paytypes = paytype.join(",") + "; "
-                }
-                else {
-                    paytypes = " All "
-                }
-                if (activity != "") {
-                    var activities = activity.join(",") + "; "
-                }
-                else {
-                    activities = " All "
-                }
-                if (settings != "") {
-                    var setting = settings.join(",") + "; "
-                }
-                else {
-                    setting = " All "
-                }
-        
-        
-                var Title = "Award Staff Pay Report"
-                var Report_Definer = ""
-                        switch (format) {
-                            case "Detailed":
-                                Title = Title + "-Detail"
-                                this.reportid = "vaOXVraOpuzXIUxS";
-        
-                                break;
-                            case "Standard":
-                            //    Title = Title + "-Standard"
-                                this.reportid = "vaOXVraOpuzXIUxS";
-        
-                                break;
-        
-                            default:
-                            //    Title = Title + "-Summary"
-                                this.reportid = "vaOXVraOpuzXIUxS"
-                                break;
-                        }
-                        
-                    
-        
-        
-                        fQuery = fQuery + " ORDER BY [Carer Code], [Service Description], Date, [Start Time]"
-        
-                // console.log(fQuery)
-        
-        
-                this.drawerVisible = true;
-        
-                const data = {
-                    "template": { "_id": this.reportid },
-                    "options": {
-                        "reports": { "save": false },
-        
-                        "txtTitle": Title,
-        
-                        "txtCriteriaStmt": Report_Definer,
-        
-                        "sql": fQuery,
-                        "Criteria": lblcriteria,
-        
-                        "txtregions": regions,
-                        "txtstfgroups": stfgroups,
-                        "txtstaffteams": staffteams,
-                        "txtStaffs": Staffs,
-                        "txtprograms": programs,
-                        "txtRosterCategories": RosterCategories,
-                        "txtHACCCategories": HACCCategories,
-                        "txtmdsagency": mdsagency,
-                        "txtAge_ATSI": Age_ATSI,
-                        "txtDatetypes": Datetypes,
-                        "txtmanagers": managers,
-                        "txtfundingsource": fundingsource,
-                        "txtOutletID": OutletID,
-                        "txtstatuscat": statuscat,
-                        "txtrecipients": recipients,
-                        "txtstafftypes": stafftypes,
-                        "txtpaytypes": paytypes,
-                        "txtactivities": activities,
-                        "txtsetting": setting,
-                        "userid": this.tocken.user,
-        
-                        "includeFinancials":this.inputForm.value.InclFinancials,
-                        "Excludeheader":this.inputForm.value.ExcluPgeHeader,
-                    }
-                }
-        
-                this.loading = true;
-                const headerDict = {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-        
-                const requestOptions = {
-                    headers: new HttpHeaders(headerDict)
-                };
-        
-                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-                    .subscribe((blob: any) => {
-                        console.log(blob);
-        
-                        let _blob: Blob = blob;
-        
-                        let fileURL = URL.createObjectURL(_blob);
-                        this.pdfTitle = Title + ".pdf"
-                        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                        this.loading = false;
-        
-                    }, err => {
-                        console.log(err);
-                        this.ModalS.error({
-                            nzTitle: 'TRACCS',
-        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                            nzOnOk: () => {
-                                     this.drawerVisible = false;
-                                     },
-                          });
-                        
-                    });
-                    
-        
-            }
-
-
-
 } //ReportsAdmin

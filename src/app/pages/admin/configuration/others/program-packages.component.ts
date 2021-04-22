@@ -55,9 +55,9 @@ export class ProgramPackagesComponent implements OnInit {
   careWorkersExcluded:Array<any>;
   PackgeLeaveTypecheckedList:Array<any>;
   checkedList:string[];
-  checkedListExcluded:string[];
-  checkedListApproved:string[];
-  checkedPackageProfile:string[];
+  checkedListExcluded:Array<any>;
+  checkedListApproved:Array<any>;
+  checkedPackageProfileServices:Array<any>;
   branches:Array<any>;
   paytypes:Array<any>;
   alerts:Array<any>;
@@ -126,7 +126,12 @@ export class ProgramPackagesComponent implements OnInit {
   tableDataPackageLeaveTypes: any;
   personId:12728;
   listCompetencyByPersonId: any;
+  listApprovedServicesByPersonId: any;
+  listApprovedStaffByPersonId:any;
+  listExcludedStaffByPersonId:any;
   CompetencycheckedList: any;
+  careWorkersCopy: any[];
+  careWorkersExcludedCopy: any;
   
   constructor(
     private globalS: GlobalService,
@@ -149,11 +154,14 @@ export class ProgramPackagesComponent implements OnInit {
       this.PackgeLeaveTypecheckedList = new Array <string>();
       this.checkedListExcluded =new Array<string>();
       this.checkedListApproved =new Array<string>();
-      this.checkedPackageProfile =new Array<string>();
+      this.checkedPackageProfileServices =new Array<string>();
       this.loadData();
-      this.loadPackageLeaveTypes();
       this.populateDropdowns();
+      this.loadPackageLeaveTypes();
+      this.loadApprovedStaff();
+      this.loadExcludedStaff();
       this.loadCompetency();
+      this.loadApprovedServices();
       this.buildForm();
       this.loading = false;
       this.cd.detectChanges();
@@ -161,6 +169,10 @@ export class ProgramPackagesComponent implements OnInit {
     showAddModal() {
       this.title = "Add New Program/Packages"
       this.resetModal();
+      this.inputForm.patchValue({
+        line_1  :'Unused funds are returned to the Department on package cessation',
+        line_2  :'For Queries and Inquiries Please Phone',
+      });
       this.modalOpen = true;
     }
 
@@ -255,12 +267,159 @@ export class ProgramPackagesComponent implements OnInit {
             else
             this.globalS.sToast('Unsuccess', 'Updated successful');
             this.postLoading = false;
-            this.loadPackageLeaveTypes();     
-            this.handlePackageLevelCancel();  
-            this.PackgeLeaveTypecheckedList = [];
+            this.loadCompetency();     
+            this.handleCompetencyCancel();  
+            this.CompetencycheckedList = [];
             this.isUpdatePackageType = false;
             this.loading = false;
           });
+      }
+    }
+    saveApprovedServices(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.checkedPackageProfileServices.forEach( (element) => {
+          // let is_exist   = this.globalS.isCompetencyExists(this.listApprovedServicesByPersonId,element);
+          // if(!is_exist){
+            let sql = "INSERT INTO ServiceOverview([Service Type], PersonID, [ServiceProgram], [ServiceStatus]) VALUES ('"+element+"', '12728', 'CAPACITY BUILDING - 31600', 'ACTIVE')";
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+              insertOne = true;
+            });
+          // }
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handleServicesCancel();
+        this.loading = true;
+        this.loadApprovedServices();
+        this.checkedPackageProfileServices = [];
+      }else{
+      //   this.postLoading = true;
+      //   const group = this.inputForm;
+      //   let competenctNumber  =  group.get('competenctNumber').value;
+      //   let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+      //   let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+      //   let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+      //   let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+      //   let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+      //   this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+      //       if (data) 
+      //       this.globalS.sToast('Success', 'Updated successful');     
+      //       else
+      //       this.globalS.sToast('Unsuccess', 'Updated successful');
+      //       this.postLoading = false;
+      //       this.loadPackageLeaveTypes();     
+      //       this.handlePackageLevelCancel();  
+      //       this.PackgeLeaveTypecheckedList = [];
+      //       this.isUpdatePackageType = false;
+      //       this.loading = false;
+      //     });
+      }
+    }
+    saveApprovedStaff(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.checkedListApproved.forEach( (element) => {
+          let is_exist   = this.globalS.isStaffexist(this.listApprovedStaffByPersonId,element);
+          if(!is_exist){
+            console.log("second check")
+            let is_exist   = this.globalS.isStaffexist(this.listExcludedStaffByPersonId,element);
+            if(!is_exist){
+                console.log("come in insertion")
+              let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('12728', 'PROG_STAFFI', 'PROG_STAFFI','"+element+"', '')";
+                this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+                insertOne = true;
+              });
+            }
+          }
+          console.log("outside")
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handleAprfCancel();
+        // this.loading = true;
+        this.loadApprovedStaff();
+        this.checkedListApproved = [];
+      }else{
+      //   this.postLoading = true;
+      //   const group = this.inputForm;
+      //   let competenctNumber  =  group.get('competenctNumber').value;
+      //   let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+      //   let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+      //   let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+      //   let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+      //   let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+      //   this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+      //       if (data) 
+      //       this.globalS.sToast('Success', 'Updated successful');     
+      //       else
+      //       this.globalS.sToast('Unsuccess', 'Updated successful');
+      //       this.postLoading = false;
+      //       this.loadPackageLeaveTypes();     
+      //       this.handlePackageLevelCancel();  
+      //       this.PackgeLeaveTypecheckedList = [];
+      //       this.isUpdatePackageType = false;
+      //       this.loading = false;
+      //     });
+      }
+    }
+    saveExcludeStaff(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.checkedListExcluded.forEach( (element) => {
+          let is_exist   = this.globalS.isStaffexist(this.listExcludedStaffByPersonId,element);
+          if(!is_exist){
+            let is_exist   = this.globalS.isStaffexist(this.listApprovedStaffByPersonId,element);
+            if(!is_exist){
+              let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('12728', 'PROG_STAFFX', 'PROG_STAFFX','"+element+"', '')";
+                this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+                insertOne = true;
+              });
+            }
+          }
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handleUnAprfCancel();
+        // this.loading = true;
+        this.loadExcludedStaff();
+        this.checkedListExcluded = [];
+      }else{
+      //   this.postLoading = true;
+      //   const group = this.inputForm;
+      //   let competenctNumber  =  group.get('competenctNumber').value;
+      //   let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+      //   let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+      //   let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+      //   let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+      //   let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+      //   this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+      //       if (data) 
+      //       this.globalS.sToast('Success', 'Updated successful');     
+      //       else
+      //       this.globalS.sToast('Unsuccess', 'Updated successful');
+      //       this.postLoading = false;
+      //       this.loadPackageLeaveTypes();     
+      //       this.handlePackageLevelCancel();  
+      //       this.PackgeLeaveTypecheckedList = [];
+      //       this.isUpdatePackageType = false;
+      //       this.loading = false;
+      //     });
       }
     }
     loadPackageLeaveTypes(){
@@ -270,9 +429,30 @@ export class ProgramPackagesComponent implements OnInit {
         this.cd.detectChanges();
       });
     }
+    loadApprovedStaff(){
+      this.menuS.getlistApprovedStaffByPersonId(12728).subscribe(data => {
+        this.listApprovedStaffByPersonId = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadExcludedStaff(){
+      this.menuS.getlistExcludedStaffByPersonId(12728).subscribe(data => {
+        this.listExcludedStaffByPersonId = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
     loadCompetency(){
       this.menuS.getlistCompetencyByPersonId(12728).subscribe(data => {
         this.listCompetencyByPersonId = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadApprovedServices(){
+      this.menuS.getlistApprovedServicesByPersonId('12728').subscribe(data => {
+        this.listApprovedServicesByPersonId = data;
         this.loading = false;
         this.cd.detectChanges();
       });
@@ -318,19 +498,29 @@ export class ProgramPackagesComponent implements OnInit {
       this.servicesModal  =true;
     }
     handleServicesCancel() {
+      this.packedTypeProfile.forEach(x => {
+        x.checked = false
+      });
       this.servicesModal = false;
+      this.checkedPackageProfileServices=[];
     }
     showstaffApprovedModal(){
       // this.resetModal();
       this.staffApproved = true;
     }
     handleAprfCancel(){
+      this.careWorkers.forEach(x => {
+        x.checked = false
+      });
       this.staffApproved = false;
     }
     showstaffUnApprovedModal(){
       this.staffUnApproved = true;
     }
     handleUnAprfCancel(){
+      this.careWorkers.forEach(x => {
+        x.checked = false
+      });
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
@@ -352,9 +542,9 @@ export class ProgramPackagesComponent implements OnInit {
     }
     onCheckboxServiceChange(option,event){
       if(event.target.checked){
-        this.checkedPackageProfile.push(option.title);
+        this.checkedPackageProfileServices.push(option.title);
       }else{
-        this.checkedPackageProfile.filter(m=>m != option.title);
+        this.checkedPackageProfileServices.filter(m=>m != option.title);
       }
     }
     searchPackageLeaves(event){
@@ -392,6 +582,30 @@ export class ProgramPackagesComponent implements OnInit {
       }else if(event.target.value == ""){
         this.competencyList = this.competencyListCopy;
       }
+    }
+    searchStaff(event){
+      this.temp = [];
+      this.careWorkers = this.careWorkersCopy;
+      if(event.target.value != ""){
+        this.temp = this.careWorkers.filter(res=>{
+          return res.accountno.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
+        })
+        this.careWorkers = this.temp;
+      }else if(event.target.value == ""){
+        this.careWorkers = this.careWorkersCopy;
+      }      
+    }
+    searchStaffExcluded(event){
+      this.temp = [];
+      this.careWorkersExcluded = this.careWorkersExcludedCopy;
+      if(event.target.value != ""){
+        this.temp = this.careWorkersExcluded.filter(res=>{
+          return res.accountno.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
+        })
+        this.careWorkersExcluded = this.temp;
+      }else if(event.target.value == ""){
+        this.careWorkersExcluded = this.careWorkersExcludedCopy;
+      }      
     }
     onCheckboxChangePackageTypes(option,event){
       if(event.target.checked){
@@ -649,6 +863,17 @@ export class ProgramPackagesComponent implements OnInit {
     }
     onIndexChange(index: number): void {
       this.current = index;
+
+      if(this.current == 2 || this.current == 3 || this.current == 4){
+        const validateForm = this.inputForm ;
+        let fundingSource =  this.globalS.isValueNull(validateForm.get('funding_source').value);
+        let title         =  this.globalS.isValueNull(validateForm.get('name').value);
+        if(this.globalS.isVarNull(fundingSource) || this.globalS.isVarNull(title)){
+          this.globalS.iToast('Alert', 'Please Add atleast Funding Source and Name First !');
+          this.current = 0; 
+        }
+      }
+
     }
     save() {
       this.postLoading = true;     
@@ -982,13 +1207,11 @@ export class ProgramPackagesComponent implements OnInit {
       let funding = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDREGION' ORDER BY Description";
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
-        this.loading = false;
       });
       
       let fundings = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDINGBODIES' ORDER BY Description";
       this.listS.getlist(fundings).subscribe(data => {
         this.fundingSources = data;
-        this.loading = false;
       });
       
       let progcor = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'CASE MANAGERS' ORDER BY Description";
@@ -1001,7 +1224,6 @@ export class ProgramPackagesComponent implements OnInit {
       this.listS.getlist(target).subscribe(data => {
         this.targetGroups = data;
       });
-      
       
       let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
       this.listS.getlist(reci).subscribe(data => {
@@ -1032,39 +1254,40 @@ export class ProgramPackagesComponent implements OnInit {
       let sc = "select distinct Name from HumanResourceTypes WHERE [Group] = 'PROGRAMS' AND User2 = 'Contingency'";
       this.listS.getlist(sc).subscribe(data => {
         this.contingency = data;
-        this.loading = false;
       });
       
       let pckg_type_profile = "SELECT DISTINCT [Title] FROM ItemTypes WHERE ProcessClassification IN ('OUTPUT', 'EVENT') AND (EndDate Is Null OR EndDate >= GETDATE()) ORDER BY [Title]"
       this.listS.getlist(pckg_type_profile).subscribe(data => {
         this.packedTypeProfile = data;
         this.packedTypeProfileCopy = data;
-        this.loading = false;
       });
       let careWorker = "SELECT DISTINCT [Accountno] FROM Staff WHERE CommencementDate is not null and terminationdate is null ORDER BY [AccountNo]";
       this.listS.getlist(careWorker).subscribe(data => {
         this.careWorkers = data;
+        this.careWorkersCopy = data;
         this.careWorkersExcluded = data;
-        this.loading = false;
+        this.careWorkersExcludedCopy = data;
       });
       
       let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
         this.competencyListCopy = data;
-        this.loading = false;
       });
       
+      let fee = "SELECT Title FROM ItemTypes WHERE (EndDate Is Null OR EndDate >= GETDATE()) AND MinorGroup = 'FEE'"
+      this.listS.getlist(fee).subscribe(data => {
+        this.adminTypesArray = data;
+        
+      });
       let activity = "select distinct Title from ItemTypes WHERE ProcessClassification = 'EVENT' AND ((EndDate IS NULL) OR (EndDate > GETDATE())) AND RosterGroup = 'RECPTABSENCE'";
       this.listS.getlist(activity).subscribe(data => {
         this.activityTypes = data;
-        this.loading = false;
       });
       
       let timesheet = "select distinct Title from ItemTypes WHERE ProcessClassification = 'OUTPUT' AND ((EndDate IS NULL) OR (EndDate > GETDATE())) AND RosterGroup = 'ADMINISTRATION'"
       this.listS.getlist(timesheet).subscribe(data => {
         this.activityTimeSheet = data;
-        this.loading = false;
       });
     }
     log(value: string[]): void {
@@ -1093,6 +1316,30 @@ export class ProgramPackagesComponent implements OnInit {
           }
         });
     }
+    deleteApprovedStaff(data:any){
+      const group = this.inputForm;
+        // this.loading = true;
+        this.menuS.deleteApprovedStaff(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadApprovedStaff();
+            return;
+          }
+        });
+    }
+    deleteExcludedStaff(data:any){
+      const group = this.inputForm;
+        // this.loading = true;
+        this.menuS.deleteExcludedStaff(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadExcludedStaff();
+            return;
+          }
+        });
+    }
     deleteCompetency(data:any){
       const group = this.inputForm;
         this.loading = true;
@@ -1101,6 +1348,19 @@ export class ProgramPackagesComponent implements OnInit {
           if (data) {
             this.globalS.sToast('Success', 'Data Deleted!');
             this.loadCompetency();
+            return;
+          }
+        });
+    }
+    
+    deleteApprovedService(data:any){
+      const group = this.inputForm;
+        this.loading = true;
+        this.menuS.deleteApprovedService(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadApprovedServices();
             return;
           }
         });

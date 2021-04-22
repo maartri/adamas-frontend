@@ -67,7 +67,16 @@ export class MenuService {
             return this.auth.get(`${menu}/packgeLeaveTypes`);
         }
         getlistCompetencyByPersonId(recordNo:number):Observable<any>{
-            return this.auth.get(`${menu}/CompetencyByPersonId/${recordNo}`);
+            return this.auth.get(`${menu}/competencyByPersonId/${recordNo}`);
+        }
+        getlistApprovedServicesByPersonId(recordNo:string):Observable<any>{
+            return this.auth.get(`${menu}/approvedServicesByPersonId/${recordNo}`);
+        }
+        getlistApprovedStaffByPersonId(recordNo:number):Observable<any>{
+            return this.auth.get(`${menu}/approvedStaffByPersonId/${recordNo}`);
+        }
+        getlistExcludedStaffByPersonId(recordNo:number):Observable<any>{
+            return this.auth.get(`${menu}/excludeStaffByPersonId/${recordNo}`);
         }
         getlistactivityGroups(is_where:boolean):Observable<any>{
             return this.auth.get(`${menu}/activityGroups/${is_where}`)
@@ -177,6 +186,15 @@ export class MenuService {
         }
         deleteCompetency(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/ProgarmPackages/deleteCompetency/${recordNo}`)
+        }
+        deleteApprovedService(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/ProgarmPackages/deleteApprovedServices/${recordNo}`)
+        }
+        deleteApprovedStaff(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/ProgarmPackages/approvedStaff/${recordNo}`)
+        }
+        deleteExcludedStaff(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/delete/ProgarmPackages/excludedStaff/${recordNo}`)
         }
         deleteCenterFacilityLoclist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/CenterFacilityLoc/${recordNo}`)

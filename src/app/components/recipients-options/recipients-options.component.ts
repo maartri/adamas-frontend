@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
 import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, CallProcedure } from '../../modules/modules';
-import { ListService, GlobalService, quantity, unit } from '@services/index';
+import { ListService, GlobalService, quantity, unit, dateFormat } from '@services/index';
 import { SqlWizardService } from '@services/sqlwizard.service';
 
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
@@ -47,6 +47,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   @Input() open: any;
   @Input() option: RECIPIENT_OPTION;
   @Input() user: any;
+
+  dateFormat: string = dateFormat;
 
   referralRadioValue: any;
   referralCheckOptions: Array<any> = [
@@ -430,7 +432,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       timeSpent: new Date().setHours(0, 15),
 
       radioGroup: 'case',
-      notes: null,
+      notes: `NDIA REFERRAL/INQUIRY FROM : Morganica Abbots
+Phone : 0403734758
+Address : 151 Dobie St GRAFTON
+
+NOTES:
+`,
       caseCategory: 'REFERRAL-IN',
       publishToApp: false,
 

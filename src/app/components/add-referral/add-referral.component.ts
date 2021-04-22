@@ -6,7 +6,7 @@ import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, con
 
 import * as moment from 'moment';
 import { RemoveFirstLast } from '@pipes/pipes';
-import { TimeSheetService, GlobalService, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 
 @Component({
@@ -25,6 +25,8 @@ export class AddReferralComponent implements OnInit {
   @Output() openRefer = new EventEmitter();
 
   referralGroup: FormGroup;
+
+  dateFormat: string = dateFormat;
 
   genderArr: Array<string> = gender
   typesArr: Array<string> = types
@@ -45,7 +47,6 @@ export class AddReferralComponent implements OnInit {
   private contacts: FormArray;
 
   current: number = 0;
-  dateFormat: string = 'dd/MM/yyyy';
   generatedAccount: string;
   accountTaken: boolean;
 
@@ -280,9 +281,12 @@ export class AddReferralComponent implements OnInit {
         return new RemoveFirstLast().transform(x.description)
       });
     })
-    this.listS.getlistbranches().subscribe(data => this.branches = data);
-    this.clientS.getmanagers().subscribe(data => this.managers = data);
-    this.listS.getserviceregion().subscribe(data => this.agencies = data);
+    this.listS.getlistbranches().subscribe(data => this.branches = data.map(x => x.toUpperCase()));
+    this.clientS.getmanagers().subscribe(data => this.managers = data.map(x => {
+        x['description'] =  x['description'].toUpperCase();
+        return x;
+    }));
+    this.listS.getserviceregion().subscribe(data => this.agencies = data.map(x => x.toUpperCase()));
   }
 
   add() {

@@ -39,3 +39,6 @@ h5.unavailable{
     color: #ff4949;
     margin: 5px;
 }
+textarea{
+    height:12rem;
+}

@@ -700,16 +700,16 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           whoCode: this.user.code,
           publishToApp: publishToApp ? 1 : 0,
           creator: this.token.user,
-          note: notes ,
+          note: notes || "" ,
           alarmDate: format(new Date,'yyyy/MM/dd'),
           reminderTo: 'ss'
         }
       }
-      // console.log(this.token)
-      // console.log(data);
-      // return;
+      
+
       this.listS.postreferralin(data).subscribe(x => {
-        this.globalS.sToast('Success', 'Package is saved');
+        this.globalS.sToast('Success', 'Package is saved'); 
+        this.handleCancel();
       });
 
 
@@ -1528,7 +1528,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   handleCancel() {
       this.open = false;
-
       this.itemOpen = false;
       this.adminOpen = false;
       this.deceaseOpen = false;
@@ -1541,6 +1540,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.notProceedOpen = false;
       this.referOnOpen = false;
       this.referInOpen = false;
+
+      this.changeDetection();
   }
 
   handleOk() {

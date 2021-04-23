@@ -1408,7 +1408,17 @@ NOTES:
         });
       }
 
-      this.referralType$ = this.listS.getreferraltype_latest(this.selectedProgram);   
+      this.referralType$ = this.listS.getreferraltype_latest(this.selectedProgram)
+          .pipe(
+              switchMap(x => {
+                if(x.length == 1){
+                  this.referInGroup.patchValue({
+                    referralType: x[0]
+                  });
+                }
+                return of(x);
+              })
+          );
       return;
     }
 

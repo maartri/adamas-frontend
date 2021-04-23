@@ -21,11 +21,22 @@ export class IntakeGroups implements OnInit, OnDestroy {
     user: any;
     loading: boolean = false;
     modalOpen: boolean = false;
+
+    definedOpen: boolean = false;
+    preferenceOpen: boolean = false;
+
     addOREdit: number;
-    inputForm: FormGroup;
 
     groupTypes: Array<any>;
     groupPreferences: Array<any>;
+
+    userGroupForm: FormGroup;
+    preferenceForm: FormGroup;
+
+    dropDowns: {
+        userGroups: Array<string>,
+        preferences: Array<string>
+    }
 
     constructor(
         private timeS: TimeSheetService,
@@ -42,7 +53,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
-                    this.router.navigate(['/admin/recipient/branches'])
+                    this.router.navigate(['/admin/recipient/personal'])
                 }
             }
         });
@@ -86,7 +97,20 @@ export class IntakeGroups implements OnInit, OnDestroy {
     }
 
     buildForm() {
+        this.userGroupForm = this.formBuilder.group({
+            group: new FormControl('', [Validators.required]),
+            notes: new FormControl(''),
+            personID: new FormControl(''),
+            recordNumber: new FormControl(0),
+            alert: new FormControl(false),
+         })
 
+         this.preferenceForm = this.formBuilder.group({
+            preference: new FormControl('', [Validators.required]),
+            notes: new FormControl(''),
+            personID: new FormControl(''),
+            recordNumber: new FormControl(0)
+         })
     }
 
     save() {
@@ -102,11 +126,100 @@ export class IntakeGroups implements OnInit, OnDestroy {
     }
 
     handleCancel() {
+        this.preferenceOpen = false;
+        this.definedOpen = false;
+    }
 
+    reloadAll(){
+        this.search()
+        this.listDropDowns()
+    }
+
+    listDropDowns(){
+        forkJoin([
+            this.listS.getusergroup(this.user.uniqueID),
+            this.listS.getrecipientpreference(this.user.uniqueID)
+        ]).subscribe(data => {
+            this.loading = false;
+            this.dropDowns = {
+                userGroups: data[0],
+                preferences: data[1]
+            }
+        });
     }
 
     showAddModal() {
         this.addOREdit = 1;
         this.modalOpen = true;
     }
+
+    updateUserGroup(data: any){
+        this.modalOpen = true;
+        this.userGroupForm.patchValue({
+            group: data.group,
+            notes: data.notes,            
+            recordNumber: data.recordNumber,
+            alert: data.mobileAlert,
+        })
+    }
+
+    deleteUserGroup(data: any){
+        this.timeS.deleteusergroup(data.recordNumber).subscribe(data =>{
+            if(data){
+                this.reloadAll()
+                this.globalS.sToast('Success','Data Deleted')
+            }
+        })
+    }
+
+    preferenceProcess(){
+        this.preferenceForm.controls['personID'].setValue(this.user.uniqueID)
+
+        const preferences = this.preferenceForm.value;
+
+        if(this.addOREdit == 0){
+            this.timeS.postrecipientpreference(preferences)
+                        .subscribe(data => {
+                            if(data){
+                                this.reloadAll()
+                                this.globalS.sToast('Success','Data Inserted')
+                            }
+                        })
+        }
+
+        if(this.addOREdit == 1){
+            this.timeS.updateusrecipientpreference(preferences)
+                .subscribe(data => {
+                    if(data){
+                        this.reloadAll()
+                        this.globalS.sToast('Success','Data Updated')
+                    }
+                })
+        }
+    }
+
+    updatePreference(data: any){
+        this.preferenceOpen = true;
+
+        this.preferenceForm.patchValue({
+            preference: data.preference,
+            notes: data.notes,
+            recordNumber: data.recordNumber
+        })
+    }
+
+    handleOk(){
+
+    }
+
+    deletePreference(data: any){
+        this.timeS.deleterecipientpreference(data.recordNumber)
+                    .subscribe(data =>{
+                        if(data){
+                            this.reloadAll()
+                            this.globalS.sToast('Success','Data Deleted')
+                        }
+                    })
+    }
+    
 }

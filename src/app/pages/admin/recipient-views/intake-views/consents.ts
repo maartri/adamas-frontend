@@ -14,6 +14,11 @@ import format from 'date-fns/format';
 @Component({
     selector: '',
     templateUrl: './consents.html',
+    styles:[`
+    h4{
+        margin-top:10px;
+    }
+    `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -76,6 +81,10 @@ export class IntakeConsents implements OnInit, OnDestroy {
             notes: null,
             expiryDate: null
          })
+
+        setTimeout(() => {
+            this.consentGroup.controls['consent'].enable();
+        }, 0);
     }
 
     trackByFn(index, item) {
@@ -126,6 +135,10 @@ export class IntakeConsents implements OnInit, OnDestroy {
         this.addOREdit = 0;
         this.buildForm();
         this.consentOpen = true;
+
+        this.listDropDowns();
+
+    
     }
 
     listDropDowns(){
@@ -137,6 +150,8 @@ export class IntakeConsents implements OnInit, OnDestroy {
 
         this.consentOpen = true;
         this.addOREdit = 1;
+        
+        this.lists = [data.consent];
 
         this.consentGroup.patchValue({
             recordNumber: data.recordNumber,
@@ -145,6 +160,8 @@ export class IntakeConsents implements OnInit, OnDestroy {
             notes: data.notes,
             expiryDate: data.expiryDate
         });
+
+        this.consentGroup.controls['consent'].disable();
     }
 
     deleteconsent(data: any){
@@ -164,7 +181,6 @@ export class IntakeConsents implements OnInit, OnDestroy {
         this.timeS.getconsents(user.id).subscribe(consents => {
             this.loading = false;
             this.consents = consents;
-            console.log(consents)
             this.cd.markForCheck();
         })        
     }

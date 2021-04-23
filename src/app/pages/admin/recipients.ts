@@ -1172,8 +1172,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (!this.isFirstLoad) {
-            // this.view(0);
-            this.view(1);
+            this.view(0);
+            // this.view(1);
             this.isFirstLoad = true;
         }
 
@@ -1232,13 +1232,13 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         //     "view":"recipient"
         // });
         
-        this.listChange({
-            accountNo: "ABBOTS MORGANICA",
-            agencyDefinedGroup: "GRAFTON",
-            sysmgr: true,
-            uniqueID: "T0100004652",
-            view: "recipient"
-        });
+        // this.listChange({
+        //     accountNo: "ABBOTS MORGANICA",
+        //     agencyDefinedGroup: "GRAFTON",
+        //     sysmgr: true,
+        //     uniqueID: "T0100004652",
+        //     view: "recipient"
+        // });
 
         // this.listChange({
         //         "agencyDefinedGroup":"ARUNDEL",

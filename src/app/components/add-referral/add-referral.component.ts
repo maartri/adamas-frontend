@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap } from 'rxjs/operators';
@@ -54,7 +54,8 @@ export class AddReferralComponent implements OnInit {
     private clientS: ClientService,
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
-    private listS: ListService
+    private listS: ListService,
+    private cd: ChangeDetectorRef
   ) {
 
   }
@@ -67,6 +68,7 @@ export class AddReferralComponent implements OnInit {
       concatMap(e => {
         if (this.referralGroup && this.referralGroup.valid) {
           this.generatedAccount = this.generateAccount();
+          this.cd.markForCheck();
           return this.clientS.isAccountNoUnique(this.generatedAccount);
         } return EMPTY;
       })
@@ -77,12 +79,14 @@ export class AddReferralComponent implements OnInit {
         this.referralGroup.patchValue({
           accountNo: this.generatedAccount
         });
+        this.cd.markForCheck();
       }
       if (next == 0) {
         this.accountTaken = true;
         this.referralGroup.patchValue({
           accountNo: this.generatedAccount
         });
+        this.cd.markForCheck();
       }
     });
   }

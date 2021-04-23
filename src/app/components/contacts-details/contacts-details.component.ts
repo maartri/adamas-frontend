@@ -135,7 +135,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
     if (token.view == view.recipient) {
         this.timeS.getcontactskinrecipient(token.id)
         .subscribe(data => {
-          this.kinsArray = data;
+          console.log(data);
+          this.kinsArray = data.list;
 
           if (data.length > 0) {
             this.selected = data[0];

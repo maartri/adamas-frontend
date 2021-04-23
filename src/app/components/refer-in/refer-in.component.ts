@@ -21,6 +21,7 @@ export class ReferInComponent implements OnInit, OnChanges {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
         // this.buildForm();
+        console.log('sample')
         this.open = true;
       }
     }

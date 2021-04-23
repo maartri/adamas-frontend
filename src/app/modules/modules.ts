@@ -287,7 +287,9 @@ export interface GetStaff {
     User: string,
     SearchString?: string,
     IncludeInactive?: boolean,
-    Status?: string
+    Status?: string,
+    Skip?: number,
+    Take?: number
 }
 
 export interface GetRecipient {
@@ -631,7 +633,7 @@ export interface ProcedureRoster {
     agencyDefinedGroup: string,
     referralCode: string,
     timePercent: string,
-    Notes: string,
+    notes: string,
     type: number,
     duration: number,
     blockNo: number,
@@ -675,8 +677,8 @@ export interface CallProcedure {
     isNDIAHCP: boolean,
     newPackage: string,
     oldPackage: string,
-    level: string,
-    type: string,
+    level?: string,
+    type?: string,
     // clientPackage: ProcedureSetClientPackage,
     roster: Array<ProcedureRoster>,
     staffNote: ProcedureClientStaffNote

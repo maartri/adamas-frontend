@@ -44,13 +44,19 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   @Input() view: number;
   @Input() reload: boolean;
 
+  phoneModal: boolean = false;
+  isOpen: boolean = false;
+  phoneSearch: string;
+
   searchModel: any;
   listsAll: Array<any> = [];
   lists: Array<any> = [];
   loading: boolean = false;
 
-  // nzFilterOption  = () => true;
+  pageCounter: number = 1;
+  take: number = 50;
 
+  // nzFilterOption  = () => true;
   constructor(
     private cd: ChangeDetectorRef,
     private timeS: TimeSheetService,
@@ -95,11 +101,13 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   }
 
   ngOnDestroy(): void{
+    console.log('destroy search-list')
     this.unsubscribe.next();
     this.unsubscribe.complete();
   }
 
   change(event: SearchProperties) {
+
     let user: SearchProperties | null;
 
     if (!event) {
@@ -113,18 +121,18 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
         view: this.view == 0 ? 'recipient' : 'staff'
       }
     }
-
+    this.searchModel = user.accountNo;
     this.onChangeCallback(user);
   }
 
-  search() {
+  search(search: string = null) {
     this.loading = true;
     if (this.view == 0) {
-      this.searchRecipient();
+      this.searchRecipient(search);
     }
 
     if (this.view == 1) {
-      this.searchStaff();
+      this.searchStaff(search);
     }
   }
 
@@ -132,8 +140,9 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   //   this.searchChangeEmit.next(data);
   // }
 
-  searchStaff(initLoad: boolean = false) {
-    this.lists = []
+  searchStaff(search: any = null) {
+    this.lists = [];   
+
     this.timeS.getstaff({
       User: this.globalS.decode().nameid,
       SearchString: ''
@@ -144,16 +153,45 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
       this.loading = false;
       this.cd.markForCheck();
     });
+
+    // this.timeS.getstaffpaginate({
+    //   User: this.globalS.decode().nameid,
+    //   SearchString: '',
+    //   Skip: this.pageCounter,
+    //   Take: this.take
+    // }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //   this.lists = this.lists.concat(data);
+    //   this.loading = false;
+    //   this.cd.markForCheck();
+    // });
+    
   }
 
-  searchRecipient(initLoad: boolean = false, accountName: any = null): void {
+  loadMore(){
+    this.pageCounter = this.pageCounter + 1;
+    this.timeS.getstaffpaginate({
+      User: this.globalS.decode().nameid,
+      SearchString: '',
+      Skip: this.pageCounter,
+      Take: this.take
+    }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+      this.lists = this.lists.concat(data);
+      this.loading = false;
+      this.cd.markForCheck();
+    });
+  }
+
+  searchRecipient(search: any = null): void {
     this.lists = []
     this.timeS.getrecipients({
       User: this.globalS.decode().nameid,
       SearchString: ''
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      this.listsAll = data;
-      // this.lists = data.slice(0, 10);
+      if(search){
+        var index = data.findIndex(x => x.uniqueID == search.id);
+        this.change(data[index]);
+      }
+
       this.lists = data;
       this.loading = false;
       this.cd.markForCheck();
@@ -164,7 +202,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   writeValue(value: any) {
     this.cd.detectChanges();
     if (value != null) {
-      this.searchModel = value;
+      this.search(value);
     }
 
     if (value instanceof Object) {
@@ -184,9 +222,34 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   }
 
   viewResult(): string{
-    return this.view == 0 ? 'Search Recipient' :
-      'Search Staff';
+    return this.view == 0 ? 'Search Recipient' : 'Search Staff';
   }
 
 
+  clearPhoneModal(){
+    this.phoneModal = false;
+  }
+
+  listPhoneRecipientsList: Array<any>;
+  searchPhone(){
+    this.timeS.getrecipientsbyphone(this.phoneSearch)
+        .subscribe(data => {
+          // this.lists = data;
+          this.listPhoneRecipientsList = data;
+          this.cd.markForCheck();
+        });
+
+  }
+
+  selectedIndex: number = null;
+  selected(index: number){
+    this.selectedIndex = index;
+  }
+
+  gotoRecipient(){
+    let selected = this.listPhoneRecipientsList[this.selectedIndex];
+    this.searchModel = this.lists[this.lists.map(x => x.uniqueID).indexOf(selected.uniqueID)];
+
+    this.change(this.searchModel);
+  }
 }

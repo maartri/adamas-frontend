@@ -236,8 +236,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
         this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode();
         this.date = addDays(this.date, this._settings.BOOKINGLEADTIME());
 
-        console.log(this.token)
-        console.log(this.globalS.decode())
+        // console.log(this.token)
+        // console.log(this.globalS.decode())
 
         this.currUser = this.globalS.decode()['nameid'];
 
@@ -272,6 +272,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
             this.services = [];
 
             this.getApprovedServices();
+            console.log(this.slots);
+            // return;
         }
 
         if (this.current == 1) {
@@ -500,6 +502,9 @@ export class BookingClientManager implements OnInit, OnDestroy {
 
         var id = this.globalS.loadingMessage('Processing booking...');
         this.bookingModalOpen = false;
+
+        console.log(this.finalBooking);
+        // return;
 
         this.clientS.addbooking(this.finalBooking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let resultRows = parseInt(data);            

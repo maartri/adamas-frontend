@@ -14,30 +14,7 @@
         
             <div class="steps-content" >
                 <div nz-row *ngIf="current == 0" [formGroup]="referralGroup">
-                    <div nz-row nzGutter="32">
-                     
-                        <div nz-col nzSpan="5">
-                            <div class="form-group">
-                                <nz-select nzAllowClear nzPlaceHolder="Title" formControlName="title">
-                                    <nz-option *ngFor="let l of titlesArr" [nzLabel]="l" [nzValue]="l"></nz-option>
-                                </nz-select>
-                            </div>
-                        </div>
-                     
-                        <div nz-col nzSpan="7">
-                            <div class="form-group">
-                                <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="gender">
-                                    <nz-option *ngFor="let l of genderArr" [nzLabel]="l" [nzValue]="l"></nz-option>
-                                </nz-select>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div nz-row >
-                        <div class="form-group">
-                            <nz-date-picker nzPlaceHolder="Birthdate" formControlName="dob" [nzFormat]="dateFormat"></nz-date-picker>
-                        </div>
-                    </div>
+
                     <div nz-row nzGutter="16">
                         <div nz-col nzSpan="8">
                             <div class="form-group">
@@ -55,6 +32,35 @@
                             </div>
                         </div>
                     </div>
+
+                    <div nz-row nzGutter="32">
+                     
+                        <div nz-col nzSpan="5">
+                            <div class="form-group">
+                                <nz-select nzAllowClear nzPlaceHolder="Title" formControlName="title">
+                                    <nz-option *ngFor="let l of titlesArr" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>
+                     
+                        <div nz-col nzSpan="7">
+                            <div class="form-group">
+                                <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="gender">
+                                    <nz-option *ngFor="let l of genderArr" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>                       
+                        
+                    </div>
+
+                    <div nz-row >
+                        <div nz-col nzSpan=12>
+                            <div class="form-group">
+                                <nz-date-picker nzPlaceHolder="Birthdate" formControlName="dob" [nzFormat]="dateFormat"></nz-date-picker>
+                            </div>
+                        </div>                       
+                    </div>
+                    
                     <div class="account-name" [class.error]="accountTaken">{{ referralGroup.get('accountNo').value }}</div>
                     <div class="message" *ngIf="accountTaken" [class.error]="accountTaken">Account is taken</div>
                     <div class="message" *ngIf="accountTaken == false" [class.error]="accountTaken">Account is available</div>
@@ -99,19 +105,20 @@
                                 <div nz-row nzGutter="16">
                                     <div class="form-group" nz-col nzSpan="12">
                                         <label for="">Description</label>
-                                        <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="type">
+                                        <nz-select nzAllowClear nzPlaceHolder="Description" formControlName="type">
                                             <nz-option *ngFor="let _add of addressType" [nzLabel]="_add" [nzValue]="_add"></nz-option>
                                         </nz-select>
                                     </div>
-                                    <div class="form-group" nz-col nzSpan="12">
-                                        <label for="">Postcode & Suburb</label>
-                                        <suburb formControlName="suburb"></suburb>
+                                    <div class="form-group" nz-col nzSpan="24">
+                                        <label for="">Address</label>
+                                        <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
                                     </div>
                                 </div>
                                 <div nz-row>
                                     <div nz-col nzSpan="24">
-                                        <label for="">Address</label>
-                                        <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        <label for="">Postcode & Suburb</label>
+                                        <suburb formControlName="suburb"></suburb>
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -123,19 +130,19 @@
                     <div [formGroup]="referralGroup">
                         <div class="form-group">
                             <label for="">Branch</label>
-                            <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="branch">
+                            <nz-select nzAllowClear nzPlaceHolder="Branch" formControlName="branch">
                                 <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
                             </nz-select>
                         </div>
                         <div class="form-group">
                             <label for="">Agency Category</label>
-                            <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="agencyDefinedGroup">
+                            <nz-select nzAllowClear nzPlaceHolder="Agency Category" formControlName="agencyDefinedGroup">
                                 <nz-option *ngFor="let l of agencies" [nzLabel]="l" [nzValue]="l"></nz-option>
                             </nz-select>
                         </div>
                         <div class="form-group">
                             <label for="">Case Manager</label>
-                            <nz-select nzAllowClear nzPlaceHolder="Gender" formControlName="recipientCoordinator">
+                            <nz-select nzAllowClear nzPlaceHolder="Case Manager" formControlName="recipientCoordinator">
                                 <nz-option *ngFor="let l of managers;let i = index" [nzLabel]="l.description" [nzValue]="i"></nz-option>
                             </nz-select>
                         </div>

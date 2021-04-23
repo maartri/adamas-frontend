@@ -16,6 +16,9 @@
 @import '~@fullcalendar/daygrid/main.css';
 @import '~@fullcalendar/timegrid/main.css'; */
 
+@import "~@ng-select/ng-select/themes/default.theme.css";
+/* @import "~@ng-select/ng-select/themes/material.theme.css"; */
+
 html{
     height:100%;
 }
@@ -167,8 +170,19 @@ button.other{
     background: #b74c4c;
     color: #fff;    
 }
+
 button.other:not(:disabled):hover{
     background:#e15a5a;
+}
+button.find{
+    background: #ff8787;
+    color: #fff;
+    width: 8rem;
+    float:right;
+}
+
+button.find:not(:disabled):hover{
+    background: #ff5f5f;
 }
 
 .flexy{

@@ -829,11 +829,19 @@ export class TimeSheetService {
     }
 
     getrecipients(rec: GetRecipient): Observable<any> {
-        return this.auth.get(`${timesheet}/recipients`, rec)
+        return this.auth.get(`${timesheet}/recipients`, rec);
+    }
+
+    getrecipientsbyphone(phoneno: string): Observable<any> {
+        return this.auth.get(`${timesheet}/phone-search-recipient/${phoneno}`);
     }
 
     getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
+    }
+
+    getstaffpaginate(staff: GetStaff): Observable<any> {
+        return this.auth.get(`${timesheet}/staffs-paginate`, staff)
     }
 
     getdaymanager(dto: DayManager): Observable<any> {

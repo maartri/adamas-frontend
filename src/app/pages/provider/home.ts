@@ -37,7 +37,7 @@ import { Component } from '@angular/core';
      .inner-content {
         padding: 24px;
         background: #fff;
-        min-height: 360px;
+        min-height: 100%;  
     }
 
     nz-content {

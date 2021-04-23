@@ -5,7 +5,7 @@
             <nz-avatar (click)="isVisible = true" nzIcon="user"></nz-avatar>
             <div *ngIf="isVisible" class="dropdown">
                 <ul>
-                    <!-- <li *ngIf="ifClientManager" (click)="toClientMembers()">Client Members</li> -->
+                    <li *ngIf="ifClientManager" (click)="settingsDrawerVisible = true">Settings</li>
                     <li>Edit Password</li>
                     <li (click)="logout()"><i nz-icon nzType="logout" nzTheme="outline"></i>Logout</li>
                 </ul>
@@ -13,3 +13,10 @@
         </div>
     </div>
 </div>
+
+<nz-drawer [nzClosable]="false" [nzWidth]="400" [nzVisible]="settingsDrawerVisible" nzPlacement="right" nzTitle="Basic Settings" (nzOnClose)="close()">
+   <div nz-row>
+       <label nz-checkbox [(ngModel)]="clientPortalMethod" (ngModelChange)="methodChange($event)">Enable ClientPortalManagerMethod </label>
+
+   </div>
+</nz-drawer>

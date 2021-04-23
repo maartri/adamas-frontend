@@ -1,6 +1,6 @@
 <div nz-row>
     <div nz-col nzSpan="24">
-        <button class="botton success" (click)="showAddModal()">Add Goal</button>
+        <button class="botton success" (click)="showAddModal()">Add Defined Group</button>
         <nz-table #sss [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="groupTypes">
             <thead>
@@ -19,10 +19,10 @@
                     <td></td>
                     <td>{{ data.notes }}</td>
                     <td class="action">
-                        <a (click)="showEditModal(i)">Update</a>
+                        <a (click)="updateUserGroup(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(i)">Delete</a>
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteUserGroup(data)">Delete</a>
                     </td>
                 </tr>
             </tbody>
@@ -30,9 +30,9 @@
     </div>
 </div>
 
-<div nz-row>
+<div nz-row style="margin-top:2rem">
     <div nz-col nzSpan="24">
-        <button class="botton success" (click)="showAddModal()">Add Goal</button>
+        <button class="botton success" (click)="showAddModal()">Add Recipient Preference</button>
         <nz-table #ss2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="groupPreferences">
             <thead>
@@ -49,10 +49,10 @@
                     <td>{{ data.preference}}</td>
                     <td>{{ data.notes }}</td>
                     <td>
-                        <a (click)="showEditModal(i)">Update</a>
+                        <a (click)="updatePreference(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(i)">Delete</a>
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="deletePreference(data)">Delete</a>
                     </td>
                 </tr>
             </tbody>
@@ -60,33 +60,66 @@
     </div>
 </div>
 
-<!-- <nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOREdit == 1 ? 'Add Branch' : 'Edit Branch'"
-    (nzOnCancel)="handleCancel()">
-    <div [formGroup]="inputForm">
-        <div nz-row>
-            <nz-form-item *ngIf="addOREdit == 1">
-                <nz-form-label [nzNoColon]="true">Branch</nz-form-label>
-                <nz-form-control nzErrorTip="Branch is required!">
-                    <nz-select formControlName="branch" nzAllowClear [nzDropdownMatchSelectWidth]="false">
-                        <nz-option *ngFor="let d of alist" [nzValue]="d" [nzLabel]="d">
-                        </nz-option>
-                    </nz-select>
-                </nz-form-control>
-            </nz-form-item>
-            <div class="form-group" *ngIf="addOREdit == 2">
-                <label for="">Branch</label>
-                <input nz-input formControlName="branch" disabled />
+<nz-modal [(nzVisible)]="definedOpen" nzTitle="Add Competency" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <div>
+        
+        <div nz-row nzGutter="16">
+            <div nz-col nzSpan="12" [formGroup]="userGroupForm">
+                <nz-select style="width:100%" nzAllowClear formControlName="group"  nzPlaceHolder="Group">
+                    <nz-option *ngFor="let data of dropDowns?.userGroups"  [nzValue]="data" [nzLabel]="data"></nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="12" [formGroup]="userGroupForm">
+                <label nz-checkbox formControlName="alert">Display Alert on Mobile App</label>
             </div>
         </div>
-        <div nz-row>
-            <div class="form-group">
-                <label for="">Notes</label>
-                <textarea rows="4" nz-input formControlName="notes"></textarea>
+        <div nz-row nzGutter="16" >
+            <div nz-col [formGroup]="userGroupForm">
+                <label for=""><h4>Notes</h4></label>
+                <textarea nz-input cols="30" rows="5" formControlName="notes"></textarea>
             </div>
         </div>
+
+        <div *nzModalFooter>
+            <ng-container>
+                <button nz-button nzType="default" (click)="handleCancel()">
+                    <span>Cancel</span>
+                </button>
+                <button nz-button nzType="primary" (click)="preferenceProcess()">
+                    <span>Save</span>
+                </button>
+            </ng-container>
+        </div>
     </div>
-    <div *nzModalFooter>
-        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" (click)="save()" [nzLoading]="loading">Save</button>
+  </nz-modal>
+
+
+  <nz-modal [(nzVisible)]="preferenceOpen" nzTitle="Add Competency" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <div>
+        
+        <div nz-row nzGutter="16">
+            <div nz-col nzSpan="12" [formGroup]="preferenceForm">
+                <nz-select style="width:100%" nzAllowClear formControlName="preference"  nzPlaceHolder="Preference">
+                    <nz-option *ngFor="let data of dropDowns?.preferences"  [nzValue]="data" [nzLabel]="data"></nz-option>
+                </nz-select>
+            </div>
+        </div>
+        <div nz-row nzGutter="16" >
+            <div nz-col [formGroup]="preferenceForm">
+                <label for=""><h4>Notes</h4></label>
+                <textarea nz-input cols="30" rows="5" formControlName="notes"></textarea>
+            </div>
+        </div>
+
+        <div *nzModalFooter>
+            <ng-container>
+                <button nz-button nzType="default" (click)="handleCancel()">
+                    <span>Cancel</span>
+                </button>
+                <button nz-button nzType="primary" (click)="preferenceProcess()">
+                    <span>Save</span>
+                </button>
+            </ng-container>
+        </div>
     </div>
-</nz-modal> -->
+  </nz-modal>

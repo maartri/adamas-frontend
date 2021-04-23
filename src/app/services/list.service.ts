@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { HttpParams } from '@angular/common/http';
 
 import { CallDeceaseProcedure, CallReferralOutProcedure } from '@modules/modules';
+import { PackageClient } from '@client/package';
 
 const list: string = "api/list"
 const docSign: string = "api/docusign"
@@ -19,6 +20,38 @@ export class ListService {
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+
+    checkIfPackageNameExists(packageName: string): Observable<any> {
+        return this.auth.get(`${list}/check-package-name-exist/${packageName}`);
+    }
+
+    getdexprograms(personID: string): Observable<any> {
+        return this.auth.get(`${list}/dex-programs/${personID}`);
+    }
+
+    getotherprograms(personID: string): Observable<any> {
+        return this.auth.get(`${list}/other-programs/${personID}`);
+    }    
+
+    gethcpprograms(): Observable<any> {
+        return this.auth.get(`${list}/hcp-programs`);
+    }
+
+    getndiaprograms(): Observable<any> {
+        return this.auth.get(`${list}/ndia-programs`);
+    }
+
+    getclientportalmethod(): Observable<any>{
+        return this.auth.get(`${list}/clientportalmethod`);
+    }
+
+    updateclientportalmethod(data: boolean): Observable<any>{
+        return this.auth.put(`${list}/clientportalmethod/${data}`);
+    }
+
+    getrecipientprograms(id: string): Observable<any>{
+        return this.auth.get(`${list}/programs-recipient/${id}`);
+    }
 
     getpayperiod(): Observable<any>{
         return this.auth.get(`${list}/payperiod`);

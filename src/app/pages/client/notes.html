@@ -3,7 +3,7 @@
 
         <nz-tabset>
 
-            <nz-tab nzTitle="OP Notes" (nzClick)="view.next(1)">
+            <nz-tab nzTitle="OP Notes" *ngIf="viewTab?.opNote" (nzClick)="view.next(1)">
                 <div nz-col nzSpan="24">
 
                     <nz-form-item>
@@ -32,8 +32,37 @@
                 </div>
             </nz-tab>
 
+            <nz-tab nzTitle="Case Notes" *ngIf="viewTab?.caseNote" (nzClick)="view.next(2)">
+                <div nz-col nzSpan="24">
 
-            <nz-tab nzTitle="Shift Notes" (nzClick)="view.next(2)">
+                    <nz-form-item>
+                        <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
+                            <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="dateRange"
+                                (ngModelChange)="dateChangeEvent.next($event)"></nz-range-picker>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-table #filterTable [nzData]="tableData" nzSize="small" [nzFrontPagination]="false">
+                        <thead (nzSortChange)="sort($event)" nzSingleSort>
+                            <tr>
+                                <th nzShowSort nzSortKey="detail">Details</th>
+                                <th nzShowSort nzSortKey="detailDate">Date</th>
+                                <th nzShowSort nzSortKey="creator">Creator</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of tableData">
+                                <td>{{ data.detail || '-' | uppercase }}</td>
+                                <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
+                                <td>{{ data.creator || '-' | uppercase }}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-tab>
+
+
+            <!-- <nz-tab nzTitle="Service Notes" (nzClick)="view.next(2)">
                 <div nz-col nzSpan="24">
 
                     <nz-form-item>
@@ -71,7 +100,7 @@
                         </tbody>
                     </nz-table>
                 </div>
-            </nz-tab>
+            </nz-tab> -->
         </nz-tabset>
 
         <!-- <ul id="demoTabs" class="nav" role="tablist">

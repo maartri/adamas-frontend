@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, forwardRef, ChangeDetectionStrategy,ChangeDetectorRef, AfterViewInit, AfterContentChecked } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms'
 
+
+import differenceInHours from 'date-fns/differenceInHours';
+import differenceInMinutes from 'date-fns/differenceInMinutes'
 const noop = () => {
 };
 
@@ -50,6 +53,8 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
     private cd:ChangeDetectorRef
   ) {
      this.cd.detach();
+
+    
    }
 
   ngOnInit(): void {
@@ -70,9 +75,7 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
 
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
-      if (property == 'interval' &&
-        !changes[property].firstChange &&
-        changes[property].currentValue != null) {
+      if (property == 'interval' && !changes[property].firstChange && changes[property].currentValue != null) {
           this.buildForm();
           this.createMultipleWeekFormats(changes[property].currentValue)
       }
@@ -111,6 +114,18 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
+  calculateDuration(data: Array<any>){
+    data.forEach(x => {
+      x['monday']['quantity'] = differenceInMinutes(new Date(x['monday']['endTime']), new Date(x['monday']['time']));
+      x['tuesday']['quantity'] = differenceInMinutes(new Date(x['tuesday']['endTime']), new Date(x['tuesday']['time']));
+      x['wednesday']['quantity'] = differenceInMinutes(new Date(x['wednesday']['endTime']), new Date(x['wednesday']['time']));
+      x['thursday']['quantity'] = differenceInMinutes(new Date(x['thursday']['endTime']), new Date(x['thursday']['time']));
+      x['friday']['quantity'] = differenceInMinutes(new Date(x['friday']['endTime']), new Date(x['friday']['time']));
+      x['saturday']['quantity'] = differenceInMinutes(new Date(x['saturday']['endTime']), new Date(x['saturday']['time']));
+      x['sunday']['quantity'] = differenceInMinutes(new Date(x['sunday']['endTime']), new Date(x['sunday']['time']));
+    })
+  }
+
   
   createMultipleWeekFormats(format: string) {
     
@@ -118,10 +133,20 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
 
     this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {     
       this.innerValue = data;
+      // console.log(data)
+      this.calculateDuration(data);
+
       console.log(this.innerValue)
       this.onChangeCallback(this.innerValue);      
       this.cd.markForCheck();
     });
+
+    // (<FormArray>this.quoteDetailsGroup.get('timeSlots')).controls.forEach(control => {
+    //   control.valueChanges.subscribe(data => {     
+    //     console.log(data);
+    //     console.log((<FormArray>this.quoteDetailsGroup.get('timeSlots')).controls.indexOf(control))
+    //   });
+    // })
   }
 
   loopRoster(noOfLoop: number, data: any = null) {
@@ -168,36 +193,43 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
     return this.formBuilder.group({
       monday: new FormGroup({
         time: new FormControl(data ? data['monday'].time: new Date(1900, 0, dayCounter, 9, 0, 0)),
+        endTime: new FormControl(data ? data['monday'].endTime: new Date(1900, 0, dayCounter, 9, 0, 0)),
         quantity: new FormControl(data ? data['monday'].quantity : 0),
         week: new FormControl(counter + 1)
       }),
       tuesday: new FormGroup({
         time: new FormControl(data ? data['tuesday'].time : new Date(1900, 0, dayCounter + 1, 9, 0, 0)),
+        endTime: new FormControl(data ? data['tuesday'].endTime : new Date(1900, 0, dayCounter + 1, 9, 0, 0)),
         quantity: new FormControl(data ? data['tuesday'].quantity : 0),
         week: new FormControl(counter + 1)
       }),
       wednesday: new FormGroup({
         time: new FormControl(data ? data['wednesday'].time: new Date(1900, 0, dayCounter + 2, 9, 0, 0)),
+        endTime: new FormControl(data ? data['wednesday'].endTime: new Date(1900, 0, dayCounter + 2, 9, 0, 0)),
         quantity: new FormControl(data ? data['wednesday'].quantity : 0),
         week: new FormControl(counter + 1)
       }),
       thursday: new FormGroup({
         time: new FormControl(data ? data['thursday'].time : new Date(1900, 0, dayCounter + 3, 9, 0, 0)),
+        endTime: new FormControl(data ? data['thursday'].endTime : new Date(1900, 0, dayCounter + 3, 9, 0, 0)),
         quantity: new FormControl(data ? data['thursday'].quantity : 0),
         week: new FormControl(counter + 1)
       }),
       friday: new FormGroup({
         time: new FormControl(data ? data['friday'].time : new Date(1900, 0, dayCounter + 4, 9, 0, 0)),
+        endTime: new FormControl(data ? data['friday'].endTime : new Date(1900, 0, dayCounter + 4, 9, 0, 0)),
         quantity: new FormControl(data ? data['friday'].quantity : 0),
         week: new FormControl(counter + 1)
       }),
       saturday: new FormGroup({
         time: new FormControl(data ? data['saturday'].time : new Date(1900, 0, dayCounter + 5, 9, 0, 0)),
+        endTime: new FormControl(data ? data['saturday'].endTime : new Date(1900, 0, dayCounter + 5, 9, 0, 0)),
         quantity: new FormControl(data ? data['saturday'].quantity : 0),
         week: new FormControl(counter + 1)
       }),
       sunday: new FormGroup({
         time: new FormControl(data ? data['sunday'].time : new Date(1900, 0, dayCounter + 6, 9, 0, 0)),
+        endTime: new FormControl(data ? data['sunday'].endTime : new Date(1900, 0, dayCounter + 6, 9, 0, 0)),
         quantity: new FormControl(data ? data['sunday'].quantity  : 0),
         week: new FormControl(counter + 1)
       })
@@ -206,6 +238,7 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
+    console.log(value)
     if(value != null){
       
       if(value.length > 0) {
@@ -217,6 +250,7 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
       this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {     
         this.innerValue = data;
         console.log(this.innerValue)
+        this.calculateDuration(data);
         this.onChangeCallback(this.innerValue);      
         this.cd.markForCheck();
       });

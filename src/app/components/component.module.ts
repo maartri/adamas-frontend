@@ -49,6 +49,7 @@ import { AddStaffComponent } from './add-staff/add-staff.component';
 import { IncidentDocumentsComponent } from './incident-documents/incident-documents.component';
 import { RecipientsOptionsComponent } from './recipients-options/recipients-options.component';
 import { SelectListRecipientComponent } from './select-list-recipient/select-list-recipient.component';
+import { FilterComponent } from './filter/filter.component';
 
 
 @NgModule({
@@ -85,7 +86,8 @@ import { SelectListRecipientComponent } from './select-list-recipient/select-lis
     AddStaffComponent,
     IncidentDocumentsComponent,
     RecipientsOptionsComponent,
-    SelectListRecipientComponent
+    SelectListRecipientComponent,
+    FilterComponent
   ],
   imports: [
     CommonModule,
@@ -128,7 +130,8 @@ import { SelectListRecipientComponent } from './select-list-recipient/select-lis
     AddStaffComponent,
     IncidentDocumentsComponent,
     RecipientsOptionsComponent,
-    NgSelectModule
+    NgSelectModule,
+    FilterComponent
   ],
   providers: [
     

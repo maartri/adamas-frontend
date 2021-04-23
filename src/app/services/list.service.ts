@@ -21,6 +21,10 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getreferraltype_latest(packageName: string): Observable<any> {
+        return this.auth.get(`${list}/referral-type/${packageName}`);
+    }
+
     checkIfPackageNameExists(packageName: string): Observable<any> {
         return this.auth.get(`${list}/check-package-name-exist/${packageName}`);
     }

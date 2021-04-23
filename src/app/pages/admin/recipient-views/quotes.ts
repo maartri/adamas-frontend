@@ -13,6 +13,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         nz-table{
             margin-top:20px;
         }        
+        app-filter{
+            float:right;
+        }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './quotes.html'
@@ -163,5 +166,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy {
 
     showAddModal() {
         
+    }
+
+    hello(data: any){
+        console.log(data);
+        return false;
     }
 }

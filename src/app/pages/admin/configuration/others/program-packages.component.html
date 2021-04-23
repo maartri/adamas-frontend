@@ -83,7 +83,7 @@
                                         <nz-form-label nzRequired nzFor="Name">Name</nz-form-label>
                                     </div>
                                     <div nz-col nzSpan="15">
-                                        <input nz-input  [nzSize]="'small'" formControlName="name"/>
+                                        <input nz-input  [nzSize]="'small'" formControlName="name" style="text-transform: uppercase;" />
                                     </div>
                                 </div>
                                 <div nz-row nzJustify class="mrg-btm">
@@ -1012,7 +1012,7 @@
                                 <div nz-col nzSpan="3" class="text-right pad-r-5"> 
                                     <nz-date-picker  [nzSize]="'small'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
                                 </div>
-                                <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
+                                <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]="!this.inputForm.get('funding_source').value || !this.inputForm.get('name').value" (click)="save()">
                                     <span>SAVE</span>
                                 </button>
                             </div>

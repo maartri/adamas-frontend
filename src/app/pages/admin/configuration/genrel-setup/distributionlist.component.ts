@@ -44,7 +44,7 @@ export class DistributionlistComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
   
   constructor(
     private globalS: GlobalService,
@@ -72,12 +72,12 @@ export class DistributionlistComponent implements OnInit {
         this.whereString = "";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
         this.loadData();
       }
     }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,DeletedRecord as is_deleted,EndDate as end_date from IM_DistributionLists "+this.whereString+" order by Recipient";
+      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+" order by Recipient";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -165,12 +165,12 @@ export class DistributionlistComponent implements OnInit {
         ltype:ltype,
         staff:staff,
         service:activity,
-        assignee:(assignee == true) ? true : false,
+        assignee:(assignee == "True") ? true : false,
         prgm:program,
         location:location,
         recepient:recipient,
         saverity:severity,
-        mandatory:(mandatory == true) ? true : false,
+        mandatory:(mandatory == "True") ? true : false,
         end_date:end_date,
         recordNo:recordNo,
       });
@@ -212,7 +212,7 @@ export class DistributionlistComponent implements OnInit {
         let assignee   = this.trueString(group.get('assignee').value);
         let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let values = recepient+","+service+","+location+","+prgm+","+staff+","+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
-        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[EndDate]) Values ("+values+")"; 
+        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
         
         console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
@@ -227,7 +227,6 @@ export class DistributionlistComponent implements OnInit {
           this.resetModal();
         });
       }else{
-        this.postLoading  = true;   
         const group       = this.inputForm;
         let ltype      = this.globalS.isValueNull(group.get('ltype').value);
         let staff      = this.globalS.isValueNull(group.get('staff').value);
@@ -240,14 +239,12 @@ export class DistributionlistComponent implements OnInit {
         let assignee   = this.trueString(group.get('assignee').value);
         let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let recordNo   = group.get('recordNo').value;
-        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[EndDate] = "+end_date+ ",[Location] ="+ location+ " WHERE [recordNo] ='"+recordNo+"'";
-        console.log(sql);
+        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ " WHERE [recordNo] ='"+recordNo+"'";
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
           this.globalS.sToast('Success', 'Saved successful');
-          this.postLoading = false;      
           this.loadData();
           this.handleCancel();
           this.resetModal();   
@@ -312,7 +309,7 @@ export class DistributionlistComponent implements OnInit {
       
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
       "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-      "ListName as  Field7,Severity as Field8,CONVERT(varchar, [EndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
+      "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
       
       const headerDict = {
         'Content-Type': 'application/json',

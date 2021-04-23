@@ -1173,20 +1173,11 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
         if (!this.isFirstLoad) {
             this.view(0);
-            //this.view(6);
+            // this.view(10);
             this.isFirstLoad = true;
         }
 
         console.log(JSON.stringify(event));
-
-  
-        // this.user = {
-        //     agencyDefinedGroup: "GRAFTON",
-        //     code: "ABERKIRDO TYBI",
-        //     id: "T0100004514",
-        //     sysmgr: true,
-        //     view: "recipient"
-        // }
 
         this.user = {
             code: event.accountNo,

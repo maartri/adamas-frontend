@@ -12,8 +12,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     styles: [`
         nz-table{
             margin-top:20px;
-        }
-        
+        }        
     `],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './quotes.html'

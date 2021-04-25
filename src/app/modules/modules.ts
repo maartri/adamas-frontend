@@ -673,6 +673,13 @@ export interface ProcedureSetClientPackage {
     clientCode: string
 }
 
+export interface Filters{
+    acceptedQuotes: boolean,
+    allDates: boolean,
+    archiveDocs: boolean,
+    display: number
+}
+
 export interface CallProcedure {
     isNDIAHCP: boolean,
     newPackage: string,

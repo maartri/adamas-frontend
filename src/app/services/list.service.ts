@@ -504,7 +504,7 @@ export class ListService {
     }    
 
     getlistquotes(data: any): Observable<any>{
-        return this.auth.get(`${list}/quotes`, data)
+        return this.auth.post(`${list}/quotes`, data)
     }
 
     postloan(data: any, personID: string): Observable<any>{

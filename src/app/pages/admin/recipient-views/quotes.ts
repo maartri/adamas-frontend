@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation, AfterViewInit } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -9,6 +9,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 
+import { Filters } from '@modules/modules';
 
 @Component({
     styleUrls:['./quotes.css'],
@@ -17,7 +18,7 @@ import { ContextMenuComponent } from 'ngx-contextmenu';
 })
 
 
-export class RecipientQuotesAdmin implements OnInit, OnDestroy {
+export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     private unsubscribe: Subject<void> = new Subject();
 
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
@@ -33,6 +34,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy {
     acceptedQuotes: boolean = false;
 
     loading: boolean = false;
+
+    filters: Filters = {
+        acceptedQuotes: false,
+        allDates: false,
+        archiveDocs: true,
+        display: 20
+    };
 
     constructor(
         private timeS: TimeSheetService,
@@ -59,9 +67,12 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy {
         });
     }
 
+    ngAfterViewInit(){        
+        this.search(this.user);
+    }
+
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
         this.buildForm();
     }
 
@@ -74,14 +85,25 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy {
         console.log(message);
     }
 
+    filterChange(data: any){
+        this.search(this.user);
+    }
+
     search(user: any) {
         this.loading = true;
-        this.listS.getlistquotes({
-            PersonID: user.id,
-            DisplayLast: this.displayLast,
-            IncludeArchived: this.archivedDocs,
-            IncludeAccepted: this.acceptedQuotes
-        }).subscribe(data => {
+        
+
+        let data = {
+            quote: {
+                PersonID: user.id,
+                DisplayLast: this.displayLast,
+                IncludeArchived: this.archivedDocs,
+                IncludeAccepted: this.acceptedQuotes
+            },
+            filters: this.filters
+        }
+
+        this.listS.getlistquotes(data).subscribe(data => {
             this.tableData = data;
             this.loading = false;
             this.cd.markForCheck();

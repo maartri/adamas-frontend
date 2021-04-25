@@ -3,7 +3,8 @@
 
         <div>
             <button class="botton success" (click)="showAddModal()">Add Quote</button>
-            <app-filter></app-filter>
+            <app-filter [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
+            {{ filters | json }}
         </div>        
 
         <nz-table #basicTable [nzLoading]="loading" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"

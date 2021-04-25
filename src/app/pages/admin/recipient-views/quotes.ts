@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -7,16 +7,11 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { ContextMenuComponent } from 'ngx-contextmenu';
+
 
 @Component({
-    styles: [`
-        nz-table{
-            margin-top:20px;
-        }        
-        app-filter{
-            float:right;
-        }
-    `],
+    styleUrls:['./quotes.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './quotes.html'
 })
@@ -24,6 +19,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 export class RecipientQuotesAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
+
+    @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+
     user: any;
     inputForm: FormGroup;
     tableData: Array<any> = [];
@@ -70,6 +68,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe.next();
         this.unsubscribe.complete();
+    }
+
+    showMessage(message: any) {
+        console.log(message);
     }
 
     search(user: any) {

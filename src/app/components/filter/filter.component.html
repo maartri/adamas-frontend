@@ -1,13 +1,17 @@
-<div>
+<div [formGroup]="filterFormGroup">
     <div class="inline">
-        <span>Display Last</span> <nz-input-number [(ngModel)]="sss" nzSize="small"  [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+        <span>Display Last</span> <nz-input-number formControlName="display" nzSize="small"  [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
     </div>
     <div class="inline">
-        <label nz-checkbox [(ngModel)]="sss"><span>Include Archived Documents</span></label> 
+        <label nz-checkbox formControlName="archiveDocs"><span>Include Archived Documents</span></label> 
     </div>
     <div class="inline">
-        <label nz-checkbox [(ngModel)]="sss"><span>Include Accepted Quotes</span></label>  
+        <label nz-checkbox formControlName="acceptedQuotes"><span>Include Accepted Quotes</span></label>  
     </div>
+    <div class="inline">
+        <label nz-checkbox formControlName="acceptedQuotes"><span>All Dates</span></label>  
+    </div>
+
     <div class="inline">
         <i nz-icon nzType="diff" nzTheme="outline"></i>
     </div>
@@ -17,4 +21,5 @@
     <div class="inline">
         <i nz-icon nzType="form" nzTheme="outline"></i>
     </div>
+
 </div>

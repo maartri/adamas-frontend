@@ -57,8 +57,12 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
   }
 
   writeValue(value: any) {
+    console.log(value);
+    
     if (value) {
       this.innerValue = this.validateNumber(value);
+      console.log(this.innerValue);
+
       if (this.innerValue) {
         this.error = false;
         this.select(this.innerValue);        
@@ -151,6 +155,14 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
       this.lastFourNo = data.slice(9, 14);
       return data;
     }
+
+    if(data.length == 10 && data.slice(0,2) == '04'){
+      this.areaCode = data.slice(0, 2);
+      this.firstFourNo = data.slice(2, 6);
+      this.lastFourNo = data.slice(6, 10);
+      return data;
+    }
+    
     return null;
   }
 

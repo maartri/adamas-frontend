@@ -19,6 +19,36 @@
 @import "~@ng-select/ng-select/themes/default.theme.css";
 /* @import "~@ng-select/ng-select/themes/material.theme.css"; */
 
+
+div.cdk-overlay-container div.cdk-overlay-connected-position-bounding-box div context-menu-content div ul{
+    background: #fff !important;
+    border: 1px solid #c3c3c3;
+    padding: 0;
+    list-style: none;
+    width: 15rem;
+    border-radius:3px;
+}
+
+div.cdk-overlay-container div.cdk-overlay-connected-position-bounding-box div context-menu-content div li{
+    cursor:pointer;
+}
+div.cdk-overlay-container div.cdk-overlay-connected-position-bounding-box div context-menu-content div li a{
+    width: 100%;
+    display: block;
+    padding:6px 5px;
+    color: #565656;
+}
+
+div.cdk-overlay-container div.cdk-overlay-connected-position-bounding-box div context-menu-content div li:hover{
+    background:#e6e6e6;
+}
+
+
+
+
+
+
+
 html{
     height:100%;
 }

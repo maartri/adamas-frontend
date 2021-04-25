@@ -72,6 +72,8 @@ import { FundingRegionsComponent } from './pages/admin/configuration/genrel-setu
 import { SpreadSheetsModule } from "@grapecity/spread-sheets-angular";
 import {DocusignComponent} from './pages/docusign/docusign'
 
+import { ContextMenuModule } from 'ngx-contextmenu';
+
 registerLocaleData(en);
 
 export function tokenGetter() {
@@ -130,7 +132,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     AgGridModule.withComponents([]),
     InfiniteScrollModule,
     FullCalendarModule,
-    SpreadSheetsModule
+    SpreadSheetsModule,
+    ContextMenuModule.forRoot()
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

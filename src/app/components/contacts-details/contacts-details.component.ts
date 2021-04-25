@@ -196,7 +196,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
-    console.log(value)
     if (value != null) {
       this.innerValue = value;
       this.searchKin(this.innerValue);
@@ -214,7 +213,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   save() {
-    if (this.innerValue.view === view.staff)
+    if (this.user.view === view.staff)
     {
       var sub = this.kindetailsGroup.get('suburbcode').value;
       let address = sub ? this.getPostCodeAndSuburb(sub) : null;
@@ -237,14 +236,38 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         details,
         details.recordNumber
       ).subscribe(data => {    
-          this.searchKin(this.innerValue);
+          this.searchKin(this.user);
           this.globalS.sToast('Success', 'Contact Updated');       
-      })
+      });
 
     }
 
-    if (this.innerValue.view === view.recipient)
+    if (this.user.view === view.recipient)
     {
+      console.log('recipient');
+      var sub = this.kindetailsGroup.get('suburbcode').value;
+      let address = sub ? this.getPostCodeAndSuburb(sub) : null;
+
+      if (!this.globalS.isEmpty(address)) {
+        this.kindetailsGroup.controls["postcode"].setValue(address.pcode);
+        this.kindetailsGroup.controls["suburb"].setValue(address.suburb);
+      }
+     
+
+      if (this.kindetailsGroup.get('oni1').value) {
+        this.kindetailsGroup.controls['ecode'].setValue('PERSON1')
+      } else if (this.kindetailsGroup.get('oni2').value) {
+        this.kindetailsGroup.controls['ecode'].setValue('PERSON2')
+      }
+
+      const details = this.kindetailsGroup.value;
+      console.log(details);
+
+      this.timeS.updatecontactskinrecipientdetails(details,details.recordNumber)
+          .subscribe(data => {
+            this.searchKin(this.user);
+            this.globalS.sToast('Success', 'Contact Updated');       
+          });
 
     }
 
@@ -277,8 +300,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   add() {
-    
-    console.log(this.user);
 
     if (this.inputForm.controls['suburbcode'].dirty) {
       var rs = this.inputForm.get('suburbcode').value;
@@ -296,13 +317,13 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
     } else if (this.inputForm.get('oni2').value) {
       this.inputForm.controls['ecode'].setValue('PERSON2')
     }
-    
+
     this.timeS.postcontactskinstaffdetails(
       this.inputForm.value,
       this.user.id
     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.globalS.sToast('Success', 'Contact Inserted');
-      this.searchKin(this.innerValue);
+      this.searchKin(this.user);
     });
   }
 

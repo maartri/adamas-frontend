@@ -1,8 +1,7 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
-
-
+import { dateFormat } from '@services/global.service';
 const noop = () => {  };
 
 @Component({
@@ -17,6 +16,7 @@ const noop = () => {  };
     }
   ],
 })
+
 export class FilterComponent implements OnInit, ControlValueAccessor {
 
   private onTouchedCallback: () => void = noop;
@@ -24,6 +24,13 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
 
 
   filterFormGroup: FormGroup;
+  dateFormat: string = dateFormat;
+
+  selectedValue: any;
+
+  openFilter: boolean = false;
+  deleteFilter: boolean = false;
+  viewFilter: boolean = false;
 
   sss: any;
   constructor(
@@ -34,10 +41,8 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
     this.buildForm();
 
     this.filterFormGroup.valueChanges.subscribe(data => {
-      console.log(this.filterFormGroup.value);
-
       this.onChangeCallback(this.filterFormGroup.value);
-    })
+    });
   }
 
   buildForm(){
@@ -45,7 +50,9 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
       display: 20,
       archiveDocs: false,
       acceptedQuotes: false,
-      allDates: false
+      allDates: true,
+      startDate: null,
+      endDate: null
     });
   }
 

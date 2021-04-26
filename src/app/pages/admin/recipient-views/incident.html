@@ -1,4 +1,7 @@
 <div nz-row>
+    <app-filter></app-filter>
+</div>
+<div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add Incident</button>
         <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"

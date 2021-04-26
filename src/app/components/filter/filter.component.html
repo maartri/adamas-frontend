@@ -1,25 +1,57 @@
-<div [formGroup]="filterFormGroup">
-    <div class="inline">
-        <span>Display Last</span> <nz-input-number formControlName="display" nzSize="small"  [nzMin]="1" [nzMax]="100" [nzStep]="1"></nz-input-number>
-    </div>
-    <div class="inline">
-        <label nz-checkbox formControlName="archiveDocs"><span>Include Archived Documents</span></label> 
-    </div>
-    <div class="inline">
-        <label nz-checkbox formControlName="acceptedQuotes"><span>Include Accepted Quotes</span></label>  
-    </div>
-    <div class="inline">
-        <label nz-checkbox formControlName="acceptedQuotes"><span>All Dates</span></label>  
+<div [formGroup]="filterFormGroup" style="float:right">
+    <div nz-row style="border-bottom: 1px solid #e0e0e0;">
+        
+            <div class="inline">
+                <span>Display Last</span> <nz-input-number formControlName="display" nzSize="small"  [nzMin]="1" [nzMax]="100" [nzStep]="1"></nz-input-number>
+            </div>
+            <div class="inline">
+                <label nz-checkbox formControlName="archiveDocs"><span>Include Archived Documents</span></label> 
+            </div>
+            <div class="inline">
+                <label nz-checkbox formControlName="acceptedQuotes"><span>Include Accepted Quotes</span></label>  
+            </div>
+
+            <div class="inline">
+                <label nz-checkbox formControlName="allDates"><span>All Dates</span></label>  
+            </div>
+            <div class="inline" *ngIf="!(filterFormGroup.get('allDates').value)">
+                <nz-date-picker formControlName="startDate" [nzSize]="'small'" [nzFormat]="dateFormat" [nzPlaceHolder]="'Start Date'"></nz-date-picker>
+            </div>
+            <div class="inline" *ngIf="!(filterFormGroup.get('allDates').value)">
+                <nz-date-picker formControlName="endDate" [nzSize]="'small'" [nzFormat]="dateFormat" [nzPlaceHolder]="'End Date'"></nz-date-picker>
+            </div>
+        
     </div>
 
-    <div class="inline">
-        <i nz-icon nzType="diff" nzTheme="outline"></i>
+    <div nz-row>
+        <div nz-col nzSpan="5" nzOffset="19">
+            <div class="filter-icons">
+                <div class="inline">
+                    <i nz-icon nzType="diff" nzTheme="outline" (click)="openFilter = !openFilter"></i>
+                </div>
+                <div class="inline">
+                    <i nz-icon nzType="fullscreen" nzTheme="outline" (click)="deleteFilter = !deleteFilter"></i>
+                </div>
+                <div class="inline">
+                    <i nz-icon nzType="form" nzTheme="outline" (click)="viewFilter = !viewFilter"></i>
+                </div>
+            </div>
+        </div>    
     </div>
-    <div class="inline">
-        <i nz-icon nzType="fullscreen" nzTheme="outline"></i>
+    <div nz-row nzGutter="24" *ngIf="openFilter">
+        <div nz-col nzSpan="8">
+            <nz-select [(ngModel)]="selectedValue" nzAllowClear nzPlaceHolder="Limit To">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+        </div>
+        <div nz-col nzSpan="8">
+            <input nz-input placeholder="Basic usage" [(ngModel)]="selectedValue" />
+        </div>
+        <div nz-col nzSpan="8">
+            <button nz-button nzType="primary">Apply</button>
+            <button nz-button nzType="danger">Close</button>
+        </div>
     </div>
-    <div class="inline">
-        <i nz-icon nzType="form" nzTheme="outline"></i>
-    </div>
-
 </div>

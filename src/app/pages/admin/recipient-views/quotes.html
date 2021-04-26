@@ -1,11 +1,11 @@
 <div nz-row>
-    <div nz-col>
 
-        <div>
-            <button class="botton success" (click)="showAddModal()">Add Quote</button>
-            <app-filter [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
-            {{ filters | json }}
-        </div>        
+    <button class="botton success" (click)="showAddModal()">Add Quote</button>
+    <app-filter [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
+
+</div>
+<div nz-row>
+    <div nz-col>
 
         <nz-table #basicTable [nzLoading]="loading" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">

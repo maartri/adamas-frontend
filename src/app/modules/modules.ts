@@ -674,10 +674,12 @@ export interface ProcedureSetClientPackage {
 }
 
 export interface Filters{
-    acceptedQuotes: boolean,
-    allDates: boolean,
-    archiveDocs: boolean,
-    display: number
+    acceptedQuotes?: boolean,
+    allDates?: boolean,
+    archiveDocs?: boolean,
+    display?: number,
+    startDate?: string,
+    endDate?: string
 }
 
 export interface CallProcedure {

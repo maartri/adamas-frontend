@@ -13,6 +13,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         nz-table{
             margin-top:20px;
         }
+        th.action{
+            width: 12rem !important;
+        }
         
     `],
     templateUrl: './incident.html',
@@ -216,6 +219,12 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
 
     delete(data: any) {
         this.timeS.deleteincident(data.recordNumber)
+            .subscribe(data => this.search());
+    }
+ 
+    closeincidentstatus(data: any) {
+        
+        this.timeS.UpdateIncidentstatus(data.recordNumber)
             .subscribe(data => this.search());
     }
 }

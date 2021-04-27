@@ -1,7 +1,9 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { dateFormat } from '@services/global.service';
+import { TABS } from '@modules/modules';
+
 const noop = () => {  };
 
 @Component({
@@ -21,6 +23,8 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
 
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;  
+
+  @Input() tabs: TABS; 
 
 
   filterFormGroup: FormGroup;

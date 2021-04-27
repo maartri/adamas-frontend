@@ -1,14 +1,14 @@
-<div [formGroup]="filterFormGroup" style="float:right">
+<div [formGroup]="filterFormGroup" class="container" style="float:right">
     <div nz-row style="border-bottom: 1px solid #e0e0e0;">
         
             <div class="inline">
                 <span>Display Last</span> <nz-input-number formControlName="display" nzSize="small"  [nzMin]="1" [nzMax]="100" [nzStep]="1"></nz-input-number>
             </div>
             <div class="inline">
-                <label nz-checkbox formControlName="archiveDocs"><span>Include Archived Documents</span></label> 
+                <label nz-checkbox *ngIf="!(tabs == 'OPNOTES') && !(tabs == 'CASENOTES') && !(tabs == 'INCIDENTS')" formControlName="archiveDocs"><span>Include Archived Documents</span></label> 
             </div>
             <div class="inline">
-                <label nz-checkbox formControlName="acceptedQuotes"><span>Include Accepted Quotes</span></label>  
+                <label nz-checkbox *ngIf="!(tabs == 'OPNOTES') && !(tabs == 'CASENOTES') && !(tabs == 'INCIDENTS')" formControlName="acceptedQuotes"><span>Include Accepted Quotes</span></label>  
             </div>
 
             <div class="inline">

@@ -17,6 +17,13 @@ export enum RECIPIENT_OPTION {
     ITEM = "ITEM"
 }
 
+export enum TABS {
+    OPNOTES = "OPNOTES",
+    CASENOTES = "CASENOTES",
+    INCIDENTS = "INCIDENTS",
+    QUOTES = "QUOTES"
+}
+
 export enum PROCESS{
     UPDATE = "UPDATE",
     ADD = "ADD"

@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { Filters } from '@modules/modules';
 
 @Component({
     styles: [`
@@ -54,6 +55,13 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
     modalOpen: boolean = false;
     addOrEdit: number;
     dateFormat: string = 'dd/MM/yyyy';
+
+    filters: Filters = {
+        acceptedQuotes: false,
+        allDates: false,
+        archiveDocs: true,
+        display: 20
+    };
 
 
     alist: Array<any> = [];
@@ -120,9 +128,14 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         this.getSelect();
     }
 
+    filterChange(data: any){
+        this.search(this.user);
+    }
+
     getNotes(user:any) {
         this.loading = true;
-        this.clientS.getopnotes(user.id).subscribe(data => {
+
+        this.clientS.getopnoteswithfilters(user.id, this.filters).subscribe(data => {
             let list: Array<any> = data.list || [];
             
             if (list.length > 0) {
@@ -136,7 +149,24 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
             
             this.loading = false;
             this.cd.markForCheck();
-        });
+        })
+
+        // this.clientS.getopnotes(user.id).subscribe(data => {
+        //     let list: Array<any> = data.list || [];
+            
+        //     if (list.length > 0) {
+        //         list.forEach(x => {
+        //             if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
+        //                 x.detail = x.detailOriginal
+        //             }
+        //         });
+        //         this.tableData = list;
+        //     }
+            
+        //     this.loading = false;
+        //     this.cd.markForCheck();
+        // });
+
     }
 
     patchData(data: any) {

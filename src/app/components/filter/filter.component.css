@@ -11,17 +11,18 @@ i{
     font-size: 1.5rem;
     cursor:pointer;
 }
-i:hover{
+i:not(.selected):hover{
     color:#c74848;
 }
 .filter-icons{
-    margin-top: 15px;
-    z-index: 10;
-    float:right;
+    margin-top: 10px;
 }
 nz-select{
     width:100%;
 }
 button{
     margin-right:5px;
+}
+.selected{
+    color:#00da25;
 }

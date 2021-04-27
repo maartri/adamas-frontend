@@ -1241,14 +1241,15 @@ export class ProgramPackagesComponent implements OnInit {
       this.listS.getlist(acti).subscribe(data => {
         this.activities = data;
       });
+      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > GETDATE()))";
+      this.listS.getlist(prog).subscribe(data => {
+        this.programz = data;
+      });
+      
       let ptype ="SELECT [recnum] AS [RecordNumber], [title] AS [Code] FROM itemtypes WHERE processclassification = 'INPUT' AND ( enddate IS NULL OR enddate >= '04-05-2019' ) ORDER BY title";
       this.loading = true;
       this.listS.getlist(ptype).subscribe(data => {
         this.paytypes = data;
-      });
-      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > GETDATE()))";
-      this.listS.getlist(prog).subscribe(data => {
-        this.programz = data;
       });
       
       let sc = "select distinct Name from HumanResourceTypes WHERE [Group] = 'PROGRAMS' AND User2 = 'Contingency'";

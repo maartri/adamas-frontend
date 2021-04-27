@@ -14,7 +14,7 @@ ul li div{
     cursor:pointer;
 }
 ul li div.active{
-    background: #fbfbfb;
+    background: #e2e2e2;
 }
 li div i{
     visibility: hidden;

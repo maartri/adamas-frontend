@@ -12,6 +12,14 @@
             </div>
 
             <div class="inline">
+                <label nz-checkbox *ngIf="tabs == 'CASENOTES'" formControlName="includeArchivedNotes"><span>Include Archived Notes</span></label>  
+            </div>
+
+            <div class="inline">
+                <label nz-checkbox *ngIf="tabs == 'INCIDENTS'" formControlName="includeClosedIncidents"><span>Include Closed Incidents</span></label>  
+            </div>
+
+            <div class="inline">
                 <label nz-checkbox formControlName="allDates"><span>All Dates</span></label>  
             </div>
             <div class="inline" *ngIf="!(filterFormGroup.get('allDates').value)">

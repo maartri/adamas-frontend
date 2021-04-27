@@ -2,7 +2,7 @@ import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { dateFormat } from '@services/global.service';
-import { TABS } from '@modules/modules';
+import { TABS, Filters } from '@modules/modules';
 
 const noop = () => {  };
 
@@ -50,14 +50,18 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
   }
 
   buildForm(){
-    this.filterFormGroup = this.fb.group({
+    var filter: Filters = {
       display: 20,
       archiveDocs: false,
       acceptedQuotes: false,
       allDates: true,
       startDate: null,
-      endDate: null
-    });
+      endDate: null,
+      includeClosedIncidents: false,
+      includeArchivedNotes: false
+    };
+
+    this.filterFormGroup = this.fb.group(filter);
   }
 
   writeValue(value: any) {

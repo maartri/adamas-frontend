@@ -684,6 +684,8 @@ export interface Filters{
     acceptedQuotes?: boolean,
     allDates?: boolean,
     archiveDocs?: boolean,
+    includeClosedIncidents?: boolean,
+    includeArchivedNotes?: boolean,
     display?: number,
     startDate?: string,
     endDate?: string

@@ -23,11 +23,15 @@
                     <td>{{ data.type }}</td>
                     <td>{{ data.subCategory }}</td>
                     <td>{{ data.description || '-' }}</td>
-                    <td>
+                    <td class="left" >
                         <a (click)="showEditModal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>                            
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure Close this Incident?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="closeincidentstatus(data)">Close</a>
+                        
                     </td>
                 </tr>
             </tbody>

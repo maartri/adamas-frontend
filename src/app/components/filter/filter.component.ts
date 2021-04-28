@@ -6,6 +6,9 @@ import { TABS, Filters } from '@modules/modules';
 
 const noop = () => {  };
 
+import { of, combineLatest, forkJoin, merge, EMPTY } from 'rxjs';
+import { switchMap, startWith } from 'rxjs/operators';
+
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -44,9 +47,36 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
   ngOnInit(): void {
     this.buildForm();
 
-    this.filterFormGroup.valueChanges.subscribe(data => {
+    // this.filterFormGroup.get('archiveDocs').valueChanges.subscribe(data => console.log(data))
+
+    combineLatest([
+      this.filterFormGroup.get('archiveDocs').valueChanges.pipe(startWith(false)),
+      this.filterFormGroup.get('acceptedQuotes').valueChanges.pipe(startWith(false)),
+      this.filterFormGroup.get('includeClosedIncidents').valueChanges.pipe(startWith(false)),
+      this.filterFormGroup.get('includeArchivedNotes').valueChanges.pipe(startWith(false))
+    ]).subscribe(([data] : any) => {
+      // console.log(data);
       this.onChangeCallback(this.filterFormGroup.value);
-    });
+    })
+
+    combineLatest([
+      this.filterFormGroup.get('startDate').valueChanges.pipe(startWith(null)),
+      this.filterFormGroup.get('endDate').valueChanges.pipe(startWith(null))
+    ]).pipe(
+      switchMap(([data, data1]:any) => {
+        if(data == null || data1 == null)
+          return EMPTY;
+        return of([data,data1]);
+      })
+    ).subscribe(([data, data1] : any) => {
+      this.onChangeCallback(this.filterFormGroup.value);
+    })
+
+
+    // this.filterFormGroup.valueChanges.subscribe(data => {
+    //   console.log(data);
+    //   this.onChangeCallback(this.filterFormGroup.value);
+    // });
   }
 
   buildForm(){

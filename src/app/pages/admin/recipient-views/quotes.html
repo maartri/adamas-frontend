@@ -2,7 +2,7 @@
 
     <button class="botton success" (click)="showAddModal()">Add Quote</button>
     <app-filter [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
-
+    {{ filters | json }}
 </div>
 <div nz-row>
     <div nz-col>

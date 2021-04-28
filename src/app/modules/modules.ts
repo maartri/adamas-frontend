@@ -17,6 +17,13 @@ export enum RECIPIENT_OPTION {
     ITEM = "ITEM"
 }
 
+export enum TABS {
+    OPNOTES = "OPNOTES",
+    CASENOTES = "CASENOTES",
+    INCIDENTS = "INCIDENTS",
+    QUOTES = "QUOTES"
+}
+
 export enum PROCESS{
     UPDATE = "UPDATE",
     ADD = "ADD"
@@ -674,10 +681,14 @@ export interface ProcedureSetClientPackage {
 }
 
 export interface Filters{
-    acceptedQuotes: boolean,
-    allDates: boolean,
-    archiveDocs: boolean,
-    display: number
+    acceptedQuotes?: boolean,
+    allDates?: boolean,
+    archiveDocs?: boolean,
+    includeClosedIncidents?: boolean,
+    includeArchivedNotes?: boolean,
+    display?: number,
+    startDate?: Date,
+    endDate?: Date
 }
 
 export interface CallProcedure {

@@ -135,13 +135,13 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
     if (token.view == view.recipient) {
         this.timeS.getcontactskinrecipient(token.id)
         .subscribe(data => {
-          console.log(data);
           this.kinsArray = data.list;
 
-          if (data.length > 0) {
-            this.selected = data[0];
-            this.showDetails(data[0]);
+          if (this.kinsArray.length > 0) {
+            this.selected = this.kinsArray[0];
+            this.showDetails(this.kinsArray[0]);
           }
+
           this.loading = false
           this.cd.markForCheck();
           this.cd.detectChanges();
@@ -154,10 +154,11 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         .subscribe(data => {
           this.kinsArray = data;
 
-          if (data.length > 0) {
-            this.selected = data[0];
-            this.showDetails(data[0]);
+          if (this.kinsArray.length > 0) {
+            this.selected = this.kinsArray[0];
+            this.showDetails(this.kinsArray[0]);
           }
+
           this.loading = false
           this.cd.markForCheck();
           this.cd.detectChanges();

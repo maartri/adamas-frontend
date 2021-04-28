@@ -1502,6 +1502,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
         }).pipe(takeUntil(this.unsubscribe)).subscribe(roster => {
 
             this.rosters = roster;
+            console.log(roster)
 
                 this.options = null;
                 var events = roster.map(x => {

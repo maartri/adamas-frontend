@@ -9,6 +9,9 @@ const noop = () => {  };
 import { of, combineLatest, forkJoin, merge, EMPTY } from 'rxjs';
 import { switchMap, startWith } from 'rxjs/operators';
 
+import startOfMonth from 'date-fns/startOfMonth'
+import endOfMonth from 'date-fns/endOfMonth'
+import format from 'date-fns/format'
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -47,36 +50,48 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
   ngOnInit(): void {
     this.buildForm();
 
-    // this.filterFormGroup.get('archiveDocs').valueChanges.subscribe(data => console.log(data))
+    var firstDate = startOfMonth(new Date());
+    var endDate =  endOfMonth(new Date());
+    
+    this.filterFormGroup.patchValue({
+      startDate: firstDate,
+      endDate: endDate
+    });
+
+    // combineLatest([
+    //   this.filterFormGroup.get('archiveDocs').valueChanges.pipe(startWith(false)),
+    //   this.filterFormGroup.get('acceptedQuotes').valueChanges.pipe(startWith(false)),
+    //   this.filterFormGroup.get('includeClosedIncidents').valueChanges.pipe(startWith(false)),
+    //   this.filterFormGroup.get('includeArchivedNotes').valueChanges.pipe(startWith(false)),
+      
+    // ]).subscribe(([data] : any) => {
+    //   setTimeout(() => {
+    //     this.onChangeCallback(this.filterFormGroup.value);
+    //   }, 0);
+    // })
 
     combineLatest([
+      this.filterFormGroup.get('startDate').valueChanges.pipe(startWith(firstDate)),
+      this.filterFormGroup.get('endDate').valueChanges.pipe(startWith(endDate)),
+
       this.filterFormGroup.get('archiveDocs').valueChanges.pipe(startWith(false)),
       this.filterFormGroup.get('acceptedQuotes').valueChanges.pipe(startWith(false)),
       this.filterFormGroup.get('includeClosedIncidents').valueChanges.pipe(startWith(false)),
-      this.filterFormGroup.get('includeArchivedNotes').valueChanges.pipe(startWith(false))
-    ]).subscribe(([data] : any) => {
-      // console.log(data);
-      this.onChangeCallback(this.filterFormGroup.value);
-    })
-
-    combineLatest([
-      this.filterFormGroup.get('startDate').valueChanges.pipe(startWith(null)),
-      this.filterFormGroup.get('endDate').valueChanges.pipe(startWith(null))
+      this.filterFormGroup.get('includeArchivedNotes').valueChanges.pipe(startWith(false)),
+      this.filterFormGroup.get('allDates').valueChanges.pipe(startWith(false))
     ]).pipe(
       switchMap(([data, data1]:any) => {
-        if(data == null || data1 == null)
+        if(data == null || data1 == null){
           return EMPTY;
+        }
         return of([data,data1]);
       })
     ).subscribe(([data, data1] : any) => {
-      this.onChangeCallback(this.filterFormGroup.value);
-    })
+      setTimeout(() => {
+        this.onChangeCallback(this.filterFormGroup.value);
+      }, 0);
+    });
 
-
-    // this.filterFormGroup.valueChanges.subscribe(data => {
-    //   console.log(data);
-    //   this.onChangeCallback(this.filterFormGroup.value);
-    // });
   }
 
   buildForm(){
@@ -95,9 +110,9 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
   }
 
   writeValue(value: any) {
-    if(!value){
-        this.onChangeCallback(this.filterFormGroup.value);
-    }
+    // if(!value){
+    //     this.onChangeCallback(this.filterFormGroup.value);
+    // }
   }
 
   registerOnChange(fn): void {

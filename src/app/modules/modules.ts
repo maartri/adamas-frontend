@@ -687,8 +687,8 @@ export interface Filters{
     includeClosedIncidents?: boolean,
     includeArchivedNotes?: boolean,
     display?: number,
-    startDate?: string,
-    endDate?: string
+    startDate?: Date,
+    endDate?: Date
 }
 
 export interface CallProcedure {

@@ -35,12 +35,14 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     loading: boolean = false;
 
-    filters: Filters = {
-        acceptedQuotes: false,
-        allDates: false,
-        archiveDocs: true,
-        display: 20
-    };
+    // filters: Filters = {
+    //     acceptedQuotes: false,
+    //     allDates: false,
+    //     archiveDocs: true,
+    //     display: 20
+    // };
+
+    filters: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -68,7 +70,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(){        
-        this.search(this.user);
+        // this.search(this.user);
     }
 
     ngOnInit(): void {

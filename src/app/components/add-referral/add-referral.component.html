@@ -136,6 +136,221 @@
 
                 <div nz-row *ngIf="current == 3">
                     <div [formGroup]="referralGroup">
+                        <div nz-row formArrayName="gpDetails" *ngFor="let item of referralGroup.get('gpDetails')['controls']; let i = index;">
+                            <div class="ref-form" [formGroupName]="i">
+
+                                <div class="close"><i nz-icon nzType="close" nzTheme="outline" (click)="deleteOther(i)"></i></div>
+
+
+                                <div nz-row>
+                                    <div nz-col nzSpan="24">
+                                        <div class="form-group">
+                                            <label for="">Contact Group</label>
+                                            <nz-select nzAllowClear formControlName="contactGroup">
+                                                <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Type</label>
+                                            <input nz-input formControlName="type" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Name</label>
+                                            <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Address 1</label>
+                                            <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Address 2</label>
+                                            <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Suburb</label>
+                                            <suburb formControlName="suburb"></suburb>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Email</label>
+                                            <input nz-input formControlName="email" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Phone 1</label>
+                                            <app-phonefax formControlName="phone1"></app-phonefax>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Phone 2</label>
+                                            <app-phonefax formControlName="phone1"></app-phonefax>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Mobile</label>
+                                            <app-phonefax [isMobile]="true" formControlName="mobile"></app-phonefax>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Fax</label>
+                                            <app-phonefax formControlName="fax"></app-phonefax>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div nz-row *ngIf="current == 4" [formGroup]="referralGroup">
+                    <button class="botton success" (click)="addOtherContacts()">Add Other Contacts</button>
+
+
+                    <div [formGroup]="referralGroup">
+                        <div nz-row formArrayName="otherContacts" *ngFor="let item of referralGroup.get('otherContacts')['controls']; let i = index;">
+                            <div class="ref-form" [formGroupName]="i">
+
+                                <div class="close"><i nz-icon nzType="close" nzTheme="outline" (click)="deleteOther(i)"></i></div>
+
+
+                                <div nz-row>
+                                    <div nz-col nzSpan="24">
+                                        <div class="form-group">
+                                            <label for="">Contact Group</label>
+                                            <nz-select nzAllowClear formControlName="contactGroup">
+                                                <nz-option *ngFor="let l of branches" [nzLabel]="l" [nzValue]="l"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Type</label>
+                                            <input nz-input formControlName="type" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Name</label>
+                                            <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Address 1</label>
+                                            <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Address 2</label>
+                                            <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Suburb</label>
+                                            <suburb formControlName="suburb"></suburb>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Email</label>
+                                            <input nz-input formControlName="email" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Phone 1</label>
+                                            <app-phonefax formControlName="phone1"></app-phonefax>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Phone 2</label>
+                                            <app-phonefax formControlName="phone1"></app-phonefax>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Mobile</label>
+                                            <app-phonefax [isMobile]="true" formControlName="mobile"></app-phonefax>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Fax</label>
+                                            <app-phonefax formControlName="fax"></app-phonefax>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div nz-row *ngIf="current == 5">
+                    <div [formGroup]="referralGroup">
                         <div class="form-group">
                             <label for="">Branch</label>
                             <nz-select nzAllowClear nzPlaceHolder="Branch" formControlName="branch">
@@ -151,34 +366,54 @@
                         <div class="form-group">
                             <label for="">Case Manager</label>
                             <nz-select nzAllowClear nzPlaceHolder="Case Manager" formControlName="recipientCoordinator">
-                                <nz-option *ngFor="let l of managers;let i = index" [nzLabel]="l.description" [nzValue]="i"></nz-option>
+                                <nz-option *ngFor="let l of managers;let i = index" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
                             </nz-select>
                         </div>
                     </div>
                 </div>
 
-                <div nz-row *ngIf="current == 4">
-                    ssss
-                </div>
-
-                <div nz-row *ngIf="current == 5">
-                    ssss
-                </div>
-
                 <div nz-row *ngIf="current == 6">
-                    ssss
+                    <div [formGroup]="referralGroup">
+                        <div class="form-group">
+                            <label for="">Notifications</label>
+                            <nz-select nzAllowClear nzPlaceHolder="Notifications" formControlName="notifications">
+                                <nz-option *ngFor="let l of notifications" [nzLabel]="l" [nzValue]="l"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
                 </div>
 
                 <div nz-row *ngIf="current == 7">
-                    ssss
+                    <div [formGroup]="referralGroup">
+                        <div class="form-group">
+                            <label for="">Followup</label>
+                            <nz-select nzAllowClear nzPlaceHolder="Followup" formControlName="followup">
+                                <nz-option *ngFor="let l of followups" [nzLabel]="l" [nzValue]="l"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
                 </div>
 
                 <div nz-row *ngIf="current == 8">
-                    ssss
+                    <div [formGroup]="referralGroup">
+                        <div class="form-group">
+                            <label for="">Documents</label>
+                            <nz-select nzAllowClear formControlName="document">
+                                <nz-option *ngFor="let l of documentlist" [nzLabel]="l" [nzValue]="l"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
                 </div>
 
                 <div nz-row *ngIf="current == 9">
-                    ssss
+                    <div [formGroup]="referralGroup">
+                        <div class="form-group">
+                            <label for="">Data List</label>
+                            <nz-select nzAllowClear formControlName="dataList">
+                                <nz-option *ngFor="let l of datalist" [nzLabel]="l" [nzValue]="l"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
                 </div>
 
             </div>

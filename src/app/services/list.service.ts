@@ -21,6 +21,23 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getnotifications(data: any): Observable<any> {
+        return this.auth.get(`${list}/notifications`, data);
+    }
+
+    getfollowups(): Observable<any> {
+        return this.auth.get(`${list}/followups`);
+    }
+
+    getdocumentslist(): Observable<any> {
+        return this.auth.get(`${list}/documents-list`);
+    }
+
+    getdatalist(): Observable<any> {
+        return this.auth.get(`${list}/data-list`);
+    }
+
+
     getreferraltype_latest(packageName: string): Observable<any> {
         return this.auth.get(`${list}/referral-type/${packageName}`);
     }

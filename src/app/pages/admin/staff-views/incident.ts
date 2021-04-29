@@ -171,6 +171,11 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
         save(){
                 
         }
+        handleOkTop() {
+            this.generatePdf();
+            this.tryDoctype = ""
+            this.pdfTitle = ""
+        }
         handleCancelTop(): void {
             this.drawerVisible = false;
             this.pdfTitle = ""

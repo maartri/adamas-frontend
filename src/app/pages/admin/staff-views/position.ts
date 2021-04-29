@@ -5,6 +5,9 @@ import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
     styles: [`
@@ -25,13 +28,18 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
     user: any;
     modalOpen: boolean = false;
     isLoading: boolean = false;
+    loading: boolean = false;
     inputForm: FormGroup;
     tableData: Array<any>;
     lists: Array<any>;
 
     dateFormat: string = 'MMM dd yyyy';
     editOrAdd: number;
-
+    tocken: any;
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -39,6 +47,9 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
+        private http: HttpClient,
+        private sanitizer: DomSanitizer,
+        private ModalS: NzModalService,
         private cd: ChangeDetectorRef
     ) {
         cd.detach();
@@ -58,6 +69,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.user = this.sharedS.getPicked();
         if(this.user){
             this.search(this.user);
@@ -200,5 +212,64 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
 
         this.editOrAdd = 2;
         this.modalOpen = true;
+    }
+
+    handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+    }
+    generatePdf(){
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
+        
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+        
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+        
+        const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+                "reports": { "save": false },
+                "txtTitle": "Position List",
+                "sql": fQuery,
+                "userid":this.tocken.user,
+                "head1" : "Sr#",
+                "head2" : "Name",
+                "head3" : "End Date",
+            }
+        }
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+        .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
     }
 }

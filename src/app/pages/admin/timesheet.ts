@@ -720,8 +720,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 // console.log(this.mapOfExpandedData)
             });
         
-        this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));
-        
+        //this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));
+       
         this.selectAll = false;
     }
 

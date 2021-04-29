@@ -7,12 +7,20 @@
                 <nz-step class="mini" nzTitle="Profile Information" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Contact Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Address Details" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="GP Details" nzDescription=""></nz-step>
+
+                <nz-step class="mini" nzTitle="Other Contacts" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Administration" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Notifications" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Followups" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Documents" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Other Required Info" nzDescription=""></nz-step>
             </nz-steps>
         
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
         
             <div class="steps-content" >
+
                 <div nz-row *ngIf="current == 0" [formGroup]="referralGroup">
 
                     <div nz-row nzGutter="16">
@@ -149,6 +157,30 @@
                     </div>
                 </div>
 
+                <div nz-row *ngIf="current == 4">
+                    ssss
+                </div>
+
+                <div nz-row *ngIf="current == 5">
+                    ssss
+                </div>
+
+                <div nz-row *ngIf="current == 6">
+                    ssss
+                </div>
+
+                <div nz-row *ngIf="current == 7">
+                    ssss
+                </div>
+
+                <div nz-row *ngIf="current == 8">
+                    ssss
+                </div>
+
+                <div nz-row *ngIf="current == 9">
+                    ssss
+                </div>
+
             </div>
         </div>
 
@@ -159,10 +191,10 @@
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
                 <span>Previous</span>
             </button>
-            <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!canGoNext">
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 9" [disabled]="!canGoNext">
                 <span>Next</span>
             </button>
-            <button nz-button nzType="primary" (click)="add()" *ngIf="current === 3" [disabled]="!canBeDone">
+            <button nz-button nzType="primary" (click)="add()" *ngIf="current === 9" [disabled]="!canBeDone">
                 <span>Done</span>
             </button>
         </ng-container>

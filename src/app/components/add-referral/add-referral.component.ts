@@ -459,6 +459,13 @@ export class AddReferralComponent implements OnInit {
     if (this.current == 0 && this.accountTaken == false) return true;
     if (this.current == 1) return true;
     if (this.current == 2) return true;
+    if (this.current == 3) return true;
+    if (this.current == 4) return true;
+    if (this.current == 5) return true;
+    if (this.current == 6) return true;
+    if (this.current == 7) return true;
+    if (this.current == 8) return true;
+    // if (this.current == 2) return true;
     return false;
   }
 

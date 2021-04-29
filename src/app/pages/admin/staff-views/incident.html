@@ -23,8 +23,8 @@
                     <td>
                         <a (click)="showEditModal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Incident from the list?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(i)">Delete</a>
                     </td>
                 </tr>
             </tbody>

@@ -154,6 +154,10 @@ export class IntakeServices implements OnInit, OnDestroy {
             billunit:'',
             namount:'',
             gst: false,
+            competency:'',
+            mandatory:false,
+            compPersonId:'',
+            compRecord:'',
             recordNumber:'',  
         })
     }
@@ -190,6 +194,22 @@ export class IntakeServices implements OnInit, OnDestroy {
         this.CompetencycheckedList = [];
         this.competencymodal = true;
     }
+    showComptencyEditModal(index: any){
+        this.competencymodal = true;
+        this.isUpdateCompetency = true;
+        // const { 
+        //   competency,
+        //   mandatory,
+        //   personId,
+        //   recordNumber,
+        // } = this.listCompetencyByPersonId[index];
+        // this.inputForm.patchValue({
+        //   competency: competency,
+        //   mandatory: (mandatory == null) ? false : true,
+        //   personId: personId,
+        //   LeaverecordNumber:recordNumber,
+        // });
+      }
     searchCompetenncy(event){
         this.temp = [];
         this.competencyList = this.competencyListCopy;

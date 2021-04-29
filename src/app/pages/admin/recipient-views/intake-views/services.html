@@ -182,7 +182,7 @@
                                                 <td>{{ data.activity}}</td>
                                                 <td>{{ data.serviceProfile}}</td>
                                                 <td>
-                                                    <a (click)="showEditModal(data.row_num)">Update</a>
+                                                    <a (click)="showComptencyEditModal(data.row_num)">Update</a>
                                                     <nz-divider nzType="vertical"></nz-divider>
                                                     <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?" nzPopconfirmPlacement="bottom"
                                                     (nzOnConfirm)="delete(i)">Delete</a>
@@ -217,7 +217,7 @@
     <button nz-button nzType="primary" (click)="save()" [nzLoading]="loading">Save</button>
 </div>
 </nz-modal>
-<nz-modal [nzWidth]="500"  [(nzVisible)]="competencymodal" nzTitle="SELECT REQUIRED COMPETENCIES" (nzOnCancel)="handleCompetencyCancel()">
+<nz-modal [nzWidth]="500"  [(nzVisible)]="competencymodal" [nzTitle]="isUpdateCompetency == true ? 'EDIT REQUIRED COMPETENCIES' : 'SELECT REQUIRED COMPETENCIES'" (nzOnCancel)="handleCompetencyCancel()">
     <form nz-form [formGroup]="inputForm" >
         <div nz-row nzGutter="24">    
             <div *ngIf="!isUpdateCompetency" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">

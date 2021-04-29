@@ -234,7 +234,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
                 "reports": { "save": false },
-                "txtTitle": "Branches List",
+                "txtTitle": "OP NOTES List",
                 "sql": fQuery,
                 "userid":this.tocken.user,
                 "head1" : "Sr#",

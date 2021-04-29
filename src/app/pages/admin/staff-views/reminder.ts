@@ -271,7 +271,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                         "template": { "_id": "0RYYxAkMCftBE9jc" },
                         "options": {
                             "reports": { "save": false },
-                            "txtTitle": "Branches List",
+                            "txtTitle": "Reminder List",
                             "sql": fQuery,
                             "userid":this.tocken.user,
                             "head1" : "Sr#",

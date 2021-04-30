@@ -505,7 +505,7 @@ export class AddReferralComponent implements OnInit {
 
   createGpDetails(): FormGroup {
     return this.formBuilder.group({
-      contactGroup: new FormControl(''),
+      contactGroup: new FormControl('3-MEDICAL'),
       type: new FormControl('GP'),
       name: new FormControl(''),
       address1: new FormControl(''),

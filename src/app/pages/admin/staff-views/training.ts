@@ -26,6 +26,7 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
     inputForm: FormGroup;
     tableData: Array<any>;
     loading: boolean = false;
+    loadingPDF: boolean = false;
     tocken: any;
     pdfTitle: string;
     tryDoctype: any;
@@ -44,7 +45,6 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
         private ModalS: NzModalService,
         private cd: ChangeDetectorRef
     ) {
-        cd.detach();
 
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
@@ -84,12 +84,11 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any) {
-        this.cd.reattach();
         this.loading = true;
         this.timeS.gettraining(user.code).subscribe(data => {
             this.tableData = data;
             this.loading = false;
-            this.cd.detectChanges();
+            this.detectChanges();
         });
 
     }
@@ -100,6 +99,11 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
 
     showAddModal() {
 
+    }
+
+    detectChanges(){
+        this.cd.detectChanges();
+        this.cd.markForCheck();
     }
 
     showEditModal(index: any) {
@@ -121,7 +125,7 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
     generatePdf(){ 
         this.drawerVisible = true;
         
-        this.loading = true;
+        this.loadingPDF = true;
         
         var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
         console.log(fQuery)
@@ -152,11 +156,11 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false; 
-            console.log("inside subscr")
+            this.loadingPDF = false;
+            this.detectChanges();
         }, err => {
             console.log(err);
-            this.loading = false; 
+            this.loadingPDF = false; 
             this.ModalS.error({
                 nzTitle: 'TRACCS',
                 nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
@@ -164,6 +168,7 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
                     this.drawerVisible = false;
                 },
             });
+            this.detectChanges();
         });
     //    this.loading = true;
      //  this.tryDoctype = "";

@@ -36,7 +36,9 @@ hr{
 td, th{
     font-size:13px;
 }
-
+.mrg-btm-half{
+    margin-bottom:.5rem;
+}
 .mrg-btm{
     margin-bottom:1rem;
 }

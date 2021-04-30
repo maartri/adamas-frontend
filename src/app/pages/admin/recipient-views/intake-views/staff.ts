@@ -20,13 +20,23 @@ export class IntakeStaff implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     loading: boolean = false;
+    postLoading : boolean = false;
     modalOpen: boolean = false;
     addOREdit: number;
     inputForm: FormGroup;
 
     excludedStaff: Array<any> = []
     includedStaff: Array<any> = []
-
+    staffApproved: boolean =  false;
+    careWorkers: any;
+    staffUnApproved: boolean = false;
+    temp: any[];
+    careWorkersCopy: any;
+    careWorkersExcluded: any;
+    careWorkersExcludedCopy: any;
+    checkedListExcluded: any;
+    checkedListApproved: any;
+    inputvalueSearch:string = '';
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -57,6 +67,8 @@ export class IntakeStaff implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
+        this.checkedListExcluded =new Array<string>();
+        this.checkedListApproved =new Array<string>();
         this.search(this.user);
         this.buildForm();
     }
@@ -72,7 +84,8 @@ export class IntakeStaff implements OnInit, OnDestroy {
 
     search(user: any = this.user) {
         this.cd.reattach();
-
+        this.careWorkers = [];
+        this.careWorkersExcluded = [];
         this.loading = true;
 
         forkJoin([
@@ -87,7 +100,9 @@ export class IntakeStaff implements OnInit, OnDestroy {
     }
 
     buildForm() {
-
+        this.inputForm = this.formBuilder.group({
+            
+        })
     }
 
     save() {
@@ -110,4 +125,72 @@ export class IntakeStaff implements OnInit, OnDestroy {
         this.addOREdit = 1;
         this.modalOpen = true;
     }
+    log(value: string[]): void {
+        // console.log(value);
+    }
+      
+    showstaffApprovedModal(){
+        // this.resetModal();
+        this.staffApproved = true;
+      }
+      handleAprfCancel(){
+        this.careWorkers.forEach(x => {
+          x.checked = false
+        });
+        this.staffApproved = false;
+      }
+      showstaffUnApprovedModal(){
+        this.staffUnApproved = true;
+      }
+      handleUnAprfCancel(){
+        this.careWorkers.forEach(x => {
+          x.checked = false
+        });
+        this.staffUnApproved = false;
+      }
+      searchStaff(event){
+        this.temp = [];
+        this.careWorkers = this.careWorkersCopy;
+        if(event.target.value != ""){
+          this.temp = this.careWorkers.filter(res=>{
+            return res.accountno.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
+          })
+          this.careWorkers = this.temp;
+        }else if(event.target.value == ""){
+          this.careWorkers = this.careWorkersCopy;
+        }      
+      }
+      searchStaffExcluded(event){
+        this.temp = [];
+        this.careWorkersExcluded = this.careWorkersExcludedCopy;
+        if(event.target.value != ""){
+          this.temp = this.careWorkersExcluded.filter(res=>{
+            return res.accountno.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
+          })
+          this.careWorkersExcluded = this.temp;
+        }else if(event.target.value == ""){
+          this.careWorkersExcluded = this.careWorkersExcludedCopy;
+        }      
+      }
+      onCheckboxUnapprovedChange(option, event) {
+        if(event.target.checked){
+          this.checkedListExcluded.push(option.accountno);
+        } else {
+          this.checkedListExcluded = this.checkedListExcluded.filter(m=>m!= option.accountno)
+        }
+      }
+      onCheckboxapprovedChange(option, event)
+      {
+        if(event.target.checked){
+          this.checkedListApproved.push(option.accountno);
+        } else {
+          this.checkedListApproved = this.checkedListApproved.filter(m=>m!= option.accountno)
+        }
+      }
+      saveApprovedStaff(){
+
+      }
+      saveExcludeStaff(){
+
+      }
 }

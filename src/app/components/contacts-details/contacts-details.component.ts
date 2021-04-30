@@ -2,7 +2,7 @@ import { Component, OnInit, Input, forwardRef, ViewChild, OnDestroy, Inject, Cha
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
-import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, contactGroups, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, contactGroups, days, gender, types, titles, caldStatuses, roles, ShareService } from '@services/index';
 import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -55,6 +55,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
     private clientS: ClientService,
     private staffS: StaffService,
     private timeS: TimeSheetService,
+    private sharedS: ShareService,
     private listS: ListService,
     private formBuilder: FormBuilder,
     private cd: ChangeDetectorRef,
@@ -63,6 +64,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   ) { }
 
   ngOnInit(): void {    
+    this.user = this.sharedS.getPicked();
     this.buildForm();
   }
 
@@ -277,6 +279,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
 
   add() {
     
+    console.log("contact");
     console.log(this.user);
 
     if (this.inputForm.controls['suburbcode'].dirty) {

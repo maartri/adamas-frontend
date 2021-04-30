@@ -55,8 +55,8 @@ export class BranchesComponent implements OnInit {
     private formBuilder: FormBuilder,
     private menuS: MenuService,
     private http: HttpClient,
-    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
+    private fb: FormBuilder,
     private ModalS: NzModalService)
     { }
 

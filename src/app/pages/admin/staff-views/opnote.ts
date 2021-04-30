@@ -11,6 +11,8 @@ import format from 'date-fns/format';
 import getYear from 'date-fns/getYear';
 import getDate from 'date-fns/getDate';
 import getMonth from 'date-fns/getMonth';
+import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
     styles: [`
@@ -38,6 +40,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
 
     modalOpen: boolean = false;
     isLoading: boolean = false;
+    
 
     default = {
         notes: '',
@@ -51,7 +54,12 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     dateFormat: string = 'dd/MM/yyyy';
     addOREdit: number;
     categories: Array<any>;
-
+    loading:boolean = false;
+    tocken: any;
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -59,8 +67,10 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private http: HttpClient,
+        private sanitizer: DomSanitizer,
+        private ModalS: NzModalService
     ) {
         cd.detach();
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -80,6 +90,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.user = this.sharedS.getPicked();
         if(this.user){
             this.search(this.user);
@@ -193,5 +204,63 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         this.modalOpen = false;
         this.inputForm.reset();
         this.isLoading = false;
+    }
+    handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+    }
+    generatePdf(){
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
+        
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+        
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+        
+        const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+                "reports": { "save": false },
+                "txtTitle": "OP NOTES List",
+                "sql": fQuery,
+                "userid":this.tocken.user,
+                "head1" : "Sr#",
+                "head2" : "Name",
+                "head3" : "End Date",
+            }
+        }
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+        .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
     }
 }

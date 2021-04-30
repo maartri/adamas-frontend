@@ -465,7 +465,7 @@ export class AddReferralComponent implements OnInit {
   createAddress(): FormGroup {
     return this.formBuilder.group({
       address1: new FormControl(''),
-      type: new FormControl(''),
+      type: new FormControl('USUAL'),
       suburb: new FormControl('')
     });
   }

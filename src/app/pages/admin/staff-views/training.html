@@ -23,7 +23,7 @@
         </nz-table>
     </div>
 </div>
-<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" [nzMaskClosable]="false" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loading">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
     </div>

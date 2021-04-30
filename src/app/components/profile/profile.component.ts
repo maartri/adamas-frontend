@@ -187,6 +187,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
 
     this.userForm = this.formBuilder.group({
+      recordId:[''],
       surnameOrg: [''],
       preferredName: [''],
       firstName: [''],
@@ -280,7 +281,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         month: this.globalS.searchOf(this.globalS.filterMonth(user.dob), months, 'December'),
         day: this.globalS.filterDay(user.dob),
         preferredName: user.preferredName,
-
+        recordId:user.uniqueID,
         casemanager: user.pan_Manager,
         type: user.category,
         stf_Department: user.stf_Department,

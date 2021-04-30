@@ -118,13 +118,13 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
         this.drawerVisible = false;
         this.pdfTitle = ""
     }
-    generatePdf(){
+    generatePdf(){ 
         this.drawerVisible = true;
         
         this.loading = true;
         
         var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
-        
+        console.log(fQuery)
         const headerDict = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -146,15 +146,17 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
                 "head3" : "End Date",
             }
         }
+        console.log("compiled after data")
         this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
         .subscribe((blob: any) => {
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
+            this.loading = false; 
+            console.log("inside subscr")
         }, err => {
             console.log(err);
-            this.loading = false;
+            this.loading = false; 
             this.ModalS.error({
                 nzTitle: 'TRACCS',
                 nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
@@ -163,8 +165,8 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
                 },
             });
         });
-        this.loading = true;
-        this.tryDoctype = "";
-        this.pdfTitle = "";
+    //    this.loading = true;
+     //  this.tryDoctype = "";
+     //   this.pdfTitle = "";
     }
 }

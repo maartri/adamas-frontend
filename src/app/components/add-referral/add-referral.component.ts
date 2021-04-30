@@ -357,7 +357,9 @@ export class AddReferralComponent implements OnInit {
       })
     })
 
-    this.listS.getdatalist().subscribe(data =>  this.datalist = data)
+    this.listS.getdatalist().subscribe(data =>  {
+      this.datalist = data
+    });
 
   }
 

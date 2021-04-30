@@ -422,9 +422,12 @@
                     <div [formGroup]="referralGroup">
                         <div class="form-group">
                             <label for="">Data List</label>
-                            <nz-select nzAllowClear formControlName="dataList">
+                            <!-- <nz-select nzAllowClear formControlName="dataList">
                                 <nz-option *ngFor="let l of datalist" [nzLabel]="l" [nzValue]="l"></nz-option>
-                            </nz-select>
+                            </nz-select> -->
+                            <div *ngFor="let l of datalist"> 
+                                <a [href]="l.link" target="_blank">{{l.form}}</a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -219,13 +219,14 @@
                     <div nz-row *ngIf="staffrecordview && staffrecordview[16] == '1'">
                         <div class="form-group">
                             <div>
-                                <label class="highlight"><i class="material-icons"> location_on </i>Address </label>
+                                <label class="highlight"><i class="material-icons "> location_on </i>Address </label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
                                     class="good add"></i>
                             </div>                           
                             <ul>
                                 <li *ngFor="let data of user?.addresses">
                                     <div class="options">
+                                        <i class="material-icons neutral" (click)="toMap(data)" style="font-size:17px;"> location_on </i>
                                         <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral" (click)="editAddressOpen(data)"></i>
                                         <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top" nzTheme="outline"  nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
                                     nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"

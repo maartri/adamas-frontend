@@ -23,7 +23,24 @@ const PROFILEPAGE_VALUE_ACCESSOR: any = {
   multi: true,
   useExisting: forwardRef(() => ProfileComponent),
 };
+class Address {
+  postcode: string;
+  address: string;
+  suburb: string;
+  state: string;
 
+  constructor(postcode: string, address: string, suburb: string, state: string) {
+      this.suburb = suburb.trim();
+      this.address = address;
+      this.postcode = postcode;
+      this.state = state;
+  }
+
+  getAddress() {
+      var _address = `${this.address} ${this.suburb} ${this.postcode}`;
+      return (_address.split(' ').join('+')).split('/').join('%2F');
+  }
+}
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile.component.html',
@@ -1107,5 +1124,12 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   isPhoneFax(data: any){
     return data == 'FAX' || data == 'HOME' || data == 'WORK';
   }
-  
+  toMap(address: any){
+             var adds = [];
+             var addr = new Address(address.postCode, address.address1, address.suburb, address.stat);
+             var addres = adds.concat('/',addr.getAddress());
+              console.log(addres);
+             window.open(`https://www.google.com/maps/dir${addres.join('')}`,'_blank');
+             return false;
+}
 }

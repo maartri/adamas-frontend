@@ -6,7 +6,7 @@ import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, con
 
 import * as moment from 'moment';
 import { RemoveFirstLast } from '@pipes/pipes';
-import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, contactGroups, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { Observable, of, from, Subject, EMPTY, combineLatest } from 'rxjs';
 
 @Component({
@@ -19,6 +19,8 @@ export class AddReferralComponent implements OnInit {
 
   private verifyAccount = new Subject<any>();
 
+  contactGroups: Array<string> = contactGroups;
+
   @Input() open: boolean = false;
   @Input() type: string = 'referral';
 
@@ -27,6 +29,10 @@ export class AddReferralComponent implements OnInit {
   referralGroup: FormGroup;
 
   dateFormat: string = dateFormat;
+
+  notifCheckBoxGroup: any;
+  notifFollowUpGroup: any;
+  notifDocumentsGroup: any;
 
   genderArr: Array<string> = gender
   typesArr: Array<string> = types
@@ -120,7 +126,7 @@ export class AddReferralComponent implements OnInit {
       appendName: new FormControl(''),
       accountNo: new FormControl(''),
       organisation: new FormControl(''),
-      type: new FormControl(0),
+      type: new FormControl(null),
 
       addresses: new FormArray([this.createAddress()]),
       contacts: new FormArray([this.createContact()]),
@@ -155,7 +161,15 @@ export class AddReferralComponent implements OnInit {
         return this.listS.getnotifications(data);
       })
     ).subscribe((data: any) => {
-        this.notifications = data;
+        // this.notifications = data;
+        this.notifCheckBoxGroup = data.map(x => {
+          return {
+            label: x.staffToNotify,
+            value: x.staffToNotify,
+            disabled: x.mandatory ? true : false,
+            checked: x.mandatory ? true : false
+          }
+        })
     });
 
     this.referralGroup.get('branch').valueChanges.subscribe(data => console.log(data))
@@ -268,6 +282,10 @@ export class AddReferralComponent implements OnInit {
     if (!event.key.match(/^[a-zA-Z ]*$/)) return false;
   }
 
+  log(data: any){
+    console.log(data)
+  }
+
   isNamesComplete(): boolean {
     return !this.globalS.isEmpty(this.referralGroup.get('lastname').value) &&
       !this.globalS.isEmpty(this.referralGroup.get('firstname').value);
@@ -316,10 +334,28 @@ export class AddReferralComponent implements OnInit {
     }));
     this.listS.getserviceregion().subscribe(data => this.agencies = data.map(x => x.toUpperCase()));
 
-    this.listS.getfollowups().subscribe(data => this.followups = data )
+    this.listS.getfollowups().subscribe(data => {
+      this.notifFollowUpGroup = data.map(x => {
+        return {
+          label: x,
+          value: x,
+          disabled: false,
+          checked: false
+        }
+      })
+    })
 
 
-    this.listS.getdocumentslist().subscribe(data => this.documentlist = data)
+    this.listS.getdocumentslist().subscribe(data => {
+      this.notifDocumentsGroup = data.map(x => {
+        return {
+          label: x,
+          value: x,
+          disabled: false,
+          checked: false
+        }
+      })
+    })
 
     this.listS.getdatalist().subscribe(data =>  this.datalist = data)
 
@@ -470,7 +506,7 @@ export class AddReferralComponent implements OnInit {
   createGpDetails(): FormGroup {
     return this.formBuilder.group({
       contactGroup: new FormControl(''),
-      type: new FormControl(''),
+      type: new FormControl('GP'),
       name: new FormControl(''),
       address1: new FormControl(''),
       address2: new FormControl(''),

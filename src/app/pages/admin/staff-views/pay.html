@@ -90,7 +90,7 @@
                                     <input type="text" nz-input maxlength="10" formControlName="payGroup">
                                 </div>
                             </div>
-                            <div nz-col nzSpan="4" nzOffset="4">
+                            <div nz-col nzSpan="4">
                                 <div class="form-group">
                                     <label for="">Award</label>
                                     <nz-select formControlName="award">
@@ -98,7 +98,36 @@
                                     </nz-select>
                                 </div>
                             </div>
+                        </div>
+                        <div nz-row>
+                            <div nz-col nzSpan="24">
+                                <div class="checkboxes">
+                                    <label nz-checkbox formControlName="excludeFromPayExport">Exclude From Pay Export</label>
+                                    <label nz-checkbox formControlName="excludeClientAdminFromPay">Exclude Client Administration From Payroll</label>
+                                    <label nz-checkbox formControlName="excludeFromTravelinterpretation">Exclude from travel interpretation</label>
+                                    
+                                </div>
+                                <div class="checkboxes">
+                                    <label nz-checkbox formControlName="includeLaundry">Laundry</label>
+                                    <label nz-checkbox formControlName="includeUniform">Uniform</label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div nz-row nzGutter="8">
                             <div nz-col nzSpan="4">
+                                <div class="form-group">
+                                    <label for="">Super % (if applicable)</label>
+                                    <input type="text" maxlength="15" nz-input formControlName="super_perc">
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="4">
+                                <div class="form-group">
+                                    <label for="">Super Fund</label>
+                                    <input type="text" maxlength="10" nz-input formControlName="super_fund">
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="6">
                                 <div class="form-group">
                                     <label for="">Employee Of</label>
                                     <nz-select formControlName="employeeOf">
@@ -106,19 +135,7 @@
                                     </nz-select>
                                 </div>
                             </div>
-                        </div>
-                        <div nz-row>
-                            <div nz-col nzSpan="24">
-                                <div class="checkboxes">
-                                    <label nz-checkbox formControlName="includeUniform">Uniform</label>
-                                    <label nz-checkbox formControlName="excludeFromPayExport">Exclude From Pay Export</label>
-                                </div>
-                                <div class="checkboxes">
-                                    <label nz-checkbox formControlName="includeLaundry">Laundry</label>
-                                    <label nz-checkbox formControlName="excludeClientAdminFromPay">Exclude Client Administration From Payroll</label>
-                                </div>
-                            </div>
-                        </div>
+                        </div>    
                     </div>
                 </nz-card>
             </div>           

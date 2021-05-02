@@ -127,8 +127,7 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
         
         this.loadingPDF = true;
         
-        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
-        console.log(fQuery)
+        var fQuery = "SELECT CONVERT(varchar, [Date],105) as head1, CONVERT(varchar, [Service Type],105) AS head2, CONVERT(varchar, [Anal],105) AS head3, Notes as head4 FROM Roster INNER JOIN ItemTypes ON Roster.[Service Type] = ItemTypes.[Title] WHERE [Carer Code] = '"+this.user.code+"' AND MinorGroup = 'TRAINING' ORDER BY DATE Desc";
         const headerDict = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -145,9 +144,10 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
                 "txtTitle": "Training List",
                 "sql": fQuery,
                 "userid":this.tocken.user,
-                "head1" : "Sr#",
-                "head2" : "Name",
-                "head3" : "End Date",
+                "head1" : "Date",
+                "head2" : "Training",
+                "head3" : "Expiry Date",
+                "head4" : "Notes",
             }
         }
         console.log("compiled after data")

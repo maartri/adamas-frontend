@@ -348,6 +348,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
+            this.cd.detectChanges();
         }, err => {
             console.log(err);
             this.loading = false;
@@ -359,6 +360,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
                 },
             });
         });
+        this.cd.detectChanges();
         this.loading = true;
         this.tryDoctype = "";
         this.pdfTitle = "";

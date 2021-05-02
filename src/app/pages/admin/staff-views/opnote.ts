@@ -219,8 +219,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         
         this.loading = true;
         
-        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
-        
+        var fQuery = "Select CONVERT(varchar, [DetailDate],105) as head1, Detail as head2, CONVERT(varchar, [AlarmDate],105) as head4, Creator as head3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'OPNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
         const headerDict = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -234,12 +233,13 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
                 "reports": { "save": false },
-                "txtTitle": "OP NOTES List",
+                "txtTitle": "Staff OP NOTES List",
                 "sql": fQuery,
                 "userid":this.tocken.user,
-                "head1" : "Sr#",
-                "head2" : "Name",
-                "head3" : "End Date",
+                "head1" : "Date",
+                "head2" : "Detail",
+                "head3" : "Created By",
+                "head4" : "Remember Date",
             }
         }
         this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
@@ -248,6 +248,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
+            this.cd.detectChanges();
         }, err => {
             console.log(err);
             this.loading = false;
@@ -259,6 +260,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
                 },
             });
         });
+        this.cd.detectChanges();
         this.loading = true;
         this.tryDoctype = "";
         this.pdfTitle = "";

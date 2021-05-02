@@ -228,7 +228,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
         
         this.loading = true;
         
-        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
+        var fQuery = "Select Name As head1, CONVERT(varchar, [Date1],105) As head2, CONVERT(varchar, [Date1],105) As head3, Address1 AS hrad4, Notes as head5 From HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFPOSITION' ORDER BY  RecordNumber DESC";
         
         const headerDict = {
             'Content-Type': 'application/json',
@@ -243,12 +243,14 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
                 "reports": { "save": false },
-                "txtTitle": "Position List",
+                "txtTitle": "Staff Position List",
                 "sql": fQuery,
                 "userid":this.tocken.user,
-                "head1" : "Sr#",
-                "head2" : "Name",
-                "head3" : "End Date",
+                "head1" : "Position",
+                "head2" : "start Date",
+                "head3" : "start Date",
+                "head4" : "Position Id",
+                "head5" : "Notes",
             }
         }
         this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
@@ -257,6 +259,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
+            this.cd.detectChanges();
         }, err => {
             console.log(err);
             this.loading = false;
@@ -268,6 +271,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
                 },
             });
         });
+        this.cd.detectChanges();
         this.loading = true;
         this.tryDoctype = "";
         this.pdfTitle = "";

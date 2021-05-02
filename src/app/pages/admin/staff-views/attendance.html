@@ -11,20 +11,28 @@
                         <label nz-checkbox formControlName="excludeShiftAlerts">Exclude From Time And Attendance Log
                             Display</label>
                     </div>
-                    <div nz-col nzSpan="6">
+                    <div nz-col nzSpan="4">
                         <label for="">Pin Number</label>
                         <input nz-input formControlName="pin" (keypress)="onKeyPress($event)" />
                     </div>
-                    <div nz-col nzSpan="6">
+                    <div nz-col nzSpan="4">
                         <label for="">Auto Logout Time</label>
                         <input nz-input formControlName="autoLogout" (keypress)="onKeyPress($event)" />
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <label for="">Time Zone Offset</label>
+                        <input nz-input formControlName="time_offset" (keypress)="onKeyPress($event)" />
                     </div>
                 </div>
                 <nz-divider nzText="Messages & Alerts" nzOrientation="left"></nz-divider>
                 <div class="divider-subs">
-                    <div>
-                        <label nz-checkbox formControlName="excludeShiftAlerts">Exclude From Generating Late, Early, Short, Long
-                            Shift Alerts</label>
+                    <div nz-row [nzGutter]="16" class="divider-subs">
+                    <div nz-col nzSpan="12">
+                        Exclude From Generating Late, Early, Short, Long Shift Alerts : <label nz-checkbox formControlName="excludeShiftAlerts"></label>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        Exclude from travel interpretation : <label nz-checkbox formControlName="excludeFromTravelinterpretation"></label>
+                    </div>
                     </div>
                     <div>
                         <ul>
@@ -40,8 +48,8 @@
                         </ul>
                     </div>
                     <div>
-                        <label nz-checkbox formControlName="rosterPublish">Send Message On Master Roster Creation</label>
-                        <label nz-checkbox formControlName="shiftChange">Send Message On Shift Changes</label>
+                        Send Message On Master Roster Creation : <label nz-checkbox formControlName="rosterPublish"></label>
+                        Send Message On Shift Changes : <label nz-checkbox formControlName="shiftChange"></label>
                     </div>
                 </div>
             </div>

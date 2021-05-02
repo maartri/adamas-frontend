@@ -250,6 +250,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         };
         this.uploadS.postdocumentstafftemplate(inp).subscribe(data => {
             this.globalS.sToast('Success','Document has been added');
+            this.handleCancel();
             this.search();
         }, (err) =>{
             console.log(err);

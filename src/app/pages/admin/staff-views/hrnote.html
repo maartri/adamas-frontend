@@ -66,7 +66,7 @@
     </div>
 </nz-modal>
 <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
-    <div class="col-md-12 spinner" *ngIf="loading">
+    <div class="col-md-12 spinner" *ngIf="loadingPDF">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
     </div>
     <div nz-row>

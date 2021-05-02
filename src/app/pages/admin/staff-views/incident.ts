@@ -185,7 +185,7 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
             
             this.loading = true;
             
-            var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
+            var fQuery = "SELECT Status as head1,CONVERT(varchar, [Date],105) as head2, [Type] as head3, ShortDesc AS head4, CurrentAssignee AS head5 FROM IM_Master IM INNER JOIN Staff S ON S.[UniqueID] = IM.[PersonID] WHERE S.[AccountNo] = '"+this.user.code+"' ORDER BY STATUS DESC, DATE DESC";
             
             const headerDict = {
                 'Content-Type': 'application/json',
@@ -200,12 +200,14 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
                 "template": { "_id": "0RYYxAkMCftBE9jc" },
                 "options": {
                     "reports": { "save": false },
-                    "txtTitle": "Incident List",
+                    "txtTitle": "Staff Incident List",
                     "sql": fQuery,
                     "userid":this.tocken.user,
-                    "head1" : "Sr#",
-                    "head2" : "Name",
-                    "head3" : "End Date",
+                    "head1" : "Status",
+                    "head2" : "Date",
+                    "head3" : "Type",
+                    "head4" : "Description",
+                    "head5" : "Assigned To",
                 }
             }
             this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
@@ -214,6 +216,7 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
                 let fileURL = URL.createObjectURL(_blob);
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
+                this.cd.detectChanges();
             }, err => {
                 console.log(err);
                 this.loading = false;
@@ -225,6 +228,7 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
                     },
                 });
             });
+            this.cd.detectChanges();
             this.loading = true;
             this.tryDoctype = "";
             this.pdfTitle = "";

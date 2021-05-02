@@ -252,12 +252,12 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                     this.pdfTitle = ""
                 }
                 generatePdf(){
+                    
                     this.drawerVisible = true;
                     
                     this.loading = true;
                     
-                    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
-                    
+                    var fQuery = "Select Name As head1, CONVERT(varchar, [Date1],105) As head2, CONVERT(varchar, [Date2],105) as head3,Notes as head4 From HumanResources  HR INNER JOIN Staff ST ON ST.[UniqueID] = HR.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HR.DeletedRecord = 0 AND [Group] = 'STAFFALERT' ORDER BY  RecordNumber DESC";
                     const headerDict = {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
@@ -271,12 +271,13 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                         "template": { "_id": "0RYYxAkMCftBE9jc" },
                         "options": {
                             "reports": { "save": false },
-                            "txtTitle": "Reminder List",
+                            "txtTitle": "Staff Reminder List",
                             "sql": fQuery,
                             "userid":this.tocken.user,
-                            "head1" : "Sr#",
-                            "head2" : "Name",
-                            "head3" : "End Date",
+                            "head1" : "Alert",
+                            "head2" : "Reminder Date",
+                            "head3" : "Expiry Date",
+                            "head4" : "Notes",
                         }
                     }
                     this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
@@ -285,6 +286,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                         let fileURL = URL.createObjectURL(_blob);
                         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                         this.loading = false;
+                        this.cd.detectChanges();
                     }, err => {
                         console.log(err);
                         this.loading = false;
@@ -296,6 +298,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                             },
                         });
                     });
+                    this.cd.detectChanges();
                     this.loading = true;
                     this.tryDoctype = "";
                     this.pdfTitle = "";

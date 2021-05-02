@@ -35,7 +35,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
     inputForm: FormGroup;
     tableData: Array<any>;
     loading: boolean = false;
-
+    loadingPDF: boolean = false;
     modalOpen: boolean = false;
     addORView: number = 1;
     categories: Array<any>;
@@ -207,10 +207,9 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
     }
     generatePdf(){
         this.drawerVisible = true;
-        
-        this.loading = true;
-        
-        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
+        this.loadingPDF = true;
+
+        var fQuery = "Select CONVERT(varchar, [DetailDate],105) as head1, Detail as head2, CONVERT(varchar, [AlarmDate],105) as head4, Creator as head3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'HRNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
         
         const headerDict = {
             'Content-Type': 'application/json',
@@ -225,12 +224,13 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
                 "reports": { "save": false },
-                "txtTitle": "HR NOTES List",
+                "txtTitle": "STAFF HR NOTES List",
                 "sql": fQuery,
                 "userid":this.tocken.user,
-                "head1" : "Sr#",
-                "head2" : "Name",
-                "head3" : "End Date",
+                "head1" : "Date",
+                "head2" : "Detail",
+                "head3" : "Created By",
+                "head4" : "Remember Date",
             }
         }
         this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
@@ -238,10 +238,12 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
+            this.loadingPDF = false;
+            console.log("compiled after data")
+            this.cd.detectChanges();
         }, err => {
             console.log(err);
-            this.loading = false;
+            this.loadingPDF = false;
             this.ModalS.error({
                 nzTitle: 'TRACCS',
                 nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
@@ -250,7 +252,8 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
                 },
             });
         });
-        this.loading = true;
+        this.cd.detectChanges();
+        this.loadingPDF = true;
         this.tryDoctype = "";
         this.pdfTitle = "";
     }

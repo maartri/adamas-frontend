@@ -82,7 +82,7 @@ export class StaffAttendanceAdmin implements OnInit, OnDestroy {
             autoLogout: data.autoLogout,
             emailMessage: data.emailMessage,
             excludeShiftAlerts: data.excludeShiftAlerts,
-            excludeFromTravelInterpretation: data.excludeFromTravelInterpretation,
+            excludeFromTravelInterpretation:data.excludeFromTravelInterpretation,
             inAppMessage: data.inAppMessage,
             logDisplay: data.logDisplay,
             pin: data.pin,

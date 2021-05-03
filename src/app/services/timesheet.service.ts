@@ -135,7 +135,9 @@ export class TimeSheetService {
     updatetimesheet(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/timesheet`, data);
     }
-
+    ProcessRoster(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/rosterOps`, data);
+    }
     postsamplereport(data: any) {
         return this.auth.post(`${timesheet}/sample-report`, data);
     }

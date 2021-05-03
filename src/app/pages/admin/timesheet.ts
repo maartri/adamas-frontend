@@ -148,7 +148,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     // 0 = staff; 1 = recipient
     view: number = 0;
     viewType: any;
-
+    
     whatProcess = PROCESS.ADD;
 
     parserPercent = (value: string) => value.replace(' %', '');
@@ -275,7 +275,9 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit(): void{
-        this.buildForm();        
+        this.buildForm(); 
+        
+       
     }
 
     buildForm() {
@@ -1501,7 +1503,7 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
         //     debtor: debtor
         // });
 
-        this.defaultStartTime = parseISO(startTime);
+       this.defaultStartTime = parseISO(startTime);
         this.defaultEndTime = parseISO(endTime);
         this.current = 0;
 

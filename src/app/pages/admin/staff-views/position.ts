@@ -228,7 +228,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
         
         this.loading = true;
         
-        var fQuery = "Select Name As head1, CONVERT(varchar, [Date1],105) As head2, CONVERT(varchar, [Date1],105) As head3, Address1 AS hrad4, Notes as head5 From HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFPOSITION' ORDER BY  RecordNumber DESC";
+        var fQuery = "Select Name As Field1, CONVERT(varchar, [Date1],105) As Field2, CONVERT(varchar, [Date1],105) As Field3, Address1 AS Field4, Notes as Field5 From HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFPOSITION' ORDER BY  RecordNumber DESC";
         
         const headerDict = {
             'Content-Type': 'application/json',

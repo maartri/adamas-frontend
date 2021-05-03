@@ -185,7 +185,7 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
             
             this.loading = true;
             
-            var fQuery = "SELECT Status as head1,CONVERT(varchar, [Date],105) as head2, [Type] as head3, ShortDesc AS head4, CurrentAssignee AS head5 FROM IM_Master IM INNER JOIN Staff S ON S.[UniqueID] = IM.[PersonID] WHERE S.[AccountNo] = '"+this.user.code+"' ORDER BY STATUS DESC, DATE DESC";
+            var fQuery = "SELECT Status as Field1,CONVERT(varchar, [Date],105) as Field2, [Type] as Field3, ShortDesc AS Field4, CurrentAssignee AS Field5 FROM IM_Master IM INNER JOIN Staff S ON S.[UniqueID] = IM.[PersonID] WHERE S.[AccountNo] = '"+this.user.code+"' ORDER BY STATUS DESC, DATE DESC";
             
             const headerDict = {
                 'Content-Type': 'application/json',

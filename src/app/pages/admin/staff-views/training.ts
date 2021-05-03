@@ -126,7 +126,7 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
         
         this.loading = true;
         
-        var fQuery = "SELECT CONVERT(varchar, [Date],105) as head1, CONVERT(varchar, [Service Type],105) AS head2, CONVERT(varchar, [Anal],105) AS head3, Notes as head4 FROM Roster INNER JOIN ItemTypes ON Roster.[Service Type] = ItemTypes.[Title] WHERE [Carer Code] = '"+this.user.code+"' AND MinorGroup = 'TRAINING' ORDER BY DATE Desc";
+        var fQuery = "SELECT CONVERT(varchar, [Date],105) as Field1, CONVERT(varchar, [Service Type],105) AS Field2, CONVERT(varchar, [Anal],105) AS Field3, Notes as Field4 FROM Roster INNER JOIN ItemTypes ON Roster.[Service Type] = ItemTypes.[Title] WHERE [Carer Code] = '"+this.user.code+"' AND MinorGroup = 'TRAINING' ORDER BY DATE Desc";
         // var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains where Domain='BRANCHES'"
         // console.log(fQuery);
         const headerDict = {

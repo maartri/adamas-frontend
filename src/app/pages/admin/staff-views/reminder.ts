@@ -257,7 +257,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                     
                     this.loading = true;
                     
-                    var fQuery = "Select Name As head1, CONVERT(varchar, [Date1],105) As head2, CONVERT(varchar, [Date2],105) as head3,Notes as head4 From HumanResources  HR INNER JOIN Staff ST ON ST.[UniqueID] = HR.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HR.DeletedRecord = 0 AND [Group] = 'STAFFALERT' ORDER BY  RecordNumber DESC";
+                    var fQuery = "Select Name As Field1, CONVERT(varchar, [Date1],105) As Field2, CONVERT(varchar, [Date2],105) as Field3,Notes as Field4 From HumanResources  HR INNER JOIN Staff ST ON ST.[UniqueID] = HR.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HR.DeletedRecord = 0 AND [Group] = 'STAFFALERT' ORDER BY  RecordNumber DESC";
                     const headerDict = {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',

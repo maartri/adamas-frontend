@@ -321,10 +321,10 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
             console.log(this.user);
 
             if(view == 1){
-                var fQuery = "SELECT Name AS head1, Notes as head2 FROM HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFTYPE' AND [Type] = 'STAFFTYPE' ORDER BY Name";
+                var fQuery = "SELECT Name AS Field1, Notes as Field2 FROM HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFTYPE' AND [Type] = 'STAFFTYPE' ORDER BY Name";
                 var title  = "User Defined Groups Applying To '"+this.user.code+"'"; 
             }else{
-                var fQuery = "SELECT Name AS head1, Notes as head2 FROM HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFPREF' AND [Type] = 'STAFFPREF' ORDER BY Name";
+                var fQuery = "SELECT Name AS Field1, Notes as Field2 FROM HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFPREF' AND [Type] = 'STAFFPREF' ORDER BY Name";
                 var title  = "STAFF PREFERENCES FOR '"+this.user.code+"'";
             }
         

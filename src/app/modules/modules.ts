@@ -100,6 +100,7 @@ export interface Staffs {
     nRegistration?: string,
     isRosterable?: boolean,
     emailTimesheet?: boolean,
+    excludeFromConflictChecking?:boolean,
     caseManager?: boolean,
     ubdMap?: string,
     contactIssues?: string,

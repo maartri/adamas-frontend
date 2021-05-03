@@ -292,6 +292,9 @@
                         <nz-descriptions-item nzTitle="Has Caseload"><label nz-checkbox nzDisabled [ngModel]="user?.caseManager" nzDisabled ></label></nz-descriptions-item>
                         <nz-descriptions-item nzTitle="Is Rosterable"><label nz-checkbox nzDisabled [ngModel]="user?.isRosterable" nzDisabled ></label></nz-descriptions-item>
                         <nz-descriptions-item nzTitle="Email Timesheet"><label nz-checkbox nzDisabled [ngModel]="user?.emailTimesheet" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Exclude From Roaster Conflict Checking"><label nz-checkbox nzDisabled [ngModel]="user?.excludeFromConflictChecking" nzDisabled ></label></nz-descriptions-item>
+                        
+
                     </nz-descriptions>
                 </div>
 
@@ -822,7 +825,14 @@
                 <nz-rate formControlName="rating" [nzCount]="7"></nz-rate>
             </div>
         </div>
-
+        <div nz-row nzGutter="16">
+            <div nz-col class="form-group" nzSpan="7">
+                <label for="">Exclude From Roaster Conflict Checking : </label>
+            </div>
+            <div nz-col class="form-group" nzSpan="1">
+                <label nz-checkbox formControlName="excludeFromConflictChecking"></label>
+            </div>
+        </div>
     </div>
 
     <div *nzModalFooter>

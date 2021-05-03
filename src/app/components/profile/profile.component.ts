@@ -222,6 +222,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       isEmail: false,
       isRosterable: false,
       isCaseLoad: false,
+      excludeFromConflictChecking:false,
       stf_Department: '',
       rating: ''
     });
@@ -301,6 +302,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         note: user.contactIssues,
 
         isEmail: user.emailTimesheet,
+        excludeFromConflictChecking:user.excludeFromConflictChecking,
         isRosterable: user.isRosterable,
         isCaseLoad: user.caseManager
       });
@@ -616,7 +618,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           caseManager: data.isCaseLoad,
           isRosterable: data.isRosterable,
           emailTimesheet: data.isEmail,
-
+          excludeFromConflictChecking:data.excludeFromConflictChecking,
           preferredName: data.preferredName
         }
         
@@ -685,7 +687,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         gender: data.gender,
         title: data.title,
         dob: birthdate,
-
         rating: data.rating,
         pan_Manager: data.casemanager,
         category: data.type,
@@ -701,7 +702,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         caseManager: data.isCaseLoad,
         isRosterable: data.isRosterable,
         emailTimesheet: data.isEmail,
-
+        excludeFromConflictChecking:data.excludeFromConflictChecking,
         preferredName: data.preferredName
       }
       this.subscriptionArray.push(this.staffS.updateusername(user));

@@ -1,7 +1,7 @@
 <div nz-row nzGutter="16">
     <div nz-col nzSpan="12">
         <button class="botton success" (click)="showAddModal(1)">Add Group</button>
-        <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
+        <button nz-button nzType="primary" (click)="handleOkTop(1)" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined1">
             <thead>
                 <tr>
@@ -30,7 +30,7 @@
 
     <div nz-col nzSpan="12">
         <button class="botton success" (click)="showAddModal(2)">Add Preferences</button>
-        <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
+        <button nz-button nzType="primary" (click)="handleOkTop(2)" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <nz-table #tb2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined2">
             <thead>
                 <tr>

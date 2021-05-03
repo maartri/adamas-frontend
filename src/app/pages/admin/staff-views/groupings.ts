@@ -305,8 +305,8 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
                 }
             });
     }
-    handleOkTop() {
-        this.generatePdf();
+    handleOkTop(view: number) {
+        this.generatePdf(view);
         this.tryDoctype = ""
         this.pdfTitle = ""
     }
@@ -314,12 +314,19 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
         this.drawerVisible = false;
         this.pdfTitle = ""
     }
-    generatePdf(){
+    generatePdf(view: number){
         this.drawerVisible = true;
         
         this.loading = true;
-        
-        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains WHERE Domain='BRANCHES'";
+            console.log(this.user);
+
+            if(view == 1){
+                var fQuery = "SELECT Name AS head1, Notes as head2 FROM HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFTYPE' AND [Type] = 'STAFFTYPE' ORDER BY Name";
+                var title  = "User Defined Groups Applying To '"+this.user.code+"'"; 
+            }else{
+                var fQuery = "SELECT Name AS head1, Notes as head2 FROM HumanResources WHERE PersonID = '"+this.user.id+"' AND [Group] = 'STAFFPREF' AND [Type] = 'STAFFPREF' ORDER BY Name";
+                var title  = "STAFF PREFERENCES FOR '"+this.user.code+"'";
+            }
         
         const headerDict = {
             'Content-Type': 'application/json',
@@ -334,12 +341,11 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
                 "reports": { "save": false },
-                "txtTitle": "User Group List",
+                "txtTitle": title,
                 "sql": fQuery,
                 "userid":this.tocken.user,
-                "head1" : "Sr#",
-                "head2" : "Name",
-                "head3" : "End Date",
+                "head1" : "Group",
+                "head2" : "Notes",
             }
         }
         this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })

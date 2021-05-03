@@ -26,7 +26,6 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
     inputForm: FormGroup;
     tableData: Array<any>;
     loading: boolean = false;
-    loadingPDF: boolean = false;
     tocken: any;
     pdfTitle: string;
     tryDoctype: any;
@@ -125,9 +124,11 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
     generatePdf(){ 
         this.drawerVisible = true;
         
-        this.loadingPDF = true;
+        this.loading = true;
         
         var fQuery = "SELECT CONVERT(varchar, [Date],105) as head1, CONVERT(varchar, [Service Type],105) AS head2, CONVERT(varchar, [Anal],105) AS head3, Notes as head4 FROM Roster INNER JOIN ItemTypes ON Roster.[Service Type] = ItemTypes.[Title] WHERE [Carer Code] = '"+this.user.code+"' AND MinorGroup = 'TRAINING' ORDER BY DATE Desc";
+        // var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains where Domain='BRANCHES'"
+        // console.log(fQuery);
         const headerDict = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -156,11 +157,11 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loadingPDF = false;
+            this.loading = false;
             this.detectChanges();
         }, err => {
             console.log(err);
-            this.loadingPDF = false; 
+            this.loading = false; 
             this.ModalS.error({
                 nzTitle: 'TRACCS',
                 nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',

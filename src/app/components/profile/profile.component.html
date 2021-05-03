@@ -289,6 +289,9 @@
                             <nz-rate [ngModel]="user?.rating" [nzCount]="7" nzDisabled></nz-rate>
                         </nz-descriptions-item>
                         <nz-descriptions-item nzTitle="N Registration #">{{ user?.nRegistration || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Has Caseload"><label nz-checkbox nzDisabled [ngModel]="user?.caseManager" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Is Rosterable"><label nz-checkbox nzDisabled [ngModel]="user?.isRosterable" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Email Timesheet"><label nz-checkbox nzDisabled [ngModel]="user?.emailTimesheet" nzDisabled ></label></nz-descriptions-item>
                     </nz-descriptions>
                 </div>
 

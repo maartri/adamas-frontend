@@ -116,7 +116,6 @@ export class StaffAttendanceAdmin implements OnInit, OnDestroy {
 
     save() {
         const group = this.inputForm;
-
         this.timeS.updatetimeandattendance({
             AutoLogout: group.get('autoLogout').value,
             EmailMessage: group.get('emailMessage').value,

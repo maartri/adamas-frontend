@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef } from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time } from '@angular/common';
+import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
 //import dayGridPlugin from '@fullcalendar/daygrid';
 //import timeGridPlugin from '@fullcalendar/timegrid';
@@ -22,8 +22,8 @@ import { NzStepsModule, NzStepComponent } from 'ng-zorro-antd/steps';
 
 //import parse from 'date-fns/parse';
 import { PROCESS } from '../../modules/modules';
+import { format, formatDistance, formatRelative, subDays } from 'date-fns'
 
-import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
 import addMinutes from 'date-fns/addMinutes'
 import isSameDay from 'date-fns/isSameDay'
@@ -73,7 +73,7 @@ timesheetsGroup: Array<any> = [];
 defaultProgram: any = null;
 defaultActivity: any = null;
 defaultCategory: any = null;
-    
+Timesheet_label:any="Add Timesheet";
 payTotal:any;
  Days_View:number=31;
     data:any=[];  
@@ -92,6 +92,7 @@ payTotal:any;
   columnWidth = 100;
   i:number=0;
   eventLog: string;
+  token:any;
 
     isVisible: boolean = false;
     hahays = new Subject<any>();
@@ -146,8 +147,7 @@ payTotal:any;
   }
   load_rosters(){
     
-    if (this.rosters==null) return;
-    if (this.rosters.length<=0) return;
+    
     this.spreadsheet.suspendPaint();
     let sheet = this.spreadsheet.getActiveSheet()
     
@@ -160,9 +160,13 @@ payTotal:any;
     
     cell.text("")
     
+
     let row=-1, col=-1;
-    if (this.rosters==null) return;
-    if (this.rosters.length<=0) return;
+    if (this.rosters==null) {
+        this.spreadsheet.resumePaint();
+        return;
+    }
+  
     for(var r of this.rosters){
             
         if (r.dayNo>this.Days_View) break;
@@ -269,7 +273,9 @@ payTotal:any;
             let row=args.row;
 
             self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
+           
             let data:any = self.find_roster(self.cell_value.RecordNo);
+           
             if (data!=null)
                 self.details(data);
 
@@ -457,7 +463,11 @@ payTotal:any;
                         else
                           self.copy_value={row:-1,col:-1,duration:-1}
   
-  
+                        //  if (self.cell_value!=null)
+                         //  self.current_roster = self.find_roster(self.cell_value.RecordNo);
+                     
+
+                     
                         if(sels && sels.length > 0){
                           console.log("Copy Operation\n" + sel + "\n");
                            
@@ -496,7 +506,8 @@ payTotal:any;
                           self.copy_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
                         else
                           self.copy_value={row:-1,col:-1,duration:-1}
-  
+                        //  if (self.cell_value!=null)
+                           // self.current_roster = self.find_roster(self.cell_value.RecordNo);
                        
                         Commands.endTransaction(context, options);
                         return true;
@@ -528,12 +539,17 @@ payTotal:any;
                         
                         var value = sheet.getValue(selected_Cell.row, selected_Cell.col);
                      
+                       
+                        
                         if (self.copy_value.row>=0){
                           self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.RecordNo)
                          
                         }
-                        if (self.operation==="cut")
-                          self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
+                        if (self.operation==="cut"){
+                            self.ProcessRoster("Cut",self.copy_value.RecordNo);
+                            self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
+                        }else
+                            self.ProcessRoster("Copy",self.copy_value.RecordNo);
                         
                        
                        
@@ -578,6 +594,8 @@ payTotal:any;
                           self.copy_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)                      
                         
                           self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
+
+                          self.ProcessRoster("Delete",self.copy_value.RecordNo);
                         }
                         self.copy_value={row:-1,col:-1,duration:-1, type:0}
                        
@@ -841,7 +859,7 @@ payTotal:any;
 //console.log("icon " +  " = " + base )
 //console.log("iconSetRule " + r + " = " + type + "\n" + iconType )
 iconSetRule.reverseIconOrder(false);
-iconSetRule.showIconOnly(false);
+iconSetRule.showIconOnly(true);
 sheet.conditionalFormats.addRule(iconSetRule);
 
         this.spreadsheet.resumePaint();
@@ -932,6 +950,35 @@ sheet.conditionalFormats.addRule(iconSetRule);
       return val;
     }
     
+    ProcessRoster(Option:any, recordNo:string):any{
+        let dt= new Date(this.date);
+        let sheet = this.spreadsheet.getActiveSheet();
+        let range = sheet.getSelections();
+        let date = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(range[0].col+1);
+        let f_row= range[0].row;
+        let l_row=f_row+range[0].rowCount;
+        let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
+
+        // let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
+        // this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
+        // this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
+        // this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+
+        let inputs={
+            "opsType": Option,
+            "user": this.token.user,
+            "recordNo": recordNo,
+            "isMaster": this.master,
+            "roster_Date" : date,
+            "start_Time":startTime
+        }
+        this.timeS.ProcessRoster(inputs).subscribe(data => {
+        this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
+       
+       
+    });
+}
+
     find_roster(RecordNo:number):any{
         let rst:any;
         for(var r of this.rosters)
@@ -953,26 +1000,26 @@ sheet.conditionalFormats.addRule(iconSetRule);
             "recipient": r.clientCode,
             "program": r.program,
             "activity": r.serviceType,
-            "paytype": "",
-            "payquant": "",
-            "payrate": "",
-            "billquant": "",
-            "billrate": 0,
-            "approved": false,
-            "billto": r.billTo,
+            "payType": r.payType,   
+            "paytype": r.payType.paytype,  
+            "pay": r.pay,                   
+            "bill": r.bill,            
+            "approved": r.Approved,
+            "billto": r.billedTo,
+            "debtor": r.billedTo,
             "notes": r.notes,
             "selected": false,
-            "serviceType": 7,
-            "recipientCode": r.clientCode,
-            "debtor": "ABRAHIM NORMIE",
-            "serviceActivity": "*HCP FEE-PACKAGE ADMINISTRATION",
-            "serviceSetting": "ABRAHIM NORMIE",
-            "analysisCode": "INVERELL",
-            "serviceTypePortal": null,
-            "payType": "CAS OT 1.5"
+            "serviceType": r.type,
+            "recipientCode": r.clientCode,            
+            "serviceActivity": r.serviceType,
+            "serviceSetting": r.serviceSetting,
+            "analysisCode": r.anal,
+            "serviceTypePortal": "",
+            "recordNo": r.recordNo
+            
         }
             
-
+        
     
     return rst;
 }   
@@ -1029,9 +1076,32 @@ sheet.conditionalFormats.addRule(iconSetRule);
     //}
    
     add_Shift(){
+        this.Timesheet_label = "Add Timesheet " 
+        this.whatProcess = PROCESS.ADD;
         this.addTimesheetVisible = true;
         this.resetAddTimesheetModal();
         this.AddViewRosterDetails.next(2);
+        let sheet = this.spreadsheet.getActiveSheet();
+        var range=sheet.getSelections();
+        // console.log(range)
+        let dt= new Date(this.date);
+        //let dt = moment.utc(this.date).local();
+        let date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(range[0].col+1);
+        let f_row= range[0].row;
+        let l_row=f_row+range[0].rowCount;
+        let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
+
+        let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
+
+        this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
+        this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
+        this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+        this.current = 0;
+        this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
+        this.rosterForm.patchValue({date:date})
+
+        //this.date = parseISO(new Date(date).toISOString());
+        
     }
    // calendarPlugins = [dayGridPlugin,timeGridPlugin,interactionPlugin]; // important!
 
@@ -1066,7 +1136,8 @@ sheet.conditionalFormats.addRule(iconSetRule);
         private cd: ChangeDetectorRef,
         private formBuilder: FormBuilder,
         private clientS: ClientService,
-        private listS: ListService
+        private listS: ListService,
+        public datepipe: DatePipe
     ) {
         
         this.currentDate = format(new Date(), 'yyyy/MM/dd');
@@ -1147,7 +1218,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
     }
     whatProcess = PROCESS.ADD;
     details(index: any){
-
+        
         this.whatProcess = PROCESS.UPDATE;
         console.log(index);
         const {
@@ -1155,8 +1226,8 @@ sheet.conditionalFormats.addRule(iconSetRule);
             serviceType, 
             analysisCode, 
             approved, 
-            billquant,
-            billrate, 
+            bill,  
+            pay,          
             billto,
             date, 
             debtor,
@@ -1167,11 +1238,12 @@ sheet.conditionalFormats.addRule(iconSetRule);
             startTime,
             program,
             payType,
+            paytype,
             shiftbookNo,
-            endTime 
-        } = index;
+            recordNo,
+            endTime } = index;
 
-
+            
         // this.rosterForm.patchValue({
         //     serviceType: this.DETERMINE_SERVICE_TYPE(index),
         //     date: date,
@@ -1184,12 +1256,14 @@ sheet.conditionalFormats.addRule(iconSetRule);
         //     recipientCode: recipientCode,
         //     debtor: debtor
         // });
+        this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
+        this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
 
-        this.defaultStartTime = parseISO(startTime);
-        this.defaultEndTime = parseISO(endTime);
+        //this.defaultStartTime = parseISO( "2020-11-20T" + startTime + ":01.516Z");
+        //this.defaultEndTime = parseISO( "2020-11-20T" + endTime + ":01.516Z");;
         this.current = 0;
 
-        console.log(this.defaultEndTime)
+       //console.log(this.defaultEndTime)
 
          
          this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
@@ -1203,18 +1277,20 @@ sheet.conditionalFormats.addRule(iconSetRule);
             this.defaultActivity = activity;
             this.defaultCategory = analysisCode;
 
-            
+            this.Timesheet_label="Edit Timesheet (RecordNo : " + recordNo +")"
             this.rosterForm.patchValue({
                 serviceType: this.DETERMINE_SERVICE_TYPE(index),
                 date: date,
                 program: program,
                 serviceActivity: activity,
-                payType: payType,
+                payType: paytype,
                 analysisCode: analysisCode,
                 recordNo: shiftbookNo,            
-                
+                pay:pay,
+                bill:bill,
                 recipientCode: recipientCode,
                 debtor: debtor
+                
             });
         }, 100);
     }
@@ -1224,7 +1300,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
     ngOnInit(): void {
         this.date = moment();
         this.buildForm(); 
-        
+         this.token = this.globalS.decode();
       // this.load_rosters();
     // for (let r=0; r<=2; r++){
         
@@ -1700,6 +1776,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
 
     // Add Timesheet
 
+    
     dateFormat: string = 'dd/MM/yyyy'
     selectAll: boolean = false;
     overlapVisible: boolean = false;
@@ -1888,7 +1965,8 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 rate: ['0'],
                 quantity: ['1'],
                 tax: '1'
-            }),
+            })
+            
         })
 
         this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
@@ -2290,54 +2368,56 @@ isServiceTypeMultipleRecipient(type: string): boolean {
 
         var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime, tsheet.time.endTime));
 
+        if(typeof tsheet.date === 'string'){
+            tsheet.date = parseISO(this.datepipe.transform(tsheet.date, 'yyyy-MM-dd'));
+        }
+       
         let inputs = {
             anal: tsheet.analysisCode || "",
-            billQty: tsheet.bill.quantity || 0,
+            billQty: parseInt(tsheet.bill.quantity || 0),
             billTo: clientCode,
             billUnit: tsheet.bill.unit || 0,
             blockNo: durationObject.blockNo,
             carerCode: this.selected.option == 0 ? this.selected.data : tsheet.staffCode,
             clientCode: this.selected.option == 0 ? clientCode : this.selected.data,
-            costQty: tsheet.pay.quantity || 0,
+            costQty: parseInt(tsheet.pay.quantity || 0),
             costUnit: tsheet.pay.unit || 0,
             date: format(tsheet.date,'yyyy/MM/dd'),
-            dayno: format(tsheet.date, 'd'),
+            dayno: parseInt(format(tsheet.date, 'd')),
             duration: durationObject.duration,
             groupActivity: false,
             haccType: tsheet.haccType || "",
-            monthNo: format(tsheet.date, 'M'),
+            monthNo: parseInt(format(tsheet.date, 'M')),
             program: tsheet.program,
-            serviceDescription: tsheet.payType || "",
+            serviceDescription:  tsheet.payType || "",
             serviceSetting: null || "",
             serviceType: tsheet.serviceActivity || "",
+            paytype: tsheet.payType.paytype,
+            // serviceType: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
             staffPosition: null || "",
             startTime: format(tsheet.time.startTime,'HH:mm'),
             status: "1",
-            taxPercent: tsheet.bill.tax || 0,
+            taxPercent: parseInt(tsheet.bill.tax || 0),
             transferred: 0,
-            type: this.activity_value,
-            unitBillRate: tsheet.bill.rate || 0,
+            // type: this.activity_value,
+            type: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
+            unitBillRate: parseInt(tsheet.bill.rate || 0),
             unitPayRate: tsheet.pay.rate || 0,
-            yearNo: format(tsheet.date, 'yyyy')
+            yearNo: parseInt(format(tsheet.date, 'yyyy')),
+            serviceTypePortal: tsheet.serviceType,
+            recordNo: tsheet.recordNo
         };
-
         if(!this.rosterForm.valid){
             this.globalS.eToast('Error', 'All fields are required');
             return;
         }
 
-        console.log(inputs);
-
-        // this.timeS.posttimesheet(inputs).subscribe(data => {
-        //     this.globalS.sToast('Success', 'Timesheet has been added');
-        //    // this.addTimesheetVisible = false;
-        // });
         if(this.whatProcess == PROCESS.ADD){
             this.timeS.posttimesheet(inputs).subscribe(data => {
                 this.globalS.sToast('Success', 'Timesheet has been added');
                 this.addTimesheetVisible = false;
-                this.picked(this.selected);
-                this.load_rosters();
+               // this.picked(this.selected);
+               this.searchRoster(tsheet.date)
             });
         }   
         
@@ -2345,7 +2425,8 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             this.timeS.updatetimesheet(inputs).subscribe(data => {
                 this.globalS.sToast('Success', 'Timesheet has been updated');
                 this.addTimesheetVisible = false;
-                this.picked(this.selected);
+                //this.picked(this.selected);
+                this.searchRoster(tsheet.date)
             });
         }
     }

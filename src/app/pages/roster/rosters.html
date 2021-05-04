@@ -82,20 +82,89 @@
 
 </div>
 
+<!-- Search staff model -->
 
-    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="recipientDetailsModal" nzTitle="Recipients Details" (nzOnCancel)="recipientDetailsModal = false" >
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="searchStaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="searchStaffModal = false" >
+    <div class="flexy" style="min-height:10rem">
+        <div nz-row>
+            <div nz-col nzSpan="6" style="margin-top: 10px; margin-bottom: 20px; width:400px">
+                <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+            </div>
+            <div>
+                <label *ngIf="selectedCarer" >Re-Allocate Staff : </label>
+                <label  id="lblStaff" >
+                {{selectedCarer}}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="reAllocate()">Allocate</button>
+        <button nz-button nzType="default"  (click)="searchStaffModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="UnAllocateStaffModal" nzTitle="Un-Allocate Staff" (nzOnCancel)="UnAllocateStaffModal = false" >
+    <div class="flexy" style="min-height:5rem">
+        <div nz-row>
+           
+            <div>
+                <label style="font-size:16px; " >Are you sure you want to Un-Allocate Staff : </label>
+               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="UnAllocate()">Un-Allocate</button>
+        <button nz-button nzType="default"  (click)="UnAllocateStaffModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="SetMultiShiftModal" nzTitle="Un-Allocate Staff" (nzOnCancel)="SetMultiShiftModal = false" >
+    <div class="flexy" style="min-height:5rem">
+        <div nz-row>
+           
+            <div>
+                <label style="font-size:16px; " >This will set all hilighted shifts to MULTI STATUS for MTA, Are you sure </label>
+               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="SetMultishift()">Yes</button>
+        <button nz-button nzType="default"  (click)="SetMultiShiftModal=false">No</button>
+    </div>
+  
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ClearMultiShiftModal" nzTitle="Un-Allocate Staff" (nzOnCancel)="ClearMultiShiftModal = false" >
+    <div class="flexy" style="min-height:5rem">
+        <div nz-row>
+           
+            <div>
+                <label style="font-size:16px;"  >This will clear all hilighted shifts to NON MULTI STATUS for MTA, Are you sure </label>               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="ClearMultishift()">Yes</button>
+        <button nz-button nzType="default"  (click)="ClearMultiShiftModal=false">No</button>
+    </div>
+</nz-modal>
+
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ViewStaffDetail" nzTitle="View Staff Details" (nzOnCancel)="ViewStaffDetail = false" >
         <div nz-row>
             sd
         </div>
         <div *nzModalFooter>
-            <button nz-button nzType="default" >Cancel</button>
+            <button nz-button nzType="default" (click)="ViewStaffDetail=false">Cancel</button>
         </div>
 	</nz-modal>
    
     
 <!-- Add Timesheet -->
 
-<nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Timesheet_label"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Timesheet"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
     <div class="flexy" style="min-height:21rem">
 
             <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">

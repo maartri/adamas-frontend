@@ -230,12 +230,12 @@
 
                     <div nz-col nzSpan="4">
                         <div class="form-group">
-                            <nz-select formControlName="template" nzSize="small" nzAllowClear nzPlaceHolder="Templates">
+                            <nz-select formControlName="template" nzSize="small" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Templates">
                                 <nz-option *ngFor="let list of quoteTemplateList" [nzValue]="list" [nzLabel]="list"></nz-option>
                             </nz-select>
                         </div>
                     </div>
-                                
+
                 </div>
 
                 <div nz-row nzGutter="32" class="line">

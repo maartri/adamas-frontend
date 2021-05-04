@@ -138,6 +138,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div nz-row nzGutter="32" class="line">
                     <div nz-col nzSpan="12" nzOffset="6">
                         <div nz-col nzSpan="6">
@@ -216,19 +217,21 @@
                 </div>
               
             </div>
+
+
             <div *ngIf="tabFindIndex == 2" >
 
                 <div nz-row nzGutter="32" [formGroup]="quoteForm">
      
-                    <div nz-col nzSpan="4">
+                    <div nz-col nzSpan="8">
                         <div class="form-group">
-                            <nz-select formControlName="program" nzSize="small" nzAllowClear nzPlaceHolder="Program">
+                            <nz-select formControlName="program" nzSize="small"  [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Program">
                                 <nz-option *ngFor="let list of quoteProgramList" [nzValue]="list" [nzLabel]="list"></nz-option>
                             </nz-select>
                         </div>
                     </div>
 
-                    <div nz-col nzSpan="4">
+                    <div nz-col nzSpan="8">
                         <div class="form-group">
                             <nz-select formControlName="template" nzSize="small" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Templates">
                                 <nz-option *ngFor="let list of quoteTemplateList" [nzValue]="list" [nzLabel]="list"></nz-option>
@@ -238,24 +241,25 @@
 
                 </div>
 
-                <div nz-row nzGutter="32" class="line">
+                <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm">
                     <div nz-col nzSpan="6">
-                        <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" />
+                        <input nz-input formControlName="no" placeholder="Basic usage" nzSize="small" />
                     </div>
                     <div nz-col nzSpan="6">
-                        <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
-                            <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                        <nz-select  class="select" formControlName="type" nzSize="small" nzAllowClear nzPlaceHolder="Type">
+                            <!-- <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
                             <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                            <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                            <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option> -->
                         </nz-select>
                     </div>
                     <div nz-col nzSpan="8" nzOffset="4">
                         <div class="right">
-                            <nz-range-picker nzSize="small" [nzFormat]="dateFormat"></nz-range-picker>
-                            <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
-                                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                            <nz-range-picker nzSize="small" formControlName="period" [nzFormat]="dateFormat"></nz-range-picker>
+
+                            <nz-select class="select" formControlName="basePeriod" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
+                                <!-- <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
                                 <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option> -->
                             </nz-select>
                         </div>
                     </div>
@@ -346,11 +350,47 @@
 
   <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="quoteLineOpen = false" (nzOnOk)="handleOk()">
     <div nz-row>
+        <div nz-row [formGroup]="quoteListForm">
+            <span style="margin-right:2rem;font-weight:bold">Charge Type</span>
+            <nz-radio-group formControlName="chargeType">
+                <label nz-radio nzValue="1">Service</label>
+                <label nz-radio nzValue="2">Item</label>
+                <label nz-radio nzValue="3">Admin Charge</label>
+                <label nz-radio nzValue="4">Package/Case Management</label>
+            </nz-radio-group>
+        </div>
+        <div nz-row class="line">
+            <div nz-col nzSpan="8" [formGroup]="quoteListForm">
+                <div class="form-group">
+                    <nz-select formControlName="code" nzSize="small" nzAllowClear nzPlaceHolder="Discipline">
+                        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                    </nz-select>
+                </div>
+
+                <div class="form-group">
+                    <input nz-input formControlName="displayText" placeholder="Sequence Number" nzSize="small"  />
+                </div>
+
+                <div class="form-group">
+                    <nz-select formControlName="strategy" nzSize="small" nzAllowClear nzPlaceHolder="Discipline">
+                        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-col nzSpan="16">
+                <div class="right">
+                    <input nz-input placeholder="Sequence Number" nzSize="small" [(ngModel)]="value" />
+                </div>
+            </div>
+        </div>
+
         <div nz-row>
 
         </div>
-        <div nz-row class="line">
 
-        </div>
     </div>
   </nz-modal>

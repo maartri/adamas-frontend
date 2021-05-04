@@ -21,6 +21,14 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getpensionandfee(): Observable<any> {
+        return this.auth.get(`${list}/pension-and-percent-fee`);
+    }
+
+    getprogramlevel(program: string): Observable<any> {
+        return this.auth.get(`${list}/program-level/${program}`);
+    }
+
     gettypeother(caseName: string): Observable<any> {
         return this.auth.get(`${list}/type-other/${caseName}`);
     }

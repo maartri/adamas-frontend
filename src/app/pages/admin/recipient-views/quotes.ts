@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
-import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { dateFormat } from '@services/global.service'
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
@@ -48,6 +48,9 @@ import { Filters } from '@modules/modules';
     .controls div i{
         cursor:pointer;
     }
+    .controls div:hover{
+        background:#d6d6d6;
+    }
     .right{
         float:right;
     }
@@ -71,6 +74,9 @@ import { Filters } from '@modules/modules';
     .form-group nz-select{
         width:100%
     }
+    nz-select.select{
+        min-width:10rem;
+    }
     `]
 })
 
@@ -79,8 +85,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     private unsubscribe: Subject<void> = new Subject();
     quoteForm: FormGroup;
+    quoteListForm: FormGroup;
 
-    title: string = 'New Quote'
+    title: string = 'Add New Quote'
     listOfData = [
         {
           key: '1',
@@ -104,6 +111,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+
     dateFormat: string = dateFormat;
     nzSize: string = "small"
 
@@ -125,15 +133,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     value: any;
 
     quoteTemplateList: Array<string>;
-    quoteProgramList: Array<string>
+    quoteProgramList: Array<string>;
 
-    // filters: Filters = {
-    //     acceptedQuotes: false,
-    //     allDates: false,
-    //     archiveDocs: true,
-    //     display: 20
-    // };
+    
 
+    radioValue: any;
     filters: any;
 
     constructor(
@@ -262,8 +266,41 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.quoteForm = this.formBuilder.group({
             program: null,
-            template: null
-        })
+            template: null,
+
+            no: null,
+            type: null,
+            period: [],
+            basePeriod: null,
+
+
+        });
+
+        this.quoteListForm = this.formBuilder.group({
+            chargeType: null,
+            code: null,
+            displayText: null,
+            strategy: null,
+            sequenceNo: null
+        });
+
+        this.quoteListForm.get('chargeType').valueChanges.subscribe(data => {
+            
+        });
+
+        this.quoteForm.get('program').valueChanges
+        .pipe(
+            switchMap(x => this.listS.getprogramlevel(x)),
+            switchMap(x => {
+                if(x.isCDC){
+                    return this.listS.getpensionandfee();
+                }
+                return EMPTY;
+            })
+        ).subscribe(data => {
+            console.log(data)
+        });
+
     }
 
     

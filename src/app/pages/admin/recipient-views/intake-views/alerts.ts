@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { AlertCompetency } from '@modules/modules';
 
 @Component({
     selector: '',
@@ -174,19 +175,20 @@ export class IntakeAlerts implements OnInit, OnDestroy {
 
     competencyProcess(){
         this.competencyGroup.controls['personID'].setValue(this.user.id)
+
         const competency = this.competencyGroup.value;
 
         if(this.addOREdit == 0){
-            this.timeS.postintakecompetency(competency).pipe(
-            takeUntil(this.unsubscribe)).subscribe(data =>{
-                            if(data){
-                                this.reloadAll()
-                                this.globalS.sToast('Success','Competency Added')
-                            }
-                        });
+            
+                this.timeS.postintakecompetency(this.competencyGroup.value)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Competency Added');
+                        this.search();
+                        this.handleCancel();
+                    });
         }
-
         if(this.addOREdit == 1){
+            console.log(this.addOREdit);
             this.timeS.updateintakecompetency(competency).pipe(
             takeUntil(this.unsubscribe)).subscribe(data => {
                             if(data){

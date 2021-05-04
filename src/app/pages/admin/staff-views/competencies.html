@@ -1,21 +1,31 @@
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add Competency</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+        <div nz-row nzGutter="16" [formGroup]="skillsForm">
+            <div nz-col nzSpan="4">
+                <button class="botton success" (click)="showAddModal()">Add Competency</button>
+            </div>
+            <div nz-col nzSpan="10">
+                <label nz-checkbox formControlName="competencyException">Exclude Staff Member From Mandatory Competency Checking </label>
+            </div>
+            <div nz-col nzSpan="10">
+                <label nz-checkbox formControlName="emailCompetencyReminders">Email Competency Reminder</label>
+            </div>
+        </div>
+        <nz-table #headerTable  [nzSize]="'small'" [nzScroll]="{ y: '240px' }" [nzFrontPagination]="false" [nzLoading]="loading"
             [nzData]="tableData">
             <thead>
                 <tr>
                     <th class="left">Competency</th>
                     <th>Expiry Date</th>
                     <th>Reminder Date</th>
-                    <th>Mandatory</th>
+                    <th nzWidth="100px">Mandatory</th>
                     <th>Cert/Reg.No</th>
                     <th>Notes</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                <tr *ngFor="let data of headerTable.data;let i = index;trackBy: trackByFn">
                 <td class="left">{{ data.competency  }}</td>
                 <td>{{ data.expiryDate | date: 'dd/MM/yyyy' }}</td>
                 <td>{{ data.reminderDate | date: 'dd/MM/yyyy'  }}</td>
@@ -33,6 +43,85 @@
                 </tr>
             </tbody>
         </nz-table>
+        <nz-card  nzTitle="SKILLS" [nzSize]="'small'" [formGroup]="skillsForm">
+            <div nz-row nzGutter="24" class="mrg-btm-2">
+                    <div nz-col nzSpan="4" class="text-right">
+                        Cert.3 Disabilities : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Cert iV Disabilities : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Cert.3 Children : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Cert 3 Community : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Cert iV Community : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Dip. Community : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Dip. Welfare : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Enrolled Nurse : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Cert 2 Community : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Training / Assessment : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                    </div>
+                    <div nz-col nzSpan="4" class="text-right">
+                        Cert 3 Aged Care   : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Cert iV Youth Work : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Child Protection   : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Manual Handling    : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Assist In Madication : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        PART Training : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Cultural Awareness : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Epilepsy : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Case Management : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Identify Respond : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                    </div>
+                    <div nz-col nzSpan="4" class="text-right">
+                        Cert iV Aged Care : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Supurvised Access : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Dementia Training : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        VPAP : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Safe Food Handling : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        ped/Midazolin : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Wound Care : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Working with Other : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Cert 3 Education : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Dip Early Education : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                    </div>
+                    <div nz-col nzSpan="4" class="text-right">
+                        Facil Behavior : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Doul Diagnosis : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        AIN : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Intro SuperVision : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                        Birth Cert/Passport : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                        <br>
+                    </div>
+                </div>
+          </nz-card>
     </div>
 </div>
 

@@ -458,6 +458,7 @@ export class TimeSheetService {
     postintakecompetency(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/competency`, data)
     }
+   
 
     updateintakecompetency(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/competency`, data)

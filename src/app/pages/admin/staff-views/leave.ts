@@ -140,6 +140,14 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     }
 
     delete(data: any) {
-
+        this.timeS
+            .deleteleaveapplication(data.recordNumber)
+            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                if (data) {
+                    this.globalS.sToast('Success', 'Data Deleted!');
+                    this.search(this.user);
+                    return;
+                }
+            });
     }
 }

@@ -482,6 +482,14 @@ export interface IntakeCompetency {
     mandatory: boolean
 }
 
+export interface AlertCompetency {
+    personID?: string,
+    competencyValue?: string,
+    mandatory?: boolean,
+    notes?: string,
+    recordNumber?: number,
+}
+
 export interface IntakeServices {
     recordNumber?: number,
     personID?: string,

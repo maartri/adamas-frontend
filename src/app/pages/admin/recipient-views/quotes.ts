@@ -4,6 +4,7 @@ import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes 
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { dateFormat } from '@services/global.service'
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -14,14 +15,95 @@ import { Filters } from '@modules/modules';
 @Component({
     styleUrls:['./quotes.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './quotes.html'
+    templateUrl: './quotes.html',
+    styles:[`
+    nz-tabset >>> div > div.ant-tabs-nav-container{
+        height: 25px !important;
+        font-size: 13px !important;
+    }
+
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+        line-height: 24px;
+        height: 25px;
+    }
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+        background: #717e94;
+        color: #fff;
+    }
+ 
+    .line{
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #f3f3f3;
+    }
+    .controls div{
+        display: inline-block;
+        border-radius: 50%;
+        background: #f1f1f1;
+        border: 1px solid #cecece;
+        width: 24px;
+        text-align: center;
+        margin-right:10px;
+    }
+    .controls div i{
+        cursor:pointer;
+    }
+    .right{
+        float:right;
+    }
+    .right >  * {        
+        margin-right:5px;
+    }
+    nz-range-picker{
+        width:15rem;
+    }
+    .div-table{
+        display: table;
+        line-height: 25px;
+    }
+    .div-table > div{
+        display: table-row;
+    }
+    .div-table > div > div{
+        display: table-cell;
+        padding: 2px 5px;
+    }
+    .form-group nz-select{
+        width:100%
+    }
+    `]
 })
 
 
 export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     private unsubscribe: Subject<void> = new Subject();
 
+    title: string = 'New Quote'
+    listOfData = [
+        {
+          key: '1',
+          name: 'John Brown',
+          age: 32,
+          address: 'New York No. 1 Lake Park'
+        },
+        {
+          key: '2',
+          name: 'Jim Green',
+          age: 42,
+          address: 'London No. 1 Lake Park'
+        },
+        {
+          key: '3',
+          name: 'Joe Black',
+          age: 32,
+          address: 'Sidney No. 1 Lake Park'
+        }
+      ];
+
+
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+    dateFormat: string = dateFormat;
+    nzSize: string = "small"
 
     user: any;
     inputForm: FormGroup;
@@ -34,6 +116,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     acceptedQuotes: boolean = false;
 
     loading: boolean = false;
+
+    quotesOpen: boolean = false;
+    quoteLineOpen: boolean = false;
+
+    value: any;
 
     // filters: Filters = {
     //     acceptedQuotes: false,
@@ -91,6 +178,27 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.search(this.user);
     }
 
+    showQuoteModal(){
+        this.quotesOpen = true;
+    }
+
+    quoteLineModal(){
+        this.quoteLineOpen = true;
+    }
+
+    handleOk(){
+
+    }
+
+    handleCancel(){
+        this.quotesOpen = false;
+    }
+
+    tabFindIndex: number = 0;
+    tabFindChange(index: number){
+        this.tabFindIndex = index;
+    }
+
     search(user: any) {
         this.loading = true;
         
@@ -142,6 +250,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             smsMessage: false
         });
     }
+
+    
 
     onKeyPress(data: KeyboardEvent) {
         return this.globalS.acceptOnlyNumeric(data);

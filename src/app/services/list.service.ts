@@ -21,6 +21,14 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    gettypeother(caseName: string): Observable<any> {
+        return this.auth.get(`${list}/type-other/${caseName}`);
+    }
+
+    gettypekin(): Observable<any> {
+        return this.auth.get(`${list}/type-kin`);
+    }
+
     getnotifications(data: any): Observable<any> {
         return this.auth.get(`${list}/notifications`, data);
     }

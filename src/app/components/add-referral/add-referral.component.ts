@@ -172,6 +172,8 @@ export class AddReferralComponent implements OnInit {
         })
     });
 
+    // this.referralGroup.get('otherContacts').valueChanges.subscribe(data => console.log(data))
+
     this.referralGroup.get('branch').valueChanges.subscribe(data => console.log(data))
 
     this.referralGroup.get('organisation').valueChanges
@@ -502,6 +504,8 @@ export class AddReferralComponent implements OnInit {
       phone2: new FormControl(''),
       mobile: new FormControl(''),
       fax: new FormControl(''),
+
+      list: new FormControl(['mark','aris'])
     });
   }
 
@@ -589,6 +593,20 @@ export class AddReferralComponent implements OnInit {
   contactTypeChange(index: any) {
     var contact = this.referralGroup.get('contacts') as FormArray;
     contact.controls[index].get('contact').reset();
+  }
+
+  contactGroupChange(index: any){
+    console.log(index);
+    return;
+    var others = this.referralGroup.get('otherContacts') as FormArray;
+
+    var contactGroup = others.controls[index].get('contactGroup').value;
+
+    if(contactGroup == "1-NEXT OF KIN" || contactGroup == "NEXTOFKIN" || contactGroup == "2-CARER" || contactGroup == "CARER"){
+      this.listS.gettypekin().subscribe(data => console.log(data))
+    } else {
+      this.listS.gettypeother(contactGroup).subscribe(data => console.log(data))
+    }    
   }
 
 }

@@ -82,9 +82,11 @@ export class StaffAttendanceAdmin implements OnInit, OnDestroy {
             autoLogout: data.autoLogout,
             emailMessage: data.emailMessage,
             excludeShiftAlerts: data.excludeShiftAlerts,
+            excludeFromTravelInterpretation:data.excludeFromTravelInterpretation,
             inAppMessage: data.inAppMessage,
             logDisplay: data.logDisplay,
             pin: data.pin,
+            staffTimezoneOffset:data.staffTimezoneOffset,
             rosterPublish: data.rosterPublish,
             shiftChange: data.shiftChange,
             smsMessage: data.smsMessage
@@ -97,9 +99,11 @@ export class StaffAttendanceAdmin implements OnInit, OnDestroy {
             autoLogout: [''],
             emailMessage: false,
             excludeShiftAlerts: false,
+            excludeFromTravelInterpretation:false,
             inAppMessage: false,
             logDisplay: false,
             pin: [''],
+            staffTimezoneOffset:[''],
             rosterPublish: false,
             shiftChange: false,
             smsMessage: false
@@ -112,14 +116,15 @@ export class StaffAttendanceAdmin implements OnInit, OnDestroy {
 
     save() {
         const group = this.inputForm;
-
         this.timeS.updatetimeandattendance({
             AutoLogout: group.get('autoLogout').value,
             EmailMessage: group.get('emailMessage').value,
             ExcludeShiftAlerts: group.get('excludeShiftAlerts').value,
+            ExcludeFromTravelinterpretation: group.get('excludeFromTravelInterpretation').value,
             InAppMessage: group.get('inAppMessage').value,
             LogDisplay: group.get('logDisplay').value,
             Pin: group.get('pin').value,
+            StaffTimezoneOffset:group.get('staffTimezoneOffset').value,
             RosterPublish: group.get('rosterPublish').value,
             ShiftChange: group.get('shiftChange').value,
             SmsMessage: group.get('smsMessage').value,

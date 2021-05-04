@@ -37,7 +37,7 @@ export class MedicalcontactComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   temp_title: any;
   
   constructor(
@@ -71,7 +71,7 @@ export class MedicalcontactComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -104,7 +104,7 @@ export class MedicalcontactComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,DeletedRecord as is_deleted FROM HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
+      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,xDeletedRecord as is_deleted FROM HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;

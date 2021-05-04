@@ -68,7 +68,8 @@
 
 <nz-modal [(nzVisible)]="quotesOpen" [nzWidth]="1340" [nzStyle]="{ top: '20px' }" [nzTitle]="title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div nz-row nzGutter="16">
-        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+
+        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSelectedIndex]="tabFindIndex">
             <nz-tab nzTitle="General" (nzClick)="tabFindChange(0)"> </nz-tab>
             <nz-tab nzTitle="Goals & Strategies" (nzClick)="tabFindChange(1)"> </nz-tab>
             <nz-tab nzTitle="Quote" (nzClick)="tabFindChange(2)"></nz-tab>
@@ -76,7 +77,7 @@
 
         <div>
             <div *ngIf="tabFindIndex == 0" >
-                <div nz-row nzGutter="32">
+                <div nz-row nzGutter="32" class="line">
                     <div nz-col nzSpan="12" nzOffset="6">
                         <div nz-col nzSpan="12">
                             <div class="form-group">
@@ -216,7 +217,28 @@
               
             </div>
             <div *ngIf="tabFindIndex == 2" >
-                <div nz-row nzGutter="32">
+
+                <div nz-row nzGutter="32" [formGroup]="quoteForm">
+     
+                    <div nz-col nzSpan="4">
+                        <div class="form-group">
+                            <nz-select formControlName="program" nzSize="small" nzAllowClear nzPlaceHolder="Program">
+                                <nz-option *ngFor="let list of quoteProgramList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+
+                    <div nz-col nzSpan="4">
+                        <div class="form-group">
+                            <nz-select formControlName="template" nzSize="small" nzAllowClear nzPlaceHolder="Templates">
+                                <nz-option *ngFor="let list of quoteTemplateList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                                
+                </div>
+
+                <div nz-row nzGutter="32" class="line">
                     <div nz-col nzSpan="6">
                         <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" />
                     </div>
@@ -318,6 +340,17 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+  </nz-modal>
+
+  <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="quoteLineOpen = false" (nzOnOk)="handleOk()">
+    <div nz-row>
+        <div nz-row>
+
+        </div>
+        <div nz-row class="line">
+
         </div>
     </div>
   </nz-modal>

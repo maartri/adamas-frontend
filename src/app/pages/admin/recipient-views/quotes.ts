@@ -76,7 +76,9 @@ import { Filters } from '@modules/modules';
 
 
 export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
+
     private unsubscribe: Subject<void> = new Subject();
+    quoteForm: FormGroup;
 
     title: string = 'New Quote'
     listOfData = [
@@ -121,6 +123,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     quoteLineOpen: boolean = false;
 
     value: any;
+
+    quoteTemplateList: Array<string>;
+    quoteProgramList: Array<string>
 
     // filters: Filters = {
     //     acceptedQuotes: false,
@@ -180,6 +185,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     showQuoteModal(){
         this.quotesOpen = true;
+        this.listS.getprogramcontingency(this.user.id).subscribe(data => this.quoteProgramList = data);
+        this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
+        this.tabFindIndex = 2;
+        console.log(this.user)
     }
 
     quoteLineModal(){
@@ -201,6 +210,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     search(user: any) {
         this.loading = true;
+        this.user = user;
         
 
         let data = {
@@ -249,6 +259,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             shiftChange: false,
             smsMessage: false
         });
+
+        this.quoteForm = this.formBuilder.group({
+            program: null,
+            template: null
+        })
     }
 
     

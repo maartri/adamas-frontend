@@ -11,7 +11,8 @@ import { EventInputTransformer, whenTransitionDone } from '@fullcalendar/angular
 import { getDate } from 'date-fns';
 import { concat, now } from 'lodash';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute, ParamMap } from '@angular/router';
+
 
 
 //Sets defaults of Criteria Model     
@@ -632,11 +633,15 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         private fb: FormBuilder,
         private sanitizer: DomSanitizer,
         private ModalS: NzModalService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute,
     ) {
 
     }
     ngOnInit(): void {
+    
+        
+           //recepientincident
         const children: Array<{ label: string; value: string }> = [];
         this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
         for (let i = 10; i < 36; i++) {
@@ -859,6 +864,23 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
             });
         });
 
+        
+       var tempkey = (this.GlobalS.var1).toString();
+      
+        switch (tempkey) {
+            case 'IncidentRegister':
+               
+                this.showModal("btn-Regis-incidentregister");
+
+                
+                break;
+        
+            default:
+               
+                break;
+        }  
+
+
 
 
     }//ngOninit  
@@ -1053,19 +1075,29 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         }        
     }
     showModal(e) {
-        e = e || window.event;
-        e = e.target || e.srcElement;
-        this.btnid = e.id
-        this.ModalS.closeAll();
-        var lftstr = e.id.substring(0, 10)
-        //    alert(lftstr)
-
+       
+       switch (e) {
+           case 'btn-Regis-incidentregister':
+            this.btnid = "btn-Regis-incidentregister"
+               break;
+       
+           default:
+                e = e || window.event;
+                e = e.target || e.srcElement;
+                this.btnid = (e.id).toString();
+                
+                this.ModalS.closeAll();
+                var lftstr = e.id.substring(0, 10)
+                //    alert(lftstr)
+        break;
+    }       
         //Criteria Items/Lists Visibility   
         this.ResetVisibility();
         this.inputForm = this.fb.group(inputFormDefault);
-    
         
-
+        
+        
+      
         switch (this.btnid) {
             case 'btn-refferallist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1903,6 +1935,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     handleOk() {
         this.reportRender(this.btnid);
         this.tryDoctype = "";        
+        this.btnid = "";
     //    this.FOReports = false;
         
         
@@ -5958,7 +5991,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         if (SvcType != "") {
             this.s_SvcTypeSQL = " ([Service] in ('" + SvcType.join("','") + "'))";
-            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_SvcTypeSQL }
+            if (this.s_SvcTypeSQL != "") { fQuery = fQuery + " AND " + this.s_SvcTypeSQL }
         }
         if (Staff != "") {
             this.s_StfSQL = "([CurrentAssignee] in ('" + Staff.join("','") + "'))";
@@ -5966,11 +5999,11 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         if (incidenttype != "") {
             this.s_IncedentTypeSQL = "(i.[Type] in ('" + incidenttype.join("','") + "'))";
-            if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_IncedentTypeSQL };
+            if (this.s_IncedentTypeSQL != "") { fQuery = fQuery + " AND " + this.s_IncedentTypeSQL };
         }
         if (category != "") {
             this.s_incidentCategorySQL = "(i.[Status] in ('" + category.join("','") + "'))";
-            if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_incidentCategorySQL };
+            if (this.s_incidentCategorySQL != "") { fQuery = fQuery + " AND " + this.s_incidentCategorySQL };
         }
 
         if (category != "") {
@@ -9071,18 +9104,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 switch (format) {
                     case "Detailed":
-                        Title = Title + "-Detail"
+                        Title = Title + "-DETAIL"
                         this.reportid = "20xwMDHmzWQlOD6N";
 
                         break;
                     case "Standard":
-                        Title = Title + "-Standard"
+                        Title = Title + "-STANDARD"
                         this.reportid = "1OoLOtjnmVq55CR3";
 
                         break;
 
                     default:
-                        Title = Title + "-Summary"
+                        Title = Title + "-SUMMARY"
                         this.reportid = "QRa7a6vcHl74gzKk"
                         break;
                 }
@@ -9095,18 +9128,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 switch (format) {
                     case "Detailed":
-                        Title = Title + "-Detail"
+                        Title = Title + "-DETAIL"
                         this.reportid = "0ZnxAZqeBt95hPdb";
 
                         break;
                     case "Standard":
-                        Title = Title + "-Standard"
+                        Title = Title + "-STANDARD"
                         this.reportid = "DBUDb5tg2SyiH0k4";
 
                         break;
 
                     default:
-                        Title = Title + "-Summary"
+                        Title = Title + "-SUMMARY"
                         this.reportid = "QRa7a6vcHl74gzKk"
                         break;
                 }
@@ -9120,18 +9153,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 switch (format) {
                     case "Detailed":
-                        Title = Title + "-Detail"
+                        Title = Title + "-DETAIL"
                         this.reportid = "KNUFzfW2y0u1Vmp8";
 
                         break;
                     case "Standard":
-                            Title = Title + "-Standard"
+                            Title = Title + "-STANDARD"
                             this.reportid = "iIYZM5tgCWBZgpZR";
     
                             break;
 
                     default:
-                        Title = Title + "-Summary"
+                        Title = Title + "-SUMMARY"
                         this.reportid = "QRa7a6vcHl74gzKk"
                         break;
                 }
@@ -9145,18 +9178,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 switch (format) {
                     case "Detailed":
-                        Title = Title + "-Detail"
+                        Title = Title + "-DETAIL"
                         this.reportid = "bS5eYd0QZKtRh7kR";
 
                         break;
                     case "Standard":
-                            Title = Title + "-Standard"
+                            Title = Title + "-STANDARD"
                             this.reportid = "mfOCkWILwdbpXNWq";
     
                             break;
 
                     default:
-                        Title = Title + "-Summary"
+                        Title = Title + "-SUMMARY"
                         this.reportid = "QRa7a6vcHl74gzKk" 
                         break;
                 }
@@ -9569,16 +9602,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detailed"
+                Title = Title + "-DETAIL"
                 this.reportid = "DeKVDYBlePosUVbB";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     //this.reportid = "bzsYqppVdYW4XLK6"; 
                     this.reportid = "hQVGJjKxbUIpACYu"; 
                     break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "gHY4F0UbTNzf4oPk"
                 break;
         }
@@ -9979,17 +10012,17 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "br0hApzbOEUutqz0";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "Y3XNmrch0jiwN5oO";
 
                     break;
             default:
 
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "VFZKXpQuPdRjOz7U" 
                 break;
         }
@@ -10402,18 +10435,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 switch (format) {
                     case "Detailed":
-                        Title = Title + "-Detail"
+                        Title = Title + "-DETAIL"
                         this.reportid = "MePWCZQThe0CAnu5";
                         break;
                     case "Standard":
-                            Title = Title + "-Standard"
+                            Title = Title + "-STANDARD"
                             this.reportid = "TjjF21FYeoPa8ttL";
     
                             break;
 
                     default:
 
-                        Title = Title + "-Summary"
+                        Title = Title + "-SUMMARY"
                         this.reportid = "IlzJ8y3CcohttpLy"
                         break;
                 }
@@ -10427,17 +10460,17 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 switch (format) {
                     case "Detailed":
-                        Title = Title + "-Detail"
+                        Title = Title + "-DETAIL"
                         this.reportid = "dBfGjQMGcDFpS0tN";
                         break;
                     case "Standard":
-                            Title = Title + "-Standard"
+                            Title = Title + "-STANDARD"
                             this.reportid = "v1NmCNitQqzEuvy2";
     
                             break;
 
                     default:
-                        Title = Title + "-Summary"
+                        Title = Title + "-SUMMARY"
                         this.reportid = "IlzJ8y3CcohttpLy"
                         break;
                 }
@@ -10451,17 +10484,17 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 switch (format) {
                     case "Detailed":
-                        Title = Title + "-Detail"
+                        Title = Title + "-DETAIL"
                         this.reportid = "Oc4nxLXjTPbGcZQH";
                         break;
                     case "Standard":
-                            Title = Title + "-Standard"
+                            Title = Title + "-STANDARD"
                             this.reportid = "EG5OARjKtdoyTYpj";
     
                             break;
 
                     default:
-                        Title = Title + "-Summary"
+                        Title = Title + "-SUMMARY"
                         this.reportid = "IlzJ8y3CcohttpLy"
                         break;
                 }
@@ -10873,16 +10906,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 //        console.log(format)
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid= "dBfGjQMGcDFpS0tN";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "v1NmCNitQqzEuvy2";
                     break;
 
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "7RdGSvcsDNba5xah"
                 break;
         }
@@ -11282,16 +11315,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 //        console.log(format)
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid= "gKDoVHUUaYJZdiE5";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "5UhTciOEItAwdplv";
                     break;
 
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "5T198rth9thUMUSA"
                 break;
         }
@@ -11874,16 +11907,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "s7xkRQoypsgZDEJi";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "87J6dAoiLAM4QSFk";
 
                     break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "EUpoRvslDL2jReMC"
               
                 break;
@@ -12279,20 +12312,21 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + "ORDER BY [Carer Code], [Service Type], Date, [Start Time]";
 
-        //console.log(fQuery)
+     //   console.log(fQuery)
+     console.log(this.inputForm.value.ExcluPgeHeader)
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "BkY2eCxEZ9xs7JdN";
                 break;
             case "Standard":
-                        Title = Title + "-Standard"
+                        Title = Title + "-STANDARD"
                         this.reportid = "5riBak9iybzIeejZ";
 
                         break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "Cjq0J0FwEE9NpEjG"
                 break;
         }
@@ -12689,16 +12723,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "PWrjCCfGSodTi4k5";
                 break;
             case "Standard":
-                        Title = Title + "-Standard"
+                        Title = Title + "-STANDARD"
                         this.reportid = "NDOYLqd3PIdrvmCo";
 
                         break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "52x7yFFEwpini1aA"
                 break;
         }
@@ -13092,16 +13126,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "pcOEeUeWKPGaGFPA";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "nfYYDDUGiPSrttea";
 
                     break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "OTUPu95cLd6uPgd5"
                 break;
         }
@@ -13496,16 +13530,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "3tnMUYUAp8WHDU1Z";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "KYio3TCmmyLOV7oy";
 
                     break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "OTUPu95cLd6uPgd5"
                 break;
         }
@@ -13899,16 +13933,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "wrRlhBfDegZzFrlu";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "bzsYqppVdYW4XLK6";
 
                     break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "pq2cnQ2nGuR4Szlh"
                 break;
         }
@@ -14295,16 +14329,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "UBAW9sppie7EzOiP";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "Ghkc0I8PGXUYn6xK";
 
                     break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "6v9LSTGgq06bT7xK"
                 break;
         }
@@ -14691,16 +14725,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "2MILocaJ7z4C1VP2";
                 break;
             case "Standard":
-                        Title = Title + "-Standard"
+                        Title = Title + "-STANDARD"
                         this.reportid = "WXNGRB3cU1V6kFz0";
 
                         break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "rUnfnSRvYRppjPTk"
                 break;
         }
@@ -15556,16 +15590,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //    //////console.log(fQuery) 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "cgcfODRkRP2q67Sh";
                 break;
             case "Standard":
-                    //    Title = Title + "-Standard"
+                    //    Title = Title + "-STANDARD"
                         this.reportid = "YYfS88zCaEg6Qd12";
 
                         break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "YYfS88zCaEg6Qd12"
                 break;
         }
@@ -16059,17 +16093,17 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
      //   console.log(fQuery) 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "pgPwDEeuHN7slyuf";
                 break;
             case "Standard":
-                    Title = Title + "-Standard"
+                    Title = Title + "-STANDARD"
                     this.reportid = "v1NmCNitQqzEuvy2";
 
                     break;
 
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid  = "EUpoRvslDL2jReMC"
                 break;
         }
@@ -16465,16 +16499,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "A1mesTZmNX4TwwUC";
                 break;
             case "Standard":
-                        Title = Title + "-Standard"
+                        Title = Title + "-STANDARD"
                         this.reportid = "2VHpFTSnZibjrd8b";
 
                         break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "ML1Lx7IY0KXwlJdd"
                 break;
         }
@@ -16866,18 +16900,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "pt03dt4gX7njbIcj";
 
                 break;
             case "Standard":
-                        Title = Title + "-Standard"
+                        Title = Title + "-STANDARD"
                         this.reportid = "IOtbWNxPenbpSQql";
 
                         break;
 
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = "9PRBcDXyREab0Qke"
                 break;
         }
@@ -17372,16 +17406,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         switch (format) {
             case "Detailed":
-                Title = Title + "-Detail"
+                Title = Title + "-DETAIL"
                 this.reportid = "MXXQYfoclIO6RAj0";
                 break;
             case "Standard":
-                //Title = Title + "-Standard"
+                //Title = Title + "-STANDARD"
                 this.reportid = " ";
 
                 break;
             default:
-                Title = Title + "-Summary"
+                Title = Title + "-SUMMARY"
                 this.reportid = " "
                 break;
         }

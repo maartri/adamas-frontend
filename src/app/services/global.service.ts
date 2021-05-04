@@ -103,9 +103,12 @@ export const incidentSeverity: string[] = ["LOW", "MEDIUM", "HIGH"];
 export const statuses: Array<string> = ['', 'CASUAL', 'CONTRACT', 'FULL TIME CONTRACT', 'FULL TIME PERMANENT', 'PART TIME CONTRACT', 'PART TIME PERMANENT'];
 export const contactGroups: Array<string> = ['1-NEXT OF KIN', '2-CARER', '3-MEDICAL', '4-ALLIED HEALTH', '5-HEALTH INSURANCE', '6-POWER OF ATTORNEY', '7-LEGAL OTHER', '8-OTHER'];
 
+
+
 @Injectable()
 export class GlobalService {
-
+var1 = 'value1'
+var2 = 'value2'
     constructor(
         private router: Router,
         private toastr: ToastrService,

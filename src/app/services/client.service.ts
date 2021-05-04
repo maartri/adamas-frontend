@@ -16,6 +16,10 @@ export class ClientService {
         private auth: AuthService
     ) { }
 
+    getnotepermissions(id: string): Observable<any>{
+        return this.auth.get(`${client}/note-permissions/${id}`);
+    }
+
     getuserinfoname(accountNo: string): Observable<any>{
         return this.auth.get(`${client}/userinfo-name/${accountNo}`);
     }
@@ -170,8 +174,24 @@ export class ClientService {
         return this.auth.get(`${client}/opnotes/${id}`)
     }
 
+    getopnoteswithfilters(id: string, data: any): Observable<any> {
+        return this.auth.post(`${client}/opnotes-with-filters/${id}`, data);
+    }
+
     getopnoteswithdate(data: any): Observable<any> {
         return this.auth.get(`${client}/opnotes-dates`, data);
+    }
+
+    getcasenotes(id: string): Observable<any> {
+        return this.auth.get(`${client}/casenotes/${id}`);
+    }
+
+    getcasenoteswithfilters(id: string, data: any): Observable<any> {
+        return this.auth.post(`${client}/casenotes-with-filters/${id}`, data);
+    }
+
+    getcasenoteswithdate(data: any): Observable<any> {
+        return this.auth.get(`${client}/casenotes-dates`, data);
     }
 
     updateopnotes(data: any, recordNo: string): Observable<any> {
@@ -208,10 +228,6 @@ export class ClientService {
 
     gethistory(name: string): Observable<any> {
         return this.auth.get(`${client}/history/${name}`);
-    }
-
-    getcasenotes(id: string): Observable<any> {
-        return this.auth.get(`${client}/casenotes/${id}`);
     }
 
     updatecasenotes(data: any, id: number): Observable<any> {

@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { HttpParams } from '@angular/common/http';
 
 import { CallDeceaseProcedure, CallReferralOutProcedure } from '@modules/modules';
+import { PackageClient } from '@client/package';
 
 const list: string = "api/list"
 const docSign: string = "api/docusign"
@@ -19,6 +20,30 @@ export class ListService {
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+
+    getreferraltype_latest(packageName: string): Observable<any> {
+        return this.auth.get(`${list}/referral-type/${packageName}`);
+    }
+
+    checkIfPackageNameExists(packageName: string): Observable<any> {
+        return this.auth.get(`${list}/check-package-name-exist/${packageName}`);
+    }
+
+    getdexprograms(personID: string): Observable<any> {
+        return this.auth.get(`${list}/dex-programs/${personID}`);
+    }
+
+    getotherprograms(personID: string): Observable<any> {
+        return this.auth.get(`${list}/other-programs/${personID}`);
+    }    
+
+    gethcpprograms(): Observable<any> {
+        return this.auth.get(`${list}/hcp-programs`);
+    }
+
+    getndiaprograms(): Observable<any> {
+        return this.auth.get(`${list}/ndia-programs`);
+    }
 
     getclientportalmethod(): Observable<any>{
         return this.auth.get(`${list}/clientportalmethod`);
@@ -479,7 +504,7 @@ export class ListService {
     }    
 
     getlistquotes(data: any): Observable<any>{
-        return this.auth.get(`${list}/quotes`, data)
+        return this.auth.post(`${list}/quotes`, data)
     }
 
     postloan(data: any, personID: string): Observable<any>{

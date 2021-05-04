@@ -1,14 +1,17 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
-import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure } from '../../modules/modules';
-import { ListService, GlobalService, quantity, unit } from '@services/index';
+import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, CallProcedure } from '../../modules/modules';
+import { ListService, GlobalService, quantity, unit, dateFormat } from '@services/index';
 import { SqlWizardService } from '@services/sqlwizard.service';
 
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import {mergeMap,takeUntil,debounceTime, distinctUntilChanged, map, switchMap, skip, startWith } from 'rxjs/operators';
-import { EMPTY, combineLatest, Observable } from 'rxjs';
+import { EMPTY, combineLatest, Observable, of } from 'rxjs';
 import { startsWith } from 'lodash';
+import { Subject } from 'rxjs';
+import * as _ from 'lodash';
 
+import format from 'date-fns/format';
 
 // import * as RECIPIENT_OPTION from '../../modules/modules';
 
@@ -39,10 +42,37 @@ const NOTE_TYPE: { } = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy {
+  private unsubscribe$ = new Subject()
 
   @Input() open: any;
   @Input() option: RECIPIENT_OPTION;
   @Input() user: any;
+
+  dateFormat: string = dateFormat;
+
+  referralRadioValue: any;
+  referralCheckOptions: Array<any> = [
+    {
+      name: 'NDIA Referral',
+      index: 1,
+      checked: false
+    },
+    {
+      name: 'HCP Referral',
+      index: 2,
+      checked: false
+    },
+    {
+      name: 'DEX Referral',
+      index: 3,
+      checked: false
+    },
+    {
+      name: 'Other',
+      index: 4,
+      checked: false
+    }
+  ]
 
   CURRENT_DATE: Date = new Date();
 
@@ -116,14 +146,22 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   dischargeReason$: Observable<any>;
   cancellationCode$: Observable<any>;
   referralCode$: Observable<any>;
+  referralType$: Observable<any>;
   referralSource$: Observable<any>;
   
   globalFormGroup: FormGroup;
+
+  newReferralUser: any;
   
   quantity: Array<any> = quantity;
   unit: Array<any> = unit;
 
+  programs: Array<any> = [];
   token: UserToken;
+
+  date: any;
+
+  originalPackageName: string;
 
   constructor(
     private listS: ListService,
@@ -137,16 +175,28 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     this.buildForm();
     this.token = this.globalS.decode();
 
-    console.log(this.user);
+    this.date = format(new Date(), 'MM-dd-yyyy');
+    // console.log(this.user);
+
+    
   }  
 
   ngOnDestroy(){
-    console.log('out')
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
+        // this.newReferralUser = changes[property].currentValue;
+
+        // console.log(this.option)
+        // console.log(this.user);
+        // console.log(this.newReferralUser)
+
+        // if(!_.isEmpty(this.newReferralUser)){
+        //   this.user = this.newReferralUser;
+        // }
+
         this.buildForm();
         this.populate();
         this.populateList();
@@ -369,11 +419,103 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     });
 
     this.referInGroup = this.fb.group({
+      type: null,
+      packageName: null,
       programs: this.fb.array([]),
+
+      referralSource: null,
+      referralCode: null,
+      referralType: null,
+
+      date: new Date(),
+      time: new Date(),
+      timeSpent: new Date().setHours(0, 15),
+
+      radioGroup: 'case',
+      notes: `NDIA REFERRAL/INQUIRY FROM : Morganica Abbots
+Phone : 0403734758
+Address : 151 Dobie St GRAFTON
+
+NOTES:
+`,
+      caseCategory: 'REFERRAL-IN',
+      publishToApp: false,
+
+      reminderDate: null,
+      reminderTo: null,
+      emailNotif: null,
+      multipleStaff: null
     });
 
   }
 
+  mutateToCheckboxes(list: Array<any>): Array<any> {
+    return list.map(x => {
+      return {
+        name: x
+      }
+    })
+  }
+
+  selectedProgram: any;
+  selectedProgramChange(name: any){
+    this.selectedProgram = name;
+    console.log(name)
+    const { type } = this.referInGroup.getRawValue();
+
+    if(type == 2){
+      const level = name.trim().split(' ')[1];
+      this.referInGroup.patchValue({
+        packageName: `HCP-L${level}-${this.user.code}`
+      });
+    }
+
+  }
+
+  referralInChange(index: any){
+
+    if(index == 1){
+      this.listS.getndiaprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {        
+        this.programs = this.mutateToCheckboxes(data);
+        this.changeDetection();
+      });
+
+      this.originalPackageName  =`NDIA-${this.user.code}`;
+
+      this.referInGroup.patchValue({
+        packageName: this.originalPackageName
+      });
+    }
+
+    if(index == 2){
+      this.listS.gethcpprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
+        this.programs = data;
+        this.changeDetection();
+      })
+
+      this.originalPackageName = `HCP-L1-${this.user.code}`;
+
+      this.referInGroup.patchValue({
+        packageName: this.originalPackageName
+      });
+    }
+
+    if(index == 3){
+      this.listS.getdexprograms(this.user.id).pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
+        this.programs = this.mutateToCheckboxes(data);
+        this.changeDetection();
+      });
+    }
+
+    if(index == 4){
+      this.listS.getotherprograms(this.user.id).pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
+        this.programs = this.mutateToCheckboxes(data);
+        this.changeDetection();
+      });
+    }
+  }
+
+  isPackageNameAvailable: boolean = null;
   VALUE_CHANGES(){
     
     if(this.option == RECIPIENT_OPTION.DISCHARGE){
@@ -397,6 +539,23 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     if(this.option == RECIPIENT_OPTION.ITEM){
       this.noteArray = ['ITEM'];
       this.itemGroup.get('caseCategory').disable();
+      return;
+    }
+
+    if(this.option == RECIPIENT_OPTION.REFER_IN){
+      this.noteArray = ['REFERRAL-IN'];
+      this.referInGroup.get('caseCategory').disable();
+
+      this.referInGroup.get('packageName')
+          .valueChanges
+          .pipe(
+            distinctUntilChanged(),
+            debounceTime(200),
+            switchMap(x => this.listS.checkIfPackageNameExists(x))
+          )
+          .subscribe(data => {
+            this.isPackageNameAvailable = data;
+          });
       return;
     }
     
@@ -429,6 +588,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         });
   }
 
+  IsNDIAorHCP(): boolean {
+    return this.referInGroup.get('type').value == 1 || this.referInGroup.get('type').value == 2;
+  }
+
   done(){
 
     var finalRoster: Array<ProcedureRoster> = [];
@@ -442,7 +605,121 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
 
     if(this.option == RECIPIENT_OPTION.REFER_IN){
-      console.log(this.referInGroup.value)
+      
+
+      const { 
+        referralSource,
+        referralCode,
+        referralType,
+        packageName,
+        radioGroup,
+        notes,
+        date,
+        time,
+        timeSpent,
+        caseCategory,
+        publishToApp,
+      } = this.referInGroup.getRawValue();
+
+      const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+      const timeInMinutes = this.globalS.getMinutes(timeSpent)
+      const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
+
+      const defaultValues = {
+        // '' is the default
+        billDesc: '',
+
+        // 7 for everything except 14 for item
+        type: 7,
+
+        // 2 is the default,
+        rStatus: '2',
+
+        // HOUR is the default     
+        billUnit: 'HOUR',
+
+        // 0 is the default  
+        billType: '0',
+
+        // '' is the default
+        payType: '',
+
+        // '' is the default
+        payRate: '',
+
+        // '' is the default
+        payUnit: '',
+
+        // '' is the default
+        apInvoiceDate: '',
+
+        // '' is the default
+        apInvoiceNumber: '',
+
+        // 0 is default
+        groupActivity: '0',
+
+        // '' is the default
+        serviceSetting: ''
+    }
+
+
+      let program: ProcedureRoster = {
+        clientCode: this.user.code,
+        carerCode: this.token.code,
+
+        serviceType: referralType,
+        date: format(date,'yyyy/MM/dd'),
+        time: format(time,'HH:mm'),
+
+        creator: this.token.code,
+        editer: this.token.user,
+
+        billUnit: defaultValues.billUnit,
+        billDesc: defaultValues.billDesc,
+        agencyDefinedGroup: this.user.agencyDefinedGroup,
+        referralCode: referralCode,
+        timePercent: timePercentage,
+        notes: notes || "",
+        type: defaultValues.type,
+        duration: timeInMinutes / 5,
+        blockNo: blockNoTime,
+        reasonType: '',
+
+        tabType: 'REFERRAL-IN',
+        program: packageName,
+        packageStatus: 'REFERRAL'
+      }
+
+      finalRoster.push(program);
+      
+      const data: CallProcedure = {
+        isNDIAHCP: this.IsNDIAorHCP(),
+        oldPackage: this.originalPackageName,
+        newPackage: packageName,
+        roster: finalRoster,
+        staffNote: {
+          personId: this.user.id,
+          program: 'VARIOUS',
+          detailDate: format(new Date,'yyyy/MM/dd'),
+          extraDetail1: 'ss',
+          extraDetail2: 'REFERRAL-IN',
+          whoCode: this.user.code,
+          publishToApp: publishToApp ? 1 : 0,
+          creator: this.token.user,
+          note: notes || "" ,
+          alarmDate: format(new Date,'yyyy/MM/dd'),
+          reminderTo: 'ss'
+        }
+      }
+      
+
+      this.listS.postreferralin(data).subscribe(x => {
+        this.globalS.sToast('Success', 'Package is saved'); 
+        this.handleCancel();
+      });
+
+
     }
 
     if(this.option == RECIPIENT_OPTION.REFER_ON){
@@ -506,9 +783,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
       const timeInMinutes = this.globalS.getMinutes(timeSpent)
       const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString()
+      
 
       for(var checkProgram of checkedPrograms){
-        console.log(checkProgram);
+
         let data: ProcedureRoster = {
               clientCode: this.user.code,
               carerCode: this.token.code,
@@ -523,7 +801,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               agencyDefinedGroup: this.user.agencyDefinedGroup,
               referralCode: '',
               timePercent: timePercentage,
-              Notes: notes,
+              notes: notes,
               type: 7,
               duration: timeInMinutes / 5,
               blockNo: blockNoTime,
@@ -574,6 +852,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       for(var checkProgram of checkedPrograms){
         let data: ProcedureRoster = {
+
             clientCode: this.user.code,
             carerCode: this.token.code,
             serviceType: referralType,
@@ -593,7 +872,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
             timePercent: quantity.toString(),
             costUnit: unit,
 
-            Notes: `${caseCategory}-${notes}`,
+            notes: `${caseCategory}-${notes}`,
             billDesc: `${notes}`,
             unitBillRate: charge,
 
@@ -632,8 +911,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           }
       }
 
-      console.log(data);
-
       this.listS.postitem(data).subscribe(data => {
           this.globalS.sToast('Success','Item Added');
       });
@@ -651,25 +928,26 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
       this.whatOptionVar = {};
       this.loadPrograms = true;
-
+      // console.log(this.user);
+      // console.log()
       switch(this.option){
         case RECIPIENT_OPTION.REFER_IN:
-          this.listS.getwizardprograms(this.user.id).subscribe(data => {
-            this.whatOptionVar = {
-              title: 'Referral In Wizard',
-              wizardTitle: '',
-              programsArr: data.map(x => {
-                  return {
-                      program: x.program,
-                      type: x.type,
-                      status: false,
-                  }
-              })
-            }
+          // this.listS.getwizardprograms(this.user.id).subscribe(data => {
+          //   this.whatOptionVar = {
+          //     title: 'Referral In Wizard',
+          //     wizardTitle: '',
+          //     programsArr: data.map(x => {
+          //         return {
+          //             program: x.program,
+          //             type: x.type,
+          //             status: false,
+          //         }
+          //     })
+          //   }
 
-            this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.REFER_IN);
-            this.changeDetection();
-          })
+          //   this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.REFER_IN);
+          //   this.changeDetection();
+          // })
           break;
         case RECIPIENT_OPTION.REFER_ON:
           this.listS.getlist(`SELECT DISTINCT UPPER(rp.[Program]) AS Program, hr.[type] FROM RecipientPrograms rp INNER JOIN HumanResourceTypes hr ON hr.NAME = rp.program WHERE rp.PersonID = '${this.user.id}' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''                 `)
@@ -972,6 +1250,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       var prog = this.referInGroup.get('programs') as FormArray;
       data.programsArr.map(x => prog.push(this.createProgramForm(x)));
       this.globalFormGroup = this.referInGroup;
+
+      
+      this.noteArray = ['REFERRAL-IN'];
+      return;
     }
 
     this.changeDetection();
@@ -1021,8 +1303,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   next() {
-
-    // console.log(this.checkedPrograms)
+    
     if(this.adminOpen){
       if(this.current < 4){
         this.current += 1;
@@ -1102,6 +1383,45 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   populateOtherDetails(){
 
+    if(this.option == RECIPIENT_OPTION.REFER_IN)
+    {
+      this.referralCode$ = this.listS.getwizardreferralcode();
+
+      if(this.referInGroup.get('type').value == 1){
+        this.referralSource$ = of(['NDIA']);
+        this.referInGroup.patchValue({
+          referralSource: 'NDIA'
+        });       
+      }
+
+      if(this.referInGroup.get('type').value == 2 || this.referInGroup.get('type').value == 3){
+        this.referralSource$ = of(['My Aged Care Gateway']);
+        this.referInGroup.patchValue({
+          referralSource: 'My Aged Care Gateway'
+        });
+      }   
+
+      if(this.referInGroup.get('type').value == 4){
+        this.referralSource$ = of(['OTHER']);
+        this.referInGroup.patchValue({
+          referralSource: 'OTHER'
+        });
+      }
+
+      this.referralType$ = this.listS.getreferraltype_latest(this.selectedProgram)
+          .pipe(
+              switchMap(x => {
+                if(x.length == 1){
+                  this.referInGroup.patchValue({
+                    referralType: x[0]
+                  });
+                }
+                return of(x);
+              })
+          );
+      return;
+    }
+
     if(this.option == RECIPIENT_OPTION.REFER_ON)
     {
       this.referralSource$ = this.listS.getwizardreferralsource('default');
@@ -1142,9 +1462,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       }
       this.itemTypes$ = this.sqlWiz.GETREFERRALTYPE_V2(_input);
     }
-    // this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
+    
+
     this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
-    console.log(this.checkedPrograms);
   }
   
 
@@ -1157,6 +1477,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   get canGoNext(): boolean {
+    if(this.option == RECIPIENT_OPTION.REFER_IN){
+      if(this.isPackageNameAvailable){
+        return false;
+      }
+    }
     return true;
   }
 
@@ -1166,9 +1491,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   handleClose(){
       // this.option = null;
-
       // this.open = false;
-
       // this.itemOpen = false;
       // this.adminOpen = false;
       // this.deceaseOpen = false;
@@ -1185,7 +1508,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   handleCancel() {
       this.open = false;
-
       this.itemOpen = false;
       this.adminOpen = false;
       this.deceaseOpen = false;
@@ -1198,6 +1520,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.notProceedOpen = false;
       this.referOnOpen = false;
       this.referInOpen = false;
+
+      this.changeDetection();
   }
 
   handleOk() {

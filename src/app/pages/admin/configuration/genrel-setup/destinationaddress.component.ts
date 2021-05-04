@@ -36,6 +36,7 @@ export class DestinationaddressComponent implements OnInit {
   check : boolean = false;  
   userRole:string="userrole";
   whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -155,7 +156,7 @@ export class DestinationaddressComponent implements OnInit {
         end_date:endDate,
         recordNumber:recordNumber,
       });
-      
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -166,7 +167,7 @@ export class DestinationaddressComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
-        let name        = group.get('name').value.trim();
+        let name        = group.get('name').value.trim().uppercase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -200,8 +201,17 @@ export class DestinationaddressComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
+        let name        = group.get('title').value.trim().uppercase();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+        }
         let type     = "'DESTINATION'";
-        let name     = this.globalS.isValueNull(group.get('name').value);
+        name     = this.globalS.isValueNull(group.get('name').value);
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
         let suburb   = this.globalS.isValueNull(group.get('suburb').value);

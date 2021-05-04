@@ -25,7 +25,7 @@
 
 <nz-modal [(nzVisible)]="phoneModal" nzTitle="Phone Search" [nzFooter]="modalFooter" (nzOnCancel)="clearPhoneModal()">
     <div nz-row>
-        <input nz-input placeholder="Phone #" [(ngModel)]="phoneSearch" />
+        <input nz-input placeholder="Phone #" [(ngModel)]="phoneSearch"  (keyup.enter)="searchPhone()" />
         <button nz-button nzType="primary" (click)="searchPhone()" nzShape="circle"><i nz-icon nzType="search"></i></button>
     </div>
 
@@ -37,6 +37,6 @@
 
     <ng-template #modalFooter>
         <button nz-button nzType="default" (click)="clearPhoneModal()">Cancel</button>
-        <button nz-button nzType="primary" (click)="gotoRecipient()">Submit</button>
+        <button nz-button nzType="primary" (click)="gotoRecipient()">Select</button>
     </ng-template>
 </nz-modal>

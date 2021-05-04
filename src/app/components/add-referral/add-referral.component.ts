@@ -1,12 +1,12 @@
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap } from 'rxjs/operators';
 
 import * as moment from 'moment';
 import { RemoveFirstLast } from '@pipes/pipes';
-import { TimeSheetService, GlobalService, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
 
 @Component({
@@ -25,6 +25,8 @@ export class AddReferralComponent implements OnInit {
   @Output() openRefer = new EventEmitter();
 
   referralGroup: FormGroup;
+
+  dateFormat: string = dateFormat;
 
   genderArr: Array<string> = gender
   typesArr: Array<string> = types
@@ -45,7 +47,6 @@ export class AddReferralComponent implements OnInit {
   private contacts: FormArray;
 
   current: number = 0;
-  dateFormat: string = 'dd/MM/yyyy';
   generatedAccount: string;
   accountTaken: boolean;
 
@@ -53,7 +54,8 @@ export class AddReferralComponent implements OnInit {
     private clientS: ClientService,
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
-    private listS: ListService
+    private listS: ListService,
+    private cd: ChangeDetectorRef
   ) {
 
   }
@@ -66,6 +68,7 @@ export class AddReferralComponent implements OnInit {
       concatMap(e => {
         if (this.referralGroup && this.referralGroup.valid) {
           this.generatedAccount = this.generateAccount();
+          this.cd.markForCheck();
           return this.clientS.isAccountNoUnique(this.generatedAccount);
         } return EMPTY;
       })
@@ -76,9 +79,14 @@ export class AddReferralComponent implements OnInit {
         this.referralGroup.patchValue({
           accountNo: this.generatedAccount
         });
+        this.cd.markForCheck();
       }
       if (next == 0) {
         this.accountTaken = true;
+        this.referralGroup.patchValue({
+          accountNo: this.generatedAccount
+        });
+        this.cd.markForCheck();
       }
     });
   }
@@ -102,7 +110,7 @@ export class AddReferralComponent implements OnInit {
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),
-      middlename: new FormControl('', Validators.required),
+      middlename: new FormControl(''),
       tempaccountName: new FormControl(''),
       appendName: new FormControl(''),
       accountNo: new FormControl(''),
@@ -159,11 +167,11 @@ export class AddReferralComponent implements OnInit {
         this.verifyAccount.next();
       });
     
-    this.referralGroup.get('middlename').valueChanges
-      .pipe(debounceTime(300))
-      .subscribe(data => {
-        this.verifyAccount.next();
-      });
+    // this.referralGroup.get('middlename').valueChanges
+    //   .pipe(debounceTime(300))
+    //   .subscribe(data => {
+    //     this.verifyAccount.next();
+    //   });
 
     this.referralGroup.get('gender').valueChanges
       .pipe(debounceTime(300))
@@ -253,7 +261,7 @@ export class AddReferralComponent implements OnInit {
     const fname = (this.referralGroup.get('firstname').value).trim();
     const lname = (this.referralGroup.get('lastname').value).trim();
     const birthdate = this.referralGroup.get('dob').value ? moment(this.referralGroup.get('dob').value).format('YYYYMMDD') : '';
-    const gender = this.referralGroup.get('gender').value ? ' (' + (this.referralGroup.get('gender').value).trim()[0] + ') ' : '';
+    const gender = this.referralGroup.get('gender').value ? ' (' + (this.referralGroup.get('gender').value).trim()[0] + ')' : '';
 
     var _account = this.type === 'referral' ? lname + ' ' + fname + gender + ' ' + birthdate : (this.referralGroup.get('organisation').value).trim();
     return _account.toUpperCase() || '';
@@ -277,36 +285,40 @@ export class AddReferralComponent implements OnInit {
         return new RemoveFirstLast().transform(x.description)
       });
     })
-    this.listS.getlistbranches().subscribe(data => this.branches = data);
-    this.clientS.getmanagers().subscribe(data => this.managers = data);
-    this.listS.getserviceregion().subscribe(data => this.agencies = data);
+    this.listS.getlistbranches().subscribe(data => this.branches = data.map(x => x.toUpperCase()));
+    this.clientS.getmanagers().subscribe(data => this.managers = data.map(x => {
+        x['description'] =  x['description'].toUpperCase();
+        return x;
+    }));
+    this.listS.getserviceregion().subscribe(data => this.agencies = data.map(x => x.toUpperCase()));
   }
 
   add() {
+
     this.referralGroup.controls["dob"].setValue(this.referralGroup.value.dob ? moment(this.referralGroup.value.dob).format() : '')
-    var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
-    this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
+    // var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
+    // this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
 
     this.filterContacts(<FormArray>this.referralGroup.controls.contacts);
     this.filterAddress(<FormArray>this.referralGroup.controls.addresses);
-
-    console.log(this.referralGroup.value);
     
-    this.openRefer.emit({
-      address: "",
-      agencyDefinedGroup: "KYOGLE",
-      code: "SSSD ASDD (M)  20200620",
-      contact: "",
-      id: "T0100005782",
-      view: "recipient"
-    });
+    // this.openRefer.emit({
+    //   address: "",
+    //   agencyDefinedGroup: "KYOGLE",
+    //   code: "SSSD ASDD (M)  20200620",
+    //   contact: "",
+    //   id: "T0100005782",
+    //   view: "recipient"
+    // });
 
-    // this.clientS.postprofile(this.referralGroup.value)
-    //   .subscribe(data => {
-    //     this.handleCancel();
-    //     this.openRefer.emit(data);
-    //     this.globalS.sToast('Success', 'Recipient Added')        
-    //   });
+    // return;
+
+    this.clientS.postprofile(this.referralGroup.value)
+      .subscribe(data => {
+        this.handleCancel();
+        this.openRefer.emit(data);
+        this.globalS.sToast('Success', 'Recipient Added')        
+      });
   }
 
   clearFormArray = (formArray: FormArray) => {

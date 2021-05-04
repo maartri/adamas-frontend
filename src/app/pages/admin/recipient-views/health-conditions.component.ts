@@ -35,6 +35,7 @@ export class HealthConditionsComponent implements OnInit {
     whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
     private unsubscribe: Subject<void> = new Subject();
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  temp_title: any;
   
     constructor(
     private globalS: GlobalService,
@@ -88,6 +89,7 @@ export class HealthConditionsComponent implements OnInit {
           end_date:end_date,
           recordNumber:recordNumber,
         });
+        this.temp_title=name;
     }
     
     handleCancel() {
@@ -131,7 +133,7 @@ export class HealthConditionsComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      let name        = group.get('name').value.trim();
+      let name        = group.get('name').value.trim().uppercase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -162,6 +164,15 @@ export class HealthConditionsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
+          let name        = group.get('name').value.trim().uppercase();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
           this.switchS.updateData(  
             this.modalVariables={
               title: 'Health Conditions'

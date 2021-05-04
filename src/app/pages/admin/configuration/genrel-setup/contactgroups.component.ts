@@ -38,6 +38,7 @@ export class ContactgroupsComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -113,6 +114,7 @@ export class ContactgroupsComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber
       });
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -129,7 +131,7 @@ export class ContactgroupsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        let name        = group.get('name').value.trim();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -141,7 +143,7 @@ export class ContactgroupsComponent implements OnInit {
             title: 'Contact Group'
           }, 
           this.inputVariables = {
-            display: group.get('name').value,
+            display: group.get('name').value.trim().toUpperCase(),
             end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             domain: 'CONTACTGROUP', 
           }
@@ -158,12 +160,21 @@ export class ContactgroupsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
+          let name        = group.get('name').value.trim().uppercase();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
           this.switchS.updateData(  
             this.modalVariables={
               title: 'Contact Group'
             }, 
             this.inputVariables = {
-              display: group.get('name').value,
+              display: group.get('name').value.trim().uppercase(),
               end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
               primaryId:group.get('recordNumber').value,
               domain: 'CONTACTGROUP',

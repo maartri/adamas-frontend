@@ -1,28 +1,33 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef } from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time } from '@angular/common';
-import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+//import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
+//import dayGridPlugin from '@fullcalendar/daygrid';
+//import timeGridPlugin from '@fullcalendar/timegrid';
+//import interactionPlugin from '@fullcalendar/interaction';ng build
 //import { forkJoin,  Subject ,  Observable, EMPTY } from 'rxjs';
 import { forkJoin, Subscription, Observable, Subject, EMPTY, of,fromEvent, } from 'rxjs';
 
 import {debounceTime, distinctUntilChanged, takeUntil,mergeMap, concatMap, switchMap,buffer,map, bufferTime, filter} from 'rxjs/operators';
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzRadioModule  } from 'ng-zorro-antd/radio';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import * as _ from 'lodash';
 
 
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { NzStepsModule, NzStepComponent } from 'ng-zorro-antd/steps';
 
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
-import addMinutes from 'date-fns/addMinutes';
-import isSameDay from 'date-fns/isSameDay';
+
+//import parse from 'date-fns/parse';
 import { PROCESS } from '../../modules/modules';
 
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO'
+import addMinutes from 'date-fns/addMinutes'
+import isSameDay from 'date-fns/isSameDay'
+import { isValid } from 'date-fns';
 
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
@@ -31,6 +36,7 @@ import * as moment from 'moment';
 import * as $ from 'jquery';
 import { SpreadSheetsModule } from '@grapecity/spread-sheets-angular';
 import * as GC from "@grapecity/spread-sheets";
+
 
 interface AddTimesheetModalInterface {
     index: number,
@@ -45,30 +51,40 @@ interface AddTimesheetModalInterface {
 })
 
 
-
-
-export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
+export class RostersAdmin  {
     spreadBackColor = "white";  
-    sheetName = "Roster List";  
+    sheetName = "Staff Rosters";  
     hostStyle = {  
-      width: '2000px',
-      height: '1600px',
-      overflow: 'hidden',
+      width: '100%',     
+      height: '1000px',
+      overflow: 'auto',
       float: 'left'
     };  
+  //  @ViewChild('password', { static: true }) static: ElementRef<HTMLDivElement>;
+ //   @ViewChild("password", { static: true }) password: ElementRef;
+ //   @ViewChild("confirmPassword", { static: true }) confirmPassword: ElementRef;
     // @ViewChild('calendar', { static: false }) calendarComponent: FullCalendarComponent;
 
     // references the #calendar in the template
-    @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+//    @ViewChild('calendar') calendarComponent: FullCalendarComponent;
 
+timesheets: Array<any> = [];
+timesheetsGroup: Array<any> = [];   
+defaultProgram: any = null;
+defaultActivity: any = null;
+defaultCategory: any = null;
+    
+payTotal:any;
+ Days_View:number=31;
     data:any=[];  
-  rosters:any=[];
+  //rosters:any=[];
+  rosters: Array<any> = [];
   current_roster:any;
   time_map = new Map();
-
-  prev_cell:any = {row:0,col:0,duration:0} 
-  cell_value:any = {row:0,col:0,duration:0} 
-  copy_value:any = {row:0,col:0,duration:0, recordNo:0} 
+  Already_loaded:boolean=false;
+  prev_cell:any = {row:0,col:0,duration:0, type:0, recordNo:0} 
+  cell_value:any = {row:0,col:0,duration:0, type:0,recordNo:0} 
+  copy_value:any = {row:0,col:0,duration:0, type:0,recordNo:0} 
 
   bodyText:string;
   recipientDetailsModal:boolean=false;
@@ -83,14 +99,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     
     enable_buttons :boolean=false;
     
-    private picked$: Subscription;
-    
-    defaultCategory:string;
-    defaultActivity:string;
-    defaultProgram:string;
-    showDone:boolean;
-   
-  
+    private picked$: Subscription;   
 
     changeModalView = new Subject<number>();
     changeViewRecipientDetails = new Subject<number>();
@@ -104,56 +113,20 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     rosterGroup: string;
     rosterForm: FormGroup;
     viewType: any;
+    start_date:string="";
+    end_date:string=""
     ForceAll:Boolean=true;
     subGroup:String="";
     RosterDate:String="";
     StartTime:String="";
     EndTime:String=""
     Duration:String="5";
-
-    calendarOptions: CalendarOptions = {
-        initialView: 'timeGridMonth',
-        plugins: [dayGridPlugin,timeGridPlugin,interactionPlugin],
-        weekends: true,
-        allDaySlot: false,
-        fixedWeekCount: false,
-        editable: false,
-        eventStartEditable: false,
-        eventResizableFromStart: false,
-        duration: {
-            months: 1           
-        },
-        // eventClassNames: [ 'myclassname', 'otherclassname' ],
-        // eventContent: { html: '<i>some html</i>' },
-        // eventDidMount: this.rightClick.bind(this),
-
-
-        headerToolbar: {
-            left: '',
-            center: '',
-            right: ''
-        },
-        events: [],
-        height:'100%',
-        scrollTime: '',
-        slotMinTime: '07:00:00',
-        select: function(info){
-
-        },
-        eventClick: this.handleClick.bind(this),
-        views: {
-            timeGridMonth: {
-              type: 'timeGrid',
-              duration: { 
-                  month: 1
-              },
-              dayHeaderFormat: { day: '2-digit' },
-
-              slotDuration: '00:05:00',
-              buttonText: '4 day',              
-            }
-        }        
-    };
+    val1:boolean=false;
+    val2:boolean=false;
+    val3:boolean=true;
+    val4:boolean=false;
+    master:boolean=false;
+    
 
     
  DayOfWeek(n:number): String{
@@ -172,39 +145,51 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
   
   }
   load_rosters(){
-  
-    let day=17;
-    for (let i=0; i<50; i++){
-      let num= Math.floor(Math.random()*10+1);
-      let num2= Math.floor(Math.random()*6+1);
-      num2=num*5
-      day = num;
-      let time:any= this.numStr(num) + ":" + this.numStr(num2);
-    this.rosters.push({RecordNo:100 +i,
-                      Date:"2021/03/"+day,
-                      Start_Time:time,
-                      Duration:6,
-                      Carer_Code:"Abbas A",
-                      Client_Code:"Darlison S",
-                      Program:"Program-1" +i,
-                      Service_Type:"Service-1" +i,
-                      Service_Description:"Service Description-1",
-                      YearNo:2021,
-                      MonthNo:3,
-                      DayNo:day,
-                      BlockNo:120,
-                      Roster_Type:8,
-                      Status:2,
-                      Service_Setting:"Setting Test" ,
-                      Unit_Pay_Rate:12.5,
-                      Unit_Bill_Rate:15.0,
-                      Notes:"Test Note",
-                      Anal:""
-  
-                    });
+    
+    if (this.rosters==null) return;
+    if (this.rosters.length<=0) return;
+    this.spreadsheet.suspendPaint();
+    let sheet = this.spreadsheet.getActiveSheet()
+    
+    var cell= sheet.getRange(0, 0, 288, 30, GC.Spread.Sheets.SheetArea.viewport)
+    cell.setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
+    if (this.master)
+        cell.backColor("#FF8080");
+    else
+        cell.backColor("white");
+    
+    cell.text("")
+    
+    let row=-1, col=-1;
+    if (this.rosters==null) return;
+    if (this.rosters.length<=0) return;
+    for(var r of this.rosters){
             
-           }
-           console.log(this.rosters);
+        if (r.dayNo>this.Days_View) break;
+
+            col=r.dayNo-1;
+            row = this.getrow(r.start_Time);//self.time_map.get(r.Start_Time); //
+            if (row!=null && col !=null)
+            this.draw_Cells(sheet,row,col,r.duration, r.type, r.recordNo)
+        
+    }
+
+    this.spreadsheet.resumePaint();
+  }
+  
+  setMasterRoster($event:any){
+      console.log("Master Roster")
+      this.master=!this.master;
+      if (this.master)
+        this.date="1900/01/01"
+    else{
+        
+        this.date = moment()
+       
+    }
+    this.searchRoster(this.date);
+     
+    
   }
   spreadsheet:any;
   //MainSpread:any=GC.Spread;
@@ -216,7 +201,9 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
       let sheet = spread.getActiveSheet();  
       //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
   
-      
+      sheet.setRowCount(288, GC.Spread.Sheets.SheetArea.viewport);
+      sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
+
           spread.suspendPaint();
           let spreadNS = GC.Spread.Sheets;
           let self = this;
@@ -224,7 +211,8 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
           
   
           spread.bind(spreadNS.Events.CellClick, function (e: any, args: any) {
-            let row,col, duration=0;
+            let row,col, duration=0,type=0;
+            spread.suspendPaint();
               let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
               self.eventLog =
                   'SpreadEvent: ' + GC.Spread.Sheets.Events.CellClick + ' event called' + '\n' +
@@ -246,7 +234,8 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                  
                   row=self.cell_value.row
                   col=self.cell_value.col
-                  duration=self.cell_value.duration
+                  duration=Number(self.cell_value.duration)
+                  type=self.cell_value.type;
                   } 
                   // duration=10;
                   // Allow selection of multiple ranges
@@ -255,7 +244,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                   // Create two different selection ranges.
                   sheet.addSelection(row, col, duration, 1);
                   
-                  let len =row+duration;
+                  let len =row+Number(duration);
                    // Set border lines to cell(1,1).
                    for (let i=row; i<len; i++){
                   var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
@@ -269,9 +258,35 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
   
                   }
   
-                  self.prev_cell = {row,col,duration};
+                  self.prev_cell = {row,col,duration, type};
+
+                  spread.resumePaint();
           });
-  
+          spread.bind(GC.Spread.Sheets.Events.CellDoubleClick, function (sender, args) {
+            console.log("Double clicked column index: " + args.row + ", " + args.col);
+            //console.log("Double clicked row index: " + args.row);
+            let col= args.col;
+            let row=args.row;
+
+            self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
+            let data:any = self.find_roster(self.cell_value.RecordNo);
+            if (data!=null)
+                self.details(data);
+
+            if(args.sheetArea === GC.Spread.Sheets.SheetArea.colHeader){
+                console.log("The column header was double clicked.");
+            }
+        
+            if(args.sheetArea === GC.Spread.Sheets.SheetArea.rowHeader){
+                console.log("The row header was double clicked.");
+            }
+        
+            if(args.sheetArea === GC.Spread.Sheets.SheetArea.corner){
+                console.log("The corner header was double clicked.");
+            }
+        
+            
+        });
           spread.bind(spreadNS.Events.SelectionChanging, function (e: any, args: any) {
               let selection = args.newSelections.pop();
               let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
@@ -502,6 +517,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                     } else {
                         Commands.startTransaction(context, options);
                         var sheet = spread.getActiveSheet();
+                        spread.suspendPaint()
                         sheet.options.isProtected = false;
                         console.log("Paste Operation")
                         var sels = sheet.getSelections();
@@ -513,7 +529,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                         var value = sheet.getValue(selected_Cell.row, selected_Cell.col);
                      
                         if (self.copy_value.row>=0){
-                          self.draw_Cells(sheet,row,col,self.copy_value.duration)
+                          self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.RecordNo)
                          
                         }
                         if (self.operation==="cut")
@@ -528,6 +544,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
   
                         Commands.endTransaction(context, options);
                         sheet.options.isProtected = true;
+                        spread.resumePaint();
                         return true;
                     }
                 }
@@ -546,6 +563,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                         Commands.startTransaction(context, options);
   
                         var sheet = spread.getActiveSheet();
+                        spread.suspendPaint()
                         console.log("Delete Operation")
                         self.operation="Delete";
                         var sheet = spread.getActiveSheet();
@@ -561,9 +579,10 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                         
                           self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
                         }
-                        self.copy_value={row:-1,col:-1,duration:-1}
+                        self.copy_value={row:-1,col:-1,duration:-1, type:0}
                        
                         Commands.endTransaction(context, options);
+                        spread.resumePaint()
                         return true;
                     }
                 }
@@ -604,76 +623,244 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
   
           spread.resumePaint();
       
-  
-      let date:Date;
-      date= new Date("03/01/2021");
-      for (let i=0; i<=31; i++)   {
-                  
-        sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
-        
-        date.setDate(date.getDate()+1); 
-        var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-        row_header.backColor("#91A6BF");
-        //weekend
-        if (i%6==0 || i%7==0){
-          
-          row_header.backColor("#C6EFEC");
-          row_header.foreColor("Black");
-        }
-      }
-  
-      let time:Time;
-      time={hours:0,
-          minutes:0}
-      for (let j=0; j<288; j++)   {      
+          self.prepare_Sheet();
      
-       
-         if (time.minutes==0){
-          sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
-         }else
-          sheet.setValue(j, 0,  "   : "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
-           
-          sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
-  
-          self.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
-  
-          time.minutes+=5;
-          if (time.minutes==60){
-            time.minutes=0;
-            time.hours+=1;
-          }
-  
-    }
-   
-    let row=-1, col=-1;
-      for(var r of self.rosters){
-        col=r.DayNo-1;
-        row = self.getrow(r.Start_Time);//self.time_map.get(r.Start_Time); //
-        if (row!=null && col !=null)
-        this.draw_Cells(sheet,row,col,r.Duration)
-  
-      }
-    
-  
-    //  let r=5,c=6;
-    //  let duration=6;
-    //  for (let m=0; m<duration; m++)
-    //  if (m==0) {
-    //       sheet.getCell(r+m,c).backColor("blue");        
-    //      }  
-    //      else
-    //       sheet.getCell(r+m,c).backColor("grey");
-  
-          
-       // this.draw_Cells(sheet,7,8,7);
-  
-        this.draw_Cells(sheet,10,10,10);
-  
-        this.draw_Cells(sheet,20,20,10);
-        
           
   }  
   
+  prepare_Sheet(){
+
+   let sheet:any=this.spreadsheet.getActiveSheet(); 
+   this.spreadsheet.suspendPaint();
+   
+    let date:Date = new Date(this.date);
+    let m = date.getMonth()+1;
+    let y=date.getFullYear();
+    let d = date.getDate()-1;
+    
+    date.setDate(date.getDate()-d)  
+    
+    let days:number =this.getDaysInMonth(m,y);
+   if (this.Days_View==31){
+    this.Days_View==days
+   }
+    sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
+  
+  
+
+    for (let i=0; i<=this.Days_View ; i++)   {
+                
+      sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
+      
+      
+      var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
+      row_header.backColor("#476794");
+      if (this.Days_View>=30)
+        sheet.setColumnWidth(i, 40.0,GC.Spread.Sheets.SheetArea.viewport);
+      else if (this.Days_View>=14)
+        sheet.setColumnWidth(i, 70.0,GC.Spread.Sheets.SheetArea.viewport);
+      else 
+        sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
+      
+        //weekend
+      
+      if ((this.DayOfWeek( date.getDay())=="Sa") || (this.DayOfWeek( date.getDay())=="Su")){
+          sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#d1e6e6");
+          sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
+      //row_header.backColor("#D1A6BC");
+     
+      }
+      date.setDate(date.getDate()+1); 
+    }
+
+   // sheet.deleteColumns(days+1,31-days );    
+  
+   if (this.Already_loaded)
+   {
+    this.spreadsheet.resumePaint();
+    return;
+   } 
+
+    let time:Time;
+    time={hours:0,
+        minutes:0}
+        
+    
+
+    for (let j=0; j<288; j++)   {      
+   
+     
+       if (time.minutes==0){
+        sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
+       }else
+        sheet.setValue(j, 0,  "   : "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
+         
+        sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
+
+        this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#083a80");
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#ffffff");
+        sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
+
+        time.minutes+=5;
+        if (time.minutes==60){
+          time.minutes=0;
+          time.hours+=1;
+        }
+        
+  }
+  
+  this.Already_loaded=true;
+  this.spreadsheet.resumePaint();
+  
+
+      
+  }
+
+  set_day_view(d:number)
+  {
+      this.Days_View=d;
+      this.prepare_Sheet();
+      this.load_rosters();
+  }  
+  
+  setIcon(r:number, c:number, type:number) {
+
+    var sheet = this.spreadsheet.getActiveSheet();
+    this.spreadsheet.suspendPaint();
+   sheet.setValue(r,c,Number(type),GC.Spread.Sheets.SheetArea.viewport);
+
+    //var range =[new GC.Spread.Sheets.Range(r,c,r,c+1)]    
+    var iconType=type
+    switch(Number(type)){
+        case 1:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeArrowsGray;
+        break;
+        case 2:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeTriangles
+            break;
+        case 3:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeStars
+            break;
+        case 4:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeFlags
+            break;
+        case 5:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeTrafficLightsUnrimmed
+            break;
+        case 6:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeTrafficLightsRimmed
+            break;
+        case 7:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeSigns
+            break;           
+        case 8:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeSymbolsCircled
+            break;   
+        case 9:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeSymbolsUncircled
+            break;   
+        case 10:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.fourArrowsColored
+            break;
+        case 11:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.fourArrowsGray;;
+            break;        
+         case 12:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.fourRedToBlack
+            break;
+        case 13:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.fourRatings
+            break;
+        case 14:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.fourTrafficLights
+            break; 
+        default:
+            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.fourArrowsColored;
+    }
+    var range =[new GC.Spread.Sheets.Range(r,c,r,c+1)]    
+   
+    var base = GC.Spread.Sheets.ConditionalFormatting.IconSetRule.getIcon;;
+        GC.Spread.Sheets.ConditionalFormatting.IconSetRule.getIcon = function (iconSetType, iconIndex) {
+                            var icon = base.apply(this, arguments);
+                               
+                                if (iconIndex === 0) {
+                                    icon = "/assets/images/r1.png";
+                                } else if (iconIndex === 1){
+                                    icon = "/assets/images/r2.jpg";
+                                } else if (iconIndex === 2) {
+                                    icon =  "/assets/images/r3.png";
+                                }else if (iconIndex === 3) {
+                                    icon =  "/assets/images/r4.png";
+                                }else if (iconIndex === 4) {
+                                    icon =  "/assets/images/r5.png";
+                                }else if (iconIndex === 5) {
+                                    icon =  "/assets/images/r6.png";
+                                }else if (iconIndex === 6) {
+                                    icon =  "/assets/images/r7.png";
+                                }else if (iconIndex === 7) {
+                                    icon =  "/assets/images/r8.png";
+                                }else if (iconIndex === 8) {
+                                    icon =  "/assets/images/r9.png";
+                                }else if (iconIndex === 9) {
+                                    icon =  "/assets/images/r10.jpg";
+                                }else if (iconIndex === 10) {
+                                    icon =  "/assets/images/r11.jpg";
+                                }else if (iconIndex === 11) {
+                                    icon =  "/assets/images/r12.png";
+                                }else if (iconIndex === 12) {
+                                    icon =  "/assets/images/r13.png";
+                                }else if (iconIndex === 13) {
+                                    icon =  "/assets/images/r14.png";
+                                }else if (iconIndex === 14) {
+                                    icon =  "/assets/images/r15.png";
+                                }
+                            
+                            return icon;
+                        };
+        
+    var iconSetRule = new GC.Spread.Sheets.ConditionalFormatting.IconSetRule(iconType,range);
+    var iconCriteria = iconSetRule.iconCriteria();
+    iconCriteria[0] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 1);
+    iconCriteria[1] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 2);
+    iconCriteria[2] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 3);
+    iconCriteria[3] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 4);
+    iconCriteria[4] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 5);
+    iconCriteria[5] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 6);
+    iconCriteria[6] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 7);
+    iconCriteria[7] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 8);
+    iconCriteria[8] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 9);
+    iconCriteria[9] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 10);
+    iconCriteria[10] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 11);
+    iconCriteria[11] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 12);
+    iconCriteria[12] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 13);
+    iconCriteria[13] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 14);
+    
+
+
+//console.log("icon " +  " = " + base )
+//console.log("iconSetRule " + r + " = " + type + "\n" + iconType )
+iconSetRule.reverseIconOrder(false);
+iconSetRule.showIconOnly(false);
+sheet.conditionalFormats.addRule(iconSetRule);
+
+        this.spreadsheet.resumePaint();
+  }
+
+  getDaysInMonth(m:number, y:number):number{
+      let n:number=0;
+      if (m==1 || m==3 || m==5 || m==7 || m==8 || m==10 || m==12) {
+        n=31;
+      }else if (m==2 && y%4==0){
+          n=29;
+      }else if (m==2 ){
+        n=28;
+      }else{
+            n=30;
+       }
+    
+      return n;
+  }
   getrow(starttime:string):number{
    let h,m,r;
     h=Number(starttime.substr(0,2));
@@ -683,29 +870,37 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     return r;
   
   }
-    draw_Cells(sheet:any,r:number, c:number, duration:number){
-      var rowImage = "assets/images/r1.jpg";
-      //sheet.options.isProtected = true;
-      sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
-      this.cell_value ={row:r,col:c,duration:duration};
+    draw_Cells(sheet:any,r:number, c:number, duration:number, type:number, RecordNo:number){
+     
+       
+      this.cell_value ={"row":r,"col":c,"duration":duration, "type":type, "RecordNo":RecordNo};
+      var rowImage = "/assets/images/r1.jpg";
+     
+      sheet.options.isProtected = true;
+      var cell= sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport);
+      cell.setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
+    //   cell.backColor("grey")
+    //   sheet.getCell(r,c).backColor("blue");
+    //   sheet.getCell(r,c).backgroundImage(rowImage)
   
+      
       for (let m=0; m<duration; m++){
       if (m==0) {
-        sheet.getCell(r+m,c).backColor("blue");
-        sheet.getCell(r+m,c).backgroundImage(rowImage)
+        sheet.getCell(r,c).backColor("#4ea0cf");
+       // sheet.getCell(r,c).backgroundImage(rowImage)
+        this.setIcon(r,c,type);
        }  
        else
-        sheet.getCell(r+m,c).backColor("grey");
+        sheet.getCell(r+m,c).backColor("#d7dbd9");
         
         //sheet.getCell(r+m,c).field=duration;
         sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
-        sheet.getRange(r+m, c, 1, 1).tag(this.cell_value);
-  
-       // sheet.getCell(r+m,c).locked(true);
-       //this.addOpenDialog();    
+        sheet.getRange(r+m, c, 1, 1).tag(this.cell_value)
+       }
+
        
-      }
     }
+
     remove_Cells(sheet:any,r:number, c:number, duration:number){
       
       
@@ -723,6 +918,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         //sheet.getCell(r+m,c).field=duration;
         sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(null);
+        sheet.getRange(r+m, c, 1, 1).text("");
   
        // sheet.getCell(r+m,c).locked(true);
        //this.addOpenDialog();    
@@ -736,7 +932,50 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
       return val;
     }
     
-      
+    find_roster(RecordNo:number):any{
+        let rst:any;
+        for(var r of this.rosters)
+       {
+                if (r.recordNo == RecordNo){
+                    rst= r;
+                    break;
+                }
+            
+        } 
+        
+        rst = {
+            "shiftbookNo": r.recordNo,
+            "date": r.roster_Date,
+            "startTime": r.start_Time,
+            "endTime":    r.end_Time,
+            "duration": r.duration,
+            "durationNumber": r.dayNo,
+            "recipient": r.clientCode,
+            "program": r.program,
+            "activity": r.serviceType,
+            "paytype": "",
+            "payquant": "",
+            "payrate": "",
+            "billquant": "",
+            "billrate": 0,
+            "approved": false,
+            "billto": r.billTo,
+            "notes": r.notes,
+            "selected": false,
+            "serviceType": 7,
+            "recipientCode": r.clientCode,
+            "debtor": "ABRAHIM NORMIE",
+            "serviceActivity": "*HCP FEE-PACKAGE ADMINISTRATION",
+            "serviceSetting": "ABRAHIM NORMIE",
+            "analysisCode": "INVERELL",
+            "serviceTypePortal": null,
+            "payType": "CAS OT 1.5"
+        }
+            
+
+    
+    return rst;
+}   
     showRecipient(): boolean  {
         const { serviceType, isMultipleRecipient, isTravelTimeChargeable } = this.rosterForm.value;
         // console.log(serviceType + '' + isTravelTimeChargeable)
@@ -770,36 +1009,36 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
       
-    onRightClick(e){
+    // onRightClick(e){
      
-        e.default=false;
-        this.optionsModal=true;
+    //     e.default=false;
+    //     this.optionsModal=true;
         
-        console.log(this.optionsModal);
-        return false;
-    }
+    //     console.log(this.optionsModal);
+    //     return false;
+    // }
 
-    handleClick(e){
-        console.log(e);
-         this.addTimesheetVisible = true;
-         this.current_roster = this.rosters[1];
-        this.details(this.current_roster);
+    // handleClick(e){
+    //     console.log(e);
+    //      this.addTimesheetVisible = true;
+    //      this.current_roster = this.rosters[1];
+    //     this.details(this.current_roster);
         
       //  this.optionsModal=true;
        // console.log(this.optionsModal);
-    }
+    //}
    
     add_Shift(){
         this.addTimesheetVisible = true;
         this.resetAddTimesheetModal();
         this.AddViewRosterDetails.next(2);
     }
-    calendarPlugins = [dayGridPlugin,timeGridPlugin,interactionPlugin]; // important!
+   // calendarPlugins = [dayGridPlugin,timeGridPlugin,interactionPlugin]; // important!
 
-    someMethod() {
-        let calendarApi = this.calendarComponent.getApi();
-        calendarApi.next();
-    }
+   // someMethod() {
+     //   let calendarApi = this.calendarComponent.getApi();
+       // calendarApi.next();
+    //}
 
     currentDate: string;
 
@@ -912,36 +1151,28 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.whatProcess = PROCESS.UPDATE;
         console.log(index);
         const {
-            shiftbookNo,
-            date,
-            startTime,
-            endTime,
-            duration,
-            durationNumber,
-            recipient,
-            program,
-            activity,
-            paytype,
-            payquant,
-            payrate,
+            activity, 
+            serviceType, 
+            analysisCode, 
+            approved, 
             billquant,
-            billrate,
-            approved,
+            billrate, 
             billto,
-            notes,
-            selected,
-            serviceType,
-            recipientCode,
+            date, 
             debtor,
-            serviceActivity,
-            serviceSetting,
+            duration, 
+            durationNumber,
             serviceTypePortal,
-            analysisCode,
-            payType
-            } = index;
+            recipientCode,
+            startTime,
+            program,
+            payType,
+            shiftbookNo,
+            endTime 
+        } = index;
 
 
-        // this.timesheetForm.patchValue({
+        // this.rosterForm.patchValue({
         //     serviceType: this.DETERMINE_SERVICE_TYPE(index),
         //     date: date,
         //     program: program,
@@ -960,7 +1191,9 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         console.log(this.defaultEndTime)
 
-        this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+         
+         this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+      //  this.durationObject = this.globalS.computeTimeDATE_FNS(startTime, endTime);
 
         setTimeout(() => {
             this.addTimesheetVisible = true;
@@ -970,6 +1203,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.defaultActivity = activity;
             this.defaultCategory = analysisCode;
 
+            
             this.rosterForm.patchValue({
                 serviceType: this.DETERMINE_SERVICE_TYPE(index),
                 date: date,
@@ -984,26 +1218,30 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
             });
         }, 100);
     }
+    ngOnDestroy(): void {  
 
+    }
     ngOnInit(): void {
         this.date = moment();
-        this.buildForm();          
-    
-        this.load_rosters();
-    for (let r=0; r<=288; r++){
+        this.buildForm(); 
         
-        this.data[r]={
+      // this.load_rosters();
+    // for (let r=0; r<=2; r++){
+        
+    //     this.data[r]={
             
-            "Date":"",
-            "time": "r " + r
+    //         "Date":"",
+    //         "time": "r " + r
         
-        }
+    //     }
   
-    }
+    // }
+
+             
+    
 }
 
-    ngOnDestroy(): void {
-    }
+   
     public clickStream;
     private clicks = 0;
 
@@ -1092,56 +1330,14 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
      }
 
   
-     public formEvent(event): void {
-      this.clickStream = fromEvent(event.target, 'click');
-  
-      const doubleClick = this.clickStream.pipe(
-        bufferTime(250),
-        map((arr: any) => arr.length),
-        filter((num: any) => num === 2)
-      );
-  
-      const oneClick = this.clickStream.pipe(
-        bufferTime(500),
-        map((arr: any) => arr.length),
-        filter((num: any) => num === 1)
-      );
-  
-      doubleClick.subscribe((q) => {
-        console.log('double!');
-      });
-  
-      oneClick.subscribe((q) => {
-        console.log('one click');
-      });
-    } 
-    showOptions(data: any) {
-        console.log(data);
-        this.selectedOption = data.selected; 
 
-        var uniqueIds = this._highlighted.reduce((acc, data) => {
-            acc.push(data.uniqueid);
-            return acc;
-        },[]);
+    // ngAfterViewInit(): void {
+    //     // console.log(this.calendarComponent.getApi());
+    //     this.searchRoster(this.date);
 
-        // var sss = uniqueIds.length > 0 ? uniqueIds : [this.selectedOption.uniqueid]
-    
-        // this.clientS.gettopaddress(sss)
-        //     .subscribe(data => this.address = data)
-
-        this.optionsModal = true;
-    }
-    highlighted(data: any) {
-        this._highlighted = data;
-    }
-
-    ngAfterViewInit(): void {
-        // console.log(this.calendarComponent.getApi());
-        this.searchRoster(this.date);
-
-        console.log(document)
+    //     console.log(document)
         
-    }
+    // }
 
     picked(data: any) {
         console.log(data);
@@ -1153,8 +1349,17 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
+       
+        //this.prepare_Sheet(this.spreadsheet);
+
         this.selected = data;
-        
+        if (this.master){
+            this.start_date= "1900/01/01"
+            this.end_date= "1900/01/31"
+        }else{
+            this.start_date= this.date
+            this.end_date= this.date
+        }  
         this.viewType = this.whatType(data.option);
         this.loading = true;
         this.enable_buttons=true;
@@ -1169,10 +1374,12 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                     this.agencyDefinedGroup = data.data;
                 });
         }
-
+        
         this.picked$ = this.timeS.gettimesheets({
-            AccountNo: data.data,
-            personType: this.viewType
+            AccountNo: data.data,            
+            personType: this.viewType,
+            startDate: this.start_date,
+            endDate: this.end_date,
         }).pipe(takeUntil(this.unsubscribe))
             .subscribe(data => {
 
@@ -1185,6 +1392,9 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                         startTime: this.fixDateTime(x.activityDate, x.activity_Time.start_time),
                         endTime: this.fixDateTime(x.activityDate, x.activity_Time.end_Time),
                         duration: x.activity_Time.calculated_Duration,
+                        dayNo: x.dayNo,
+                        monthNo: x.monthNo,
+                        yearNo: x.yearNo,                       
                         durationNumber: x.activity_Time.duration,
                         recipient: x.recipientLocation,
                         program: x.program.title,
@@ -1204,36 +1414,53 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                         debtor: x.billedTo.accountNo,
                         serviceActivity: x.activity.name,
                         serviceSetting: x.recipientLocation,
-                        analysisCode: x.anal
+                        analysisCode: x.anal,
+                        type:x.type
 
                     }
+                   
                 });
                 
-                // this.timesheetsGroup = this.nest(this.timesheets, ['activity']);
-                // // console.log(JSON.stringify(this.timesheetsGroup));
-                    
-                // this.index = 0;
-                
-                // //this.resultMapData = this.recurseObjOuterLoop(this.timesheetsGroup);
-                // this.resultMapData = this.listOfMapData
-                // console.log(this.resultMapData)
-                
-                // this.resultMapData.forEach(item => {
-                //     this.mapOfExpandedData[item.key] = this.convertTreeToList(item);
-                //     console.log(this.convertTreeToList(item));
-                // });
-                
-                // console.log(this.mapOfExpandedData)
+                console.log(this.timesheets);
+            
             });
         
-      //  this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));
-        
+        this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));
+     
         this.selectAll = false;
     }
     eventRender(e: any){
         e.el.querySelectorAll('.fc-title')[0].innerHTML = e.el.querySelectorAll('.fc-title')[0].innerText;
     }
+    computeHoursAndPay(compute: any): void{
+        var hourMinStr;
 
+        if (compute.workedHours && compute.workedHours > 0) {
+            const hours = Math.floor(compute.workedHours * 60 / 60);
+            const minutes = ('0' + compute.workedHours * 60 % 60).slice(-2);
+
+            hourMinStr = `${hours}:${minutes}`
+        }
+
+        var _temp = {
+            KMAllowancesQty: compute.kmAllowancesQty || 0,
+            AllowanceQty: compute.allowanceQty || 0,
+            WorkedHours: compute.workedHours || 0,
+            PaidAsHours: compute.paidAsHours || 0,
+            PaidAsServices: compute.paidAsServices || 0,
+            WorkedAttributableHours: compute.workedAttributableHours || 0,
+            PaidQty: compute.paidQty || 0,
+            PaidAmount: compute.paidAmount || 0,
+            ProvidedHours: compute.providedHours || 0,
+            BilledAsHours: compute.billedAsHours || 0,
+            BilledAsServices: compute.billedAsServices || 0,
+            BilledQty: compute.billedQty || 0,
+            BilledAmount: compute.billedAmount || 0,
+            HoursAndMinutes: hourMinStr
+        };
+
+        this.payTotal = _temp;
+    }
     getComputedPay(data: any = this.selected): Observable<any>{
         return this.timeS.getcomputetimesheet({
             AccountName: data.data,
@@ -1259,10 +1486,12 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
     searchRoster(date: any): void{
 
-        this.calendarOptions.eventClick;
+       
         // console.log(format(startOfMonth(date),'yyyy/MM/dd'));
         if(!this.recipient) return;
         console.log(moment(date).startOf('month').format('YYYY-MM-DD hh:mm'));
+        
+       
 
         this.staffS.getroster({
             RosterType: this.recipient.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',
@@ -1273,6 +1502,7 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
         }).pipe(takeUntil(this.unsubscribe)).subscribe(roster => {
 
             this.rosters = roster;
+            console.log(roster)
 
                 this.options = null;
                 var events = roster.map(x => {
@@ -1301,31 +1531,26 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
                         events: events
                     }
                 }
-                
+                this.load_rosters();
                 this.loading = false;
-                this.calendarOptions.events = this.options.events;
-                this.calendarOptions.scrollTime = this.options.scrollTime;
-
-                // console.log(this.options.events);
-
-                this.calendarComponent.getApi().render();
-
+        
                 this.globalS.sToast('Roster Notifs',`There are ${(this.options.events).length} rosters found!`)
+               
         });
     }
 
     next_date(){
         this.date = moment(this.date).add('month', 1);
-        var calendar = this.calendarComponent.getApi(); 
-        calendar.next();
+       // var calendar = this.calendarComponent.getApi(); 
+       // calendar.next();
 
         this.upORdown.next(true);
     }
 
     prev_date(){
         this.date = moment(this.date).subtract('month', 1);
-        var calendar = this.calendarComponent.getApi(); 
-        calendar.prev();
+       // var calendar = this.calendarComponent.getApi(); 
+       // calendar.prev();
         this.upORdown.next(false);
     }
 
@@ -1514,7 +1739,9 @@ export class RostersAdmin implements OnInit, OnDestroy, AfterViewInit {
     defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
     defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
 
-   
+    dateFormat: string = 'dd/MM/yyyy'
+
+    
     modalTimesheetValues: Array<AddTimesheetModalInterface> = [
         {
             index: 1,
@@ -1633,6 +1860,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
     }   
     buildForm() {
         this.rosterForm = this.formBuilder.group({
+            recordNo: [''],
             date: [this.payPeriodEndDate, Validators.required],
             serviceType: ['', Validators.required],
             program: ['', Validators.required],
@@ -1667,15 +1895,23 @@ isServiceTypeMultipleRecipient(type: string): boolean {
         this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         this.fixStartTimeDefault();
 
-        this.rosterForm.get('time.startTime').valueChanges.pipe(
+        this.rosterForm.get('sleepOverTime').valueChanges.pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(d => {
+            const { serviceType, sleepOverTime } = this.rosterForm.value;
+            if(serviceType === 'SLEEPOVER'){
+                this.defaultEndTime = sleepOverTime;
+            }
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         });
 
         this.rosterForm.get('time.startTime').valueChanges.pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(d => {
+            const { serviceType, sleepOverTime } = this.rosterForm.value;
+            if(serviceType === 'SLEEPOVER'){
+                this.defaultEndTime = sleepOverTime;
+            }
             this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         });
 
@@ -1714,14 +1950,28 @@ isServiceTypeMultipleRecipient(type: string): boolean {
 
         this.rosterForm.get('recipientCode').valueChanges.pipe(
             takeUntil(this.unsubscribe),
-            switchMap(x => {
+            switchMap(x => {            
                 this.rosterForm.patchValue({
                     debtor: x
                 });
                 return this.GETPROGRAMS(x)
             })
         ).subscribe((d: Array<any>) => {
-            this.programsList = d;
+
+            this.programsList = d.map(x => x.progName);
+            console.log(this.programsList)
+
+            if(this.whatProcess == PROCESS.UPDATE){
+                setTimeout(() => {
+                    this.rosterForm.patchValue({
+                        program: this.defaultProgram
+                    });
+                }, 0);
+                console.log(this.rosterForm.value)
+            }         
+
+            this.cd.markForCheck();
+            this.cd.detectChanges();
 
             if(d && d.length == 1){
                 this.rosterForm.patchValue({
@@ -1769,48 +2019,37 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 });
             }
         });
-
-        // this.rosterForm.get('program').valueChanges.pipe(
-        //     distinctUntilChanged(),
-        //     switchMap(x => {
-        //         this.serviceActivityList = [];
-        //         this.rosterForm.patchValue({
-        //             serviceActivity: null
-        //         });
-        //         return this.GETSERVICEACTIVITY(x)
-        //     })
-        // ).subscribe((d: Array<any>) => {
-
-        //     this.serviceActivityList = d;
-
-        //     if(d && d.length == 1){
-        //         this.rosterForm.patchValue({
-        //             serviceActivity: d[0].activity
-        //         });
-        //     }
-        // });
- this.rosterForm.get('program').valueChanges.pipe(
+        this.rosterForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
+                if(!x) return EMPTY;
                 this.serviceActivityList = [];
                 this.rosterForm.patchValue({
                     serviceActivity: null
-                    
                 });
-                console.log("Print Program " + x);
                 return this.GETSERVICEACTIVITY(x)
             })
         ).subscribe((d: Array<any>) => {
 
-            this.serviceActivityList = d;
-            console.log(d);
+            this.serviceActivityList = d.map(x => x.activity);
+            console.log(d)
+            console.log(this.serviceActivityList)
+            if(this.whatProcess == PROCESS.UPDATE){
+                setTimeout(() => {
+                    this.rosterForm.patchValue({
+                        serviceActivity: this.defaultActivity
+                    });
+                }, 0);
+            }
+
             if(d && d.length == 1){
                 this.rosterForm.patchValue({
-                    serviceActivity: d[0].activity
+                    serviceActivity: d[0]
                 });
             }
         });
-        this.rosterForm.get('serviceactivity').valueChanges.pipe(
+
+       this.rosterForm.get('serviceActivity').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
                 if (!x) {
@@ -1820,8 +2059,9 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 return this.GETROSTERGROUP(x)
             })
         ).subscribe(d => {
-            if (d.length > 1) return false;
-            this.rosterGroup = (d[0].RosterGroup).toUpperCase();
+            console.log(d);
+            if (d.length > 1 || d.length == 0) return false;
+            this.rosterGroup = (d[0].rosterGroup).toUpperCase();
             this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
 
             this.rosterForm.patchValue({
@@ -1829,7 +2069,6 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             })
         });        
     }
-    
    
     GET_ACTIVITY_VALUE(roster: string) {
         // ADMINISTRATION
@@ -1893,6 +2132,16 @@ isServiceTypeMultipleRecipient(type: string): boolean {
 
         if (roster === 'TRAVEL TIME') {
             this.activity_value = 5;
+        }
+    }
+
+    
+    isEndSteps() {
+        if (this.rosterGroup === 'ALLOWANCE') {
+            return this.current >= 3;
+        }
+        else {
+            return this.current >= 3;
         }
     }
 
@@ -1979,7 +2228,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
     next(): void {
         this.current += 1;
 
-        //if(this.whatProcess == PROCESS.UPDATE) return;
+        if(this.whatProcess == PROCESS.UPDATE) return;
 
         if(this.current == 1 && this.selected.option == 1){
             this.rosterForm.patchValue({
@@ -2008,35 +2257,6 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 });
             }            
         }
-        // this.current += 1;
-
-        // if(this.current == 1 && this.selected.option == 1){
-        //     this.rosterForm.patchValue({
-        //         debtor: this.selected.data
-        //     });
-        // }
-
-        // if(this.current == 4){
-        //     const { recipientCode, program, serviceActivity } = this.rosterForm.value;
-
-        //     if(!this.globalS.isEmpty(recipientCode) &&
-        //             !this.globalS.isEmpty(serviceActivity) &&
-        //                 !this.globalS.isEmpty(program)){
-        //         this.timeS.getbillingrate({
-        //             RecipientCode: recipientCode,
-        //             ActivityCode: serviceActivity,
-        //             Program: program
-        //         }).subscribe(data => {
-        //             this.rosterForm.patchValue({
-        //                 bill: {
-        //                     unit: data.unit,
-        //                     rate: this.DEFAULT_NUMERIC(data.rate),
-        //                     tax: this.DEFAULT_NUMERIC(data.tax)
-        //                 }
-        //             });
-        //         });
-        //     }            
-        // }
     }
     DEFAULT_NUMERIC(data: any): number{
         if(!this.globalS.isEmpty(data) && !isNaN(data)){
@@ -2046,12 +2266,19 @@ isServiceTypeMultipleRecipient(type: string): boolean {
     }
 
     get nextCondition() {
+        // console.log(this.rosterGroup)
         if (this.current == 2 && !this.ifRosterGroupHasTimePayBills(this.rosterGroup)) {
             return false; 
+        }
+        if(this.current == 3 && this.rosterGroup == 'ADMINISTRATION'){
+            return false;
         }
         return this.current < 4;
     }
 
+    get showDone(){
+        return this.current >= 4 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3);
+    }
     get isFormValid(){
         return  this.rosterForm.valid;
     }
@@ -2102,10 +2329,26 @@ isServiceTypeMultipleRecipient(type: string): boolean {
 
         console.log(inputs);
 
-        this.timeS.posttimesheet(inputs).subscribe(data => {
-            this.globalS.sToast('Success', 'Timesheet has been added');
-           // this.addTimesheetVisible = false;
-        });
+        // this.timeS.posttimesheet(inputs).subscribe(data => {
+        //     this.globalS.sToast('Success', 'Timesheet has been added');
+        //    // this.addTimesheetVisible = false;
+        // });
+        if(this.whatProcess == PROCESS.ADD){
+            this.timeS.posttimesheet(inputs).subscribe(data => {
+                this.globalS.sToast('Success', 'Timesheet has been added');
+                this.addTimesheetVisible = false;
+                this.picked(this.selected);
+                this.load_rosters();
+            });
+        }   
+        
+        if(this.whatProcess == PROCESS.UPDATE){
+            this.timeS.updatetimesheet(inputs).subscribe(data => {
+                this.globalS.sToast('Success', 'Timesheet has been updated');
+                this.addTimesheetVisible = false;
+                this.picked(this.selected);
+            });
+        }
     }
 
     FIX_CLIENTCODE_INPUT(tgroup: any): string{
@@ -2152,4 +2395,18 @@ isServiceTypeMultipleRecipient(type: string): boolean {
    
 
      // Add Timesheet
+     confirm(index: number) {
+        if (!this.selected && this.timesheets.length > 0) return;
+
+        if (index == 1) {
+            this.resetAddTimesheetModal();
+            this.addTimesheetVisible = true;
+            this.whatProcess = PROCESS.ADD
+        }
+    }
+        
+       
+
+      
+     
 }

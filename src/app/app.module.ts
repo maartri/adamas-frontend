@@ -26,6 +26,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 // import { NgSelectModule } from '@ng-select/ng-select';
 
+
 import {
   AuthService,
   LoginService,
@@ -70,6 +71,8 @@ import { BranchesComponent } from './pages/admin/configuration/genrel-setup/bran
 import { FundingRegionsComponent } from './pages/admin/configuration/genrel-setup/funding-regions/funding-regions.component';
 import { SpreadSheetsModule } from "@grapecity/spread-sheets-angular";
 import {DocusignComponent} from './pages/docusign/docusign'
+
+import { ContextMenuModule } from 'ngx-contextmenu';
 
 registerLocaleData(en);
 
@@ -129,7 +132,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     AgGridModule.withComponents([]),
     InfiniteScrollModule,
     FullCalendarModule,
-    SpreadSheetsModule
+    SpreadSheetsModule,
+    ContextMenuModule.forRoot()
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
@@ -167,3 +171,10 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+declare module "@angular/core" {
+  interface ModuleWithProviders<T = any> {
+    ngModule: Type<T>;
+    providers?: Provider[];
+  }
+}

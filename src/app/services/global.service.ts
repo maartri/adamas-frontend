@@ -281,22 +281,41 @@ var2 = 'value2'
         }
         return null;
     }
+    isPackageLeaveTypeExists(tableData,username) {
+        return tableData.some(function(el) {
+          username = username.replace(/'/g, '');
+          return el.leaveActivityCode.trim().toUpperCase() === username.trim().toUpperCase();
+        }); 
+    }
+    isStaffexist(tableData,username) {
+        return tableData.some(function(el) {
+          username = username.replace(/'/g, '');
+          return el.name.trim().toUpperCase() === username.trim().toUpperCase();
+        }); 
+    }
+    
+    isCompetencyExists(tableData,username){
+        return tableData.some(function(el) {
+            username = username.replace(/'/g, '');
+            return el.competency.trim().toUpperCase() === username.trim().toUpperCase();
+          })
+    }
     isTitleExists(tableData,username) {
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
-          return el.title.trim() === username.trim();
+          return el.title.trim().toUpperCase() === username.trim().toUpperCase();
         }); 
     }
-    isNameExists(tableData,username) {
+    isNameExists(tableData,username) { 
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
-          return el.title.trim() === username.trim();
+          return el.name.trim().toUpperCase() === username.trim().toUpperCase();
         }); 
     }
     isDescriptionExists(tableData,username) {
         return tableData.some(function(el) {
           username = username.replace(/'/g, '');
-          return el.title.trim() === username.trim();
+          return el.description.trim().toUpperCase() === username.trim().toUpperCase();
         }); 
     }
     decode(token: string = this.token) {
@@ -664,7 +683,6 @@ var2 = 'value2'
     }
 
     START_DATE_ZEROHOURSMINUTES(date: Date): Date{
-        console.log(date);
         return new Date(date.getFullYear(),date.getMonth(),date.getDate(), 0, 0);
     }
 
@@ -687,9 +705,8 @@ var2 = 'value2'
     }
 
     CALCULATE_WHAT_WEEK_FORTNIGHT(payperiod: Date, dateToBeCalculated: Date){
-        console.log(payperiod)
-
-        console.log(dateToBeCalculated)
+        // console.log(payperiod)
+        // console.log(dateToBeCalculated)
 
         var _laterDate = this.END_DATE_MAXHOURSMINUTES(dateToBeCalculated);
         var _earlierDate = this.START_DATE_ZEROHOURSMINUTES(payperiod);

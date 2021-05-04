@@ -17,6 +17,13 @@ export enum RECIPIENT_OPTION {
     ITEM = "ITEM"
 }
 
+export enum TABS {
+    OPNOTES = "OPNOTES",
+    CASENOTES = "CASENOTES",
+    INCIDENTS = "INCIDENTS",
+    QUOTES = "QUOTES"
+}
+
 export enum PROCESS{
     UPDATE = "UPDATE",
     ADD = "ADD"
@@ -633,7 +640,7 @@ export interface ProcedureRoster {
     agencyDefinedGroup: string,
     referralCode: string,
     timePercent: string,
-    Notes: string,
+    notes: string,
     type: number,
     duration: number,
     blockNo: number,
@@ -673,12 +680,23 @@ export interface ProcedureSetClientPackage {
     clientCode: string
 }
 
+export interface Filters{
+    acceptedQuotes?: boolean,
+    allDates?: boolean,
+    archiveDocs?: boolean,
+    includeClosedIncidents?: boolean,
+    includeArchivedNotes?: boolean,
+    display?: number,
+    startDate?: Date,
+    endDate?: Date
+}
+
 export interface CallProcedure {
     isNDIAHCP: boolean,
     newPackage: string,
     oldPackage: string,
-    level: string,
-    type: string,
+    level?: string,
+    type?: string,
     // clientPackage: ProcedureSetClientPackage,
     roster: Array<ProcedureRoster>,
     staffNote: ProcedureClientStaffNote

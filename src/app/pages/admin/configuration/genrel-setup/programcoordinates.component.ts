@@ -36,6 +36,7 @@ export class ProgramcoordinatesComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  temp_title: any;
   
   constructor(
     private globalS: GlobalService,
@@ -100,6 +101,7 @@ export class ProgramcoordinatesComponent implements OnInit {
         recordNumber:recordNumber,
         
       });
+      this.temp_title = name;
     }
     loadTitle()
     {
@@ -141,7 +143,7 @@ export class ProgramcoordinatesComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group  = this.inputForm;
-        let name        = group.get('name').value.trim();
+        let name        = group.get('name').value.trim().uppercase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -169,12 +171,20 @@ export class ProgramcoordinatesComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
+        let name        = group.get('name').value.trim().uppercase();
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+          }
         let code   = this.globalS.isValueNull(group.get('code').value);
-        let name   = this.globalS.isValueNull(group.get('name').value);
+        name   = this.globalS.isValueNull(group.get('name').value);
         let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let recordNumber = group.get('recordNumber').value;
         let sql  = "Update DataDomains SET [HACCCode] ="+ code+",[EndDate] ="+ end_date+",[Description]="+ name+" WHERE [RecordNumber]='"+recordNumber+"'";
-        console.log(sql);
         
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 

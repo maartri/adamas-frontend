@@ -52,11 +52,12 @@ export class ProgramPackagesComponent implements OnInit {
   quoutetemplates:Array<any>;
   competencyList:Array<any>;
   competencyListCopy:Array<any>;
-  careWorkersExcluded:Array<any>
+  careWorkersExcluded:Array<any>;
+  PackgeLeaveTypecheckedList:Array<any>;
   checkedList:string[];
-  checkedListExcluded:string[];
-  checkedListApproved:string[];
-  checkedPackageProfile:string[];
+  checkedListExcluded:Array<any>;
+  checkedListApproved:Array<any>;
+  checkedPackageProfileServices:Array<any>;
   branches:Array<any>;
   paytypes:Array<any>;
   alerts:Array<any>;
@@ -77,6 +78,9 @@ export class ProgramPackagesComponent implements OnInit {
   staff:Array<any>;
   recepients:Array<any>;
   recepitnt_copy:Array<any>;
+  leaveTypes:Array<any>;
+  accoumulationTypes:Array<any>;
+  leaveTypes_copy:Array<any>;
   activities:Array<any>;
   types:Array<any>;
   fundingTypes:Array<any>;
@@ -84,6 +88,7 @@ export class ProgramPackagesComponent implements OnInit {
   programCordinates:Array<any>;
   individual:boolean= false;
   aged:boolean= false;
+  visibleRecurrent:boolean=false;
   template:boolean=false;
   packageLevel:boolean=false;
   ServiceData:Array<any>;
@@ -117,6 +122,16 @@ export class ProgramPackagesComponent implements OnInit {
   tryDoctype: any;
   drawerVisible: boolean =  false;
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  isUpdatePackageType: boolean = false;
+  tableDataPackageLeaveTypes: any;
+  personId:0;
+  listCompetencyByPersonId: any;
+  listApprovedServicesByPersonId: any;
+  listApprovedStaffByPersonId:any;
+  listExcludedStaffByPersonId:any;
+  CompetencycheckedList: any;
+  careWorkersCopy: any[];
+  careWorkersExcludedCopy: any;
   
   constructor(
     private globalS: GlobalService,
@@ -135,53 +150,390 @@ export class ProgramPackagesComponent implements OnInit {
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
-      this.checkedList = new Array<string>();
+      this.CompetencycheckedList = new Array<string>();
+      this.PackgeLeaveTypecheckedList = new Array <string>();
       this.checkedListExcluded =new Array<string>();
       this.checkedListApproved =new Array<string>();
-      this.checkedPackageProfile =new Array<string>();
+      this.checkedPackageProfileServices =new Array<string>();
       this.loadData();
       this.populateDropdowns();
+      this.loadPackageLeaveTypes();
+      this.loadApprovedStaff();
+      this.loadExcludedStaff();
+      this.loadCompetency();
+      this.loadApprovedServices();
       this.buildForm();
       this.loading = false;
       this.cd.detectChanges();
     }
-    
-    //open modals
     showAddModal() {
       this.title = "Add New Program/Packages"
       this.resetModal();
+      this.inputForm.patchValue({
+        line_1  :'Unused funds are returned to the Department on package cessation',
+        line_2  :'For Queries and Inquiries Please Phone',
+      });
       this.modalOpen = true;
+    }
+
+    showPackageLeaveModal(){
+      this.leaveTypes.forEach(x => {
+        x.checked = false
+      });
+      this.PackgeLeaveTypecheckedList = [];
+      this.packageLevel = true;
+    }
+    savePackageTypes(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.PackgeLeaveTypecheckedList.forEach( (element) => {
+          let is_exist   = this.globalS.isPackageLeaveTypeExists(this.tableDataPackageLeaveTypes,element);
+          if(!is_exist){
+            let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('', 'PROG_LEAVE', 'PROG_LEAVE','"+element+"', '')";
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+              insertOne = true;
+            });
+          }
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handlePackageLevelCancel();
+        this.loading = true;
+        this.loadPackageLeaveTypes();
+        this.PackgeLeaveTypecheckedList = [];
+      }else{
+        this.postLoading = true;
+        const group = this.inputForm;
+        let LeaverecordNumber  =  group.get('LeaverecordNumber').value;
+        let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+        let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+        let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+        let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+        let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+LeaverecordNumber+"'";
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+            if (data) 
+            this.globalS.sToast('Success', 'Updated successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Updated successful');
+            this.postLoading = false;
+            this.loadPackageLeaveTypes();     
+            this.handlePackageLevelCancel();  
+            this.PackgeLeaveTypecheckedList = [];
+            this.isUpdatePackageType = false;
+            this.loading = false;
+          });
+      }
+    }
+    saveCompetency(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.CompetencycheckedList.forEach( (element) => {
+          let is_exist   = this.globalS.isCompetencyExists(this.listCompetencyByPersonId,element);
+          if(!is_exist){
+            let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('"+this.personId+"', 'PROG_COMP', 'PROG_COMP', '"+element+"', '')";
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+              insertOne = true;
+            });
+          }
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handleCompetencyCancel();
+        this.loading = true;
+        this.loadCompetency();
+        this.CompetencycheckedList = [];
+      }else{
+        this.postLoading = true;
+        const group = this.inputForm;
+        let competenctNumber  =  group.get('competenctNumber').value;
+        let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+        let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+        let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+        let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+        let sql  = "UPDATE HumanResources SET [PersonID] = '"+this.personId+"', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+            if (data) 
+            this.globalS.sToast('Success', 'Updated successful');     
+            else
+            this.globalS.sToast('Unsuccess', 'Updated successful');
+            this.postLoading = false;
+            this.loadCompetency();     
+            this.handleCompetencyCancel();  
+            this.CompetencycheckedList = [];
+            this.isUpdatePackageType = false;
+            this.loading = false;
+          });
+      }
+    }
+    saveApprovedServices(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.checkedPackageProfileServices.forEach( (element) => {
+          // let is_exist   = this.globalS.isCompetencyExists(this.listApprovedServicesByPersonId,element);
+          // if(!is_exist){
+            let sql = "INSERT INTO ServiceOverview([Service Type], PersonID, [ServiceProgram], [ServiceStatus]) VALUES ('"+element+"','"+this.personId+"', 'CAPACITY BUILDING - 31600', 'ACTIVE')";
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+              insertOne = true;
+            });
+          // }
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handleServicesCancel();
+        this.loading = true;
+        this.loadApprovedServices();
+        this.checkedPackageProfileServices = [];
+      }else{
+      //   this.postLoading = true;
+      //   const group = this.inputForm;
+      //   let competenctNumber  =  group.get('competenctNumber').value;
+      //   let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+      //   let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+      //   let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+      //   let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+      //   let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+      //   this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+      //       if (data) 
+      //       this.globalS.sToast('Success', 'Updated successful');     
+      //       else
+      //       this.globalS.sToast('Unsuccess', 'Updated successful');
+      //       this.postLoading = false;
+      //       this.loadPackageLeaveTypes();     
+      //       this.handlePackageLevelCancel();  
+      //       this.PackgeLeaveTypecheckedList = [];
+      //       this.isUpdatePackageType = false;
+      //       this.loading = false;
+      //     });
+      }
+    }
+    saveApprovedStaff(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.checkedListApproved.forEach( (element) => {
+          let is_exist   = this.globalS.isStaffexist(this.listApprovedStaffByPersonId,element);
+          if(!is_exist){
+            console.log("second check")
+            let is_exist   = this.globalS.isStaffexist(this.listExcludedStaffByPersonId,element);
+            if(!is_exist){
+                console.log("come in insertion")
+              let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('"+this.personId+"', 'PROG_STAFFI', 'PROG_STAFFI','"+element+"', '')";
+                this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+                insertOne = true;
+              });
+            }
+          }
+          console.log("outside")
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handleAprfCancel();
+        // this.loading = true;
+        this.loadApprovedStaff();
+        this.checkedListApproved = [];
+      }else{
+      //   this.postLoading = true;
+      //   const group = this.inputForm;
+      //   let competenctNumber  =  group.get('competenctNumber').value;
+      //   let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+      //   let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+      //   let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+      //   let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+      //   let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+      //   this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+      //       if (data) 
+      //       this.globalS.sToast('Success', 'Updated successful');     
+      //       else
+      //       this.globalS.sToast('Unsuccess', 'Updated successful');
+      //       this.postLoading = false;
+      //       this.loadPackageLeaveTypes();     
+      //       this.handlePackageLevelCancel();  
+      //       this.PackgeLeaveTypecheckedList = [];
+      //       this.isUpdatePackageType = false;
+      //       this.loading = false;
+      //     });
+      }
+    }
+    saveExcludeStaff(){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      let insertOne = false;
+      if(!this.isUpdatePackageType){
+        this.checkedListExcluded.forEach( (element) => {
+          let is_exist   = this.globalS.isStaffexist(this.listExcludedStaffByPersonId,element);
+          if(!is_exist){
+            let is_exist   = this.globalS.isStaffexist(this.listApprovedStaffByPersonId,element);
+            if(!is_exist){
+              let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('"+this.personId+"', 'PROG_STAFFX', 'PROG_STAFFX','"+element+"', '')";
+                this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+                insertOne = true;
+              });
+            }
+          }
+        });
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        this.handleUnAprfCancel();
+        // this.loading = true;
+        this.loadExcludedStaff();
+        this.checkedListExcluded = [];
+      }else{
+      //   this.postLoading = true;
+      //   const group = this.inputForm;
+      //   let competenctNumber  =  group.get('competenctNumber').value;
+      //   let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+      //   let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+      //   let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+      //   let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+
+      //   let sql  = "UPDATE HumanResources SET [PersonID] = '', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+      //   this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+      //       if (data) 
+      //       this.globalS.sToast('Success', 'Updated successful');     
+      //       else
+      //       this.globalS.sToast('Unsuccess', 'Updated successful');
+      //       this.postLoading = false;
+      //       this.loadPackageLeaveTypes();     
+      //       this.handlePackageLevelCancel();  
+      //       this.PackgeLeaveTypecheckedList = [];
+      //       this.isUpdatePackageType = false;
+      //       this.loading = false;
+      //     });
+      }
+    }
+    loadPackageLeaveTypes(){
+      this.menuS.getlistPackageLeaveTypes().subscribe(data => {
+        this.tableDataPackageLeaveTypes = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadApprovedStaff(){
+      this.menuS.getlistApprovedStaffByPersonId(this.personId).subscribe(data => {
+        this.listApprovedStaffByPersonId = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadExcludedStaff(){
+      this.menuS.getlistExcludedStaffByPersonId(this.personId).subscribe(data => {
+        this.listExcludedStaffByPersonId = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadCompetency(){
+      this.menuS.getlistCompetencyByPersonId(this.personId).subscribe(data => {
+        this.listCompetencyByPersonId = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadApprovedServices(){
+      this.menuS.getlistApprovedServicesByPersonId("this.personId").subscribe(data => {
+        this.listApprovedServicesByPersonId = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    showPackageLeaveEditModal(index: any){
+      this.packageLevel = true;
+      this.isUpdatePackageType = true;
+      const { 
+        leaveActivityCode,
+        claimReducedTo,
+        accumulatedBy,
+        maxDays,
+        recordNumber,
+      } = this.tableDataPackageLeaveTypes[index];
+      this.inputForm.patchValue({
+        claimReducedTo: claimReducedTo,
+        maxDays: maxDays,
+        leaveActivityCode: leaveActivityCode,
+        accumulatedBy:accumulatedBy,
+        LeaverecordNumber:recordNumber,
+      });
+    }
+    showComptencyEditModal(index: any){
+      this.competencymodal = true;
+      this.isUpdatePackageType = true;
+      const { 
+        competency,
+        mandatory,
+        personId,
+        recordNumber,
+      } = this.listCompetencyByPersonId[index];
+      this.inputForm.patchValue({
+        competency: competency,
+        mandatory: (mandatory == null) ? false : true,
+        personId: personId,
+        LeaverecordNumber:recordNumber,
+      });
+    }
+    handlePackageLevelCancel() {
+      this.packageLevel = false;
     }
     showServicesModal(){
       this.servicesModal  =true;
     }
-    showPackageLeaveModal(){
-      this.packageLevel = true;
-    }
     handleServicesCancel() {
+      this.packedTypeProfile.forEach(x => {
+        x.checked = false
+      });
       this.servicesModal = false;
-    }
-    handlePackageLevelCancel() {
-      this.packageLevel = false;
+      this.checkedPackageProfileServices=[];
     }
     showstaffApprovedModal(){
       // this.resetModal();
       this.staffApproved = true;
     }
     handleAprfCancel(){
+      this.careWorkers.forEach(x => {
+        x.checked = false
+      });
       this.staffApproved = false;
     }
     showstaffUnApprovedModal(){
       this.staffUnApproved = true;
     }
     handleUnAprfCancel(){
+      this.careWorkers.forEach(x => {
+        x.checked = false
+      });
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
+      this.competencyList.forEach(x => {
+        x.checked = false
+      });
+      this.CompetencycheckedList = [];
       this.competencymodal = true;
+      this.isUpdatePackageType = false;
     }
     handleCompetencyCancel(){
       this.competencymodal = false;
+      // this.isUpdatePackageType = false;
     }
     //End Opening of All Modals
     loadTitle()
@@ -190,51 +542,84 @@ export class ProgramPackagesComponent implements OnInit {
     }
     onCheckboxServiceChange(option,event){
       if(event.target.checked){
-        console.log(option);
-        this.checkedPackageProfile.push(option.title);
+        this.checkedPackageProfileServices.push(option.title);
       }else{
-        this.checkedPackageProfile.filter(m=>m != option.title);
+        this.checkedPackageProfileServices.filter(m=>m != option.title);
       }
     }
     searchPackageLeaves(event){
+      this.temp = [];
+      this.leaveTypes = this.leaveTypes_copy;
       if(event.target.value != ""){
-        this.recepients = this.recepients.filter(res=>{
-          return res.name.toLowerCase().match(event.target.value.toLowerCase());
+        this.temp = this.leaveTypes.filter(res=>{
+          return res.title.toLowerCase().match(event.target.value.toLowerCase());
         })
+        this.leaveTypes = this.temp;
       }else if(event.target.value == ""){
-        this.recepients = this.recepitnt_copy;
+        this.leaveTypes = this.leaveTypes_copy;
       }
     }
-    searchApprovedServices(){
+    searchApprovedServices(event){
       this.temp = [];
       this.packedTypeProfile = this.packedTypeProfileCopy;
-      if(this.inputvalueSearch != ""){
+      if(event.target.value != ""){
         this.temp = this.packedTypeProfile.filter(res=>{
-          return res.title.toLowerCase().match(this.inputvalueSearch.toLowerCase());
+          return res.title.toLowerCase().match(event.target.value.toLowerCase());
         })
         this.packedTypeProfile = this.temp;
-      }else if(this.inputvalueSearch == ""){
+      }else if(event.target.value == ""){
         this.packedTypeProfile = this.packedTypeProfileCopy;
       }
-      this.inputvalueSearch = "";
     }
     searchCompetenncy(event){
       this.temp = [];
       this.competencyList = this.competencyListCopy;
-      if(this.inputvalueSearch != ""){
+      if(event.target.value != ""){
         this.temp = this.competencyList.filter(res=>{
-          return res.name.toLowerCase().indexOf(this.inputvalueSearch.toLowerCase()) > -1;
+          return res.name.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
         })
         this.competencyList = this.temp;
-      }else if(this.inputvalueSearch == ""){
+      }else if(event.target.value == ""){
         this.competencyList = this.competencyListCopy;
       }
     }
-    onCheckboxChange(option, event) {
+    searchStaff(event){
+      this.temp = [];
+      this.careWorkers = this.careWorkersCopy;
+      if(event.target.value != ""){
+        this.temp = this.careWorkers.filter(res=>{
+          return res.accountno.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
+        })
+        this.careWorkers = this.temp;
+      }else if(event.target.value == ""){
+        this.careWorkers = this.careWorkersCopy;
+      }      
+    }
+    searchStaffExcluded(event){
+      this.temp = [];
+      this.careWorkersExcluded = this.careWorkersExcludedCopy;
+      if(event.target.value != ""){
+        this.temp = this.careWorkersExcluded.filter(res=>{
+          return res.accountno.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1;
+        })
+        this.careWorkersExcluded = this.temp;
+      }else if(event.target.value == ""){
+        this.careWorkersExcluded = this.careWorkersExcludedCopy;
+      }      
+    }
+    onCheckboxChangePackageTypes(option,event){
       if(event.target.checked){
-        this.checkedList.push(option.name);
+        this.PackgeLeaveTypecheckedList.push(option.title);
       } else {
-        this.checkedList = this.checkedList.filter(m=>m!= option.name)
+        this.PackgeLeaveTypecheckedList = this.PackgeLeaveTypecheckedList.filter(m=>m!= option.title)
+      }
+    }
+     
+    onCompetencyCheckboxChange(option, event) {
+      if(event.target.checked){
+        this.CompetencycheckedList.push(option.name);
+      } else {
+        this.CompetencycheckedList = this.CompetencycheckedList.filter(m=>m!= option.name)
       }
     }
     onCheckboxUnapprovedChange(option, event) {
@@ -478,6 +863,17 @@ export class ProgramPackagesComponent implements OnInit {
     }
     onIndexChange(index: number): void {
       this.current = index;
+
+      if(this.current == 2 || this.current == 3 || this.current == 4){
+        const validateForm = this.inputForm ;
+        let fundingSource =  this.globalS.isValueNull(validateForm.get('funding_source').value);
+        let title         =  this.globalS.isValueNull(validateForm.get('name').value);
+        if(this.globalS.isVarNull(fundingSource) || this.globalS.isVarNull(title)){
+          this.globalS.iToast('Alert', 'Please Add atleast Funding Source and Name First !');
+          this.current = 0; 
+        }
+      }
+
     }
     save() {
       this.postLoading = true;     
@@ -485,7 +881,7 @@ export class ProgramPackagesComponent implements OnInit {
       if(!this.isUpdate){
         
         let fundingSource =  this.globalS.isValueNull(group.get('funding_source').value);
-        let title         =  this.globalS.isValueNull(group.get('name').value);
+        let title         =  this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let agencyID      =  this.globalS.isValueNull(group.get('agency_id').value);
         let state         =  this.globalS.isValueNull(group.get('state').value);
         let gst           =  this.trueString(group.get('gst').value);
@@ -605,23 +1001,34 @@ export class ProgramPackagesComponent implements OnInit {
         +","+defaultWithNoticeCancel+","+noNoticeCancelRate+","+shortNoticeCancelRate+","+defaultWithNoticeProgram;
         
         let sqlz = "insert into humanresourcetypes ([Group],[Name],[type],[address1],[address2],[Suburb],[HRT_DATASET],[USER1],[Phone2],[gst],[GSTRate],[budgetamount],[budget_1],[budgetperiod],[fax],[email],[phone1],[CloseDate],[Postcode],[UserYesNo3],[User2],[User3],[User4],[User10],[BudgetEnforcement],[BudgetRosterEnforcement],[UserYesNo1],[UserYesNo2],[User8],[User9],[User11],[User12],[P_Def_Alert_Type],[P_Def_Alert_Period],[P_Def_Alert_Allowed],[P_Def_Alert_Yellow],[P_Def_Alert_Orange],[P_Def_Alert_Red],[P_Def_Expire_Amount],[P_Def_Expire_CostType],[P_Def_Expire_Unit],[P_Def_Expire_Period],[P_Def_Expire_Length],[P_Def_Fee_BasicCare],[P_Def_Contingency_PercAmt],[P_Def_Admin_AdminType],[P_Def_Admin_CMType],[P_Def_Admin_CM_PercAmt],[p_Def_Admin_Admin_PercAmt],[P_Def_StdDisclaimer],[P_Def_Admin_AdminFrequency],[P_Def_Admin_CMFrequency],[P_Def_Admin_AdminDay] ,[P_Def_Admin_CMDay],[P_Def_Expire_Using],[P_Def_Contingency_Max],[DefaultCHGTravelWithinActivity],[DefaultCHGTravelWithinPayType],[DefaultNCTravelWithinProgram],[DefaultNCTravelWithinActivity],[DefaultNCTravelWithinPayType],[DefaultCHGTravelBetweenActivity],[DefaultCHGTravelBetweenPayType],[DefaultNCTravelBetweenProgram],[DefaultNCTravelBetweenActivity],[DefaultNCTravelBetweenPayType],[DefaultCHGTRAVELBetweenProgram],[DefaultCHGTRAVELWithInProgram],[P_Def_IncludeClientFeesInCont],[P_Def_IncludeIncomeTestedFeeInAdmin],[P_Def_IncludeBasicCareFeeInAdmin],[P_Def_IncludeTopUpFeeInAdmin],[CDCStatementText1],[DefaultDailyFee],[NoNoticeLeadTime],[ShortNoticeLeadTime],[NoNoticeLeaveActivity],[ShortNoticeLeaveActivity],[DefaultNoNoticeCancel],[DefaultNoNoticeBillProgram],[DefaultNoNoticePayProgram],[DefaultNoNoticePayType],[DefaultShortNoticeCancel],[DefaultShortNoticeBillProgram],[DefaultShortNoticePayProgram],[DefaultShortNoticePayType],[DefaultWithNoticeCancel],[NoNoticeCancelRate],[ShortNoticeCancelRate],[DefaultWithNoticeProgram]) values("+values+");select @@IDENTITY";
-        console.log(sqlz);
+        // console.log(sqlz);
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
+            // console.log(data+"data");
+            this.personId = data;
+            
+            // console.log("if humanresourcetype.recordnumber "+this.personId)
+
             this.globalS.sToast('Success', 'Saved successful');
             this.loadData();
             this.postLoading = false;   
             this.loading = false;       
-            this.handleCancel();
-            this.resetModal();
+            
+            // this.handleCancel();
+            
+            // this.resetModal();
+          
           }
           else{
+            // console.log(data+"data");
+            this.personId = data;
+            // console.log("else humanresourcetype.recordnumber "+this.personId)
             this.globalS.sToast('Success', 'Saved successful');
             this.loadData();
             this.loading = false;   
             this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
+            // this.handleCancel();
+            // this.resetModal();
           }
         });
       }
@@ -762,7 +1169,15 @@ export class ProgramPackagesComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    
+    packgChange(e){
+    }
+    recurrentChange(e){
+      if(e.target.checked){
+        this.visibleRecurrent = true;
+      }else{
+        this.visibleRecurrent = false;
+      }
+    }
     loadData(){
       this.loading = true;
       this.menuS.getlistProgramPackages(this.check).subscribe(data => {
@@ -794,6 +1209,7 @@ export class ProgramPackagesComponent implements OnInit {
       this.unitsArray    = ['PER','TOTAL'];
       this.dailyArry     = ['DAILY'];
       this.quoutetemplates = ['CAREPLAN SAVED AS TEMPLATE.OD'];
+      this.accoumulationTypes = ['CONSECUTIVE DAYS','CUMULATIVE DAYS'];
       this.adminTypesArray = ['**CDC – CARE MGMT','**CDC FEE-ADMIN','~CASE MGT~','~PACKAGE ADMIN~','AGREED TOP UP FEE','BASIC CARE FEE','CDC  EXIT FEE','COORDINATION OF SUPPORTS','INCOME TESTED FEE','NDIA FAINANCIAL INTERMEDIATOR','YLYC CASE MAN. 2.066'];
       this.budgetRoasterEnforcement = ['NONE','NOTIFY','NOTIFY AND UNALLOCATE'];
       this.listS.getcaredomain().subscribe(data => this.caredomain = data);
@@ -802,13 +1218,11 @@ export class ProgramPackagesComponent implements OnInit {
       let funding = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDREGION' ORDER BY Description";
       this.listS.getlist(funding).subscribe(data => {
         this.fundingRegion = data;
-        this.loading = false;
       });
       
       let fundings = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain =  'FUNDINGBODIES' ORDER BY Description";
       this.listS.getlist(fundings).subscribe(data => {
         this.fundingSources = data;
-        this.loading = false;
       });
       
       let progcor = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND Domain = 'CASE MANAGERS' ORDER BY Description";
@@ -822,11 +1236,15 @@ export class ProgramPackagesComponent implements OnInit {
         this.targetGroups = data;
       });
       
-      
       let reci = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
       this.listS.getlist(reci).subscribe(data => {
         this.recepients = data;
         this.recepitnt_copy = this.recepients;
+      });
+      let leavetype = "SELECT Title FROM ItemTypes WHERE RosterGroup = 'RECPTABSENCE' AND EndDate IS NULL or EndDate > GETDate() ORDER BY Title";
+      this.listS.getlist(leavetype).subscribe(data => {
+        this.leaveTypes = data;
+        this.leaveTypes_copy = this.leaveTypes;
       });
       
       
@@ -847,46 +1265,46 @@ export class ProgramPackagesComponent implements OnInit {
       let sc = "select distinct Name from HumanResourceTypes WHERE [Group] = 'PROGRAMS' AND User2 = 'Contingency'";
       this.listS.getlist(sc).subscribe(data => {
         this.contingency = data;
-        this.loading = false;
       });
       
       let pckg_type_profile = "SELECT DISTINCT [Title] FROM ItemTypes WHERE ProcessClassification IN ('OUTPUT', 'EVENT') AND (EndDate Is Null OR EndDate >= GETDATE()) ORDER BY [Title]"
       this.listS.getlist(pckg_type_profile).subscribe(data => {
         this.packedTypeProfile = data;
         this.packedTypeProfileCopy = data;
-        this.loading = false;
       });
       let careWorker = "SELECT DISTINCT [Accountno] FROM Staff WHERE CommencementDate is not null and terminationdate is null ORDER BY [AccountNo]";
       this.listS.getlist(careWorker).subscribe(data => {
         this.careWorkers = data;
+        this.careWorkersCopy = data;
         this.careWorkersExcluded = data;
-        this.loading = false;
+        this.careWorkersExcludedCopy = data;
       });
       
       let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       this.listS.getlist(comp).subscribe(data => {
         this.competencyList = data;
         this.competencyListCopy = data;
-        this.loading = false;
       });
       
+      let fee = "SELECT Title FROM ItemTypes WHERE (EndDate Is Null OR EndDate >= GETDATE()) AND MinorGroup = 'FEE'"
+      this.listS.getlist(fee).subscribe(data => {
+        this.adminTypesArray = data;
+        
+      });
       let activity = "select distinct Title from ItemTypes WHERE ProcessClassification = 'EVENT' AND ((EndDate IS NULL) OR (EndDate > GETDATE())) AND RosterGroup = 'RECPTABSENCE'";
       this.listS.getlist(activity).subscribe(data => {
         this.activityTypes = data;
-        this.loading = false;
       });
       
       let timesheet = "select distinct Title from ItemTypes WHERE ProcessClassification = 'OUTPUT' AND ((EndDate IS NULL) OR (EndDate > GETDATE())) AND RosterGroup = 'ADMINISTRATION'"
       this.listS.getlist(timesheet).subscribe(data => {
         this.activityTimeSheet = data;
-        this.loading = false;
       });
     }
     log(value: string[]): void {
       // console.log(value);
     }
-    delete(data: any) { 
-      this.postLoading = true;     
+    delete(data: any) {
       const group = this.inputForm;
       this.menuS.deleteProgarmPackageslist(data.recordNumber)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -896,6 +1314,67 @@ export class ProgramPackagesComponent implements OnInit {
           return;
         }
       });
+    }
+    deletePackageLeaveType(data:any){
+        const group = this.inputForm;
+        this.loading = true;
+        this.menuS.deletePackageLeaveTypelist(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadPackageLeaveTypes();
+            return;
+          }
+        });
+    }
+    deleteApprovedStaff(data:any){
+      const group = this.inputForm;
+        // this.loading = true;
+        this.menuS.deleteApprovedStaff(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadApprovedStaff();
+            return;
+          }
+        });
+    }
+    deleteExcludedStaff(data:any){
+      const group = this.inputForm;
+        // this.loading = true;
+        this.menuS.deleteExcludedStaff(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadExcludedStaff();
+            return;
+          }
+        });
+    }
+    deleteCompetency(data:any){
+      const group = this.inputForm;
+        this.loading = true;
+        this.menuS.deleteCompetency(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadCompetency();
+            return;
+          }
+        });
+    }
+    
+    deleteApprovedService(data:any){
+      const group = this.inputForm;
+        this.loading = true;
+        this.menuS.deleteApprovedService(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadApprovedServices();
+            return;
+          }
+        });
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
@@ -997,8 +1476,8 @@ export class ProgramPackagesComponent implements OnInit {
         shortNoticeLeadTime:'',
         shortNoticeLeaveActivity:'',
         no_notice:'',
-        recurant:'',
-        packg_balance:'',
+        recurant:false,
+        packg_balance:false,
         type: '',
         vehicledef:false,
         outletid:'',
@@ -1033,8 +1512,25 @@ export class ProgramPackagesComponent implements OnInit {
         addrLine1:'',
         addrLine2:'',
         Phone:'',
-        recordNumber:null
+        recordNumber:null,
+        leaveActivityCode:'', //package leave types modal edit
+        claimReducedTo:'',
+        accumulatedBy:'',
+        maxDays:'',
+        LeaverecordNumber:null,
+        competency:'',//competency modal edit
+        mandatory:false,
+        personId:null,
+        competenctNumber:null,
       });
+
+      // this.inputForm.get('packg_balance').valueChanges.subscribe(data => {
+      //   if(!data){
+      //       this.inputForm.controls['recurant'].enable()
+      //   } else {
+      //       this.inputForm.controls['packg_balance'].enable()
+      //   }
+      // })
     }
     handleOkTop() {
       this.generatePdf();

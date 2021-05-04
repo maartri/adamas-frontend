@@ -1,6 +1,12 @@
 <div nz-row>
+
+    <button class="botton success" (click)="showAddModal()">Add Quote</button>
+    <app-filter [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
+    <!-- {{ filters | json }} -->
+</div>
+<div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add Quote</button>
+
         <nz-table #basicTable [nzLoading]="loading" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
@@ -17,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn" [contextMenu]="basicMenu" [contextMenuSubject]="data" >
                     <td class="left">{{ data.quoteNumber  }}</td>
                     <td>{{ data.carePlan }}</td>
                     <td>{{ data.planType }}</td>
@@ -32,3 +38,22 @@
         </nz-table>
     </div>
 </div>
+
+
+<context-menu>
+    <ng-template contextMenuItem (execute)="showMessage('Hi, ' + $event.item.name)">
+      Accept Quote
+    </ng-template>
+    
+    <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
+      Clone Quote to this Recipient
+    </ng-template>
+
+    <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
+        Clone Quote to another Recipient
+    </ng-template>
+
+    <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
+        Open Attached Careplan
+    </ng-template>
+</context-menu>

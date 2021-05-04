@@ -66,6 +66,8 @@ export class NotesClientManager implements OnInit {
 
     OPDateRange: Array<any> = []
 
+    viewTab: any;
+
     constructor(
         private globalS: GlobalService,
         private clientS: ClientService
@@ -76,11 +78,11 @@ export class NotesClientManager implements OnInit {
                 if (x.length < 2) {
                     return EMPTY;
                 }
-                return this.getShiftNotes(x);
+                return this.getCaseNotes(x, this.token.uniqueID);
             })
         ).subscribe(date => {
             this.loading = false;
-            this.tableData = date;
+            this.tableData = date.list;
         });
 
         this.OPdateChangeEvent.pipe(
@@ -102,7 +104,6 @@ export class NotesClientManager implements OnInit {
             this.tableData = [];
 
             if (this.viewNo == 1) {
-                // this.getOPNotes(this.token.uniqueID);
                 this.OPdateChangeEvent.next(this.OPDateRange);
             }
                 
@@ -115,7 +116,13 @@ export class NotesClientManager implements OnInit {
         var token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
 
         this.accountNo = token.code;
-        this.token = token;        
+        this.token = token;  
+        
+        this.viewTab = {opNote: true, caseNote: true}
+
+        // this.clientS.getnotepermissions(this.token.user).subscribe(data => {
+        //     this.viewTab = data;
+        // });
 
         this.dateRange[0] = startOfMonth(new Date());
         this.dateRange[1] = lastDayOfMonth(new Date());
@@ -123,7 +130,9 @@ export class NotesClientManager implements OnInit {
         this.OPDateRange[0] = startOfMonth(new Date());
         this.OPDateRange[1] = lastDayOfMonth(new Date());
 
-        this.view.next(1);
+ 
+
+        // this.view.next(1);
     }
 
     isEven(index: number) {
@@ -150,10 +159,19 @@ export class NotesClientManager implements OnInit {
         });
     }
 
-    getShiftNotes(dates: Array<any> = null) {
+    getServiceNotes(dates: Array<any> = null) {
         this.loading = true;
         return this.clientS.getservicenotes({
             client: this.accountNo,
+            startDate: moment(dates[0]).format('YYYY/MM/DD'),
+            endDate: moment(dates[1]).format('YYYY/MM/DD')
+        });
+    }
+
+    getCaseNotes(dates: Array<any> = null, uniqueId: any){
+        this.loading = true;
+        return this.clientS.getcasenoteswithdate({
+            client: uniqueId,
             startDate: moment(dates[0]).format('YYYY/MM/DD'),
             endDate: moment(dates[1]).format('YYYY/MM/DD')
         });

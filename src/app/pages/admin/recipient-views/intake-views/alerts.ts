@@ -192,8 +192,10 @@ export class IntakeAlerts implements OnInit, OnDestroy {
             this.timeS.updateintakecompetency(competency).pipe(
             takeUntil(this.unsubscribe)).subscribe(data => {
                             if(data){
-                                this.reloadAll()
                                 this.globalS.sToast('Success','Competency Updated')
+                                this.search();
+                                this.handleCancel()
+                                
                             }
                         });
         }

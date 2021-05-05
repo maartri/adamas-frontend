@@ -219,13 +219,14 @@
                     <div nz-row *ngIf="staffrecordview && staffrecordview[16] == '1'">
                         <div class="form-group">
                             <div>
-                                <label class="highlight"><i class="material-icons"> location_on </i>Address </label>
+                                <label class="highlight"><i class="material-icons "> location_on </i>Address </label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
                                     class="good add"></i>
                             </div>                           
                             <ul>
                                 <li *ngFor="let data of user?.addresses">
                                     <div class="options">
+                                        <i class="material-icons neutral" (click)="toMap(data)" style="font-size:17px;"> location_on </i>
                                         <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral" (click)="editAddressOpen(data)"></i>
                                         <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top" nzTheme="outline"  nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
                                     nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
@@ -288,6 +289,12 @@
                             <nz-rate [ngModel]="user?.rating" [nzCount]="7" nzDisabled></nz-rate>
                         </nz-descriptions-item>
                         <nz-descriptions-item nzTitle="N Registration #">{{ user?.nRegistration || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Has Caseload"><label nz-checkbox nzDisabled [ngModel]="user?.caseManager" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Is Rosterable"><label nz-checkbox nzDisabled [ngModel]="user?.isRosterable" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Email Timesheet"><label nz-checkbox nzDisabled [ngModel]="user?.emailTimesheet" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Exclude From Roaster Conflict Checking"><label nz-checkbox nzDisabled [ngModel]="user?.excludeFromConflictChecking" nzDisabled ></label></nz-descriptions-item>
+                        
+
                     </nz-descriptions>
                 </div>
 
@@ -532,11 +539,17 @@
  <nz-modal [(nzVisible)]="profileStaffModal" [nzStyle]="{ top: '20px' }" nzTitle="Update Profile" (nzOnCancel)="handleCancel()">
 
     <div nz-row nzGutter="16" [formGroup]="userForm">
-        <div nz-row>
+        <div nz-row nzGutter="24">
             <div nz-col nzSpan="8">
                 <div class="form-group">
                     <label for="">Preferred Name</label>
                     <input nz-input type="text"  oninput="this.value = this.value.toUpperCase()" formControlName="preferredName">
+                </div>
+            </div>
+            <div nz-col nzSpan="8" lass="form-group">
+                <div class="form-group">
+                    <label for="">Record ID</label>
+                    <input nz-input type="text"  oninput="this.value = this.value.toUpperCase()" formControlName="recordId" readonly>
                 </div>
             </div>
         </div>
@@ -812,7 +825,14 @@
                 <nz-rate formControlName="rating" [nzCount]="7"></nz-rate>
             </div>
         </div>
-
+        <div nz-row nzGutter="16">
+            <div nz-col class="form-group" nzSpan="7">
+                <label for="">Exclude From Roaster Conflict Checking : </label>
+            </div>
+            <div nz-col class="form-group" nzSpan="1">
+                <label nz-checkbox formControlName="excludeFromConflictChecking"></label>
+            </div>
+        </div>
     </div>
 
     <div *nzModalFooter>

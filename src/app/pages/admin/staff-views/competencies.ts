@@ -27,6 +27,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     inputForm: FormGroup;
+    skillsForm: FormGroup;
     tableData: Array<any>;
     loading: boolean = false;
 
@@ -100,6 +101,10 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             certReg: '',
             mandatory: false,
             notes: ''
+        });
+        this.skillsForm = this.formBuilder.group({
+            competencyException:false,
+            emailCompetencyReminders:false,
         });
     }
 

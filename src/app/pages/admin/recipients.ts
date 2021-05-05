@@ -1173,7 +1173,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
         if (!this.isFirstLoad) {
             this.view(0);
-            // this.view(1);
+            // this.view(10);
+            
             this.isFirstLoad = true;
         }
 

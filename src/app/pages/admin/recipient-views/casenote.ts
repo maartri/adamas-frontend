@@ -99,7 +99,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
+        // this.search(this.user);
         this.buildForm();
     }
 
@@ -129,7 +129,8 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                         x.detail = x.detailOriginal
                     }
                 });
-                console.log(list);
+                this.tableData = list;
+            } else {
                 this.tableData = list;
             }
             

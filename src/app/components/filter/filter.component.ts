@@ -78,7 +78,8 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
       this.filterFormGroup.get('acceptedQuotes').valueChanges.pipe(startWith(false)),
       this.filterFormGroup.get('includeClosedIncidents').valueChanges.pipe(startWith(false)),
       this.filterFormGroup.get('includeArchivedNotes').valueChanges.pipe(startWith(false)),
-      this.filterFormGroup.get('allDates').valueChanges.pipe(startWith(false))
+      this.filterFormGroup.get('allDates').valueChanges.pipe(startWith(false)),
+      this.filterFormGroup.get('display').valueChanges.pipe(startWith(20))
     ]).pipe(
       switchMap(([data, data1]:any) => {
         if(data == null || data1 == null){

@@ -114,7 +114,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
+        // this.search(this.user);
         this.buildForm();
     }
 
@@ -145,10 +145,13 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
                     }
                 });
                 this.tableData = list;
+            } else {
+                this.tableData = list;
             }
             
             this.loading = false;
             this.cd.markForCheck();
+            this.cd.detectChanges();
         })
 
         // this.clientS.getopnotes(user.id).subscribe(data => {

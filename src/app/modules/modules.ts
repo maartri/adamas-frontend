@@ -107,6 +107,7 @@ export interface Staffs {
     nRegistration?: string,
     isRosterable?: boolean,
     emailTimesheet?: boolean,
+    excludeFromConflictChecking?:boolean,
     caseManager?: boolean,
     ubdMap?: string,
     contactIssues?: string,
@@ -397,9 +398,11 @@ export interface AttendanceStaff {
     AutoLogout: string,
     EmailMessage: boolean,
     ExcludeShiftAlerts: boolean,
+    ExcludeFromTravelinterpretation:boolean,
     InAppMessage: boolean,
     LogDisplay: boolean,
     Pin: string,
+    StaffTimezoneOffset:string,
     RosterPublish: boolean,
     ShiftChange: boolean,
     SmsMessage: boolean,
@@ -484,6 +487,14 @@ export interface Consents {
 export interface IntakeCompetency {
     name: string,
     mandatory: boolean
+}
+
+export interface AlertCompetency {
+    personID?: string,
+    competencyValue?: string,
+    mandatory?: boolean,
+    notes?: string,
+    recordNumber?: number,
 }
 
 export interface IntakeServices {

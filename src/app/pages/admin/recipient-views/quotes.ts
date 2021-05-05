@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
-import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { dateFormat } from '@services/global.service'
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -14,14 +15,115 @@ import { Filters } from '@modules/modules';
 @Component({
     styleUrls:['./quotes.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './quotes.html'
+    templateUrl: './quotes.html',
+    styles:[`
+    nz-tabset >>> div > div.ant-tabs-nav-container{
+        height: 25px !important;
+        font-size: 13px !important;
+    }
+
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+        line-height: 24px;
+        height: 25px;
+    }
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+        background: #717e94;
+        color: #fff;
+    }
+ 
+    .line{
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #f3f3f3;
+    }
+    .controls div{
+        display: inline-block;
+        border-radius: 50%;
+        background: #f1f1f1;
+        border: 1px solid #cecece;
+        width: 24px;
+        text-align: center;
+        margin-right:10px;
+    }
+    .controls div i{
+        cursor:pointer;
+    }
+    .controls div:hover{
+        background:#d6d6d6;
+    }
+    .right{
+        float:right;
+    }
+    .right >  * {        
+        margin-right:5px;
+    }
+    nz-range-picker{
+        width:15rem;
+    }
+    .div-table{
+        display: table;
+        line-height: 25px;
+    }
+    .div-table > div{
+        display: table-row;
+    }
+    .div-table > div > div{
+        display: table-cell;
+        padding: 2px 5px;
+    }
+    .form-group nz-select{
+        width:100%
+    }
+    nz-select.select{
+        min-width:10rem;
+    }
+    .inline{
+        display:flex;
+    }
+    .inline > .title{
+        font-size:12px;
+        margin-right:5px;
+    }
+    .mini{
+        width:4rem;
+    }
+    `]
 })
 
 
 export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
+
     private unsubscribe: Subject<void> = new Subject();
+    quoteForm: FormGroup;
+    quoteListForm: FormGroup;
+
+    title: string = 'Add New Quote'
+    listOfData = [
+        // {
+        //   key: '1',
+        //   name: 'John Brown',
+        //   age: 32,
+        //   address: 'New York No. 1 Lake Park'
+        // },
+        // {
+        //   key: '2',
+        //   name: 'Jim Green',
+        //   age: 42,
+        //   address: 'London No. 1 Lake Park'
+        // },
+        // {
+        //   key: '3',
+        //   name: 'Joe Black',
+        //   age: 32,
+        //   address: 'Sidney No. 1 Lake Park'
+        // }
+      ];
+
 
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+
+    dateFormat: string = dateFormat;
+    nzSize: string = "small"
 
     user: any;
     inputForm: FormGroup;
@@ -35,13 +137,20 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     loading: boolean = false;
 
-    // filters: Filters = {
-    //     acceptedQuotes: false,
-    //     allDates: false,
-    //     archiveDocs: true,
-    //     display: 20
-    // };
+    quotesOpen: boolean = false;
+    quoteLineOpen: boolean = false;
 
+    value: any;
+
+    quoteTemplateList: Array<string>;
+    quoteProgramList: Array<string>;
+
+    IS_CDC: boolean = false;
+
+
+    
+
+    radioValue: any;
     filters: any;
 
     constructor(
@@ -91,8 +200,34 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.search(this.user);
     }
 
+    showQuoteModal(){
+        this.quotesOpen = true;
+        this.listS.getprogramcontingency(this.user.id).subscribe(data => this.quoteProgramList = data);
+        this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
+        this.tabFindIndex = 2;
+        console.log(this.user)
+    }
+
+    quoteLineModal(){
+        this.quoteLineOpen = true;
+    }
+
+    handleOk(){
+
+    }
+
+    handleCancel(){
+        this.quotesOpen = false;
+    }
+
+    tabFindIndex: number = 0;
+    tabFindChange(index: number){
+        this.tabFindIndex = index;
+    }
+
     search(user: any) {
         this.loading = true;
+        this.user = user;
         
 
         let data = {
@@ -132,14 +267,66 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             autoLogout: [''],
             emailMessage: false,
             excludeShiftAlerts: false,
+            excludeFromTravelinterpretation:false,
             inAppMessage: false,
             logDisplay: false,
             pin: [''],
+            staffTimezoneOffset:[''],
             rosterPublish: false,
             shiftChange: false,
             smsMessage: false
         });
+
+        this.quoteForm = this.formBuilder.group({
+            program: null,
+            template: null,
+
+            no: null,
+            type: null,
+            period: [],
+            basePeriod: null,
+
+
+        });
+
+        this.quoteListForm = this.formBuilder.group({
+            chargeType: null,
+            code: null,
+            displayText: null,
+            strategy: null,
+            sequenceNo: null
+        });
+
+        this.quoteListForm.get('chargeType').valueChanges.subscribe(data => {
+            
+        });
+
+        this.quoteForm.get('program').valueChanges
+        .pipe(
+            switchMap(x => this.listS.getprogramlevel(x)),
+            switchMap(x => {
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
+                    this.detectChanges();
+                    return this.listS.getpensionandfee();
+                }
+                this.detectChanges();
+                return EMPTY;
+            })
+        ).subscribe(data => {
+            console.log(data)
+            this.detectChanges();
+        });
+
     }
+
+    detectChanges(){
+        this.cd.markForCheck();
+        this.cd.detectChanges();
+    }
+
+    
 
     onKeyPress(data: KeyboardEvent) {
         return this.globalS.acceptOnlyNumeric(data);
@@ -152,9 +339,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             AutoLogout: group.get('autoLogout').value,
             EmailMessage: group.get('emailMessage').value,
             ExcludeShiftAlerts: group.get('excludeShiftAlerts').value,
+            ExcludeFromTravelinterpretation: group.get('excludeFromTravelinterpretation').value,
             InAppMessage: group.get('inAppMessage').value,
             LogDisplay: group.get('logDisplay').value,
             Pin: group.get('pin').value,
+            StaffTimezoneOffset:group.get('staffTimezoneOffset').value,
             RosterPublish: group.get('rosterPublish').value,
             ShiftChange: group.get('shiftChange').value,
             SmsMessage: group.get('smsMessage').value,

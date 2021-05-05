@@ -42,3 +42,7 @@ nz-select{
 .close i:hover{
     color:#151515;
 }
+
+nz-checkbox-group >>> label{
+    display:block;
+}

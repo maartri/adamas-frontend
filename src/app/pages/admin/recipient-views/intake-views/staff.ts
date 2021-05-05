@@ -10,6 +10,14 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 
 @Component({
+  styles: [`
+      nz-table{
+        margin-top:10px;
+        margin-bottom:30px;
+        
+    }
+            
+    `],
     selector: '',
     templateUrl: './staff.html',
     changeDetection: ChangeDetectionStrategy.OnPush

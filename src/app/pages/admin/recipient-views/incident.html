@@ -1,14 +1,15 @@
 <div nz-row>
     <button class="botton success" (click)="showAddModal()">Add Incident</button>
+    <nz-divider nzType="vertical"></nz-divider>
+    <button class="botton sea" id="incidentregister" (click)="Incidentlisting()">Incident listing</button> 
+
     <app-filter [tabs]="'INCIDENTS'"></app-filter>
 </div>
 <div nz-row>
     <div nz-col>
 
-        <button class="botton success" (click)="showAddModal()">Add Incident</button>
-        <nz-divider nzType="vertical"></nz-divider>
-       <button class="botton sea" id="incidentregister" (click)="Incidentlisting()">Incident listing</button> 
-
+        
+        
         <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>

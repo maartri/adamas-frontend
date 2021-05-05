@@ -116,15 +116,15 @@
   </nz-modal>
   <nz-modal [(nzVisible)]="preferenceOpen" nzTitle="PREFERENCES" (nzOnCancel)="handleCancel(2)" (nzOnOk)="handleOk()">
     <div>
-        
         <div nz-row nzGutter="16">
             <div nz-col nzSpan="12" [formGroup]="preferenceForm" *ngIf="addOREdit == 1">
+                <label for=""><h4>Preference</h4></label>
                 <nz-select style="width:100%" nzAllowClear formControlName="preference">
                     <nz-option *ngFor="let data of dropDowns?.preferences"  [nzValue]="data" [nzLabel]="data"></nz-option>
                 </nz-select>
             </div>
             <div nz-col nzSpan="12" [formGroup]="preferenceForm" *ngIf="addOREdit == 2">
-                <label for="">Branch</label>
+                <label for="">Preference</label>
                 <input nz-input formControlName="preference" disabled />
             </div>
         </div>

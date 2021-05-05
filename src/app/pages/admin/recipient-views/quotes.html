@@ -312,10 +312,67 @@
                 </div>
 
                 <div nz-row class="line" nzGutter="16">
-                    <div nz-col nzSpan="16">
-
+                    <div nz-col nzSpan="18">
+                        <div nz-row nzGutter="16"> 
+                            <div nz-col nzSpan="12" class="inline" *ngIf="!IS_CDC">
+                                <span class="title">Initial Budget</span>
+                                <input nz-input class="mini" placeholder="" nzSize="small" [(ngModel)]="value" />
+                            </div>
+                            <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC">
+                                <span class="title">Gov't Contribution</span>
+                                <input nz-input class="mini" placeholder="" nzSize="small" [(ngModel)]="value" />
+                            </div>
+                            <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC">
+                                <span class="title">Centrelink Income Tested Fee</span>
+                                <span>
+                                    <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
+                                        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                                        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                                    </nz-select>
+                                </span>
+                                <span>@</span>
+                                <span><input nz-input class="mini" placeholder="" nzSize="small" [(ngModel)]="value" /></span>
+                                <span>=</span>
+                                <span><input nz-input class="mini" placeholder="" nzSize="small" [(ngModel)]="value" /></span>
+                            </div>
+                        </div>
+                        <div nz-row class="line" *ngIf="IS_CDC">
+                            <div class="div-table">
+                                <div>
+                                    <div></div>
+                                    <div>Annual Charge</div>
+                                    <div>Daily</div>
+                                    <div>Monthly</div>
+                                </div>
+                                <div>
+                                    <div>Base Quote</div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                </div>
+                                <div>
+                                    <div>Admin & Case Management</div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                </div>
+                                <div>
+                                    <div>Total Quote</div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                </div>
+                                <div>
+                                    <div>Remaining Funds</div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div nz-col nzSpan="8">
+                    <div nz-col nzSpan="6">
                         <div class="right">
                             <div class="div-table">
                                 <div>

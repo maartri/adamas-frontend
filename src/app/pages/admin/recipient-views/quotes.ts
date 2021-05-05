@@ -77,6 +77,16 @@ import { Filters } from '@modules/modules';
     nz-select.select{
         min-width:10rem;
     }
+    .inline{
+        display:flex;
+    }
+    .inline > .title{
+        font-size:12px;
+        margin-right:5px;
+    }
+    .mini{
+        width:4rem;
+    }
     `]
 })
 
@@ -89,24 +99,24 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     title: string = 'Add New Quote'
     listOfData = [
-        {
-          key: '1',
-          name: 'John Brown',
-          age: 32,
-          address: 'New York No. 1 Lake Park'
-        },
-        {
-          key: '2',
-          name: 'Jim Green',
-          age: 42,
-          address: 'London No. 1 Lake Park'
-        },
-        {
-          key: '3',
-          name: 'Joe Black',
-          age: 32,
-          address: 'Sidney No. 1 Lake Park'
-        }
+        // {
+        //   key: '1',
+        //   name: 'John Brown',
+        //   age: 32,
+        //   address: 'New York No. 1 Lake Park'
+        // },
+        // {
+        //   key: '2',
+        //   name: 'Jim Green',
+        //   age: 42,
+        //   address: 'London No. 1 Lake Park'
+        // },
+        // {
+        //   key: '3',
+        //   name: 'Joe Black',
+        //   age: 32,
+        //   address: 'Sidney No. 1 Lake Park'
+        // }
       ];
 
 
@@ -134,6 +144,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     quoteTemplateList: Array<string>;
     quoteProgramList: Array<string>;
+
+    IS_CDC: boolean = false;
+
 
     
 
@@ -292,15 +305,25 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         .pipe(
             switchMap(x => this.listS.getprogramlevel(x)),
             switchMap(x => {
+                this.IS_CDC = false;
                 if(x.isCDC){
+                    this.IS_CDC = true;
+                    this.detectChanges();
                     return this.listS.getpensionandfee();
                 }
+                this.detectChanges();
                 return EMPTY;
             })
         ).subscribe(data => {
             console.log(data)
+            this.detectChanges();
         });
 
+    }
+
+    detectChanges(){
+        this.cd.markForCheck();
+        this.cd.detectChanges();
     }
 
     

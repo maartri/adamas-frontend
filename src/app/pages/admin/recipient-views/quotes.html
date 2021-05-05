@@ -241,7 +241,7 @@
 
                 </div>
 
-                <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm">
+                <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" *ngIf="quoteForm.get('program').value">
                     <div nz-col nzSpan="6">
                         <input nz-input formControlName="no" placeholder="Basic usage" nzSize="small" />
                     </div>
@@ -265,7 +265,7 @@
                     </div>
                 </div>
 
-                <div nz-row class="line">
+                <div nz-row class="line" *ngIf="quoteForm.get('program').value">
                     <div nz-col nzSpan="12">
                         <div class="controls">
                             <div><i nz-icon nzType="plus" nzTheme="outline" (click)="quoteLineModal()"></i></div>
@@ -286,7 +286,7 @@
                     </div>
                 </div>
 
-                <div nz-row>
+                <div nz-row *ngIf="quoteForm.get('program').value">
                     <nz-table #basicTable [nzData]="listOfData" nzSize="small">
                         <thead>
                           <tr>
@@ -317,7 +317,7 @@
                       </nz-table>
                 </div>
 
-                <div nz-row class="line" nzGutter="16">
+                <div nz-row class="line" nzGutter="16" *ngIf="quoteForm.get('program').value">
                     <div nz-col nzSpan="18">
                         <div nz-row nzGutter="16"> 
                             <div nz-col nzSpan="12" class="inline" *ngIf="!IS_CDC">
@@ -402,7 +402,7 @@
                     </div>
                 </div>
 
-                <div nz-row class="line">
+                <div nz-row class="line" *ngIf="quoteForm.get('program').value">
                     <textarea rows="4" nz-input [(ngModel)]="value" placeholder="Extra Information"></textarea>
                 </div>
 
@@ -424,7 +424,7 @@
         </div>
 
         <div nz-row class="line">
-            <div nz-col nzSpan="8" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
+            <div nz-col nzSpan="6" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="form-group">
                     <nz-select formControlName="code" nzSize="small" nzAllowClear nzPlaceHolder="Code">
                         <nz-option *ngFor="let d of codes" [nzValue]="d" [nzLabel]="d"></nz-option>
@@ -432,11 +432,11 @@
                 </div>
 
                 <div class="form-group">
-                    <input nz-input formControlName="displayText" placeholder="Sequence Number" nzSize="small"  />
+                    <input nz-input formControlName="displayText" placeholder="Display Text" nzSize="small"  />
                 </div>
 
                 <div class="form-group">
-                    <nz-select formControlName="strategy" nzSize="small" nzAllowClear nzPlaceHolder="Discipline">
+                    <nz-select formControlName="strategy" nzSize="small" nzAllowClear nzPlaceHolder="Strategy">
                         <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
                         <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
                         <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>

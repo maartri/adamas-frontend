@@ -212,9 +212,6 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
         const index = this.whatView;
         this.isLoading = true;
 
-        // console.log(list);
-        // return;
-
         if (index == 1) {            
             this.timeS.postuserdefined1({
                 notes: notes,

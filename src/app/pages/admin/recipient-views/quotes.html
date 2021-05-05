@@ -457,15 +457,18 @@
                     <label nz-radio nzValue="Weekly">Weekly</label>
                     <label nz-radio nzValue="Fortnightly">Fortnightly</label>
                     <label nz-radio nzValue="FourWeekly">Monthly</label>
-                    <label nz-radio nzValue="">None</label>
+                    <label nz-radio nzValue="None">None</label>
                 </nz-radio-group>
             </div>
 
             <div nz-row>                
-                <div nz-col nzSpan="20">
-                    <app-interval-design [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-design>
+                <div nz-col nzSpan="15">
+                    <app-interval-quote [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-quote>
+                    {{ slots | json  }}
+                    <!-- {{ slots?.quantity }} -->
+                    <!-- <app-interval-design [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-design> -->
                 </div>
-                <div nz-col nzSpan="4">
+                <div nz-col nzSpan="9">
 
                 </div>
             </div>

@@ -98,7 +98,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     quoteListForm: FormGroup;
 
     title: string = 'Add New Quote';
-    slots: Array<any> = [];
+    slots: any;
     weekly: string = 'Weekly';
 
     listOfData = [
@@ -303,7 +303,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
 
         this.quoteListForm.get('chargeType').valueChanges.subscribe(data => {
-            
+            console.log(data)
         });
 
         this.quoteListForm.get('roster').valueChanges.subscribe(data => {
@@ -335,7 +335,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.cd.markForCheck();
         this.cd.detectChanges();
     }
-
     
 
     onKeyPress(data: KeyboardEvent) {

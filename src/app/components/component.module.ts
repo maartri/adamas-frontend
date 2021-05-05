@@ -50,6 +50,7 @@ import { IncidentDocumentsComponent } from './incident-documents/incident-docume
 import { RecipientsOptionsComponent } from './recipients-options/recipients-options.component';
 import { SelectListRecipientComponent } from './select-list-recipient/select-list-recipient.component';
 import { FilterComponent } from './filter/filter.component';
+import { IntervalQuoteComponent } from './interval-quote/interval-quote.component';
 
 
 @NgModule({
@@ -87,7 +88,8 @@ import { FilterComponent } from './filter/filter.component';
     IncidentDocumentsComponent,
     RecipientsOptionsComponent,
     SelectListRecipientComponent,
-    FilterComponent
+    FilterComponent,
+    IntervalQuoteComponent
   ],
   imports: [
     CommonModule,
@@ -131,7 +133,8 @@ import { FilterComponent } from './filter/filter.component';
     IncidentDocumentsComponent,
     RecipientsOptionsComponent,
     NgSelectModule,
-    FilterComponent
+    FilterComponent,
+    IntervalQuoteComponent
   ],
   providers: [
     

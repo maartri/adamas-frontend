@@ -1,0 +1,27 @@
+.id-container{
+    margin-top:1rem;
+    font-size:12px;
+}
+.id-table{
+    display:table;
+}
+
+.id-table > div { 
+    display: table-row; 
+}
+.id-table > div > div { 
+    display: table-cell;
+    padding: 2px 5px;
+}
+nz-input-number{
+    width:3rem;
+}
+nz-time-picker{
+    width:5rem;
+}
+.float{
+    float:left;
+}
+.spacing > *{
+    margin-right:5px;
+}

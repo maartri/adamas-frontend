@@ -1,9 +1,15 @@
 <div nz-row>
     <button class="botton success" (click)="showAddModal()">Add Incident</button>
+    <nz-divider nzType="vertical"></nz-divider>
+    <button class="botton sea" id="incidentregister" (click)="Incidentlisting()">Incident listing</button> 
+
     <app-filter [tabs]="'INCIDENTS'"></app-filter>
 </div>
 <div nz-row>
     <div nz-col>
+
+        
+        
         <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
@@ -26,10 +32,10 @@
                     <td class="left" >
                         <a (click)="showEditModal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure,you want to delete this Incident?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>                            
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure Close this Incident?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure, you want Close this Incident?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="closeincidentstatus(data)">Close</a>
                         
                     </td>

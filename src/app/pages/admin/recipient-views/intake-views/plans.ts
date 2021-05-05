@@ -40,7 +40,7 @@ export class IntakePlans implements OnInit, OnDestroy {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
-                    this.router.navigate(['/admin/recipient/branches'])
+                    this.router.navigate(['/admin/recipient/personal'])
                 }
             }
         });

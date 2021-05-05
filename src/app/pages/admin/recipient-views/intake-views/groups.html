@@ -107,7 +107,7 @@
                 <button nz-button nzType="default" (click)="handleCancel(1)">
                     <span>Cancel</span>
                 </button>
-                <button nz-button nzType="primary" (click)="userGroupProcess()" [disabled]="!this.preferenceForm.get('group').value">
+                <button nz-button nzType="primary" (click)="userGroupProcess()" [disabled]="!this.userGroupForm.get('group').value">
                     <span>Save</span>
                 </button>
             </ng-container>

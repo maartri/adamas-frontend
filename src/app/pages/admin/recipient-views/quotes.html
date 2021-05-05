@@ -451,8 +451,24 @@
             </div>
         </div>
 
-        <div nz-row>
+        <div nz-row class="line">
+            <div nz-row [formGroup]="quoteListForm">
+                <nz-radio-group formControlName="roster">
+                    <label nz-radio nzValue="Weekly">Weekly</label>
+                    <label nz-radio nzValue="Fortnightly">Fortnightly</label>
+                    <label nz-radio nzValue="FourWeekly">Monthly</label>
+                    <label nz-radio nzValue="">None</label>
+                </nz-radio-group>
+            </div>
 
+            <div nz-row>                
+                <div nz-col nzSpan="20">
+                    <app-interval-design [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-design>
+                </div>
+                <div nz-col nzSpan="4">
+
+                </div>
+            </div>
         </div>
 
     </div>

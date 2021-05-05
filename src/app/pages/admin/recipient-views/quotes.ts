@@ -97,7 +97,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     quoteForm: FormGroup;
     quoteListForm: FormGroup;
 
-    title: string = 'Add New Quote'
+    title: string = 'Add New Quote';
+    slots: Array<any> = [];
+    weekly: string = 'Weekly';
+
     listOfData = [
         // {
         //   key: '1',
@@ -294,11 +297,18 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             code: null,
             displayText: null,
             strategy: null,
-            sequenceNo: null
+            sequenceNo: null,
+
+            roster: null
         });
 
         this.quoteListForm.get('chargeType').valueChanges.subscribe(data => {
             
+        });
+
+        this.quoteListForm.get('roster').valueChanges.subscribe(data => {
+            console.log(data);
+            this.weekly = data;
         });
 
         this.quoteForm.get('program').valueChanges

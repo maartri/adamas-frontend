@@ -151,7 +151,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     IS_CDC: boolean = false;
 
 
-    
+    codes: Array<any>
 
     radioValue: any;
     filters: any;
@@ -213,6 +213,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     quoteLineModal(){
         this.quoteLineOpen = true;
+        this.quoteListForm.reset();
     }
 
     handleOk(){
@@ -221,6 +222,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     handleCancel(){
         this.quotesOpen = false;
+    }
+
+    handleCancelLine(){
+        this.quoteLineOpen = false;
+        console.log('s')
     }
 
     tabFindIndex: number = 0;
@@ -302,8 +308,18 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             roster: null
         });
 
-        this.quoteListForm.get('chargeType').valueChanges.subscribe(data => {
+        this.quoteListForm.get('chargeType').valueChanges
+        .pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                return this.listS.getchargetype({
+                    program: this.quoteForm.get('program').value,
+                    index: x
+                  })
+            })
+        ).subscribe(data => {
             console.log(data)
+            this.codes = data;
         });
 
         this.quoteListForm.get('roster').valueChanges.subscribe(data => {

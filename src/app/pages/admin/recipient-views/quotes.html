@@ -411,7 +411,7 @@
     </div>
   </nz-modal>
 
-  <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="quoteLineOpen = false" (nzOnOk)="handleOk()">
+  <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="handleCancelLine()" (nzOnOk)="handleOk()">
     <div nz-row>
         <div nz-row [formGroup]="quoteListForm">
             <span style="margin-right:2rem;font-weight:bold">Charge Type</span>
@@ -422,13 +422,12 @@
                 <label nz-radio nzValue="4">Package/Case Management</label>
             </nz-radio-group>
         </div>
+
         <div nz-row class="line">
-            <div nz-col nzSpan="8" [formGroup]="quoteListForm">
+            <div nz-col nzSpan="8" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="form-group">
-                    <nz-select formControlName="code" nzSize="small" nzAllowClear nzPlaceHolder="Discipline">
-                        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                    <nz-select formControlName="code" nzSize="small" nzAllowClear nzPlaceHolder="Code">
+                        <nz-option *ngFor="let d of codes" [nzValue]="d" [nzLabel]="d"></nz-option>
                     </nz-select>
                 </div>
 
@@ -444,14 +443,14 @@
                     </nz-select>
                 </div>
             </div>
-            <div nz-col nzSpan="16">
+            <div nz-col nzSpan="16" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="right">
                     <input nz-input placeholder="Sequence Number" nzSize="small" [(ngModel)]="value" />
                 </div>
             </div>
         </div>
 
-        <div nz-row class="line">
+        <div nz-row class="line" *ngIf="quoteListForm.get('chargeType').value">
             <div nz-row [formGroup]="quoteListForm">
                 <nz-radio-group formControlName="roster">
                     <label nz-radio nzValue="Weekly">Weekly</label>

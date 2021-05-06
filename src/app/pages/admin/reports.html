@@ -925,7 +925,7 @@
                             <div class="form-group">
                                 <label><i nz-icon nzType="bank" nzTheme="outline"></i> Recipients  </label>
                                 <label class="checks" nz-checkbox formControlName="allRecipients">All Recipients </label>
-                                <nz-select formControlName="recipientArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allRecipients">
+                                <nz-select formControlName="recipientArr" nzMaxTagCount="4" nzMode="multiple" nzShowSearch="true" [nzDisabled]="inputForm.value.allRecipients">
                                     <nz-option *ngFor="let option of recipientArr" [nzLabel]="option" [nzValue]="option"></nz-option>
                                 </nz-select>                                    
                             </div>     

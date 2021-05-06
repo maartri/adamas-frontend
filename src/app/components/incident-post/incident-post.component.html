@@ -95,25 +95,25 @@
                             <div nz-col nzSpan="12">
                                 <label for="">Organisation</label>
                                 <div class="pad-15">
-                                    <nz-radio-group>
+                                    <nz-radio-group formControlName= "organisation">
                                         <div nz-row>
-                                            <div nz-col nzSpan="12">
+                                            <div nz-col nzSpan="14">
                                                 <div>
-                                                    <label nz-radio nzValue="A">Aged Care Funded</label>
+                                                    <label nz-radio nzValue="3">Aged Care Funded</label>
                                                 </div>
                                                 <div>
-                                                    <label nz-radio nzValue="B">Member of Community</label>
+                                                    <label nz-radio nzValue="2">Member of Community</label>
                                                 </div>
                                                 <div>
-                                                    <label nz-radio nzValue="C">Block Funded</label>
+                                                    <label nz-radio nzValue="4">Block Funded</label>
                                                 </div>
                                             </div>
-                                            <div nz-col nzSpan="12">
-                                                <div>
-                                                    <label nz-radio nzValue="A">Agency Staff</label>
+                                            <div nz-col nzSpan="10" >
+                                                <div  >
+                                                    <label nz-radio nzValue="0">Agency Staff</label>
                                                 </div>
-                                                <div>
-                                                    <label nz-radio nzValue="B">NDIS Participant</label>
+                                                <div >
+                                                    <label nz-radio nzValue="1">NDIS Participant</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -135,14 +135,19 @@
                                             </div>
                                         </div>
                                         <div nz-col nzSpan="12">
-                                            <div class="form-group">
-                                                <label for="">Time of Incident</label>
+                                            <div class="form-group">                                               
                                                 <div nz-row nzGutter="16">
-                                                    <div nz-col nzSpan="9">
-                                                        <nz-time-picker formControlName="startTimeOfIncident" [nzMinuteStep]="5" [nzPlaceHolder]="'Start Time'" nzFormat="HH:mm"></nz-time-picker>
+                                                    <div nz-col nzSpan="11">
+                                                        <label for="">Start Time</label>
+                                                        <div nz-col nzSpan="9">
+                                                            <nz-time-picker formControlName="startTimeOfIncident" [nzMinuteStep]="5" [nzPlaceHolder]="'Start Time'" nzFormat="HH:mm"></nz-time-picker>
+                                                        </div>
                                                     </div>
-                                                    <div nz-col nzSpan="9">
-                                                        <nz-time-picker formControlName="endTimeOfIncident" [nzMinuteStep]="5" [nzPlaceHolder]="'End Time'" nzFormat="HH:mm"></nz-time-picker>
+                                                    <div nz-col nzSpan="11">
+                                                        <label for="">End Time</label>
+                                                        <div nz-col nzSpan="9">
+                                                            <nz-time-picker formControlName="endTimeOfIncident" [nzMinuteStep]="5" [nzPlaceHolder]="'End Time'" nzFormat="HH:mm"></nz-time-picker>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -239,7 +244,7 @@
                                 <label nz-checkbox formControlName="incident21">Alleged aggressive behaviour by the carer, member of the public or service worker</label>
                             </div>
                             <div style="display: flex;">
-                                <label nz-checkbox formControlName="incident13">Others</label>  <input style="width: 15rem;" formControlName="other" nz-input nzSize="small" />
+                                <label nz-checkbox formControlName="incident13">Others</label>  <textarea style="width: 15rem; height: 30px;" formControlName="other" nz-input nzSize="small"></textarea>
                             </div>
                         </div>
                     </div>
@@ -377,8 +382,8 @@
                                     <div class="margin-btm-10">
                                         <label formControlName="strat67" nz-checkbox >Poisons Information</label>
                                     </div>
-                                    <div>
-                                        <label formControlName="strat69" nz-checkbox >Other Specify</label>
+                                    <div style="display: flex;">
+                                        <label formControlName="strat69" nz-checkbox >Other Specify</label> <textarea style="width: 15rem; height: 30px;" formControlName="otherspecify" nz-input nzSize="small"></textarea>
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="12">

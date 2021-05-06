@@ -827,6 +827,7 @@ export interface IM_Master {
     SummaryOfOtherAction: string,
     SubjectName: string,
     SubjectGender: string,
+    SubjectType: string,
     ResidenceSubjectOther: string,
     TypeOther: string,
     Manager: string,
@@ -841,6 +842,7 @@ export interface IM_Master {
     Staff?: Array<any>,
     IncidentNotes: Array<any>,
     NewRelationship: Array<any>
+    
 }
 
 export interface NewRelationShip

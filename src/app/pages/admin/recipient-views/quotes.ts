@@ -9,6 +9,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContextMenuComponent } from 'ngx-contextmenu';
+import { billunit, periodQuote } from '@services/global.service';
 
 import { Filters } from '@modules/modules';
 
@@ -87,6 +88,24 @@ import { Filters } from '@modules/modules';
     .mini{
         width:4rem;
     }
+    .spacing > *{
+        margin-right:5px;
+    }
+    .calc-wrapper > div{
+        margin-top:8px;
+    }
+    .three-wid{
+        width:3rem;
+    }
+    .three-five{
+        width:5rem;
+    }
+    .flex{
+        display:flex;
+    }
+    .flex > *{
+        margin-right:5px;
+    }
     `]
 })
 
@@ -96,6 +115,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     private unsubscribe: Subject<void> = new Subject();
     quoteForm: FormGroup;
     quoteListForm: FormGroup;
+
+    billUnitArr: Array<string> = billunit;
+    periodArr: Array<string> = periodQuote;
+
+    size: string = 'small'
 
     title: string = 'Add New Quote';
     slots: any;
@@ -152,6 +176,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
     codes: Array<any>
+    recipientProperties: any;
 
     radioValue: any;
     filters: any;
@@ -305,12 +330,15 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             strategy: null,
             sequenceNo: null,
 
+            price: null,
+
             roster: null
         });
 
         this.quoteListForm.get('chargeType').valueChanges
         .pipe(
             switchMap(x => {                
+                this.resetQuotePrimary();
                 if(!x) return EMPTY;
                 return this.listS.getchargetype({
                     program: this.quoteForm.get('program').value,
@@ -318,13 +346,21 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
                   })
             })
         ).subscribe(data => {
-            console.log(data)
-            this.resetQuotePrimary();
+            // this.resetQuotePrimary();
             this.codes = data;
         });
 
-        this.quoteListForm.get('code').valueChanges.subscribe(data => {
-           this.weekly = null
+        this.quoteListForm.get('code').valueChanges.pipe(
+            switchMap(x => {
+                if(!x)
+                    return EMPTY;
+
+                return this.listS.getprogramproperties(x)
+            })
+        ).subscribe(data => {
+            this.weekly = null;
+            this.recipientProperties = data;
+            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount })
         });
 
         this.quoteListForm.get('roster').valueChanges.subscribe(data => {

@@ -31,7 +31,7 @@ import { isValid } from 'date-fns';
 
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
-
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import * as moment from 'moment';
 import * as $ from 'jquery';
 import { SpreadSheetsModule } from '@grapecity/spread-sheets-angular';
@@ -84,6 +84,7 @@ payTotal:any;
   cell_value:any = {row:0,col:0,duration:0, type:0,recordNo:0} 
   copy_value:any = {row:0,col:0,duration:0, type:0,recordNo:0} 
 
+  notes:string="";
   bodyText:string;
   recipientDetailsModal:boolean=false;
   operation:string="";
@@ -129,12 +130,16 @@ payTotal:any;
     sample: any;
     searchStaffModal:boolean=false;
     ViewStaffDetail:boolean=false;
+    ViewServiceDetail:boolean=false;
+    ViewAdditionalModal:boolean=false;
     isFirstLoad:boolean=false;
     userview: UserView;
     selectedCarer:any;
     UnAllocateStaffModal:boolean=false;
     ClearMultiShiftModal:boolean=false;
     SetMultiShiftModal:boolean=false;
+    deleteRosterModal:boolean=false;
+
  DayOfWeek(n:number): String{
 
     let day:String="";
@@ -190,7 +195,22 @@ normalRoutePass(): void{
         console.log(data);
     });
 }
+SaveAdditionalInfo(notes:string){
+    this.notes=notes;
+    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+    this.ProcessRoster("Additional", this.cell_value.RecordNo);
+   
+}
+deleteRoster(){
+    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+    this.ProcessRoster("Delete",this.cell_value.RecordNo);
 
+    let sheet=this.spreadsheet.getActiveSheet();
+    this.spreadsheet.suspendPaint();
+    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    this.operation="Delete";                 
+    this.spreadsheet.resumePaint();
+}
 reAllocate(){
     if (this.cell_value==null || this.cell_value.RecordNo==0) return;
 
@@ -205,7 +225,7 @@ reAllocate(){
 
 
 UnAllocate(){
-    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+   // if (this.cell_value==null || this.cell_value.RecordNo==0) return;
 
     this.ProcessRoster("Un-Allocate", this.cell_value.RecordNo);
     let sheet=this.spreadsheet.getActiveSheet();
@@ -216,7 +236,19 @@ UnAllocate(){
 
 }
 
+SaveMasterRosters(){
 
+    if (this.rosters==null) return;
+    if (this.rosters.length<=0) return;
+
+    let rst:any=this.rosters[0];
+    
+   let RecordNo=rst.recordNo;
+    if (this.viewType=="Staff")
+        this.ProcessRoster("Staff Master", RecordNo);
+    else if (this.viewType=="Recipient")
+        this.ProcessRoster("Client Master", RecordNo);
+}
 SetMultishift(){
     if (this.cell_value==null || this.cell_value.RecordNo==0) return;
 
@@ -505,6 +537,7 @@ ClearMultishift(){
           newMenuData.push( clear_multi);
   
           newMenuData.push(sperator);
+          
           var viewStaff = {
             text: 'View Staff Detail',
             name: 'ViewStaffDetail',
@@ -513,12 +546,21 @@ ClearMultishift(){
         };        
            newMenuData.push(viewStaff);
   
+           var viewService= {
+            text: 'View Service Detail',
+            name: 'ViewServiceDetail',
+            command: "ViewServiceDetail",
+            workArea: 'viewport'
+        };        
+           newMenuData.push(viewService);
+
            var openDialog = {
             text: 'View Additional Information (Xtra Info)',
             name: 'ViewAdditional',
             command: "ViewAdditional",
             workArea: 'viewport'
-        };        
+        }; 
+
            newMenuData.push(openDialog);
            spread.contextMenu.menuData = newMenuData;
           
@@ -666,9 +708,9 @@ ClearMultishift(){
                         Commands.startTransaction(context, options);
   
                         var sheet = spread.getActiveSheet();
-                        spread.suspendPaint()
+                      
                         console.log("Delete Operation")
-                        self.operation="Delete";
+                       
                         var sheet = spread.getActiveSheet();
                        
                         var sels = sheet.getSelections();
@@ -678,16 +720,16 @@ ClearMultishift(){
                         selected_Cell=sel;
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null){
-                          self.copy_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)                      
-                        
-                          self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
-
-                          self.ProcessRoster("Delete",self.copy_value.RecordNo);
-                        }
-                        self.copy_value={row:-1,col:-1,duration:-1, type:0}
+                          self.cell_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)                      
+                          self.deleteRosterModal=true;
+                          
+                        }else
+                         self.cell_value={row:-1,col:-1,duration:-1, type:0}
                        
+                        self.operation="Delete";     
+
                         Commands.endTransaction(context, options);
-                        spread.resumePaint()
+                      
                         return true;
                     }
                 }
@@ -849,6 +891,40 @@ ClearMultishift(){
                     }
                 }
             });
+            
+            spread.commandManager().register("ViewServiceDetail",
+            {
+                canUndo: true,
+                execute: function (context, options, isUndo) {
+                    var Commands = GC.Spread.Sheets.Commands;
+                                 // add cmd here
+                    options.cmd = "ViewServiceDetail";
+                    if (isUndo) {
+                        Commands.undoTransaction(context, options);
+                        return true;
+                    } else {
+                        Commands.startTransaction(context, options);
+                      
+                        var sheet = spread.getActiveSheet();
+                        var sels = sheet.getSelections();
+                        var sel = sels[0];
+                        var row = sel.row;
+                        var col= sel.col;
+                       
+            
+                        self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
+                       
+                        let data:any = self.find_roster(self.cell_value.RecordNo);
+                       
+                        if (data!=null)
+                            self.details(data);
+  
+                        Commands.endTransaction(context, options);
+                        return true;
+                    }
+                }
+            });
+            
             spread.commandManager().register("ViewAdditional",
             {
                 canUndo: true,
@@ -862,7 +938,22 @@ ClearMultishift(){
                     } else {
                         Commands.startTransaction(context, options);
                         var sheet = spread.getActiveSheet();
-                    
+                        var sels = sheet.getSelections();
+                        var sel = sels[0];
+                        var row = sel.row;
+                        var col= sel.col;
+                       
+            
+                        self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
+                       
+                        let data:any = self.find_roster(self.cell_value.RecordNo);
+                        self.notes ="";
+                        self.notes=data.notes;
+                        self.defaultStartTime=data.startTime;
+                        self.date=data.date;
+                        self.serviceType=data.serviceActivity;
+
+                        self.ViewAdditionalModal=true;
                         console.log("ViewAdditional event called");
   
                         Commands.endTransaction(context, options);
@@ -1163,12 +1254,19 @@ sheet.conditionalFormats.addRule(iconSetRule);
   
       for (let m=0; m<duration; m++){
       if (m==0) {
-        sheet.getCell(r+m,c).backColor("white");
+        if (this.master)           
+            sheet.getCell(r+m,c).backColor("#FF8080");
+        else
+            sheet.getCell(r+m,c).backColor("white");
+        
         sheet.getCell(r+m,c).backgroundImage(null)
        }  
-       else
-        sheet.getCell(r+m,c).backColor("white");
-        
+       else {
+            if (this.master)           
+            sheet.getCell(r+m,c).backColor("#FF8080");
+                else
+            sheet.getCell(r+m,c).backColor("white");
+       }
         //sheet.getCell(r+m,c).field=duration;
         sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(null);
@@ -1188,6 +1286,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
     
     ProcessRoster(Option:any, recordNo:string):any{
         let dt= new Date(this.date);
+        
         let sheet = this.spreadsheet.getActiveSheet();
         let range = sheet.getSelections();
         let date = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(range[0].col+1);
@@ -1195,11 +1294,11 @@ sheet.conditionalFormats.addRule(iconSetRule);
         let l_row=f_row+range[0].rowCount;
         let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
 
-        // let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
-        // this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
-        // this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
-        // this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+        if (this.master){
 
+            startTime="00:00"
+        }
+       
         let inputs={
             "opsType": Option,
             "user": this.token.user,
@@ -1207,10 +1306,11 @@ sheet.conditionalFormats.addRule(iconSetRule);
             "isMaster": this.master,
             "roster_Date" : date,
             "start_Time":startTime,
-            "carer_code":this.selectedCarer
+            "carer_code":this.selectedCarer,
+            "notes" : this.notes
         }
         this.timeS.ProcessRoster(inputs).subscribe(data => {
-        if  (this.ClearMultiShiftModal==false &&  this.SetMultiShiftModal==false)    
+        //if  (this.ClearMultiShiftModal==false &&  this.SetMultiShiftModal==false)    
              this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
         this.selectedCarer="";
         this.searchStaffModal=false;
@@ -1218,6 +1318,10 @@ sheet.conditionalFormats.addRule(iconSetRule);
         
         this.ClearMultiShiftModal=false;
         this.SetMultiShiftModal=false;
+        this.ViewAdditionalModal=false;
+        this.ViewServiceDetail=false;
+        this.ViewStaffDetail=false;
+        this.deleteRosterModal=false;
             
     });
 }
@@ -1361,6 +1465,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
     date:any = moment();
     options: any;
     recipient: any;
+    serviceType:any;
 
     loading: boolean = false;
     basic: boolean = false;
@@ -1802,13 +1907,10 @@ reload(reload: boolean){
        
         // console.log(format(startOfMonth(date),'yyyy/MM/dd'));
         if(!this.recipient) return;
-        console.log(moment(date).startOf('month').format('YYYY-MM-DD hh:mm'));
         
-       
 
         this.staffS.getroster({
-            RosterType: this.recipient.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',
-            //AccountNo: 'ABBERTON B',
+            RosterType: this.recipient.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',            
             AccountNo: this.recipient.data,
             StartDate: moment(date).startOf('month').format('YYYY/MM/DD'),
             EndDate: moment(date).endOf('month').format('YYYY/MM/DD')

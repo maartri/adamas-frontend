@@ -100,6 +100,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   dlist: Array<any> = [];
   mlist: Array<any> = [];
   recipientStrArr: Array<any> = [];
+  statuseffect :string;
 
   private default = {
     notes: '',
@@ -149,6 +150,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   }
 
   buildForm() {
+    
     this.incidentForm = this.fb.group({
         recordNo: '',
         incidentType: '',
@@ -208,7 +210,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         incident10: false,
         incident11: false,
         incident12: false,
-        incident13: false,
+        incident13: false,        
         incident14: false,
         incident15: false,
         incident16: false,
@@ -219,10 +221,11 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         incident21: false,
         incident22: false,
         other: '',
+        otherspecify: '',
         summary: '',
         description: '',
 
-        //
+
         accountNo: '',
         subjectName: '',
         dob: '',
@@ -234,6 +237,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         endTimeOfIncident: null,
         dateOfIncident: '',
         gender:'',
+        organisation: '',
+        //SubjectType : '',
 
         //staff
         name: '',
@@ -361,7 +366,9 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       this.incidentForm.patchValue({
         accountNo: user.accountNo,
         gender: this.getGender(user.gender),
-        dob: this.getBirthdate(user.dateOfBirth)
+        dob: this.getBirthdate(user.dateOfBirth),
+        
+        
       });
     }
 
@@ -409,6 +416,38 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     if(_gender === 'female')
       return 'female';
   }
+  /*
+  getorganisation(org:string){
+    console.log(org)
+    if(this.globalS.isEmpty(org)) return;
+    var _organisation = org;
+    var temp
+    switch (_organisation) {
+      case '0':
+        temp = 'D';        
+        break;
+      case '1':
+        temp = 'E';        
+        break;
+      case '2':
+        temp = 'B';        
+        break;
+      case '3':
+        temp = 'A';        
+        break;
+      case '4':
+        temp = 'C';        
+        break;
+       
+    
+      default:
+        break;
+    }
+return temp;
+  }
+   */
+
+  
 
   buildValueChanges(){
 
@@ -519,6 +558,30 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     this.listNewPeople.splice(index, 1);
   }
 
+buildCheckBoxesInStep1(): string{
+  
+  var defaultVa: string = '';
+
+    const { 
+      organisation,
+      } = this.incidentForm.value;
+      //defaultVa = this.trueString(organisation);
+      defaultVa = organisation;
+      
+    return defaultVa;
+
+}
+updateCheckBoxesInStep1(defaultString: string){ 
+  
+  if(!defaultString) return;
+
+  this.incidentForm.patchValue({
+    //organisation: this.isChecked(defaultString[0])
+    organisation: defaultString
+  })
+  
+
+}
   buildCheckBoxesInStep2(): string{
     var defaultVa: string = '';
 
@@ -545,6 +608,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         incident20,
         incident21,
         incident22,
+      //  organisation,
     } = this.incidentForm.value;
     
     defaultVa = defaultVa.concat(this.trueString(incident1));
@@ -569,6 +633,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     defaultVa = defaultVa.concat(this.trueString(incident20));
     defaultVa = defaultVa.concat(this.trueString(incident21));
     defaultVa = defaultVa.concat(this.trueString(incident22));
+    //defaultVa = defaultVa.concat(this.trueString(organisation));
 
     return defaultVa;
   }
@@ -599,6 +664,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       incident20: this.isChecked(defaultString[19]),
       incident21: this.isChecked(defaultString[20]),
       incident22: this.isChecked(defaultString[21]),
+      //organisation:this.isChecked(defaultString[22]),
     })
   }
 
@@ -669,20 +735,29 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     defaultVa = defaultVa.concat(this.trueString(officeUse7));
     defaultVa = defaultVa.concat(this.trueString(officeUse8));
     defaultVa = defaultVa.concat(this.trueString(officeUse9));
-
+  //  console.log(" debug  "+defaultVa)
     return defaultVa;    
   }
 
   updateCheckBoxesInOfficeUse(defaultString: string){
+    var temp;
     if(!defaultString) return;
+
+    if(this.statuseffect === "CLOSED"){
+     temp  = true
+    }
+    else{temp = false}
+
+    //console.log("debug")
+
     this.incidentForm.patchValue({
       officeUse1: this.isChecked(defaultString[0]),
       officeUse2: this.isChecked(defaultString[1]),
       officeUse3: this.isChecked(defaultString[2]),
       officeUse4: this.isChecked(defaultString[3]),
       officeUse5: this.isChecked(defaultString[4]),
-      officeUse6: this.isChecked(defaultString[5]),
-      officeUse7: this.isChecked(defaultString[6]),
+      officeUse6: this.isChecked(defaultString[5]),      
+      officeUse7: temp,//this.isChecked(defaultString[6]),
       officeUse8: this.isChecked(defaultString[7]),
       officeUse9: this.isChecked(defaultString[8])
     })
@@ -702,7 +777,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           step4, step51, step52, step53, step54,
           step61, step7, reportEnter, communityService, regionalComm, comments,
           other, summary, description,
-          accountNo, dateOfIncident, reportedBy, recordNo, startTimeOfIncident, endTimeOfIncident, commentsStaff, incidentNotes  } = 
+          accountNo, dateOfIncident, reportedBy, recordNo, startTimeOfIncident, endTimeOfIncident, commentsStaff, incidentNotes,otherspecify, } = 
     this.incidentForm.value;
 
     var { 
@@ -740,16 +815,21 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           SummaryOfOtherAction: step7,
           SubjectName: accountNo,
           SubjectGender: '',
+          SubjectType: this.buildCheckBoxesInStep1(),
           ResidenceSubjectOther: '',
           TypeOther: this.buildCheckBoxesInStep2(),
           Manager: regionalComm,
           
-          IncidentTypeOther: other,
+          IncidentTypeOther: other,          
           Mobile: '',
           OfficeUse: this.buildCheckBoxesInOfficeUse(),
           FollowupContacted: this.buildCheckBoxesInStep6(),
-          FollowupContactedOther: '',
+          FollowupContactedOther: otherspecify,
           SubjectMood: step51,
+          
+          
+          
+         
 
           Staff: this.selectedStaff.length > 0 ? this.selectedStaff.map(x => {
             return {
@@ -878,6 +958,9 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   patchUpdateValues(data: any){
 
+  //  console.log(data)
+    this.statuseffect = data.status;
+    this.updateCheckBoxesInStep1(data.subjectType)
     this.updateCheckBoxesInStep2(data.typeOther);
     this.updateCheckBoxesInOfficeUse(data.officeUse);
     this.updateCheckBoxesInStep6(data.followupContacted);
@@ -886,10 +969,13 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
     this.incidentForm.patchValue({
       summary: data.shortDesc,
-      description: data.fullDesc,
-
+      description: data.fullDesc, 
+      
+      other:data.incidentTypeOther,
+      otherspecify:  data.followupContactedOther,
+      
       step4: data.location,
-      step51: data.followupContactedOther,
+      step51: data.subjectMood,
       step52: data.releventBackground,
       step53: data.triggers,
       step54: data.initialNotes,
@@ -906,9 +992,11 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       endTimeOfIncident: data.estimatedTimeOther ? parse(data.estimatedTimeOther,'HH:mm', new Date()) : null,
       startTimeOfIncident: this.getRealDate(data.time),
       dateOfIncident: this.getRealDate(data.date),
-      reportedBy: data.reportedBy,
+      reportedBy: data.reportedBy,      
+      recordNo: data.recordNo,
+      //organisation:this.getorganisation(data.subjectType),
+      organisation:data.subjectType ,
 
-      recordNo: data.recordNo
     });
   }
 

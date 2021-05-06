@@ -9,9 +9,11 @@ import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
 import { EventInputTransformer, whenTransitionDone } from '@fullcalendar/angular';
 import { getDate } from 'date-fns';
-import { concat, now } from 'lodash';
+import { concat, constant, now } from 'lodash';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router,ActivatedRoute, ParamMap } from '@angular/router';
+import * as constants from './../../services/global.service'
+
 
 
 
@@ -503,8 +505,10 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     CompetenciesArr: Array<any> = [];
     staffteamArr: Array<any> = [];
     competeciesgroupArr: Array<any> = [];
-    cycleArr: Array<any> = ['Cycle 1', 'Cycle 2', 'Cycle 3', 'Cycle 4', 'Cycle 5', 'Cycle 6', 'Cycle 7', 'Cycle 8', 'Cycle 9', 'Cycle 10'];
-    stafftypeArr: Array<any> = ['BROKERAGE ORGANISATION', 'STAFF', 'VOLUNTEER']
+    cycleArr: Array<any> = constants.fundingDropDowns.cycle;
+//    cycleArr: Array<any> = ['Cycle 1', 'Cycle 2', 'Cycle 3', 'Cycle 4', 'Cycle 5', 'Cycle 6', 'Cycle 7', 'Cycle 8', 'Cycle 9', 'Cycle 10'];
+stafftypeArr: Array<any> = constants.types;
+    //stafftypeArr: Array<any> = ['BROKERAGE ORGANISATION', 'STAFF', 'VOLUNTEER']
     trainingtypeArr: Array<any> = [];
     traccsuserArr: Array<any> = [];
     rostertypeArr: Array<{ label: string; value: string }> =  [
@@ -1920,6 +1924,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         console.log('onChange: ', result);
     }
 
+    /*
     PrintID(e) {
         e = e || window.event;
         e = e.target || e.srcElement;
@@ -1930,9 +1935,11 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         return this.btnid
         //  
 
-    }
+    } */
 
     handleOk() {
+          this.btnid = this.GlobalS.var2
+        console.log(this.btnid)
         this.reportRender(this.btnid);
         this.tryDoctype = "";        
         this.btnid = "";
@@ -1971,7 +1978,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.drawerVisible = false;
         this.budgetvisible = false;
         this.pdfTitle = ""
-        this.inputForm.reset(inputFormDefault);
+        //this.inputForm.reset(inputFormDefault);
+        this.inputForm = this.fb.group(inputFormDefault);
     }
 
     reportRender(idbtn) {
@@ -2133,7 +2141,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-
+         this.GlobalS.var2 = this.btnid
         // console.log(strdate)   
         switch (idbtn) {
             case 'btn-refferallist':
@@ -2520,6 +2528,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
                 alert("Yet to do")
 
         } 
+
+        
 
     }
     //           

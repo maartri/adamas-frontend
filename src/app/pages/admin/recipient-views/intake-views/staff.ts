@@ -10,9 +10,17 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 
 @Component({
-  selector: '',
-  templateUrl: './staff.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styles: [`
+      nz-table{
+        margin-top:10px;
+        margin-bottom:30px;
+        
+    }
+            
+    `],
+    selector: '',
+    templateUrl: './staff.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class IntakeStaff implements OnInit, OnDestroy {
@@ -51,22 +59,22 @@ export class IntakeStaff implements OnInit, OnDestroy {
     private modalService: NzModalService,
     private cd: ChangeDetectorRef
     ) {
-      cd.detach();
-      
-      this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        if (data instanceof NavigationEnd) {
-          if (!this.sharedS.getPicked()) {
-            this.router.navigate(['/admin/recipient/branches'])
-          }
-        }
-      });
-      
-      this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        if (this.globalS.isCurrentRoute(this.router, 'staff')) {
-          this.user = data;
-          this.search(data);
-        }
-      });
+        cd.detach();
+
+        this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data instanceof NavigationEnd) {
+                if (!this.sharedS.getPicked()) {
+                  this.router.navigate(['/admin/recipient/personal'])
+                }
+            }
+        });
+
+        this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (this.globalS.isCurrentRoute(this.router, 'staff')) {
+                this.user = data;
+                this.search(data);
+            }
+        });
     }
     
     ngOnInit(): void {

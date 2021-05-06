@@ -44,7 +44,10 @@
                 "src/sass"
               ]
             },
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "rxjs-compat"
+           ]
           },
           "configurations": {
             "production": {

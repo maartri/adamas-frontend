@@ -1391,14 +1391,7 @@ NOTES:
         this.referralSource$ = of(['NDIA']);
         this.referInGroup.patchValue({
           referralSource: 'NDIA'
-        });
-
-        this.referralType$ = this.listS.getlist(`SELECT [Title] As Activity FROM ItemTypes WHERE ProcessClassification = 'OUTPUT' AND [RosterGroup] IN ('ADMISSION') AND [MinorGroup] IN ('REFERRAL-IN') AND (EndDate Is Null OR EndDate >= '${ this.date }') ORDER BY [Title]`)
-        .pipe(
-          switchMap(x => {
-            return of(x.map(d => d.activity));
-          })
-        )
+        });       
       }
 
       if(this.referInGroup.get('type').value == 2 || this.referInGroup.get('type').value == 3){
@@ -1406,47 +1399,27 @@ NOTES:
         this.referInGroup.patchValue({
           referralSource: 'My Aged Care Gateway'
         });
-
-        this.referralType$ = this.listS.getlist(`SELECT [Title] As Activity FROM ItemTypes WHERE ProcessClassification = 'OUTPUT' AND [RosterGroup] IN ('ADMISSION') AND [MinorGroup] IN ('REFERRAL-IN') AND (EndDate Is Null OR EndDate >= '${ this.date }') ORDER BY [Title]`)
-        .pipe(
-          switchMap(x => {
-            return of(x.map(d => d.activity));
-          })
-        )
-      }
-
-   
+      }   
 
       if(this.referInGroup.get('type').value == 4){
         this.referralSource$ = of(['OTHER']);
         this.referInGroup.patchValue({
           referralSource: 'OTHER'
         });
-
-        this.referralType$ = this.listS.getlist(`
-          SELECT [service type] AS Activity
-          FROM   serviceoverview SO
-                INNER JOIN humanresourcetypes HRT
-                        ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid
-          WHERE  HRT.[name] = '${this.selectedProgram}'
-                AND EXISTS (SELECT title
-                            FROM   itemtypes ITM
-                            WHERE  title = SO.[service type]
-                                    AND ITM.[rostergroup] IN ( 'ADMISSION' )
-                                    AND ITM.[minorgroup] IN ( 'REFERRAL-IN' )
-                                    AND ( ITM.enddate IS NULL
-                                          OR ITM.enddate >= '${this.date}' ))
-          ORDER  BY [service type] 
-        `)
-          .pipe(
-            switchMap(x => {
-              return of(x.map(d => d.activity));
-            })
-          )
       }
 
-   
-        return;
+      this.referralType$ = this.listS.getreferraltype_latest(this.selectedProgram)
+          .pipe(
+              switchMap(x => {
+                if(x.length == 1){
+                  this.referInGroup.patchValue({
+                    referralType: x[0]
+                  });
+                }
+                return of(x);
+              })
+          );
+      return;
     }
 
     if(this.option == RECIPIENT_OPTION.REFER_ON)

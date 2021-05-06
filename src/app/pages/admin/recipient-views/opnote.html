@@ -1,6 +1,9 @@
 <div nz-row>
+    <button class="botton success" (click)="showAddModal()">Add OP Note</button>
+    <app-filter [tabs]="'OPNOTES'"  [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
+</div>
+<div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add OP Note</button>
         <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>

@@ -1,17 +1,21 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, ClientService } from '@services/index';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd,ActivatedRoute } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { ReportsAdmin } from '@admin/reports';
 
 @Component({
     styles: [`
         nz-table{
             margin-top:20px;
+        }
+        th.action{
+            width: 12rem !important;
         }
         
     `],
@@ -32,8 +36,11 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     incidentOpen: boolean = false;
 
     incidentRecipient: any;
-
+    Reports: ReportsAdmin
     operation: any; 
+    btnid: string
+    id: string
+    
 
     constructor(
         private timeS: TimeSheetService,
@@ -43,7 +50,11 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private route: ActivatedRoute
+        
+        
+        
     ) {
         cd.detach();
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -59,6 +70,8 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
                 this.search(data);
             }
         });
+
+        
     }
 
     ngOnInit(): void {
@@ -75,6 +88,7 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe.next();
         this.unsubscribe.complete();
+
     }
 
     search(user: any = this.user) {
@@ -222,4 +236,27 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         this.timeS.deleteincident(data.recordNumber)
             .subscribe(data => this.search());
     }
+ 
+    closeincidentstatus(data: any) {
+        
+        this.timeS.UpdateIncidentstatus(data.recordNumber)
+            .subscribe(data => this.search());
+    }
+    
+    Incidentlisting(){
+      
+        console.log(this.globalS.var1)
+       this.router.navigate(['/admin/reports'])
+
+       this.globalS.var1 = 'IncidentRegister';
+
+       console.log(this.globalS.var1)
+     /*   this.router.navigate(['/admin/reports'],{
+            queryParams:{
+                id :'incidentregister'
+            }
+
+        }); */
+  
+    }  
 }

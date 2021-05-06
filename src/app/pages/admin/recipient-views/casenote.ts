@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { Filters } from '@modules/modules';
 
 @Component({
     styles: [`
@@ -59,6 +60,13 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
     clist: Array<any> = [];
     mlist: Array<any> = [];
 
+    filters: Filters = {
+        acceptedQuotes: false,
+        allDates: false,
+        archiveDocs: true,
+        display: 20
+    };
+
     recipientStrArr: Array<any> = [];
 
 
@@ -91,7 +99,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
+        // this.search(this.user);
         this.buildForm();
     }
 
@@ -104,10 +112,15 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         this.getNotes(this.user);
         this.getSelect();
     }
+
+    filterChange(data: any){
+        this.getNotes(this.user);
+    }
     
     getNotes(user: any) {
         this.loading = true;
-        this.clientS.getcasenotes(user.code).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+
+        this.clientS.getcasenoteswithfilters(user.code, this.filters).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let list: Array<any> = data.list || [];
 
             if (list.length > 0) {
@@ -116,13 +129,31 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                         x.detail = x.detailOriginal
                     }
                 });
-                console.log(list);
+                this.tableData = list;
+            } else {
                 this.tableData = list;
             }
             
             this.loading = false;
             this.cd.markForCheck();
         });
+
+        // this.clientS.getcasenotes(user.code).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        //     let list: Array<any> = data.list || [];
+
+        //     if (list.length > 0) {
+        //         list.forEach(x => {
+        //             if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
+        //                 x.detail = x.detailOriginal
+        //             }
+        //         });
+        //         console.log(list);
+        //         this.tableData = list;
+        //     }
+            
+        //     this.loading = false;
+        //     this.cd.markForCheck();
+        // });
     }
 
     buildForm() {

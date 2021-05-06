@@ -1,27 +1,54 @@
-<div nz-row style="padding:8px">
+<div nz-row style="padding:6px; ">
 
-    <div nz-row >
+    <div nz-row style="padding:6px; background-color: #184599;">
         
         <div nz-col nzSpan="8" style="margin-top: 10px;">
             <div class="calendar-title">            
                 <app-search-timesheet [view]="0" (selected)="picked($event)"></app-search-timesheet>
             </div>
         </div>
-            <div nz-col nzSpan="6" style="margin-top: 1px;">
-                <div class="date-title">
+        <div nz-col nzSpan="3" style="margin-top: 10px; color: white; font-weight: 400;">
+                <div class="date-title" nzvisible="!master">
                     {{ date | date: 'MMMM yyyy'}}
                  </div>
-            </div>
-            <div  nz-col nzSpan="10" style="margin-top: 1px;">
+                 <div  nz-col style="margin-top: 5px;">
+                    <nz-checkbox-wrapper (nzOnChange)="setMasterRoster($event)">
+                        <label nz-checkbox style="color: white"  nzValue="master">Master Roster</label>             
+                    </nz-checkbox-wrapper >
+                    </div>
+        </div>
+        <div  nz-col nzSpan="3" nzvisible="!master" style="margin-top: 10px;">
             <nz-button-group >
                 <button  nz-button nzType="primary" (click)="prev_date()"><i nz-icon nzType="left"></i></button>
                 <button  nz-button nzType="primary" (click)="next_date()"><i nz-icon nzType="right"></i></button>
                 
             </nz-button-group>        
            </div>
+           
+        <div  nz-col nzSpan="6"  style="margin-top: 6px; ">
+            
+             
+                <nz-radio-group>
+                    <label nz-radio style="width: 120px; color: white;" (click)="set_day_view(14)" nzValue="val1">Fortnight</label>                   
+                    <label nz-radio style="width: 100px; color: white;" (click)="set_day_view(5)" nzValue="val2">5 Day Week</label>
+                    <label nz-radio style="width: 120px; color: white;" (click)="set_day_view(31)" nzValue="val3" >Calendar Month</label>
+                    <label nz-radio style="width: 100px; color: white;" (click)="set_day_view(7)" nzValue="val4">7 Day Week</label>
+                  
+                </nz-radio-group>               
+                  
+           </div>
+           <div  nz-col nzSpan="4" style=" margin-top: 6px;">
+            
+            <nz-checkbox-wrapper >
+                <label nz-checkbox style="margin-left: 8px; color: white" nzValue="cval1">Include Fees</label>
+                <label nz-checkbox style="color: white" nzValue="cval2">Include Item</label>             
+              
+            </nz-checkbox-wrapper>               
+              
+       </div>
     </div>
 
-    <div nz-row>
+    <div nz-row style="padding:6px">
         
         <div  class="nz-button" >
             <nz-button-group >
@@ -40,95 +67,21 @@
         </div>
     </div>
 
-    <div nz-row>
+<div nz-row style="padding:8px">
         
-  <gc-spread-sheets  
-  [backColor]="spreadBackColor"  
-  [hostStyle]="hostStyle"  
-  (workbookInitialized)="workbookInit($event)"  
->   
-  <gc-worksheet [name]="sheetName" [dataSource]="data">  
-    <gc-column dataField="Date1" width="40px"></gc-column>  
-    <gc-column dataField="Date2" width="40px"></gc-column>  
-    <gc-column dataField="Date3" width="40px"></gc-column>  
-    <gc-column dataField="Date4" width="40px"></gc-column>  
-    <gc-column dataField="Date5" width="40px"></gc-column>  
-    <gc-column dataField="Date6" width="40px"></gc-column>  
-    <gc-column dataField="Date7" width="40px"></gc-column>  
-    <gc-column dataField="Date8" width="40px"></gc-column>  
-    <gc-column dataField="Date9" width="40px"></gc-column>  
-    <gc-column dataField="Date10" width="40px"></gc-column>  
-    <gc-column dataField="Date11" width="40px"></gc-column>  
-    <gc-column dataField="Date12" width="40px"></gc-column>  
-    <gc-column dataField="Date13" width="40px"></gc-column>  
-    <gc-column dataField="Date14" width="40px"></gc-column>  
-    <gc-column dataField="Date15" width="40px"></gc-column>  
-    <gc-column dataField="Date16" width="40px"></gc-column>  
-    <gc-column dataField="Date17" width="40px"></gc-column>  
-    <gc-column dataField="Date18" width="40px"></gc-column>  
-    <gc-column dataField="Date19" width="40px"></gc-column>  
-    <gc-column dataField="Date20" width="40px"></gc-column>  
-    <gc-column dataField="Date21" width="40px"></gc-column>  
-    <gc-column dataField="Date22" width="40px"></gc-column>  
-    <gc-column dataField="Date23" width="40px"></gc-column>  
-    <gc-column dataField="Date24" width="40px"></gc-column>  
-    <gc-column dataField="Date25" width="40px"></gc-column>  
-    <gc-column dataField="Date26" width="40px"></gc-column>  
-    <gc-column dataField="Date27" width="40px"></gc-column>  
-    <gc-column dataField="Date28" width="40px"></gc-column>  
-    <gc-column dataField="Date29" width="40px"></gc-column>  
-    <gc-column dataField="Date30" width="40px"></gc-column> 
-    <gc-column dataField="Date31" width="columnWidth"></gc-column> 
-  </gc-worksheet>  
-</gc-spread-sheets>
+    <gc-spread-sheets  id="ss"
+    [backColor]="spreadBackColor"  
+    [hostStyle]="hostStyle"  
+    (workbookInitialized)="workbookInit($event)"  
+    >   
+        <gc-worksheet [name]="sheetName"  >      
+        </gc-worksheet>  
+    </gc-spread-sheets>
         
-    </div>
+</div>
 
 </div>
 
-<nz-modal class="options" [nzStyle]="{ top: '15px' }" [(nzVisible)]="optionsModal" nzTitle="" (nzOnCancel)="optionsModal = false">
-        <div nz-row>
-        <ul>
-           
-            <li (click)="handleClick(2)"> View Roster Details</li>
-            <li>View Service Shift Notes</li>
-            <hr/>
-            <li>Copy</li>
-            <li>Cut</li>
-            <li>Past</li>
-            <hr/>
-            <li>Delete</li>
-            <hr/>
-            <li>Re-Allocate Staff</li>
-            <li>Un-allocate Staff</li>
-            <hr/>
-            <li>Set Multishift</li>
-            <li>Clear Multishift</li>
-            <hr/>
-            <li>View Staff Details</li>
-            <li (click)="changeViewRecipientDetails.next(1)">View Recipient Details</li>
-            <li>View Service Details</li>
-            <li>View Additional Information (Xtra Info)</li>
-            <!-- <li>Change <i nz-icon nzType="right" nzTheme="outline"></i>
-               <ul>
-                    <li (click)="changeModalView.next(1)">Change Output Type</li>
-                    <li (click)="changeModalView.next(2)">Change Program</li>
-                    <li (click)="changeModalView.next(3)">Change Activity</li>
-                    <li (click)="changeModalView.next(4)">Change Pay Type</li>
-                    <li (click)="changeModalView.next(5)">Change Bill Amount</li>
-                    <li (click)="changeModalView.next(6)">Change Bill Quantity</li>
-                    <li (click)="changeModalView.next(7)">Change Pay Quantity</li>
-                    <li (click)="changeModalView.next(8)">Set Unit Cost</li>
-                </ul> 
-            </li> -->
-        </ul>
-    </div>
-    <div *nzModalFooter>
-        <!-- <span>Modal Footer: </span> -->
-        <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button> -->
-        <!-- <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button>  -->
-      </div>
-    </nz-modal>
 
     <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="recipientDetailsModal" nzTitle="Recipients Details" (nzOnCancel)="recipientDetailsModal = false" >
         <div nz-row>
@@ -142,7 +95,7 @@
     
 <!-- Add Timesheet -->
 
-<nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Add Timesheet"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Timesheet_label"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
     <div class="flexy" style="min-height:21rem">
 
             <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">
@@ -168,10 +121,9 @@
                     <div nz-row>
                         <div class="form-group">
                             <label for="">Service Type</label>
-                            <nz-select nzShowSearch nzAllowClear formControlName="serviceType" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-select formControlName="serviceType" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                                 <nz-option *ngFor="let list of modalTimesheetValues" [nzValue]="list.name" [nzLabel]="list.name"></nz-option>
                             </nz-select>
-                            
                         </div>
                     </div>
                    
@@ -213,26 +165,25 @@
                     </div>
                 </div>
                 <div *ngIf="current == 1" [formGroup]="rosterForm">
-                    <div class="form-group" >
+                    <div class="form-group" *ngIf="showRecipient() && selected?.option === 0">
                         <label for="">Recipient</label>
                         <app-recipient-popup formControlName="recipientCode"></app-recipient-popup>
                     </div>
-                    <div class="form-group" >
+                    <div class="form-group" *ngIf="showRecipient() ">
                         <label for="">Debtor</label>
                         <app-recipient-popup formControlName="debtor"></app-recipient-popup>
                     </div>
-                    
                     <div class="form-group">
                         <label for="">Program</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of programsList" [nzValue]="list.progName" [nzLabel]="list.progName"></nz-option>
+                            <nz-option *ngFor="let list of programsList" [nzValue]="list" [nzLabel]="list"></nz-option>
                             <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
                         </nz-select>
                     </div>
                     <div class="form-group">
                         <label for="">Service/Activity/Item</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list.activity" [nzLabel]="list.activity"></nz-option>
+                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list"></nz-option>
                             <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
                         </nz-select>                        
                         <div>
@@ -376,4 +327,5 @@
     </ng-template>
 
 </nz-modal>
-
+  
+<!-- Add Timesheet -->

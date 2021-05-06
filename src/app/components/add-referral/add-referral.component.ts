@@ -1,13 +1,13 @@
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
-import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap } from 'rxjs/operators';
+import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap, startWith } from 'rxjs/operators';
 
 import * as moment from 'moment';
 import { RemoveFirstLast } from '@pipes/pipes';
-import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
-import { Observable, of, from, Subject, EMPTY } from 'rxjs';
+import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, contactGroups, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { Observable, of, from, Subject, EMPTY, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-add-referral',
@@ -19,6 +19,8 @@ export class AddReferralComponent implements OnInit {
 
   private verifyAccount = new Subject<any>();
 
+  contactGroups: Array<string> = contactGroups;
+
   @Input() open: boolean = false;
   @Input() type: string = 'referral';
 
@@ -27,6 +29,10 @@ export class AddReferralComponent implements OnInit {
   referralGroup: FormGroup;
 
   dateFormat: string = dateFormat;
+
+  notifCheckBoxGroup: any;
+  notifFollowUpGroup: any;
+  notifDocumentsGroup: any;
 
   genderArr: Array<string> = gender
   typesArr: Array<string> = types
@@ -42,9 +48,14 @@ export class AddReferralComponent implements OnInit {
   branches: Array<string>;
   managers: Array<string>;
   agencies: Array<string>;
+  followups: Array<string>;
+  notifications: Array<string>;
+  documentlist: Array<string>;
+  datalist: Array<string>;
 
   private addresses: FormArray;
   private contacts: FormArray;
+  private otherContacts: FormArray;
 
   current: number = 0;
   generatedAccount: string;
@@ -54,7 +65,8 @@ export class AddReferralComponent implements OnInit {
     private clientS: ClientService,
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
-    private listS: ListService
+    private listS: ListService,
+    private cd: ChangeDetectorRef
   ) {
 
   }
@@ -67,6 +79,7 @@ export class AddReferralComponent implements OnInit {
       concatMap(e => {
         if (this.referralGroup && this.referralGroup.valid) {
           this.generatedAccount = this.generateAccount();
+          this.cd.markForCheck();
           return this.clientS.isAccountNoUnique(this.generatedAccount);
         } return EMPTY;
       })
@@ -77,12 +90,14 @@ export class AddReferralComponent implements OnInit {
         this.referralGroup.patchValue({
           accountNo: this.generatedAccount
         });
+        this.cd.markForCheck();
       }
       if (next == 0) {
         this.accountTaken = true;
         this.referralGroup.patchValue({
           accountNo: this.generatedAccount
         });
+        this.cd.markForCheck();
       }
     });
   }
@@ -111,21 +126,55 @@ export class AddReferralComponent implements OnInit {
       appendName: new FormControl(''),
       accountNo: new FormControl(''),
       organisation: new FormControl(''),
-      type: new FormControl(0),
+      type: new FormControl(null),
 
       addresses: new FormArray([this.createAddress()]),
       contacts: new FormArray([this.createContact()]),
+
+      otherContacts: new FormArray([this.createOtherContact()]),
+      gpDetails: new FormArray([this.createGpDetails()]),
 
       branch: new FormControl(''),
       agencyDefinedGroup: new FormControl(''),
       recipientCoordinator: new FormControl(''),
       referral: new FormControl(''),
+      confirmation: new FormControl(null),
 
-      confirmation: new FormControl(null)
+      dataList: new FormControl(null),
+      document: new FormControl(null),
+      followup: new FormControl(null),
+      notifications: new FormControl(null)
     });
 
 
     this.populateDropdowns();
+
+    combineLatest([
+      this.referralGroup.get('branch').valueChanges,
+      this.referralGroup.get('recipientCoordinator').valueChanges.pipe(startWith(false)),
+    ]).pipe(
+      switchMap(([x, x1]): any => {
+        let data = {
+          branch: x,
+          coordinator: x1
+        }
+        return this.listS.getnotifications(data);
+      })
+    ).subscribe((data: any) => {
+        // this.notifications = data;
+        this.notifCheckBoxGroup = data.map(x => {
+          return {
+            label: x.staffToNotify,
+            value: x.staffToNotify,
+            disabled: x.mandatory ? true : false,
+            checked: x.mandatory ? true : false
+          }
+        })
+    });
+
+    // this.referralGroup.get('otherContacts').valueChanges.subscribe(data => console.log(data))
+
+    this.referralGroup.get('branch').valueChanges.subscribe(data => console.log(data))
 
     this.referralGroup.get('organisation').valueChanges
       .pipe(distinctUntilChanged(), debounceTime(200), mergeMap(x => {
@@ -163,11 +212,6 @@ export class AddReferralComponent implements OnInit {
         this.verifyAccount.next();
       });
     
-    // this.referralGroup.get('middlename').valueChanges
-    //   .pipe(debounceTime(300))
-    //   .subscribe(data => {
-    //     this.verifyAccount.next();
-    //   });
 
     this.referralGroup.get('gender').valueChanges
       .pipe(debounceTime(300))
@@ -240,6 +284,10 @@ export class AddReferralComponent implements OnInit {
     if (!event.key.match(/^[a-zA-Z ]*$/)) return false;
   }
 
+  log(data: any){
+    console.log(data)
+  }
+
   isNamesComplete(): boolean {
     return !this.globalS.isEmpty(this.referralGroup.get('lastname').value) &&
       !this.globalS.isEmpty(this.referralGroup.get('firstname').value);
@@ -287,6 +335,34 @@ export class AddReferralComponent implements OnInit {
         return x;
     }));
     this.listS.getserviceregion().subscribe(data => this.agencies = data.map(x => x.toUpperCase()));
+
+    this.listS.getfollowups().subscribe(data => {
+      this.notifFollowUpGroup = data.map(x => {
+        return {
+          label: x,
+          value: x,
+          disabled: false,
+          checked: false
+        }
+      })
+    })
+
+
+    this.listS.getdocumentslist().subscribe(data => {
+      this.notifDocumentsGroup = data.map(x => {
+        return {
+          label: x,
+          value: x,
+          disabled: false,
+          checked: false
+        }
+      })
+    })
+
+    this.listS.getdatalist().subscribe(data =>  {
+      this.datalist = data
+    });
+
   }
 
   add() {
@@ -375,15 +451,25 @@ export class AddReferralComponent implements OnInit {
     this.addresses.push(this.createAddress());
   }
 
+  addOtherContacts(): void {
+    this.otherContacts = this.referralGroup.get('otherContacts') as FormArray;
+    this.otherContacts.push(this.createOtherContact());
+  }
+
   deleteAdd(i: number): void {
     this.addresses = this.referralGroup.get('addresses') as FormArray;
     this.addresses.removeAt(i);
   }
 
+  deleteOther(i: number): void {
+    this.otherContacts = this.referralGroup.get('otherContacts') as FormArray;
+    this.otherContacts.removeAt(i);
+  }
+
   createAddress(): FormGroup {
     return this.formBuilder.group({
       address1: new FormControl(''),
-      type: new FormControl(''),
+      type: new FormControl('USUAL'),
       suburb: new FormControl('')
     });
   }
@@ -402,6 +488,40 @@ export class AddReferralComponent implements OnInit {
     return this.formBuilder.group({
       contacttype: new FormControl('MOBILE'),
       contact: new FormControl('')
+    });
+  }
+
+  createOtherContact(): FormGroup {
+    return this.formBuilder.group({
+      contactGroup: new FormControl(''),
+      type: new FormControl(''),
+      name: new FormControl(''),
+      address1: new FormControl(''),
+      address2: new FormControl(''),
+      suburb: new FormControl(''),
+      email: new FormControl(''),
+      phone1: new FormControl(''),
+      phone2: new FormControl(''),
+      mobile: new FormControl(''),
+      fax: new FormControl(''),
+
+      list: new FormControl(['mark','aris'])
+    });
+  }
+
+  createGpDetails(): FormGroup {
+    return this.formBuilder.group({
+      contactGroup: new FormControl('3-MEDICAL'),
+      type: new FormControl('GP'),
+      name: new FormControl(''),
+      address1: new FormControl(''),
+      address2: new FormControl(''),
+      suburb: new FormControl(''),
+      email: new FormControl(''),
+      phone1: new FormControl(''),
+      phone2: new FormControl(''),
+      mobile: new FormControl(''),
+      fax: new FormControl(''),
     });
   }
 
@@ -455,6 +575,13 @@ export class AddReferralComponent implements OnInit {
     if (this.current == 0 && this.accountTaken == false) return true;
     if (this.current == 1) return true;
     if (this.current == 2) return true;
+    if (this.current == 3) return true;
+    if (this.current == 4) return true;
+    if (this.current == 5) return true;
+    if (this.current == 6) return true;
+    if (this.current == 7) return true;
+    if (this.current == 8) return true;
+    // if (this.current == 2) return true;
     return false;
   }
 
@@ -466,6 +593,20 @@ export class AddReferralComponent implements OnInit {
   contactTypeChange(index: any) {
     var contact = this.referralGroup.get('contacts') as FormArray;
     contact.controls[index].get('contact').reset();
+  }
+
+  contactGroupChange(index: any){
+    console.log(index);
+    return;
+    var others = this.referralGroup.get('otherContacts') as FormArray;
+
+    var contactGroup = others.controls[index].get('contactGroup').value;
+
+    if(contactGroup == "1-NEXT OF KIN" || contactGroup == "NEXTOFKIN" || contactGroup == "2-CARER" || contactGroup == "CARER"){
+      this.listS.gettypekin().subscribe(data => console.log(data))
+    } else {
+      this.listS.gettypeother(contactGroup).subscribe(data => console.log(data))
+    }    
   }
 
 }

@@ -25,3 +25,15 @@ nz-time-picker{
 .spacing > *{
     margin-right:5px;
 }
+.calc-wrapper > div{
+    margin-top:8px;
+}
+.three-wid{
+    width:3rem;
+}
+.flex{
+    display:flex;
+}
+.flex > *{
+    margin-right:5px;
+}

@@ -310,7 +310,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.quoteListForm.get('chargeType').valueChanges
         .pipe(
-            switchMap(x => {
+            switchMap(x => {                
                 if(!x) return EMPTY;
                 return this.listS.getchargetype({
                     program: this.quoteForm.get('program').value,
@@ -319,7 +319,12 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             })
         ).subscribe(data => {
             console.log(data)
+            this.resetQuotePrimary();
             this.codes = data;
+        });
+
+        this.quoteListForm.get('code').valueChanges.subscribe(data => {
+           this.weekly = null
         });
 
         this.quoteListForm.get('roster').valueChanges.subscribe(data => {
@@ -330,7 +335,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.quoteForm.get('program').valueChanges
         .pipe(
             switchMap(x => this.listS.getprogramlevel(x)),
-            switchMap(x => {
+            switchMap(x => {                
                 this.IS_CDC = false;
                 if(x.isCDC){
                     this.IS_CDC = true;
@@ -355,6 +360,15 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     onKeyPress(data: KeyboardEvent) {
         return this.globalS.acceptOnlyNumeric(data);
+    }
+
+    resetQuotePrimary(){
+        this.quoteListForm.patchValue({
+            code: null,
+            displayText: null,
+            roster: null,
+            strategy: null
+        });
     }
 
     save() {

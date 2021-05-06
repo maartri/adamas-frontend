@@ -450,7 +450,7 @@
             </div>
         </div>
 
-        <div nz-row class="line" *ngIf="quoteListForm.get('chargeType').value">
+        <div nz-row class="line" *ngIf="quoteListForm.get('code').value">
             <div nz-row [formGroup]="quoteListForm">
                 <nz-radio-group formControlName="roster">
                     <label nz-radio nzValue="Weekly">Weekly</label>
@@ -461,14 +461,11 @@
             </div>
 
             <div nz-row>                
-                <div nz-col nzSpan="15">
+                <div nz-col nzSpan="24">
                     <app-interval-quote [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-quote>
-                    {{ slots | json  }}
+                    <!-- {{ slots | json  }} -->
                     <!-- {{ slots?.quantity }} -->
                     <!-- <app-interval-design [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-design> -->
-                </div>
-                <div nz-col nzSpan="9">
-
                 </div>
             </div>
         </div>

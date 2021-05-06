@@ -86,6 +86,7 @@ export const states = ['AUSTRALIAN CAPITAL TERRITORY', 'NEW SOUTH WALES', 'NORTH
 export const cycles = ['1st Monday - CYCLE 1', '1st Tuesday - CYCLE 1', '1st Wednesday - CYCLE 1', '1st Thursday - CYCLE 1', '1st Friday - CYCLE 1']
 export const billunit = ['HOUR', 'SERVICE']
 export const period = ['DAY', 'WEEKLY', 'FNIGHTLY', 'MONTH', 'QUARTER', 'HALF YEAR', 'YEAR']
+export const periodQuote = ['ONCE OFF', 'WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'QUARTERLY', 'HALF YEARLY', 'YEARLY']
 export const status = ['WAIT LIST', 'ON HOLD', 'ACTIVE', 'INACTIVE']
 export const achievementIndex = ['(1) NOT ACHIEVED', '(2) PARTIALLY ACHIEVED', '(3) MOSTLY ACHIEVED', '(4) FULLY ACHIEVED', '(5) ONGOING', '(6) FUNDING NOT APPROVED']
 export const caldStatuses = ['CALD BACKGROUND', 'NOT CALD BACKGROUND']

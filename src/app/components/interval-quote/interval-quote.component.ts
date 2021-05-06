@@ -6,6 +6,8 @@ import differenceInHours from 'date-fns/differenceInHours';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import format from 'date-fns/format';
 
+import { billunit, periodQuote } from '@services/global.service';
+
 const noop = () => {
 };
 
@@ -44,6 +46,9 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
   @Input() mode: Mode = Mode.Default;
 
   @Input() size: string;
+
+  billUnitArr: Array<string> = billunit;
+  periodArr: Array<string> = periodQuote;
   
   // slots: Array<any> = [];
 

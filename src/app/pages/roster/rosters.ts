@@ -46,7 +46,7 @@ interface UserView{
     staffRecordView: string,
     staff: number
 }
-const license = "License Key";
+const license = "E427689893651433#B0ASSrpndudjTsh4V8U7UwM6LzVTb9UkZNZkZtVXc7oVT8QVWRFmV6NFa4EDOqx6bjFlT6pXSj9We73CVOBXRY54akZ7d8dFezsWWCVnYiNWZFNGTRZHMqdzKyVlT6hTOxU4VuhWYv9EW8hHSipUS8kGa9VkQ5JWRoJGVzQmN8sCZtpWT5UlavcWN9ZXeVNzNUtEbxIGZ8tSdqtCaJtkUOdzUDFUMCxkVD94R4llMBl6dV96SxIGayNGVzQlQVdXRxt6b5sCcQhzLZBFTzgXZrpXaiNUU656LGhlb8hEZDZjREZEM8ETQvpVNRNlbwkGViojITJCLikjN6YDR7UUNiojIIJCL7kTOwMDOzYjM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiIxQTOwMDMgYDM5ATMyAjMiojI4J7QiwiI5AjNwEjMwIjI0ICc8VkIsIych5WYkFkI0ISYONkIsUWdyRnOiwmdFJCLiMzM4ETN6MTO8kDO6cjM4IiOiQWSiwSfdtlOicGbmJCLlNHbhZmOiI7ckJye0ICbuFkI1pjIEJCLi4TP7V6RGBzZ8t4cSplZUhTashjVuJ5L0JUUPhXRzFUMvonUzAHciJTapZ5a54EdxpXNEVkejBFZrFWdpZUaXFVNJRnZ92UTzJjUP5mWL5GeqJlailHMENmSV5kM7N5YzZFN7JjQxB3f1";
 
 @Component({
     styles: [`
@@ -1647,7 +1647,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
 
     }
     ngOnInit(): void {
-      //  GC.Spread.Sheets.LicenseKey = license;
+        GC.Spread.Sheets.LicenseKey = license;
         this.date = moment();
         this.buildForm(); 
          this.token = this.globalS.decode();    

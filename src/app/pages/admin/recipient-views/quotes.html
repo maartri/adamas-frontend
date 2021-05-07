@@ -59,13 +59,6 @@
 </context-menu>
 
 
-
-
-
-
-
-
-
 <nz-modal [(nzVisible)]="quotesOpen" [nzWidth]="1340" [nzStyle]="{ top: '20px' }" [nzTitle]="title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div nz-row nzGutter="16">
 
@@ -76,99 +69,147 @@
         </nz-tabset>
 
         <div>
-            <div *ngIf="tabFindIndex == 0" >
+            <div *ngIf="tabFindIndex == 0"  [formGroup]="quoteGeneralForm">
                 <div nz-row nzGutter="32" class="line">
                     <div nz-col nzSpan="12" nzOffset="6">
-                        <div nz-col nzSpan="12">
-                            <div class="form-group">
-                                <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" />
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="10">
+                                <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                    <label nzFor="ID">ID:</label>
+                                </div>
+                                <div nz-col nzSpan="14">
+                                    <div class="form-group">
+                                        <input nz-input formControlName="id" nzSize="small"  />
+                                    </div>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="14">
+                                <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                    <label nzFor="ID">Plan Type:</label>
+                                </div>
+                                <div nz-col nzSpan="16">
+                                    <div class="form-group">
+                                        <nz-select  nzSize="small" formControlName="planType" nzAllowClear nzShowSearch>
+                                            <nz-option *ngFor="let c of quotePlanType" [nzValue]="c" [nzLabel]="c"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div nz-col nzSpan="12">
-                            <div class="form-group">
-                                <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Plan Type">
-                                    <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                                </nz-select>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                    <label nzFor="Name">Name:</label>
+                                </div>
+                                <div nz-col nzSpan="20">
+                                    <div class="form-group">
+                                        <input nz-input formControlName="name" nzSize="small"  />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div nz-col nzSpan="24">
-                            <div class="form-group">
-                                <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Name">
-                                    <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                                </nz-select>
-                            </div>
-                        </div>
+                        </div>    
                     </div>
                 </div>
                 <div nz-row nzGutter="32" class="line">
-                    
                     <div nz-col nzSpan="12" nzOffset="6">
-                        <div nz-col nzSpan="24">
-                            <div class="form-group">
-                                <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Care Domain">
-                                    <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                                </nz-select>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                    <label nzFor="Care Domain">Care Domain:</label>
+                                </div>
+                                <div nz-col nzSpan="20">
+                                    <div class="form-group">
+                                        <nz-select  nzSize="small" formControlName="careDomain" nzAllowClear nzShowSearch>
+                                            <nz-option *ngFor="let c of careDomainList" [nzValue]="c" [nzLabel]="c"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-    
-                        <div nz-col nzSpan="24">
-                            <div class="form-group">
-                                <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Discipline">
-                                    <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                                </nz-select>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                    <label nzFor="Discipline">Discipline:</label>
+                                </div>
+                                <div nz-col nzSpan="20">
+                                    <div class="form-group">
+                                        <nz-select  nzSize="small" formControlName="discipline" nzAllowClear nzShowSearch>
+                                            <nz-option *ngFor="let d of disciplineList" [nzValue]="d" [nzLabel]="d"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-    
-                        <div nz-col nzSpan="24">
-                            <div class="form-group">
-                                <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Program">
-                                    <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                                </nz-select>
+                        </div> 
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                    <label nzFor="Program">Program:</label>
+                                </div>
+                                <div nz-col nzSpan="20">
+                                    <div class="form-group">
+                                        <nz-select  nzSize="small" formControlName="program" nzAllowClear nzShowSearch>
+                                            <nz-option *ngFor="let list of programList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        </div> 
                     </div>
                 </div>
-
                 <div nz-row nzGutter="32" class="line">
                     <div nz-col nzSpan="12" nzOffset="6">
-                        <div nz-col nzSpan="6">
-                            <div class="form-group">
-                                <nz-date-picker nzSize="small" ></nz-date-picker>
+                        <div nz-row nzJustify class="mrg-btm"> 
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="4">
+                                    <div class="form-group" class="text-right pad-r-5">
+                                        <label>Start Date:</label>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="4">
+                                    <div class="form-group">
+                                        <nz-date-picker nzSize="small" formControlName="starDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="4">
+                                    <div class="form-group" class="text-right pad-r-5">
+                                        <label>Sign Off Date:</label>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="4">
+                                    <div class="form-group">
+                                        <nz-date-picker nzSize="small" formControlName="signOfDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8" class="text-right">
+                                    <div class="form-group">
+                                        <label nz-checkbox >Publish to App</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div nz-col nzSpan="6">
-                            <div class="form-group">
-                                <nz-date-picker  nzSize="small"></nz-date-picker>
+                        <div nz-row nzJustify class="mrg-btm">
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                    <label nzFor="Review Date">Review Date:</label>
+                                </div>
+                                <div nz-col nzSpan="4">
+                                    <div class="form-group">
+                                        <nz-date-picker nzSize="small" formControlName="reviewDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div nz-col nzSpan="6">
-                            <div class="form-group">
-                                <nz-date-picker  nzSize="small" ></nz-date-picker>
-                            </div>
-                        </div>
-
-                        <div nz-col nzSpan="6">
-                            <div class="form-group">
-                                <label nz-checkbox >Publish to App</label>
-                            </div>
-                        </div>
-
+                        <div nz-row nzJustify class="mrg-btm"> 
                         <div nz-col nzSpan="24">
-                            <div class="form-group">
-                                <input nz-input placeholder="Reminder Text" nzSize="small" [(ngModel)]="value" />
+                            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                <label nzFor="Reminder Text">Reminder Text:</label>
                             </div>
+                            <div nz-col nzSpan="20">
+                                <div class="form-group">
+                                    <input nz-input nzSize="small" formControlName="rememberText" />
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -254,7 +295,7 @@
                     </div>
                     <div nz-col nzSpan="8" nzOffset="4">
                         <div class="right">
-                            <nz-range-picker nzSize="small" formControlName="period" [nzFormat]="dateFormat"></nz-range-picker>
+                            <nz-range-picker nzSize="small" formControlName="period"></nz-range-picker>
 
                             <nz-select class="select" formControlName="basePeriod" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
                                 <!-- <nz-option nzValue="jack" nzLabel="Jack"></nz-option>

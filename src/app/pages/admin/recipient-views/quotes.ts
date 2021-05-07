@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation, AfterViewInit } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService,qoutePlantype, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -96,7 +96,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     private unsubscribe: Subject<void> = new Subject();
     quoteForm: FormGroup;
     quoteListForm: FormGroup;
-
+    quoteGeneralForm : FormGroup;
     title: string = 'Add New Quote';
     slots: any;
     weekly: string = 'Weekly';
@@ -126,6 +126,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
     dateFormat: string = dateFormat;
+    date: Date = new Date();
     nzSize: string = "small"
 
     user: any;
@@ -155,6 +156,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     radioValue: any;
     filters: any;
+    disciplineList: any;
+    careDomainList: any;
+    programList: any;
+    quotePlanType: string[];
+    carePlanID: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -226,12 +232,29 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     handleCancelLine(){
         this.quoteLineOpen = false;
-        console.log('s')
     }
 
     tabFindIndex: number = 0;
     tabFindChange(index: number){
         this.tabFindIndex = index;
+        
+        if(this.tabFindIndex == 0){
+            this.populateDropdDowns()
+            
+            this.quoteGeneralForm.patchValue({
+                id: this.carePlanID.itemId,
+                planType:"SUPPORT PLAN",
+                name:this.quoteForm.get('template').value,
+                careDomain:"CARE DOMAIN",
+                discipline:"NOT SPECIFIED",
+                program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
+                starDate   :this.date,
+                signOfDate :this.date,
+                reviewDate :this.date,
+                publishToApp:false
+            })
+            this.detectChanges();
+        }
     }
 
     search(user: any) {
@@ -254,8 +277,25 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.loading = false;
             this.cd.markForCheck();
         })
+        this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.detectChanges();});
     }
+    populateDropdDowns() {
+        
+        let notSpecified =["NOT SPECIFIED"];
+        
+        this.listS.getdiscipline().subscribe(data => {this.disciplineList = data;
+            this.disciplineList.push(notSpecified);
+        });
+        this.listS.getcaredomain().subscribe(data => {this.careDomainList = data;
+            this.careDomainList.push(notSpecified);
+        }); 
+        this.listS.getndiaprograms().subscribe(data => {this.programList = data;
+            this.programList.push(notSpecified);
+        });
+        this.listS.getcareplan().subscribe(data => {this.quotePlanType = data;})
 
+        this.detectChanges();
+    }
     patchData(data: any) {
         this.inputForm.patchValue({
             autoLogout: data.autoLogout,
@@ -272,6 +312,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 
     buildForm() {
+
         this.inputForm = this.formBuilder.group({
             autoLogout: [''],
             emailMessage: false,
@@ -286,17 +327,29 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             smsMessage: false
         });
 
+        this.quoteGeneralForm = this.formBuilder.group({
+            id:null,
+            planType:null,
+            name:null,
+            careDomain:null,
+            discipline:null,
+            program:null,
+            starDate:null,
+            signOfDate:null,
+            reviewDate:null,
+            rememberText:null,
+            publishToApp:false
+        });
+
         this.quoteForm = this.formBuilder.group({
             program: null,
             template: null,
-
             no: null,
             type: null,
             period: [],
             basePeriod: null,
-
-
         });
+
 
         this.quoteListForm = this.formBuilder.group({
             chargeType: null,
@@ -373,7 +426,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     save() {
         const group = this.inputForm;
-
         this.timeS.updatetimeandattendance({
             AutoLogout: group.get('autoLogout').value,
             EmailMessage: group.get('emailMessage').value,

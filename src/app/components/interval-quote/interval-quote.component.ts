@@ -86,6 +86,7 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     for (let property in changes) {
       if (property == 'interval' && !changes[property].firstChange && changes[property].currentValue != null) {
           this.buildForm();
+          console.log(changes[property].currentValue)
           this.createMultipleWeekFormats(changes[property].currentValue)
       }
     }
@@ -112,12 +113,11 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   noOfLoops(data): number {
-    this.period = data;
     if (data == 'Weekly') {
       return 1;
     } else if (data == 'Fortnightly') {
       return 2;
-    } else if (data == 'FourWeekly') {
+    } else if (data == 'Monthly') {
       return 4;
     } else {
       return 0;
@@ -125,7 +125,9 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   createMultipleWeekFormats(format: string) {
+    // console.log(format)
     
+    this.period = format;
     this.loopRoster(this.noOfLoops(format));
 
     this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {

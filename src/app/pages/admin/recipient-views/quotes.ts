@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContextMenuComponent } from 'ngx-contextmenu';
-import { billunit, periodQuote, basePeriod } from '@services/global.service';
+import { billunit, periodQuote } from '@services/global.service';
 
 import { Filters } from '@modules/modules';
 
@@ -118,7 +118,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     billUnitArr: Array<string> = billunit;
     periodArr: Array<string> = periodQuote;
-    basePeriodArr: Array<string> = basePeriod;
 
     size: string = 'small'
 
@@ -294,18 +293,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
                 return this.listS.getprogramproperties(x)
             })
         ).subscribe(data => {
-            this.weekly = null;
             this.recipientProperties = data;
-            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount })
+            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None' })
         });
 
         this.quoteListForm.get('roster').valueChanges.subscribe(data => {
             this.weekly = data;
             this.setPeriod(data);
-
-            this.quoteListForm.patchValue({
-                billUnit: 'HOUR'
-            })
         });
 
         this.quoteForm.get('program').valueChanges
@@ -328,25 +322,24 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     setPeriod(data: any){
-        // console.log(data);
+
         if(data && data != 'None'){
 
             this.quoteListForm.get('period').disable();
 
-            if(data == 'FourWeekly'){
-                data = 'MONTHLY';
-            }
-
             this.quoteListForm.patchValue({
-                period: data.toUpperCase()
+                period: data.toUpperCase(),
+                billUnit: 'HOUR',
+                weekNo: 52
             })
 
             return;
         }
 
         this.quoteListForm.patchValue({
-            period: null,
-            billUnit: null
+            period: 'WEEKLY',
+            billUnit: 'HOUR',    
+            weekNo: 52
         })
 
         this.quoteListForm.get('period').enable();
@@ -520,6 +513,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         
         setTimeout(() => {
             this.quoteLines = [...this.quoteLines, this.quoteListForm.getRawValue()];
+            this.handleCancelLine();
             this.detectChanges();
         }, 0);
     }

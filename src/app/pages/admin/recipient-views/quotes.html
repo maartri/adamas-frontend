@@ -256,8 +256,10 @@
                         <div class="right">
                             <nz-range-picker nzSize="small" formControlName="period" [nzFormat]="dateFormat"></nz-range-picker>
 
-                            <nz-select class="select" formControlName="basePeriod" nzSize="small" nzAllowClear nzPlaceHolder="Base Period">
-                                <nz-option *ngFor="let l of basePeriodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
+                            <nz-select class="select" formControlName="basePeriod" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
+                                <!-- <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option> -->
                             </nz-select>
                         </div>
                     </div>
@@ -418,10 +420,6 @@
     </div>
   </nz-modal>
 
-
-
-  <!-- QUOTELINE -->
-
   <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="handleCancelLine()" (nzOnOk)="handleOk()">
     <div nz-row>
         <div nz-row [formGroup]="quoteListForm">
@@ -475,14 +473,14 @@
                 <nz-radio-group formControlName="roster">
                     <label nz-radio nzValue="Weekly">Weekly</label>
                     <label nz-radio nzValue="Fortnightly">Fortnightly</label>
-                    <label nz-radio nzValue="FourWeekly">Monthly</label>
+                    <label nz-radio nzValue="Monthly">Monthly</label>
                     <label nz-radio nzValue="None">None</label>
                 </nz-radio-group>
             </div>
 
             <div nz-row>
                 
-                <div nz-col nzSpan="15" *ngIf="weekly !='None'">
+                <div nz-col nzSpan="15">
                     <app-interval-quote [(ngModel)]="slots" (ngModelChange)="slotsChange($event)" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-quote>
                     <!-- {{ slots | json }} -->
                 </div>

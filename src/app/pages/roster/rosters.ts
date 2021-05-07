@@ -1764,6 +1764,7 @@ reload(reload: boolean){
         if (!data.data) {
             this.rosters = [];
             this.selected = null;
+            this.enable_buttons=false;
             return;
         }
 

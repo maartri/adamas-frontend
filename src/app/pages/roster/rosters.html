@@ -49,18 +49,20 @@
     </div>
 
     <div nz-row style="padding:6px">
-        
+   
         <div  class="nz-button" >
             <nz-button-group >
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="add_Shift()"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="check-circle" nzTheme="outline"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="select" nzTheme="outline"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="form"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="edit"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="contacts"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="diff"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="prev_date()"><i nz-icon nzType="left"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="next_date()"><i nz-icon nzType="right"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons"  *ngIf="viewType=='Recipient'" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Client Administration time"><i nz-icon nzType="font-colors" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Service with nominated staff member" ><i nz-icon nzType="team" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Travel time"><i nz-icon nzType="car" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" *ngIf="viewType=='Staff'"nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Staff  Administration time" ><i nz-icon nzType="form"></i></button>
+                <button [disabled]="!enable_buttons" *ngIf="viewType=='Staff'" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Staff Unavailability" ><i nz-icon nzType="stop" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" *ngIf="viewType=='Recipient'" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Client Cancellation"><i nz-icon nzType="close-square" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Recurring Service Wizard"><i nz-icon nzType="setting" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Load/Unload Staff Compare Roster"><i nz-icon nzType="retweet" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Compress Rosters on Screen"><i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i></button>
                 <button [disabled]="!master" nz-button nzType="primary" (click)="SaveMasterRosters()" nz-tooltip nzTooltipTitle="Save Master Rosters" ><i nz-icon nzType="appstore"></i></button>
             
             </nz-button-group>     

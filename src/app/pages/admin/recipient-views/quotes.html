@@ -256,10 +256,8 @@
                         <div class="right">
                             <nz-range-picker nzSize="small" formControlName="period" [nzFormat]="dateFormat"></nz-range-picker>
 
-                            <nz-select class="select" formControlName="basePeriod" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
-                                <!-- <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option> -->
+                            <nz-select class="select" formControlName="basePeriod" nzSize="small" nzAllowClear nzPlaceHolder="Base Period">
+                                <nz-option *ngFor="let l of basePeriodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
                         </div>
                     </div>
@@ -419,6 +417,10 @@
         </div>
     </div>
   </nz-modal>
+
+
+
+  <!-- QUOTELINE -->
 
   <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="handleCancelLine()" (nzOnOk)="handleOk()">
     <div nz-row>

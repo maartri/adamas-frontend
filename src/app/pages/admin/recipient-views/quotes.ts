@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContextMenuComponent } from 'ngx-contextmenu';
-import { billunit, periodQuote } from '@services/global.service';
+import { billunit, periodQuote, basePeriod } from '@services/global.service';
 
 import { Filters } from '@modules/modules';
 
@@ -118,6 +118,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     billUnitArr: Array<string> = billunit;
     periodArr: Array<string> = periodQuote;
+    basePeriodArr: Array<string> = basePeriod;
 
     size: string = 'small'
 

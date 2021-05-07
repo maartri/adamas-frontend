@@ -23,10 +23,16 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/incident-documents`, data);
     }
 
-    getincidentnotifications(): Observable<any>{
+    GetIncidentNotifications(): Observable<any>{
         return this.auth.get(`${timesheet}/incident-notifications`);
     }
-
+    //incident-mandatory-notifications Getincidentmandatorynotifications
+    Getincidentmandatorynotifications(): Observable<any>{
+        return this.auth.get(`${timesheet}/incident-mandatory-notifications`);
+    }
+    Getincidentnonmandatorynotifications(): Observable<any>{
+        return this.auth.get(`${timesheet}/incident-nonmandatory-notifications`);
+    }
     getincidentnotes(recordNo: number): Observable<any>{
         return this.auth.get(`${timesheet}/incident-note/${recordNo}`);
     }

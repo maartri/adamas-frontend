@@ -282,7 +282,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
                   })
             })
         ).subscribe(data => {
-            // this.resetQuotePrimary();
             this.codes = data;
         });
 
@@ -300,8 +299,12 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
 
         this.quoteListForm.get('roster').valueChanges.subscribe(data => {
-            console.log(data);
             this.weekly = data;
+            this.setPeriod(data);
+
+            this.quoteListForm.patchValue({
+                billUnit: 'HOUR'
+            })
         });
 
         this.quoteForm.get('program').valueChanges
@@ -321,7 +324,34 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             console.log(data)
             this.detectChanges();
         });
+    }
 
+    setPeriod(data: any){
+        // console.log(data);
+        if(data && data != 'None'){
+
+            this.quoteListForm.get('period').disable();
+
+            if(data == 'FourWeekly'){
+                data = 'MONTHLY';
+            }
+
+            this.quoteListForm.patchValue({
+                period: data.toUpperCase()
+            })
+
+            return;
+        }
+
+        this.quoteListForm.patchValue({
+            period: null,
+            billUnit: null
+        })
+
+        this.quoteListForm.get('period').enable();
+
+        
+        
     }
 
     ngOnDestroy(): void {

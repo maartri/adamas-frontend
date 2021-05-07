@@ -85,6 +85,7 @@ export const dayStrings = ['Sunday','Monday','Tuesday','Wednesday','Thursday','F
 export const states = ['AUSTRALIAN CAPITAL TERRITORY', 'NEW SOUTH WALES', 'NORTHERN TERRITORY', 'QUEENSLAND', 'SOUTH AUSTRALIA', 'TASMANIA', 'VICTORIA', 'WESTERN AUSTRALIA']
 export const cycles = ['1st Monday - CYCLE 1', '1st Tuesday - CYCLE 1', '1st Wednesday - CYCLE 1', '1st Thursday - CYCLE 1', '1st Friday - CYCLE 1']
 export const billunit = ['HOUR', 'SERVICE']
+export const basePeriod = ['ANNUALLY', 'FIXED PERIOD']
 export const period = ['DAY', 'WEEKLY', 'FNIGHTLY', 'MONTH', 'QUARTER', 'HALF YEAR', 'YEAR']
 export const periodQuote = ['ONCE OFF', 'WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'QUARTERLY', 'HALF YEARLY', 'YEARLY']
 export const status = ['WAIT LIST', 'ON HOLD', 'ACTIVE', 'INACTIVE']

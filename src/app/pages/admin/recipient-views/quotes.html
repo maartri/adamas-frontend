@@ -287,7 +287,7 @@
                 </div>
 
                 <div nz-row *ngIf="quoteForm.get('program').value">
-                    <nz-table #basicTable [nzData]="listOfData" nzSize="small">
+                    <nz-table #basicTable [nzData]="quoteLines" nzSize="small">
                         <thead>
                           <tr>
                             <th>Item Code</th>
@@ -300,16 +300,25 @@
                             <th>Amount</th>
                             <th>GST</th>
                             <th>Total</th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr *ngFor="let data of basicTable.data">
-                            <td>{{data.name}}</td>
-                            <td>{{data.age}}</td>
-                            <td>{{data.address}}</td>
+                            <td>{{data.code}}</td>
+                            <td>{{data.displayText}}</td>
+                            <td>{{data.quantity}}</td>
+
+                            <td>{{data.billUnit}}</td>
+                            <td>{{data.period}}</td>
+                            <td>{{data.quantity}}</td>
+                            <td>{{data.price}}</td>
+                            <td>{{data.quantity}}</td>
+                            <td>{{data.gst}}</td>
+                            <td>{{data.quantity}}</td>
                             <td>
-                              <a>Action 一 {{data.name}}</a>
-                              <nz-divider nzType="vertical"></nz-divider>
+                              <!-- <a>Action 一 {{data.name}}</a>
+                              <nz-divider nzType="vertical"></nz-divider> -->
                               <a>Delete</a>
                             </td>
                           </tr>
@@ -440,10 +449,10 @@
                 </div>
             </div>
 
-            <div nz-col nzSpan="6" *ngIf="quoteListForm.get('chargeType').value">
+            <div nz-col nzSpan="6" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="right">
                     <label for="">Sequence #</label>
-                    <input nz-input placeholder="Sequence Number" nzSize="small" [(ngModel)]="value" />
+                    <input nz-input placeholder="Sequence Number" nzSize="small" formControlName="sequenceNo" />
                 </div>
             </div>
         </div>
@@ -454,8 +463,6 @@
                     <label for="">Strategy</label>
                     <nz-select formControlName="strategy" nzSize="small" nzAllowClear nzPlaceHolder="Strategy">
                         <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
                     </nz-select>
                 </div>
             </div>
@@ -474,49 +481,54 @@
             <div nz-row>
                 
                 <div nz-col nzSpan="16" *ngIf="weekly !='None'">
-                    <app-interval-quote [(ngModel)]="slots" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-quote>
+                    <app-interval-quote [(ngModel)]="slots" (ngModelChange)="slotsChange($event)" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-quote>
+                    <!-- {{ slots | json }} -->
                 </div>
 
                 <div nz-col nzSpan="8">
                     <div nz-row class="calc-wrapper" *ngIf="weekly" [formGroup]="quoteListForm">
-                        <div class="spacing flex">
-                            <nz-input-number [nzSize]="size"></nz-input-number>
-                            <nz-select nzSize="small" nzAllowClear>
+                        <div class="spacing flex"> 
+                            <nz-input-number [nzSize]="size" formControlName="quantity"></nz-input-number>
+                            <nz-select nzSize="small" nzAllowClear placeholder="Bill Unit" formControlName="billUnit">
                                 <nz-option *ngFor="let l of billUnitArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
-                            <nz-select  nzSize="small" nzAllowClear>
+                            <nz-select  nzSize="small" nzAllowClear placeholder="Period" formControlName="period">
                                 <nz-option *ngFor="let l of periodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
                             <span>X</span>
-                            <nz-input-number [nzSize]="size" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                            <nz-input-number [nzSize]="size" formControlName="weekNo"></nz-input-number>
                         </div>
                         <div class="flex">
                             <span>Price</span>
                             <input class="three-five" formControlName="price" nz-input nzSize="small" />
                             <span>Min</span>
-                            <span><label nz-checkbox >GST</label></span>
-                            <input class="three-five" nz-input nzSize="small" />
+                            <span><label nz-checkbox formControlName="min">GST</label></span>
+                            <input class="three-five" nz-input nzSize="small" formControlName="gst" />
                         </div>
-                        <div nz-row>
-                            <nz-input-number [nzSize]="size" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        <div nz-row class="spacing">
+                            <nz-input-number [nzSize]="size" formControlName="quoteValue"></nz-input-number>
                             <span>% of Quote Value</span>
                         </div>
-                        <div nz-row>
-                            <nz-input-number [nzSize]="size" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                        <div nz-row class="spacing">
+                            <nz-input-number [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
                             <span>% of Quote Budget</span>
                         </div>
                     </div>
                 </div>
 
-                <div nz-col nzSpan="24" class="line">
-                    
-                    <div class="form-group">
-                        <textarea rows="4" nz-input [(ngModel)]="value" placeholder="Notes"></textarea>
+                <div nz-col nzSpan="24" class="line">                    
+                    <div class="form-group" [formGroup]="quoteListForm">
+                        <textarea rows="4" nz-input formControlName="notes" placeholder="Notes"></textarea>
                     </div>
 
                 </div>
             </div>
         </div>
-
     </div>
+
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancelLine()">Cancel</button>
+        <button nz-button nzType="primary" (click)="GENERATE_QUOTE_LINE()">Save</button>
+    </div>
+
   </nz-modal>

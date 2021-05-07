@@ -181,6 +181,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     radioValue: any;
     filters: any;
 
+    quoteLines: Array<any> = [];
+
+    quoteLinesTemp: Array<any> = [];
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -214,87 +218,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.user = this.sharedS.getPicked();
         this.buildForm();
     }
-
-    ngOnDestroy(): void {
-        this.unsubscribe.next();
-        this.unsubscribe.complete();
-    }
-
-    showMessage(message: any) {
-        console.log(message);
-    }
-
-    filterChange(data: any){
-        this.search(this.user);
-    }
-
-    showQuoteModal(){
-        this.quotesOpen = true;
-        this.listS.getprogramcontingency(this.user.id).subscribe(data => this.quoteProgramList = data);
-        this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
-        this.tabFindIndex = 2;
-        console.log(this.user)
-    }
-
-    quoteLineModal(){
-        this.quoteLineOpen = true;
-        this.quoteListForm.reset();
-    }
-
-    handleOk(){
-
-    }
-
-    handleCancel(){
-        this.quotesOpen = false;
-    }
-
-    handleCancelLine(){
-        this.quoteLineOpen = false;
-        console.log('s')
-    }
-
-    tabFindIndex: number = 0;
-    tabFindChange(index: number){
-        this.tabFindIndex = index;
-    }
-
-    search(user: any) {
-        this.loading = true;
-        this.user = user;
-        
-
-        let data = {
-            quote: {
-                PersonID: user.id,
-                DisplayLast: this.displayLast,
-                IncludeArchived: this.archivedDocs,
-                IncludeAccepted: this.acceptedQuotes
-            },
-            filters: this.filters
-        }
-
-        this.listS.getlistquotes(data).subscribe(data => {
-            this.tableData = data;
-            this.loading = false;
-            this.cd.markForCheck();
-        })
-    }
-
-    patchData(data: any) {
-        this.inputForm.patchValue({
-            autoLogout: data.autoLogout,
-            emailMessage: data.emailMessage,
-            excludeShiftAlerts: data.excludeShiftAlerts,
-            inAppMessage: data.inAppMessage,
-            logDisplay: data.logDisplay,
-            pin: data.pin,
-            rosterPublish: data.rosterPublish,
-            shiftChange: data.shiftChange,
-            smsMessage: data.smsMessage
-        });
-    }
-
 
     buildForm() {
         this.inputForm = this.formBuilder.group({
@@ -330,9 +253,22 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             strategy: null,
             sequenceNo: null,
 
-            price: null,
+            quantity: null,
+            billUnit: null,
+            period: null,
+            weekNo: null,
 
-            roster: null
+            price: null,
+            gst: null,
+            min: null,
+            quoteValue: null,
+            quoteBudget: null,
+
+            roster: null,
+            rosterString: null,
+            notes: null,
+
+            editable: true
         });
 
         this.quoteListForm.get('chargeType').valueChanges
@@ -386,6 +322,92 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.detectChanges();
         });
 
+    }
+
+    ngOnDestroy(): void {
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
+    }
+
+    slotsChange(data: any){
+        this.quoteListForm.patchValue({
+            quantity: data.quantity,
+            rosterString: data.roster
+        });
+    }
+
+    showMessage(message: any) {
+        console.log(message);
+    }
+
+    filterChange(data: any){
+        this.search(this.user);
+    }
+
+    showQuoteModal(){
+        this.quotesOpen = true;
+        this.listS.getprogramcontingency(this.user.id).subscribe(data => this.quoteProgramList = data);
+        this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
+        this.tabFindIndex = 2;
+        console.log(this.user)
+    }
+
+    quoteLineModal(){
+        this.quoteLineOpen = true;
+        this.quoteListForm.reset();
+    }
+
+    handleOk(){
+
+    }
+
+    handleCancel(){
+        this.quotesOpen = false;
+    }
+
+    handleCancelLine(){
+        this.quoteLineOpen = false;        
+    }
+
+    tabFindIndex: number = 0;
+    tabFindChange(index: number){
+        this.tabFindIndex = index;
+    }
+
+    search(user: any) {
+        this.loading = true;
+        this.user = user;
+        
+
+        let data = {
+            quote: {
+                PersonID: user.id,
+                DisplayLast: this.displayLast,
+                IncludeArchived: this.archivedDocs,
+                IncludeAccepted: this.acceptedQuotes
+            },
+            filters: this.filters
+        }
+
+        this.listS.getlistquotes(data).subscribe(data => {
+            this.tableData = data;
+            this.loading = false;
+            this.cd.markForCheck();
+        })
+    }
+
+    patchData(data: any) {
+        this.inputForm.patchValue({
+            autoLogout: data.autoLogout,
+            emailMessage: data.emailMessage,
+            excludeShiftAlerts: data.excludeShiftAlerts,
+            inAppMessage: data.inAppMessage,
+            logDisplay: data.logDisplay,
+            pin: data.pin,
+            rosterPublish: data.rosterPublish,
+            shiftChange: data.shiftChange,
+            smsMessage: data.smsMessage
+        });
     }
 
     detectChanges(){
@@ -461,5 +483,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     hello(data: any){
         console.log(data);
         return false;
+    }
+
+    GENERATE_QUOTE_LINE(){
+        
+        setTimeout(() => {
+            this.quoteLines = [...this.quoteLines, this.quoteListForm.getRawValue()];
+            this.detectChanges();
+        }, 0);
     }
 }

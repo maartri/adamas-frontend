@@ -146,7 +146,7 @@
                                                     <div nz-col nzSpan="11">
                                                         <label for="">End Time</label>
                                                         <div nz-col nzSpan="9">
-                                                            <nz-time-picker formControlName="endTimeOfIncident" [nzMinuteStep]="5" [nzPlaceHolder]="'End Time'" nzFormat="HH:mm"></nz-time-picker>
+                                                            <nz-time-picker formControlName="endTimeOfIncident" [nzMinuteStep]="5" [nzPlaceHolder]="'End Time'" nzFormat="HH:mm"  ></nz-time-picker>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -348,7 +348,7 @@
                            </div>
                            <div nz-col nzSpan="12">
                                 <div class="form-group">
-                                    <label for="">Any environment irritants or other identifiable</label>
+                                    <label for="">Any environment irritants or other identifiable patterns or triggers that you observed prior to</label>
                                     <textarea  formControlName="step53" rows="4" nz-input ></textarea>
                                 </div>                            
                             </div>
@@ -493,7 +493,7 @@
                                     </div>
                                     <div class="check-oneline">
                                         <label for="">Closed Incident on TRACCS</label>
-                                        <label nz-checkbox formControlName="officeUse7">Yes</label>
+                                        <label nz-checkbox formControlName="officeUse7" nzdisabled  >Yes</label>
                                     </div>
                                 </div>
                                 <div nz-col nzOffset="1" nzSpan="12">
@@ -541,16 +541,16 @@
                         <div nz-col nzSpan="24">
                             <div class="notif-wrapper">
                                 <h4>Mandatory Incident Notifications</h4>
-                                <div nz-col nzSpan="24" *ngFor="let staff of incidentNotifications">
-                                    <label nz-checkbox *ngIf="staff.mandatory" [nzValue]="staff" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{ staff.staff }}</label>
+                                <div nz-col nzSpan="24" *ngFor="let staff of incidentmandatoryNotifications">
+                                    <label nz-checkbox  [nzValue]="staff" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{staff}}</label>
                                 </div>
                             </div>
                         </div>
                         <div nz-col nzSpan="24">
                             <div class="notif-wrapper">
                                 <h4>Optional Incident Notifications</h4>
-                                <div nz-col nzSpan="24" *ngFor="let staff of incidentNotifications">
-                                    <label nz-checkbox *ngIf="!staff.mandatory" [nzValue]="staff" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{ staff.staff }}</label>
+                                <div nz-col nzSpan="24" *ngFor="let staff of incidentnonmandatoryNotifications">
+                                    <label nz-checkbox  [nzValue]="staff" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{staff}}</label>
                                 </div>
                             </div>
                         </div>

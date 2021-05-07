@@ -12,6 +12,7 @@ import parse from 'date-fns/parse';
 import * as moment from 'moment';
 import { User, NewRelationShip, ProfileInterface, IM_Master } from '@modules/modules';
 import { NzModalService } from 'ng-zorro-antd/modal';
+
 const noop = () => {
 };
 
@@ -93,6 +94,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   modalOpen: boolean = false;
 
   incidentNotifications: Array<any>;
+  incidentmandatoryNotifications : Array<any>;
+  incidentnonmandatoryNotifications : Array<any>;
 
   alist: Array<any> = [];
   blist: Array<any> = [];
@@ -101,7 +104,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   mlist: Array<any> = [];
   recipientStrArr: Array<any> = [];
   statuseffect :string;
-
+  tocken:any
+  
   private default = {
     notes: '',
     publishToApp: false,
@@ -128,7 +132,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   ) { 
 
   }
-
+  
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
@@ -145,7 +149,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     }
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
+    this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
     this.buildForm();
   }
 
@@ -169,17 +174,17 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         step7:'',
         
         // Office Use
-        officeUse1: false,
+        officeUse1: true,
         officeUse2: false,
         officeUse3: false,
         officeUse4: false,
         officeUse5: false,
         officeUse6: false,
-        officeUse7: false,
+        officeUse7: false ,
         officeUse8: false,
         officeUse9: false,
 
-        reportEnter:'',
+        reportEnter:this.tocken.user,
         communityService: '',
         regionalComm:'',
         comments: '',
@@ -416,51 +421,26 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     if(_gender === 'female')
       return 'female';
   }
-  /*
-  getorganisation(org:string){
-    console.log(org)
-    if(this.globalS.isEmpty(org)) return;
-    var _organisation = org;
-    var temp
-    switch (_organisation) {
-      case '0':
-        temp = 'D';        
-        break;
-      case '1':
-        temp = 'E';        
-        break;
-      case '2':
-        temp = 'B';        
-        break;
-      case '3':
-        temp = 'A';        
-        break;
-      case '4':
-        temp = 'C';        
-        break;
-       
-    
-      default:
-        break;
-    }
-return temp;
-  }
-   */
-
-  
+ 
 
   buildValueChanges(){
 
     this.getSelect();
-
-    this.timeS.getincidentnotifications().subscribe(data => {
-      this.incidentNotifications = data.map(x =>{
+    
+  this.timeS.GetIncidentNotifications().subscribe(data => {
+    
+    
+     this.incidentNotifications = data.map(x =>{
         var o = Object.assign({}, x);
         o.checked = true;
+        
         return o;
       });
-    });
-
+      
+  }); 
+  this.timeS.Getincidentmandatorynotifications().subscribe(data => this.incidentmandatoryNotifications = data);
+  this.timeS.Getincidentnonmandatorynotifications().subscribe(data => this.incidentnonmandatoryNotifications = data);
+    
     this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
         this.listIncidentTypes = data;
     });
@@ -742,8 +722,9 @@ updateCheckBoxesInStep1(defaultString: string){
   updateCheckBoxesInOfficeUse(defaultString: string){
     var temp;
     if(!defaultString) return;
-
-    if(this.statuseffect === "CLOSED"){
+//&& this.operation.process == 'UPDATE'
+    if(this.statuseffect === "CLOSED"  ){
+      
      temp  = true
     }
     else{temp = false}
@@ -751,13 +732,15 @@ updateCheckBoxesInStep1(defaultString: string){
     //console.log("debug")
 
     this.incidentForm.patchValue({
-      officeUse1: this.isChecked(defaultString[0]),
+      //officeUse1: this.isChecked(defaultString[0]),
+      officeUse1: this.isChecked('1'), //as we are entering data so it should be true
       officeUse2: this.isChecked(defaultString[1]),
       officeUse3: this.isChecked(defaultString[2]),
       officeUse4: this.isChecked(defaultString[3]),
       officeUse5: this.isChecked(defaultString[4]),
       officeUse6: this.isChecked(defaultString[5]),      
-      officeUse7: temp,//this.isChecked(defaultString[6]),
+      //officeUse7: this.isChecked(defaultString[6]),
+      officeUse7: temp,
       officeUse8: this.isChecked(defaultString[7]),
       officeUse9: this.isChecked(defaultString[8])
     })
@@ -771,20 +754,35 @@ updateCheckBoxesInStep1(defaultString: string){
     return '1' == data ? true : false;
   }
 
+ 
+
+
   save(){
+    
 
     var { incidentType, serviceType,
           step4, step51, step52, step53, step54,
           step61, step7, reportEnter, communityService, regionalComm, comments,
           other, summary, description,
-          accountNo, dateOfIncident, reportedBy, recordNo, startTimeOfIncident, endTimeOfIncident, commentsStaff, incidentNotes,otherspecify, } = 
+          accountNo, dateOfIncident, reportedBy, recordNo,startTimeOfIncident , endTimeOfIncident, commentsStaff, incidentNotes,otherspecify, } = 
     this.incidentForm.value;
-
+    
+      if (this.current == 1 && endTimeOfIncident != null && format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm') ){
+        this.modal.error({
+          nzTitle: 'TRACCS',
+            nzContent: 'End Time of Incident Must be greater than Start Time',
+            nzOnOk: () => {
+              this.current = 1;
+            },
+          });
+      
+    }else{
     var { 
       accountNo,
       primaryPhone
     } = this.user;
-
+    
+    
     var im_master: IM_Master = {
           RecordNo: recordNo || 0,
           PersonId: this.innerValue.id,
@@ -855,32 +853,37 @@ updateCheckBoxesInStep1(defaultString: string){
       });
     }   
   }
-
+  }
   saveNote(){
 
     if (!this.globalS.IsFormValid(this.noteFormGroup))
     return;
 
     const { alarmDate, restrictionsStr, whocode, restrictions } = this.noteFormGroup.value;
+    
     const cleanDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(alarmDate);
-
+    
     let privateFlag = restrictionsStr == 'workgroup' ? true : false;
     let restricts = restrictionsStr != 'restrict';
 
     this.noteFormGroup.controls["restrictionsStr"].setValue(privateFlag);
 
     this.noteFormGroup.controls["alarmDate"].setValue(cleanDate);
-
+    
     this.noteFormGroup.controls["whocode"].setValue(this.globalS.decode().nameid);
     this.noteFormGroup.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
 
     const noteValue = this.noteFormGroup.value;
+    if(noteValue.alarmDate != null){
+      var checknull = format(noteValue.alarmDate,"yyyy-MM-dd'T'HH:mm:ss")
+    }else{checknull = ''}
 
     const note: Note = {
       creator: 'sysmgr',
       detail: noteValue.notes,
       detailDate: format(new Date(),"yyyy-MM-dd'T'HH:mm:ss"),
-      alarmDate: format(noteValue.alarmDate,"yyyy-MM-dd'T'HH:mm:ss"),
+      alarmDate: checknull,
+    //  alarmDate: format(noteValue.alarmDate,"yyyy-MM-dd'T'HH:mm:ss"),
       personID: '',
       recordNumber: 0,
       restrictions: noteValue.restrictions,
@@ -958,7 +961,8 @@ updateCheckBoxesInStep1(defaultString: string){
 
   patchUpdateValues(data: any){
 
-  //  console.log(data)
+    console.log(data)
+    
     this.statuseffect = data.status;
     this.updateCheckBoxesInStep1(data.subjectType)
     this.updateCheckBoxesInStep2(data.typeOther);
@@ -966,7 +970,8 @@ updateCheckBoxesInStep1(defaultString: string){
     this.updateCheckBoxesInStep6(data.followupContacted);
     this.updateStaffListing(data.staff);
     this.updateNewRelationShip(data.newRelationship);
-
+  
+  
     this.incidentForm.patchValue({
       summary: data.shortDesc,
       description: data.fullDesc, 
@@ -988,9 +993,10 @@ updateCheckBoxesInStep1(defaultString: string){
       regionalComm: data.manager,
       comments: data.notes,
       commentsStaff: data.ongoingNotes,
-
+      
       endTimeOfIncident: data.estimatedTimeOther ? parse(data.estimatedTimeOther,'HH:mm', new Date()) : null,
       startTimeOfIncident: this.getRealDate(data.time),
+      
       dateOfIncident: this.getRealDate(data.date),
       reportedBy: data.reportedBy,      
       recordNo: data.recordNo,
@@ -998,6 +1004,7 @@ updateCheckBoxesInStep1(defaultString: string){
       organisation:data.subjectType ,
 
     });
+    
   }
 
   //From ControlValueAccessor interface
@@ -1047,8 +1054,25 @@ updateCheckBoxesInStep1(defaultString: string){
   }
 
   next(): void {
-      this.current += 1;
-  }
+    var  {startTimeOfIncident,endTimeOfIncident} = this.incidentForm.value
+
+     
+     
+    if (this.current == 1 && endTimeOfIncident != null ){
+        //this.compareTimeofincidents();
+        if (format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm')){
+          //  alert("End Time of Incient must be greater then Start time")
+            this.modal.error({
+              nzTitle: 'TRACCS',
+                nzContent: 'End Time of Incident Must be greater than Start Time',
+                nzOnOk: () => {},
+              });
+        }
+        
+    }else
+        
+          this.current += 1;
+      }
 
   log(event: any) {
     this.selectedStaff = event;
@@ -1077,14 +1101,30 @@ updateCheckBoxesInStep1(defaultString: string){
           data.push('*VARIOUS');
           this.clist = data;
       });
+    //  this.alist = this.listPrograms ;
+    
       this.timeS.getprogramop(this.innerValue.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           data.push('*VARIOUS');
           this.alist = data;
       });
-
+    
       this.listS.getcategoryincident().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           this.dlist = data;
       })
   }
+  compareTimeofincidents(){
+    var  {startTimeOfIncident,endTimeOfIncident} = this.incidentForm.value
 
-}
+   // console.log("compare  "+format(startTimeOfIncident, 'HH:mm') + " ," + format(endTimeOfIncident, 'HH:mm'));
+    if (format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm')){
+      //  alert("End Time of Incient must be greater then Start time")
+        this.modal.error({
+          nzTitle: 'TRACCS',
+            nzContent: 'End Time of Incident Must be greater than Start Time',
+            nzOnOk: () => {},
+          });
+    }
+    else{this.current = 2}
+  }
+
+}//

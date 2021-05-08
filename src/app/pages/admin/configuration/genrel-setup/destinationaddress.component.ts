@@ -188,7 +188,7 @@ export class DestinationaddressComponent implements OnInit {
         let postcode = null;
         let values = "'DESTINATION'"+","+type+","+name+","+address1+","+address2+","+suburb+","+postcode+","+phone1+","+phone2+","+fax+","+mobile+","+email+","+end_date;
         let sql = "insert into HumanResourceTypes([Group],[Type],[Name],[Address1],[Address2],[Suburb],[Postcode],[Phone1],[Phone2],[Fax],[Mobile],[email],[EndDate]) Values ("+values+")";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
@@ -225,7 +225,7 @@ export class DestinationaddressComponent implements OnInit {
         let postcode = null;
         let recordnumber     = group.get('recordNumber').value;
         let sql  = "Update HumanResourceTypes SET [Group]='DESTINATION',[Type] ="+ type+ ",[Name] ="+ name+ ",[Address1] ="+ address1+",[Address2] ="+ address2+",[Suburb] ="+ suburb+",[Postcode] ="+ postcode+",[Phone1] ="+ phone1+",[Phone2] ="+ phone2+",[Fax] ="+ fax+",[Mobile] ="+ mobile +",[EMail] ="+email+",[EndDate] ="+end_date+" WHERE [RecordNumber] ='"+recordnumber+"'";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
           if (data) 

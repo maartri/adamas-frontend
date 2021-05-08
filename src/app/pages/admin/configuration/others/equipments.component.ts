@@ -171,7 +171,7 @@ export class EquipmentsComponent implements OnInit {
         const group = this.inputForm;
         if(group.get('type').value){
           let type            = this.globalS.isValueNull(group.get('type').value);
-          let description     = this.globalS.isValueNull(group.get('description').value);
+          let description     = this.globalS.isValueNull(group.get('description').value.trim().toUppercase());
           let asset           = this.globalS.isValueNull(group.get('asset_no').value);
           let serial_no       = this.globalS.isValueNull(group.get('serial_no').value);
           let purchase_am     = this.globalS.isValueNull(group.get('purchase_am').value);
@@ -206,7 +206,7 @@ export class EquipmentsComponent implements OnInit {
         const group       = this.inputForm;
         
         let type            = this.globalS.isValueNull(group.get('type').value);
-        let description     = this.globalS.isValueNull(group.get('description').value);
+        let description     = this.globalS.isValueNull(group.get('description').value.trim().toUppercase());
         let asset           = this.globalS.isValueNull(group.get('asset_no').value);
         let serial_no       = this.globalS.isValueNull(group.get('serial_no').value);
         let purchase_am     = this.globalS.isValueNull(group.get('purchase_am').value);

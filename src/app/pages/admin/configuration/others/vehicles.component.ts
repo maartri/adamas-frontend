@@ -154,7 +154,8 @@ export class VehiclesComponent implements OnInit {
           else
           this.globalS.sToast('Unsuccess', 'Saved successful');
           this.loadData();
-          this.postLoading = false;          
+          this.postLoading = false;     
+          this.loading = false;     
           this.handleCancel();
           this.resetModal();
         });
@@ -172,7 +173,8 @@ export class VehiclesComponent implements OnInit {
             else
             this.globalS.sToast('Unsuccess', 'Updated successful');
             this.loadData();
-            this.postLoading = false;          
+            this.postLoading = false;    
+            this.loading = false;      
             this.isUpdate = false;
             this.handleCancel();
             this.resetModal();

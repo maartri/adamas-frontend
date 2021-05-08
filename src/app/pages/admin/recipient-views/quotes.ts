@@ -161,6 +161,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     programList: any;
     quotePlanType: string[];
     carePlanID: any;
+    goalOfCarelist: any;
+    goalsAndStratergies: any;
+    userCopy: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -183,6 +186,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'quotes')) {
                 this.search(data);
+                this.userCopy = data;
             }
         });
     }
@@ -211,10 +215,39 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     showQuoteModal(){
         this.quotesOpen = true;
+        this.tabFindIndex = 2; 
+
+        let id = this.user.id.substr(this.user.id - 5)
+
+        this.populateDropdDowns();
+        
         this.listS.getprogramcontingency(this.user.id).subscribe(data => this.quoteProgramList = data);
+        
         this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
-        this.tabFindIndex = 2;
-        console.log(this.user)
+        
+        this.listCarePlanAndGolas();
+
+        this.quoteGeneralForm.patchValue({
+            id: this.carePlanID.itemId,
+            planType:"SUPPORT PLAN",
+            name:this.quoteForm.get('template').value,
+            careDomain:"CARE DOMAIN",
+            discipline:"NOT SPECIFIED",
+            program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
+            starDate   :this.date,
+            signOfDate :this.date,
+            reviewDate :this.date,
+            publishToApp:false
+        })
+
+        this.detectChanges();       
+    }
+
+    listCarePlanAndGolas(){
+        this.loading = true;
+        this.listS.getCareplangoals('45976').subscribe(data => this.goalsAndStratergies = data);
+        this.loading = false;
+        this.cd.markForCheck();
     }
 
     quoteLineModal(){
@@ -237,24 +270,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     tabFindIndex: number = 0;
     tabFindChange(index: number){
         this.tabFindIndex = index;
-        
-        if(this.tabFindIndex == 0){
-            this.populateDropdDowns()
-            
-            this.quoteGeneralForm.patchValue({
-                id: this.carePlanID.itemId,
-                planType:"SUPPORT PLAN",
-                name:this.quoteForm.get('template').value,
-                careDomain:"CARE DOMAIN",
-                discipline:"NOT SPECIFIED",
-                program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
-                starDate   :this.date,
-                signOfDate :this.date,
-                reviewDate :this.date,
-                publishToApp:false
-            })
-            this.detectChanges();
-        }
     }
 
     search(user: any) {
@@ -293,7 +308,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.programList.push(notSpecified);
         });
         this.listS.getcareplan().subscribe(data => {this.quotePlanType = data;})
-
+        
         this.detectChanges();
     }
     patchData(data: any) {
@@ -477,5 +492,16 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     hello(data: any){
         console.log(data);
         return false;
+    }
+
+    deleteCarePlanGoal(data: any){
+    this.timeS.deleteCarePlangoals(data.recordnumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+                this.globalS.sToast('Success', 'Data Deleted!');
+                this.listCarePlanAndGolas();
+            return;
+         }
+      });
     }
 }

@@ -133,6 +133,12 @@ export class ListService {
         return this.auth.get(`${list}/program/contingency/list/${personID}`);
     }
 
+    getCareplangoals(personID: string): Observable<any>{
+        return this.auth.get(`${list}/quote/careplangoal/list/${personID}`)
+    }
+
+    
+
     getfundingpackagepurposelist(): Observable<any>{
         return this.auth.get(`${list}/funding/package-purpose/list`);
     }

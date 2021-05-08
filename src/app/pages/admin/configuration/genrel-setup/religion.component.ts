@@ -131,7 +131,7 @@ dateFormat: string ='dd/MM/yyyy';
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){      
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -153,14 +153,15 @@ dateFormat: string ='dd/MM/yyyy';
             else
             this.globalS.sToast('Unsuccess', 'Data not saved' + data);
             this.loadData();
-            this.postLoading = false;          
+            this.postLoading = false;   
+            this.loading = false;       
             this.handleCancel();
             this.resetModal();
           });
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          let name        = group.get('name').value.trim().uppercase();
+          let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
@@ -186,7 +187,9 @@ dateFormat: string ='dd/MM/yyyy';
               else
               this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
-              this.postLoading = false;          
+              this.postLoading = false;  
+              this.loading = false;    
+              this.isUpdate = false;    
               this.handleCancel();
               this.resetModal();
             });

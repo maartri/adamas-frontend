@@ -153,7 +153,7 @@ export class BranchesComponent implements OnInit {
       if(!this.isUpdate){
         const group = this.inputForm;
         let name        = group.get('name').value.trim().toUpperCase();
-        let is_exist    = this.globalS.isNameExists(this.tableData,name);
+        let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
           this.postLoading = false;
@@ -195,9 +195,9 @@ export class BranchesComponent implements OnInit {
         });
       }else{
           const group = this.inputForm;
-          let name        = group.get('name').value.trim().uppercase();
+          let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
-            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
             if(is_exist){
               this.globalS.sToast('Unsuccess', 'Title Already Exist');
               this.postLoading = false;

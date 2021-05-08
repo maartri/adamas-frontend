@@ -91,6 +91,7 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/quote/details/${id}`);
     }
 
+    
     updatepackagesupplement(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/packagesupplement`, data);
     }
@@ -491,6 +492,10 @@ export class TimeSheetService {
 
     deletegoals(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/intake/goals/${recordNo}`)
+    }
+
+    deleteCarePlangoals(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/quote/careplangoal/${recordNo}`)
     }
 
     /** */

@@ -9,7 +9,7 @@ import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@an
 import { forkJoin, Subscription, Observable, Subject, EMPTY, of,fromEvent, } from 'rxjs';
 
 import {debounceTime, distinctUntilChanged, takeUntil,mergeMap, concatMap, switchMap,buffer,map, bufferTime, filter} from 'rxjs/operators';
-import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, view, ClientService, StaffService,ShareService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzRadioModule  } from 'ng-zorro-antd/radio';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -31,7 +31,7 @@ import { isValid } from 'date-fns';
 
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
-
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import * as moment from 'moment';
 import * as $ from 'jquery';
 import { SpreadSheetsModule } from '@grapecity/spread-sheets-angular';
@@ -42,6 +42,11 @@ interface AddTimesheetModalInterface {
     index: number,
     name: string
 }
+interface UserView{
+    staffRecordView: string,
+    staff: number
+}
+const license = "E427689893651433#B0ASSrpndudjTsh4V8U7UwM6LzVTb9UkZNZkZtVXc7oVT8QVWRFmV6NFa4EDOqx6bjFlT6pXSj9We73CVOBXRY54akZ7d8dFezsWWCVnYiNWZFNGTRZHMqdzKyVlT6hTOxU4VuhWYv9EW8hHSipUS8kGa9VkQ5JWRoJGVzQmN8sCZtpWT5UlavcWN9ZXeVNzNUtEbxIGZ8tSdqtCaJtkUOdzUDFUMCxkVD94R4llMBl6dV96SxIGayNGVzQlQVdXRxt6b5sCcQhzLZBFTzgXZrpXaiNUU656LGhlb8hEZDZjREZEM8ETQvpVNRNlbwkGViojITJCLikjN6YDR7UUNiojIIJCL7kTOwMDOzYjM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiIxQTOwMDMgYDM5ATMyAjMiojI4J7QiwiI5AjNwEjMwIjI0ICc8VkIsIych5WYkFkI0ISYONkIsUWdyRnOiwmdFJCLiMzM4ETN6MTO8kDO6cjM4IiOiQWSiwSfdtlOicGbmJCLlNHbhZmOiI7ckJye0ICbuFkI1pjIEJCLi4TP7V6RGBzZ8t4cSplZUhTashjVuJ5L0JUUPhXRzFUMvonUzAHciJTapZ5a54EdxpXNEVkejBFZrFWdpZUaXFVNJRnZ92UTzJjUP5mWL5GeqJlailHMENmSV5kM7N5YzZFN7JjQxB3f1";
 
 @Component({
     styles: [`
@@ -49,7 +54,6 @@ interface AddTimesheetModalInterface {
     `],
     templateUrl: './rosters.html'
 })
-
 
 export class RostersAdmin  {
     spreadBackColor = "white";  
@@ -60,13 +64,7 @@ export class RostersAdmin  {
       overflow: 'auto',
       float: 'left'
     };  
-  //  @ViewChild('password', { static: true }) static: ElementRef<HTMLDivElement>;
- //   @ViewChild("password", { static: true }) password: ElementRef;
- //   @ViewChild("confirmPassword", { static: true }) confirmPassword: ElementRef;
-    // @ViewChild('calendar', { static: false }) calendarComponent: FullCalendarComponent;
-
-    // references the #calendar in the template
-//    @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+  
 
 timesheets: Array<any> = [];
 timesheetsGroup: Array<any> = [];   
@@ -86,6 +84,7 @@ payTotal:any;
   cell_value:any = {row:0,col:0,duration:0, type:0,recordNo:0} 
   copy_value:any = {row:0,col:0,duration:0, type:0,recordNo:0} 
 
+  notes:string="";
   bodyText:string;
   recipientDetailsModal:boolean=false;
   operation:string="";
@@ -128,8 +127,19 @@ payTotal:any;
     val4:boolean=false;
     master:boolean=false;
     
+    sample: any;
+    searchStaffModal:boolean=false;
+    ViewStaffDetail:boolean=false;
+    ViewServiceDetail:boolean=false;
+    ViewAdditionalModal:boolean=false;
+    isFirstLoad:boolean=false;
+    userview: UserView;
+    selectedCarer:any;
+    UnAllocateStaffModal:boolean=false;
+    ClearMultiShiftModal:boolean=false;
+    SetMultiShiftModal:boolean=false;
+    deleteRosterModal:boolean=false;
 
-    
  DayOfWeek(n:number): String{
 
     let day:String="";
@@ -145,6 +155,115 @@ payTotal:any;
     return day;
   
   }
+  listChange(event: any) {
+
+    if (event == null) {
+        this.user = null;
+        this.isFirstLoad = false;
+        this.sharedS.emitChange(this.user);
+        return;
+    }
+
+      this.selectedCarer=event.accountNo;
+
+    this.user = {
+        code: event.accountNo,
+        id: event.uniqueID,
+        view: event.view,
+        agencyDefinedGroup: event.agencyDefinedGroup,
+        sysmgr: event.sysmgr
+    }
+
+    this.sharedS.emitChange(this.user);
+    this.cd.detectChanges();
+}
+
+normalRoutePass(): void{
+    const { user } = this.globalS.decode();
+
+    this.listS.getstaffrecordview(user).subscribe(data => {
+        this.userview = data;
+        this.cd.detectChanges();
+    })
+
+   
+    this.isFirstLoad = false;   
+    
+    
+
+    this.sharedS.emitRouteChangeSource$.subscribe(data => {
+        console.log(data);
+    });
+}
+SaveAdditionalInfo(notes:string){
+    this.notes=notes;
+    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+    this.ProcessRoster("Additional", this.cell_value.RecordNo);
+   
+}
+deleteRoster(){
+    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+    this.ProcessRoster("Delete",this.cell_value.RecordNo);
+
+    let sheet=this.spreadsheet.getActiveSheet();
+    this.spreadsheet.suspendPaint();
+    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    this.operation="Delete";                 
+    this.spreadsheet.resumePaint();
+}
+reAllocate(){
+    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+
+    this.ProcessRoster("Re-Allocate", this.cell_value.RecordNo);
+    let sheet=this.spreadsheet.getActiveSheet();
+    this.spreadsheet.suspendPaint();
+    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    this.spreadsheet.resumePaint();
+
+
+}
+
+
+UnAllocate(){
+   // if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+
+    this.ProcessRoster("Un-Allocate", this.cell_value.RecordNo);
+    let sheet=this.spreadsheet.getActiveSheet();
+    this.spreadsheet.suspendPaint();
+    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    this.spreadsheet.resumePaint();
+
+
+}
+
+SaveMasterRosters(){
+
+    if (this.rosters==null) return;
+    if (this.rosters.length<=0) return;
+
+    let rst:any=this.rosters[0];
+    
+   let RecordNo=rst.recordNo;
+    if (this.viewType=="Staff")
+        this.ProcessRoster("Staff Master", RecordNo);
+    else if (this.viewType=="Recipient")
+        this.ProcessRoster("Client Master", RecordNo);
+}
+SetMultishift(){
+    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+
+    
+    this.ProcessRoster("SetMultishift", this.cell_value.RecordNo);
+    
+
+}
+ClearMultishift(){
+    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+
+    this.ProcessRoster("ClearMultishift", this.cell_value.RecordNo);
+    
+
+}
   load_rosters(){
     
     
@@ -418,6 +537,7 @@ payTotal:any;
           newMenuData.push( clear_multi);
   
           newMenuData.push(sperator);
+          
           var viewStaff = {
             text: 'View Staff Detail',
             name: 'ViewStaffDetail',
@@ -426,12 +546,21 @@ payTotal:any;
         };        
            newMenuData.push(viewStaff);
   
+           var viewService= {
+            text: 'View Service Detail',
+            name: 'ViewServiceDetail',
+            command: "ViewServiceDetail",
+            workArea: 'viewport'
+        };        
+           newMenuData.push(viewService);
+
            var openDialog = {
             text: 'View Additional Information (Xtra Info)',
             name: 'ViewAdditional',
             command: "ViewAdditional",
             workArea: 'viewport'
-        };        
+        }; 
+
            newMenuData.push(openDialog);
            spread.contextMenu.menuData = newMenuData;
           
@@ -579,9 +708,9 @@ payTotal:any;
                         Commands.startTransaction(context, options);
   
                         var sheet = spread.getActiveSheet();
-                        spread.suspendPaint()
+                      
                         console.log("Delete Operation")
-                        self.operation="Delete";
+                       
                         var sheet = spread.getActiveSheet();
                        
                         var sels = sheet.getSelections();
@@ -591,20 +720,156 @@ payTotal:any;
                         selected_Cell=sel;
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null){
-                          self.copy_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)                      
-                        
-                          self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
-
-                          self.ProcessRoster("Delete",self.copy_value.RecordNo);
-                        }
-                        self.copy_value={row:-1,col:-1,duration:-1, type:0}
+                          self.cell_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)                      
+                          self.deleteRosterModal=true;
+                          
+                        }else
+                         self.cell_value={row:-1,col:-1,duration:-1, type:0}
                        
+                        self.operation="Delete";     
+
                         Commands.endTransaction(context, options);
-                        spread.resumePaint()
+                      
                         return true;
                     }
                 }
             });  
+
+            
+            spread.commandManager().register("ReAllocateStaff",
+            {
+                canUndo: true,
+                execute: function (context, options, isUndo) {
+                    var Commands = GC.Spread.Sheets.Commands;
+                                 // add cmd here
+                    options.cmd = "ReAllocateStaff";
+                    if (isUndo) {
+                        Commands.undoTransaction(context, options);
+                        return true;
+                    } else {
+                        Commands.startTransaction(context, options);
+                       
+                        var sheet = spread.getActiveSheet();
+                        
+                        var sels = sheet.getSelections();
+                        var sel = sels[0];
+                        var row = sel.row;
+                       
+                        selected_Cell=sel;
+  
+                        if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null)
+                          self.cell_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
+                        else
+                          self.cell_value={row:-1,col:-1,duration:-1}
+
+                        self.searchStaffModal=true;
+                        
+                        console.log("Reallocate Event called");
+  
+                        Commands.endTransaction(context, options);
+                        return true;
+                    }
+                }
+            });
+            spread.commandManager().register("UnAllocateStaff",
+            {
+                canUndo: true,
+                execute: function (context, options, isUndo) {
+                    var Commands = GC.Spread.Sheets.Commands;
+                                 // add cmd here
+                    options.cmd = "UnAllocateStaff";
+                    if (isUndo) {
+                        Commands.undoTransaction(context, options);
+                        return true;
+                    } else {
+                        Commands.startTransaction(context, options);
+                        var sheet = spread.getActiveSheet();
+                        var sels = sheet.getSelections();
+                        var sel = sels[0];
+                        var row = sel.row;
+                       
+                        selected_Cell=sel;
+  
+                        if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null)
+                          self.cell_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
+                        else
+                          self.cell_value={row:-1,col:-1,duration:-1}
+
+                        self.UnAllocateStaffModal=true;
+                        
+                                                
+                        console.log("UnAllocateStaff Event called");
+  
+                        Commands.endTransaction(context, options);
+                        return true;
+                    }
+                }
+            });
+            spread.commandManager().register("MultiShift",
+            {
+                canUndo: true,
+                execute: function (context, options, isUndo) {
+                    var Commands = GC.Spread.Sheets.Commands;
+                                 // add cmd here
+                    options.cmd = "MultiShift";
+                    if (isUndo) {
+                        Commands.undoTransaction(context, options);
+                        return true;
+                    } else {
+                        Commands.startTransaction(context, options);
+                     
+                        var sheet = spread.getActiveSheet();
+                        var sels = sheet.getSelections();
+                        var sel = sels[0];
+                        var row = sel.row;
+                       
+                        selected_Cell=sel;
+  
+                        if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null)
+                          self.cell_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
+                        else
+                          self.cell_value={row:-1,col:-1,duration:-1}
+                          self.SetMultiShiftModal=true;                    
+                        console.log("MultiShift Event called");
+  
+                        Commands.endTransaction(context, options);
+                        return true;
+                    }
+                }
+            });
+            
+            spread.commandManager().register("ClearMultiShift",
+            {
+                canUndo: true,
+                execute: function (context, options, isUndo) {
+                    var Commands = GC.Spread.Sheets.Commands;
+                                 // add cmd here
+                    options.cmd = "ClearMultiShift";
+                    if (isUndo) {
+                        Commands.undoTransaction(context, options);
+                        return true;
+                    } else {
+                        Commands.startTransaction(context, options);
+                        var sheet = spread.getActiveSheet();
+                        var sels = sheet.getSelections();
+                        var sel = sels[0];
+                        var row = sel.row;
+                       
+                        selected_Cell=sel;
+  
+                        if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null)
+                          self.cell_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
+                        else
+                          self.cell_value={row:-1,col:-1,duration:-1}
+                          
+                          self.ClearMultiShiftModal=true;                
+                        console.log("ClearMultiShift Event called");
+  
+                        Commands.endTransaction(context, options);
+                        return true;
+                    }
+                }
+            });
             spread.commandManager().register("ViewStaffDetail",
             {
                 canUndo: true,
@@ -618,7 +883,7 @@ payTotal:any;
                     } else {
                         Commands.startTransaction(context, options);
                         var sheet = spread.getActiveSheet();
-                        self.addTimesheetVisible=true;
+                        self.ViewStaffDetail=true;
                         
   
                         Commands.endTransaction(context, options);
@@ -626,18 +891,80 @@ payTotal:any;
                     }
                 }
             });
+            
+            spread.commandManager().register("ViewServiceDetail",
+            {
+                canUndo: true,
+                execute: function (context, options, isUndo) {
+                    var Commands = GC.Spread.Sheets.Commands;
+                                 // add cmd here
+                    options.cmd = "ViewServiceDetail";
+                    if (isUndo) {
+                        Commands.undoTransaction(context, options);
+                        return true;
+                    } else {
+                        Commands.startTransaction(context, options);
+                      
+                        var sheet = spread.getActiveSheet();
+                        var sels = sheet.getSelections();
+                        var sel = sels[0];
+                        var row = sel.row;
+                        var col= sel.col;
+                       
+            
+                        self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
+                       
+                        let data:any = self.find_roster(self.cell_value.RecordNo);
+                       
+                        if (data!=null)
+                            self.details(data);
   
+                        Commands.endTransaction(context, options);
+                        return true;
+                    }
+                }
+            });
+            
+            spread.commandManager().register("ViewAdditional",
+            {
+                canUndo: true,
+                execute: function (context, options, isUndo) {
+                    var Commands = GC.Spread.Sheets.Commands;
+                                 // add cmd here
+                    options.cmd = "ViewAdditional";
+                    if (isUndo) {
+                        Commands.undoTransaction(context, options);
+                        return true;
+                    } else {
+                        Commands.startTransaction(context, options);
+                        var sheet = spread.getActiveSheet();
+                        var sels = sheet.getSelections();
+                        var sel = sels[0];
+                        var row = sel.row;
+                        var col= sel.col;
+                       
+            
+                        self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
+                       
+                        let data:any = self.find_roster(self.cell_value.RecordNo);
+                        self.notes ="";
+                        self.notes=data.notes;
+                        self.defaultStartTime=data.startTime;
+                        self.date=data.date;
+                        self.serviceType=data.serviceActivity;
+
+                        self.ViewAdditionalModal=true;
+                        console.log("ViewAdditional event called");
+  
+                        Commands.endTransaction(context, options);
+                        return true;
+                    }
+                }
+            });
             sheet.options.isProtected = true;
             spread.options.allowContextMenu = true;
-           // spread.getHost().addEventListener("contextmenu", function (e) {         
-            spread.getHost().addEventListener("gc.spread.contextMenu.pasteAll", function (e) {         
-              
-              sheet.options.isProtected = false;
-              console.log("Past");              
-              
-                e.preventDefault();
-                return false;
-              });
+               
+         
   
           spread.resumePaint();
       
@@ -927,12 +1254,19 @@ sheet.conditionalFormats.addRule(iconSetRule);
   
       for (let m=0; m<duration; m++){
       if (m==0) {
-        sheet.getCell(r+m,c).backColor("white");
+        if (this.master)           
+            sheet.getCell(r+m,c).backColor("#FF8080");
+        else
+            sheet.getCell(r+m,c).backColor("white");
+        
         sheet.getCell(r+m,c).backgroundImage(null)
        }  
-       else
-        sheet.getCell(r+m,c).backColor("white");
-        
+       else {
+            if (this.master)           
+            sheet.getCell(r+m,c).backColor("#FF8080");
+                else
+            sheet.getCell(r+m,c).backColor("white");
+       }
         //sheet.getCell(r+m,c).field=duration;
         sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(null);
@@ -952,6 +1286,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
     
     ProcessRoster(Option:any, recordNo:string):any{
         let dt= new Date(this.date);
+        
         let sheet = this.spreadsheet.getActiveSheet();
         let range = sheet.getSelections();
         let date = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(range[0].col+1);
@@ -959,23 +1294,35 @@ sheet.conditionalFormats.addRule(iconSetRule);
         let l_row=f_row+range[0].rowCount;
         let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
 
-        // let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
-        // this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
-        // this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
-        // this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+        if (this.master){
 
+            startTime="00:00"
+        }
+       
         let inputs={
             "opsType": Option,
             "user": this.token.user,
             "recordNo": recordNo,
             "isMaster": this.master,
             "roster_Date" : date,
-            "start_Time":startTime
+            "start_Time":startTime,
+            "carer_code":this.selectedCarer,
+            "notes" : this.notes
         }
         this.timeS.ProcessRoster(inputs).subscribe(data => {
-        this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
-       
-       
+        //if  (this.ClearMultiShiftModal==false &&  this.SetMultiShiftModal==false)    
+             this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
+        this.selectedCarer="";
+        this.searchStaffModal=false;
+        this.UnAllocateStaffModal=false;
+        
+        this.ClearMultiShiftModal=false;
+        this.SetMultiShiftModal=false;
+        this.ViewAdditionalModal=false;
+        this.ViewServiceDetail=false;
+        this.ViewStaffDetail=false;
+        this.deleteRosterModal=false;
+            
     });
 }
 
@@ -1118,6 +1465,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
     date:any = moment();
     options: any;
     recipient: any;
+    serviceType:any;
 
     loading: boolean = false;
     basic: boolean = false;
@@ -1137,7 +1485,8 @@ sheet.conditionalFormats.addRule(iconSetRule);
         private formBuilder: FormBuilder,
         private clientS: ClientService,
         private listS: ListService,
-        public datepipe: DatePipe
+        public datepipe: DatePipe,
+        private sharedS: ShareService,
     ) {
         
         this.currentDate = format(new Date(), 'yyyy/MM/dd');
@@ -1298,26 +1647,19 @@ sheet.conditionalFormats.addRule(iconSetRule);
 
     }
     ngOnInit(): void {
+        GC.Spread.Sheets.LicenseKey = license;
         this.date = moment();
         this.buildForm(); 
-         this.token = this.globalS.decode();
-      // this.load_rosters();
-    // for (let r=0; r<=2; r++){
-        
-    //     this.data[r]={
-            
-    //         "Date":"",
-    //         "time": "r " + r
-        
-    //     }
-  
-    // }
-
+         this.token = this.globalS.decode();    
              
     
 }
 
-   
+reloadVal: boolean = false;
+reload(reload: boolean){
+    this.reloadVal = !this.reloadVal;
+}
+
     public clickStream;
     private clicks = 0;
 
@@ -1422,6 +1764,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
         if (!data.data) {
             this.rosters = [];
             this.selected = null;
+            this.enable_buttons=false;
             return;
         }
 
@@ -1565,13 +1908,10 @@ sheet.conditionalFormats.addRule(iconSetRule);
        
         // console.log(format(startOfMonth(date),'yyyy/MM/dd'));
         if(!this.recipient) return;
-        console.log(moment(date).startOf('month').format('YYYY-MM-DD hh:mm'));
         
-       
 
         this.staffS.getroster({
-            RosterType: this.recipient.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',
-            //AccountNo: 'ABBERTON B',
+            RosterType: this.recipient.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',            
             AccountNo: this.recipient.data,
             StartDate: moment(date).startOf('month').format('YYYY/MM/DD'),
             EndDate: moment(date).endOf('month').format('YYYY/MM/DD')

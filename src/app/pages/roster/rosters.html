@@ -49,19 +49,21 @@
     </div>
 
     <div nz-row style="padding:6px">
-        
+   
         <div  class="nz-button" >
             <nz-button-group >
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="add_Shift()"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="check-circle" nzTheme="outline"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="select" nzTheme="outline"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="form"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="edit"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="contacts"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="diff"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="prev_date()"><i nz-icon nzType="left"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="next_date()"><i nz-icon nzType="right"></i></button>
-                <button [disabled]="!enable_buttons" nz-button nzType="primary" ><i nz-icon nzType="appstore"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons"  *ngIf="viewType=='Recipient'" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Client Administration time"><i nz-icon nzType="font-colors" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Service with nominated staff member" ><i nz-icon nzType="team" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Travel time"><i nz-icon nzType="car" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" *ngIf="viewType=='Staff'"nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Staff  Administration time" ><i nz-icon nzType="form"></i></button>
+                <button [disabled]="!enable_buttons" *ngIf="viewType=='Staff'" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Staff Unavailability" ><i nz-icon nzType="stop" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" *ngIf="viewType=='Recipient'" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Client Cancellation"><i nz-icon nzType="close-square" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Recurring Service Wizard"><i nz-icon nzType="setting" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Load/Unload Staff Compare Roster"><i nz-icon nzType="retweet" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Compress Rosters on Screen"><i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i></button>
+                <button [disabled]="!master" nz-button nzType="primary" (click)="SaveMasterRosters()" nz-tooltip nzTooltipTitle="Save Master Rosters" ><i nz-icon nzType="save" nzTheme="outline"></i></button>
             
             </nz-button-group>     
         </div>
@@ -83,19 +85,121 @@
 </div>
 
 
-    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="recipientDetailsModal" nzTitle="Recipients Details" (nzOnCancel)="recipientDetailsModal = false" >
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="deleteRosterModal" nzTitle="Delete Roster" (nzOnCancel)="deleteRosterModal = false" >
+    <div class="flexy" style="min-height:3rem">
         <div nz-row>
-            sd
+           
+            <div>
+                <label style="font-size:14px; " >Are you sure you want to delete roster </label>
+               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="deleteRoster()">Delete</button>
+        <button nz-button nzType="default"  (click)="deleteRosterModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+<!-- Search staff model -->
+
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="searchStaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="searchStaffModal = false" >
+    <div class="flexy" style="min-height:10rem">
+        <div nz-row>
+            <div nz-col nzSpan="6" style="margin-top: 10px; margin-bottom: 20px; width:400px">
+                <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+            </div>
+            <div>
+                <label *ngIf="selectedCarer" >Re-Allocate Staff : </label>
+                <label  id="lblStaff" >
+                {{selectedCarer}}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="reAllocate()">Allocate</button>
+        <button nz-button nzType="default"  (click)="searchStaffModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="UnAllocateStaffModal" nzTitle="Un-Allocate Staff" (nzOnCancel)="UnAllocateStaffModal = false" >
+    <div class="flexy" style="min-height:3rem">
+        <div nz-row>
+           
+            <div>
+                <label style="font-size:14px; " >Are you sure you want to Un-Allocate Staff : </label>
+               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="UnAllocate()">Un-Allocate</button>
+        <button nz-button nzType="default"  (click)="UnAllocateStaffModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="SetMultiShiftModal" nzTitle="MULTI STATUS for MTA" (nzOnCancel)="SetMultiShiftModal = false" >
+    <div class="flexy" style="min-height:5rem">
+        <div nz-row>
+           
+            <div>
+                <label style="font-size:16px; " >This will set all hilighted shifts to MULTI STATUS for MTA, Are you sure </label>
+               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="SetMultishift()">Yes</button>
+        <button nz-button nzType="default"  (click)="SetMultiShiftModal=false">No</button>
+    </div>
+  
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ClearMultiShiftModal" nzTitle="MULTI STATUS for MTA" (nzOnCancel)="ClearMultiShiftModal = false" >
+    <div class="flexy" style="min-height:5rem">
+        <div nz-row>
+           
+            <div>
+                <label style="font-size:16px;"  >This will clear all hilighted shifts to NON MULTI STATUS for MTA, Are you sure </label>               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="ClearMultishift()">Yes</button>
+        <button nz-button nzType="default"  (click)="ClearMultiShiftModal=false">No</button>
+    </div>
+</nz-modal>
+
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ViewStaffDetail" nzTitle="View Staff Details" (nzOnCancel)="ViewStaffDetail = false" >
+        <div nz-row>
+            <!-- <div class="form-group" *ngIf="selected?.option === 1"> -->
+                <label for="">Staff/Contractor</label>
+                <app-staff-popup formControlName="staffCode"></app-staff-popup>
+            <!-- </div> -->
         </div>
         <div *nzModalFooter>
-            <button nz-button nzType="default" >Cancel</button>
+            <button nz-button nzType="default" (click)="ViewStaffDetail=false">Save</button>
+            <button nz-button nzType="default" (click)="ViewStaffDetail=false">Cancel</button>
         </div>
 	</nz-modal>
    
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ViewAdditionalModal" nzTitle="View Additional Info" (nzOnCancel)="ViewAdditionalModal = false" >
+        <div nz-row>
+            <!-- <div class="form-group" *ngIf="selected?.option === 1"> -->
+                <label for=""> Date: {{date}}   Start Time: {{defaultStartTime}}  Activity: {{serviceType}}</label>
+               <input type="text" [value]="notes"  style="width:450px; height:200px" id="txtnotes" #box>
+            <!-- </div> -->
+        </div>
+        <div *nzModalFooter>
+            <button nz-button nzType="default" (click)="SaveAdditionalInfo(box.value)">Save</button>
+            <button nz-button nzType="default" (click)="ViewAdditionalModal=false">Cancel</button>
+        </div>
+	</nz-modal>
     
 <!-- Add Timesheet -->
 
-<nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Timesheet_label"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Timesheet"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
     <div class="flexy" style="min-height:21rem">
 
             <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">

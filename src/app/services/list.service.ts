@@ -20,6 +20,9 @@ export class ListService {
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+    getpostquote(): Observable<any> {
+        return this.auth.post(`${list}/post_quote`, null);
+    }
 
     getprogramproperties(program: string): Observable<any> {
         return this.auth.get(`${list}/program-properties/${program}`);

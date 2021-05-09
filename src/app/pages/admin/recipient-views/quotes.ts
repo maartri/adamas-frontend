@@ -260,9 +260,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     listCarePlanAndGolas(){
         this.loading = true;
-        this.listS.getCareplangoals('45976').subscribe(data => this.goalsAndStratergies = data);
-        this.loading = false;
-        this.cd.detectChanges();
+        this.listS.getCareplangoals('45976').subscribe(data => {
+            this.goalsAndStratergies = data;
+            this.loading = false;
+            this.cd.markForCheck();
+        });
     }
 
     saveCarePlan(){
@@ -272,9 +274,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.globalS.sToast('Success', 'Data Inserted');
                 this.goalAndStrategiesmodal = false;
                 this.listCarePlanAndGolas();
-                this.cd.detectChanges();
+                this.cd.markForCheck();
             });
-            this.cd.detectChanges();
+            this.cd.markForCheck();
     }
 
     showCarePlanStrategiesModal(){

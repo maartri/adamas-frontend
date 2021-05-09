@@ -1,6 +1,6 @@
 <div nz-row>
     <div nz-col nzSpan="24">
-        <button class="botton success" (click)="showAddModal()">Add Recipient Group</button>
+        <button class="botton success" (click)="showAddModal(1)">Add Recipient Group</button>
         <nz-table #sss [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="groupTypes">
             <thead>
@@ -16,12 +16,12 @@
                 <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
                     <td class="left">{{ i+1  }}</td>
                     <td>{{ data.group}}</td>
-                    <td></td>
+                    <td><label nz-checkbox nzDisabled [ngModel]="data.mobileAlert" nzDisabled ></label></td>
                     <td>{{ data.notes }}</td>
                     <td class="action">
                         <a (click)="updateUserGroup(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Recipient Group From the List?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteUserGroup(data)">Delete</a>
                     </td>
                 </tr>
@@ -32,7 +32,7 @@
 
 <div nz-row style="margin-top:2rem">
     <div nz-col nzSpan="24">
-        <button class="botton success" (click)="showAddModal()">Add Recipient Extra Group</button>
+        <button class="botton success" (click)="showAddModal(2)">Add Recipient Extra Group</button>
         <nz-table #ss2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="groupPreferences">
             <thead>
@@ -51,7 +51,7 @@
                     <td>
                         <a (click)="updatePreference(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?"
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want delete this Recipient Preference From List?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="deletePreference(data)">Delete</a>
                     </td>
                 </tr>
@@ -60,17 +60,39 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="definedOpen" nzTitle="Add Competency" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="definedOpen" nzTitle="USER GROUP" (nzOnCancel)="handleCancel(1)" (nzOnOk)="handleOk()">
     <div>
         
-        <div nz-row nzGutter="16">
-            <div nz-col nzSpan="12" [formGroup]="userGroupForm">
-                <nz-select style="width:100%" nzAllowClear formControlName="group"  nzPlaceHolder="Group">
+        <div nz-row nzGutter="16" class="mrg-btm" >
+            <div nz-col nzSpan="12" [formGroup]="userGroupForm" *ngIf="addOREdit == 1">
+                <label for="End Date">Title:</label>
+                <nz-select style="width:100%" nzAllowClear formControlName="group">
                     <nz-option *ngFor="let data of dropDowns?.userGroups"  [nzValue]="data" [nzLabel]="data"></nz-option>
                 </nz-select>
             </div>
+            <div nz-col nzSpan="12" [formGroup]="userGroupForm" *ngIf="addOREdit == 2">
+                <label for="">Branch</label>
+                <input nz-input formControlName="group" disabled />
+            </div>
             <div nz-col nzSpan="12" [formGroup]="userGroupForm">
-                <label nz-checkbox formControlName="alert">Display Alert on Mobile App</label>
+                <label for=""></label>
+                <label nz-checkbox formControlName="alert" style="margin-top: 20px;">Display Alert on Mobile App</label>
+            </div>
+        </div>
+        <div nz-row nzGutter="16" class="mrg-btm">
+            <div nz-col nzSpan="12" [formGroup]="userGroupForm">  
+                <label for="">Start Date:</label>              
+                <nz-date-picker formControlName="date1" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+            <div nz-col nzSpan="12" [formGroup]="userGroupForm">  
+                <label for="">End Date:</label>              
+                <nz-date-picker formControlName="date2" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+        </div>
+        <div nz-row nzGutter="16" class="mrg-btm">
+            <div nz-col nzSpan="24" [formGroup]="userGroupForm">  
+            <label for="">Email:</label>
+            <input nz-input  formControlName="email" />
             </div>
         </div>
         <div nz-row nzGutter="16" >
@@ -82,26 +104,28 @@
 
         <div *nzModalFooter>
             <ng-container>
-                <button nz-button nzType="default" (click)="handleCancel()">
+                <button nz-button nzType="default" (click)="handleCancel(1)">
                     <span>Cancel</span>
                 </button>
-                <button nz-button nzType="primary" (click)="preferenceProcess()">
+                <button nz-button nzType="primary" (click)="userGroupProcess()" [disabled]="!this.userGroupForm.get('group').value">
                     <span>Save</span>
                 </button>
             </ng-container>
         </div>
     </div>
   </nz-modal>
-
-
-  <nz-modal [(nzVisible)]="preferenceOpen" nzTitle="Add Competency" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <nz-modal [(nzVisible)]="preferenceOpen" nzTitle="PREFERENCES" (nzOnCancel)="handleCancel(2)" (nzOnOk)="handleOk()">
     <div>
-        
         <div nz-row nzGutter="16">
-            <div nz-col nzSpan="12" [formGroup]="preferenceForm">
-                <nz-select style="width:100%" nzAllowClear formControlName="preference"  nzPlaceHolder="Preference">
+            <div nz-col nzSpan="12" [formGroup]="preferenceForm" *ngIf="addOREdit == 1">
+                <label for=""><h4>Preference</h4></label>
+                <nz-select style="width:100%" nzAllowClear formControlName="preference">
                     <nz-option *ngFor="let data of dropDowns?.preferences"  [nzValue]="data" [nzLabel]="data"></nz-option>
                 </nz-select>
+            </div>
+            <div nz-col nzSpan="12" [formGroup]="preferenceForm" *ngIf="addOREdit == 2">
+                <label for="">Preference</label>
+                <input nz-input formControlName="preference" disabled />
             </div>
         </div>
         <div nz-row nzGutter="16" >
@@ -113,10 +137,10 @@
 
         <div *nzModalFooter>
             <ng-container>
-                <button nz-button nzType="default" (click)="handleCancel()">
+                <button nz-button nzType="default" (click)="handleCancel(2)">
                     <span>Cancel</span>
                 </button>
-                <button nz-button nzType="primary" (click)="preferenceProcess()">
+                <button nz-button nzType="primary" (click)="preferenceProcess()" [disabled]="!this.preferenceForm.get('preference').value">
                     <span>Save</span>
                 </button>
             </ng-container>

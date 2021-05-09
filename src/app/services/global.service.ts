@@ -81,7 +81,7 @@ export const fundingDropDowns = {
 
 export const dateFormat = "dd/MM/yyyy";
 export const dayStrings = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
+export const qoutePlantype = ['SUPPORT PLAN'];
 export const states = ['AUSTRALIAN CAPITAL TERRITORY', 'NEW SOUTH WALES', 'NORTHERN TERRITORY', 'QUEENSLAND', 'SOUTH AUSTRALIA', 'TASMANIA', 'VICTORIA', 'WESTERN AUSTRALIA']
 export const cycles = ['1st Monday - CYCLE 1', '1st Tuesday - CYCLE 1', '1st Wednesday - CYCLE 1', '1st Thursday - CYCLE 1', '1st Friday - CYCLE 1']
 export const billunit = ['HOUR', 'SERVICE']

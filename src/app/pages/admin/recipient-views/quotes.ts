@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation, AfterViewInit } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService,qoutePlantype, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -122,6 +122,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     size: string = 'small'
 
+    quoteGeneralForm : FormGroup;
     title: string = 'Add New Quote';
     slots: any;
     weekly: string = 'Weekly';
@@ -151,6 +152,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
     dateFormat: string = dateFormat;
+    date: Date = new Date();
     nzSize: string = "small"
 
     user: any;
@@ -181,6 +183,14 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     radioValue: any;
     filters: any;
+    disciplineList: any;
+    careDomainList: any;
+    programList: any;
+    quotePlanType: string[];
+    carePlanID: any;
+    goalOfCarelist: any;
+    goalsAndStratergies: any;
+    userCopy: any;
 
     quoteLines: Array<any> = [];
 
@@ -207,6 +217,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'quotes')) {
                 this.search(data);
+                this.userCopy = data;
             }
         });
     }
@@ -220,107 +231,107 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.buildForm();
     }
 
-    buildForm() {
-        this.inputForm = this.formBuilder.group({
-            autoLogout: [''],
-            emailMessage: false,
-            excludeShiftAlerts: false,
-            excludeFromTravelinterpretation:false,
-            inAppMessage: false,
-            logDisplay: false,
-            pin: [''],
-            staffTimezoneOffset:[''],
-            rosterPublish: false,
-            shiftChange: false,
-            smsMessage: false
-        });
+    // buildForm() {
+    //     this.inputForm = this.formBuilder.group({
+    //         autoLogout: [''],
+    //         emailMessage: false,
+    //         excludeShiftAlerts: false,
+    //         excludeFromTravelinterpretation:false,
+    //         inAppMessage: false,
+    //         logDisplay: false,
+    //         pin: [''],
+    //         staffTimezoneOffset:[''],
+    //         rosterPublish: false,
+    //         shiftChange: false,
+    //         smsMessage: false
+    //     });
 
-        this.quoteForm = this.formBuilder.group({
-            program: null,
-            template: null,
+    //     this.quoteForm = this.formBuilder.group({
+    //         program: null,
+    //         template: null,
 
-            no: null,
-            type: null,
-            period: [],
-            basePeriod: null,
+    //         no: null,
+    //         type: null,
+    //         period: [],
+    //         basePeriod: null,
 
 
-        });
+    //     });
 
-        this.quoteListForm = this.formBuilder.group({
-            chargeType: null,
-            code: null,
-            displayText: null,
-            strategy: null,
-            sequenceNo: null,
+    //     this.quoteListForm = this.formBuilder.group({
+    //         chargeType: null,
+    //         code: null,
+    //         displayText: null,
+    //         strategy: null,
+    //         sequenceNo: null,
 
-            quantity: null,
-            billUnit: null,
-            period: null,
-            weekNo: null,
+    //         quantity: null,
+    //         billUnit: null,
+    //         period: null,
+    //         weekNo: null,
 
-            price: null,
-            gst: null,
-            min: null,
-            quoteValue: null,
-            quoteBudget: null,
+    //         price: null,
+    //         gst: null,
+    //         min: null,
+    //         quoteValue: null,
+    //         quoteBudget: null,
 
-            roster: null,
-            rosterString: null,
-            notes: null,
+    //         roster: null,
+    //         rosterString: null,
+    //         notes: null,
 
-            editable: true
-        });
+    //         editable: true
+    //     });
 
-        this.quoteListForm.get('chargeType').valueChanges
-        .pipe(
-            switchMap(x => {                
-                this.resetQuotePrimary();
-                if(!x) return EMPTY;
-                return this.listS.getchargetype({
-                    program: this.quoteForm.get('program').value,
-                    index: x
-                  })
-            })
-        ).subscribe(data => {
-            this.codes = data;
-        });
+    //     this.quoteListForm.get('chargeType').valueChanges
+    //     .pipe(
+    //         switchMap(x => {                
+    //             this.resetQuotePrimary();
+    //             if(!x) return EMPTY;
+    //             return this.listS.getchargetype({
+    //                 program: this.quoteForm.get('program').value,
+    //                 index: x
+    //               })
+    //         })
+    //     ).subscribe(data => {
+    //         this.codes = data;
+    //     });
 
-        this.quoteListForm.get('code').valueChanges.pipe(
-            switchMap(x => {
-                if(!x)
-                    return EMPTY;
+    //     this.quoteListForm.get('code').valueChanges.pipe(
+    //         switchMap(x => {
+    //             if(!x)
+    //                 return EMPTY;
 
-                return this.listS.getprogramproperties(x)
-            })
-        ).subscribe(data => {
-            this.recipientProperties = data;
-            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None' })
-        });
+    //             return this.listS.getprogramproperties(x)
+    //         })
+    //     ).subscribe(data => {
+    //         this.recipientProperties = data;
+    //         this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None' })
+    //     });
 
-        this.quoteListForm.get('roster').valueChanges.subscribe(data => {
-            this.weekly = data;
-            this.setPeriod(data);
-        });
+    //     this.quoteListForm.get('roster').valueChanges.subscribe(data => {
+    //         this.weekly = data;
+    //         this.setPeriod(data);
+    //     });
 
-        this.quoteForm.get('program').valueChanges
-        .pipe(
-            switchMap(x => this.listS.getprogramlevel(x)),
-            switchMap(x => {                
-                this.IS_CDC = false;
-                if(x.isCDC){
-                    this.IS_CDC = true;
-                    this.detectChanges();
-                    return this.listS.getpensionandfee();
-                }
-                this.detectChanges();
-                return EMPTY;
-            })
-        ).subscribe(data => {
-            console.log(data)
-            this.detectChanges();
-        });
-    }
+    //     this.quoteForm.get('program').valueChanges
+    //     .pipe(
+    //         switchMap(x => this.listS.getprogramlevel(x)),
+    //         switchMap(x => {                
+    //             this.IS_CDC = false;
+    //             if(x.isCDC){
+    //                 this.IS_CDC = true;
+    //                 this.detectChanges();
+    //                 return this.listS.getpensionandfee();
+    //             }
+    //             this.detectChanges();
+    //             return EMPTY;
+    //         })
+    //     ).subscribe(data => {
+    //         console.log(data)
+    //         this.detectChanges();
+    //     });
+    // }
 
     setPeriod(data: any){
 
@@ -371,10 +382,39 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     showQuoteModal(){
         this.quotesOpen = true;
+        this.tabFindIndex = 2; 
+
+        let id = this.user.id.substr(this.user.id - 5)
+
+        this.populateDropdDowns();
+        
         this.listS.getprogramcontingency(this.user.id).subscribe(data => this.quoteProgramList = data);
+        
         this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
-        this.tabFindIndex = 2;
-        console.log(this.user)
+        
+        this.listCarePlanAndGolas();
+
+        this.quoteGeneralForm.patchValue({
+            id: this.carePlanID.itemId,
+            planType:"SUPPORT PLAN",
+            name:this.quoteForm.get('template').value,
+            careDomain:"CARE DOMAIN",
+            discipline:"NOT SPECIFIED",
+            program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
+            starDate   :this.date,
+            signOfDate :this.date,
+            reviewDate :this.date,
+            publishToApp:false
+        })
+
+        this.detectChanges();       
+    }
+
+    listCarePlanAndGolas(){
+        this.loading = true;
+        this.listS.getCareplangoals('45976').subscribe(data => this.goalsAndStratergies = data);
+        this.loading = false;
+        this.cd.markForCheck();
     }
 
     quoteLineModal(){
@@ -391,7 +431,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     handleCancelLine(){
-        this.quoteLineOpen = false;        
+        this.quoteLineOpen = false;
     }
 
     tabFindIndex: number = 0;
@@ -419,8 +459,25 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.loading = false;
             this.cd.markForCheck();
         })
+        this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.detectChanges();});
     }
-
+    populateDropdDowns() {
+        
+        let notSpecified =["NOT SPECIFIED"];
+        
+        this.listS.getdiscipline().subscribe(data => {this.disciplineList = data;
+            this.disciplineList.push(notSpecified);
+        });
+        this.listS.getcaredomain().subscribe(data => {this.careDomainList = data;
+            this.careDomainList.push(notSpecified);
+        }); 
+        this.listS.getndiaprograms().subscribe(data => {this.programList = data;
+            this.programList.push(notSpecified);
+        });
+        this.listS.getcareplan().subscribe(data => {this.quotePlanType = data;})
+        
+        this.detectChanges();
+    }
     patchData(data: any) {
         this.inputForm.patchValue({
             autoLogout: data.autoLogout,
@@ -433,6 +490,101 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             shiftChange: data.shiftChange,
             smsMessage: data.smsMessage
         });
+    }
+
+
+    buildForm() {
+
+        this.inputForm = this.formBuilder.group({
+            autoLogout: [''],
+            emailMessage: false,
+            excludeShiftAlerts: false,
+            excludeFromTravelinterpretation:false,
+            inAppMessage: false,
+            logDisplay: false,
+            pin: [''],
+            staffTimezoneOffset:[''],
+            rosterPublish: false,
+            shiftChange: false,
+            smsMessage: false
+        });
+
+        this.quoteGeneralForm = this.formBuilder.group({
+            id:null,
+            planType:null,
+            name:null,
+            careDomain:null,
+            discipline:null,
+            program:null,
+            starDate:null,
+            signOfDate:null,
+            reviewDate:null,
+            rememberText:null,
+            publishToApp:false
+        });
+
+        this.quoteForm = this.formBuilder.group({
+            program: null,
+            template: null,
+            no: null,
+            type: null,
+            period: [],
+            basePeriod: null,
+        });
+
+
+        this.quoteListForm = this.formBuilder.group({
+            chargeType: null,
+            code: null,
+            displayText: null,
+            strategy: null,
+            sequenceNo: null,
+
+            roster: null
+        });
+
+        this.quoteListForm.get('chargeType').valueChanges
+        .pipe(
+            switchMap(x => {                
+                if(!x) return EMPTY;
+                return this.listS.getchargetype({
+                    program: this.quoteForm.get('program').value,
+                    index: x
+                  })
+            })
+        ).subscribe(data => {
+            console.log(data)
+            this.resetQuotePrimary();
+            this.codes = data;
+        });
+
+        this.quoteListForm.get('code').valueChanges.subscribe(data => {
+           this.weekly = null
+        });
+
+        this.quoteListForm.get('roster').valueChanges.subscribe(data => {
+            console.log(data);
+            this.weekly = data;
+        });
+
+        this.quoteForm.get('program').valueChanges
+        .pipe(
+            switchMap(x => this.listS.getprogramlevel(x)),
+            switchMap(x => {                
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
+                    this.detectChanges();
+                    return this.listS.getpensionandfee();
+                }
+                this.detectChanges();
+                return EMPTY;
+            })
+        ).subscribe(data => {
+            console.log(data)
+            this.detectChanges();
+        });
+
     }
 
     detectChanges(){
@@ -456,7 +608,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     save() {
         const group = this.inputForm;
-
         this.timeS.updatetimeandattendance({
             AutoLogout: group.get('autoLogout').value,
             EmailMessage: group.get('emailMessage').value,
@@ -522,5 +673,16 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     saveQuote(){
         console.log(this.quoteLines);
         console.log(this.quoteForm.value)
+    }
+    
+    deleteCarePlanGoal(data: any){
+        this.timeS.deleteCarePlangoals(data.recordnumber)
+            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                if (data) {
+                    this.globalS.sToast('Success', 'Data Deleted!');
+                    this.listCarePlanAndGolas();
+                return;
+            }
+        });
     }
 }

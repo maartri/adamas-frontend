@@ -167,14 +167,14 @@ export class MedicalcontactComponent implements OnInit {
       
       if(!this.isUpdate){       
         const group = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
           this.postLoading = false;
           return false;   
         }
-        let type     = this.globalS.isValueNull(group.get('type').value);
+        let type     = this.globalS.isValueNull(group.get('type').value.trim().toUpperCase());
             name     = this.globalS.isValueNull(group.get('name').value);
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
@@ -189,7 +189,7 @@ export class MedicalcontactComponent implements OnInit {
         let postcode = null; 
         let values = "'3-Medical'"+","+type+","+name+","+address1+","+address2+","+suburb+","+postcode+","+phone1+","+phone2+","+fax+","+mobile+","+email+","+end_date;
         let sql = "insert into HumanResourceTypes([Group],[Type],[Name],[Address1],[Address2],Suburb,Postcode,Phone1,Phone2,Fax,Mobile,email,EndDate) Values ("+values+")";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
@@ -202,7 +202,7 @@ export class MedicalcontactComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
@@ -212,7 +212,7 @@ export class MedicalcontactComponent implements OnInit {
             }
           }
         let type     = this.globalS.isValueNull(group.get('type').value);
-        name     = this.globalS.isValueNull(group.get('name').value);
+        name     = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
         let suburb   = this.globalS.isValueNull(group.get('suburb').value);
@@ -226,7 +226,7 @@ export class MedicalcontactComponent implements OnInit {
         let postcode = null;
         let recordnumber = group.get('recordNumber').value;
         let sql  = "Update HumanResourceTypes SET [Group]='3-Medical',[Type] ="+ type+ ",[Name] ="+ name+",[Address1] ="+ address1+ ",[Address2] ="+ address2+",[Suburb] ="+ suburb+",[Postcode] ="+ postcode+",[Phone1] ="+ phone1+",[Phone2] ="+ phone2+ ",[Fax] = "+ fax+ ",[Mobile] ="+ mobile +",[EMail] ="+ email + ",[EndDate] ="+ end_date + " WHERE [RecordNumber] ='"+recordnumber+"'";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
           if (data) 

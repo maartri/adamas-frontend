@@ -97,6 +97,7 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/quote/details/${id}`);
     }
 
+    
     updatepackagesupplement(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/packagesupplement`, data);
     }
@@ -499,6 +500,10 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/intake/goals/${recordNo}`)
     }
 
+    deleteCarePlangoals(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/quote/careplangoal/${recordNo}`)
+    }
+
     /** */
 
     /**
@@ -542,6 +547,7 @@ export class TimeSheetService {
     postusergroup(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/user-group`, data)
     }
+
 
     updateusergroup(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/user-group`, data)
@@ -1127,8 +1133,14 @@ export class TimeSheetService {
     /**      
      * End - Pay Tab
      */
+
+    
     updatemiscellaneous(note: MiscellaneousNote): Observable<any> {
         return this.auth.put(`${timesheet}/notes/miscellaneous`, note)
+    }
+
+    getCarePlanID(){
+        return this.auth.get(`${timesheet}/carePlanId`)
     }
 
     updatetimeandattendance(attendance: AttendanceStaff): Observable<any> {

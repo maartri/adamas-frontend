@@ -153,7 +153,7 @@ export class PostcodesComponent implements OnInit {
         let postcode = this.globalS.isValueNull(group.get('postcode').value);
         let Recnum   = group.get('Recnum').value;
         let sql  = "Update Pcodes SET [Suburb] = "+ suburb+ ",[Postcode] = "+ postcode+ ",[State] = "+ state + " WHERE [Recnum] ='"+Recnum+"'";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     

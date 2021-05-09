@@ -35,7 +35,7 @@ export class HolidaysComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord, 0) = 0";
+  whereString :string="Where ISNULL(xDeletedRecord, 0) = 0";
   whereLive   :string="Where ISNULL(xDeletedRecord, 0) = 0";
   temp_title: any;
   
@@ -70,7 +70,7 @@ export class HolidaysComponent implements OnInit {
         this.whereLive = "";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord, 0) = 0";
+        this.whereString = "Where ISNULL(xDeletedRecord, 0) = 0";
         this.whereLive   = "Where ISNULL(xDeletedRecord, 0) = 0";
         this.loadData();
       }
@@ -88,7 +88,7 @@ export class HolidaysComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="Select ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS row_num,RECORDNO,DATE,DESCRIPTION,Stats,PublicHolidayRegion,DeletedRecord as is_deleted from PUBLIC_HOLIDAYS "+this.whereString+" order by DATE desc";
+      let sql ="Select ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS row_num,RECORDNO,DATE,DESCRIPTION,Stats,PublicHolidayRegion,xDeletedRecord as is_deleted from PUBLIC_HOLIDAYS "+this.whereString+" order by DATE desc";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -137,7 +137,7 @@ export class HolidaysComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group  = this.inputForm;
-        let name        = group.get('description').value.trim().uppercase();
+        let name        = group.get('description').value.trim().toUpperCase();
         let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -145,29 +145,30 @@ export class HolidaysComponent implements OnInit {
           return false;   
         }
 
-        let description   = this.globalS.isValueNull(group.get('description').value);
+        let description   = this.globalS.isValueNull(group.get('description').value.trim().toUpperCase());
         let stats         = this.globalS.isValueNull(group.get('state').value);
         let PublicHolidayRegion = this.globalS.isValueNull(group.get('region').value);
         let date          = !(this.globalS.isVarNull(group.get('date').value)) ?  "'"+this.globalS.convertDbDate(group.get('date').value)+"'" : null;
         
         let values = date+","+description+","+stats+","+PublicHolidayRegion;
         let sql = "insert into PUBLIC_HOLIDAYS (DATE,DESCRIPTION,Stats,PublicHolidayRegion) Values ("+values+")";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
           this.globalS.sToast('Success', 'Saved successful');
           this.loadData();
-          this.postLoading = false;          
+          this.postLoading = false; 
+          this.loading = false;         
           this.handleCancel();
           this.resetModal();
         });
       }else{
         const group = this.inputForm;
-        let name        = group.get('description').value.trim().uppercase();
+        let name        = group.get('description').value.trim().toUpperCase();
           if(this.temp_title != name){
-            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
             if(is_exist){
               this.globalS.sToast('Unsuccess', 'Title Already Exist');
               this.postLoading = false;
@@ -180,17 +181,18 @@ export class HolidaysComponent implements OnInit {
         let date          = !(this.globalS.isVarNull(group.get('date').value)) ?  "'"+this.globalS.convertDbDate(group.get('date').value)+"'" : null;
         let recordno = group.get('recordno').value;
         let sql  = "Update PUBLIC_HOLIDAYS SET [DATE] ="+ date+",[DESCRIPTION] ="+ description+",[Stats] ="+ stats+",[PublicHolidayRegion] ="+ PublicHolidayRegion +" WHERE [RECORDNO]='"+recordno+"'";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Updated successful');     
           else
           this.globalS.sToast('Success', 'Updated successful');
-          this.postLoading = false;      
+          this.postLoading = false;   
+          this.loading = false;  
+          this.isUpdate = false; 
           this.loadData();
           this.handleCancel();
-          this.resetModal();   
-          this.isUpdate = false; 
+          this.resetModal();    
         });
       }
     }

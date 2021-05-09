@@ -497,7 +497,9 @@ export class TimeSheetService {
     deleteCarePlangoals(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/quote/careplangoal/${recordNo}`)
     }
-
+    deleteCarePlanStrategy(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/quote/careplanstrategy/${recordNo}`)
+    }
     postGoalsAndStratergies(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/quote/GoalsAndStratergies`, data)
     }

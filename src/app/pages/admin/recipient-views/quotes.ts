@@ -246,6 +246,20 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     //         smsMessage: false
     //     });
 
+    //     this.quoteGeneralForm = this.formBuilder.group({
+    //         id:null,
+    //         planType:null,
+    //         name:null,
+    //         careDomain:null,
+    //         discipline:null,
+    //         program:null,
+    //         starDate:null,
+    //         signOfDate:null,
+    //         reviewDate:null,
+    //         rememberText:null,
+    //         publishToApp:false
+    //     });
+
     //     this.quoteForm = this.formBuilder.group({
     //         program: null,
     //         template: null,
@@ -540,12 +554,28 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             strategy: null,
             sequenceNo: null,
 
-            roster: null
+            quantity: null,
+            billUnit: null,
+            period: null,
+            weekNo: null,
+
+            price: null,
+            gst: null,
+            min: null,
+            quoteValue: null,
+            quoteBudget: null,
+
+            roster: null,
+            rosterString: null,
+            notes: null,
+
+            editable: true
         });
 
         this.quoteListForm.get('chargeType').valueChanges
         .pipe(
             switchMap(x => {                
+                this.resetQuotePrimary();
                 if(!x) return EMPTY;
                 return this.listS.getchargetype({
                     program: this.quoteForm.get('program').value,
@@ -553,18 +583,24 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
                   })
             })
         ).subscribe(data => {
-            console.log(data)
-            this.resetQuotePrimary();
             this.codes = data;
         });
 
-        this.quoteListForm.get('code').valueChanges.subscribe(data => {
-           this.weekly = null
+        this.quoteListForm.get('code').valueChanges.pipe(
+            switchMap(x => {
+                if(!x)
+                    return EMPTY;
+
+                return this.listS.getprogramproperties(x)
+            })
+        ).subscribe(data => {
+            this.recipientProperties = data;
+            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None' })
         });
 
         this.quoteListForm.get('roster').valueChanges.subscribe(data => {
-            console.log(data);
             this.weekly = data;
+            this.setPeriod(data);
         });
 
         this.quoteForm.get('program').valueChanges

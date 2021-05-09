@@ -466,7 +466,7 @@
 
   </nz-modal>
 
-  <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="handleCancelLine()" (nzOnOk)="handleOk()">
+  <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="handleCancelLine()" >
     <div nz-row>
         <div nz-row [formGroup]="quoteListForm">
             <span style="margin-right:2rem;font-weight:bold">Charge Type</span>

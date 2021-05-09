@@ -136,7 +136,9 @@ export class ListService {
     getCareplangoals(personID: string): Observable<any>{
         return this.auth.get(`${list}/quote/careplangoal/list/${personID}`)
     }
-
+    getgoalofcare(): Observable<any> {
+        return this.auth.get(`${list}/quote/goalofcare`);
+    }
     
 
     getfundingpackagepurposelist(): Observable<any>{

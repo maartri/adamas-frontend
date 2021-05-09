@@ -11,6 +11,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 
 import { Filters } from '@modules/modules';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     styleUrls:['./quotes.css'],
@@ -128,7 +130,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     dateFormat: string = dateFormat;
     date: Date = new Date();
     nzSize: string = "small"
-
     user: any;
     inputForm: FormGroup;
     tableData: Array<any> = [];
@@ -140,9 +141,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     acceptedQuotes: boolean = false;
 
     loading: boolean = false;
-
+    postLoading: boolean = false;
     quotesOpen: boolean = false;
     quoteLineOpen: boolean = false;
+    goalAndStrategiesmodal : boolean = false;
+    isUpdateGoal:boolean = false;
 
     value: any;
 
@@ -164,7 +167,15 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     goalOfCarelist: any;
     goalsAndStratergies: any;
     userCopy: any;
-
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+    token:any;
+    tocken: any;
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;  
+    goalsAndStratergiesForm: FormGroup;
+    reportDataParent:any;
+    
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -173,6 +184,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
+        private http: HttpClient,
+        private sanitizer: DomSanitizer,
+        private ModalS: NzModalService,
         private cd: ChangeDetectorRef
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -196,6 +210,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit(): void {
+        this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.user = this.sharedS.getPicked();
         this.buildForm();
     }
@@ -231,7 +246,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             id: this.carePlanID.itemId,
             planType:"SUPPORT PLAN",
             name:this.quoteForm.get('template').value,
-            careDomain:"CARE DOMAIN",
+            careDomain:"NOT SPECIFIED",
             discipline:"NOT SPECIFIED",
             program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
             starDate   :this.date,
@@ -247,7 +262,24 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.loading = true;
         this.listS.getCareplangoals('45976').subscribe(data => this.goalsAndStratergies = data);
         this.loading = false;
-        this.cd.markForCheck();
+        this.cd.detectChanges();
+    }
+
+    saveCarePlan(){
+        this.timeS.postGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
+            takeUntil(this.unsubscribe))
+            .subscribe(data => {
+                this.globalS.sToast('Success', 'Data Inserted');
+                this.goalAndStrategiesmodal = false;
+                this.listCarePlanAndGolas();
+                this.cd.detectChanges();
+            });
+            this.cd.detectChanges();
+    }
+
+    showCarePlanStrategiesModal(){
+        this.goalAndStrategiesmodal = true;
+        this.listS.getgoalofcare().subscribe(data => this.goalOfCarelist = data);
     }
 
     quoteLineModal(){
@@ -270,6 +302,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     tabFindIndex: number = 0;
     tabFindChange(index: number){
         this.tabFindIndex = index;
+        if(this.tabFindIndex == 0){
+            this.quoteGeneralForm.patchValue({
+                name:this.quoteForm.get('template').value,
+                program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
+            })
+        }
+        
     }
 
     search(user: any) {
@@ -365,6 +404,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             basePeriod: null,
         });
 
+        this.goalsAndStratergiesForm = this.formBuilder.group({
+            goal:'',
+            PersonID:'45976'
+        });
 
         this.quoteListForm = this.formBuilder.group({
             chargeType: null,
@@ -500,8 +543,97 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             if (data) {
                 this.globalS.sToast('Success', 'Data Deleted!');
                 this.listCarePlanAndGolas();
+                this.cd.detectChanges();
             return;
          }
+         this.cd.detectChanges();
       });
+    }
+
+    handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+      }
+      handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+      }
+      generatePdf(){
+          console.log(this.tocken);
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "SELECT RecordNumber as recordnumber,CONVERT(varchar, [Date1],105) as Field1,CONVERT(varchar, [Date2],105) as Field2,CONVERT(varchar, [DateInstalled],105) as Field3,[State] as Field4, User1 AS Field5 FROM HumanResources WHERE PersonID = '45976' AND [Type] = 'CAREPLANGOALS' ORDER BY Name";
+        
+        const headerDict = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+        
+        const requestOptions = {
+          headers: new HttpHeaders(headerDict)
+        };
+        
+        const data = {
+          "template": { "_id": "0RYYxAkMCftBE9jc" },
+          "options": {
+            "reports": { "save": false },
+            "txtTitle": "Contact Groups List",
+            "sql": fQuery,
+            "userid":this.tocken.user,
+            "head1" : "Ant Complete",
+            "head2" : "Last Review",
+            "head3" : "Completed",
+            "head4" : "Percent",
+            "head5" : "Goal",
+          }
+        }
+
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+        .subscribe((blob: any) => {
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.loading = false;
+          this.detectChanges();
+        }, err => {
+          console.log(err);
+          this.loading = false;
+          this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+              this.drawerVisible = false;
+            },
+          });
+        });
+        this.detectChanges();
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
+      }
+
+      printReport(){
+        var fQuery = "SELECT RecordNumber as recordnumber,CONVERT(varchar, [Date1],105) as Field1,CONVERT(varchar, [Date2],105) as Field2,CONVERT(varchar, [DateInstalled],105) as Field3,[State] as Field4, User1 AS Field5 FROM HumanResources WHERE PersonID = '45976' AND [Type] = 'CAREPLANGOALS' ORDER BY Name";
+        this.reportDataParent = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+              "reports": { "save": false },
+              "txtTitle": "Contact Groups List",
+              "sql": fQuery,
+              "userid":this.tocken.user,
+              "head1" : "Ant Complete",
+              "head2" : "Last Review",
+              "head3" : "Completed",
+              "head4" : "Percent",
+              "head5" : "Goal",
+            }
+      }
+    }
+    handlegoalsStarCancel(){
+        this.goalAndStrategiesmodal = false;
+        this.isUpdateGoal = false;
     }
 }

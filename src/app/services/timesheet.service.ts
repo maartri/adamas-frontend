@@ -90,8 +90,8 @@ export class TimeSheetService {
     getquotedetails(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/quote/details/${id}`);
     }
-
     
+
     updatepackagesupplement(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/packagesupplement`, data);
     }
@@ -496,6 +496,10 @@ export class TimeSheetService {
 
     deleteCarePlangoals(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/quote/careplangoal/${recordNo}`)
+    }
+
+    postGoalsAndStratergies(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/quote/GoalsAndStratergies`, data)
     }
 
     /** */

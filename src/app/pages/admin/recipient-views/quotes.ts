@@ -296,7 +296,12 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.isUpdateGoal = true;
         this.listStrtegies();
         this.goalsAndStratergiesForm.patchValue({
-            title : "Goal Of Care : "
+            title : "Goal Of Care : ",
+            goal  : data.goal,
+            ant   : data.antComplete,
+            lastReview : data.LastReview,
+            completed : data.completed,
+            percent :data.percent,
         })
     }
 
@@ -436,7 +441,12 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.goalsAndStratergiesForm = this.formBuilder.group({
             goal:'',
             PersonID:'45976',
-            title:'',
+            title : "Goal Of Care : ",
+            ant   : null,
+            lastReview : null,
+            completed:null,
+            percent : null,
+            achivedIndex:'',
         });
 
         this.quoteListForm = this.formBuilder.group({

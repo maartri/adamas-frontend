@@ -272,9 +272,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.cd.markForCheck();
         });
     }
-    listStrtegies(){
+    listStrtegies(personID:any){
         this.loading = true;
-        this.listS.getStrategies('45976').subscribe(data => {
+        this.listS.getStrategies(personID).subscribe(data => {
             this.stratergiesList = data;
             this.loading = false;
             this.cd.markForCheck();
@@ -309,12 +309,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     saveStrategy(){
         if(!this.isUpdateStrategy){
+            this.stratergiesForm.controls.PersonID.setValue(this.personIdForStrategy);
             this.timeS.postplanStrategy(this.stratergiesForm.value).pipe(
                 takeUntil(this.unsubscribe))
                 .subscribe(data => {
                     this.globalS.sToast('Success', 'Data Inserted');
                     this.strategiesmodal = false;
-                    this.listStrtegies();
+                    this.listStrtegies(this.personIdForStrategy);
                     this.cd.markForCheck();
                 });
         }
@@ -333,7 +334,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     showEditCarePlanModal(data:any){
         this.goalAndStrategiesmodal = true;
         this.isUpdateGoal = true;
-        this.listStrtegies();
+        this.listStrtegies(data.recordnumber);
         this.personIdForStrategy = data.recordnumber;
         this.goalsAndStratergiesForm.patchValue({
             title : "Goal Of Care : ",
@@ -418,7 +419,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.loading = false;
             this.cd.markForCheck();
         })
-        this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.detectChanges();});
+        this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.cd.markForCheck();});
     }
     populateDropdDowns() {
         
@@ -665,7 +666,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data) {
                 this.globalS.sToast('Success', 'Data Deleted!');
-                this.listStrtegies();
+                this.listStrtegies(this.personIdForStrategy);
                 this.cd.markForCheck();
             return;
          }

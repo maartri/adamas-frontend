@@ -308,8 +308,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     
 
     saveStrategy(){
+        this.stratergiesForm.controls.PersonID.setValue(this.personIdForStrategy);
         if(!this.isUpdateStrategy){
-            this.stratergiesForm.controls.PersonID.setValue(this.personIdForStrategy);
             this.timeS.postplanStrategy(this.stratergiesForm.value).pipe(
                 takeUntil(this.unsubscribe))
                 .subscribe(data => {
@@ -318,7 +318,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
                     this.listStrtegies(this.personIdForStrategy);
                     this.cd.markForCheck();
                 });
+        }else{
+            this.timeS.updateplanStrategy(this.stratergiesForm.value).pipe(
+                takeUntil(this.unsubscribe))
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.strategiesmodal = false;
+                    this.listStrtegies(this.personIdForStrategy);
+                    this.cd.markForCheck();
+                });
         }
+        this.cd.markForCheck();
     }
 
     showCarePlanStrategiesModal(){
@@ -357,6 +367,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             outcome:data.achieved,
             strategyId:data.contractedId,
             serviceTypes:data.dsServices,
+            recordNumber:data.recordnumber,
         });
     }
     quoteLineModal(){
@@ -518,6 +529,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             outcome:null,
             strategyId:'',
             serviceTypes:'',
+            recordNumber:'',
         });
 
         this.quoteListForm = this.formBuilder.group({

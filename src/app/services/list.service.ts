@@ -229,7 +229,9 @@ export class ListService {
     getimlocation(): Observable<any>{
         return this.auth.get(`${list}/imlocation`);
     }
-
+    getplangoalachivement():Observable<any>{
+        return this.auth.get(`${list}/plangoalachivement`);
+    }
     getpaycode(data: any): Observable<any>{
         return this.auth.get(`${list}/paycode`, data);
     }

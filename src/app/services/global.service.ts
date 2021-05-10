@@ -89,6 +89,7 @@ export const period = ['DAY', 'WEEKLY', 'FNIGHTLY', 'MONTH', 'QUARTER', 'HALF YE
 export const periodQuote = ['ONCE OFF', 'WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'QUARTERLY', 'HALF YEARLY', 'YEARLY']
 export const status = ['WAIT LIST', 'ON HOLD', 'ACTIVE', 'INACTIVE']
 export const achievementIndex = ['(1) NOT ACHIEVED', '(2) PARTIALLY ACHIEVED', '(3) MOSTLY ACHIEVED', '(4) FULLY ACHIEVED', '(5) ONGOING', '(6) FUNDING NOT APPROVED']
+export const expectedOutcome = ['(1) Daily Living', '(2) Home', '(3) Health and Well-being', '(4) Lifelong Learning', '(5) Work', '(6) Social and Community Participation','(7) Relationships','(8) Choice and Control']
 export const caldStatuses = ['CALD BACKGROUND', 'NOT CALD BACKGROUND']
 export const titles = ["Mr", "Ms", "Mrs", "Dr"]
 export const types = ['BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']

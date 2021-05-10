@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation, AfterViewInit } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService,qoutePlantype, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService,expectedOutcome,qoutePlantype, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -176,6 +176,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     reportDataParent:any;
     stratergiesList: any;
     pdfdata:any;
+    stratergiesForm: FormGroup;
+    strategiesmodal: boolean;
+    expecteOutcome: string[];
+    plangoalachivementlis: any;
     
     constructor(
         private timeS: TimeSheetService,
@@ -286,11 +290,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.cd.markForCheck();
     }
 
+    saveStrategy(){
+
+    }
+
     showCarePlanStrategiesModal(){
         this.goalAndStrategiesmodal = true;
         this.listS.getgoalofcare().subscribe(data => this.goalOfCarelist = data);
     }
-    
+    showStrategiesModal(){
+        this.strategiesmodal = true;
+    }
     showEditCarePlanModal(data:any){
         this.goalAndStrategiesmodal = true;
         this.isUpdateGoal = true;
@@ -304,7 +314,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             percent :data.percent,
         })
     }
-
+    showEditStrategyModal(data:any){
+        console.log(this.user);
+        this.strategiesmodal = true;
+        this.stratergiesForm = this.formBuilder.group({
+            detail:data.strategy,
+            PersonID:'45976',
+            outcome:data.achieved,
+            strategyId:data.contractedId,
+            serviceTypes:data.dsServices,
+        });
+    }
     quoteLineModal(){
         this.quoteLineOpen = true;
         this.quoteListForm.reset();
@@ -369,6 +389,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
     populateDropdDowns() {
         
+        this.expecteOutcome = expectedOutcome;
+
         let notSpecified =["NOT SPECIFIED"];
         
         this.listS.getdiscipline().subscribe(data => {this.disciplineList = data;
@@ -382,6 +404,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
         this.listS.getcareplan().subscribe(data => {this.quotePlanType = data;})
         
+        this.listS.getplangoalachivement().subscribe(data=> this.plangoalachivementlis = data)
         this.detectChanges();
     }
     patchData(data: any) {
@@ -447,6 +470,15 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             completed:null,
             percent : null,
             achivedIndex:'',
+            notes:'',
+        });
+
+        this.stratergiesForm = this.formBuilder.group({
+            detail:'',
+            PersonID:'45976',
+            outcome:null,
+            strategyId:'',
+            serviceTypes:'',
         });
 
         this.quoteListForm = this.formBuilder.group({
@@ -690,4 +722,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.goalAndStrategiesmodal = false;
         this.isUpdateGoal = false;
     }
+    handleStarCancel(){
+        this.strategiesmodal = false;
+    }
+
 }

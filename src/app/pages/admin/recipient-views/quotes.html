@@ -41,23 +41,77 @@
 
 
 <context-menu>
-    <ng-template contextMenuItem (execute)="showMessage('Hi, ' + $event.item.name)">
+    <ng-template contextMenuItem (execute)="showAcceptModal($event.item)">
       Accept Quote
     </ng-template>
     
-    <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
+    <ng-template contextMenuItem let-item (execute)="showAcceptModal($event.item)">
       Clone Quote to this Recipient
     </ng-template>
 
-    <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
+    <ng-template contextMenuItem let-item (execute)="showAcceptModal($event.item)">
         Clone Quote to another Recipient
     </ng-template>
 
-    <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
+    <ng-template contextMenuItem let-item (execute)="showAcceptModal($event.item)">
         Open Attached Careplan
     </ng-template>
 </context-menu>
 
+
+<nz-modal [(nzVisible)]="inActiveOpen" [nzWidth]="850" [nzStyle]="{ top: '20px' }" [nzTitle]="'Auto Roster Creation - Date Selection'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <div nz-row nzGutter="16">
+        <div nz-row class="form-group" [formGroup]="inActiveForm">
+            <label for="">Time Period</label>
+            <nz-range-picker formControlName="timePeriod"></nz-range-picker>
+        </div>
+    </div>
+</nz-modal>
+
+
+<nz-modal [(nzVisible)]="activeOpen" [nzWidth]="850" [nzStyle]="{ top: '20px' }" [nzTitle]="'Fee and Price Update Options'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <div nz-row nzGutter="16">
+        <div nz-row>
+            <div nz-col nzSpan="12" [formGroup]="activeForm">
+                <h3>For The Master Roster</h3>
+                <div class="form-group">
+                    <label nz-checkbox formControlName="aUpdateActivities">Update prices for existing activities</label>
+                </div>
+                <div class="form-group">
+                    <label nz-checkbox formControlName="aUpdateApplicable">Update/recalculate fees if applicable</label>
+                </div>
+                <div class="form-group">
+                    <label nz-checkbox formControlName="aCreateBookings">Auto Create Master Roster Bookings</label>
+                </div>
+                <div class="form-group">
+                    <label nz-checkbox formControlName="aDeleteActivities">Delete Existing Activities</label>
+                </div>
+            </div>
+
+            <div nz-col nzSpan="12" [formGroup]="activeForm">
+                <h3>For Existing Roster</h3>
+                <div class="form-group">
+                    <label nz-checkbox formControlName="bUpdateActivities">Update prices for existing activities</label>
+                </div>
+                <div class="form-group">
+                    <label nz-checkbox formControlName="bUpdateApplicable">Update/recalculate fees if applicable</label>
+                </div>
+                <div class="form-group">
+                    <label nz-checkbox formControlName="bCreateBookings">Auto Create Master Roster Bookings</label>
+                </div>
+                <div class="form-group">
+                    <label nz-checkbox formControlName="bDeleteActivities">Delete Existing Activities</label>
+                </div>
+            </div>            
+
+        </div>
+
+        <div nz-row class="form-group" [formGroup]="activeForm">
+            <label for="">Time Period</label>
+            <nz-range-picker formControlName="timePeriod"></nz-range-picker>
+        </div>
+    </div>
+</nz-modal>
 
 <nz-modal [(nzVisible)]="quotesOpen" [nzWidth]="1340" [nzStyle]="{ top: '20px' }" [nzTitle]="title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div nz-row nzGutter="16">

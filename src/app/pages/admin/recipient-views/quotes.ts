@@ -156,7 +156,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     nzSize: string = "small"
 
     user: any;
+
     inputForm: FormGroup;
+    activeForm: FormGroup;
+    inActiveForm: FormGroup;
+
     tableData: Array<any> = [];
     checked: boolean = false;
     isDisabled: boolean = false;
@@ -169,6 +173,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     quotesOpen: boolean = false;
     quoteLineOpen: boolean = false;
+    activeOpen: boolean = false;
+    inActiveOpen: boolean = false;
+
 
     value: any;
 
@@ -386,8 +393,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    showMessage(message: any) {
-        console.log(message);
+    showAcceptModal(item: any) {
+        if(['REFERRAL','INACTIVE'].includes(item.programStatus)){
+            console.log('referral')
+            this.inActiveOpen = true;
+        }
+
+        if(['ACTIVE','ONHOLD'].includes(item.programStatus)){
+            console.log('active')
+            this.activeOpen = true;
+        }
+
     }
 
     filterChange(data: any){
@@ -442,6 +458,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     handleCancel(){
         this.quotesOpen = false;
+        this.inActiveOpen = false;
+        this.activeOpen = false;
     }
 
     handleCancelLine(){
@@ -521,6 +539,24 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             rosterPublish: false,
             shiftChange: false,
             smsMessage: false
+        });
+
+        this.inActiveForm = this.formBuilder.group({
+            timePeriod: []
+        });
+
+        this.activeForm = this.formBuilder.group({
+            aUpdateActivities: true,
+            aUpdateApplicable: true,
+            aCreateBookings: true,
+            aDeleteActivities: false,
+
+            bUpdateActivities: true,
+            bUpdateApplicable: true,
+            bCreateBookings: true,
+            bDeleteActivities: false,
+
+            timePeriod: []
         });
 
         this.quoteGeneralForm = this.formBuilder.group({

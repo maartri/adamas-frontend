@@ -501,11 +501,12 @@ export class BookingClientManager implements OnInit, OnDestroy {
         }
 
         var id = this.globalS.loadingMessage('Processing booking...');
-        this.bookingModalOpen = false;
 
         console.log(this.finalBooking);
+
         // return;
 
+        this.bookingModalOpen = false;
         this.clientS.addbooking(this.finalBooking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             let resultRows = parseInt(data);            
             if (resultRows == 1) {
@@ -674,7 +675,7 @@ A four weekly booking has been made from date ${startDate} until ${endDate}:
             }
         }
 
-        // Four Weekly
+        // Four WeeklyloadBooking
         if(this.slots.length  == 4){
             while(currDate < this.publishedEndDate){
                 var noOfWeekSincePayPeriod = this.globalS.CALCULATE_WHAT_WEEK_FOURWEEKLY(payPeriod, currDate);

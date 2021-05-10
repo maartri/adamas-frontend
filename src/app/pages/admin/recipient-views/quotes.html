@@ -243,9 +243,9 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let data of headerTable.data">
-                                <td style="width:10%;">{{data.antComplete}}</td>
-                                <td style="width:10%;">{{data.lastReview}}</td>
-                                <td style="width:10%;">{{data.parePlan}}</td>
+                                <td style="width:10%;">{{data.achievementDate | date: 'dd/MM/y' }}</td>
+                                <td style="width:10%;">{{data.lastReviewed | date: 'dd/MM/y' }}</td>
+                                <td style="width:10%;">{{data.achievement }}</td>
                                 <td style="width:60%;">{{data.goal}}</td>
                                 <td style="width:10%;">
                                     <a (click)="showEditCarePlanModal(data)">Update</a>
@@ -573,7 +573,7 @@
                                                     </div>
                                                     <div nz-col nzSpan="10">
                                                         <div class="form-group" style="margin-bottom:7px;">
-                                                            <nz-date-picker nzSize="small" formControlName="ant" [nzFormat]="dateFormat"></nz-date-picker>
+                                                            <nz-date-picker nzSize="achievementDate" formControlName="achievementDate" nzSize="small" [nzFormat]="dateFormat"></nz-date-picker>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -588,7 +588,7 @@
                                                     </div>
                                                     <div nz-col nzSpan="10">
                                                         <div class="form-group" style="margin-bottom:7px;">
-                                                            <nz-date-picker nzSize="small" formControlName="lastReview" [nzFormat]="dateFormat"></nz-date-picker>
+                                                            <nz-date-picker nzSize="small" formControlName="lastReviewed" [nzFormat]="dateFormat"></nz-date-picker>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -603,7 +603,7 @@
                                                     </div>
                                                     <div nz-col nzSpan="6">
                                                         <div class="form-group" style="margin-bottom:7px;">
-                                                            <nz-date-picker nzSize="small" formControlName="completed" [nzFormat]="dateFormat"></nz-date-picker>
+                                                            <nz-date-picker nzSize="small" formControlName="dateAchieved" [nzFormat]="dateFormat"></nz-date-picker>
                                                         </div>
                                                     </div>
                                                     <div nz-col nzSpan="3" class="text-right pad-r-5">
@@ -611,7 +611,7 @@
                                                     </div>
                                                     <div nz-col nzSpan="1">
                                                         <div class="form-group" style="margin-bottom:7px;">
-                                                            <input nz-input formControlName="percent" nzSize="small"  />
+                                                            <input nz-input formControlName="achievement" nzSize="small"  />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -626,7 +626,7 @@
                                                     </div>
                                                     <div nz-col nzSpan="10">
                                                         <div class="form-group" style="margin-bottom:7px;">
-                                                            <nz-select formControlName="achivedIndex" nzSize="small" nzAllowClear nzPlaceHolder="Code">
+                                                            <nz-select formControlName="achievementIndex" nzSize="small" nzAllowClear nzPlaceHolder="Code">
                                                                 <nz-option *ngFor="let d of plangoalachivementlis" [nzValue]="d" [nzLabel]="d"></nz-option>
                                                             </nz-select>
                                                         </div>
@@ -696,13 +696,15 @@
                     </div>
                 </div>
             </form>
-            <div *nzModalFooter>
-                <ng-container>
-                    <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="saveCarePlan()">
-                        <span>Save</span>
-                    </button>
-                </ng-container>
-            </div>
+            <!-- <div *ngIf="tabFindIndex == 0"> -->
+                <div *nzModalFooter>
+                    <ng-container>
+                        <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="saveCarePlan()">
+                            <span>Save</span>
+                        </button>
+                    </ng-container>
+                </div>
+            <!-- </div> -->
         </nz-modal>
         
         <nz-modal [nzWidth]="1050"  [(nzVisible)]="strategiesmodal" nzTitle="Add/Change Plan Goal Stretegy" (nzOnCancel)="handleStarCancel()">

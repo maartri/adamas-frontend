@@ -503,7 +503,13 @@ export class TimeSheetService {
     postGoalsAndStratergies(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/quote/GoalsAndStratergies`, data)
     }
-
+    updateGoalsAndStratergies(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/quote/GoalsAndStratergies`, data)
+    }
+    postplanStrategy(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/quote/planStrategy`, data)
+    }
+    
     /** */
 
     /**

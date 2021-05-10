@@ -13,6 +13,7 @@ import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Filters } from '@modules/modules';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { NotesClient } from '@client/notes';
 
 @Component({
     styleUrls:['./quotes.css'],
@@ -146,7 +147,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     quoteLineOpen: boolean = false;
     goalAndStrategiesmodal : boolean = false;
     isUpdateGoal:boolean = false;
-
+    isUpdateStrategy:boolean = false;  
     value: any;
 
     quoteTemplateList: Array<string>;
@@ -180,6 +181,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     strategiesmodal: boolean;
     expecteOutcome: string[];
     plangoalachivementlis: any;
+    personIdForStrategy: any;
     
     constructor(
         private timeS: TimeSheetService,
@@ -279,47 +281,78 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
     }
     saveCarePlan(){
-        this.timeS.postGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
-            takeUntil(this.unsubscribe))
-            .subscribe(data => {
-                this.globalS.sToast('Success', 'Data Inserted');
-                this.goalAndStrategiesmodal = false;
-                this.listCarePlanAndGolas();
-                this.cd.markForCheck();
+
+        if(!this.isUpdateGoal){
+            this.timeS.postGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
+                takeUntil(this.unsubscribe))
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.goalAndStrategiesmodal = false;
+                    this.listCarePlanAndGolas();
+                    this.cd.markForCheck();
+                });
+        }else{
+            this.timeS.updateGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
+                takeUntil(this.unsubscribe))
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.goalAndStrategiesmodal = false;
+                    this.listCarePlanAndGolas();
+                    this.isUpdateGoal = false;
+                    this.cd.markForCheck();
+
             });
-            this.cd.markForCheck();
+        }
+        this.cd.markForCheck();
     }
+    
 
     saveStrategy(){
-
+        if(!this.isUpdateStrategy){
+            this.timeS.postplanStrategy(this.stratergiesForm.value).pipe(
+                takeUntil(this.unsubscribe))
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.strategiesmodal = false;
+                    this.listStrtegies();
+                    this.cd.markForCheck();
+                });
+        }
     }
 
     showCarePlanStrategiesModal(){
         this.goalAndStrategiesmodal = true;
+        this.personIdForStrategy = '';
         this.listS.getgoalofcare().subscribe(data => this.goalOfCarelist = data);
     }
     showStrategiesModal(){
+        this.stratergiesForm.reset();
+        this.isUpdateStrategy = false;
         this.strategiesmodal = true;
     }
     showEditCarePlanModal(data:any){
         this.goalAndStrategiesmodal = true;
         this.isUpdateGoal = true;
         this.listStrtegies();
+        this.personIdForStrategy = data.recordnumber;
         this.goalsAndStratergiesForm.patchValue({
             title : "Goal Of Care : ",
             goal  : data.goal,
-            ant   : data.antComplete,
-            lastReview : data.LastReview,
-            completed : data.completed,
-            percent :data.percent,
+            achievementDate  : data.achievementDate,
+            dateAchieved     : data.dateAchieved,
+            lastReviewed     : data.lastReviewed,
+            achievementIndex : data.achievementIndex,
+            achievement      : data.achievement,
+            notes            : data.notes,
+            recordnumber     : data.recordnumber,
         })
     }
     showEditStrategyModal(data:any){
-        console.log(this.user);
+        this.isUpdateStrategy = true;
         this.strategiesmodal = true;
         this.stratergiesForm = this.formBuilder.group({
             detail:data.strategy,
-            PersonID:'45976',
+            PersonID:data.recordnumber,
             outcome:data.achieved,
             strategyId:data.contractedId,
             serviceTypes:data.dsServices,
@@ -462,6 +495,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
 
         this.goalsAndStratergiesForm = this.formBuilder.group({
+            recordnumber:null,
             goal:'',
             PersonID:'45976',
             title : "Goal Of Care : ",
@@ -469,13 +503,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             lastReview : null,
             completed:null,
             percent : null,
-            achivedIndex:'',
+            achievementIndex:'',
             notes:'',
+            dateAchieved:null,
+            lastReviewed:null,
+            achievementDate:null,
+            achievement:'',
         });
 
         this.stratergiesForm = this.formBuilder.group({
             detail:'',
-            PersonID:'45976',
+            PersonID:this.personIdForStrategy,
             outcome:null,
             strategyId:'',
             serviceTypes:'',
@@ -721,9 +759,11 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     handlegoalsStarCancel(){
         this.goalAndStrategiesmodal = false;
         this.isUpdateGoal = false;
+        this.personIdForStrategy = '';
     }
     handleStarCancel(){
         this.strategiesmodal = false;
+        this.isUpdateStrategy = false;
     }
 
 }

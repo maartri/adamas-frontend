@@ -1,19 +1,19 @@
 <div nz-row class="mrg-btm">
     <div nz-col nzSpan="24">
         <button class="botton success" (click)="showAddModal(1)">Add Excluded Staff</button>
-        <nz-table #sss [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
-            [nzFrontPagination]="false" [nzData]="excludedStaff">
+        <nz-table #headerTable  [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
+            [nzFrontPagination]="false" [nzData]="excludedStaff" [nzScroll]="{ y: '240px' }">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Notes</th>
-                    <th class="action">Actions</th>
+                    <th nzWidth="5%">#</th>
+                    <th nzWidth="15%">Name</th>
+                    <th nzWidth="60%">Notes</th>
+                    <th nzWidth="10%" class="action">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ i+1  }}</td>
+                <tr *ngFor="let data of headerTable.data;let i = index;trackBy: trackByFn">
+                    <td>{{ i+1  }}</td>
                     <td>{{ data.name}}</td>
                     <td>{{ data.notes }}</td>
                     <td>
@@ -30,22 +30,22 @@
 <div nz-row>
     <div nz-col nzSpan="24">
         <button class="botton success" (click)="showAddModal(2)">Add Approved Staff</button>
-        <nz-table #ss2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
-            [nzFrontPagination]="false" [nzData]="includedStaff">
+        <nz-table #headerTable2  [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
+            [nzFrontPagination]="false" [nzData]="includedStaff" [nzScroll]="{ y: '240px' }">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Notes</th>
-                    <th class="action">Actions</th>
+                    <th nzWidth="5%">#</th>
+                    <th nzWidth="15%">Name</th>
+                    <th nzWidth="60%">Notes</th>
+                    <th nzWidth="10%" class="action">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of ss2.data;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ i+1  }}</td>
-                    <td>{{ data.name}}</td>
-                    <td>{{ data.notes }}</td>
-                    <td>
+                <tr *ngFor="let data of headerTable2.data;let i = index;trackBy: trackByFn">
+                    <td nzWidth="5%">{{ i+1  }}</td>
+                    <td nzWidth="20%">{{ data.name}}</td>
+                    <td nzWidth="55%">{{ data.notes }}</td>
+                    <td nzWidth="10%">
                         <a (click)="showEditModal(2,i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?"
@@ -59,16 +59,19 @@
 <nz-modal [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()" >
     <div nz-row [formGroup]="inputForm">
         <div nz-row>
-            <nz-form-item>
+            <nz-form-item *ngIf="editOrAdd == 1">
                 <nz-form-label>{{ whatView == 1 ? 'Staff' :  'Staff'}}</nz-form-label>
                 <nz-form-control nzErrorTip="Required Field">
-                    <nz-select formControlName="name" nzAllowClear nzPlaceHolder="" 
-                    nzMode="multiple"
-                    [nzDropdownMatchSelectWidth]="false">
-                        <nz-option *ngFor="let list of listArray" [nzValue]="list" [nzLabel]="list"></nz-option>
+                    <nz-select formControlName="list" nzAllowClear nzPlaceHolder=""
+                    [nzDropdownMatchSelectWidth]="false" style="width: 100%;">
+                        <nz-option *ngFor="let list of listStaff" [nzValue]="list" [nzLabel]="list"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>
+            <div class="form-group" *ngIf="editOrAdd == 2">
+                <nz-form-label>{{ whatView == 1 ? 'Staff' :  'Staff'}}</nz-form-label>
+                <input nz-input formControlName="list" disabled />
+            </div>
         </div>
         <div nz-row>
             <nz-form-item>

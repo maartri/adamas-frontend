@@ -60,6 +60,9 @@ export class AddReferralComponent implements OnInit {
   current: number = 0;
   generatedAccount: string;
   accountTaken: boolean;
+  default_branch: string  = '';
+  default_manager: string = '';
+  default_agency: string  = '';
 
   constructor(
     private clientS: ClientService,
@@ -132,9 +135,9 @@ export class AddReferralComponent implements OnInit {
       otherContacts: new FormArray([this.createOtherContact()]),
       gpDetails: new FormArray([this.createGpDetails()]),
 
-      branch: new FormControl(''),
-      agencyDefinedGroup: new FormControl(''),
-      recipientCoordinator: new FormControl(''),
+      branch: new FormControl(this.default_branch),
+      agencyDefinedGroup: new FormControl(this.default_agency),
+      recipientCoordinator: new FormControl(this.default_manager),
       referral: new FormControl(''),
       confirmation: new FormControl(null),
 
@@ -327,12 +330,29 @@ export class AddReferralComponent implements OnInit {
         return new RemoveFirstLast().transform(x.description)
       });
     })
-    this.listS.getlistbranches().subscribe(data => this.branches = data.map(x => x.toUpperCase()));
-    this.clientS.getmanagers().subscribe(data => this.managers = data.map(x => {
+    this.listS.getlistbranches().subscribe(data => {
+      this.branches = data.map(x => x.toUpperCase())
+      if(this.branches.length == 1){
+        this.default_branch = this.branches[0];
+      }
+    });
+    this.clientS.getmanagers().subscribe(data => {
+      this.managers = data.map(x => {
         x['description'] =  x['description'].toUpperCase();
-        return x;
-    }));
-    this.listS.getserviceregion().subscribe(data => this.agencies = data.map(x => x.toUpperCase()));
+        return x;})
+        if(this.managers.length == 1){
+            this.default_manager = this.managers[0];
+        }
+        
+    });
+    this.listS.getserviceregion().subscribe(data => {
+      this.agencies = data.map(x => x.toUpperCase())
+        if(this.agencies.length == 1){
+          this.default_agency = this.agencies[0];
+        }
+      console.log();
+      }
+    );
 
     this.listS.getfollowups().subscribe(data => {
       this.notifFollowUpGroup = data.map(x => {

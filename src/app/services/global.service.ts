@@ -505,6 +505,9 @@ var2 = 'value2'
         const newDate = format(Date.parse(date),'dd/MM/yyyy');
         return newDate;
     }
+    getCurrentDate(){
+        return moment().format('yyyy-MM-DD')
+    }
     convertDbDate(date:string){
         const newDate = format(Date.parse(date),'yyyy/MM/dd');
         return newDate;

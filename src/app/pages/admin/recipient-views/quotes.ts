@@ -220,6 +220,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.user = this.sharedS.getPicked();
         this.buildForm();
+        this.quoteGeneralForm.controls.discipline.setValue("NOT SPECIFIED");
+        this.quoteGeneralForm.controls.careDomain.setValue("NOT SPECIFIED");
     }
 
     ngOnDestroy(): void {
@@ -248,14 +250,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
         
         this.listCarePlanAndGolas();
-
+        this.quoteGeneralForm.controls.careDomain.setValue("NOT SPECIFIED");
+        this.quoteGeneralForm.controls.discipline.setValue("NOT SPECIFIED");
+        this.quoteForm.get('program').value ? this.quoteGeneralForm.controls.careDomain.setValue("NOT SPECIFIED") : this.quoteForm.get('program').value;
         this.quoteGeneralForm.patchValue({
             id: this.carePlanID.itemId,
             planType:"SUPPORT PLAN",
             name:this.quoteForm.get('template').value,
-            careDomain:"NOT SPECIFIED",
-            discipline:"NOT SPECIFIED",
-            program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
             starDate   :this.date,
             signOfDate :this.date,
             reviewDate :this.date,

@@ -70,7 +70,6 @@ export class AddReferralComponent implements OnInit {
   ) {
 
   }
-
   ngOnInit() {
     this.resetGroup();    
     this.verifyAccount.pipe(

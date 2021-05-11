@@ -73,6 +73,22 @@ export class AddReferralComponent implements OnInit {
 
   ngOnInit() {
     this.resetGroup();    
+    
+
+
+    this.referralGroup.patchValue({
+      dob:this.globalS.getAgedCareDate(),
+    })
+    
+    this.referralGroup.controls.dob.setValue(this.globalS.getAgedCareDate());
+    
+    
+
+    
+    console.log(this.globalS.getAgedCareDate());
+
+
+
 
     this.verifyAccount.pipe(
       debounceTime(300),

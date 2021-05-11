@@ -653,6 +653,9 @@ var2 = 'value2'
     curreentDate(){
         return moment(new Date()).format('MM-DD-YYYY');
     } 
+    getAgedCareDate(){
+        return moment().startOf('year').subtract(65, 'years').format('MM/DD/YYYY');
+    }
     filterDate(date: any): string {
         return moment(date).format('DD/MM/YYYY')
     }

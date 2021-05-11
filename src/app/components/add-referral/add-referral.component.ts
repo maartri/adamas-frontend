@@ -570,6 +570,21 @@ export class AddReferralComponent implements OnInit {
 
   get canGoNext(): boolean {
     //if (this.current == 0) return true;
+
+    if(this.current == 6 || this.current == 7 || this.current == 8 || this.current == 9){
+      const validateForm = this.referralGroup ;
+      
+      let branch =  this.globalS.isValueNull(validateForm.get('branch').value);
+      let agencyDefinedGroup         =  this.globalS.isValueNull(validateForm.get('agencyDefinedGroup').value);
+      let recipientCoordinator         =  this.globalS.isValueNull(validateForm.get('recipientCoordinator').value);
+      
+      if(this.globalS.isVarNull(branch) || this.globalS.isVarNull(agencyDefinedGroup) || this.globalS.isVarNull(recipientCoordinator)){
+        this.globalS.iToast('Alert', 'First Complete Step No 6  Administration !');
+        this.current = 5; 
+      }
+    }
+
+
     if (this.current == 0 && this.accountTaken == false) return true;
     if (this.current == 1) return true;
     if (this.current == 2) return true;

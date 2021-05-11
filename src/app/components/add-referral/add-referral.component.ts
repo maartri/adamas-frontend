@@ -73,23 +73,6 @@ export class AddReferralComponent implements OnInit {
 
   ngOnInit() {
     this.resetGroup();    
-    
-
-
-    this.referralGroup.patchValue({
-      dob:this.globalS.getAgedCareDate(),
-    })
-    
-    this.referralGroup.controls.dob.setValue(this.globalS.getAgedCareDate());
-    
-    
-
-    
-    console.log(this.globalS.getAgedCareDate());
-
-
-
-
     this.verifyAccount.pipe(
       debounceTime(300),
       concatMap(e => {
@@ -133,7 +116,7 @@ export class AddReferralComponent implements OnInit {
 
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
-      dob: new FormControl('', Validators.required),
+      dob: new FormControl(this.globalS.getAgedCareDate(), Validators.required),
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),

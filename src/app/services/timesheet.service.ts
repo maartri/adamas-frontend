@@ -96,8 +96,8 @@ export class TimeSheetService {
     getquotedetails(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/quote/details/${id}`);
     }
-
     
+
     updatepackagesupplement(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/packagesupplement`, data);
     }
@@ -503,7 +503,21 @@ export class TimeSheetService {
     deleteCarePlangoals(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/quote/careplangoal/${recordNo}`)
     }
-
+    deleteCarePlanStrategy(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/quote/careplanstrategy/${recordNo}`)
+    }
+    postGoalsAndStratergies(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/quote/GoalsAndStratergies`, data)
+    }
+    updateGoalsAndStratergies(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/quote/GoalsAndStratergies`, data)
+    }
+    postplanStrategy(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/quote/planStrategy`, data)
+    }
+    updateplanStrategy(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/quote/planStrategy`, data)
+    }
     /** */
 
     /**

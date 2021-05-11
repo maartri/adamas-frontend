@@ -148,7 +148,13 @@ export class ListService {
     getCareplangoals(personID: string): Observable<any>{
         return this.auth.get(`${list}/quote/careplangoal/list/${personID}`)
     }
-
+    getStrategies(personID: string): Observable<any>{
+        return this.auth.get(`${list}/quote/careplangoal/strtegies/${personID}`)
+    }
+    
+    getgoalofcare(): Observable<any> {
+        return this.auth.get(`${list}/quote/goalofcare`);
+    }
     
 
     getfundingpackagepurposelist(): Observable<any>{
@@ -235,7 +241,9 @@ export class ListService {
     getimlocation(): Observable<any>{
         return this.auth.get(`${list}/imlocation`);
     }
-
+    getplangoalachivement():Observable<any>{
+        return this.auth.get(`${list}/plangoalachivement`);
+    }
     getpaycode(data: any): Observable<any>{
         return this.auth.get(`${list}/paycode`, data);
     }

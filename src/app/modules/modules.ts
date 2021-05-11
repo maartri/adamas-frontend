@@ -57,6 +57,46 @@ export interface Jwt {
     user: string
 }
 
+export interface QuoteLineDTO {
+    docHdrId?: number,
+    lineNo?:number,
+    COID?:number,
+    BRID?:number,
+    DPID?: number,
+    itemId?: number,
+    displayText?: string,
+    qty?: number,
+    frequency?: string,
+    lengthInWeeks?:number,
+    quoteQty?: number,
+    billUnit?: string,
+
+    unitBillRate?: number,
+    tax?: number,
+    priceType?: string,
+    quotePerc?: string,
+    budgetPerc?: string,
+    roster?: string,
+    strategyId?: number,
+    rcycle?: string,
+    notes?: string,
+    sortOrder: number
+}
+
+export interface QuoteHeaderDTO {
+    docNo?: number,
+    clientId?:number,
+    programId?:number,
+    CPID?:number,
+    contribution?: number,
+    daysCalc?: number,
+    budget?: string,
+    govtContribution?: number,
+    quoteBase?: string,
+   
+    quoteLines?: Array<QuoteLineDTO>
+}
+
 export interface Recipients {
     sqlID?: number,
     uniqueID?: string,

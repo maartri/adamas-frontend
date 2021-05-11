@@ -1178,8 +1178,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             this.isFirstLoad = true;
         }
 
-        console.log(JSON.stringify(event));
-
+        // console.log(JSON.stringify(event));
+        console.log(event); 
         this.user = {
             code: event.accountNo,
             id: event.uniqueID,
@@ -1206,7 +1206,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         private listS: ListService
     ) {
         this.sharedS.emitProfileStatus$.subscribe(data => {
-            console.log(data);
+            // console.log(data);
             this.selectedRecipient = data;
             this.recipientType = data.type == null || data.type.trim() == "" ? null : data.type;
             // if(data.admissionDate == null && data.dischargeDate == null){

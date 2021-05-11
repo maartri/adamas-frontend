@@ -11,7 +11,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
 
-import { Filters } from '@modules/modules';
+import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 
 @Component({
     styleUrls:['./quotes.css'],
@@ -86,7 +86,7 @@ import { Filters } from '@modules/modules';
         margin-right:5px;
     }
     .mini{
-        width:4rem;
+        width:5rem;
     }
     .spacing > *{
         margin-right:5px;
@@ -113,6 +113,8 @@ import { Filters } from '@modules/modules';
 export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     private unsubscribe: Subject<void> = new Subject();
+
+    quoteIdsForm: FormGroup;
     quoteForm: FormGroup;
     quoteListForm: FormGroup;
 
@@ -435,7 +437,20 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             signOfDate :this.date,
             reviewDate :this.date,
             publishToApp:false
-        })
+        });
+
+        // console.log(this.user)
+        this.listS.getrecipientsqlid(this.user.id).subscribe(data => console.log(data))
+
+        this.quoteForm.reset({
+            program: null,
+            template: null,
+            no: null,
+            type: null,
+            period: [],
+            basePeriod: null,
+        });
+
 
         this.detectChanges();       
     }
@@ -472,6 +487,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     search(user: any) {
+        console.log(user);
+
         this.loading = true;
         this.user = user;
         
@@ -490,8 +507,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.tableData = data;
             this.loading = false;
             this.cd.markForCheck();
-        })
+        });
+
         this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.detectChanges();});
+        // this.timeS.
     }
     populateDropdDowns() {
         
@@ -580,6 +599,15 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             type: null,
             period: [],
             basePeriod: null,
+
+            initialBudget: null,
+            govtContrib: null,
+
+
+        });
+
+        this.quoteIdsForm = this.formBuilder.group({
+            itemId: null
         });
 
 
@@ -594,6 +622,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             billUnit: null,
             period: null,
             weekNo: null,
+            itemId: null,
 
             price: null,
             gst: null,
@@ -631,7 +660,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             })
         ).subscribe(data => {
             this.recipientProperties = data;
-            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None' })
+            
+            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None',itemId: data.recnum })
         });
 
         this.quoteListForm.get('roster').valueChanges.subscribe(data => {
@@ -641,11 +671,20 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.quoteForm.get('program').valueChanges
         .pipe(
-            switchMap(x => this.listS.getprogramlevel(x)),
+            switchMap(x => {
+                if(!x) return EMPTY;
+                return this.listS.getprogramlevel(x)
+            }),
             switchMap(x => {                
                 this.IS_CDC = false;
                 if(x.isCDC){
                     this.IS_CDC = true;
+                    if(x.quantity && x.timeUnit == 'DAY'){
+                        this.quoteForm.patchValue({
+                            govtContrib: (x.quantity*365).toFixed(2),
+                            programId: x.recordNumber
+                        });
+                    }
                     this.detectChanges();
                     return this.listS.getpensionandfee();
                 }
@@ -743,8 +782,42 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     saveQuote(){
-        console.log(this.quoteLines);
+        let qteLineArr: Array<QuoteLineDTO> = [];
+        let qteHeader: QuoteHeaderDTO;
+
+        const quoteForm = this.quoteForm.getRawValue();
+
+        this.quoteLines.forEach(x => {
+            let da: QuoteLineDTO = {
+                sortOrder: 0,
+                billUnit: x.billUnit,
+                itemId: x.itemId,
+                qty: x.quantity,
+                displayText: x.displayText,
+
+                unitBillRate: x.price,
+                frequency: x.period,
+                lengthInWeeks: x.weekNo
+            };
+            qteLineArr.push(da);
+        });
+
+        // console.log(this.quoteLines);
+        // console.log(qteLineArr);
+
+        qteHeader = {
+            programId: quoteForm.programId,
+            // clientId: this.quote
+            // quoteLines: qteLineArr
+        }
+
+
+
+
+
         console.log(this.quoteForm.value)
+
+
     }
     
     deleteCarePlanGoal(data: any){

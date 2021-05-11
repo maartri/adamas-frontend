@@ -37,3 +37,6 @@ nz-time-picker{
 .flex > *{
     margin-right:5px;
 }
+.weekend-clr{
+    background: #ffd9d9;
+}

@@ -122,6 +122,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
       }
     }
     this.searchModel = user.accountNo;
+
     this.onChangeCallback(user);
   }
 

@@ -20,8 +20,13 @@ export class ListService {
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
-    getpostquote(): Observable<any> {
-        return this.auth.post(`${list}/post_quote`, null);
+
+    getrecipientsqlid(id: string): Observable<any> {
+        return this.auth.get(`${list}/recipient-sqlid/${id}`);
+    }
+
+    getpostquote(data: any): Observable<any> {
+        return this.auth.post(`${list}/post_quote`, data);
     }
 
     getprogramproperties(program: string): Observable<any> {

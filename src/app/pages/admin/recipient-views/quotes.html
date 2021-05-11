@@ -423,13 +423,13 @@
                 <div nz-row class="line" nzGutter="16" *ngIf="quoteForm.get('program').value">
                     <div nz-col nzSpan="18">
                         <div nz-row nzGutter="16"> 
-                            <div nz-col nzSpan="12" class="inline" *ngIf="!IS_CDC">
+                            <div nz-col nzSpan="12" class="inline" *ngIf="!IS_CDC" [formGroup]="quoteForm">
                                 <span class="title">Initial Budget</span>
-                                <input nz-input class="mini" placeholder="" nzSize="small" [(ngModel)]="value" />
+                                <input nz-input class="mini" placeholder="" nzSize="small" formControlName="initialBudget" />
                             </div>
-                            <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC">
+                            <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm">
                                 <span class="title">Gov't Contribution</span>
-                                <input nz-input class="mini" placeholder="" nzSize="small" [(ngModel)]="value" />
+                                <input nz-input class="mini" placeholder="" nzSize="small" formControlName="govtContrib" />
                             </div>
                             <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC">
                                 <span class="title">Centrelink Income Tested Fee</span>
@@ -455,28 +455,34 @@
                                     <div>Monthly</div>
                                 </div>
                                 <div>
-                                    <div>Base Quote</div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div>Agreed Basic Care Fee</div>
+                                    <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
                                 </div>
                                 <div>
-                                    <div>Admin & Case Management</div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div>Agreed Income Tested Fee</div>
+                                    <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input nzSize="small" [(ngModel)]="value" /></div>
                                 </div>
                                 <div>
-                                    <div>Total Quote</div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div></div>
+                                    <div> <input nz-input nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
                                 </div>
                                 <div>
-                                    <div>Remaining Funds</div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
-                                    <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                    <div>ADD Pro Rata Prev Balance</div>
+                                    <div> <input nz-input nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> </div>
+                                    <div> </div>
+                                </div>
+                                <div>
+                                    <div>Total Package Value</div>
+                                    <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
+                                    <div> </div>
+                                    <div> </div>
                                 </div>
                             </div>
                         </div>

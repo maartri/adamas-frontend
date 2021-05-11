@@ -439,14 +439,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         let notSpecified =["NOT SPECIFIED"];
         
-        this.listS.getdiscipline().subscribe(data => {this.disciplineList = data;
-            this.disciplineList.push(notSpecified);
+        this.listS.getdiscipline().subscribe(data => {
+            data.push('NOT SPECIFIED');
+            this.disciplineList = data;
         });
-        this.listS.getcaredomain().subscribe(data => {this.careDomainList = data;
-            this.careDomainList.push(notSpecified);
+        this.listS.getcaredomain().subscribe(data => {
+            data.push('NOT SPECIFIED');
+            this.careDomainList = data
         }); 
-        this.listS.getndiaprograms().subscribe(data => {this.programList = data;
-            this.programList.push(notSpecified);
+        this.listS.getndiaprograms().subscribe(data => {
+            data.push('NOT SPECIFIED');
+            this.programList = data;
         });
         this.listS.getcareplan().subscribe(data => {this.quotePlanType = data;})
         
@@ -488,9 +491,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             id:null,
             planType:null,
             name:null,
-            careDomain:null,
-            discipline:null,
-            program:null,
+            program: 'NOT SPECIFIED',
+            discipline: 'NOT SPECIFIED',
+            careDomain: 'NOT SPECIFIED',
             starDate:null,
             signOfDate:null,
             reviewDate:null,

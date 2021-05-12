@@ -26,7 +26,7 @@ export class ListService {
     }
 
     getpostquote(data: any): Observable<any> {
-        return this.auth.post(`${list}/post_quote`, data);
+        return this.auth.post(`${list}/post-quote`, data);
     }
 
     getprogramproperties(program: string): Observable<any> {

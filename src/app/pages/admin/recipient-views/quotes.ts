@@ -126,6 +126,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     periodArr: Array<string> = periodQuote;
     basePeriodArr: Array<string> = basePeriod;
 
+    clientId: number;
+
     size: string = 'small'
 
     quoteGeneralForm : FormGroup;
@@ -467,7 +469,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
 
         // console.log(this.user)
-        this.listS.getrecipientsqlid(this.user.id).subscribe(data => console.log(data))
+        this.listS.getrecipientsqlid(this.user.id).subscribe(data => {
+            this.clientId = data;
+        })
 
         this.quoteForm.reset({
             program: null,
@@ -476,6 +480,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             type: null,
             period: [],
             basePeriod: null,
+            programId: null
         });
 
 
@@ -748,8 +753,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             basePeriod: null,
 
             initialBudget: null,
+            daysCalc: 365,
             govtContrib: null,
 
+            programId: null
 
         });
 
@@ -958,6 +965,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         let qteHeader: QuoteHeaderDTO;
 
         const quoteForm = this.quoteForm.getRawValue();
+        // console.log(quoteForm)
+
+        console.log(this.quoteLines);
+        // console.log(qteHeader);
 
         this.quoteLines.forEach(x => {
             let da: QuoteLineDTO = {
@@ -969,27 +980,40 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
                 unitBillRate: x.price,
                 frequency: x.period,
-                lengthInWeeks: x.weekNo
+                lengthInWeeks: x.weekNo,
+                roster: x.rosterString
             };
             qteLineArr.push(da);
         });
 
-        // console.log(this.quoteLines);
-        // console.log(qteLineArr);
-
         qteHeader = {
             programId: quoteForm.programId,
-            // clientId: this.quote
-            // quoteLines: qteLineArr
+            clientId: this.clientId,
+            quoteLines: qteLineArr,
+            daysCalc: 365,
+            budget: "51808.1",
+            quoteBase: 'ANNUALLY',
+            govtContribution: 51808.10,
+            packageSupplements: '000000000000000000',
+            agreedTopUp: '0.00',
+            balanceAtQuote: '0.00',
+            clAssessedIncomeTestedFee: '0.00',
+
+            feesAccepted: 0,
+            basePension: 'SINGLE',
+            dailyBasicCareFee: '$0.00',
+            dailyIncomeTestedFee: '$0.00',
+            dailyAgreedTopUp: '$0.00',
+            quoteView: 'ANNUALLY',
+
+            personId: this.user.id
+
         }
 
-
-
-
-
-        console.log(this.quoteForm.value)
-
-
+        this.listS.getpostquote(qteHeader)
+            .subscribe(data => {
+                this.globalS.sToast('Success','Quote Added');
+            }) 
     }
     
     deleteCarePlanGoal(data: any){

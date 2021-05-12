@@ -92,7 +92,20 @@ export interface QuoteHeaderDTO {
     daysCalc?: number,
     budget?: string,
     govtContribution?: number,
+
     quoteBase?: string,
+    packageSupplements?: string,
+    agreedTopUp?: string,
+    balanceAtQuote?: string,
+    clAssessedIncomeTestedFee?: string,
+    feesAccepted?: number,
+    basePension?: string,
+    dailyBasicCareFee?: string,
+    dailyIncomeTestedFee?: string,
+    dailyAgreedTopUp?: string,
+    quoteView?: string,
+
+    personId?: string,
    
     quoteLines?: Array<QuoteLineDTO>
 }

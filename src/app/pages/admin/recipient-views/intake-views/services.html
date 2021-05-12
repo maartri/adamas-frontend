@@ -37,179 +37,180 @@
 (nzOnCancel)="handleCancel()">
 <div [formGroup]="inputForm">
     <div nz-row nzGutter="24" class="mrg-btm" >
-        <nz-tabset>
-            <nz-tab nzTitle="Service Information" style="margin-top: -16px;">
-                <div nz-row nzSpan="24">
-                    <div nz-col nzSpan="12"class="pad-r-5">
-                        <div nz-row nzJustify class="mrg-btm-half">
-                            <nz-card [nzSize]="'small'" nzTitle="Service Status and Funding">
-                                <nz-card [nzSize]="'small'" nzTitle="Mandatory Details" style="border-color:red;">
-                                    <div nz-row nzJustify class="mrg-btm-half">
-                                        <div nz-col nzSpan="5" class="text-right">
-                                            <label nzFor="Status">Description : &nbsp;</label>
-                                        </div>
-                                        <div nz-col nzSpan="10">
-                                            <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="status" nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let stat of status" [nzLabel]="stat" [nzValue]="stat"></nz-option>
-                                            </nz-select>
-                                        </div>
+        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSelectedIndex]="tabFindIndex">
+            <nz-tab nzTitle="Service Information" (nzClick)="tabFindChange(0)"> </nz-tab>
+        </nz-tabset>      
+        <div *ngIf="tabFindIndex == 0">
+            <div nz-row nzSpan="24">
+                <div nz-col nzSpan="12"class="pad-r-5">
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzSize]="'small'" nzTitle="Service Status and Funding">
+                            <nz-card [nzSize]="'small'" nzTitle="Mandatory Details" style="border-color:red;">
+                                <div nz-row nzJustify class="mrg-btm-half">
+                                    <div nz-col nzSpan="5" class="text-right">
+                                        <label nzFor="Status">Description : &nbsp;</label>
                                     </div>
-                                    <div nz-row nzJustify class="mrg-btm-half">
-                                        <div nz-col nzSpan="5" class="text-right">
-                                            <label nzFor="Status">Program : &nbsp;</label>
-                                        </div>
-                                        <div nz-col nzSpan="13">
-                                            <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="program" nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let prog of program" [nzLabel]="prog.name" [nzValue]="prog.name"></nz-option>
-                                            </nz-select>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify class="mrg-btm-half">
-                                        <div nz-col nzSpan="5" class="text-right">
-                                        </div>
-                                        <div nz-col nzSpan="16">
-                                            <label nz-checkbox formControlName="includeCaseManagement">Include Case Management In Activities</label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify class="mrg-btm-half">
-                                        <div nz-col nzSpan="5" class="text-right">
-                                            <label nzFor="Status">Activity : &nbsp;</label>
-                                        </div>
-                                        <div nz-col nzSpan="13">
-                                            <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="activity" nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let activity of activities" [nzLabel]="activity.title" [nzValue]="activity.title"></nz-option>
-                                            </nz-select>
-                                        </div>
-                                    </div>
-                                </nz-card>
-                            </nz-card>
-                        </div>
-                        <div nz-row nzJustify class="mrg-btm-half">
-                            <nz-card [nzSize]="'small'" nzTitle="Frequency and Duration">
-                                <div nz-row nzJustify>
-                                    <div nz-col nzSpan="3" class="text-left pad-r-5">
-                                        <label for="Freq">Freq</label>
-                                        <input nz-input [nzSize]="'small'" formControlName="freq" [disabled]="!this.inputForm.get('activity').value" />
-                                    </div>
-                                    <div nz-col nzSpan="8" class="text-left pad-r-5">
-                                        <label for="Period">Period</label>
-                                        <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" [nzDisabled]="!this.inputForm.get('activity').value" formControlName="period" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let period of periods" [nzLabel]="period" [nzValue]="period"></nz-option>
+                                    <div nz-col nzSpan="10">
+                                        <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="status" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let stat of status" [nzLabel]="stat" [nzValue]="stat"></nz-option>
                                         </nz-select>
                                     </div>
-                                    <div nz-col nzSpan="3" class="text-left pad-r-5">
-                                        <label for="Dur'n">Dur'n</label>
-                                        <input nz-input [nzSize]="'small'" [disabled]="!this.inputForm.get('activity').value" formControlName="freq" />
+                                </div>
+                                <div nz-row nzJustify class="mrg-btm-half">
+                                    <div nz-col nzSpan="5" class="text-right">
+                                        <label nzFor="Status">Program : &nbsp;</label>
+                                    </div>
+                                    <div nz-col nzSpan="13">
+                                        <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="program" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let prog of program" [nzLabel]="prog.name" [nzValue]="prog.name"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify class="mrg-btm-half">
+                                    <div nz-col nzSpan="5" class="text-right">
+                                    </div>
+                                    <div nz-col nzSpan="16">
+                                        <label nz-checkbox formControlName="includeCaseManagement">Include Case Management In Activities</label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify class="mrg-btm-half">
+                                    <div nz-col nzSpan="5" class="text-right">
+                                        <label nzFor="Status">Activity : &nbsp;</label>
+                                    </div>
+                                    <div nz-col nzSpan="13">
+                                        <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="activity" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let activity of activities" [nzLabel]="activity.title" [nzValue]="activity.title"></nz-option>
+                                        </nz-select>
                                     </div>
                                 </div>
                             </nz-card>
-                        </div>
-                        <div nz-row nzJustify class="mrg-btm-half">
-                            <nz-card [nzSize]="'small'" nzTitle="Budget">
-                                <div nz-row nzJustify>
-                                    <div nz-col nzSpan="6" class="text-left pad-r-5">
-                                        <label for="Type">Type</label>
-                                        <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="budgetType" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let type of budgetTypes" [nzLabel]="type" [nzValue]="type"></nz-option>
-                                        </nz-select>
-                                    </div>
-                                    <div nz-col nzSpan="3" class="text-left pad-r-5">
-                                        <label for="Amount">Amount</label>
-                                        <input nz-input [nzSize]="'small'" formControlName="bamount" />
-                                    </div>
-                                    <div nz-col nzSpan="6" class="text-left pad-r-5">
-                                        <label for="Enforcement">Enforcement</label>
-                                        <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="enforcement" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let enforc of enforcement" [nzLabel]="enforc" [nzValue]="enforc"></nz-option>
-                                        </nz-select>
-                                    </div>
-                                    <div nz-col nzSpan="4" class="text-left pad-r-5">
-                                        <label for="Starting">Starting</label>
-                                        <nz-date-picker  formControlName="starting" [nzSize]="'small'" [nzFormat]="dateFormat"></nz-date-picker>
-                                    </div>
-                                </div>
-                            </nz-card>
-                        </div>
-                        <div nz-row nzJustify class="mrg-btm-half">
-                            <nz-card [nzSize]="'small'" nzTitle="Special Pricing" [nzExtra]="extraTemplate">
-                                <div nz-row nzJustify>
-                                    <div nz-col nzSpan="6" class="text-left pad-r-5">
-                                        <label for="Bill Unit">Bill Unit</label>
-                                        <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" [nzDisabled]="!this.inputForm.get('specialPricing').value" formControlName="billunit" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let unit of billunit" [nzLabel]="unit" [nzValue]="unit"></nz-option>
-                                        </nz-select>
-                                    </div>
-                                    <div nz-col nzSpan="3" class="text-left pad-r-5">
-                                        <label for="Amount">Amount</label>
-                                        <input nz-input [nzSize]="'small'" [disabled]="!this.inputForm.get('specialPricing').value" formControlName="namount" />
-                                    </div>
-                                    <div nz-col nzSpan="2" class="text-left pad-r-5">
-                                        <label for="GST">GST</label>
-                                        <label nz-checkbox formControlName="gst"></label>
-                                    </div>
-                                    <div nz-col nzSpan="8" class="text-left pad-r-5">
-                                        <label for="Bill To">Bill To</label>
-                                        <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="period" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let recip of listRecipients" [nzLabel]="recip.accountNo" [nzValue]="recip.accountNo"></nz-option>
-                                        </nz-select>
-                                    </div>
-                                </div>
-                                <div nz-row nzJustify>
-                                    <label nz-checkbox formControlName="includeCaseManagement"> Exclude From Price Updates</label>
-                                </div>
-                            </nz-card>
-                            <ng-template #extraTemplate>
-                                <b>Use SPECIAL PRICING : </b> &nbsp;<label nz-checkbox formControlName="specialPricing"></label>
-                            </ng-template>
-                        </div>
-                    </div>
-                    <div nz-col nzSpan="12">
-                        <div nz-row nzJustify class="mrg-btm-half">
-                            <nz-card [nzSize]="'small'" nzTitle="Service Competencies" [nzExtra]="extraTemplatebtn" style="height:325px;overflow:scroll;">
-                                <div nz-row nzSpan="24">
-                                    <div nz-col nzSpan="20"class="pad-r-5" style="width:100%;">
-                                        <nz-table #basicTable nzWidth="100%" style="margin-top: 0px;" [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
-                                        [nzFrontPagination]="false" [nzData]="tableData">
-                                        <thead>
-                                            <tr>
-                                                <th nzWidth="70%">Competency</th>
-                                                <th nzWidth="10%">Mandatory</th>
-                                                <th nzWidth="20%" class="action">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                                                <td>{{ data.activity}}</td>
-                                                <td>{{ data.serviceProfile}}</td>
-                                                <td>
-                                                    <a (click)="showComptencyEditModal(data.row_num)">Update</a>
-                                                    <nz-divider nzType="vertical"></nz-divider>
-                                                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?" nzPopconfirmPlacement="bottom"
-                                                    (nzOnConfirm)="delete(i)">Delete</a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </nz-table>
-                                </div>
-                            </div>    
-                            
                         </nz-card>
-                        <ng-template #extraTemplatebtn>
-                            <button class="botton success" (click)="showCompetencyModal()">ADD</button>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzSize]="'small'" nzTitle="Frequency and Duration">
+                            <div nz-row nzJustify>
+                                <div nz-col nzSpan="3" class="text-left pad-r-5">
+                                    <label for="Freq">Freq</label>
+                                    <input nz-input [nzSize]="'small'" formControlName="freq" [disabled]="!this.inputForm.get('activity').value" />
+                                </div>
+                                <div nz-col nzSpan="8" class="text-left pad-r-5">
+                                    <label for="Period">Period</label>
+                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" [nzDisabled]="!this.inputForm.get('activity').value" formControlName="period" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let period of periods" [nzLabel]="period" [nzValue]="period"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div nz-col nzSpan="3" class="text-left pad-r-5">
+                                    <label for="Dur'n">Dur'n</label>
+                                    <input nz-input [nzSize]="'small'" [disabled]="!this.inputForm.get('activity').value" formControlName="freq" />
+                                </div>
+                            </div>
+                        </nz-card>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzSize]="'small'" nzTitle="Budget">
+                            <div nz-row nzJustify>
+                                <div nz-col nzSpan="6" class="text-left pad-r-5">
+                                    <label for="Type">Type</label>
+                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="budgetType" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let type of budgetTypes" [nzLabel]="type" [nzValue]="type"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div nz-col nzSpan="3" class="text-left pad-r-5">
+                                    <label for="Amount">Amount</label>
+                                    <input nz-input [nzSize]="'small'" formControlName="bamount" />
+                                </div>
+                                <div nz-col nzSpan="6" class="text-left pad-r-5">
+                                    <label for="Enforcement">Enforcement</label>
+                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="enforcement" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let enforc of enforcement" [nzLabel]="enforc" [nzValue]="enforc"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div nz-col nzSpan="4" class="text-left pad-r-5">
+                                    <label for="Starting">Starting</label>
+                                    <nz-date-picker  formControlName="starting" [nzSize]="'small'" [nzFormat]="dateFormat"></nz-date-picker>
+                                </div>
+                            </div>
+                        </nz-card>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzSize]="'small'" nzTitle="Special Pricing" [nzExtra]="extraTemplate">
+                            <div nz-row nzJustify>
+                                <div nz-col nzSpan="6" class="text-left pad-r-5">
+                                    <label for="Bill Unit">Bill Unit</label>
+                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" [nzDisabled]="!this.inputForm.get('specialPricing').value" formControlName="billunit" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let unit of billunit" [nzLabel]="unit" [nzValue]="unit"></nz-option>
+                                    </nz-select>
+                                </div>
+                                <div nz-col nzSpan="3" class="text-left pad-r-5">
+                                    <label for="Amount">Amount</label>
+                                    <input nz-input [nzSize]="'small'" [disabled]="!this.inputForm.get('specialPricing').value" formControlName="namount" />
+                                </div>
+                                <div nz-col nzSpan="2" class="text-left pad-r-5">
+                                    <label for="GST">GST</label>
+                                    <label nz-checkbox formControlName="gst"></label>
+                                </div>
+                                <div nz-col nzSpan="8" class="text-left pad-r-5">
+                                    <label for="Bill To">Bill To</label>
+                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="period" nzShowSearch nzAllowClear style="width:100%;">
+                                        <nz-option *ngFor="let recip of listRecipients" [nzLabel]="recip.accountNo" [nzValue]="recip.accountNo"></nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                            <div nz-row nzJustify>
+                                <label nz-checkbox formControlName="includeCaseManagement"> Exclude From Price Updates</label>
+                            </div>
+                        </nz-card>
+                        <ng-template #extraTemplate>
+                            <b>Use SPECIAL PRICING : </b> &nbsp;<label nz-checkbox formControlName="specialPricing"></label>
                         </ng-template>
                     </div>
-                    <div nz-row nzJustify>
-                        <nz-card [nzSize]="'small'" nzTitle="Instruction / Notes" [nzExtra]="extraTemplatetwo">
-                            <textarea rows="11" nz-input  formControlName="period" style="resize: none;"></textarea>
-                        </nz-card>
-                    </div>
-                    <ng-template #extraTemplatetwo>
-                        <b>Auto Insert Notes To Roaster : </b> &nbsp;<label nz-checkbox formControlName="includeCaseManagement"></label>
+                </div>
+                <div nz-col nzSpan="12">
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzSize]="'small'" nzTitle="Service Competencies" [nzExtra]="extraTemplatebtn" style="height:325px;overflow:scroll;">
+                            <div nz-row nzSpan="24">
+                                <div nz-col nzSpan="20"class="pad-r-5" style="width:100%;">
+                                    <nz-table #basicTable nzWidth="100%" style="margin-top: 0px;" [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
+                                    [nzFrontPagination]="false" [nzData]="tableData">
+                                    <thead>
+                                        <tr>
+                                            <th nzWidth="70%">Competency</th>
+                                            <th nzWidth="10%">Mandatory</th>
+                                            <th nzWidth="20%" class="action">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                                            <td>{{ data.activity}}</td>
+                                            <td>{{ data.serviceProfile}}</td>
+                                            <td>
+                                                <a (click)="showComptencyEditModal(data.row_num)">Update</a>
+                                                <nz-divider nzType="vertical"></nz-divider>
+                                                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?" nzPopconfirmPlacement="bottom"
+                                                (nzOnConfirm)="delete(i)">Delete</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </nz-table>
+                            </div>
+                        </div>    
+                        
+                    </nz-card>
+                    <ng-template #extraTemplatebtn>
+                        <button class="botton success" (click)="showCompetencyModal()">ADD</button>
                     </ng-template>
                 </div>
+                <div nz-row nzJustify>
+                    <nz-card [nzSize]="'small'" nzTitle="Instruction / Notes" [nzExtra]="extraTemplatetwo">
+                        <textarea rows="11" nz-input  formControlName="period" style="resize: none;"></textarea>
+                    </nz-card>
+                </div>
+                <ng-template #extraTemplatetwo>
+                    <b>Auto Insert Notes To Roaster : </b> &nbsp;<label nz-checkbox formControlName="includeCaseManagement"></label>
+                </ng-template>
             </div>
-        </nz-tab>
-    </nz-tabset>
+        </div>
+    </div>
 </div>
 </div>
 <div *nzModalFooter>
@@ -221,7 +222,6 @@
     <form nz-form [formGroup]="inputForm" >
         <div nz-row nzGutter="24">    
             <div *ngIf="!isUpdateCompetency" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Competencies Required</h4>
                 <nz-input-group [nzSuffix]="suffixIconSearch">
                     <input type="text" nz-input placeholder="search text" [(ngModel)]="inputvalueSearch" (keyup)="searchCompetenncy($event)" [ngModelOptions]="{standalone: true}" />
                 </nz-input-group>

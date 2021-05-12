@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef,ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap, startWith } from 'rxjs/operators';
@@ -23,7 +23,8 @@ export class AddReferralComponent implements OnInit {
 
   @Input() open: boolean = false;
   @Input() type: string = 'referral';
-
+  @ViewChild('sample', { static: false }) _lastname: ElementRef;
+  
   @Output() openRefer = new EventEmitter();
 
   referralGroup: FormGroup;
@@ -69,6 +70,7 @@ export class AddReferralComponent implements OnInit {
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
     private listS: ListService,
+    private elemtRef :ElementRef,
     private cd: ChangeDetectorRef
   ) {
 
@@ -104,6 +106,9 @@ export class AddReferralComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    setTimeout(() => {
+      this._lastname.nativeElement.focus();
+    });
     for (let property in changes) {
       if (property == 'open' && 
             !changes[property].firstChange &&
@@ -115,7 +120,9 @@ export class AddReferralComponent implements OnInit {
   }
 
   resetGroup() {
-
+    setTimeout(() => {
+      this._lastname.nativeElement.focus();
+    });
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
       dob: new FormControl(this.globalS.getAgedCareDate(), Validators.required),
@@ -234,9 +241,8 @@ export class AddReferralComponent implements OnInit {
         }
         this.verifyAccount.next();
       });
-
   }
-
+  
   // contactTypeChange(index: number) {
   //   var contact = this.referralGroup.get('contacts') as FormArray;
   //   contact.controls[index].get('contact').reset();

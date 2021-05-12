@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes,status,period,budgetTypes,enforcement,billunit, ClientService } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes,status,period,budgetTypes,enforcement,billunit, ClientService, MenuService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -51,11 +51,14 @@ export class IntakeServices implements OnInit, OnDestroy {
     competencyListCopy: any;
     temp: any[];
     listRecipients: any;
+    isUpdatePackageType: any;
+    listCompetencyByPersonId: any;
 
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
         private listS: ListService,
+        private menuS: MenuService,
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
@@ -229,10 +232,66 @@ export class IntakeServices implements OnInit, OnDestroy {
           this.CompetencycheckedList = this.CompetencycheckedList.filter(m=>m!= option.name)
         }
     }
-    saveCompetency(){
-        
+    loadCompetency(){
+        this.menuS.getlistCompetencyByPersonId(this.user.id).subscribe(data => {
+          this.listCompetencyByPersonId = data;
+          this.loading = false;
+          this.cd.detectChanges();
+        });
     }
+    saveCompetency(){
+        this.postLoading = true;     
+        const group = this.inputForm;
+        let insertOne = false;
+        if(!this.isUpdatePackageType){
+          this.CompetencycheckedList.forEach( (element) => {
+            let is_exist   = this.globalS.isCompetencyExists(this.listCompetencyByPersonId,element);
+            if(!is_exist){
+              let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('"+this.user.id+"', 'PROG_COMP', 'PROG_COMP', '"+element+"', '')";
+              this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+                insertOne = true;
+              });
+            }
+          });
+          if(insertOne){
+            this.globalS.sToast('Success', 'Saved successful');
+          }
+          this.postLoading = false;
+          this.handleCompetencyCancel();
+          this.loading = true;
+          this.loadCompetency();
+          this.CompetencycheckedList = [];
+        }else{
+        //   this.postLoading = true;
+        //   const group = this.inputForm;
+        //   let competenctNumber  =  group.get('competenctNumber').value;
+        //   let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
+        //   let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
+        //   let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
+        //   let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
+  
+        //   let sql  = "UPDATE HumanResources SET [PersonID] = '"+this.personId+"', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
+        //   this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+        //       if (data) 
+        //       this.globalS.sToast('Success', 'Updated successful');     
+        //       else
+        //       this.globalS.sToast('Unsuccess', 'Updated successful');
+        //       this.postLoading = false;
+        //       this.loadCompetency();     
+        //       this.handleCompetencyCancel();  
+        //       this.CompetencycheckedList = [];
+        //       this.isUpdatePackageType = false;
+        //       this.loading = false;
+        //     });
+        }
+      }
+
     handleCompetencyCancel(){
         this.competencymodal = false;
+    }
+    
+    tabFindIndex: number = 0;
+        tabFindChange(index: number){
+         this.tabFindIndex = index;
     }
 }

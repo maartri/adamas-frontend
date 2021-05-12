@@ -64,7 +64,7 @@
                     <div nz-row >
                         <div nz-col nzSpan=12>
                             <div class="form-group">
-                                <nz-date-picker nzPlaceHolder="Birthdate" formControlName="dob" [nzFormat]="dateFormat" [nzDefaultPickerValue]="defaultDate"></nz-date-picker>
+                                <nz-date-picker nzPlaceHolder="Birthdate" (nzOnOpenChange)="dateOpenChange($event)" formControlName="dob" [nzFormat]="dateFormat" [nzDefaultPickerValue]="defaultDate"></nz-date-picker>
                             </div>
                         </div>                       
                     </div>

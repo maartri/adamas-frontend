@@ -122,10 +122,24 @@ export class AddReferralComponent implements OnInit {
   getdefaultDate(){
    this.defaultDate = this.globalS.getAgedCareDate()
   }
+
+  defaultBirthDate(): Date{
+    var currDate = new Date();
+    currDate.setFullYear(currDate.getFullYear() - 65);
+    return currDate;
+  }
+
+  dateOpenChange(data: any){
+    this.referralGroup.patchValue({
+      dob: this.defaultBirthDate()
+    });
+  }
+
   resetGroup() {
     setTimeout(() => {
       this._lastname.nativeElement.focus();
     });
+    
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
       dob: new FormControl('', Validators.required),

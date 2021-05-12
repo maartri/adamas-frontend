@@ -60,6 +60,9 @@ export class AddReferralComponent implements OnInit {
   current: number = 0;
   generatedAccount: string;
   accountTaken: boolean;
+  default_branch: string  = '';
+  default_manager: string = '';
+  default_agency: string  = '';
 
   constructor(
     private clientS: ClientService,
@@ -70,26 +73,8 @@ export class AddReferralComponent implements OnInit {
   ) {
 
   }
-
   ngOnInit() {
     this.resetGroup();    
-    
-
-
-    this.referralGroup.patchValue({
-      dob:this.globalS.getAgedCareDate(),
-    })
-    
-    this.referralGroup.controls.dob.setValue(this.globalS.getAgedCareDate());
-    
-    
-
-    
-    console.log(this.globalS.getAgedCareDate());
-
-
-
-
     this.verifyAccount.pipe(
       debounceTime(300),
       concatMap(e => {
@@ -133,7 +118,7 @@ export class AddReferralComponent implements OnInit {
 
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
-      dob: new FormControl('', Validators.required),
+      dob: new FormControl(this.globalS.getAgedCareDate(), Validators.required),
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),
@@ -150,9 +135,9 @@ export class AddReferralComponent implements OnInit {
       otherContacts: new FormArray([this.createOtherContact()]),
       gpDetails: new FormArray([this.createGpDetails()]),
 
-      branch: new FormControl(''),
-      agencyDefinedGroup: new FormControl(''),
-      recipientCoordinator: new FormControl(''),
+      branch: new FormControl(this.default_branch),
+      agencyDefinedGroup: new FormControl(this.default_agency),
+      recipientCoordinator: new FormControl(this.default_manager),
       referral: new FormControl(''),
       confirmation: new FormControl(null),
 
@@ -345,12 +330,29 @@ export class AddReferralComponent implements OnInit {
         return new RemoveFirstLast().transform(x.description)
       });
     })
-    this.listS.getlistbranches().subscribe(data => this.branches = data.map(x => x.toUpperCase()));
-    this.clientS.getmanagers().subscribe(data => this.managers = data.map(x => {
+    this.listS.getlistbranches().subscribe(data => {
+      this.branches = data.map(x => x.toUpperCase())
+      if(this.branches.length == 1){
+        this.default_branch = this.branches[0];
+      }
+    });
+    this.clientS.getmanagers().subscribe(data => {
+      this.managers = data.map(x => {
         x['description'] =  x['description'].toUpperCase();
-        return x;
-    }));
-    this.listS.getserviceregion().subscribe(data => this.agencies = data.map(x => x.toUpperCase()));
+        return x;})
+        if(this.managers.length == 1){
+            this.default_manager = this.managers[0];
+        }
+        
+    });
+    this.listS.getserviceregion().subscribe(data => {
+      this.agencies = data.map(x => x.toUpperCase())
+        if(this.agencies.length == 1){
+          this.default_agency = this.agencies[0];
+        }
+      console.log();
+      }
+    );
 
     this.listS.getfollowups().subscribe(data => {
       this.notifFollowUpGroup = data.map(x => {
@@ -588,6 +590,21 @@ export class AddReferralComponent implements OnInit {
 
   get canGoNext(): boolean {
     //if (this.current == 0) return true;
+
+    if(this.current == 6 || this.current == 7 || this.current == 8 || this.current == 9){
+      const validateForm = this.referralGroup ;
+      
+      let branch =  this.globalS.isValueNull(validateForm.get('branch').value);
+      let agencyDefinedGroup         =  this.globalS.isValueNull(validateForm.get('agencyDefinedGroup').value);
+      let recipientCoordinator         =  this.globalS.isValueNull(validateForm.get('recipientCoordinator').value);
+      
+      if(this.globalS.isVarNull(branch) || this.globalS.isVarNull(agencyDefinedGroup) || this.globalS.isVarNull(recipientCoordinator)){
+        this.globalS.iToast('Alert', 'First Complete Step No 6  Administration !');
+        this.current = 5; 
+      }
+    }
+
+
     if (this.current == 0 && this.accountTaken == false) return true;
     if (this.current == 1) return true;
     if (this.current == 2) return true;

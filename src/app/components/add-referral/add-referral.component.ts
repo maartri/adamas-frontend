@@ -64,6 +64,7 @@ export class AddReferralComponent implements OnInit {
   default_branch: string  = '';
   default_manager: string = '';
   default_agency: string  = '';
+  defaultDate: string;
 
   constructor(
     private clientS: ClientService,
@@ -118,14 +119,16 @@ export class AddReferralComponent implements OnInit {
       }
     }
   }
-
+  getdefaultDate(){
+   this.defaultDate = this.globalS.getAgedCareDate()
+  }
   resetGroup() {
     setTimeout(() => {
       this._lastname.nativeElement.focus();
     });
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
-      dob: new FormControl(this.globalS.getAgedCareDate(), Validators.required),
+      dob: new FormControl('', Validators.required),
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),

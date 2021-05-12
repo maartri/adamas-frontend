@@ -294,4 +294,8 @@ export class IntakeServices implements OnInit, OnDestroy {
         tabFindChange(index: number){
          this.tabFindIndex = index;
     }
+    tabFindIndexcomp: number = 0;
+        tabFindChangecomp(index: number){
+         this.tabFindIndexcomp = index;
+    }
 }

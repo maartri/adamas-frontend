@@ -472,7 +472,6 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/intake/competency`, data)
     }
    
-
     updateintakecompetency(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/competency`, data)
     }
@@ -480,8 +479,24 @@ export class TimeSheetService {
     deleteintakecompetency(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/intake/competency/${recordNo}`)
     }
+    /** */
 
-    de
+    /**
+     *  Competency
+     */
+
+     postintakeServicecompetency(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/Servicecompetency`, data)
+    }
+   
+    updateintakeServicecompetency(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/Servicecompetency`, data)
+    }
+
+    deleteintakeServicecompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/Servicecompetency/${recordNo}`)
+    }
+
     /** */
 
     /**

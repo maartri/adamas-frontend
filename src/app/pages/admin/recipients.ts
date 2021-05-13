@@ -115,8 +115,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     sample: any;
 
     newReferralModal: boolean = false;
+    newQuoteModal: boolean = false;
     saveModal: boolean = false;
-    quoteModal: boolean = false;
+    
     newOtherModal: boolean = false;
 
     isLoading: boolean = false;
@@ -1299,7 +1300,6 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     handleCancel() {
         this.newReferralModal = false;
         this.saveModal = false;
-        this.quoteModal = false;
         this.newOtherModal = false;
         this.findModalOpen = false;
     }

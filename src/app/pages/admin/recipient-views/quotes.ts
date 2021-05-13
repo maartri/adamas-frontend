@@ -270,6 +270,187 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.quoteGeneralForm.controls.careDomain.setValue("NOT SPECIFIED");
     }
 
+    buildForm() {
+
+        this.inputForm = this.formBuilder.group({
+            autoLogout: [''],
+            emailMessage: false,
+            excludeShiftAlerts: false,
+            excludeFromTravelinterpretation:false,
+            inAppMessage: false,
+            logDisplay: false,
+            pin: [''],
+            staffTimezoneOffset:[''],
+            rosterPublish: false,
+            shiftChange: false,
+            smsMessage: false
+        });
+
+        this.inActiveForm = this.formBuilder.group({
+            timePeriod: []
+        });
+
+        this.activeForm = this.formBuilder.group({
+            aUpdateActivities: true,
+            aUpdateApplicable: true,
+            aCreateBookings: true,
+            aDeleteActivities: false,
+
+            bUpdateActivities: true,
+            bUpdateApplicable: true,
+            bCreateBookings: true,
+            bDeleteActivities: false,
+
+            timePeriod: []
+        });
+
+        this.quoteGeneralForm = this.formBuilder.group({
+            id:null,
+            planType:null,
+            name:null,
+            program: 'NOT SPECIFIED',
+            discipline: 'NOT SPECIFIED',
+            careDomain: 'NOT SPECIFIED',
+            starDate:null,
+            signOfDate:null,
+            reviewDate:null,
+            rememberText:null,
+            publishToApp:false
+        });
+
+        this.quoteForm = this.formBuilder.group({
+            program: null,
+            template: null,
+            no: null,
+            type: null,
+            period: [],
+            basePeriod: null,
+
+            initialBudget: null,
+            daysCalc: 365,
+            govtContrib: null,
+
+            programId: null
+
+        });
+
+        this.quoteIdsForm = this.formBuilder.group({
+            itemId: null
+        });
+
+        this.goalsAndStratergiesForm = this.formBuilder.group({
+            recordnumber:null,
+            goal:'',
+            PersonID:'45976',
+            title : "Goal Of Care : ",
+            ant   : null,
+            lastReview : null,
+            completed:null,
+            percent : null,
+            achievementIndex:'',
+            notes:'',
+            dateAchieved:null,
+            lastReviewed:null,
+            achievementDate:null,
+            achievement:'',
+        });
+
+        this.stratergiesForm = this.formBuilder.group({
+            detail:'',
+            PersonID:this.personIdForStrategy,
+            outcome:null,
+            strategyId:'',
+            serviceTypes:'',
+            recordNumber:'',
+        });
+
+        this.quoteListForm = this.formBuilder.group({
+            chargeType: null,
+            code: null,
+            displayText: null,
+            strategy: null,
+            sequenceNo: null,
+
+            quantity: null,
+            billUnit: null,
+            period: null,
+            weekNo: null,
+            itemId: null,
+
+            price: null,
+            gst: null,
+            min: null,
+            quoteValue: null,
+            quoteBudget: null,
+
+            roster: null,
+            rosterString: null,
+            notes: null,
+
+            editable: true
+        });
+
+        this.quoteListForm.get('chargeType').valueChanges
+        .pipe(
+            switchMap(x => {                
+                this.resetQuotePrimary();
+                if(!x) return EMPTY;
+                return this.listS.getchargetype({
+                    program: this.quoteForm.get('program').value,
+                    index: x
+                  })
+            })
+        ).subscribe(data => {
+            this.codes = data;
+        });
+
+        this.quoteListForm.get('code').valueChanges.pipe(
+            switchMap(x => {
+                if(!x)
+                    return EMPTY;
+
+                return this.listS.getprogramproperties(x)
+            })
+        ).subscribe(data => {
+            this.recipientProperties = data;
+            
+            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None',itemId: data.recnum })
+        });
+
+        this.quoteListForm.get('roster').valueChanges.subscribe(data => {
+            this.weekly = data;
+            this.setPeriod(data);
+        });
+
+        this.quoteForm.get('program').valueChanges
+        .pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                return this.listS.getprogramlevel(x)
+            }),
+            switchMap(x => {                
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
+                    if(x.quantity && x.timeUnit == 'DAY'){
+                        this.quoteForm.patchValue({
+                            govtContrib: (x.quantity*365).toFixed(2),
+                            programId: x.recordNumber
+                        });
+                    }
+                    this.detectChanges();
+                    return this.listS.getpensionandfee();
+                }
+                this.detectChanges();
+                return EMPTY;
+            })
+        ).subscribe(data => {
+            console.log(data)
+            this.detectChanges();
+        });
+
+    }
+
     // buildForm() {
     //     this.inputForm = this.formBuilder.group({
     //         autoLogout: [''],
@@ -693,189 +874,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             shiftChange: data.shiftChange,
             smsMessage: data.smsMessage
         });
-    }
-
-
-    buildForm() {
-
-        this.inputForm = this.formBuilder.group({
-            autoLogout: [''],
-            emailMessage: false,
-            excludeShiftAlerts: false,
-            excludeFromTravelinterpretation:false,
-            inAppMessage: false,
-            logDisplay: false,
-            pin: [''],
-            staffTimezoneOffset:[''],
-            rosterPublish: false,
-            shiftChange: false,
-            smsMessage: false
-        });
-
-        this.inActiveForm = this.formBuilder.group({
-            timePeriod: []
-        });
-
-        this.activeForm = this.formBuilder.group({
-            aUpdateActivities: true,
-            aUpdateApplicable: true,
-            aCreateBookings: true,
-            aDeleteActivities: false,
-
-            bUpdateActivities: true,
-            bUpdateApplicable: true,
-            bCreateBookings: true,
-            bDeleteActivities: false,
-
-            timePeriod: []
-        });
-
-        this.quoteGeneralForm = this.formBuilder.group({
-            id:null,
-            planType:null,
-            name:null,
-            program: 'NOT SPECIFIED',
-            discipline: 'NOT SPECIFIED',
-            careDomain: 'NOT SPECIFIED',
-            starDate:null,
-            signOfDate:null,
-            reviewDate:null,
-            rememberText:null,
-            publishToApp:false
-        });
-
-        this.quoteForm = this.formBuilder.group({
-            program: null,
-            template: null,
-            no: null,
-            type: null,
-            period: [],
-            basePeriod: null,
-
-            initialBudget: null,
-            daysCalc: 365,
-            govtContrib: null,
-
-            programId: null
-
-        });
-
-        this.quoteIdsForm = this.formBuilder.group({
-            itemId: null
-        });
-
-        this.goalsAndStratergiesForm = this.formBuilder.group({
-            recordnumber:null,
-            goal:'',
-            PersonID:'45976',
-            title : "Goal Of Care : ",
-            ant   : null,
-            lastReview : null,
-            completed:null,
-            percent : null,
-            achievementIndex:'',
-            notes:'',
-            dateAchieved:null,
-            lastReviewed:null,
-            achievementDate:null,
-            achievement:'',
-        });
-
-        this.stratergiesForm = this.formBuilder.group({
-            detail:'',
-            PersonID:this.personIdForStrategy,
-            outcome:null,
-            strategyId:'',
-            serviceTypes:'',
-            recordNumber:'',
-        });
-
-        this.quoteListForm = this.formBuilder.group({
-            chargeType: null,
-            code: null,
-            displayText: null,
-            strategy: null,
-            sequenceNo: null,
-
-            quantity: null,
-            billUnit: null,
-            period: null,
-            weekNo: null,
-            itemId: null,
-
-            price: null,
-            gst: null,
-            min: null,
-            quoteValue: null,
-            quoteBudget: null,
-
-            roster: null,
-            rosterString: null,
-            notes: null,
-
-            editable: true
-        });
-
-        this.quoteListForm.get('chargeType').valueChanges
-        .pipe(
-            switchMap(x => {                
-                this.resetQuotePrimary();
-                if(!x) return EMPTY;
-                return this.listS.getchargetype({
-                    program: this.quoteForm.get('program').value,
-                    index: x
-                  })
-            })
-        ).subscribe(data => {
-            this.codes = data;
-        });
-
-        this.quoteListForm.get('code').valueChanges.pipe(
-            switchMap(x => {
-                if(!x)
-                    return EMPTY;
-
-                return this.listS.getprogramproperties(x)
-            })
-        ).subscribe(data => {
-            this.recipientProperties = data;
-            
-            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None',itemId: data.recnum })
-        });
-
-        this.quoteListForm.get('roster').valueChanges.subscribe(data => {
-            this.weekly = data;
-            this.setPeriod(data);
-        });
-
-        this.quoteForm.get('program').valueChanges
-        .pipe(
-            switchMap(x => {
-                if(!x) return EMPTY;
-                return this.listS.getprogramlevel(x)
-            }),
-            switchMap(x => {                
-                this.IS_CDC = false;
-                if(x.isCDC){
-                    this.IS_CDC = true;
-                    if(x.quantity && x.timeUnit == 'DAY'){
-                        this.quoteForm.patchValue({
-                            govtContrib: (x.quantity*365).toFixed(2),
-                            programId: x.recordNumber
-                        });
-                    }
-                    this.detectChanges();
-                    return this.listS.getpensionandfee();
-                }
-                this.detectChanges();
-                return EMPTY;
-            })
-        ).subscribe(data => {
-            console.log(data)
-            this.detectChanges();
-        });
-
-    }
+    }    
 
     detectChanges(){
         this.cd.markForCheck();

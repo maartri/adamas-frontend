@@ -52,6 +52,7 @@ import { SelectListRecipientComponent } from './select-list-recipient/select-lis
 import { FilterComponent } from './filter/filter.component';
 import { IntervalQuoteComponent } from './interval-quote/interval-quote.component';
 import { PrintPdfComponent } from './print-pdf/print-pdf.component';
+import { AddQuoteComponent } from './add-quote/add-quote.component';
 
 
 @NgModule({
@@ -91,7 +92,8 @@ import { PrintPdfComponent } from './print-pdf/print-pdf.component';
     SelectListRecipientComponent,
     FilterComponent,
     IntervalQuoteComponent,
-    PrintPdfComponent
+    PrintPdfComponent,
+    AddQuoteComponent
   ],
   imports: [
     CommonModule,
@@ -136,7 +138,8 @@ import { PrintPdfComponent } from './print-pdf/print-pdf.component';
     RecipientsOptionsComponent,
     NgSelectModule,
     FilterComponent,
-    IntervalQuoteComponent
+    IntervalQuoteComponent,
+    AddQuoteComponent
   ],
   providers: [
     

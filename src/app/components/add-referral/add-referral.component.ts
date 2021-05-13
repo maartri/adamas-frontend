@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap, startWith } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { Observable, of, from, Subject, EMPTY, combineLatest } from 'rxjs';
   styleUrls: ['./add-referral.component.css']
 })
   
-export class AddReferralComponent implements OnInit {
+export class AddReferralComponent implements OnInit, OnDestroy {
 
   private verifyAccount = new Subject<any>();
 
@@ -64,6 +64,8 @@ export class AddReferralComponent implements OnInit {
   default_manager: string = '';
   default_agency: string  = '';
 
+  private destroy$ = new Subject();
+
   constructor(
     private clientS: ClientService,
     private formBuilder: FormBuilder,
@@ -101,6 +103,11 @@ export class AddReferralComponent implements OnInit {
         this.cd.markForCheck();
       }
     });
+  }
+
+  ngOnDestroy(){
+    this.destroy$.next();  // trigger the unsubscribe
+    this.destroy$.complete(); // finalize & clean up the subject stream
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -320,23 +327,23 @@ export class AddReferralComponent implements OnInit {
   }
 
   populateDropdowns(): void {
-    this.clientS.getcontacttype().subscribe(data => {
+    this.clientS.getcontacttype().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.contactType = data.map(x => {
         return (new RemoveFirstLast().transform(x.description)).trim();
       });
     })
-    this.clientS.getaddresstype().subscribe(data => {
+    this.clientS.getaddresstype().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.addressType = data.map(x => {
         return new RemoveFirstLast().transform(x.description)
       });
     })
-    this.listS.getlistbranches().subscribe(data => {
+    this.listS.getlistbranches().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.branches = data.map(x => x.toUpperCase())
       if(this.branches.length == 1){
         this.default_branch = this.branches[0];
       }
     });
-    this.clientS.getmanagers().subscribe(data => {
+    this.clientS.getmanagers().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.managers = data.map(x => {
         x['description'] =  x['description'].toUpperCase();
         return x;})
@@ -345,7 +352,7 @@ export class AddReferralComponent implements OnInit {
         }
         
     });
-    this.listS.getserviceregion().subscribe(data => {
+    this.listS.getserviceregion().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.agencies = data.map(x => x.toUpperCase())
         if(this.agencies.length == 1){
           this.default_agency = this.agencies[0];
@@ -354,7 +361,7 @@ export class AddReferralComponent implements OnInit {
       }
     );
 
-    this.listS.getfollowups().subscribe(data => {
+    this.listS.getfollowups().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.notifFollowUpGroup = data.map(x => {
         return {
           label: x,
@@ -366,7 +373,7 @@ export class AddReferralComponent implements OnInit {
     })
 
 
-    this.listS.getdocumentslist().subscribe(data => {
+    this.listS.getdocumentslist().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.notifDocumentsGroup = data.map(x => {
         return {
           label: x,
@@ -377,7 +384,7 @@ export class AddReferralComponent implements OnInit {
       })
     })
 
-    this.listS.getdatalist().subscribe(data =>  {
+    this.listS.getdatalist().pipe(takeUntil(this.destroy$)).subscribe(data =>  {
       this.datalist = data
     });
 
@@ -573,7 +580,8 @@ export class AddReferralComponent implements OnInit {
     this.accountTaken = null;
     this.current = 0;
 
-    this.resetGroup();
+    // this.resetGroup();
+    this.ngOnDestroy();
   }
 
   next() {

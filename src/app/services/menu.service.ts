@@ -69,6 +69,10 @@ export class MenuService {
         getlistCompetencyByPersonId(recordNo:number):Observable<any>{
             return this.auth.get(`${menu}/competencyByPersonId/${recordNo}`);
         }
+        getlistServiceCompetencyByPersonId(recordNo:string):Observable<any>{
+            return this.auth.get(`${menu}/serviceCompetencyByPersonId/${recordNo}`);
+        }
+        
         getlistApprovedServicesByPersonId(recordNo:string):Observable<any>{
             return this.auth.get(`${menu}/approvedServicesByPersonId/${recordNo}`);
         }

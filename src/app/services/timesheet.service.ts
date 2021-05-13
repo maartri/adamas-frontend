@@ -482,7 +482,7 @@ export class TimeSheetService {
     /** */
 
     /**
-     *  Competency
+     *  Service Competency
      */
 
      postintakeServicecompetency(data: any): Observable<any> {

@@ -53,6 +53,7 @@ export class IntakeServices implements OnInit, OnDestroy {
     listRecipients: any;
     isUpdatePackageType: any;
     listCompetencyByPersonId: any;
+    competencyForm: FormGroup;
 
     constructor(
         private timeS: TimeSheetService,
@@ -157,12 +158,16 @@ export class IntakeServices implements OnInit, OnDestroy {
             billunit:'',
             namount:'',
             gst: false,
-            competency:'',
-            mandatory:false,
-            compPersonId:'',
             compRecord:'',
             recordNumber:'',  
         })
+        this.competencyForm = this.formBuilder.group({
+            competency:'',
+            mandatory:false,
+            PersonID:'',
+            notes:'',
+            recordNumber:'',
+        });
     }
 
     save() {
@@ -176,7 +181,15 @@ export class IntakeServices implements OnInit, OnDestroy {
     delete(index: number) {
 
     }
-
+    deletecompetency(data: any){
+        this.timeS.deleteintakeServicecompetency(data.recordNumber).pipe(
+        takeUntil(this.unsubscribe)).subscribe(data => {
+                        if(data){
+                            this.loadCompetency()
+                            this.globalS.sToast('Success','Competency Deleted')
+                        }
+                    })
+    }
     handleCancel() {
         this.modalOpen = false;
     }
@@ -187,6 +200,7 @@ export class IntakeServices implements OnInit, OnDestroy {
     showAddModal() {
         this.addOREdit = 1;
         this.listDropDown();
+        this.loadCompetency();
         this.modalOpen = true;
 
     }
@@ -197,21 +211,15 @@ export class IntakeServices implements OnInit, OnDestroy {
         this.CompetencycheckedList = [];
         this.competencymodal = true;
     }
-    showComptencyEditModal(index: any){
+    showComptencyEditModal(data: any){
         this.competencymodal = true;
         this.isUpdateCompetency = true;
-        // const { 
-        //   competency,
-        //   mandatory,
-        //   personId,
-        //   recordNumber,
-        // } = this.listCompetencyByPersonId[index];
-        // this.inputForm.patchValue({
-        //   competency: competency,
-        //   mandatory: (mandatory == null) ? false : true,
-        //   personId: personId,
-        //   LeaverecordNumber:recordNumber,
-        // });
+        this.competencyForm.patchValue({
+          competency: data.competency,
+          mandatory: (data.mandatory == false || data.mandatory == null ) ? false : true,
+          notes:data.notes,
+          recordNumber:data.recordNumber,
+        });
       }
     searchCompetenncy(event){
         this.temp = [];
@@ -233,60 +241,64 @@ export class IntakeServices implements OnInit, OnDestroy {
         }
     }
     loadCompetency(){
-        this.menuS.getlistCompetencyByPersonId(this.user.id).subscribe(data => {
+        this.menuS.getlistServiceCompetencyByPersonId(this.user.id).subscribe(data => {
           this.listCompetencyByPersonId = data;
           this.loading = false;
           this.cd.detectChanges();
         });
     }
     saveCompetency(){
-        this.postLoading = true;     
-        const group = this.inputForm;
+        this.postLoading = true;
         let insertOne = false;
-        if(!this.isUpdatePackageType){
+        const { notes,competency,mandatory,PersonID,recordNumber} = this.competencyForm.value;
+        if(!this.isUpdateCompetency){
           this.CompetencycheckedList.forEach( (element) => {
             let is_exist   = this.globalS.isCompetencyExists(this.listCompetencyByPersonId,element);
             if(!is_exist){
-              let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('"+this.user.id+"', 'PROG_COMP', 'PROG_COMP', '"+element+"', '')";
-              this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
-                insertOne = true;
-              });
-            }
+                this.timeS.postintakeServicecompetency({
+                    PersonID: this.user.id,
+                    competencyValue: element,
+                    mandatory:0,
+                   })
+                    .subscribe(data => {
+                        insertOne = true;
+                    });
+                }
           });
           if(insertOne){
             this.globalS.sToast('Success', 'Saved successful');
           }
+          
+          insertOne = false;
           this.postLoading = false;
           this.handleCompetencyCancel();
           this.loading = true;
           this.loadCompetency();
+          this.competencyForm.reset();
           this.CompetencycheckedList = [];
-        }else{
-        //   this.postLoading = true;
-        //   const group = this.inputForm;
-        //   let competenctNumber  =  group.get('competenctNumber').value;
-        //   let leaveActivityCode  =  this.globalS.isValueNull(group.get('leaveActivityCode').value);
-        //   let accumulatedBy      =  this.globalS.isValueNull(group.get('accumulatedBy').value);
-        //   let maxDays            =  this.globalS.isValueNull(group.get('maxDays').value);
-        //   let claimReducedTo     =  this.globalS.isValueNull(group.get('claimReducedTo').value);
-  
-        //   let sql  = "UPDATE HumanResources SET [PersonID] = '"+this.personId+"', [NAME] = "+leaveActivityCode+",[SubType] = "+accumulatedBy+", [User3] = "+maxDays+", [User4] = "+claimReducedTo+", [GROUP] = 'PROG_LEAVE', [TYPE] = 'PROG_LEAVE' WHERE RecordNumber ='"+competenctNumber+"'";
-        //   this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-        //       if (data) 
-        //       this.globalS.sToast('Success', 'Updated successful');     
-        //       else
-        //       this.globalS.sToast('Unsuccess', 'Updated successful');
-        //       this.postLoading = false;
-        //       this.loadCompetency();     
-        //       this.handleCompetencyCancel();  
-        //       this.CompetencycheckedList = [];
-        //       this.isUpdatePackageType = false;
-        //       this.loading = false;
-        //     });
+        }
+        else{
+           this.postLoading = true;
+           this.timeS.updateintakeServicecompetency({
+            PersonID: this.user.id,
+            competencyValue: competency,
+            mandatory:mandatory,
+            notes:notes,
+            recordNumber:recordNumber
+           })
+            .subscribe(data => {
+                this.globalS.sToast('Success', 'Saved successful');
+                this.postLoading = false;
+                this.handleCompetencyCancel();
+                this.loading = true;
+                this.competencyForm.reset();
+                this.loadCompetency();
+            });
         }
       }
 
     handleCompetencyCancel(){
+        this.competencyForm.reset();
         this.competencymodal = false;
     }
     

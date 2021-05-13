@@ -299,11 +299,14 @@ var2 = 'value2'
         }); 
     }
     
-    isCompetencyExists(tableData,username){
-        return tableData.some(function(el) {
-            username = username.replace(/'/g, '');
-            return el.competency.trim().toUpperCase() === username.trim().toUpperCase();
-          })
+    isCompetencyExists(tableData,username){        
+            if(tableData.length > 0 ){
+                return tableData.some(function(el) {
+                    username = username.replace(/'/g, '');
+                    return el.competency.trim().toUpperCase() === username.trim().toUpperCase();
+                  })
+            }
+            return false;
     }
     isTitleExists(tableData,username) {
         return tableData.some(function(el) {

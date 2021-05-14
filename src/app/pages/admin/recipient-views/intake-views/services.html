@@ -48,7 +48,7 @@
                             <nz-card [nzSize]="'small'" nzTitle="Mandatory Details" style="border-color:red;">
                                 <div nz-row nzJustify class="mrg-btm-half">
                                     <div nz-col nzSpan="5" class="text-right">
-                                        <label nzFor="Status">Description : &nbsp;</label>
+                                        <label nzFor="Status">Status : &nbsp;</label>
                                     </div>
                                     <div nz-col nzSpan="10">
                                         <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="status" nzShowSearch nzAllowClear style="width:100%;">
@@ -161,7 +161,7 @@
                             </div>
                         </nz-card>
                         <ng-template #extraTemplate>
-                            <b>Use SPECIAL PRICING : </b> &nbsp;<label nz-checkbox formControlName="specialPricing"></label>
+                            <b>Use SPECIAL PRICING : </b> &nbsp;<label nz-checkbox formControlName="specialPricing" (change)="checkValueChange($event)"></label>
                         </ng-template>
                     </div>
                 </div>

@@ -181,7 +181,7 @@ export class IntakeServices implements OnInit, OnDestroy {
       this.postLoading = false;
     };
     save() {
-            const { PersonID,status,program,activity,freq,period,duration,billunit,namount,activityBreakDown,serviceBiller,specialPricing,gst,autoInsertNotes,excludeFromNDIAPriceUpdates,budgetType,bamount,enforcement,starting } = this.inputForm.value;
+            const { PersonID,status,program,activity,freq,period,duration,billunit,namount,activityBreakDown,serviceBiller,specialPricing,gst,autoInsertNotes,excludeFromNDIAPriceUpdates,budgetType,bamount,enforcement,starting,recordNumber } = this.inputForm.value;
 
 
             this.postLoading = true;     
@@ -219,7 +219,38 @@ export class IntakeServices implements OnInit, OnDestroy {
               }
             })
         }else{
-
+            this.timeS.updateintakeRservices({
+                ServiceStatus: status,
+                ServiceProgram: program,
+                ServiceType:activity,
+                Frequency:freq,
+                Period:period,
+                Duration:duration,
+                UnitType:billunit,
+                UnitBillRate:namount,
+                ActivityBreakDown:activityBreakDown,
+                ServiceBiller:serviceBiller,
+                ForceSpecialPrice:specialPricing,
+                TaxRate:gst,
+                AutoInsertNotes:autoInsertNotes,
+                ExcludeFromNDIAPriceUpdates:excludeFromNDIAPriceUpdates,
+                BudgetType:budgetType,
+                BudgetAmount:bamount,
+                BudgetLimitType:enforcement,
+                BudgetStartDate:starting,
+                RecordNumber:recordNumber
+              }).pipe(takeUntil(this.unsubscribe))
+              .subscribe(data => {
+                if (data) {
+                  this.globalS.sToast('Success', 'Data Updated');
+                  this.loading = false;
+                  this.postLoading = false;
+                  this.isUpdate = false;
+                  this.handleCancel();
+                  this.search();
+                  this.resetModal();
+                }
+              })
         }
         this.resetModal();
     }
@@ -229,6 +260,30 @@ export class IntakeServices implements OnInit, OnDestroy {
         this.listDropDown();
         this.loadCompetency();
         this.modalOpen = true;
+        this.isUpdate = true;
+        this.checkValueChange(data.specialPricing)
+        this.inputForm.patchValue({
+            PersonID: this.user.id,
+              status: data.status,
+              program: data.serviceProgram,
+              activity:data.activity,
+              freq:data.frequency,
+              period:data.period,
+              duration:data.duration,
+              billunit:data.unitType,
+              namount:data.unitBillRate,
+              activityBreakDown:data.activityBreakDown,
+              serviceBiller:data.serviceBiller,
+              specialPricing:(data.forceSpecialPrice == false) ? false : true,
+              gst:(data.taxRate == false) ? false : true,
+              autoInsertNotes:(data.autoInsertNotes == false) ? false : true,
+              excludeFromNDIAPriceUpdates:(data.excludeFromNDIAPriceUpdates == false) ? false : true,
+              budgetType:data.budgetType,
+              bamount:'',
+              enforcement:data.budgetLimitType,
+              starting:data.budgetStartDate,
+              recordNumber:data.recordNumber
+        });
         
     }
 
@@ -238,7 +293,7 @@ export class IntakeServices implements OnInit, OnDestroy {
                             if(data){
                                 this.search()
                                 this.loading = false
-                                this.globalS.sToast('Success','Competency Deleted')
+                                this.globalS.sToast('Success','Service Deleted')
                             }
              })
     }
@@ -247,7 +302,7 @@ export class IntakeServices implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe)).subscribe(data => {
                         if(data){
                             this.loadCompetency()
-                            this.globalS.sToast('Success','Service Deleted')
+                            this.globalS.sToast('Success','Competency Deleted')
                         }
                     })
     }
@@ -369,5 +424,16 @@ export class IntakeServices implements OnInit, OnDestroy {
     tabFindIndexcomp: number = 0;
         tabFindChangecomp(index: number){
          this.tabFindIndexcomp = index;
+    }
+    checkValueChange(event: any){
+        if(( !event.currentTarget.checked) || (event == false) ){
+            this.inputForm.patchValue({
+                gst:false,
+                budgetType:'',
+                bamount:'',
+                enforcement:'',
+                starting:'',
+            })
+        }
     }
 }

@@ -22,10 +22,10 @@
                     <td>{{ data.status }}</td>
                     <td>{{ data.serviceProfile}}</td>
                     <td>
-                        <a (click)="showEditModal(data.row_num)">Update</a>
+                        <a (click)="showEditModal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?" nzPopconfirmPlacement="bottom"
-                        (nzOnConfirm)="delete(i)">Delete</a>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this service from List?" nzPopconfirmPlacement="bottom"
+                        (nzOnConfirm)="delete(data)">Delete</a>
                     </td>
                 </tr>
             </tbody>
@@ -101,7 +101,7 @@
                                 </div>
                                 <div nz-col nzSpan="3" class="text-left pad-r-5">
                                     <label for="Dur'n">Dur'n</label>
-                                    <input nz-input [nzSize]="'small'" [disabled]="!this.inputForm.get('activity').value" formControlName="freq" />
+                                    <input nz-input [nzSize]="'small'" [disabled]="!this.inputForm.get('activity').value" formControlName="duration" />
                                 </div>
                             </div>
                         </nz-card>
@@ -151,13 +151,13 @@
                                 </div>
                                 <div nz-col nzSpan="8" class="text-left pad-r-5">
                                     <label for="Bill To">Bill To</label>
-                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="period" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="serviceBiller" nzShowSearch nzAllowClear style="width:100%;">
                                         <nz-option *ngFor="let recip of listRecipients" [nzLabel]="recip.accountNo" [nzValue]="recip.accountNo"></nz-option>
                                     </nz-select>
                                 </div>
                             </div>
                             <div nz-row nzJustify>
-                                <label nz-checkbox formControlName="includeCaseManagement"> Exclude From Price Updates</label>
+                                <label nz-checkbox formControlName="excludeFromNDIAPriceUpdates"> Exclude From Price Updates</label>
                             </div>
                         </nz-card>
                         <ng-template #extraTemplate>
@@ -186,7 +186,7 @@
                                             <td>
                                                 <a (click)="showComptencyEditModal(data)">Update</a>
                                                 <nz-divider nzType="vertical"></nz-divider>
-                                                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this branch?" nzPopconfirmPlacement="bottom"
+                                                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Service Competency?" nzPopconfirmPlacement="bottom"
                                                 (nzOnConfirm)="deletecompetency(data)">Delete</a>
                                             </td>
                                         </tr>
@@ -202,11 +202,11 @@
                 </div>
                 <div nz-row nzJustify>
                     <nz-card [nzSize]="'small'" nzTitle="Instruction / Notes" [nzExtra]="extraTemplatetwo">
-                        <textarea rows="11" nz-input  formControlName="period" style="resize: none;"></textarea>
+                        <textarea rows="11" nz-input  formControlName="activityBreakDown" style="resize: none;"></textarea>
                     </nz-card>
                 </div>
                 <ng-template #extraTemplatetwo>
-                    <b>Auto Insert Notes To Roaster : </b> &nbsp;<label nz-checkbox formControlName="includeCaseManagement"></label>
+                    <b>Auto Insert Notes To Roaster : </b> &nbsp;<label nz-checkbox formControlName="autoInsertNotes"></label>
                 </ng-template>
             </div>
         </div>

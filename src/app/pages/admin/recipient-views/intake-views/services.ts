@@ -51,7 +51,7 @@ export class IntakeServices implements OnInit, OnDestroy {
     competencyListCopy: any;
     temp: any[];
     listRecipients: any;
-    isUpdatePackageType: any;
+    isUpdate: any;
     listCompetencyByPersonId: any;
     competencyForm: FormGroup;
 
@@ -150,8 +150,9 @@ export class IntakeServices implements OnInit, OnDestroy {
             activity:'',
             freq:'',
             period:'',
+            duration:'',
             enforcement:'',
-            starting:null,
+            starting:'',
             budgetType:'',
             bamount:'',
             specialPricing:false,
@@ -159,6 +160,11 @@ export class IntakeServices implements OnInit, OnDestroy {
             namount:'',
             gst: false,
             compRecord:'',
+            activityBreakDown:'',
+            serviceBiller:'',
+            autoInsertNotes:false,
+            excludeFromNDIAPriceUpdates:false,
+            PersonID:'',
             recordNumber:'',  
         })
         this.competencyForm = this.formBuilder.group({
@@ -169,24 +175,79 @@ export class IntakeServices implements OnInit, OnDestroy {
             recordNumber:'',
         });
     }
-
+    resetModal(){
+      this.inputForm.reset();
+      this.buildForm();
+      this.postLoading = false;
+    };
     save() {
+            const { PersonID,status,program,activity,freq,period,duration,billunit,namount,activityBreakDown,serviceBiller,specialPricing,gst,autoInsertNotes,excludeFromNDIAPriceUpdates,budgetType,bamount,enforcement,starting } = this.inputForm.value;
 
+
+            this.postLoading = true;     
+            if(!this.isUpdate){  
+
+            this.timeS.postintakeRservices({
+              PersonID: this.user.id,
+              ServiceStatus: status,
+              ServiceProgram: program,
+              ServiceType:activity,
+              Frequency:freq,
+              Period:period,
+              Duration:duration,
+              UnitType:billunit,
+              UnitBillRate:namount,
+              ActivityBreakDown:activityBreakDown,
+              ServiceBiller:serviceBiller,
+              ForceSpecialPrice:specialPricing,
+              TaxRate:gst,
+              AutoInsertNotes:autoInsertNotes,
+              ExcludeFromNDIAPriceUpdates:excludeFromNDIAPriceUpdates,
+              BudgetType:budgetType,
+              BudgetAmount:bamount,
+              BudgetLimitType:enforcement,
+              BudgetStartDate:starting,
+            }).pipe(takeUntil(this.unsubscribe))
+            .subscribe(data => {
+              if (data) {
+                this.globalS.sToast('Success', 'Data Added');
+                this.loading = false;
+                this.postLoading = false;
+                this.handleCancel();
+                this.search();
+                this.resetModal();
+              }
+            })
+        }else{
+
+        }
+        this.resetModal();
     }
 
-    showEditModal(index: number) {
-
+    showEditModal(data: any) {
+        this.addOREdit = 2;
+        this.listDropDown();
+        this.loadCompetency();
+        this.modalOpen = true;
+        
     }
 
-    delete(index: number) {
-
+    delete(data: any) {
+        this.timeS.deleteintakerservice(data.recordNumber).pipe(
+            takeUntil(this.unsubscribe)).subscribe(data => {
+                            if(data){
+                                this.search()
+                                this.loading = false
+                                this.globalS.sToast('Success','Competency Deleted')
+                            }
+             })
     }
     deletecompetency(data: any){
         this.timeS.deleteintakeServicecompetency(data.recordNumber).pipe(
         takeUntil(this.unsubscribe)).subscribe(data => {
                         if(data){
                             this.loadCompetency()
-                            this.globalS.sToast('Success','Competency Deleted')
+                            this.globalS.sToast('Success','Service Deleted')
                         }
                     })
     }
@@ -195,14 +256,12 @@ export class IntakeServices implements OnInit, OnDestroy {
     }
     
     log(value: string[]): void {
-        // console.log(value);
     }
     showAddModal() {
         this.addOREdit = 1;
         this.listDropDown();
         this.loadCompetency();
         this.modalOpen = true;
-
     }
     showCompetencyModal(){
         this.competencyList.forEach(x => {
@@ -268,8 +327,8 @@ export class IntakeServices implements OnInit, OnDestroy {
           if(insertOne){
             this.globalS.sToast('Success', 'Saved successful');
           }
-          
-          insertOne = false;
+          this.cd.detectChanges();
+          insertOne = false;    
           this.postLoading = false;
           this.handleCompetencyCancel();
           this.loading = true;
@@ -291,6 +350,7 @@ export class IntakeServices implements OnInit, OnDestroy {
                 this.postLoading = false;
                 this.handleCompetencyCancel();
                 this.loading = true;
+                this.cd.detectChanges();
                 this.competencyForm.reset();
                 this.loadCompetency();
             });

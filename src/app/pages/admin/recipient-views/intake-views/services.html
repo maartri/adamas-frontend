@@ -60,7 +60,7 @@
                                     <div nz-col nzSpan="5" class="text-right">
                                         <label nzFor="Status">Program : &nbsp;</label>
                                     </div>
-                                    <div nz-col nzSpan="13">
+                                    <div nz-col nzSpan="18">
                                         <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="program" nzShowSearch nzAllowClear style="width:100%;">
                                             <nz-option *ngFor="let prog of program" [nzLabel]="prog.name" [nzValue]="prog.name"></nz-option>
                                         </nz-select>
@@ -77,7 +77,7 @@
                                     <div nz-col nzSpan="5" class="text-right">
                                         <label nzFor="Status">Activity : &nbsp;</label>
                                     </div>
-                                    <div nz-col nzSpan="13">
+                                    <div nz-col nzSpan="18">
                                         <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="activity" nzShowSearch nzAllowClear style="width:100%;">
                                             <nz-option *ngFor="let activity of activities" [nzLabel]="activity.title" [nzValue]="activity.title"></nz-option>
                                         </nz-select>
@@ -115,7 +115,7 @@
                                         <nz-option *ngFor="let type of budgetTypes" [nzLabel]="type" [nzValue]="type"></nz-option>
                                     </nz-select>
                                 </div>
-                                <div nz-col nzSpan="3" class="text-left pad-r-5">
+                                <div nz-col nzSpan="4" class="text-left pad-r-5">
                                     <label for="Amount">Amount</label>
                                     <input nz-input [nzSize]="'small'" formControlName="bamount" />
                                 </div>
@@ -125,7 +125,7 @@
                                         <nz-option *ngFor="let enforc of enforcement" [nzLabel]="enforc" [nzValue]="enforc"></nz-option>
                                     </nz-select>
                                 </div>
-                                <div nz-col nzSpan="4" class="text-left pad-r-5">
+                                <div nz-col nzSpan="6" class="text-left pad-r-5">
                                     <label for="Starting">Starting</label>
                                     <nz-date-picker  formControlName="starting" [nzSize]="'small'" [nzFormat]="dateFormat"></nz-date-picker>
                                 </div>
@@ -147,11 +147,11 @@
                                 </div>
                                 <div nz-col nzSpan="2" class="text-left pad-r-5">
                                     <label for="GST">GST</label>
-                                    <label nz-checkbox formControlName="gst"></label>
+                                    <label nz-checkbox formControlName="gst" [nzDisabled]="!this.inputForm.get('specialPricing').value"></label>
                                 </div>
                                 <div nz-col nzSpan="8" class="text-left pad-r-5">
                                     <label for="Bill To">Bill To</label>
-                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="serviceBiller" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="serviceBiller" [nzDisabled]="!this.inputForm.get('specialPricing').value" nzShowSearch nzAllowClear style="width:100%;">
                                         <nz-option *ngFor="let recip of listRecipients" [nzLabel]="recip.accountNo" [nzValue]="recip.accountNo"></nz-option>
                                     </nz-select>
                                 </div>
@@ -215,7 +215,7 @@
 </div>
 <div *nzModalFooter>
     <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-    <button nz-button nzType="primary" (click)="save()" [nzLoading]="loading">Save</button>
+    <button nz-button nzType="primary" (click)="save()" [nzLoading]="loading" [disabled]="!this.inputForm.get('status').value || !this.inputForm.get('program').value || !this.inputForm.get('activity').value ">Save</button>
 </div>
 </nz-modal>
 <nz-modal [nzWidth]="500"  [(nzVisible)]="competencymodal" [nzTitle]="isUpdateCompetency == true ? 'EDIT REQUIRED COMPETENCIES' : 'SELECT REQUIRED COMPETENCIES'" (nzOnCancel)="handleCompetencyCancel()">

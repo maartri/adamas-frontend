@@ -444,7 +444,7 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/intake/services/competency/${recordNo}`)
     }
     deleteintakerservice(recordNo: number): Observable<any> {
-        return this.auth.delete(`${timesheet}/intake/rservices//${recordNo}`)
+        return this.auth.delete(`${timesheet}/intake/rservices/${recordNo}`)
     }
     
 

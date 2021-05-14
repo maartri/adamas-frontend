@@ -297,6 +297,7 @@ export class IntakeServices implements OnInit, OnDestroy {
                             }
              })
     }
+    
     deletecompetency(data: any){
         this.timeS.deleteintakeServicecompetency(data.recordNumber).pipe(
         takeUntil(this.unsubscribe)).subscribe(data => {
@@ -382,7 +383,7 @@ export class IntakeServices implements OnInit, OnDestroy {
           if(insertOne){
             this.globalS.sToast('Success', 'Saved successful');
           }
-          this.cd.detectChanges();
+        //   this.cd.detectChanges();
           insertOne = false;    
           this.postLoading = false;
           this.handleCompetencyCancel();

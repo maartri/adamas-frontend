@@ -443,6 +443,10 @@ export class TimeSheetService {
     deleteintakeservicecompetency(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/intake/services/competency/${recordNo}`)
     }
+    deleteintakerservice(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/rservices/${recordNo}`)
+    }
+    
 
     /** */
 
@@ -472,7 +476,6 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/intake/competency`, data)
     }
    
-
     updateintakecompetency(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/competency`, data)
     }
@@ -480,8 +483,24 @@ export class TimeSheetService {
     deleteintakecompetency(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/intake/competency/${recordNo}`)
     }
+    /** */
 
-    de
+    /**
+     *  Service Competency
+     */
+
+     postintakeServicecompetency(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/Servicecompetency`, data)
+    }
+   
+    updateintakeServicecompetency(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/Servicecompetency`, data)
+    }
+
+    deleteintakeServicecompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/Servicecompetency/${recordNo}`)
+    }
+
     /** */
 
     /**
@@ -1064,15 +1083,21 @@ export class TimeSheetService {
     getintakeservices(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/services/${id}`)
     }
+    
 
     postintakeservices(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/services`, data)
+    }
+    postintakeRservices(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/rservices`, data)
     }
 
     updateintakeservices(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/services`, data)
     }
-
+    updateintakeRservices(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/rservices`, data)
+    }
     getplacements(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/placements/${id}`)
     }

@@ -192,15 +192,15 @@ export class IntakeStaff implements OnInit, OnDestroy {
       if (!this.inputForm.valid)
       return;
       
-      const { list, notes, id } = this.inputForm.value;
+      const { list, notes, recordNumber } = this.inputForm.value;
       const index = this.whatView;
       this.isLoading = true;
       
       if (index == 1) {
-        this.timeS.updateshareduserdefined({
-          group: list,
-          notes,
-          recordNumber: id
+        this.timeS.updateintakestaff({
+          name: list,
+          notes:notes,
+          recordNumber:recordNumber
         }).pipe(
           takeUntil(this.unsubscribe))
           .subscribe(data => {
@@ -213,10 +213,10 @@ export class IntakeStaff implements OnInit, OnDestroy {
         }
         
         if (index == 2) {
-          this.timeS.updateshareduserdefined({
-            group: list,
-            notes,
-            recordNumber: id
+          this.timeS.updateintakestaff({
+            name: list,
+            notes:notes,
+            recordNumber:recordNumber
           }).pipe(
             takeUntil(this.unsubscribe))
             .subscribe(data => {
@@ -258,8 +258,15 @@ export class IntakeStaff implements OnInit, OnDestroy {
           this.modalOpen = true;
       }
         
-        delete(index: number) {
-          
+        delete(recordNo: number) {
+          this.timeS.deleteintakestaff(recordNo)
+            .subscribe(data => {
+                if (data) {
+                    this.handleCancel();
+                    this.success();
+                    this.globalS.sToast('Success', 'Data Deleted');
+                }
+            });
         }
         
         handleCancel() {
@@ -276,5 +283,8 @@ export class IntakeStaff implements OnInit, OnDestroy {
         
         log(value: string[]): void {
         }
-        
+        tabFindIndex: number = 0;
+        tabFindChange(index: number){
+         this.tabFindIndex = index;
+        }
       }

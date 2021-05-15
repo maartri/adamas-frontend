@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input, OnDestroy, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef,ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap, startWith } from 'rxjs/operators';
@@ -23,7 +23,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
   @Input() open: boolean = false;
   @Input() type: string = 'referral';
-
+  @ViewChild('sample', { static: false }) _lastname: ElementRef;
+  
   @Output() openRefer = new EventEmitter();
 
   referralGroup: FormGroup;
@@ -63,6 +64,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   default_branch: string  = '';
   default_manager: string = '';
   default_agency: string  = '';
+  defaultDate: string;
 
   private destroy$ = new Subject();
 
@@ -71,6 +73,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
     private listS: ListService,
+    private elemtRef :ElementRef,
     private cd: ChangeDetectorRef
   ) {
 
@@ -111,6 +114,9 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    setTimeout(() => {
+      this._lastname.nativeElement.focus();
+    });
     for (let property in changes) {
       if (property == 'open' && 
             !changes[property].firstChange &&
@@ -120,12 +126,30 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       }
     }
   }
+  getdefaultDate(){
+   this.defaultDate = this.globalS.getAgedCareDate()
+  }
+
+  defaultBirthDate(): Date{
+    var currDate = new Date();
+    currDate.setFullYear(currDate.getFullYear() - 65);
+    return currDate;
+  }
+
+  dateOpenChange(data: any){
+    this.referralGroup.patchValue({
+      dob: this.defaultBirthDate()
+    });
+  }
 
   resetGroup() {
-
+    setTimeout(() => {
+      this._lastname.nativeElement.focus();
+    });
+    
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
-      dob: new FormControl(this.globalS.getAgedCareDate(), Validators.required),
+      dob: new FormControl('', Validators.required),
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),
@@ -241,9 +265,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
         }
         this.verifyAccount.next();
       });
-
   }
-
+  
   // contactTypeChange(index: number) {
   //   var contact = this.referralGroup.get('contacts') as FormArray;
   //   contact.controls[index].get('contact').reset();

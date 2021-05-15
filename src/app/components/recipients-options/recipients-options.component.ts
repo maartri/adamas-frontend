@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
 import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, CallProcedure } from '../../modules/modules';
-import { ListService, GlobalService, quantity, unit, dateFormat } from '@services/index';
+import { ListService, GlobalService, quantity, unit, dateFormat, ClientService } from '@services/index';
 import { SqlWizardService } from '@services/sqlwizard.service';
 
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
@@ -12,6 +12,7 @@ import { Subject } from 'rxjs';
 import * as _ from 'lodash';
 
 import format from 'date-fns/format';
+import { setDate } from 'date-fns';
 
 // import * as RECIPIENT_OPTION from '../../modules/modules';
 
@@ -159,7 +160,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   programs: Array<any> = [];
   token: UserToken;
 
-  date: any;
+  incidentDocument: any;
+
+  date:any;
+  
 
   originalPackageName: string;
 
@@ -168,16 +172,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     private fb: FormBuilder,
     private cd: ChangeDetectorRef,
     private globalS: GlobalService,
-    private sqlWiz: SqlWizardService
+    private sqlWiz: SqlWizardService,
+    private clientS: ClientService,
   ) { }
 
   ngOnInit(): void {
     this.buildForm();
     this.token = this.globalS.decode();
-
     this.date = format(new Date(), 'MM-dd-yyyy');
-    // console.log(this.user);
-
     
   }  
 
@@ -595,6 +597,7 @@ NOTES:
   done(){
 
     var finalRoster: Array<ProcedureRoster> = [];
+    
 
     // console.log(this.itemGroup.getRawValue());
     // console.log(this.token);
@@ -606,7 +609,7 @@ NOTES:
 
     if(this.option == RECIPIENT_OPTION.REFER_IN){
       
-
+      
       const { 
         referralSource,
         referralCode,
@@ -717,6 +720,10 @@ NOTES:
       this.listS.postreferralin(data).subscribe(x => {
         this.globalS.sToast('Success', 'Package is saved'); 
         this.handleCancel();
+        
+        this.emailnotify();
+        this.writereminder();
+   
       });
 
 
@@ -916,7 +923,25 @@ NOTES:
       });
       
     }
+   
+  
+  
   }
+  emailnotify(){
+    
+
+  const {notes} = this.referInGroup.value;
+  console.log("emailnotify  " + notes)
+    
+    var emailTo = this.globalS.emailaddress; //"mufeed@adamas.net.au"//(this.referralGroup.value.).toString();
+  //var emailCC = (this.referralGroup.value.cc).toString();
+ // var emailSubject = (this.referralGroup.value.subjecttext).toString();
+ var emailSubject = "ADAMAS NOTIFICATION";
+  var emailBody = notes;  
+  location.href = "mailto:" + emailTo + "?" +     
+    (emailSubject ? "&subject=" + emailSubject : "") + 
+    (emailBody ? "&body=" + emailBody : "");
+}
 
   // GETCHECKED_PROGRAMS(list: Array<any>){
   //   return list.filter(x => x.checked);
@@ -1521,7 +1546,11 @@ NOTES:
       this.referOnOpen = false;
       this.referInOpen = false;
 
+      
+
       this.changeDetection();
+
+      
   }
 
   handleOk() {
@@ -1535,5 +1564,33 @@ NOTES:
   onChange(data: any){
     
   }
+  writereminder(){
+    var sql,temp;
+    //let Date1,Date2;
+
+   let Date1 : Date   = new Date();
+   let Date2 :Date = new Date(Date1);
+    
+    
+    
+    temp = (this.globalS.followups.label).toString().substring(0,2)
+    
+    switch (temp) {
+      case '10':
+        Date2.setDate(Date2.getDate() + 10)
+        
+        break;
+        case '30':
+          Date2.setDate(Date2.getDate() + 30)
+        break;
+    
+      default:
+        break;
+    }
+    sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
+    
+    this.clientS.addRefreminder(sql).subscribe(x => console.log(x) )
+  }
+ 
 
 }

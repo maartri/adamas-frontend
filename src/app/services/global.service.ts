@@ -111,8 +111,14 @@ export const contactGroups: Array<string> = ['1-NEXT OF KIN', '2-CARER', '3-MEDI
 
 @Injectable()
 export class GlobalService {
-var1 = 'value1'
-var2 = 'value2'
+var1 = '';
+var2 = '';
+emailaddress:Array<string> = []  ;
+followups:any ;
+doc:any; 
+stafftonotiify:any = "ABFLAT GISELBERT";
+id: any;
+
     constructor(
         private router: Router,
         private toastr: ToastrService,

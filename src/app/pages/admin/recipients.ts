@@ -5,7 +5,7 @@ import { GlobalService, StaffService, ShareService, leaveTypes, ListService } fr
 import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
 import { RECIPIENT_OPTION } from '../../modules/modules';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
-
+import format from 'date-fns/format';
 
 @Component({
     styles: [`
@@ -1179,6 +1179,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         }
 
         console.log(JSON.stringify(event));
+        this.globalS.id = event.uniqueID;
 
         this.user = {
             code: event.accountNo,
@@ -1203,7 +1204,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         private activeRoute: ActivatedRoute,
         private sharedS: ShareService,
         private cd: ChangeDetectorRef,
-        private listS: ListService
+        private listS: ListService,
+        private globalS:GlobalService
     ) {
         this.sharedS.emitProfileStatus$.subscribe(data => {
             console.log(data);
@@ -1221,9 +1223,11 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             }
             
         })
+        
     }
 
     ngOnInit(): void {
+      
 
         // this.listChange({
         //     "agencyDefinedGroup":"ARUNDEL",
@@ -1255,7 +1259,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        
+      
     }
 
     view(index: number) {
@@ -1421,4 +1425,5 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     filterChange(index: number){
       
     }
-}
+   
+}//

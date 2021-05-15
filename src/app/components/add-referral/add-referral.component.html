@@ -386,13 +386,32 @@
 
                 <div nz-row *ngIf="current == 6">
                     <div [formGroup]="referralGroup">
-                        <div class="form-group">
+                        <div class="form-group">  
                             <label for="">Notifications</label>
                             <!-- <nz-select nzAllowClear nzPlaceHolder="Notifications" formControlName="notifications">
                                 <nz-option *ngFor="let l of notifications" [nzLabel]="l" [nzValue]="l"></nz-option>
-                            </nz-select> -->
+                            </nz-select> 
                             <nz-checkbox-group [(ngModel)]="notifCheckBoxGroup" (ngModelChange)="log(notifCheckBoxGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+
+                            -->
+                            <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                        
+                            <!--    <div class="staff-wrapper">
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let notify of notifCheckBoxes">
+                                            <label nz-checkbox [nzValue]="notify.label" [(ngModel)]="notify.disabled" [ngModelOptions]="{standalone: true}">{{ notify.label }}</label>
+                                        </div>
+                                        <div nz-col nzSpan="24" *ngFor="let notify of notifCheckBoxes">
+                                            <label nz-checkbox [nzValue]="notify.label" [(ngModel)]="notify.checked" [ngModelOptions]="{standalone: true}">{{ notify.label }}</label>
+                                        </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                            </div> -->
+
+                            
                         </div>
+                        
                     </div>
                 </div>
 
@@ -403,7 +422,7 @@
                             <!-- <nz-select nzAllowClear nzPlaceHolder="Followup" formControlName="followup">
                                 <nz-option *ngFor="let l of followups" [nzLabel]="l" [nzValue]="l"></nz-option>
                             </nz-select> -->
-                            <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="log(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                            <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                         </div>
                     </div>
                 </div>
@@ -415,7 +434,7 @@
                             <!-- <nz-select nzAllowClear formControlName="document">
                                 <nz-option *ngFor="let l of documentlist" [nzLabel]="l" [nzValue]="l"></nz-option>
                             </nz-select> -->
-                            <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="log(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                            <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="doc(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
 
                         </div>
                     </div>
@@ -453,4 +472,55 @@
             </button>
         </ng-container>
     </div>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="adddoc" [nzWidth]="800" nzTitle="Add Referral Document" (nzOnCancel)="handleCancel()"
+
+><!-- 
+ <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
+    <div nz-col nzSpan="8">
+        <nz-upload nzType="drag" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes" [nzBeforeUpload]="beforeUpload"
+             [nzAction]="urlPath" (nzChange)="handleChange($event)" nzListType="picture"
+            [(nzFileList)]="fileList2">
+
+            <p class="ant-upload-drag-icon">
+                <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+            <p class="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+            </p>
+        </nz-upload>
+    </div>
+   <div nz-col nzSpan="16">
+        <nz-spin *ngIf="loadDocument" nzSimple></nz-spin>
+        <ul class="overflow-list-incident">
+            <li *ngFor="let file of loadedFiles;let i = index">            
+                <div>
+                    <h4>{{ file.filename }}</h4>
+                    <div nz-row nzGutter="32" class="doc-wrapper">
+                        <div nz-col nzSpan="8">
+                            <label for="">Created</label> {{ file.created }}
+                        </div>
+                        <div div nz-col nzSpan="8">
+                            <label for="">Modified</label> {{ file.modified }}
+                        </div>
+                    </div>
+                    <div nz-row nzGutter="32" class="doc-wrapper">
+                        <div nz-col nzSpan="8">
+                            <label for="">Program</label> {{ file.program }}
+                        </div>
+                        <div div nz-col nzSpan="8">
+                            <label for="">Discipline</label> {{ file.discipline }}
+                        </div>
+                        <div div nz-col nzSpan="8">
+                            <label for="">Care Domain</label> {{ file.careDomain }}
+                        </div>
+                    </div>
+                </div>
+            </li> 
+        </ul> 
+        <nz-empty *ngIf="loadDocument == false && loadedFiles?.length == 0"></nz-empty> 
+    </div> 
+</div> -->
 </nz-modal>

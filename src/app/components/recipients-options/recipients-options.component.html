@@ -103,7 +103,7 @@
                                 <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
                             </nz-radio-group>
 
-                            <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
+                            <textarea rows="4" nz-input formControlName="notes" style="margin:15px "></textarea>
                         </div>
                     </div>
 
@@ -1472,13 +1472,14 @@
                                 </nz-select>
                             </div>
                         </div>
-                        <div nz-col nzSpan="8">
+                    <!--    <div nz-col nzSpan="8">
                             <div class="form-group">
                                 <nz-select formControlName="emailNotif" nzAllowClear nzPlaceHolder="Email Notification To" style="width:8rem">
                                     <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
                                 </nz-select>
-                            </div>
+                            </div>                    
                         </div>
+                    -->
                     </div>
                     <div nz-row [nzGutter]="8" >
                         <div nz-col nzSpan="8">
@@ -1487,9 +1488,10 @@
                             </nz-select>
                         </div>                        
                     </div>
+                  
 
                 </div>
-
+                
 
             </div>
         </div>
@@ -1510,3 +1512,6 @@
         </ng-container>
     </div>
 </nz-modal>
+
+
+   

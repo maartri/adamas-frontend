@@ -23,10 +23,12 @@ export class IntakeFunding implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     loading: boolean = false;
+    postLoading: boolean = false;
     modalOpen: boolean = false;
     addOREdit: number;
     inputForm: FormGroup;
     tableData: Array<any> = [];
+    packageDetailForm: FormGroup;
 
     constructor(
         private timeS: TimeSheetService,
@@ -84,7 +86,10 @@ export class IntakeFunding implements OnInit, OnDestroy {
     }
 
     buildForm() {
-        
+            this.packageDetailForm = this.formBuilder.group({
+                name:'',
+                notes:''
+            });
     }
 
     save() {
@@ -100,9 +105,12 @@ export class IntakeFunding implements OnInit, OnDestroy {
     }
 
     handleCancel() {
-        
+        this.modalOpen = false;   
     }
-
+    tabFindIndex: number = 0;
+    tabFindChange(index: number){
+        this.tabFindIndex = index;
+    }
     showAddModal() {
         this.addOREdit = 1;
         this.modalOpen = true;

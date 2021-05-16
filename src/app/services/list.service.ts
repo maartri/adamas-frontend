@@ -574,6 +574,11 @@ export class ListService {
         return this.auth.get(`${list}/indigenous`)
     }
 
+    getnotifyaddresses(Detail:any): Observable<any>{
+        return this.auth.get(`${list}/notifymail/${Detail}`)
+    }
+   
+
     getlistdisabilities(): Observable<any>{
         return this.auth.get(`${list}/disabilities`)
     }

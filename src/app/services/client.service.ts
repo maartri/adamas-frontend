@@ -31,7 +31,10 @@ export class ClientService {
     postprofile(data: any): Observable<any> {
         return this.auth.post(`${client}/profile`, data);
     }
-
+     
+    addRefreminder(sqlString: string): Observable<any>{
+        return this.auth.post(`${client}/addrefreminder`, { Sql: sqlString})
+    }
     isAccountNoUnique(name: string): Observable<any> {
         return this.auth.get(`${client}/is-accountno-unique/${name}`);
     }

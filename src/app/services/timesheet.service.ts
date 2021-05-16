@@ -637,7 +637,10 @@ export class TimeSheetService {
     postremindersrecipient(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/recipient/reminders`, data)
     }
-
+    
+    PostRecipientFollowReminders(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/recipient/followup`, data)
+    }
     updateremindersrecipient(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/recipient/reminders`, data)
     }

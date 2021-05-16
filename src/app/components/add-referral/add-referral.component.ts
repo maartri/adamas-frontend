@@ -8,6 +8,14 @@ import * as moment from 'moment';
 import { RemoveFirstLast } from '@pipes/pipes';
 import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, contactGroups, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { Observable, of, from, Subject, EMPTY, combineLatest } from 'rxjs';
+import { getMultipleValuesInSingleSelectionError } from '@angular/cdk/collections';
+import { Reminders } from '@modules/modules';
+import format from 'date-fns/format';
+import { setDate } from 'date-fns';
+import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import id from 'date-fns/locale/id';
+
 
 @Component({
   selector: 'app-add-referral',
@@ -25,6 +33,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   @Input() type: string = 'referral';
   @ViewChild('sample', { static: false }) _lastname: ElementRef;
   
+  @Input() followupremind: string = '';
+
   @Output() openRefer = new EventEmitter();
 
   referralGroup: FormGroup;
@@ -32,6 +42,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   dateFormat: string = dateFormat;
 
   notifCheckBoxGroup: any;
+  notifCheckBoxes: Array<string> = []
   notifFollowUpGroup: any;
   notifDocumentsGroup: any;
 
@@ -41,6 +52,13 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   addressType: Array<string> = []
   contactType: Array<string> = []
 
+  email: Array<string> = []
+  acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";
+  file :File;
+  fileList2: Array<any> = [];
+  urlPath: string = `api/v2/file/upload-incident-document-procedure`;
+  loadedFiles: Array<any> = [];
+  
 
   loading: boolean;
 
@@ -53,6 +71,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   notifications: Array<string>;
   documentlist: Array<string>;
   datalist: Array<string>;
+  adddoc :boolean = false;
 
   private addresses: FormArray;
   private contacts: FormArray;
@@ -68,13 +87,18 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject();
 
+  token :any ;
+  date: any;
+
   constructor(
     private clientS: ClientService,
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
     private listS: ListService,
     private elemtRef :ElementRef,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private timeS: TimeSheetService,
+    private msg: NzMessageService,
   ) {
 
   }
@@ -169,13 +193,16 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       branch: new FormControl(this.default_branch),
       agencyDefinedGroup: new FormControl(this.default_agency),
       recipientCoordinator: new FormControl(this.default_manager),
+      document: new FormControl(null),
+      followup: new FormControl(null),
+      notifications: new FormControl(null),
+      dataList: new FormControl(null),
+
       referral: new FormControl(''),
       confirmation: new FormControl(null),
 
-      dataList: new FormControl(null),
-      document: new FormControl(null),
-      followup: new FormControl(null),
-      notifications: new FormControl(null)
+      
+      
     });
 
 
@@ -194,12 +221,14 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       })
     ).subscribe((data: any) => {
         // this.notifications = data;
-        this.notifCheckBoxGroup = data.map(x => {
+        //this.notifCheckBoxGroup = data.map(x => {
+          
+          this.notifCheckBoxes = data.map(x => {
           return {
             label: x.staffToNotify,
             value: x.staffToNotify,
             disabled: x.mandatory ? true : false,
-            checked: x.mandatory ? true : false
+            check: x.mandatory ? true : false
           }
         })
     });
@@ -314,9 +343,55 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     // numbers only /[0-9\+\-\ ]/
     if (!event.key.match(/^[a-zA-Z ]*$/)) return false;
   }
-
-  log(data: any){
+  getemails(data){
+    
+    
+    
+    var temp1 = data.find(x => x.checked === true)
+    
+  
+      this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)
+   
+       
+    
+    
+  }
+  log(data:any){
     console.log(data)
+  }
+  doc(data:any){
+    
+    var temp = data.find(x => x.checked === true)
+    this.globalS.doc = temp.label.toString();
+    
+  }
+  notif(data: any){
+    
+    var temp1 = data.find(x => x.checked === true)
+    
+  
+      this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)
+   
+      
+      
+        
+  
+    
+    
+  }
+ 
+  followup(data: any){
+    
+    
+    
+    var temp
+   
+  
+  temp = data.find(x => x.checked === true)
+  this.globalS.followups = temp
+    
+  
+   
   }
 
   isNamesComplete(): boolean {
@@ -435,12 +510,17 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
     this.clientS.postprofile(this.referralGroup.value)
       .subscribe(data => {
+        
         this.handleCancel();
         this.openRefer.emit(data);
+        
         this.globalS.sToast('Success', 'Recipient Added')        
+      
       });
+      
+     
   }
-
+  
   clearFormArray = (formArray: FormArray) => {
     while (formArray.length !== 0) {
       formArray.removeAt(0)
@@ -572,6 +652,13 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       fax: new FormControl(''),
     });
   }
+  createFolloupDetails():FormGroup { 
+    return this.formBuilder.group({ 
+    //  notifCheckBoxes :new FormControl()
+
+    });
+  }
+
 
   verify() {
 
@@ -602,6 +689,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     this.generatedAccount = null;
     this.accountTaken = null;
     this.current = 0;
+    this.adddoc = false;
 
     // this.resetGroup();
     this.ngOnDestroy();
@@ -673,4 +761,40 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     }    
   }
 
+
+beforeUpload = (file: File): boolean => {
+  this.file = file;
+  console.log(file);
+  
+  this.referralGroup.patchValue({
+    name: this.globalS.removeExtension(this.file.name)
+  });
+
+  
+
+  return false;
+};
+handleChange({ file, fileList }: UploadChangeParam): void {
+  const status = file.status;
+  if (status !== 'uploading') {
+    // console.log(file, fileList);
+  }
+  if (status === 'done') {
+    this.msg.success(`${file.name} file uploaded successfully.`);
+    this.loadFiles();
+  } else if (status === 'error') {
+    this.msg.error(`${file.name} file upload failed.`);
+  }
 }
+
+loadFiles() {
+  this.timeS. getincidentdocuments(id)
+      .subscribe(data => {
+        this.loadedFiles = data;
+
+        this.cd.detectChanges();
+        this.cd.markForCheck();
+      });
+}
+
+}//

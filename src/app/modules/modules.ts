@@ -107,7 +107,9 @@ export interface QuoteHeaderDTO {
 
     personId?: string,
    
-    quoteLines?: Array<QuoteLineDTO>
+    quoteLines?: Array<QuoteLineDTO>,
+    program?: string,
+    user?: string
 }
 
 export interface Recipients {

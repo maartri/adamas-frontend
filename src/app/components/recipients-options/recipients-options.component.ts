@@ -695,7 +695,7 @@ NOTES:
       
       const data: CallProcedure = {
         isNDIAHCP: this.IsNDIAorHCP(),
-        oldPackage: this.originalPackageName,
+        oldPackage: this.selectedProgram,
         newPackage: packageName,
         roster: finalRoster,
         staffNote: {

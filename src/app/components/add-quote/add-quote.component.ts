@@ -114,6 +114,8 @@ export class AddQuoteComponent implements OnInit {
 
     quoteLinesTemp: Array<any> = [];
 
+    loggedInUser: any;
+
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     token:any;
     tocken: any;
@@ -148,6 +150,9 @@ export class AddQuoteComponent implements OnInit {
     this.buildForm();
     this.quoteGeneralForm.controls.discipline.setValue("NOT SPECIFIED");
     this.quoteGeneralForm.controls.careDomain.setValue("NOT SPECIFIED");
+
+    this.loggedInUser = this.globalS.decode();
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -709,6 +714,8 @@ export class AddQuoteComponent implements OnInit {
     // console.log(quoteForm)
 
     console.log(this.quoteLines);
+    console.log(this.loggedInUser);
+    // return;
     // console.log(qteHeader);
 
     this.quoteLines.forEach(x => {
@@ -729,6 +736,7 @@ export class AddQuoteComponent implements OnInit {
 
     qteHeader = {
         programId: quoteForm.programId,
+        program: quoteForm.program,
         clientId: this.clientId,
         quoteLines: qteLineArr,
         daysCalc: 365,
@@ -747,8 +755,9 @@ export class AddQuoteComponent implements OnInit {
         dailyAgreedTopUp: '$0.00',
         quoteView: 'ANNUALLY',
 
-        personId: this.user.id
-
+        personId: this.user.id,
+        user: this.loggedInUser.user,
+        template: quoteForm.template
     }
 
     this.listS.getpostquote(qteHeader)

@@ -328,16 +328,10 @@ export class AddReferralComponent implements OnInit {
     console.log(data)
   }
   doc(data:any){
-    var temp,temp1;
-    for(var i = 0; i < data.length; i++ ){
-      if (data[i].checked === true){
-        
-         temp = data[i].label
-         temp1 += temp
-     } 
-  } 
-  this.globalS.doc = temp1;
-      
+    
+    var temp = data.find(x => x.checked === true)
+    this.globalS.doc = temp.label.toString();
+    
   }
   notif(data: any){
     

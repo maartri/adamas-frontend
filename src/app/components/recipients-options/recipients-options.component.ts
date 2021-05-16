@@ -3,16 +3,18 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ChangeDe
 import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, CallProcedure } from '../../modules/modules';
 import { ListService, GlobalService, quantity, unit, dateFormat, ClientService } from '@services/index';
 import { SqlWizardService } from '@services/sqlwizard.service';
-
+import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import {mergeMap,takeUntil,debounceTime, distinctUntilChanged, map, switchMap, skip, startWith } from 'rxjs/operators';
 import { EMPTY, combineLatest, Observable, of } from 'rxjs';
 import { startsWith } from 'lodash';
 import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-
+import { UploadChangeParam } from 'ng-zorro-antd/upload';
 import format from 'date-fns/format';
 import { setDate } from 'date-fns';
+import { filter } from 'rxjs/operators';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 // import * as RECIPIENT_OPTION from '../../modules/modules';
 
@@ -129,6 +131,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   referOnOpen: boolean = false;
   referInOpen: boolean = false;
 
+  referdocument: boolean = false;
+
   loadPrograms:boolean = false;
 
   inputValue: any;
@@ -160,11 +164,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   programs: Array<any> = [];
   token: UserToken;
 
-  incidentDocument: any;
+  fileList2: Array<any> = [];
 
   date:any;
-  
-
+  urlPath: string = `api/v2/file/upload-document-remote`;
+  acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";
+  file: File;
   originalPackageName: string;
 
   constructor(
@@ -174,6 +179,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     private globalS: GlobalService,
     private sqlWiz: SqlWizardService,
     private clientS: ClientService,
+    private http: HttpClient,
+    private msg: NzMessageService,
   ) { }
 
   ngOnInit(): void {
@@ -720,10 +727,13 @@ NOTES:
       this.listS.postreferralin(data).subscribe(x => {
         this.globalS.sToast('Success', 'Package is saved'); 
         this.handleCancel();
-        
-        this.emailnotify();
+        if (this.globalS.doc != null){
+        this.addRefdoc();
+        }
         this.writereminder();
-   
+        
+       if (this.globalS.emailaddress != null){
+        this.emailnotify(); }
       });
 
 
@@ -931,24 +941,22 @@ NOTES:
     
 
   const {notes} = this.referInGroup.value;
-  console.log("emailnotify  " + notes)
+  
     
-    var emailTo = this.globalS.emailaddress; //"mufeed@adamas.net.au"//(this.referralGroup.value.).toString();
-  //var emailCC = (this.referralGroup.value.cc).toString();
- // var emailSubject = (this.referralGroup.value.subjecttext).toString();
+    var emailTo = this.globalS.emailaddress; 
+  
  var emailSubject = "ADAMAS NOTIFICATION";
   var emailBody = notes;  
   location.href = "mailto:" + emailTo + "?" +     
-    (emailSubject ? "&subject=" + emailSubject : "") + 
+    (emailSubject ? "subject=" + emailSubject : "") + 
     (emailBody ? "&body=" + emailBody : "");
+
+    this.globalS.emailaddress = null;
+
+
 }
 
-  // GETCHECKED_PROGRAMS(list: Array<any>){
-  //   return list.filter(x => x.checked);
-  // }
-
   
-
   populate(){
 
       this.whatOptionVar = {};
@@ -1529,6 +1537,8 @@ NOTES:
       // this.notProceedOpen = false;
       // this.referOnOpen = false;
       // this.referInOpen = false;
+
+      this.referdocument = false;
   }
 
   handleCancel() {
@@ -1546,7 +1556,7 @@ NOTES:
       this.referOnOpen = false;
       this.referInOpen = false;
 
-      
+      this.referdocument = false;
 
       this.changeDetection();
 
@@ -1554,7 +1564,7 @@ NOTES:
   }
 
   handleOk() {
-    
+    this.referdocument = false;
   }
 
   haha(data: any){
@@ -1563,6 +1573,20 @@ NOTES:
 
   onChange(data: any){
     
+  }
+  handleChange({ file, fileList }: UploadChangeParam): void {
+    const status = file.status;
+    if (status !== 'uploading') {
+      // console.log(file, fileList);
+    }
+    if (status === 'done') {
+      this.globalS.sToast('Success', `${file.name} file uploaded successfully.`);
+      
+      
+    } else if (status === 'error') {
+      this.globalS.sToast('Success', `${file.name} file upload failed.`);
+      
+    }
   }
   writereminder(){
     var sql,temp;
@@ -1591,6 +1615,61 @@ NOTES:
     
     this.clientS.addRefreminder(sql).subscribe(x => console.log(x) )
   }
+ addRefdoc(){
+  console.log(this.globalS.doc.toString());
+  /*if (this.globalS.doc.toString() != null){ 
+    console.log(this.globalS.doc.toString());                 
+    this.referdocument = true;
+  } */
+  this.referdocument = true;
+  this.globalS.doc = null;
+  } 
+  customReq = () => {
+    console.log(this.globalS.doc.label)
+
+    console.log(this.file);
+
+    const formData = new FormData();
+
+    //const { program, discipline, careDomain, classification, category, reminderDate, publishToApp, reminderText, notes  } = this.incidentForm.value;
+    
+    formData.append('file', this.file as any);
+    /*formData.append('data', JSON.stringify({
+      PersonID: this.innerValue.id,
+      DocPath: this.token.recipientDocFolder,
+      
+      Program: program,
+      Discipline: discipline,
+      CareDomain: careDomain,
+      Classification: classification,
+      Category: category,
+      ReminderDate: reminderDate,
+      PublishToApp: publishToApp,
+      ReminderText: reminderText,
+      Notes: notes,
+      SubId: this.innerValue.incidentId
+    })) */
+
+    const req = new HttpRequest('POST', this.urlPath, formData, {
+      reportProgress: true,
+      withCredentials: true
+    });
+
+    var id = this.globalS.loadingMessage(`Uploading file ${this.file.name}`)
+    this.http.request(req).pipe(filter(e => e instanceof HttpResponse)).subscribe(
+      (event: HttpEvent<any>) => {
+        this.msg.remove(id);
+        this.globalS.sToast('Success','Document uploaded');
+      },
+      err => {
+        console.log(err);
+        this.globalS.eToast('Error',err.error.message);
+        this.msg.remove(id);
+      }
+    );
+    
+  };
+ 
  
 
 }

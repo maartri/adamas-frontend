@@ -756,7 +756,8 @@ export class AddQuoteComponent implements OnInit {
         quoteView: 'ANNUALLY',
 
         personId: this.user.id,
-        user: this.loggedInUser.user
+        user: this.loggedInUser.user,
+        template: quoteForm.template
     }
 
     this.listS.getpostquote(qteHeader)

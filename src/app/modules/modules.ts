@@ -109,7 +109,8 @@ export interface QuoteHeaderDTO {
    
     quoteLines?: Array<QuoteLineDTO>,
     program?: string,
-    user?: string
+    user?: string,
+    template?: string
 }
 
 export interface Recipients {

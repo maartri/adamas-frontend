@@ -36,6 +36,8 @@ export class AddQuoteComponent implements OnInit {
 
     @Input() open: boolean = false;
     @Input() user: any; 
+    @Input() option: any;
+    @Input() record: any;
     
     private unsubscribe: Subject<void> = new Subject();
     
@@ -102,6 +104,7 @@ export class AddQuoteComponent implements OnInit {
     radioValue: any;
     filters: any;
     disciplineList: any;
+    typeList: Array<any> = [];
     careDomainList: any;
     programList: any;
     quotePlanType: string[];
@@ -160,6 +163,8 @@ export class AddQuoteComponent implements OnInit {
       if (property == 'open' && 
             !changes[property].firstChange &&
               changes[property].currentValue != null) {
+        // console.log(this.option)
+        // console.log(this.record)
 
         this.search(this.user);
         this.showQuoteModal();
@@ -197,7 +202,7 @@ export class AddQuoteComponent implements OnInit {
           no: null,
           type: null,
           period: [],
-          basePeriod: null,
+          basePeriod: 'ANNUALLY',
           programId: null
       });
 
@@ -259,7 +264,7 @@ export class AddQuoteComponent implements OnInit {
           no: null,
           type: null,
           period: [],
-          basePeriod: null,
+          basePeriod: 'ANNUALLY',
 
           initialBudget: null,
           daysCalc: 365,
@@ -380,7 +385,6 @@ export class AddQuoteComponent implements OnInit {
               return EMPTY;
           })
       ).subscribe(data => {
-          console.log(data)
           this.detectChanges();
       });
 
@@ -625,6 +629,10 @@ export class AddQuoteComponent implements OnInit {
          this.cd.markForCheck();
       });
     }
+
+    deleteQuoteList(data: any, index: number){
+        this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+    }
   
 
   showCarePlanStrategiesModal(){
@@ -670,6 +678,10 @@ export class AddQuoteComponent implements OnInit {
       });
   }
 
+  showEditQuoteModal(data: any){
+      console.log(data);
+  }
+
   tabFinderIndexbtn:number = 0;
   tabFindChangeStrategies(index: number){
       this.tabFinderIndexbtn = index;
@@ -711,12 +723,13 @@ export class AddQuoteComponent implements OnInit {
     let qteHeader: QuoteHeaderDTO;
 
     const quoteForm = this.quoteForm.getRawValue();
-    // console.log(quoteForm)
+
 
     console.log(this.quoteLines);
     console.log(this.loggedInUser);
     // return;
     // console.log(qteHeader);
+    // return;
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
@@ -729,7 +742,8 @@ export class AddQuoteComponent implements OnInit {
             unitBillRate: x.price,
             frequency: x.period,
             lengthInWeeks: x.weekNo,
-            roster: x.rosterString
+            roster: x.rosterString,
+            serviceType: x.code
         };
         qteLineArr.push(da);
     });
@@ -783,6 +797,8 @@ export class AddQuoteComponent implements OnInit {
       this.expecteOutcome = expectedOutcome;
 
       let notSpecified =["NOT SPECIFIED"];
+
+      this.listS.getquotetype().subscribe(data =>this.typeList = data);
       
       this.listS.getdiscipline().subscribe(data => {
           data.push('NOT SPECIFIED');
@@ -839,6 +855,31 @@ export class AddQuoteComponent implements OnInit {
 
         this.cd.markForCheck();
       });
+
+
+      if(this.option == 'update' && this.record)
+      {
+          this.listS.getquotedetails(this.record).subscribe(data => {
+              this.quoteForm.patchValue({
+                  program: data.program
+              });
+
+            //   this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
+            //       return {
+            //         code: x.,
+            //         displayText: ,
+            //         quantity: ,
+            //         billUnit: ,
+            //         period: ,
+            //         quantity: ,
+            //         price: ,
+            //         quantity: ,
+            //         gst: ,
+
+            //       }
+            //   }) : [];
+          })
+      }
   }
 
 

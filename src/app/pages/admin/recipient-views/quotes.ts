@@ -118,6 +118,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     private unsubscribe: Subject<void> = new Subject();
 
+    option: string = 'add';
+
     quoteIdsForm: FormGroup;
     quoteForm: FormGroup;
     quoteListForm: FormGroup;
@@ -183,6 +185,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     activeOpen: boolean = false;
     inActiveOpen: boolean = false;
 
+    newQuoteModal: boolean = false;
 
     goalAndStrategiesmodal : boolean = false;
     isUpdateGoal:boolean = false;
@@ -1132,6 +1135,14 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     handleStarCancel(){
         this.strategiesmodal = false;
         this.isUpdateStrategy = false;
+    }
+
+    record: any;
+    updateQuoteModal(data: any){
+        console.log(data);
+        this.option = 'update';
+        this.record = data.recordNumber;
+        this.newQuoteModal = !this.newQuoteModal
     }
 
 }

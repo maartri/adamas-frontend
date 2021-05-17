@@ -20,6 +20,13 @@ export class ListService {
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+    getquotetype(): Observable<any>{
+        return this.auth.get(`${list}/goalplan/list`);
+    }
+
+    getquotedetails(recordNo: number): Observable<any>{
+        return this.auth.get(`${list}/quotes-details/${recordNo}`);
+    }
 
     getquotelinedetails(recordNo: number): Observable<any>{
         return this.auth.get(`${list}/quotes-line-details/${recordNo}`);

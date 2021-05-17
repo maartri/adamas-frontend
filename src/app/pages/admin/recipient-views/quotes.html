@@ -1,6 +1,6 @@
 <div nz-row>
     
-    <button class="botton success" (click)="showQuoteModal()">Add Quote</button>
+    <button class="botton success" (click)="option = 'add';newQuoteModal = !newQuoteModal">Add Quote</button>
     <app-filter [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
     <!-- {{ filters | json }} -->
 </div>
@@ -20,6 +20,7 @@
                 <th>Created</th>
                 <th>Modified</th>
                 <th>Related Careplan</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -33,11 +34,17 @@
                 <td>{{ data.created }}</td>
                 <td>{{ data.modified }}</td>
                 <td>{{ data.filename }}</td>
+                <td>
+                    <a (click)="updateQuoteModal(data)">Update</a>
+                </td>
             </tr>
         </tbody>
     </nz-table>
 </div>
 </div>
+
+
+<app-add-quote [open]="newQuoteModal" [user]="user" [option]="option" [record]="record"></app-add-quote>
 
 
 <context-menu>

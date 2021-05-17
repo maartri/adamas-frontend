@@ -725,8 +725,8 @@ export class AddQuoteComponent implements OnInit {
     const quoteForm = this.quoteForm.getRawValue();
 
 
-    console.log(this.quoteLines);
-    console.log(this.loggedInUser);
+    // console.log(this.quoteLines);
+    // console.log(this.loggedInUser);
     // return;
     // console.log(qteHeader);
     // return;
@@ -771,8 +771,11 @@ export class AddQuoteComponent implements OnInit {
 
         personId: this.user.id,
         user: this.loggedInUser.user,
-        template: quoteForm.template
+        template: quoteForm.template,
+        type: quoteForm.type
     }
+
+    console.log(qteHeader);
 
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {

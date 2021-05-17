@@ -211,8 +211,11 @@ export class AddQuoteComponent implements OnInit {
   }
 
   buildForm() {
-
-      this.inputForm = this.formBuilder.group({
+    
+    if(this.option == 'add'){
+        this.quoteLines = [];
+    }
+    this.inputForm = this.formBuilder.group({
           autoLogout: [''],
           emailMessage: false,
           excludeShiftAlerts: false,
@@ -867,20 +870,19 @@ export class AddQuoteComponent implements OnInit {
                   program: data.program
               });
 
-            //   this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
-            //       return {
-            //         code: x.,
-            //         displayText: ,
-            //         quantity: ,
-            //         billUnit: ,
-            //         period: ,
-            //         quantity: ,
-            //         price: ,
-            //         quantity: ,
-            //         gst: ,
+              this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
+                  return {
+                    code: x.serviceType,
+                    displayText: x.displayText,
+                    quantity: x.qty,
+                    billUnit: x.billUnit,
+                    frequency: x.frequency,
+                    // quantity: x.quoteQty,
+                    price: x.unitBillRate,
+                    // gst: ,
 
-            //       }
-            //   }) : [];
+                  }
+              }) : [];
           })
       }
   }

@@ -1082,6 +1082,7 @@ export class AddQuoteComponent implements OnInit {
               });
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
+                  console.log(x)
                   return {
                     code: x.serviceType,
                     displayText: x.displayText,

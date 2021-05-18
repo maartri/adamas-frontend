@@ -120,6 +120,7 @@
             <nz-tab nzTitle="General" (nzClick)="tabFindChange(0)"> </nz-tab>
             <nz-tab nzTitle="Goals & Strategies" (nzClick)="tabFindChange(1)"> </nz-tab>
             <nz-tab nzTitle="Quote" (nzClick)="tabFindChange(2)"></nz-tab>
+            <nz-tab nzTitle="Supplements" (nzClick)="tabFindChange(3)" *ngIf="IS_CDC"></nz-tab>
         </nz-tabset>
         
         <div nzGutter="16">
@@ -317,7 +318,8 @@
             
           
 
-        </div><div *ngIf="tabFindIndex == 2" >
+        </div>
+        <div *ngIf="tabFindIndex == 2" >
 
             <div nz-row nzGutter="32" [formGroup]="quoteForm">
  
@@ -514,6 +516,87 @@
                 <textarea rows="4" nz-input [(ngModel)]="value" placeholder="Extra Information"></textarea>
             </div>
         </div>        
+        <div *ngIf="tabFindIndex == 3"  [formGroup]="supplements">
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="12" nzOffset="4">
+                     <nz-card>
+                        <div nz-col nzSpan="16" class="text-right pad-r-5">
+                            Domentica/Congnition/Veterans's Supplement <label nz-checkbox ></label>
+                        </div>
+                        <div nz-col nzSpan="6" class="text-center">
+                            <nz-radio-group>
+                                <label nz-radio nzValue="Level 1" [nzDisabled]="disabledRadio">Level 1</label>
+                                <label nz-radio nzValue="Level 2" [nzDisabled]="disabledRadio">Level 2</label>
+                                <label nz-radio nzValue="Level 3" [nzDisabled]="disabledRadio">Level 3</label>
+                                <label nz-radio nzValue="Level 4" [nzDisabled]="disabledRadio">Level 4</label>
+                            </nz-radio-group>
+                        </div>
+                     </nz-card>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="12" nzOffset="4">
+                    <nz-card>
+                        <div nz-col nzSpan="16" class="text-right pad-r-5">
+                         Oxygen Supplement <label nz-checkbox ></label>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="12" nzOffset="4">
+                    <nz-card>
+                        <div nz-col nzSpan="16" class="text-right pad-r-5">
+                        Enteral Feeding Supplement <label nz-checkbox ></label>
+                        </div>
+                        <div nz-col nzSpan="6" class="text-center">
+                        <nz-radio-group>
+                            <label nz-radio nzValue="Bolus" [nzDisabled]="disabledRadio">Bolus</label>
+                            <label nz-radio nzValue="Non-Bolus" [nzDisabled]="disabledRadio" style="padding-left:2.1rem;">Non-Bolus</label>
+                        </nz-radio-group>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="12" nzOffset="4">
+                    <nz-card>
+                        <div nz-col nzSpan="16" class="text-right pad-r-5">
+                         EACHD Top Up Suplemment <label nz-checkbox ></label>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="12" nzOffset="4">
+                    <nz-card>
+                        <div nz-col nzSpan="16" class="text-right pad-r-5">
+                        Home Care Viability Supplement <label nz-checkbox formcontrol="viabilitySuplement"></label>
+                        </div>
+                        <div nz-col nzSpan="6" class="text-center">
+                            <nz-radio-group>
+                                <label nz-radio nzValue="Level 1" [nzDisabled]="disabledRadio">Level 1</label>
+                                <label nz-radio nzValue="Level 2" [nzDisabled]="disabledRadio">Level 2</label>
+                                <label nz-radio nzValue="Level 3" [nzDisabled]="disabledRadio">Level 3</label>
+                                <label nz-radio nzValue="Level 4" [nzDisabled]="disabledRadio">Level 4</label>
+                                <label nz-radio nzValue="Level 5" [nzDisabled]="disabledRadio">Level 5</label>
+                                <label nz-radio nzValue="Level 6" [nzDisabled]="disabledRadio">Level 6</label>
+                                <label nz-radio nzValue="Level 7" [nzDisabled]="disabledRadio">Level 7</label>
+                            </nz-radio-group>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="12" nzOffset="4">
+                    <nz-card>
+                        <div nz-col nzSpan="16" class="text-right pad-r-5">
+                            Financial Hardship Supplement <label nz-checkbox ></label>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
+        </div>
     </div>
 
     

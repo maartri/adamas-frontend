@@ -521,14 +521,14 @@
                 <div nz-col nzSpan="12" nzOffset="4">
                      <nz-card>
                         <div nz-col nzSpan="16" class="text-right pad-r-5">
-                            Domentica/Congnition/Veterans's Supplement <label nz-checkbox ></label>
+                            Domentica/Congnition/Veterans's Supplement <label nz-checkbox formControlName="domentica"></label>
                         </div>
                         <div nz-col nzSpan="6" class="text-center">
-                            <nz-radio-group>
-                                <label nz-radio nzValue="Level 1" [nzDisabled]="disabledRadio">Level 1</label>
-                                <label nz-radio nzValue="Level 2" [nzDisabled]="disabledRadio">Level 2</label>
-                                <label nz-radio nzValue="Level 3" [nzDisabled]="disabledRadio">Level 3</label>
-                                <label nz-radio nzValue="Level 4" [nzDisabled]="disabledRadio">Level 4</label>
+                            <nz-radio-group formControlName="levelSupplement">
+                                <label nz-radio nzValue="Level 1" [nzDisabled]="!this.supplements.get('domentica').value">Level 1</label>
+                                <label nz-radio nzValue="Level 2" [nzDisabled]="!this.supplements.get('domentica').value">Level 2</label>
+                                <label nz-radio nzValue="Level 3" [nzDisabled]="!this.supplements.get('domentica').value">Level 3</label>
+                                <label nz-radio nzValue="Level 4" [nzDisabled]="!this.supplements.get('domentica').value">Level 4</label>
                             </nz-radio-group>
                         </div>
                      </nz-card>
@@ -538,7 +538,7 @@
                 <div nz-col nzSpan="12" nzOffset="4">
                     <nz-card>
                         <div nz-col nzSpan="16" class="text-right pad-r-5">
-                         Oxygen Supplement <label nz-checkbox ></label>
+                         Oxygen Supplement <label nz-checkbox formControlName="oxygen"></label>
                         </div>
                     </nz-card>
                 </div>
@@ -547,12 +547,12 @@
                 <div nz-col nzSpan="12" nzOffset="4">
                     <nz-card>
                         <div nz-col nzSpan="16" class="text-right pad-r-5">
-                        Enteral Feeding Supplement <label nz-checkbox ></label>
+                        Enteral Feeding Supplement <label nz-checkbox formControlName="feedingSuplement"></label>
                         </div>
                         <div nz-col nzSpan="6" class="text-center">
-                        <nz-radio-group>
-                            <label nz-radio nzValue="Bolus" [nzDisabled]="disabledRadio">Bolus</label>
-                            <label nz-radio nzValue="Non-Bolus" [nzDisabled]="disabledRadio" style="padding-left:2.1rem;">Non-Bolus</label>
+                        <nz-radio-group formControlName="feedingSupplement">
+                            <label nz-radio nzValue="Bolus"     [nzDisabled]="!this.supplements.get('feedingSuplement').value">Bolus</label>
+                            <label nz-radio nzValue="Non-Bolus" [nzDisabled]="!this.supplements.get('feedingSuplement').value" style="padding-left:2.1rem;">Non-Bolus</label>
                         </nz-radio-group>
                         </div>
                     </nz-card>
@@ -562,7 +562,7 @@
                 <div nz-col nzSpan="12" nzOffset="4">
                     <nz-card>
                         <div nz-col nzSpan="16" class="text-right pad-r-5">
-                         EACHD Top Up Suplemment <label nz-checkbox ></label>
+                         EACHD Top Up Suplemment <label nz-checkbox formControlName="EACHD"></label>
                         </div>
                     </nz-card>
                 </div>
@@ -571,17 +571,17 @@
                 <div nz-col nzSpan="12" nzOffset="4">
                     <nz-card>
                         <div nz-col nzSpan="16" class="text-right pad-r-5">
-                        Home Care Viability Supplement <label nz-checkbox formcontrol="viabilitySuplement"></label>
+                        Home Care Viability Supplement <label nz-checkbox formControlName="viabilitySuplement"></label>
                         </div>
                         <div nz-col nzSpan="6" class="text-center">
-                            <nz-radio-group>
-                                <label nz-radio nzValue="Level 1" [nzDisabled]="disabledRadio">Level 1</label>
-                                <label nz-radio nzValue="Level 2" [nzDisabled]="disabledRadio">Level 2</label>
-                                <label nz-radio nzValue="Level 3" [nzDisabled]="disabledRadio">Level 3</label>
-                                <label nz-radio nzValue="Level 4" [nzDisabled]="disabledRadio">Level 4</label>
-                                <label nz-radio nzValue="Level 5" [nzDisabled]="disabledRadio">Level 5</label>
-                                <label nz-radio nzValue="Level 6" [nzDisabled]="disabledRadio">Level 6</label>
-                                <label nz-radio nzValue="Level 7" [nzDisabled]="disabledRadio">Level 7</label>
+                            <nz-radio-group formControlName="viabilitySupplement">
+                                <label nz-radio nzValue="Level 1" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 1</label>
+                                <label nz-radio nzValue="Level 2" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 2</label>
+                                <label nz-radio nzValue="Level 3" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 3</label>
+                                <label nz-radio nzValue="Level 4" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 4</label>
+                                <label nz-radio nzValue="Level 5" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 5</label>
+                                <label nz-radio nzValue="Level 6" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 6</label>
+                                <label nz-radio nzValue="Level 7" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 7</label>
                             </nz-radio-group>
                         </div>
                     </nz-card>
@@ -591,7 +591,13 @@
                 <div nz-col nzSpan="12" nzOffset="4">
                     <nz-card>
                         <div nz-col nzSpan="16" class="text-right pad-r-5">
-                            Financial Hardship Supplement <label nz-checkbox ></label>
+                            Financial Hardship Supplement 
+                        </div>
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <div> <input nz-input  nzSize="small" formControlName="financialSup" /></div>
+                        </div>
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label>Per Day</label>
                         </div>
                     </nz-card>
                 </div>

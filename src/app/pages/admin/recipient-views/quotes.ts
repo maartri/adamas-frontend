@@ -393,7 +393,15 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
 
         this.supplements = this.formBuilder.group({
+            domentica:false,
+            levelSupplement:'',
+            oxygen:false,
+            feedingSuplement:false,
+            feedingSupplement:'',
+            EACHD:false,
             viabilitySuplement:false,
+            viabilitySupplement:'',
+            financialSup:''
         });
 
         this.quoteListForm.get('chargeType').valueChanges

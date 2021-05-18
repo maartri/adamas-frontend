@@ -333,7 +333,8 @@ export class AddQuoteComponent implements OnInit {
           rosterString: null,
           notes: null,
 
-          editable: true
+          editable: true,
+          recordNumber: null,
       });
 
       this.quoteListForm.get('chargeType').valueChanges
@@ -372,13 +373,23 @@ export class AddQuoteComponent implements OnInit {
       ).subscribe(data => {
           this.recipientProperties = data;
           
-          if(this.option == 'add')
-          {
+          if(this.option == 'add'){
             this.quoteListForm.patchValue({ 
                 displayText: data.billText, 
                 price: data.amount, 
                 roster: 'None',
-                itemId: data.recnum })
+                itemId: data.recnum 
+            })
+          }
+
+          if(this.option == 'update'){
+              console.log(this.updateValues)
+            this.quoteListForm.patchValue({ 
+                displayText: data.billText, 
+                price: data.amount,
+                itemId: data.recnum,
+                roster: this.determineRosterType(this.updateValues)
+            });
           }
       });
 
@@ -414,7 +425,17 @@ export class AddQuoteComponent implements OnInit {
       });
 
   }
+  
+  determineRosterType(data: any){
+    if(data.roster && data.roster.length > 0)
+    {
+        return data.frequency
+    }
 
+    if(data.roster == null || this.globalS.isEmpty(data.roster)){
+        return 'NONE';
+    }
+  }
 
   resetQuotePrimary(){
       this.quoteListForm.patchValue({
@@ -736,8 +757,12 @@ export class AddQuoteComponent implements OnInit {
 
   updateValues: any;
   firstLoadQuoteLine: boolean = true;
+  quoteLineIndex: number;
 
-  showEditQuoteModal(data: any){
+  showEditQuoteModal(data: any, index: number){
+
+    this.quoteLineIndex = index;
+
     this.listS.getquotelinedetails(data.recordNumber)
         .subscribe(x => {
             this.updateValues = x;
@@ -751,7 +776,8 @@ export class AddQuoteComponent implements OnInit {
                     billUnit: x.billUnit,
                     weekNo: x.lengthInWeeks,
                     price: x.rate,
-                    notes: x.notes
+                    notes: x.notes,
+                    recordNumber: data.recordNumber
                 })
                 console.log(this.quoteListForm.value)
             }, 100);
@@ -813,17 +839,28 @@ export class AddQuoteComponent implements OnInit {
                 roster: quoteLine.rosterString,
                 serviceType: quoteLine.code
             };
+            console.log(quoteLine)
 
+
+            // return;
             this.listS.updatequoteline(da, this.updateValues.recordNumber)
-                .pipe(
-                    switchMap(x => {
+                .subscribe(data => {
                         this.globalS.sToast('Success', 'Quote Line updated')
-                        this.quoteLineOpen = false;
+                       
+                        
+                        var q = this.quoteLines[this.quoteLineIndex];
+                        q.code = quoteLine.code;
+                        q.displayText = quoteLine.displayText;
+                        q.quantity = quoteLine.quantity;
+                        q.billUnit = quoteLine.billUnit;
+                        q.frequency = quoteLine.period;
+                        q.lengthInWeeks = quoteLine.weekNo;
+                        q.price = quoteLine.price;
+                        q.tax = quoteLine.gst;
+                        q.recordNumber = quoteLine.recordNumber;
 
-                        return this.listS.getquoteline(quoteForm.recordNumber);
-                    })
-                ).subscribe(data => {
-                    console.log(data)
+                        this.quoteLineOpen = false;
+                        this.detectChanges();
                 });
 
        }
@@ -997,7 +1034,6 @@ export class AddQuoteComponent implements OnInit {
               });
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
-                //   console.log(x)
                   return {
                     code: x.serviceType,
                     displayText: x.displayText,
@@ -1010,7 +1046,7 @@ export class AddQuoteComponent implements OnInit {
                     lengthInWeeks:x.lengthInWeeks,
                     basequote: x.unitBillRate * x.frequency
                   }
-              }) : []; 
+              }) : [];
               
           })
       }

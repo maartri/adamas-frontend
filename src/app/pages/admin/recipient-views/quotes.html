@@ -5,42 +5,41 @@
     <!-- {{ filters | json }} -->
 </div>
 <div nz-row>
-    <div nz-col>
-        
-        <nz-table #basicTable [nzLoading]="loading" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
-        [nzData]="tableData">
-        <thead>
-            <tr>
-                <th class="left">Quote #</th>
-                <th>Name/Description</th>
-                <th>Quote Type</th>
-                <th>St</th>
-                <th>Valid From</th>
-                <th>Valid To</th>
-                <th>Created</th>
-                <th>Modified</th>
-                <th>Related Careplan</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn" [contextMenu]="basicMenu" [contextMenuSubject]="data" >
-                <td class="left">{{ data.quoteNumber  }}</td>
-                <td>{{ data.carePlan }}</td>
-                <td>{{ data.planType }}</td>
-                <td>{{ data.st }}</td>
-                <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
-                <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
-                <td>{{ data.created }}</td>
-                <td>{{ data.modified }}</td>
-                <td>{{ data.filename }}</td>
-                <td>
-                    <a (click)="updateQuoteModal(data)">Update</a>
-                </td>
-            </tr>
-        </tbody>
-    </nz-table>
-</div>
+    <div nz-col>        
+            <nz-table #basicTable [nzLoading]="loading" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                [nzData]="tableData">
+                <thead>
+                    <tr>
+                        <th class="left">Quote #</th>
+                        <th>Name/Description</th>
+                        <th>Quote Type</th>
+                        <th>St</th>
+                        <th>Valid From</th>
+                        <th>Valid To</th>
+                        <th>Created</th>
+                        <th>Modified</th>
+                        <th>Related Careplan</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn" [contextMenu]="basicMenu" [contextMenuSubject]="data" >
+                        <td class="left">{{ data.quoteNumber  }}</td>
+                        <td>{{ data.carePlan }}</td>
+                        <td>{{ data.planType }}</td>
+                        <td>{{ data.st }}</td>
+                        <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
+                        <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
+                        <td>{{ data.created }}</td>
+                        <td>{{ data.modified }}</td>
+                        <td>{{ data.filename }}</td>
+                        <td>
+                            <a (click)="updateQuoteModal(data)">Update</a>
+                        </td>
+                    </tr>
+                </tbody>
+        </nz-table>
+    </div>
 </div>
 
 

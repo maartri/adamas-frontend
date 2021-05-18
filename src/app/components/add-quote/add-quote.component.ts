@@ -17,6 +17,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
+import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
 
 const noop = () => {};
 
@@ -871,6 +872,7 @@ export class AddQuoteComponent implements OnInit {
               });
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
+                  console.log(x)
                   return {
                     code: x.serviceType,
                     displayText: x.displayText,
@@ -879,13 +881,40 @@ export class AddQuoteComponent implements OnInit {
                     frequency: x.frequency,
                     // quantity: x.quoteQty,
                     price: x.unitBillRate,
-                    // gst: ,
+                     tax: x.tax , 
+                    lengthInWeeks:x.lengthInWeeks,
+                    basequote: x.unitBillRate * x.frequency,
 
                   }
-              }) : [];
+              }) : []; 
+              
           })
       }
   }
 
+  amount(var1:number,var2:number){
+    var product
+    product = (var1 * var2 );
 
-}
+    return product.toFixed(2)
+
+  }
+  totalamount(var1:number,var2:number,var3:number){
+    var product : number;
+    
+    if(var3 != null && var3 != 0){
+    product = ((var1 * var2 ) * var3);
+    }else{
+        product = (var1 * var2 );
+    }
+     
+    this.globalS.baseamount =  product
+    return product.toFixed(2)
+
+  }
+  fbasequote(){
+    console.log(this.quoteLines)
+    return this.globalS.baseamount.toFixed(2) ;
+  }
+
+}//this.quoteLines

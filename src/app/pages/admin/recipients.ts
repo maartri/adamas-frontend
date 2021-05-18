@@ -1222,6 +1222,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         private http: HttpClient,
         private msg: NzMessageService,
     ) {
+      
         this.sharedS.emitProfileStatus$.subscribe(data => {
             // console.log(data);
             this.selectedRecipient = data;
@@ -1230,7 +1231,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             //     this.recipientStatus = null;
             //     return;
             // }
-
+            
             if(this.globalS.doc != null){
               this.addRefdoc();
             }
@@ -1321,7 +1322,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleCancel() {
-        this.newReferralModal = false;
+    
+
+        this.newReferralModal = !this.newReferralModal;
         this.saveModal = false;
         this.newOtherModal = false;
         this.findModalOpen = false;
@@ -1330,7 +1333,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleOk() {
-      this.referdocument = false;
+    //  this.referdocument = false;
     }
 
     detectChanges(){
@@ -1357,6 +1360,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     profileData: any;
     
     openReferModal(user: any) {
+      console.log(user.toString())
         this.sample = user;
         this.sharedS.emitOnSearchListNext(user.code);        
         this.profileData = user;
@@ -1453,14 +1457,19 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         console.log(this.globalS.doc.toString());                 
         this.referdocument = true;
       } */
+
+      
       this.referdocument = true;
+      this.globalS.doc = null;
+      
+      
       
       } 
       customReq = () => {
         //console.log(this.globalS.doc.label)
     
         console.log(this.file);
-    
+        this.referdocument = false;
         const formData = new FormData();
     
         //const { program, discipline, careDomain, classification, category, reminderDate, publishToApp, reminderText, notes  } = this.incidentForm.value;
@@ -1525,5 +1534,6 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.referdocument = false;
 
     }
+   
    
 }//

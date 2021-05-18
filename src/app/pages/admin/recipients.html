@@ -252,18 +252,9 @@
     </div>
 </nz-modal>
 
-<nz-modal 
-[(nzVisible)]="referdocument"
- nzWidth="400" 
- [nzStyle]="{ top: '20px' }" 
- [nzWidth]="800" 
- nzTitle="Add Referral Document" 
- (nzOnCancel)="handleCancel()" 
- (nzOnOk)="handleOk()" 
- (nzAfterClose)="handleClose()"
->
-<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
-    <div nz-col nzSpan="8">
+<nz-modal [(nzVisible)]="referdocument" [nzStyle]="{top: '20px'}" nzWidth="600"   nzTitle="Add Referral Document" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"  >
+<div nz-row *ngIf="referdocument">
+    <div nz-col nzSpan="16">
         <nz-upload nzType="drag" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes" 
              [nzAction]="urlPath" (nzChange)="handleChange($event)" nzListType="picture"
             [(nzFileList)]="fileList2">
@@ -279,9 +270,9 @@
     </div>
 </div>
 <div *nzModalFooter>
-    
-    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-    <button nz-button nzType="primary" (click)="customReq()">Save</button>
-    
+    <ng-container>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="customReq()">Save</button>
+    </ng-container> 
 </div>
 </nz-modal>

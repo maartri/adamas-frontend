@@ -598,7 +598,7 @@
                 <div class="form-group">
                     <label for="">Strategy</label>
                     <nz-select formControlName="strategy" nzSize="small" nzAllowClear nzPlaceHolder="Strategy">
-                        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                        <!-- <nz-option nzValue="jack" nzLabel="Jack"></nz-option> -->
                     </nz-select>
                 </div>
             </div>
@@ -622,9 +622,10 @@
                 </div>
 
                 <div nz-col nzSpan="9">
-                    <div nz-row class="calc-wrapper" *ngIf="weekly" [formGroup]="quoteListForm">
-                        <div class="spacing flex"> 
-                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quantity"></nz-input-number>
+                    <div nz-row class="calc-wrapper" [hidden]="!weekly" >
+                        <div class="spacing flex" [formGroup]="quoteListForm"> 
+                            <!-- <input class="three-five" formControlName="quantity" nz-input nzSize="small" /> -->
+                            <nz-input-number formControlName="quantity" [nzStep]="0" [nzSize]="size"></nz-input-number>
                             <nz-select nzSize="small" nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Bill Unit" formControlName="billUnit">
                                 <nz-option *ngFor="let l of billUnitArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
@@ -632,21 +633,21 @@
                                 <nz-option *ngFor="let l of periodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
                             <span>X</span>
-                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="weekNo"></nz-input-number>
+                            <nz-input-number  [nzStep]="0" [nzSize]="size" formControlName="weekNo"></nz-input-number>
                         </div>
-                        <div class="flex">
+                        <div class="flex" [formGroup]="quoteListForm">
                             <span>Price</span>
                             <input class="three-five" formControlName="price" nz-input nzSize="small" />
                             <span>Min</span>
                             <span><label nz-checkbox formControlName="min">GST</label></span>
                             <input class="three-five" nz-input nzSize="small" formControlName="gst" />
                         </div>
-                        <div nz-row class="spacing">
-                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteValue"></nz-input-number>
+                        <div nz-row class="spacing" [formGroup]="quoteListForm">
+                            <nz-input-number [nzMin]="1" [nzStep]="0" [nzSize]="size" formControlName="quoteValue"></nz-input-number>
                             <span>% of Quote Value</span>
                         </div>
-                        <div nz-row class="spacing">
-                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
+                        <div nz-row class="spacing" [formGroup]="quoteListForm">
+                            <nz-input-number [nzMin]="1" [nzStep]="0" [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
                             <span>% of Quote Budget</span>
                         </div>
                     </div>

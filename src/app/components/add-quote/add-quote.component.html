@@ -535,7 +535,7 @@
                 <div nz-col nzSpan="9">
                     <div nz-row class="calc-wrapper" *ngIf="weekly" [formGroup]="quoteListForm">
                         <div class="spacing flex"> 
-                            <nz-input-number [nzSize]="size" formControlName="quantity"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quantity"></nz-input-number>
                             <nz-select nzSize="small" nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Bill Unit" formControlName="billUnit">
                                 <nz-option *ngFor="let l of billUnitArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
@@ -543,7 +543,7 @@
                                 <nz-option *ngFor="let l of periodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
                             <span>X</span>
-                            <nz-input-number [nzSize]="size" formControlName="weekNo"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="weekNo"></nz-input-number>
                         </div>
                         <div class="flex">
                             <span>Price</span>
@@ -553,11 +553,11 @@
                             <input class="three-five" nz-input nzSize="small" formControlName="gst" />
                         </div>
                         <div nz-row class="spacing">
-                            <nz-input-number [nzSize]="size" formControlName="quoteValue"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteValue"></nz-input-number>
                             <span>% of Quote Value</span>
                         </div>
                         <div nz-row class="spacing">
-                            <nz-input-number [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
                             <span>% of Quote Budget</span>
                         </div>
                     </div>

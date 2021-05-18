@@ -345,6 +345,18 @@ export class AddQuoteComponent implements OnInit {
           })
       ).subscribe(data => {
           this.codes = data;
+        //   if(this.option == 'update')
+        //   {
+        //        var x = this.updateValues;
+        //        console.log(x);
+        //        setTimeout(() => {
+        //         this.quoteListForm.patchValue({
+        //             code: x.title,
+        //             displayText: x.displayText,                
+        //         })
+        //         this.detectChanges();
+        //        }, 100);
+        //   }
       });
 
       this.quoteListForm.get('code').valueChanges.pipe(
@@ -634,7 +646,20 @@ export class AddQuoteComponent implements OnInit {
     }
 
     deleteQuoteList(data: any, index: number){
-        this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+        if(this.option == 'update'){
+            // this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+            // console.log(data)
+            this.listS.deletequoteline(data.recordNumber).subscribe(data => {
+                this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+                this.detectChanges();
+            });
+        }
+
+        if(this.option == 'add'){
+            console.log('add');
+            this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+        }
+        
     }
   
 
@@ -681,8 +706,35 @@ export class AddQuoteComponent implements OnInit {
       });
   }
 
+  getChargeType(type: string): any{
+        if(type == 'DIRECT SERVICE')
+            return '1';
+
+        if(type == 'GOODS/EQUIPMENT')
+            return '2';
+
+        if(type == 'PACKAGE ADMIN')
+            return '3';
+    
+        if(type == 'CASE MANAGEMENT')
+            return '4';
+  }
+
+  updateValues: any;
   showEditQuoteModal(data: any){
-      console.log(data);
+    this.listS.getquotelinedetails(data.recordNumber)
+        .subscribe(x => {
+            this.updateValues = x;
+            this.quoteListForm.patchValue({
+                chargeType: this.getChargeType(x.mainGroup),
+                code: x.title,
+                displayText: x.displayText,
+            })
+                
+            this.detectChanges();
+        });
+
+    this.quoteLineOpen = true;
   }
 
   tabFinderIndexbtn:number = 0;
@@ -709,12 +761,18 @@ export class AddQuoteComponent implements OnInit {
   }
 
   GENERATE_QUOTE_LINE(){
-        
-      setTimeout(() => {
-          this.quoteLines = [...this.quoteLines, this.quoteListForm.getRawValue()];
-          this.handleCancelLine();
-          this.detectChanges();
-      }, 0);
+       if(this.option == 'add')
+       {
+            setTimeout(() => {
+                this.quoteLines = [...this.quoteLines, this.quoteListForm.getRawValue()];
+                this.handleCancelLine();
+                this.detectChanges();
+            }, 0);
+       }
+
+       if(this.option == 'update'){
+           console.log('ipdate')
+       }
   }
 
   handleCancelLine(){
@@ -877,10 +935,8 @@ export class AddQuoteComponent implements OnInit {
                     quantity: x.qty,
                     billUnit: x.billUnit,
                     frequency: x.frequency,
-                    // quantity: x.quoteQty,
                     price: x.unitBillRate,
-                    // gst: ,
-
+                    recordNumber: x.recordNumber
                   }
               }) : [];
           })

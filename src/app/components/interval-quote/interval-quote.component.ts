@@ -17,9 +17,9 @@ enum Mode {
 }
 
 enum Interval {
-  Weekly = "Weekly",
-  Fortnightly = "Fortnightly",
-  FourWeekly = "FourWeekly"
+  WEEKLY = "WEEKLY",
+  FORTNIGHTLY = "FORTNIGHTLY",
+  FOURWEEKLY = "FOURWEEKLY"
 }
 
 @Component({
@@ -113,11 +113,11 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   noOfLoops(data): number {
-    if (data == 'Weekly') {
+    if (data == 'WEEKLY') {
       return 1;
-    } else if (data == 'Fortnightly') {
+    } else if (data == 'FORTNIGHTLY') {
       return 2;
-    } else if (data == 'Monthly') {
+    } else if (data == 'MONTHLY') {
       return 4;
     } else {
       return 0;
@@ -252,13 +252,13 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
   calculateRosterString(data: any){
     var clonedObjArray = [...data];
 
-    if(this.period == 'Weekly'){      
+    if(this.period == 'WEEKLY'){      
       for(var a = 0; a < 3; a++){
         clonedObjArray = clonedObjArray.concat(data);
       }      
     }
 
-    if(this.period == 'Fortnightly'){
+    if(this.period == 'FORTNIGHTLY'){
       for(var a = 0; a < 1; a++){
         clonedObjArray = clonedObjArray.concat(data);
       }

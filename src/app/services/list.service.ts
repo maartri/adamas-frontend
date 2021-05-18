@@ -21,6 +21,18 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getquoteline(data: any): Observable<any>{
+        return this.auth.get(`${list}/quote-line/list/${data}`);
+    }
+
+    updatequoteline(data: any, recordNo: any): Observable<any>{
+        return this.auth.put(`${list}/quotes-line-details/${recordNo}`, data);
+    }
+
+    getstrategyList(docId: any): Observable<any>{
+        return this.auth.get(`${list}/strategy-list/${docId}`);
+    }
+
     getquotelinedetails(recordNo: number): Observable<any>{
         return this.auth.get(`${list}/quotes-line-details/${recordNo}`);
     }

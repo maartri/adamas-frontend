@@ -130,7 +130,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   notProceedOpen: boolean = false;
   referOnOpen: boolean = false;
   referInOpen: boolean = false;
-
+  referIndocument: boolean = false;
   referdocument: boolean = false;
 
   loadPrograms:boolean = false;
@@ -191,6 +191,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   }  
 
   ngOnDestroy(){
+    
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -218,7 +219,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   openModal(){
-    this.current = 0;    
+    this.current = 0;
+    console.log(this.option);    
     if(this.option == RECIPIENT_OPTION.REFER_IN)  this.referInOpen = true;
     if(this.option == RECIPIENT_OPTION.REFER_ON)  this.referOnOpen = true;
     if(this.option == RECIPIENT_OPTION.NOT_PROCEED) this.notProceedOpen = true;
@@ -727,10 +729,12 @@ NOTES:
       this.listS.postreferralin(data).subscribe(x => {
         this.globalS.sToast('Success', 'Package is saved'); 
         this.handleCancel();
-        if (this.globalS.doc != null){
-        this.addRefdoc();
-        }
-        this.writereminder();
+       
+        if (this.globalS.followups != null){
+        this.writereminder(); }
+      //  if(this.globalS.doc != null){
+      //    this.addRefdoc();
+      //  }
         
        if (this.globalS.emailaddress != null){
         this.emailnotify(); }
@@ -1539,6 +1543,8 @@ NOTES:
       // this.referInOpen = false;
 
       this.referdocument = false;
+      this.referIndocument = false;
+    //  this.option = null
   }
 
   handleCancel() {
@@ -1614,61 +1620,69 @@ NOTES:
     sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
     
     this.clientS.addRefreminder(sql).subscribe(x => console.log(x) )
+
+    this.globalS.followups = null;
   }
- addRefdoc(){
-  console.log(this.globalS.doc.toString());
-  /*if (this.globalS.doc.toString() != null){ 
-    console.log(this.globalS.doc.toString());                 
-    this.referdocument = true;
-  } */
-  this.referdocument = true;
-  this.globalS.doc = null;
-  } 
-  customReq = () => {
-    console.log(this.globalS.doc.label)
-
-    console.log(this.file);
-
-    const formData = new FormData();
-
-    //const { program, discipline, careDomain, classification, category, reminderDate, publishToApp, reminderText, notes  } = this.incidentForm.value;
+  addRefdoc(){
+    //console.log(this.globalS.doc.toString());
+    /*if (this.globalS.doc.toString() != null){ 
+      console.log(this.globalS.doc.toString());                 
+      this.referdocument = true;
+    } */
     
-    formData.append('file', this.file as any);
-    /*formData.append('data', JSON.stringify({
-      PersonID: this.innerValue.id,
-      DocPath: this.token.recipientDocFolder,
+    //this.referdocument = true;
+    this.referIndocument = true;
+    
+    
+    
+    } 
+    customReq = () => {
+      //console.log(this.globalS.doc.label)
+  
+      console.log(this.file);
+    //  this.referdocument = false;
+      const formData = new FormData();
+  
+      //const { program, discipline, careDomain, classification, category, reminderDate, publishToApp, reminderText, notes  } = this.incidentForm.value;
       
-      Program: program,
-      Discipline: discipline,
-      CareDomain: careDomain,
-      Classification: classification,
-      Category: category,
-      ReminderDate: reminderDate,
-      PublishToApp: publishToApp,
-      ReminderText: reminderText,
-      Notes: notes,
-      SubId: this.innerValue.incidentId
-    })) */
-
-    const req = new HttpRequest('POST', this.urlPath, formData, {
-      reportProgress: true,
-      withCredentials: true
-    });
-
-    var id = this.globalS.loadingMessage(`Uploading file ${this.file.name}`)
-    this.http.request(req).pipe(filter(e => e instanceof HttpResponse)).subscribe(
-      (event: HttpEvent<any>) => {
-        this.msg.remove(id);
-        this.globalS.sToast('Success','Document uploaded');
-      },
-      err => {
-        console.log(err);
-        this.globalS.eToast('Error',err.error.message);
-        this.msg.remove(id);
-      }
-    );
+      formData.append('file', this.file as any);
+      /*formData.append('data', JSON.stringify({
+        PersonID: this.innerValue.id,
+        DocPath: this.token.recipientDocFolder,
+        
+        Program: program,
+        Discipline: discipline,
+        CareDomain: careDomain,
+        Classification: classification,
+        Category: category,
+        ReminderDate: reminderDate,
+        PublishToApp: publishToApp,
+        ReminderText: reminderText,
+        Notes: notes,
+        SubId: this.innerValue.incidentId
+      })) */
+  
+      const req = new HttpRequest('POST', this.urlPath, formData, {
+        reportProgress: true,
+        withCredentials: true
+      });
+  
+      var id = this.globalS.loadingMessage(`Uploading file ${this.file.name}`)
+      this.http.request(req).pipe(filter(e => e instanceof HttpResponse)).subscribe(
+        (event: HttpEvent<any>) => {
+          this.msg.remove(id);
+          this.globalS.sToast('Success','Document uploaded');
+        },
+        err => {
+          console.log(err);
+          this.msg.error(`${this.file.name} file upload failed.`);
+          this.msg.remove(id);
+        }
+      );
+      
+    }; 
     
-  };
+
  
  
 

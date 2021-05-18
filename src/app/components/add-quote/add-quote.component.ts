@@ -970,8 +970,8 @@ export class AddQuoteComponent implements OnInit {
         type: quoteForm.type
     }
 
-    console.log(qteHeader);
-    return;
+    // console.log(qteHeader);
+    // return;
 
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {

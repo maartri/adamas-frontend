@@ -345,11 +345,11 @@
                         <td>{{data.frequency}}</td>
                         <td>{{data.lengthInWeeks}}</td>
                         <td>${{data.price}}</td>
-                        <td> $ {{amount(data.price,data.lengthInWeeks)}}  </td>                        
+                        <td>$ {{amount(data.price,data.lengthInWeeks)}}  </td>                        
                         <td>{{data.tax}}</td>
                         <td>${{totalamount(data.price,data.lengthInWeeks,data.tax)}}</td>
                         <td>
-                            <a (click)="showEditQuoteModal(data)">Update</a>
+                            <a (click)="showEditQuoteModal(data, i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
                             <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Quote List ?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteQuoteList(data, i)">Delete</a>
@@ -607,10 +607,10 @@
         <div nz-row class="line" *ngIf="quoteListForm.get('code').value">
             <div nz-row [formGroup]="quoteListForm">
                 <nz-radio-group formControlName="roster">
-                    <label nz-radio nzValue="Weekly">Weekly</label>
-                    <label nz-radio nzValue="Fortnightly">Fortnightly</label>
-                    <label nz-radio nzValue="Monthly">Monthly</label>
-                    <label nz-radio nzValue="None">None</label>
+                    <label nz-radio nzValue="WEEKLY">Weekly</label>
+                    <label nz-radio nzValue="FORTNIGHTLY">Fortnightly</label>
+                    <label nz-radio nzValue="MONTHLY">Monthly</label>
+                    <label nz-radio nzValue="NONE">None</label>
                 </nz-radio-group>
             </div>
 
@@ -625,7 +625,7 @@
                     <div nz-row class="calc-wrapper" [hidden]="!weekly" >
                         <div class="spacing flex" [formGroup]="quoteListForm"> 
                             <!-- <input class="three-five" formControlName="quantity" nz-input nzSize="small" /> -->
-                            <nz-input-number formControlName="quantity" [nzStep]="0" [nzSize]="size"></nz-input-number>
+                            <nz-input-number formControlName="quantity" [nzMin]="1" [nzStep]="1" [nzSize]="size"></nz-input-number>
                             <nz-select nzSize="small" nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Bill Unit" formControlName="billUnit">
                                 <nz-option *ngFor="let l of billUnitArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
@@ -643,11 +643,11 @@
                             <input class="three-five" nz-input nzSize="small" formControlName="gst" />
                         </div>
                         <div nz-row class="spacing" [formGroup]="quoteListForm">
-                            <nz-input-number [nzMin]="1" [nzStep]="0" [nzSize]="size" formControlName="quoteValue"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteValue"></nz-input-number>
                             <span>% of Quote Value</span>
                         </div>
                         <div nz-row class="spacing" [formGroup]="quoteListForm">
-                            <nz-input-number [nzMin]="1" [nzStep]="0" [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
                             <span>% of Quote Budget</span>
                         </div>
                     </div>

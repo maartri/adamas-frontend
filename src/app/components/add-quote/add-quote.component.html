@@ -343,11 +343,11 @@
 
                         <td>{{data.billUnit}}</td>
                         <td>{{data.frequency}}</td>
-                        <td>{{data.quantity}}</td>
-                        <td>{{data.price}}</td>
-                        <td>{{data.quantity}}</td>
-                        <td>{{data.gst}}</td>
-                        <td>{{data.quantity}}</td>
+                        <td>{{data.lengthInWeeks}}</td>
+                        <td>${{data.price}}</td>
+                        <td> $ {{amount(data.price,data.lengthInWeeks)}}  </td>                        
+                        <td>{{data.tax}}</td>
+                        <td>${{totalamount(data.price,data.lengthInWeeks,data.tax)}}</td>
                         <td>
                             <a (click)="showEditQuoteModal(data)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
@@ -431,7 +431,10 @@
                         <div class="div-table">
                             <div>
                                 <div>Base Quote</div>
-                                <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                <div> 
+                                    <span nz-input nzSize="small"> $ {{fbasequote()}} </span>
+                                    
+                                </div>
                             </div>
                             <div>
                                 <div>Admin & Case Management</div>
@@ -472,7 +475,7 @@
 
   <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="handleCancelLine()" >
     <div nz-row>
-        <div nz-row [formGroup]="quoteListForm">
+        <div nz-row [formGroup]="quoteListForm"> 
             <span style="margin-right:2rem;font-weight:bold">Charge Type</span>
             <nz-radio-group formControlName="chargeType">
                 <label nz-radio nzValue="1">Service</label>

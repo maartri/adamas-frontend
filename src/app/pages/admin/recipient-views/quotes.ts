@@ -454,7 +454,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
                 return EMPTY;
             })
         ).subscribe(data => {
-            console.log(data)
+            console.log(  + data)
             this.detectChanges();
         });
 
@@ -976,7 +976,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         const quoteForm = this.quoteForm.getRawValue();
         // console.log(quoteForm)
 
-        console.log(this.quoteLines);
+        console.log( this.quoteLines);
         // console.log(qteHeader);
 
         this.quoteLines.forEach(x => {
@@ -1146,7 +1146,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     record: any;
     updateQuoteModal(data: any){
-        console.log(data);
+        console.log(  data);
         this.option = 'update';
         this.record = data.recordNumber;
         this.newQuoteModal = !this.newQuoteModal

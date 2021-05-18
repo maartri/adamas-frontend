@@ -277,9 +277,9 @@
 
             </div>
 
-            <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" *ngIf="quoteForm.get('program').value">
+            <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null">
                 <div nz-col nzSpan="6">
-                    <input nz-input formControlName="no" placeholder="No" nzSize="small" />
+                    <input nz-input formControlName="no" placeholder="Quote No" [disabled]="true" nzSize="small" />
                 </div>
                 <div nz-col nzSpan="6">
                     <nz-select  class="select" formControlName="type" nzSize="small" nzAllowClear nzPlaceHolder="Type">

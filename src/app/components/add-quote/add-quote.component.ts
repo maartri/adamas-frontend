@@ -20,6 +20,10 @@ import { billunit, periodQuote, basePeriod } from '@services/global.service';
 import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
 // import { Console } from 'node:console';
 
+import addYears from 'date-fns/addYears';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+
 const noop = () => {};
 
 @Component({
@@ -218,6 +222,7 @@ export class AddQuoteComponent implements OnInit {
     if(this.option == 'add'){
         this.quoteLines = [];
     }
+
     this.inputForm = this.formBuilder.group({
           autoLogout: [''],
           emailMessage: false,
@@ -278,7 +283,6 @@ export class AddQuoteComponent implements OnInit {
           govtContrib: null,
 
           programId: null
-
       });
 
       this.quoteIdsForm = this.formBuilder.group({
@@ -350,6 +354,7 @@ export class AddQuoteComponent implements OnInit {
         financialSup:''
       });
 
+
       this.quoteListForm.get('chargeType').valueChanges
       .pipe(
           switchMap(x => {                
@@ -406,6 +411,31 @@ export class AddQuoteComponent implements OnInit {
           }
       });
 
+
+
+
+      this.quoteForm.get('basePeriod').valueChanges
+            .subscribe(x => {
+                console.log(x)
+                if(!x) return EMPTY;
+                if(x == 'ANNUALLY'){
+                    setTimeout(() => {
+                        this.quoteForm.patchValue({
+                            period:[new Date(), addYears(new Date(), 1)]
+                        });
+                    }, 0);
+                }
+
+                if(x == 'FIXED PERIOD'){
+                    setTimeout(() => {
+                        this.quoteForm.patchValue({
+                            period:[startOfMonth(new Date()), endOfMonth(new Date())]
+                        });
+                    }, 0);
+                }
+                this.detectChanges();
+            })
+
       this.quoteListForm.get('roster').valueChanges.subscribe(data => {
           this.weekly = data;
           this.setPeriod(data);
@@ -414,7 +444,10 @@ export class AddQuoteComponent implements OnInit {
       this.quoteForm.get('program').valueChanges
       .pipe(
           switchMap(x => {
-              if(!x) return EMPTY;
+              if(!x) {
+                return EMPTY
+              };
+       
               return this.listS.getprogramlevel(x)
           }),
           switchMap(x => {                
@@ -437,8 +470,11 @@ export class AddQuoteComponent implements OnInit {
           this.detectChanges();
       });
 
+      
+
   }
-  
+
+
   determineRosterType(data: any){
     if(data.roster && data.roster.length > 0)
     {
@@ -888,13 +924,7 @@ export class AddQuoteComponent implements OnInit {
     let qteHeader: QuoteHeaderDTO;
 
     const quoteForm = this.quoteForm.getRawValue();
-
-
-    // console.log(this.quoteLines);
-    // console.log(this.loggedInUser);
-    // return;
-    // console.log(qteHeader);
-    // return;
+    console.log(quoteForm);
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
@@ -941,6 +971,7 @@ export class AddQuoteComponent implements OnInit {
     }
 
     console.log(qteHeader);
+    return;
 
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {

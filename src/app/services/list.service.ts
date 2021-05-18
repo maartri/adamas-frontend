@@ -161,6 +161,10 @@ export class ListService {
         return this.auth.get(`${list}/program/contingency/list/${personID}`);
     }
 
+    getishcpcdcprograms(personID: string): Observable<any>{
+        return this.auth.get(`${list}/is-hcp-cdc-programs/${personID}`);
+    }
+
     getCareplangoals(personID: string): Observable<any>{
         return this.auth.get(`${list}/quote/careplangoal/list/${personID}`)
     }

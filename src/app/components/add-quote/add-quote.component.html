@@ -59,6 +59,7 @@
             <nz-tab nzTitle="General" (nzClick)="tabFindChange(0)"> </nz-tab>
             <nz-tab nzTitle="Goals & Strategies" (nzClick)="tabFindChange(1)"> </nz-tab>
             <nz-tab nzTitle="Quote" (nzClick)="tabFindChange(2)"></nz-tab>
+            <nz-tab nzTitle="Supplements" (nzClick)="tabFindChange(3)"></nz-tab>
         </nz-tabset>
         
         <div nzGutter="16">
@@ -253,10 +254,8 @@
                 
             </div>
             
-            
-          
-
-        </div><div *ngIf="tabFindIndex == 2" >
+            </div>
+            <div *ngIf="tabFindIndex == 2" >
 
             <div nz-row nzGutter="32" [formGroup]="quoteForm">
  
@@ -454,7 +453,11 @@
             <div nz-row class="line" *ngIf="quoteForm.get('program').value">
                 <textarea rows="4" nz-input [(ngModel)]="value" placeholder="Extra Information"></textarea>
             </div>
-        </div>        
+           </div>
+           <div *ngIf="tabFindIndex == 3" >
+                <p>pragraph tag</p>
+           </div>
+           
     </div>
 
     

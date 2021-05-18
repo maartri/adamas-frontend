@@ -348,7 +348,7 @@
                         <td>${{data.price}}</td>
                         <td> $ {{amount(data.price,data.lengthInWeeks)}}  </td>                        
                         <td>{{data.tax}}</td>
-                        <td>${{totalamount(data.price,data.lengthInWeeks,data.tax)}}</td>
+                        <td>${{totalamount(data.price,data.lengthInWeeks,data.tax,data.quantity)}}</td>
                         <td>
                             <a (click)="showEditQuoteModal(data)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
@@ -367,7 +367,7 @@
                             <span class="title">Initial Budget</span>
                             <input nz-input class="mini" placeholder="" nzSize="small" formControlName="initialBudget" />
                         </div>
-                        <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm">
+                        <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
                             <span class="title">Gov't Contribution</span>
                             <input nz-input class="mini" placeholder="" nzSize="small" formControlName="govtContrib" />
                         </div>
@@ -439,15 +439,15 @@
                             </div>
                             <div>
                                 <div>Admin & Case Management</div>
-                                <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <span nz-input nzSize="small"> $ {{admincharges()}} </span></div>
                             </div>
                             <div>
                                 <div>Total Quote</div>
-                                <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <span nz-input nzSize="small"> $ {{(fbasequote() + admincharges())}} </span></div>
                             </div>
                             <div>
                                 <div>Remaining Funds</div>
-                                <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <span nz-input nzSize="small"> $ {{(remainingfund()  )}} </span></div>
                             </div>
                         </div>
                     </div>

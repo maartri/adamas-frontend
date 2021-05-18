@@ -18,6 +18,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
 import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
+import { PrintPdfComponent } from '@components/print-pdf/print-pdf.component';
+import { toLength } from 'lodash';
 
 const noop = () => {};
 
@@ -115,6 +117,7 @@ export class AddQuoteComponent implements OnInit {
     userCopy: any;
 
     quoteLines: Array<any> = [];
+    fquotehdr: Array<any> = [];
 
     quoteLinesTemp: Array<any> = [];
 
@@ -872,7 +875,8 @@ export class AddQuoteComponent implements OnInit {
               });
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
-                  console.log(x)
+                //  console.log(x)
+                this.fquotehdr = x;
                   return {
                     code: x.serviceType,
                     displayText: x.displayText,
@@ -883,10 +887,11 @@ export class AddQuoteComponent implements OnInit {
                     price: x.unitBillRate,
                      tax: x.tax , 
                     lengthInWeeks:x.lengthInWeeks,
-                    basequote: x.unitBillRate * x.frequency,
+                  //  basequote: ,
 
                   }
               }) : []; 
+              
               
           })
       }
@@ -899,13 +904,13 @@ export class AddQuoteComponent implements OnInit {
     return product.toFixed(2)
 
   }
-  totalamount(var1:number,var2:number,var3:number){
+  totalamount(var1:number,var2:number,var3:number,var4:number){
     var product : number;
     
     if(var3 != null && var3 != 0){
-    product = ((var1 * var2 ) * var3);
+    product = ((var1 * var2 ) * var3 * var4);
     }else{
-        product = (var1 * var2 );
+        product = (var1 * var2 * var4);
     }
      
     this.globalS.baseamount =  product
@@ -913,8 +918,85 @@ export class AddQuoteComponent implements OnInit {
 
   }
   fbasequote(){
-    console.log(this.quoteLines)
+      
+        let temp = this.fquotehdr
+        var temp1 : number;
+        var test :number;
+        
+        let price,quantity,length;
+    //    console.log(temp)
+        
+    
+        for(let i = 0;i < temp.length+1;i++){
+            
+          
+            //    console.log(this.quoteLines[i].lengthInWeeks)
+            //    console.log(this.quoteLines[i].quantity)
+            //    console.log(this.quoteLines[i].price)
+                price = temp[i].price
+                quantity = temp[i].quantity
+                length  = temp[i].lengthInWeeks
+               //console.log(price)
+               
+               test = (price * quantity * length)
+               this.globalS.baseamount  = this.globalS.baseamount + test
+        //       console.log(temp1)
+
+        } 
+        
+      
+    
     return this.globalS.baseamount.toFixed(2) ;
   }
+  govtContribution
+  govtcontribute(){
+    var temp  :number;
+    temp = this.quoteForm.value.govtContrib 
+//    temp =  51808.10;
+    return temp.toFixed(2) ;
+  }
+  remainingfund(){
+      var temp :Number;
+    temp = (this.quoteForm.value.govtContrib -  this.globalS.admincharges - this.globalS.baseamount)
+    return temp.toFixed(2)
+  }
+  admincharges(){
+    if(this.quoteListForm.value.chargeType == 3 ){
+    let temp = this.fquotehdr
+    var temp1 : number;
+    var test :number;
+    
+    let price,quantity,length;
+//    console.log(temp)
+    
 
-}//this.quoteLines
+    for(let i = 0;i < temp.length+1;i++){
+        
+      
+        //    console.log(this.quoteLines[i].lengthInWeeks)
+        //    console.log(this.quoteLines[i].quantity)
+        //    console.log(this.quoteLines[i].price)
+            price = temp[i].price
+            quantity = temp[i].quantity
+            length  = temp[i].lengthInWeeks
+           //console.log(price)
+           
+           test = (price * quantity * length)
+           this.globalS.admincharges  = this.globalS.admincharges + test
+           console.log(temp1)
+
+    } 
+}else{
+    this.globalS.admincharges = 0;
+}
+    
+  
+
+return this.globalS.admincharges.toFixed(2) ;
+
+  }
+
+
+
+
+}//

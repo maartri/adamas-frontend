@@ -36,6 +36,7 @@ import * as moment from 'moment';
 import * as $ from 'jquery';
 import { SpreadSheetsModule } from '@grapecity/spread-sheets-angular';
 import * as GC from "@grapecity/spread-sheets";
+import { NZ_ICONS, NZ_ICON_DEFAULT_TWOTONE_COLOR } from 'ng-zorro-antd';
 
 
 interface AddTimesheetModalInterface {
@@ -92,6 +93,7 @@ payTotal:any;
   i:number=0;
   eventLog: string;
   token:any;
+  addBookingModel:boolean=false;
 
     isVisible: boolean = false;
     hahays = new Subject<any>();
@@ -112,6 +114,7 @@ payTotal:any;
     today = new Date();
     rosterGroup: string;
     rosterForm: FormGroup;
+    bookingForm: FormGroup;
     viewType: any;
     start_date:string="";
     end_date:string=""
@@ -139,6 +142,8 @@ payTotal:any;
     ClearMultiShiftModal:boolean=false;
     SetMultiShiftModal:boolean=false;
     deleteRosterModal:boolean=false;
+
+    add_UnAllocated:boolean=false;
 
  DayOfWeek(n:number): String{
 
@@ -188,12 +193,137 @@ normalRoutePass(): void{
 
    
     this.isFirstLoad = false;   
-    
+
     
 
     this.sharedS.emitRouteChangeSource$.subscribe(data => {
         console.log(data);
     });
+}
+
+doneBooking(){
+    this.addBookingModel=false;
+    this.add_UnAllocated=false;
+   
+    //this.fixStartTimeDefault();
+        let date=this.date;
+        let time = {startTime:this.defaultStartTime, endTime:this.defaultEndTime, duration:0};
+        const bForm =  this.bookingForm.value;
+        const tsheet:any = {
+            date: date,
+            time : time,
+            analysisCode:'',
+            bill:{rate:0,quantity:"0", unit:"0", tax:0},
+            pay:{rate:0,quantity:"0", unit:"0"},
+            haccType:"",
+            program:bForm.program,
+            serviceActivity:bForm.serviceActivity,
+            payType:'N/A',
+            serviceDscr:'N/A',
+            serviceType:this.serviceType,
+            recordNo:0,
+            staffCode:'BOOKED'
+
+        }
+        let clientCode = this.recipient.data;
+
+        var durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));
+        
+        
+        if(typeof this.date === 'string'){
+            this.date = parseISO(this.datepipe.transform(this.date, 'yyyy-MM-dd'));
+        }
+        let inputs = {
+            anal: tsheet.analysisCode || "",
+            billQty: tsheet.bill.quantity || 0,
+            billTo: clientCode,
+            billUnit: tsheet.bill.unit || 0,
+            blockNo: durationObject.blockNo,
+            carerCode: this.selected.option == 0 ? this.selected.data : tsheet.staffCode,
+            clientCode: this.selected.option == 0 ? clientCode : this.selected.data,
+            costQty: tsheet.pay.quantity || 0,
+            costUnit: tsheet.pay.unit || 0,
+            date: format(tsheet.date,'yyyy/MM/dd'),
+            dayno: parseInt(format(tsheet.date, 'd')),
+            duration: durationObject.duration,
+            groupActivity: false,
+            haccType: tsheet.haccType || "",
+            monthNo: parseInt(format(tsheet.date, 'M')),
+            program: tsheet.program,
+            serviceDescription:  tsheet.serviceDscr || "",
+            serviceSetting: null || "",
+            serviceType: tsheet.serviceActivity || "",
+            paytype: tsheet.payType,
+            // serviceType: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
+            staffPosition: null || "",
+            startTime: format(tsheet.time.startTime,'HH:mm'),
+            status: "1",
+            taxPercent: tsheet.bill.tax || 0,
+            transferred: 0,
+            // type: this.activity_value,
+            type: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
+            unitBillRate:( tsheet.bill.rate || 0),
+            unitPayRate: tsheet.pay.rate || 0,
+            yearNo: parseInt(format(tsheet.date, 'yyyy')),
+            serviceTypePortal: tsheet.serviceType,
+            recordNo: tsheet.recordNo
+        };
+        
+      
+
+            this.timeS.posttimesheet(inputs).subscribe(data => {
+                this.globalS.sToast('Success', 'Roster has been added');
+                this.addTimesheetVisible = false;
+               // this.picked(this.selected);
+               this.searchRoster(tsheet.date)
+            });
+        
+       
+    
+
+    
+}
+addBooking(){
+    this.addBookingModel=true;
+    this.add_UnAllocated=true;    
+    this.Timesheet_label = "Add Timesheet " 
+    //this.whatProcess = PROCESS.ADD;
+   // this.addTimesheetVisible = true;
+   // this.resetAddTimesheetModal();
+   // this.AddViewRosterDetails.next(2);
+    let sheet = this.spreadsheet.getActiveSheet();
+    var range=sheet.getSelections();
+    // console.log(range)
+    let dt= new Date(this.date);
+    //let dt = moment.utc(this.date).local();
+    let date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(range[0].col+1);
+    let f_row= range[0].row;
+    let l_row=f_row+range[0].rowCount;
+    let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
+
+    let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
+
+    this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
+    this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
+    this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+    this.current = 0;
+    this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
+   // this.bookingForm.patchValue({date:date})
+
+    //this.date = parseISO(new Date(date).toISOString());
+                            
+        this.GETPROGRAMS( this.recipient.data).subscribe(d => {
+        this.programActivityList=d;
+        this.programsList = d.map(x => x.progName);
+        this.serviceActivityList = d.map(x => x.serviceType);
+
+    });
+
+//     let sql ="SELECT DISTINCT [Program] AS ProgName FROM RecipientPrograms INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID INNER JOIN HumanResourceTypes pr ON RecipientPrograms.Program = pr.name WHERE Recipients.AccountNo = '" + this.recipient.data +"' AND  (ISNULL(pr.CloseDate, '2000/01/01') < '2021/05/05') AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]"
+//     this.listS.getlist (sql).subscribe(data=>{
+//         this.serviceActivityList=data;
+//    });
+    
 }
 SaveAdditionalInfo(notes:string){
     this.notes=notes;
@@ -1082,7 +1212,7 @@ ClearMultishift(){
             iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeArrowsGray;
         break;
         case 2:
-            iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeTriangles
+            iconType= GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeTriangles
             break;
         case 3:
             iconType=  GC.Spread.Sheets.ConditionalFormatting.IconSetType.threeStars
@@ -1450,13 +1580,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
         //this.date = parseISO(new Date(date).toISOString());
         
     }
-   // calendarPlugins = [dayGridPlugin,timeGridPlugin,interactionPlugin]; // important!
-
-   // someMethod() {
-     //   let calendarApi = this.calendarComponent.getApi();
-       // calendarApi.next();
-    //}
-
+   
     currentDate: string;
 
     dateStream = new Subject<any>();
@@ -1595,7 +1719,7 @@ sheet.conditionalFormats.addRule(iconSetRule);
             
         // this.rosterForm.patchValue({
         //     serviceType: this.DETERMINE_SERVICE_TYPE(index),
-        //     date: date,
+        //     date: date,serviceActivityList
         //     program: program,
         //     serviceActivity: activity,
         //     payType: payType,
@@ -1770,14 +1894,16 @@ reload(reload: boolean){
 
        
         //this.prepare_Sheet(this.spreadsheet);
+     
 
         this.selected = data;
         if (this.master){
             this.start_date= "1900/01/01"
             this.end_date= "1900/01/31"
         }else{
-            this.start_date= this.date
-            this.end_date= this.date
+            
+            this.start_date= moment(this.date).startOf('month').format('YYYY/MM/DD')
+            this.end_date= moment(this.date).endOf('month').format('YYYY/MM/DD')
         }  
         this.viewType = this.whatType(data.option);
         this.loading = true;
@@ -1792,13 +1918,13 @@ reload(reload: boolean){
                 .subscribe(data => {
                     this.agencyDefinedGroup = data.data;
                 });
-        }
+        } 
         
         this.picked$ = this.timeS.gettimesheets({
             AccountNo: data.data,            
             personType: this.viewType,
-            startDate: this.start_date,
-            endDate: this.end_date,
+            startDate: moment(this.date).startOf('month').format('YYYY/MM/DD'),
+            endDate: moment(this.date).endOf('month').format('YYYY/MM/DD'),
         }).pipe(takeUntil(this.unsubscribe))
             .subscribe(data => {
 
@@ -2023,9 +2149,24 @@ reload(reload: boolean){
         if (type === 'ADMINISTRATION' || type === 'ALLOWANCE NON-CHARGEABLE' || type === 'ITEM' || (type == 'SERVICE' && !isMultipleRecipient)) {
             sql = `SELECT Distinct [Name] AS ProgName FROM HumanResourceTypes WHERE [group] = 'PROGRAMS' AND ISNULL(UserYesNo3,0) = 0 AND (EndDate Is Null OR EndDate >=  '${this.currentDate}') ORDER BY [ProgName]`;
         } else {
-            sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
-                INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
-                WHERE Recipients.AccountNo = '${type}' AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]`
+            // sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
+            //     INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
+            //     WHERE Recipients.AccountNo = '${type}' AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]`
+
+            
+            sql =`SELECT ACCOUNTNO, PROGRAM AS ProgName, [SERVICE TYPE] as serviceType, [SERVICESTATUS],
+                (CASE WHEN ISNULL(S.ForceSpecialPrice,0) = 0 THEN
+                (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+                 WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+                 WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+                 WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5                       
+                 WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+                ELSE I.Amount END )
+                ELSE S.[UNIT BILL RATE] END ) AS BILLRATE
+                FROM RECIPIENTS C INNER JOIN RECIPIENTPROGRAMS RP ON C.UNIQUEID = RP.PERSONID 
+                INNER JOIN ServiceOverview S ON C.UNIQUEID = S.PersonID AND RP.PROGRAM = S.ServiceProgram
+                INNER JOIN ITEMTYPES I ON S.[SERVICE TYPE] = I.TITLE AND ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM')
+                WHERE ACCOUNTNO = '${type}'`
         }
         if (!sql) return EMPTY;
         return this.listS.getlist(sql);
@@ -2203,6 +2344,7 @@ reload(reload: boolean){
     serviceActivityList: Array<any>;
     payTypeList: Array<any> = [];
     analysisCodeList: Array<any> = []
+    programActivityList:Array<any>=[]
    
     
     clearLowerLevelInputs() {
@@ -2405,8 +2547,9 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 
                 return this.GETPROGRAMS(x)
             })
-        ).subscribe(d => {
-            this.programsList = d;
+        ).subscribe((d: Array<any>)  => {
+            this.programsList = d.map(x => x.progName);
+            //this.programsList = d;
         });
 
         this.rosterForm.get('serviceType').valueChanges.pipe(
@@ -2465,7 +2608,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 });
             }
         });
-
+      
        this.rosterForm.get('serviceActivity').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
@@ -2484,7 +2627,65 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             this.rosterForm.patchValue({
                 haccType: this.rosterGroup
             })
-        });        
+        }); 
+     //--------------------------an other booking form-------------------------------- 
+        this.bookingForm = this.formBuilder.group({
+            recordNo: [''],
+            date: [this.payPeriodEndDate, Validators.required],
+            serviceType: ['', Validators.required],
+            program: ['', Validators.required],
+            serviceActivity: ['', Validators.required],
+            payType: ['', Validators.required],
+            analysisCode: [''],
+            recipientCode:  [''],
+            haccType: '',
+            staffCode:  [''],
+            debtor:  [''],
+            isMultipleRecipient: false,
+            isTravelTimeChargeable: false,
+            sleepOverTime: '',
+            time: this.formBuilder.group({
+                startTime:  [''],
+                endTime:  [''],
+            }),
+            pay: this.formBuilder.group({
+                unit:  ['HOUR'],
+                rate:  ['0'],
+                quantity:  ['1'],
+                position: ''
+            }),
+            bill: this.formBuilder.group({
+                unit: ['HOUR'],
+                rate: ['0'],
+                quantity: ['1'],
+                tax: '1'
+            })
+            
+        })
+
+        this.bookingForm.get('program').valueChanges.pipe(
+            distinctUntilChanged(),
+            switchMap(x => {
+                if(!x) return EMPTY;
+               // this.serviceActivityList = [];
+                this.bookingForm.patchValue({
+                    serviceActivity: null
+                });
+
+              //  return items.filter(item => item.title.indexOf(filter.title) !== -1);
+              //  return  this.programActivityList.filter(item => item.ProgName.indexOf(filter.title) !== -1);
+            })
+        ).subscribe((d: Array<any>) => {
+
+           // this.serviceActivityList = d.map(x => x.activity);
+           
+
+            if(this.serviceActivityList.length == 1){
+                this.bookingForm.patchValue({
+                    serviceActivity: this.serviceActivityList[0]
+                });
+            }
+        });
     }
    
     GET_ACTIVITY_VALUE(roster: string) {
@@ -2694,12 +2895,15 @@ isServiceTypeMultipleRecipient(type: string): boolean {
     }
 
     get showDone(){
-        return this.current >= 4 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3);
+       
+            return this.current >= 4 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3) ;
     }
     get isFormValid(){
         return  this.rosterForm.valid;
     }
-
+    get isBookingValid(){
+        return true;// this.bookingForm.valid;
+    }
     done(): void {
         this.fixStartTimeDefault();
         

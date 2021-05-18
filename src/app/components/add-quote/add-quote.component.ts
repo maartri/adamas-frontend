@@ -764,8 +764,7 @@ export class AddQuoteComponent implements OnInit {
                     billUnit: x.billUnit,
                     weekNo: x.lengthInWeeks,
                     price: x.rate,
-                    notes: x.notes,
-                    roster: 'Weekly'
+                    notes: x.notes
                 })
                 console.log(this.quoteListForm.value)
             }, 100);

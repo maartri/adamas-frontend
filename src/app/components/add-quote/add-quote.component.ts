@@ -140,6 +140,7 @@ export class AddQuoteComponent implements OnInit {
     expecteOutcome: string[];
     plangoalachivementlis: any;
     personIdForStrategy: any;
+    supplements: FormGroup;
 
   constructor(
     private timeS: TimeSheetService,
@@ -342,6 +343,17 @@ export class AddQuoteComponent implements OnInit {
       });
 
 
+      this.supplements = this.formBuilder.group({
+        domentica:false,
+        levelSupplement:'',
+        oxygen:false,
+        feedingSuplement:false,
+        feedingSupplement:'',
+        EACHD:false,
+        viabilitySuplement:false,
+        viabilitySupplement:'',
+        financialSup:''
+      });
 
       this.quoteListForm.get('chargeType').valueChanges
       .pipe(

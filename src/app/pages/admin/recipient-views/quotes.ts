@@ -215,7 +215,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     quoteLines: Array<any> = [];
 
     quoteLinesTemp: Array<any> = [];
-
+    
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     token:any;
     tocken: any;
@@ -231,7 +231,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     expecteOutcome: string[];
     plangoalachivementlis: any;
     personIdForStrategy: any;
-    
+    supplements: FormGroup;
+    isSuplement: boolean = false;
+    disabledRadio:boolean = true;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -391,6 +393,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             notes: null,
 
             editable: true
+        });
+
+        this.supplements = this.formBuilder.group({
+            viabilitySuplement:false,
         });
 
         this.quoteListForm.get('chargeType').valueChanges
@@ -628,6 +634,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     showQuoteModal(){
         this.quotesOpen = true;
+        this.IS_CDC = false;
         this.tabFindIndex = 2; 
 
         let id = this.user.id.substr(this.user.id - 5)

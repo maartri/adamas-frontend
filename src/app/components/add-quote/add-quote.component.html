@@ -59,6 +59,7 @@
             <nz-tab nzTitle="General" (nzClick)="tabFindChange(0)"> </nz-tab>
             <nz-tab nzTitle="Goals & Strategies" (nzClick)="tabFindChange(1)"> </nz-tab>
             <nz-tab nzTitle="Quote" (nzClick)="tabFindChange(2)"></nz-tab>
+            <nz-tab nzTitle="Supplements" (nzClick)="tabFindChange(3)"></nz-tab>
         </nz-tabset>
         
         <div nzGutter="16">
@@ -253,10 +254,8 @@
                 
             </div>
             
-            
-          
-
-        </div><div *ngIf="tabFindIndex == 2" >
+            </div>
+            <div *ngIf="tabFindIndex == 2" >
 
             <div nz-row nzGutter="32" [formGroup]="quoteForm">
  
@@ -457,7 +456,11 @@
             <div nz-row class="line" *ngIf="quoteForm.get('program').value">
                 <textarea rows="4" nz-input [(ngModel)]="value" placeholder="Extra Information"></textarea>
             </div>
-        </div>        
+           </div>
+           <div *ngIf="tabFindIndex == 3" >
+                <p>pragraph tag</p>
+           </div>
+           
     </div>
 
     
@@ -538,7 +541,7 @@
                 <div nz-col nzSpan="9">
                     <div nz-row class="calc-wrapper" *ngIf="weekly" [formGroup]="quoteListForm">
                         <div class="spacing flex"> 
-                            <nz-input-number [nzSize]="size" formControlName="quantity"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quantity"></nz-input-number>
                             <nz-select nzSize="small" nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Bill Unit" formControlName="billUnit">
                                 <nz-option *ngFor="let l of billUnitArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
@@ -546,7 +549,7 @@
                                 <nz-option *ngFor="let l of periodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
                             <span>X</span>
-                            <nz-input-number [nzSize]="size" formControlName="weekNo"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="weekNo"></nz-input-number>
                         </div>
                         <div class="flex">
                             <span>Price</span>
@@ -556,11 +559,11 @@
                             <input class="three-five" nz-input nzSize="small" formControlName="gst" />
                         </div>
                         <div nz-row class="spacing">
-                            <nz-input-number [nzSize]="size" formControlName="quoteValue"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteValue"></nz-input-number>
                             <span>% of Quote Value</span>
                         </div>
                         <div nz-row class="spacing">
-                            <nz-input-number [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
+                            <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
                             <span>% of Quote Budget</span>
                         </div>
                     </div>

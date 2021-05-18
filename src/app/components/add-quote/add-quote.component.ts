@@ -18,6 +18,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
 import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
+// import { Console } from 'node:console';
 
 const noop = () => {};
 
@@ -263,6 +264,7 @@ export class AddQuoteComponent implements OnInit {
       });
 
       this.quoteForm = this.formBuilder.group({
+          recordNumber: null,
           program: null,
           template: null,
           no: null,
@@ -370,7 +372,14 @@ export class AddQuoteComponent implements OnInit {
       ).subscribe(data => {
           this.recipientProperties = data;
           
-          this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None',itemId: data.recnum })
+          if(this.option == 'add')
+          {
+            this.quoteListForm.patchValue({ 
+                displayText: data.billText, 
+                price: data.amount, 
+                roster: 'None',
+                itemId: data.recnum })
+          }
       });
 
       this.quoteListForm.get('roster').valueChanges.subscribe(data => {
@@ -422,24 +431,28 @@ export class AddQuoteComponent implements OnInit {
   }
 
   setPeriod(data: any){
+      
     if(data && data != 'None'){
+        if(this.option == 'add'){
+            this.quoteListForm.get('period').disable();
 
-        this.quoteListForm.get('period').disable();
-
-        this.quoteListForm.patchValue({
-            period: data.toUpperCase(),
-            billUnit: 'HOUR',
-            weekNo: 52
-        })
-
+            this.quoteListForm.patchValue({
+                period: data.toUpperCase(),
+                billUnit: 'HOUR',
+                weekNo: 52
+            })
+        }
         return;
     }
 
-    this.quoteListForm.patchValue({
-        period: 'WEEKLY',
-        billUnit: 'HOUR',    
-        weekNo: 52
-    })
+    if(this.option == 'add')
+    {
+        this.quoteListForm.patchValue({
+            period: 'WEEKLY',
+            billUnit: 'HOUR',    
+            weekNo: 52
+        })
+    }
 
     this.quoteListForm.get('period').enable();
   }
@@ -722,20 +735,33 @@ export class AddQuoteComponent implements OnInit {
   }
 
   updateValues: any;
+  firstLoadQuoteLine: boolean = true;
+
   showEditQuoteModal(data: any){
     this.listS.getquotelinedetails(data.recordNumber)
         .subscribe(x => {
             this.updateValues = x;
-            this.quoteListForm.patchValue({
-                chargeType: this.getChargeType(x.mainGroup),
-                code: x.title,
-                displayText: x.displayText,
-            })
-                
+            setTimeout(() => {
+                this.quoteListForm.patchValue({
+                    chargeType: this.getChargeType(x.mainGroup),
+                    code: x.title,
+                    displayText: x.displayText,
+                    quantity: x.qty,
+                    period: x.frequency,
+                    billUnit: x.billUnit,
+                    weekNo: x.lengthInWeeks,
+                    price: x.rate,
+                    notes: x.notes,
+                    roster: 'Weekly'
+                })
+                console.log(this.quoteListForm.value)
+            }, 100);
+            
             this.detectChanges();
         });
 
     this.quoteLineOpen = true;
+    this.firstLoadQuoteLine = true;
   }
 
   tabFinderIndexbtn:number = 0;
@@ -772,7 +798,35 @@ export class AddQuoteComponent implements OnInit {
        }
 
        if(this.option == 'update'){
-           console.log('ipdate')
+           var quoteForm = this.quoteForm.value;
+           var quoteLine = this.quoteListForm.getRawValue();
+           
+           let da: QuoteLineDTO = {
+                sortOrder: 0,
+                billUnit: quoteLine.billUnit,
+                itemId: quoteLine.itemId,
+                qty: quoteLine.quantity,
+                displayText: quoteLine.displayText,
+
+                unitBillRate: quoteLine.price,
+                frequency: quoteLine.period,
+                lengthInWeeks: quoteLine.weekNo,
+                roster: quoteLine.rosterString,
+                serviceType: quoteLine.code
+            };
+
+            this.listS.updatequoteline(da, this.updateValues.recordNumber)
+                .pipe(
+                    switchMap(x => {
+                        this.globalS.sToast('Success', 'Quote Line updated')
+                        this.quoteLineOpen = false;
+
+                        return this.listS.getquoteline(quoteForm.recordNumber);
+                    })
+                ).subscribe(data => {
+                    console.log(data)
+                });
+
        }
   }
 
@@ -842,10 +896,21 @@ export class AddQuoteComponent implements OnInit {
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
-        }) 
+        });
+  }
+
+  refreshQuoteLines(recordNo: any){
+      
   }
 
   slotsChange(data: any){
+
+      // This would stop process at the bottom on first load of QuoteLineModal
+      if(this.firstLoadQuoteLine){
+          this.firstLoadQuoteLine = false;
+          return;
+      }
+
       this.quoteListForm.patchValue({
           quantity: data.quantity,
           rosterString: data.roster
@@ -854,6 +919,7 @@ export class AddQuoteComponent implements OnInit {
 
   quoteLineModal(){
       this.quoteLineOpen = true;
+      this.firstLoadQuoteLine = true;
       this.quoteListForm.reset();
   }
 
@@ -925,12 +991,14 @@ export class AddQuoteComponent implements OnInit {
       if(this.option == 'update' && this.record)
       {
           this.listS.getquotedetails(this.record).subscribe(data => {
+              console.log(data)
               this.quoteForm.patchValue({
+                  recordNumber: data.recordNumber,
                   program: data.program
               });
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
-                  console.log(x)
+                //   console.log(x)
                   return {
                     code: x.serviceType,
                     displayText: x.displayText,
@@ -941,8 +1009,7 @@ export class AddQuoteComponent implements OnInit {
                     recordNumber: x.recordNumber,
                     tax: x.tax , 
                     lengthInWeeks:x.lengthInWeeks,
-                    basequote: x.unitBillRate * x.frequency,
-
+                    basequote: x.unitBillRate * x.frequency
                   }
               }) : []; 
               
@@ -971,7 +1038,7 @@ export class AddQuoteComponent implements OnInit {
 
   }
   fbasequote(){
-    console.log(this.quoteLines)
+    // console.log(this.quoteLines)
     return this.globalS.baseamount.toFixed(2) ;
   }
 

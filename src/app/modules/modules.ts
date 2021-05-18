@@ -80,7 +80,9 @@ export interface QuoteLineDTO {
     strategyId?: number,
     rcycle?: string,
     notes?: string,
-    sortOrder: number
+    sortOrder: number,
+
+    serviceType?: string
 }
 
 export interface QuoteHeaderDTO {
@@ -110,7 +112,8 @@ export interface QuoteHeaderDTO {
     quoteLines?: Array<QuoteLineDTO>,
     program?: string,
     user?: string,
-    template?: string
+    template?: string,
+    type?: string,
 }
 
 export interface Recipients {

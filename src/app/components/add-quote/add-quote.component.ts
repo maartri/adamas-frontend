@@ -36,6 +36,8 @@ export class AddQuoteComponent implements OnInit {
 
     @Input() open: boolean = false;
     @Input() user: any; 
+    @Input() option: any;
+    @Input() record: any;
     
     private unsubscribe: Subject<void> = new Subject();
     
@@ -102,6 +104,7 @@ export class AddQuoteComponent implements OnInit {
     radioValue: any;
     filters: any;
     disciplineList: any;
+    typeList: Array<any> = [];
     careDomainList: any;
     programList: any;
     quotePlanType: string[];
@@ -160,6 +163,8 @@ export class AddQuoteComponent implements OnInit {
       if (property == 'open' && 
             !changes[property].firstChange &&
               changes[property].currentValue != null) {
+        // console.log(this.option)
+        // console.log(this.record)
 
         this.search(this.user);
         this.showQuoteModal();
@@ -197,7 +202,7 @@ export class AddQuoteComponent implements OnInit {
           no: null,
           type: null,
           period: [],
-          basePeriod: null,
+          basePeriod: 'ANNUALLY',
           programId: null
       });
 
@@ -206,8 +211,11 @@ export class AddQuoteComponent implements OnInit {
   }
 
   buildForm() {
-
-      this.inputForm = this.formBuilder.group({
+    
+    if(this.option == 'add'){
+        this.quoteLines = [];
+    }
+    this.inputForm = this.formBuilder.group({
           autoLogout: [''],
           emailMessage: false,
           excludeShiftAlerts: false,
@@ -259,7 +267,7 @@ export class AddQuoteComponent implements OnInit {
           no: null,
           type: null,
           period: [],
-          basePeriod: null,
+          basePeriod: 'ANNUALLY',
 
           initialBudget: null,
           daysCalc: 365,
@@ -337,6 +345,18 @@ export class AddQuoteComponent implements OnInit {
           })
       ).subscribe(data => {
           this.codes = data;
+        //   if(this.option == 'update')
+        //   {
+        //        var x = this.updateValues;
+        //        console.log(x);
+        //        setTimeout(() => {
+        //         this.quoteListForm.patchValue({
+        //             code: x.title,
+        //             displayText: x.displayText,                
+        //         })
+        //         this.detectChanges();
+        //        }, 100);
+        //   }
       });
 
       this.quoteListForm.get('code').valueChanges.pipe(
@@ -380,7 +400,6 @@ export class AddQuoteComponent implements OnInit {
               return EMPTY;
           })
       ).subscribe(data => {
-          console.log(data)
           this.detectChanges();
       });
 
@@ -625,6 +644,23 @@ export class AddQuoteComponent implements OnInit {
          this.cd.markForCheck();
       });
     }
+
+    deleteQuoteList(data: any, index: number){
+        if(this.option == 'update'){
+            // this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+            // console.log(data)
+            this.listS.deletequoteline(data.recordNumber).subscribe(data => {
+                this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+                this.detectChanges();
+            });
+        }
+
+        if(this.option == 'add'){
+            console.log('add');
+            this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+        }
+        
+    }
   
 
   showCarePlanStrategiesModal(){
@@ -670,6 +706,37 @@ export class AddQuoteComponent implements OnInit {
       });
   }
 
+  getChargeType(type: string): any{
+        if(type == 'DIRECT SERVICE')
+            return '1';
+
+        if(type == 'GOODS/EQUIPMENT')
+            return '2';
+
+        if(type == 'PACKAGE ADMIN')
+            return '3';
+    
+        if(type == 'CASE MANAGEMENT')
+            return '4';
+  }
+
+  updateValues: any;
+  showEditQuoteModal(data: any){
+    this.listS.getquotelinedetails(data.recordNumber)
+        .subscribe(x => {
+            this.updateValues = x;
+            this.quoteListForm.patchValue({
+                chargeType: this.getChargeType(x.mainGroup),
+                code: x.title,
+                displayText: x.displayText,
+            })
+                
+            this.detectChanges();
+        });
+
+    this.quoteLineOpen = true;
+  }
+
   tabFinderIndexbtn:number = 0;
   tabFindChangeStrategies(index: number){
       this.tabFinderIndexbtn = index;
@@ -694,12 +761,18 @@ export class AddQuoteComponent implements OnInit {
   }
 
   GENERATE_QUOTE_LINE(){
-        
-      setTimeout(() => {
-          this.quoteLines = [...this.quoteLines, this.quoteListForm.getRawValue()];
-          this.handleCancelLine();
-          this.detectChanges();
-      }, 0);
+       if(this.option == 'add')
+       {
+            setTimeout(() => {
+                this.quoteLines = [...this.quoteLines, this.quoteListForm.getRawValue()];
+                this.handleCancelLine();
+                this.detectChanges();
+            }, 0);
+       }
+
+       if(this.option == 'update'){
+           console.log('ipdate')
+       }
   }
 
   handleCancelLine(){
@@ -711,12 +784,13 @@ export class AddQuoteComponent implements OnInit {
     let qteHeader: QuoteHeaderDTO;
 
     const quoteForm = this.quoteForm.getRawValue();
-    // console.log(quoteForm)
 
-    console.log(this.quoteLines);
-    console.log(this.loggedInUser);
+
+    // console.log(this.quoteLines);
+    // console.log(this.loggedInUser);
     // return;
     // console.log(qteHeader);
+    // return;
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
@@ -729,7 +803,8 @@ export class AddQuoteComponent implements OnInit {
             unitBillRate: x.price,
             frequency: x.period,
             lengthInWeeks: x.weekNo,
-            roster: x.rosterString
+            roster: x.rosterString,
+            serviceType: x.code
         };
         qteLineArr.push(da);
     });
@@ -757,8 +832,11 @@ export class AddQuoteComponent implements OnInit {
 
         personId: this.user.id,
         user: this.loggedInUser.user,
-        template: quoteForm.template
+        template: quoteForm.template,
+        type: quoteForm.type
     }
+
+    console.log(qteHeader);
 
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
@@ -783,6 +861,8 @@ export class AddQuoteComponent implements OnInit {
       this.expecteOutcome = expectedOutcome;
 
       let notSpecified =["NOT SPECIFIED"];
+
+      this.listS.getquotetype().subscribe(data =>this.typeList = data);
       
       this.listS.getdiscipline().subscribe(data => {
           data.push('NOT SPECIFIED');
@@ -839,6 +919,28 @@ export class AddQuoteComponent implements OnInit {
 
         this.cd.markForCheck();
       });
+
+
+      if(this.option == 'update' && this.record)
+      {
+          this.listS.getquotedetails(this.record).subscribe(data => {
+              this.quoteForm.patchValue({
+                  program: data.program
+              });
+
+              this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
+                  return {
+                    code: x.serviceType,
+                    displayText: x.displayText,
+                    quantity: x.qty,
+                    billUnit: x.billUnit,
+                    frequency: x.frequency,
+                    price: x.unitBillRate,
+                    recordNumber: x.recordNumber
+                  }
+              }) : [];
+          })
+      }
   }
 
 

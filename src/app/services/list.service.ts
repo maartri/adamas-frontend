@@ -21,6 +21,22 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getquotelinedetails(recordNo: number): Observable<any>{
+        return this.auth.get(`${list}/quotes-line-details/${recordNo}`);
+    }
+
+    deletequoteline(recordNo: number):Observable<any>{
+        return this.auth.delete(`${list}/quote-lines/${recordNo}`);
+    }
+
+    getquotetype(): Observable<any>{
+        return this.auth.get(`${list}/goalplan/list`);
+    }
+
+    getquotedetails(recordNo: number): Observable<any>{
+        return this.auth.get(`${list}/quotes-details/${recordNo}`);
+    }
+
     getrecipientsqlid(id: string): Observable<any> {
         return this.auth.get(`${list}/recipient-sqlid/${id}`);
     }

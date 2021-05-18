@@ -160,7 +160,10 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     return currDate;
   }
 
+  firstOpenChange: boolean = false;
   dateOpenChange(data: any){
+    if(this.firstOpenChange || !data) return;
+    this.firstOpenChange = true;
     this.referralGroup.patchValue({
       dob: this.defaultBirthDate()
     });
@@ -170,10 +173,12 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this._lastname.nativeElement.focus();
     });
+
+    this.firstOpenChange = false;
     
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
-      dob: new FormControl('', Validators.required),
+      dob: new FormControl(null, Validators.required),
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),

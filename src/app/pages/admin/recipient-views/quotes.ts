@@ -463,6 +463,59 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.detectChanges();
         });
 
+        this.supplements.get('levelSupplement').valueChanges.pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                console.log("value "+ x);
+                return this.listS.getprogramlevel(x)
+            }),
+            switchMap(x => {                
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
+                    if(x.quantity && x.timeUnit == 'DAY'){
+                        this.quoteForm.patchValue({
+                            govtContrib: (x.quantity*365).toFixed(2),
+                            programId: x.recordNumber
+                        });
+                    }
+                    this.detectChanges();
+                    return this.listS.getpensionandfee();
+                }
+                this.detectChanges();
+                return EMPTY;
+            })
+           ).subscribe(data => {
+            console.log(data)
+            this.detectChanges();
+        });
+
+        // .pipe(
+        //     switchMap(x => {
+        //         if(!x) return EMPTY;
+        //         return this.listS.getprogramlevel(x)
+        //     }),
+        //     switchMap(x => {                
+        //         this.IS_CDC = false;
+        //         if(x.isCDC){
+        //             this.IS_CDC = true;
+        //             if(x.quantity && x.timeUnit == 'DAY'){
+        //                 this.quoteForm.patchValue({
+        //                     govtContrib: (x.quantity*365).toFixed(2),
+        //                     programId: x.recordNumber
+        //                 });
+        //             }
+        //             this.detectChanges();
+        //             return this.listS.getpensionandfee();
+        //         }
+        //         this.detectChanges();
+        //         return EMPTY;
+        //     })
+        // ).subscribe(data => {
+        //     console.log(data)
+        //     this.detectChanges();
+        // });
+
     }
 
     // buildForm() {

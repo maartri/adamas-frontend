@@ -309,7 +309,7 @@ export class AddQuoteComponent implements OnInit {
       this.stratergiesForm = this.formBuilder.group({
           detail:'',
           PersonID:this.personIdForStrategy,
-          outcome:null,
+          outcome:'',
           strategyId:'',
           serviceTypes:'',
           recordNumber:'',
@@ -754,7 +754,11 @@ export class AddQuoteComponent implements OnInit {
   }
 
   showStrategiesModal(){
-      this.stratergiesForm.reset();
+    this.stratergiesForm.patchValue({
+        detail:'',
+        outcome:'',
+        strategyId:'',
+    });
       this.isUpdateStrategy = false;
       this.strategiesmodal = true;
   }
@@ -780,7 +784,7 @@ export class AddQuoteComponent implements OnInit {
   showEditStrategyModal(data:any){
       this.isUpdateStrategy = true;
       this.strategiesmodal = true;
-      this.stratergiesForm = this.formBuilder.group({
+      this.stratergiesForm.patchValue({
           detail:data.strategy,
           PersonID:data.recordnumber,
           outcome:data.achieved,

@@ -19,7 +19,7 @@ import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
 import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
 import { PrintPdfComponent } from '@components/print-pdf/print-pdf.component';
-import { toLength } from 'lodash';
+import { filter, toLength } from 'lodash';
 
 // import { Console } from 'node:console';
 
@@ -106,7 +106,7 @@ export class AddQuoteComponent implements OnInit {
 
     codes: Array<any>
     recipientProperties: any;
-
+    cpid:any;
     radioValue: any;
     filters: any;
     disciplineList: any;
@@ -126,6 +126,9 @@ export class AddQuoteComponent implements OnInit {
     quoteLinesTemp: Array<any> = [];
 
     loggedInUser: any;
+    admincharges :number = 0;
+    specindex:number;
+    dochdr:any;
 
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     token:any;
@@ -735,6 +738,7 @@ export class AddQuoteComponent implements OnInit {
   }
 
   showEditStrategyModal(data:any){
+      
       this.isUpdateStrategy = true;
       this.strategiesmodal = true;
       this.stratergiesForm = this.formBuilder.group({
@@ -766,7 +770,7 @@ export class AddQuoteComponent implements OnInit {
   quoteLineIndex: number;
 
   showEditQuoteModal(data: any, index: number){
-
+    
     this.quoteLineIndex = index;
 
     this.listS.getquotelinedetails(data.recordNumber)
@@ -1034,6 +1038,8 @@ export class AddQuoteComponent implements OnInit {
       {
           this.listS.getquotedetails(this.record).subscribe(data => {
               console.log(data)
+               this.cpid = data.cpid
+               
               this.quoteForm.patchValue({
                   recordNumber: data.recordNumber,
                   program: data.program
@@ -1041,8 +1047,9 @@ export class AddQuoteComponent implements OnInit {
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
 
-                  console.log(x)
+                //  console.log(x)
                 this.fquotehdr = x;
+                 this.dochdr = x.docHdrId
                   return {
                     code: x.serviceType,
                     displayText: x.displayText,
@@ -1053,7 +1060,7 @@ export class AddQuoteComponent implements OnInit {
                     recordNumber: x.recordNumber,
                     tax: x.tax , 
                     lengthInWeeks:x.lengthInWeeks,
-                    typechar: x.mainGroup,
+                    quoteQty:x.quoteQty
                   //  basequote: ,
 
 
@@ -1089,31 +1096,31 @@ export class AddQuoteComponent implements OnInit {
   }
   fbasequote(){
       
-        let temp = this.fquotehdr
-        var temp1 : number;
+        let temp = this.fquotehdr        
         var test :number;
         
         let price,quantity,length;
     //    console.log(temp)
-        
-    
+   
+    if (this.option == 'update'){
         for(let i = 0;i < temp.length+1;i++){
             
           
             //    console.log(this.quoteLines[i].lengthInWeeks)
             //    console.log(this.quoteLines[i].quantity)
             //    console.log(this.quoteLines[i].price)
+            //if(stype == "ADMINISTRATION"){ }
                 price = temp[i].price
                 quantity = temp[i].quantity
-                length  = temp[i].lengthInWeeks
+                length  = temp[i].quoteQty
                //console.log(price)
                
                test = (price * quantity * length)
                this.globalS.baseamount  = this.globalS.baseamount + test
         //       console.log(temp1)
-
+            
         } 
-        
+    }
       
     
 
@@ -1130,55 +1137,77 @@ export class AddQuoteComponent implements OnInit {
   }
   remainingfund(){
       var temp :Number;
-    temp = (this.quoteForm.value.govtContrib -  this.globalS.admincharges - this.globalS.baseamount)
+    temp = (this.quoteForm.value.govtContrib -  this.admincharges - this.globalS.baseamount)
     return temp.toFixed(2)
   }
   totalQuote(){
     var temp :Number;
-    temp =  (this.globalS.admincharges + this.globalS.baseamount)
+    temp =  (this.admincharges + this.globalS.baseamount)
     return temp.toFixed(2)
   }
-  admincharges(){
-      let temp = this.fquotehdr
-    var id = '46010'  ;
-    this.listS.GetQuotetype(id).subscribe(x => {console.log(x)})
-    console.log(temp)
-  
-    if(this.quoteListForm.value.chargeType == 'PACKAGE ADMIN' ){
- //   if( this.updateValues == 3 ){
-    
+  admincharge(){
+      
+    var id,stype;
+   
+    id  = this.cpid  ;
+   // id  = '46010'  ;
+    this.listS.GetQuotetype(id).subscribe( x => {
+        this.specindex = x.indexOf("ADMINISTRATION")
+        //console.log(stype)
+
+    })
+   
+ //   if(stype == "ADMINISTRATION" ){
+
+    let temp = this.fquotehdr   
+        console.log(temp)
     var temp1 : number;
     var test :number;
     
     let price,quantity,length;
-    console.log(temp)
-    
-
-    for(let i = 0;i < temp.length+1;i++){
+//    console.log(this.specindex)
+    if (this.option == 'update'){
         
-      
-        //    console.log(this.quoteLines[i].lengthInWeeks)
-        //    console.log(this.quoteLines[i].quantity)
-        //    console.log(this.quoteLines[i].price)
-            price = temp[i].price
-            quantity = temp[i].quantity
-            length  = temp[i].lengthInWeeks
-           //console.log(price)
+            
+            let j = this.specindex
+          
+               for(let i =0;i < temp.length+1;i++){
+                    
+                
+                
+                price = temp[i].price
+                quantity = temp[i].quantity
+                length  = temp[i].quoteQty
+                //    console.log(price)
+                    
+                       test = (price * quantity * length)
+                    //   temp1 = test
+                    this.admincharges = this.admincharges + test
+                //       console.log(temp1)
            
-           test = (price * quantity * length)
-           this.globalS.admincharges  = this.globalS.admincharges + test
-           console.log(temp1)
-
-    } 
-}else{
-    this.globalS.admincharges = 0;
-}
-    
+            } 
+        
+            console.log(test)
+       
+    }
   
 
-return this.globalS.admincharges.toFixed(2) ;
+return this.admincharges;
 
   }
+  dailyliving(){
+    let daily;
+     
+    var temp = this.dochdr
+      this.listS.GetDailyliving(temp).subscribe(x => {
+        
+         daily = x;
+         console.log(x);
+      });
+   return daily;
+  
+
+}
 
 
 

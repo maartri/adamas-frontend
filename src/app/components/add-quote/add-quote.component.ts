@@ -102,7 +102,7 @@ export class AddQuoteComponent implements OnInit {
     quoteProgramList: Array<string>;
 
     IS_CDC: boolean = false;
-
+    programLevel:any;
 
     codes: Array<any>
     recipientProperties: any;
@@ -454,6 +454,8 @@ export class AddQuoteComponent implements OnInit {
               this.IS_CDC = false;
               if(x.isCDC){
                   this.IS_CDC = true;
+                  this.programLevel = x.level;
+                    console.log(this.programLevel+"this.programLevel")
                   if(x.quantity && x.timeUnit == 'DAY'){
                       this.quoteForm.patchValue({
                           govtContrib: (x.quantity*365).toFixed(2),
@@ -1123,6 +1125,17 @@ export class AddQuoteComponent implements OnInit {
   fbasequote(){
     // console.log(this.quoteLines)
     return this.globalS.baseamount.toFixed(2) ;
+  }
+  domenticaChange(event: any){
+    if(event.target.checked){
+        this.supplements.patchValue({
+            levelSupplement : this.programLevel,
+        })
+    }else{
+        this.supplements.patchValue({
+            levelSupplement : '',
+        })
+    }
   }
 
 }//this.quoteLines

@@ -164,6 +164,10 @@ export class ListService {
     getchargetype(data: any): Observable<any>{
         return this.auth.get(`${list}/quote/chargeType`, data);
     }
+    GetQuotetype(Sql: string): Observable<any>{
+        return this.auth.get(`${list}/getquotetype/${Sql}`);
+    }
+    
 
     getglobaltemplate(): Observable<any>{
         return this.auth.get(`${list}/template/list`);

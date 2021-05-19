@@ -121,6 +121,7 @@ export class AddQuoteComponent implements OnInit {
 
     quoteLines: Array<any> = [];
     fquotehdr: Array<any> = [];
+    mainGroup: Array<any> = [];
 
     quoteLinesTemp: Array<any> = [];
 
@@ -770,7 +771,7 @@ export class AddQuoteComponent implements OnInit {
 
     this.listS.getquotelinedetails(data.recordNumber)
         .subscribe(x => {
-            this.updateValues = x;
+            this.updateValues = x;                         
             setTimeout(() => {
                 this.quoteListForm.patchValue({
                     chargeType: this.getChargeType(x.mainGroup),
@@ -1040,7 +1041,7 @@ export class AddQuoteComponent implements OnInit {
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
 
-                //  console.log(x)
+                  console.log(x)
                 this.fquotehdr = x;
                   return {
                     code: x.serviceType,
@@ -1052,7 +1053,7 @@ export class AddQuoteComponent implements OnInit {
                     recordNumber: x.recordNumber,
                     tax: x.tax , 
                     lengthInWeeks:x.lengthInWeeks,
-
+                    typechar: x.mainGroup,
                   //  basequote: ,
 
 
@@ -1132,14 +1133,25 @@ export class AddQuoteComponent implements OnInit {
     temp = (this.quoteForm.value.govtContrib -  this.globalS.admincharges - this.globalS.baseamount)
     return temp.toFixed(2)
   }
+  totalQuote(){
+    var temp :Number;
+    temp =  (this.globalS.admincharges + this.globalS.baseamount)
+    return temp.toFixed(2)
+  }
   admincharges(){
-    if(this.quoteListForm.value.chargeType == 3 ){
-    let temp = this.fquotehdr
+      let temp = this.fquotehdr
+    var id = '46010'  ;
+    this.listS.GetQuotetype(id).subscribe(x => {console.log(x)})
+    console.log(temp)
+  
+    if(this.quoteListForm.value.chargeType == 'PACKAGE ADMIN' ){
+ //   if( this.updateValues == 3 ){
+    
     var temp1 : number;
     var test :number;
     
     let price,quantity,length;
-//    console.log(temp)
+    console.log(temp)
     
 
     for(let i = 0;i < temp.length+1;i++){

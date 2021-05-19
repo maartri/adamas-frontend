@@ -172,7 +172,7 @@
 </nz-modal>
 
     <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ViewStaffDetail" nzTitle="View Staff Details" (nzOnCancel)="ViewStaffDetail = false" >
-        <div nz-row>
+        <div nz-row [formGroup]="rosterForm">
             <!-- <div class="form-group" *ngIf="selected?.option === 1"> -->
                 <label for="">Staff/Contractor</label>
                 <app-staff-popup formControlName="staffCode"></app-staff-popup>

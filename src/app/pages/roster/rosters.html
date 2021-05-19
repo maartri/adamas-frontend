@@ -53,7 +53,7 @@
         <div  class="nz-button" >
             <nz-button-group >
                 <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
-                <button [disabled]="!enable_buttons"  *ngIf="viewType=='Recipient'" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
+                <button [disabled]="!enable_buttons" (click)="addBooking()"  *ngIf="viewType=='Recipient'" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
                 <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Client Administration time"><i nz-icon nzType="font-colors" nzTheme="outline"></i></button>
                 <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Service with nominated staff member" ><i nz-icon nzType="team" nzTheme="outline"></i></button>
                 <button [disabled]="!enable_buttons" nz-button nzType="primary" nz-tooltip nzTooltipTitle="Record Travel time"><i nz-icon nzType="car" nzTheme="outline"></i></button>
@@ -433,3 +433,78 @@
 </nz-modal>
   
 <!-- Add Timesheet -->
+
+
+<nz-modal [(nzVisible)]="addBookingModel" [nzWidth]="900" nzTitle="Timesheet"  [nzFooter]="modalFooter2" (nzOnCancel)="addBookingModel=false">
+    <div class="flexy" style="min-height:21rem">
+
+            <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">
+                <nz-step *ngIf="current>0" nzTitle="Service/Activity"></nz-step>
+                <nz-step *ngIf="current>1" nzTitle="Recipient/Staff Details"></nz-step>
+                <nz-step *ngIf="current>2" nzTitle="Program"></nz-step>
+               </nz-steps>
+    
+            <nz-divider class="full-height" nzType="vertical"></nz-divider>
+ 
+            <div class="steps-content">
+                <div *ngIf="current == 0" [formGroup]="bookingForm">                    
+                    
+                    <div class="form-group">
+                            <label for="">Program</label>
+                            <nz-select nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                                <nz-option *ngFor="let list of programsList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                                <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
+                            </nz-select>
+                        </div>
+                    <div class="form-group">
+                        <label for="">Service/Activity/Item</label>
+                        <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
+                        </nz-select>                        
+                        <div>
+                            <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="rosterForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
+                            <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+                <div *ngIf="current == 1" [formGroup]="bookingForm">
+                    <div class="form-group" *ngIf="viewType=='Staff'">
+                        <label for="">Recipient</label>
+                        <app-recipient-popup formControlName="recipientCode"></app-recipient-popup>
+                    </div>
+                    <div class="form-group" *ngIf="viewType=='Recipient' ">
+                        <label for="">Staff</label>
+                        <app-staff-popup formControlName="staffCode"></app-staff-popup>
+                    </div>
+                   
+                </div>
+                
+               
+                    
+                   
+              
+
+
+   
+    </div>
+
+    <ng-template #modalFooter2>
+        <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+            <span>Previous</span>
+        </button>
+        <button nz-button nzType="default" (click)="next()" *ngIf="nextCondition && !add_UnAllocated" [disabled]="nextDisabled" >
+            <span>Next</span>
+        </button>
+        <button nz-button nzType="primary" (click)="doneBooking()" [disabled]="!isBookingValid" *ngIf="showDone && !add_UnAllocated">
+            <span>Done</span>
+        </button>
+        <button nz-button nzType="primary" (click)="doneBooking()" *ngIf="add_UnAllocated">
+            <span>Done</span>
+        </button>
+        <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>
+        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button> -->
+    </ng-template>
+
+</nz-modal>

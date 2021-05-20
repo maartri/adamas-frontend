@@ -114,6 +114,7 @@ export interface QuoteHeaderDTO {
     user?: string,
     template?: string,
     type?: string,
+    documentId?: number
 }
 
 export interface Recipients {

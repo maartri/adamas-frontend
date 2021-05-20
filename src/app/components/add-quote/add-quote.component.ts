@@ -111,7 +111,8 @@ export class AddQuoteComponent implements OnInit {
     IS_CDC: boolean = false;
     programLevel:any;
 
-    codes: Array<any>
+    codes: Array<any>;
+    strategies: Array<any>;
     recipientProperties: any;
 
     radioValue: any;
@@ -377,6 +378,7 @@ export class AddQuoteComponent implements OnInit {
       .pipe(
           switchMap(x => {                
               this.resetQuotePrimary();
+              this.listStrategiesDropDown(this.tableDocumentId);
               if(!x) return EMPTY;
               return this.listS.getchargetype({
                   program: this.quoteForm.get('program').value,
@@ -541,6 +543,12 @@ export class AddQuoteComponent implements OnInit {
           roster: null,
           strategy: null
       });
+  }
+
+  listStrategiesDropDown(docId: any){
+      this.listS.getstrategyList(docId.toString()).subscribe(data => {
+          this.strategies = data;
+      })
   }
 
   detectChanges(){
@@ -989,6 +997,7 @@ export class AddQuoteComponent implements OnInit {
 
     const quoteForm = this.quoteForm.getRawValue();
     console.log(quoteForm);
+    console.log(this.quoteLines);
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
@@ -1002,7 +1011,8 @@ export class AddQuoteComponent implements OnInit {
             frequency: x.period,
             lengthInWeeks: x.weekNo,
             roster: x.rosterString,
-            serviceType: x.code
+            serviceType: x.code,
+            strategyId: x.strategy
         };
         qteLineArr.push(da);
     });
@@ -1031,11 +1041,9 @@ export class AddQuoteComponent implements OnInit {
         personId: this.user.id,
         user: this.loggedInUser.user,
         template: quoteForm.template,
-        type: quoteForm.type
+        type: quoteForm.type,
+        documentId: this.tableDocumentId
     }
-
-    // console.log(qteHeader);
-    // return;
 
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {

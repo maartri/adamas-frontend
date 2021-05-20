@@ -599,7 +599,7 @@
                 <div class="form-group">
                     <label for="">Strategy</label>
                     <nz-select formControlName="strategy" nzSize="small" nzAllowClear nzPlaceHolder="Strategy">
-                        <!-- <nz-option nzValue="jack" nzLabel="Jack"></nz-option> -->
+                        <nz-option *ngFor="let d of strategies" [nzValue]="d.recordNumber" [nzLabel]="d.strategy"></nz-option>
                     </nz-select>
                 </div>
             </div>

@@ -931,7 +931,7 @@
                             </ul> -->
                             <div style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
                             <nz-radio-group formControlName="programChecked">
-                                <label nz-radio *ngFor="let program of admitGroup.get('programs')['controls'];let i = index" [nzValue]="program">{{ admitGroup.get('programs')['controls'][i].value.program }}</label>
+                                <label nz-radio *ngFor="let program of admitGroup.get('programs').value;let i = index" [nzValue]="program">{{ admitGroup.get('programs')['controls'][i].value.program }}</label>
                             </nz-radio-group>
                             </div>
                             <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>

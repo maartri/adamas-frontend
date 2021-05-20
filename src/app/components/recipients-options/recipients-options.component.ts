@@ -390,10 +390,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.admitGroup.get('programChecked').valueChanges
         .pipe(
             switchMap(x => {
+              console.log(x);
                 if(!x) return EMPTY;
-                  console.log(x);
+                  // console.log(x);
                 let obj = {
-                  program: x,
+                  program: x.program,
                   option: 'ADMIT'
                 }
                 return this.listS.getreferraltype(obj)

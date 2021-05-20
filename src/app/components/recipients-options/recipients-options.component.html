@@ -10,9 +10,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="itemGroup">
@@ -24,7 +24,7 @@
                     </ul>
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1">
                     <div nz-row nzGutter="24" [formGroup]="itemGroup"> 
                         <div nz-col nzSpan="24">
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                             </div>
-                           <div nz-row>
+                            <div nz-row>
                                 <div nz-col nzSpan="8">
                                     <div class="form-group">
                                         <nz-date-picker formControlName="suppliedDate" (ngModelChange)="onChange($event)" nzPlaceHolder="Supplied Date"></nz-date-picker>
@@ -48,11 +48,11 @@
                                         <input nz-input placeholder="Ref/No" formControlName="refNo" />
                                     </div>
                                 </div>
-                           </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2">
                     
                     <div nz-row>
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                     </div>
-
+                    
                     <div nz-row nzGutter="24" [formGroup]="itemGroup">
                         <div nz-col nzSpan="6">
                             <div class="form-group">
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-
+                    
                     <div nz-row nzGutter="24" [formGroup]="itemGroup">
                         <div nz-col nzSpan="6">
                             <div class="form-group">
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3" [formGroup]="itemGroup" nzGutter="32">
                     <div nz-col nzSpan="24">
                         <div class="form-group">
@@ -102,11 +102,11 @@
                                 <label nz-radio [nzValue]="'op'">OP NOTE</label>
                                 <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
                             </nz-radio-group>
-
+                            
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px "></textarea>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Unit" style="width:8rem">
@@ -114,22 +114,22 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 4" [formGroup]="itemGroup">
-
+                    
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
                             <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                         </div>
                     </div>
-
+                    
                     <div nz-row [nzGutter]="16" class="space-btm">
                         <div nz-col nzSpan="8">
                             <div class="form-group">
@@ -154,13 +154,13 @@
                         </div>                        
                     </div>  
                 </div>  
-
-
+                
+                
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -184,116 +184,216 @@
     <div nz-row *ngIf="adminOpen">
         <div class="flexy">        
             <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
-                <nz-step class="mini" nzTitle="Program " nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Date Details" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Admission" nzDescription=""></nz-step>
+                <!-- <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step> -->
+                <!-- <nz-step class="mini" nzTitle="Date Details" nzDescription=""></nz-step> -->
+                <!-- <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step> -->
+                <!-- <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step> -->
+                <nz-step class="mini" nzTitle="Notifications" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Followups" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Documents" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Additional Data" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
-                <div nz-row *ngIf="current == 0" >
-                    <ul [formGroup]="adminGroup">
-                        <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs')['controls'];let i = index">
-                            <div [formGroupName]="i">
-                                <label nz-checkbox formControlName="checked"> {{ adminGroup.get('programs')['controls'][i].value.program }}</label>
-                            </div>
-                        </li>
-                    </ul>
-                    <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
-                </div>
-
-                <div nz-row *ngIf="current == 1">
-                    <p>Referral Type</p>
-                    <div style="margin-left: 1rem">
-                        <ng-container *ngFor="let program of checkedPrograms">
-                            <app-select-list-recipient [(ngModel)]="program.selected" [program]="program.program" [option]="option"></app-select-list-recipient>
-                        </ng-container>
+                <div nz-row *ngIf="current == 0" [formGroup]="adminGroup">
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzBodyStyle]="{'padding':'5px'}">
+                            <ul style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                                <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs')['controls'];let i = index">
+                                    <div [formGroupName]="i">
+                                        <label nz-checkbox formControlName="checked"> {{ adminGroup.get('programs')['controls'][i].value.program }}</label>
+                                    </div>
+                                </li>
+                            </ul>
+                            <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
+                        </nz-card>
                     </div>
-                </div>
-
-                <div nz-row *ngIf="current == 2" [formGroup]="adminGroup">
-                    <div nz-row [nzGutter]="8" class="space-btm">
-                        <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="referralDate" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
-                        </div>                        
-                    </div>
-                    <div nz-row [nzGutter]="8">
-                        <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
-                        </div>
-                        <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
-                        </div>
-                    </div>
-                </div>
-
-                <div nz-row *ngIf="current == 3" [nzGutter]="16">
-                    <div nz-col nzSpan="24">
-                        <div class="form-group"  [formGroup]="adminGroup">
-                            <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
-                            </nz-radio-group>
-
-                            <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
-                        </div>
-                    </div>
-
-                    <div nz-col nzSpan="12">
-                        <div class="form-group"  [formGroup]="adminGroup">
-                            <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
-                                <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
-                            </nz-select>
-                        </div>
-                    </div>
-
-                    <div nz-col nzSpan="8">
-                        <div class="form-group"  [formGroup]="adminGroup">
-                            <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div nz-row *ngIf="current == 4" [formGroup]="adminGroup">
-                    <div nz-row [nzGutter]="8" class="space-btm">
-                        <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
-                        </div>                        
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzBodyStyle]="{'padding':'5px'}">
+                            <!-- <ng-container *ngFor="let program of checkedPrograms"> -->
+                                <!-- <app-select-list-recipient [(ngModel)]="program.selected" [program]="program.program" [option]="option"></app-select-list-recipient> -->
+                            <!-- </ng-container> -->
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="8">
+                                    <label>Admission Type</label>
+                                </div>
+                                <div nz-col nzSpan="16">
+                                    <!-- <div class="form-group"> -->
+                                        <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
+                                            <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
+                                        </nz-select>
+                                    <!-- </div> -->
+                                </div>
+                            </div>    
+                        </nz-card>
                     </div>  
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzBodyStyle]="{'padding':'5px'}">
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="8">
+                                    <label>Referral Date</label>
+                                    <nz-date-picker formControlName="referralDate"></nz-date-picker>
+                                </div>
+                                <div nz-col nzSpan="8" style="padding-right: 5px;">
+                                    <label>Time</label>
+                                    <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+                                </div>
+                                <div nz-col nzSpan="8">
+                                    <label>Time Spent</label>
+                                    <nz-time-picker formControlName="timeSpent"  nzFormat="HH:mm"></nz-time-picker>
+                                </div>
+                            </div>
+                        </nz-card>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzBodyStyle]="{'padding':'5px'}">
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="6">
+                                    <label class="space-top-3">Note Type</label>
+                                    <nz-radio-group formControlName="radioGroup" class="space-top">
+                                        <label nz-radio [nzValue]="'case'">CASE NOTE</label>
+                                        <label nz-radio [nzValue]="'op'">OP NOTE</label>
+                                        <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                    </nz-radio-group>
+                                </div>
+                                <div nz-col nzSpan="18">
+                                    <label>CASE NOTE</label>
+                                    <textarea rows="2" nz-input formControlName="notes" style="resize:none;height:10rem;" ></textarea>
+                                </div>
+                            </div>
+                            <nz-divider></nz-divider>
+                            <div nz-col nzSpan="24">
+                                <div nz-col nzSpan="14">
+                                    <div class="form-group">
+                                        <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
+                                            <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8" class="text-center">
+                                    <div class="form-group">
+                                        <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </nz-card>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm-half">
+                        <nz-card [nzBodyStyle]="{'padding':'5px'}">
+                            <div nz-col nzSpan="24" class="mrg-btm-half">
+                                <div nz-col nzSpan="8" class="">
+                                    <div class="form-group">
+                                        <label>TRACCS Reminder To</label>
+                                        <nz-select formControlName="reminderTo" nzAllowClear style="width:8rem">
+                                            <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8" class="text-center">
+                                    <div class="form-group space-top">
+                                        <label nz-checkbox formControlName="publishToApp" > multipleStaff </label>
+                                    </div>  
+                                </div>
+                                <div nz-col nzSpan="8" class="">
+                                    <div class="form-group">
+                                        <label> Reminder Date </label>
+                                            <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
+                                    </div>  
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="24" class="mrg-btm-half">
+                                <div nz-col nzSpan="16" class="">
+                                    <div class="form-group">
+                                        <label>Email Notification To</label>
+                                        <nz-select formControlName="reminderTo" nzAllowClear style="width:8rem">
+                                            <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="8" class="text-center">
+                                    <div class="form-group space-top">
+                                        <label nz-checkbox formControlName="publishToApp" > multipleStaff </label>
+                                    </div>  
+                                </div>
+                            </div>
+                        </nz-card>
+                    </div>                
+            </div>
+            <div nz-row *ngIf="current == 1">
+                <div [formGroup]="adminGroup">
+                    <div class="form-group">  
+                        <label for="">Notifications</label>
+                        <!-- <nz-select nzAllowClear nzPlaceHolder="Notifications" formControlName="notifications">
+                            <nz-option *ngFor="let l of notifications" [nzLabel]="l" [nzValue]="l"></nz-option>
+                        </nz-select> 
+                        <nz-checkbox-group [(ngModel)]="notifCheckBoxGroup" (ngModelChange)="log(notifCheckBoxGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
 
-                    <div nz-row [nzGutter]="16" class="space-btm">
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <nz-select formControlName="reminderTo" nzAllowClear nzPlaceHolder="TRACCS Reminder To" style="width:8rem">
-                                    <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
-                                </nz-select>
-                            </div>
-                        </div>
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <nz-select formControlName="emailNotif" nzAllowClear nzPlaceHolder="Email Notification To" style="width:8rem">
-                                    <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
-                                </nz-select>
-                            </div>
+                        -->
+                        <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                    
+                        <!--    <div class="staff-wrapper">
+                            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                <div nz-row>
+                                    <div nz-col nzSpan="24" *ngFor="let notify of notifCheckBoxes">
+                                        <label nz-checkbox [nzValue]="notify.label" [(ngModel)]="notify.disabled" [ngModelOptions]="{standalone: true}">{{ notify.label }}</label>
+                                    </div>
+                                    <div nz-col nzSpan="24" *ngFor="let notify of notifCheckBoxes">
+                                        <label nz-checkbox [nzValue]="notify.label" [(ngModel)]="notify.checked" [ngModelOptions]="{standalone: true}">{{ notify.label }}</label>
+                                    </div>
+                                </div>
+                            </nz-checkbox-wrapper>
+                        </div> -->
+
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div nz-row *ngIf="current == 2">
+                <div [formGroup]="adminGroup">
+                    <div class="form-group">
+                        <label for="">Followup</label>
+                        <!-- <nz-select nzAllowClear nzPlaceHolder="Followup" formControlName="followup">
+                            <nz-option *ngFor="let l of followups" [nzLabel]="l" [nzValue]="l"></nz-option>
+                        </nz-select> -->
+                        <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                    </div>
+                </div>
+            </div>
+
+            <div nz-row *ngIf="current == 3">
+                <div [formGroup]="adminGroup">
+                    <div class="form-group">
+                        <label for="">Documents</label>
+                        <!-- <nz-select nzAllowClear formControlName="document">
+                            <nz-option *ngFor="let l of documentlist" [nzLabel]="l" [nzValue]="l"></nz-option>
+                        </nz-select> -->
+                        <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="doc(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+
+                    </div>
+                </div>
+            </div>
+
+            <div nz-row *ngIf="current == 4">
+                <div [formGroup]="adminGroup">
+                    <div class="form-group">
+                        <label for="">Data List</label>
+                        <!-- <nz-select nzAllowClear formControlName="dataList">
+                            <nz-option *ngFor="let l of datalist" [nzLabel]="l" [nzValue]="l"></nz-option>
+                        </nz-select> -->
+                        <div *ngFor="let l of datalist"> 
+                            <a [href]="l.link" target="_blank">{{l.form}}</a>
                         </div>
                     </div>
-                    <div nz-row [nzGutter]="8" >
-                        <div nz-col nzSpan="8">
-                            <nz-select formControlName="multipleStaff" nzAllowClear nzPlaceHolder="Multiple Staff" style="width:8rem">
-                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                            </nz-select>
-                        </div>                        
-                    </div>  
-                </div>  
-
-
+                </div>
             </div>
         </div>
-
+    </div>
+        
         <div *nzModalFooter>
             <ng-container>
                 <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -303,11 +403,11 @@
                     <span>Next</span>
                 </button>
                 <button nz-button nzType="primary" *ngIf="current === 4" (click)="done()" [disabled]="!canBeDone">
-                    <span>Done</span>
+                    <span>Accept</span>
                 </button>
             </ng-container>
         </div>
-
+        
     </div>
 </nz-modal>
 
@@ -325,13 +425,13 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content" [formGroup]="deceaseGroup">
                 <div nz-row *ngIf="current == 0" >
                     <nz-date-picker formControlName="deathDate" [nzPlaceHolder]="'Date Of Death'"></nz-date-picker>
-
+                    
                     <div class="space-top">
                         <ul class="no-padding">
                             <li formArrayName="programs" *ngFor="let program of deceaseGroup.get('programs')['controls'];let i = index">
@@ -342,9 +442,9 @@
                         </ul>
                         <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                     </div>
-
+                    
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1" nzGutter="16">
                     <div nz-row>
                         <div nz-col nzSpan="12">
@@ -365,7 +465,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2" [formGroup]="deceaseGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
@@ -381,7 +481,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3" [formGroup]="deceaseGroup" nzGutter="16">
                     <div nz-col nzSpan="24">
                         <div class="form-group" >
@@ -390,11 +490,11 @@
                                 <label nz-radio [nzValue]="'op'">OP NOTE</label>
                                 <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
                             </nz-radio-group>
-
+                            
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
@@ -402,21 +502,21 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="8">
                         <div class="form-group">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 4" [formGroup]="deceaseGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
                             <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                         </div>                        
                     </div>  
-
+                    
                     <div nz-row [nzGutter]="16" class="space-btm">
                         <div nz-col nzSpan="8">
                             <div class="form-group">
@@ -443,9 +543,9 @@
                 </div>
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -475,9 +575,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="adminGroup">
@@ -489,23 +589,23 @@
                     </ul>
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1">
-                   
+                    
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2">
                     
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3">
                     
                 </div>
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -534,9 +634,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="suspendGroup">
@@ -548,7 +648,7 @@
                     </ul>
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1" [formGroup]="suspendGroup">
                     <div nz-row nzGutter="16"> 
                         <div nz-col nzSpan="24">
@@ -570,14 +670,14 @@
                         </div>                        
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2">
                     <div class="form-group">
                         <label for="">Suspend Dates Between</label>                        
                         <nz-range-picker></nz-range-picker>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3" nzGutter="32" [formGroup]="suspendGroup">
                     <div nz-col nzSpan="24">
                         <div class="form-group">
@@ -585,12 +685,12 @@
                                 <label nz-radio [nzValue]="'case'">CASE NOTE</label>
                                 <label nz-radio [nzValue]="'op'">OP NOTE</label>
                                 <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
-                              </nz-radio-group>
-
-                              <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
+                            </nz-radio-group>
+                            
+                            <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
@@ -598,14 +698,14 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 4" [formGroup]="suspendGroup">
                     <div class="form-group">
                         <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
@@ -616,12 +716,12 @@
                         </nz-select>
                     </div>
                 </div>
-
+                
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -650,9 +750,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="dischargeGroup">
@@ -664,7 +764,7 @@
                     </ul>
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1">
                     <div nz-row>
                         <div nz-col nzSpan="12">
@@ -685,7 +785,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2" [formGroup]="dischargeGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
@@ -701,7 +801,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3" nzGutter="32">
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="dischargeGroup">
@@ -710,11 +810,11 @@
                                 <label nz-radio [nzValue]="'op'">OP NOTE</label>
                                 <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
                             </nz-radio-group>
-
+                            
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12" >
                         <div class="form-group" [formGroup]="dischargeGroup">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
@@ -722,21 +822,21 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group" [formGroup]="dischargeGroup">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 4" [formGroup]="dischargeGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
                             <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                         </div>
                     </div>  
-
+                    
                     <div nz-row [nzGutter]="16" class="space-btm">
                         <div nz-col nzSpan="8">
                             <div class="form-group">
@@ -761,12 +861,12 @@
                         </div>
                     </div>
                 </div>
-
+                
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -795,9 +895,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="waitListGroup">
@@ -809,23 +909,23 @@
                     </ul>
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1">
-                   
+                    
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2">
                     
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3">
                     
                 </div>
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -855,9 +955,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="admitGroup">
@@ -869,23 +969,23 @@
                     </ul>
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1">
-                   
+                    
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2">
                     
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3">
                     
                 </div>
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -915,9 +1015,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="assessGroup">
@@ -929,7 +1029,7 @@
                     </ul>
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1">
                     <p>Screening Type</p>
                     <div style="margin-left: 1rem">
@@ -938,7 +1038,7 @@
                         </ng-container>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2" [formGroup]="assessGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
@@ -954,7 +1054,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3" nzGutter="32">
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="assessGroup">
@@ -963,11 +1063,11 @@
                                 <label nz-radio [nzValue]="'op'">OP NOTE</label>
                                 <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
                             </nz-radio-group>
-
+                            
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group" [formGroup]="assessGroup">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Unit" style="width:8rem">
@@ -975,21 +1075,21 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group" [formGroup]="assessGroup">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 4" [formGroup]="assessGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
                             <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                         </div>                        
                     </div>  
-
+                    
                     <div nz-row [nzGutter]="16" class="space-btm">
                         <div nz-col nzSpan="8">
                             <div class="form-group">
@@ -1014,12 +1114,12 @@
                         </div>                        
                     </div>  
                 </div>  
-
+                
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -1049,9 +1149,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" >
                     <ul [formGroup]="notProceedGroup">
@@ -1061,11 +1161,11 @@
                             </div>
                         </li>
                     </ul>
-
+                    
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
-
+                    
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1">
                     <div nz-row>
                         <!-- <div nz-col nzSpan="12">
@@ -1079,7 +1179,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2" [formGroup]="notProceedGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
@@ -1095,7 +1195,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3" nzGutter="32">
                     
                     <div nz-col nzSpan="24">
@@ -1104,12 +1204,12 @@
                                 <label nz-radio nzValue="A">CASE NOTE</label>
                                 <label nz-radio nzValue="B">OP NOTE</label>
                                 <label nz-radio nzValue="C">CLINICAL NOTE</label>
-                              </nz-radio-group>
-
-                              <textarea rows="4" nz-input [(ngModel)]="inputValue" style="margin:15px 0"></textarea>
+                            </nz-radio-group>
+                            
+                            <textarea rows="4" nz-input [(ngModel)]="inputValue" style="margin:15px 0"></textarea>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Unit" style="width:8rem">
@@ -1117,22 +1217,22 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group">
                             <label nz-checkbox [(ngModel)]="checked">Publish To Mobile App</label>
                         </div>
                     </div>
-
+                    
                 </div>
-
+                
                 <div nz-row *ngIf="current == 4" [formGroup]="notProceedGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
                             <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                         </div>                        
                     </div>  
-
+                    
                     <div nz-row [nzGutter]="16" class="space-btm">
                         <div nz-col nzSpan="8">
                             <div class="form-group">
@@ -1156,13 +1256,13 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                 </div>
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -1192,9 +1292,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0">
                     <ul [formGroup]="referOnGroup">
@@ -1206,7 +1306,7 @@
                     </ul>
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1" [formGroup]="referOnGroup">
                     <div nz-row class="space-btm">
                         <div nz-col nzSpan="12">
@@ -1231,7 +1331,7 @@
                         </div>          
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2" [formGroup]="referOnGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
@@ -1247,7 +1347,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3" nzGutter="32" >
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="referOnGroup">
@@ -1255,12 +1355,12 @@
                                 <label nz-radio [nzValue]="'case'">CASE NOTE</label>
                                 <label nz-radio [nzValue]="'op'">OP NOTE</label>
                                 <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
-                              </nz-radio-group>
-
-                              <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
+                            </nz-radio-group>
+                            
+                            <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group" [formGroup]="referOnGroup">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Category" style="width:8rem">
@@ -1268,22 +1368,22 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group" [formGroup]="referOnGroup">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 4" [formGroup]="referOnGroup">
-
+                    
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
                             <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                         </div>                        
                     </div>  
-
+                    
                     <div nz-row [nzGutter]="16" class="space-btm">
                         <div nz-col nzSpan="8">
                             <div class="form-group">
@@ -1307,15 +1407,15 @@
                             </nz-select>
                         </div>                        
                     </div>
-
+                    
                 </div>
-
-
+                
+                
             </div>
         </div>
-
+        
     </div>
-
+    
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
@@ -1345,9 +1445,9 @@
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
             </nz-steps>
-        
+            
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
-        
+            
             <div class="steps-content">
                 <div nz-row *ngIf="current == 0" [formGroup]="referInGroup">
                     <div nz-row nzGutter="16">
@@ -1379,7 +1479,7 @@
                     </div>
                     <!-- <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin> -->
                 </div>
-
+                
                 <div nz-row *ngIf="current == 1" [formGroup]="referInGroup">
                     <div nz-row class="space-btm">
                         <div nz-col nzSpan="12">
@@ -1411,7 +1511,7 @@
                         </div>          
                     </div> -->
                 </div>
-
+                
                 <div nz-row *ngIf="current == 2" [formGroup]="referInGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
@@ -1427,7 +1527,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 3" nzGutter="16">
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="referInGroup">
@@ -1436,11 +1536,11 @@
                                 <label nz-radio [nzValue]="'op'">OP NOTE</label>
                                 <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
                             </nz-radio-group>
-
+                            
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group" [formGroup]="referInGroup">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
@@ -1448,22 +1548,22 @@
                             </nz-select>
                         </div>
                     </div>
-
+                    
                     <div nz-col nzSpan="12">
                         <div class="form-group" [formGroup]="referInGroup">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div nz-row *ngIf="current == 4" [formGroup]="referInGroup">
-
+                    
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
                             <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                         </div>                        
                     </div>  
-
+                    
                     <div nz-row [nzGutter]="16" class="space-btm">
                         <div nz-col nzSpan="8">
                             <div class="form-group">
@@ -1472,7 +1572,7 @@
                                 </nz-select>
                             </div>
                         </div>
-                    <!--    <div nz-col nzSpan="8">
+                        <!--    <div nz-col nzSpan="8">
                             <div class="form-group">
                                 <nz-select formControlName="emailNotif" nzAllowClear nzPlaceHolder="Email Notification To" style="width:8rem">
                                     <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
@@ -1480,39 +1580,39 @@
                             </div>                    
                         </div>
                     -->
-                    </div>
-                    <div nz-row [nzGutter]="8" >
-                        <div nz-col nzSpan="8">
-                            <nz-select formControlName="multipleStaff" nzAllowClear nzPlaceHolder="Multiple Staff" style="width:8rem">
-                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                            </nz-select>
-                        </div>                        
-                    </div>
-                  
-
+                </div>
+                <div nz-row [nzGutter]="8" >
+                    <div nz-col nzSpan="8">
+                        <nz-select formControlName="multipleStaff" nzAllowClear nzPlaceHolder="Multiple Staff" style="width:8rem">
+                            <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                        </nz-select>
+                    </div>                        
                 </div>
                 
-
+                
             </div>
+            
+            
         </div>
-
     </div>
+    
+</div>
 
-    <div *nzModalFooter>
-        <ng-container>
-            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
-                <span>Previous</span>
-            </button>
-            <button nz-button nzType="default" (click)="next()" *ngIf="current < 4" [disabled]="!canGoNext">
-                <span>Next</span>
-            </button>
-            <button nz-button nzType="primary" *ngIf="current === 4" (click)="done()" [disabled]="!canBeDone">
-                <span>Done</span>
-            </button>
-        </ng-container>
-    </div>
+<div *nzModalFooter>
+    <ng-container>
+        <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+            <span>Previous</span>
+        </button>
+        <button nz-button nzType="default" (click)="next()" *ngIf="current < 4" [disabled]="!canGoNext">
+            <span>Next</span>
+        </button>
+        <button nz-button nzType="primary" *ngIf="current === 4" (click)="done()" [disabled]="!canBeDone">
+            <span>Done</span>
+        </button>
+    </ng-container>
+</div>
 </nz-modal>
 
 
 
-   
+

@@ -373,6 +373,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
 
           // this.tempContactArray = this.contactForm.get('contacts').value;
+          console.log(this.user.filePhoto)
+          if(!this.user.filePhoto){
+            return EMPTY;
+          }
           return this.staffS.getimages({ directory: this.user.filePhoto })
         })
       ).subscribe(blob => {
@@ -422,6 +426,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.addressForm.setControl('addresses', this.formBuilder.array(this.addressBuilder(data[0]) || []));
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
           // this.tempContactArray = this.contactForm.get('contacts').value;
+          if(!this.user.filePhoto){
+            return EMPTY;
+          }
           return this.staffS.getimages({ directory: this.user.filePhoto })
         })
       ).subscribe(blob => {

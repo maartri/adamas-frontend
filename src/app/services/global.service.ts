@@ -120,6 +120,7 @@ doc:any;
 stafftonotiify:any = "ABFLAT GISELBERT";
 id: any;
 baseamount :number = 0;
+admincharges :number = 0;
 
     constructor(
         private router: Router,

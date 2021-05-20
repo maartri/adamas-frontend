@@ -109,6 +109,9 @@ import { UploadChangeParam } from 'ng-zorro-antd/upload';
 
 
 export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
+
+    option: string = 'add';
+    
     user: any = null;
     nzSelectedIndex: number = 0;
     isFirstLoad: boolean = false;

@@ -55,7 +55,13 @@
                 <div nz-row nzGutter="24" class="">
                     <label for="CDC Item" col nzSpan="6">List Type:</label>
                     <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="ltype" nzShowSearch nzAllowClear style="width:100%;">
-                    <nz-option *ngFor="let ltype of listType" [nzValue]="ltype" [nzLabel]="ltype"></nz-option> 
+                        <nz-option *ngFor="let ltype of listType" [nzValue]="ltype" [nzLabel]="ltype"></nz-option> 
+                    </nz-select>
+                </div>
+                <div nz-row nzGutter="24" *ngIf="inputForm.get('ltype').value === 'EVENT'">
+                    <label for="CDC Item" col nzSpan="6">Event:</label>
+                    <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="event" nzShowSearch nzAllowClear style="width:100%;">
+                        <nz-option *ngFor="let e of events" [nzValue]="e" [nzLabel]="e"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-row nzGutter="24" class="">
@@ -72,10 +78,7 @@
                     <nz-option *ngFor="let service of services;let i = index;" [nzValue]="service.title" [nzLabel]="service.title"></nz-option> 
                     </nz-select>
                 </div>
-                <div nz-row nzGutter="24" class="">
-                    <label for="CDC Item" nzSpan="6" >Default Assignee:</label>
-                        <label nz-checkbox nzSpan="14"  formControlName="assignee">Name will appear as default assignee for incidents linked to this list profile</label>
-                </div>
+
                 <div nz-row nzGutter="24" class="">
                     <label for="CDC Item" nzSpan="6" >Program:</label>
                     <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="prgm" nzShowSearch nzAllowClear style="width:100%;">
@@ -89,20 +92,24 @@
                     </nz-select>
                 </div>
                 <div nz-row nzGutter="24" class="">
-                    <label for="CDC Item" nzSpan="6" >Recepient:</label>
+                    <label for="CDC Item" nzSpan="6" >Recipient:</label>
                     <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="recepient" nzShowSearch nzAllowClear style="width:100%;">
                     <nz-option *ngFor="let recipi of recipients" [nzValue]="recipi.name" [nzLabel]="recipi.name"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-row nzGutter="24" class="">
-                    <label for="CDC Item" nzSpan="6" >Saverity:</label>
+                    <label for="CDC Item" nzSpan="6" >Severity:</label>
                     <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="saverity" nzShowSearch nzAllowClear style="width:100%;">
                     <nz-option *ngFor="let sever of severity" [nzValue]="sever" [nzLabel]="sever"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-row nzGutter="24" class="">
                     <label for="CDC Item" nzSpan="6" >Mandatory Notification:</label>
-                    <label nz-checkbox nzSpan="14"  formControlName="mandatory">Staff will be a mandatory notifyee for incidents linked to this list profile with no user choice</label>
+                    <label nz-checkbox nzSpan="14"  formControlName="mandatory"><span class="small-font">Staff will be a mandatory notifyee for incidents linked to this list profile with no user choice</span></label>
+                </div>
+                <div nz-row nzGutter="24" class="" *ngIf="inputForm.get('ltype').value === 'INCIDENT'">
+                    <label for="CDC Item" nzSpan="6" >Default Assignee:</label>
+                        <label nz-checkbox nzSpan="14"  formControlName="assignee"><span class="small-font">Name will appear as default assignee for incidents linked to this list profile</span></label>
                 </div>
                 <div nz-row nzGutter="24" class="">
                     <label for="CDC Item" nzSpan="6" >Expiry Date:</label>

@@ -922,13 +922,18 @@
                 <div nz-row *ngIf="current == 0" [formGroup]="admitGroup">
                     <div nz-row nzJustify class="mrg-btm-half">
                         <nz-card [nzBodyStyle]="{'padding':'5px'}">
-                            <ul style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                            <!-- <ul style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
                                 <li formArrayName="programs" *ngFor="let program of admitGroup.get('programs')['controls'];let i = index">
                                     <div [formGroupName]="i">
-                                        <label nz-checkbox formControlName="checked"> {{ admitGroup.get('programs')['controls'][i].value.program }}</label>
+                                        <label nz-chekbox formControlName="checked"> {{ admitGroup.get('programs')['controls'][i].value.program }}</label>
                                     </div>
                                 </li>
-                            </ul>
+                            </ul> -->
+                            <div style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                            <nz-radio-group formControlName="programChecked">
+                                <label nz-radio *ngFor="let program of admitGroup.get('programs')['controls'];let i = index" [nzValue]="program">{{ admitGroup.get('programs')['controls'][i].value.program }}</label>
+                            </nz-radio-group>
+                            </div>
                             <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                         </nz-card>
                     </div>
@@ -943,9 +948,12 @@
                                 </div>
                                 <div nz-col nzSpan="16">
                                     <!-- <div class="form-group"> -->
-                                        <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
+                                        <ng-container *ngFor="let program of checkedPrograms">
+                                            <app-select-list-recipient [program]="program.program" [option]="option"></app-select-list-recipient>
+                                        </ng-container>
+                                        <!-- <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
                                             <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
-                                        </nz-select>
+                                        </nz-select> -->
                                     <!-- </div> -->
                                 </div>
                             </div>    
@@ -955,8 +963,8 @@
                         <nz-card [nzBodyStyle]="{'padding':'5px'}">
                             <div nz-col nzSpan="24">
                                 <div nz-col nzSpan="8">
-                                    <label>Referral Date</label>
-                                    <nz-date-picker formControlName="referralDate"></nz-date-picker>
+                                    <label>Admission Date</label>
+                                    <nz-date-picker formControlName="admissionDate"></nz-date-picker>
                                 </div>
                                 <div nz-col nzSpan="8" style="padding-right: 5px;">
                                     <label>Time</label>
@@ -996,7 +1004,7 @@
                                 </div>
                                 <div nz-col nzSpan="8" class="text-center">
                                     <div class="form-group">
-                                        <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
+                                        <label nz-checkbox formControlName="adminsssion" [nzDisabled]="admission"> ADMISSION </label>
                                     </div>
                                 </div>
                             </div>
@@ -1015,7 +1023,7 @@
                                 </div>
                                 <div nz-col nzSpan="8" class="text-center">
                                     <div class="form-group space-top">
-                                        <label nz-checkbox formControlName="publishToApp" > multipleStaff </label>
+                                        <label nz-checkbox formControlName="multipleStaff"> multipleStaff </label>
                                     </div>  
                                 </div>
                                 <div nz-col nzSpan="8" class="">

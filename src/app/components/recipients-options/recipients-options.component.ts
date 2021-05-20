@@ -132,7 +132,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   referInOpen: boolean = false;
   referIndocument: boolean = false;
   referdocument: boolean = false;
-  
+  admission :  boolean = false;
   loadPrograms:boolean = false;
   
   inputValue: any;
@@ -284,6 +284,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         reminderDate: null,
         reminderTo: null,
         emailNotif: null,
+        adminsssion:null,
         multipleStaff: null,
       });
       
@@ -371,6 +372,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         programs: this.fb.array([]),
         radioGroup: 'case',
         notes: null,
+        programChecked:null,
         caseCategory: null,
         publishToApp: false,
         reminderDate: null,
@@ -378,11 +380,31 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         emailNotif: null,
         multipleStaff: null,
         referralDate: null,
-        time: null,
-        timeSpent: null,
+        admissionDate:new Date(),
+        adminsssion:null,
+        time: new Date(),
+        timeSpent: new Date(),
       });
       
-      this.assessGroup = this.fb.group({
+     
+      this.admitGroup.get('programChecked').valueChanges
+        .pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                  console.log(x);
+                let obj = {
+                  program: x,
+                  option: 'ADMIT'
+                }
+                return this.listS.getreferraltype(obj)
+            })
+          ).subscribe(data => {
+              console.log(  + data)
+       });
+
+
+
+       this.assessGroup = this.fb.group({
         programs: this.fb.array([]),
         
         date:null,
@@ -1090,6 +1112,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     this.changeDetection();
                     // this.changeNoteEvent();
                 })
+                
                 // this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
                 // .subscribe(data => {
                 //   this.whatOptionVar = {
@@ -1587,7 +1610,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     this.itemTypes$ = this.sqlWiz.GETREFERRALTYPE_V2(_input);
                   }
                   
-                  
                   this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
                 }
                 
@@ -1686,7 +1708,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   //let Date1,Date2;
                   
                   let Date1 : Date   = new Date();
-                  let Date2 :Date = new Date(Date1);
+                  let Date2 : Date   = new Date(Date1);
                   
                   
                   

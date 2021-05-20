@@ -105,7 +105,6 @@ export class ListService {
         return this.auth.get(`${list}/data-list`);
     }
 
-
     getreferraltype_latest(packageName: string): Observable<any> {
         return this.auth.get(`${list}/referral-type/${packageName}`);
     }

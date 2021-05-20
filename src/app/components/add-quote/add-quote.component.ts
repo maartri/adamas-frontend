@@ -197,7 +197,15 @@ export class AddQuoteComponent implements OnInit {
 
       this.populateDropdDowns();
       
-      this.listS.getprogramcontingency(this.user.id).subscribe(data => this.quoteProgramList = data);
+      this.listS.getprogramcontingency(this.user.id).subscribe(data => {
+        this.quoteProgramList = data
+
+        if(data && data.length == 1){
+            this.quoteForm.patchValue({
+                program: data[0]
+            })
+        }
+      });
       
       this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
       
@@ -1065,7 +1073,15 @@ export class AddQuoteComponent implements OnInit {
 
       let notSpecified =["NOT SPECIFIED"];
 
-      this.listS.getquotetype().subscribe(data =>this.typeList = data);
+      this.listS.getquotetype().subscribe(data =>{
+        this.typeList = data;
+
+        if(data && data.length == 1){
+            this.quoteForm.patchValue({
+                type: data[0]
+            });
+        }
+      });
       
       this.listS.getdiscipline().subscribe(data => {
           data.push('NOT SPECIFIED');

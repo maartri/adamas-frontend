@@ -50,7 +50,7 @@
 
     <div nz-row style="padding:6px">
    
-        <div  class="nz-button" >
+        <div  class="nz-button"  nz-col nzSpan="8">
             <nz-button-group >
                 <button [disabled]="!enable_buttons" nz-button nzType="primary" (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
                 <button [disabled]="!enable_buttons" (click)="addBooking()"  *ngIf="viewType=='Recipient'" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
@@ -64,14 +64,18 @@
                 <button [disabled]="!enable_buttons" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Load/Unload Staff Compare Roster"><i nz-icon nzType="retweet" nzTheme="outline"></i></button>
                 <button [disabled]="!enable_buttons" nz-button nzType="primary"  nz-tooltip nzTooltipTitle="Compress Rosters on Screen"><i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i></button>
                 <button [disabled]="!master" nz-button nzType="primary" (click)="SaveMasterRosters()" nz-tooltip nzTooltipTitle="Save Master Rosters" ><i nz-icon nzType="save" nzTheme="outline"></i></button>
-            
-            </nz-button-group>     
+               
+            </nz-button-group>    
+           
         </div>
+        <div class="nz-alert"  nz-col nzSpan="10">
+            <span>{{ActiveCellText}}</span>
+        </div> 
     </div>
 
 <div nz-row style="padding:8px">
         
-    <gc-spread-sheets  id="ss"
+    <gc-spread-sheets  id="#ss"
     [backColor]="spreadBackColor"  
     [hostStyle]="hostStyle"  
     (workbookInitialized)="workbookInit($event)"  
@@ -508,3 +512,24 @@
     </ng-template>
 
 </nz-modal>
+</nz-modal>
+<div>
+    <img id="icon-1" style="display:none"  src="/assets/images/r1.png"/>
+    <img id="icon-2" style="display:none"  src="/assets/images/r2.jpg"/>
+    <img id="icon-3" style="display:none"  src="/assets/images/r3.png"/>
+    <img id="icon-4" style="display:none"  src="/assets/images/r4.png"/>
+    <img id="icon-5" style="display:none"  src="/assets/images/r5.png"/>
+    <img id="icon-6" style="display:none"  src="/assets/images/r6.png"/>
+
+    <img id="icon-7" style="display:none"  src="/assets/images/r7.png"/>
+    <img id="icon-8" style="display:none"  src="/assets/images/r8.png"/>
+    <img id="icon-9" style="display:none"  src="/assets/images/r9.png"/>
+    <img id="icon-10" style="display:none"  src="/assets/images/r10.jpg"/>
+    <img id="icon-11" style="display:none"  src="/assets/images/r11.jpg"/>
+    <img id="icon-12" style="display:none"  src="/assets/images/r12.png"/>
+    <img id="icon-13" style="display:none"  src="/assets/images/r13.png"/>
+    <img id="icon-14" style="display:none"  src="/assets/images/r14.png"/>
+    <img id="icon-15" style="display:none"  src="/assets/images/r15.png"/>
+    <img id="icon-20" style="display:none"  src="/assets/images/r20.jpg"/>
+    <img id="icon-21" style="display:none"  src="/assets/images/r21.jpg"/>
+</div>

@@ -994,8 +994,22 @@ export class AddQuoteComponent implements OnInit {
   GENERATE_QUOTE_LINE(){
        if(this.option == 'add')
        {
+           console.log(this.quoteListForm.getRawValue())
+           const quote  = this.quoteListForm.getRawValue();
+           var _quote = {
+            billUnit: quote.billUnit,
+            code: quote.code,
+            displayText: quote.displayText,
+            quantity: quote.quantity,
+            frequency: quote.period,
+            quoteQty: quote.weekNo, 
+            price: quote.price,
+            tax: quote.gst,
+            itemId: quote.itemId
+           }
+        //    return;
             setTimeout(() => {
-                this.quoteLines = [...this.quoteLines, this.quoteListForm.getRawValue()];
+                this.quoteLines = [...this.quoteLines, _quote];
                 this.handleCancelLine();
                 this.detectChanges();
             }, 0);
@@ -1337,6 +1351,7 @@ export class AddQuoteComponent implements OnInit {
    
     id  = this.cpid  ;
    // id  = '46010'  ;
+   if(!id) return;
     this.listS.GetQuotetype(id).subscribe( x => {
         this.specindex = x.indexOf("ADMINISTRATION")
         //console.log(stype)
@@ -1439,6 +1454,7 @@ return this.admincharges;
     let daily;
      
     var temp = this.dochdr
+    if(!temp) return;
       this.listS.GetDailyliving(temp).subscribe(x => {
         
          daily = x;

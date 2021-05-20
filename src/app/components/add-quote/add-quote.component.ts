@@ -13,7 +13,6 @@ import * as moment from 'moment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { dateFormat } from '@services/global.service'
-import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
@@ -23,6 +22,9 @@ import { MedicalProceduresComponent } from '@admin/recipient-views/medical-proce
 import addYears from 'date-fns/addYears';
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
+
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+
 
 const noop = () => {};
 
@@ -44,6 +46,11 @@ export class AddQuoteComponent implements OnInit {
     @Input() user: any; 
     @Input() option: any;
     @Input() record: any;
+
+    confirmModal?: NzModalRef; 
+
+
+    disableAddTabs: boolean = true;
     
     private unsubscribe: Subject<void> = new Subject();
     
@@ -153,6 +160,7 @@ export class AddQuoteComponent implements OnInit {
     private http: HttpClient,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
+    private modal: NzModalService,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -223,6 +231,8 @@ export class AddQuoteComponent implements OnInit {
         this.quoteLines = [];
     }
 
+    this.disableAddTabs = true;
+
     this.inputForm = this.formBuilder.group({
           autoLogout: [''],
           emailMessage: false,
@@ -292,7 +302,7 @@ export class AddQuoteComponent implements OnInit {
       this.goalsAndStratergiesForm = this.formBuilder.group({
           recordnumber:null,
           goal:'',
-          PersonID:'45976',
+          PersonID: null,
           title : "Goal Of Care : ",
           ant   : null,
           lastReview : null,
@@ -381,6 +391,41 @@ export class AddQuoteComponent implements OnInit {
         //   }
       });
 
+      this.quoteForm.get('program').valueChanges
+      .pipe(
+          switchMap(x => {
+              if(!x) {
+                return EMPTY
+              };
+       
+              return this.listS.getprogramlevel(x)
+          }),
+          switchMap(x => {                
+              this.IS_CDC = false;
+              if(x.isCDC){
+                  this.IS_CDC = true;
+                  if(x.quantity && x.timeUnit == 'DAY'){
+                      this.quoteForm.patchValue({
+                          govtContrib: (x.quantity*365).toFixed(2),
+                          programId: x.recordNumber
+                      });
+                  }
+                  this.detectChanges();
+                  return this.listS.getpensionandfee();
+              }
+              this.detectChanges();
+              return EMPTY;
+          })
+      ).subscribe(data => {
+          this.detectChanges();
+      });
+
+      this.quoteForm.get('template').valueChanges.subscribe(data => {
+        console.log('ssd')
+        if(!data)   return;
+        this.showConfirm();
+      });
+
       this.quoteListForm.get('code').valueChanges.pipe(
           switchMap(x => {
               if(!x)
@@ -440,39 +485,34 @@ export class AddQuoteComponent implements OnInit {
           this.weekly = data;
           this.setPeriod(data);
       });
-
-      this.quoteForm.get('program').valueChanges
-      .pipe(
-          switchMap(x => {
-              if(!x) {
-                return EMPTY
-              };
-       
-              return this.listS.getprogramlevel(x)
-          }),
-          switchMap(x => {                
-              this.IS_CDC = false;
-              if(x.isCDC){
-                  this.IS_CDC = true;
-                  if(x.quantity && x.timeUnit == 'DAY'){
-                      this.quoteForm.patchValue({
-                          govtContrib: (x.quantity*365).toFixed(2),
-                          programId: x.recordNumber
-                      });
-                  }
-                  this.detectChanges();
-                  return this.listS.getpensionandfee();
-              }
-              this.detectChanges();
-              return EMPTY;
-          })
-      ).subscribe(data => {
-          this.detectChanges();
-      });
-
-      
-
   }
+
+
+  tableDocumentId: number;
+
+  showConfirm(): void {
+        this.confirmModal = this.modal.confirm({
+        nzTitle: 'Do you want to select this template?',
+        nzContent: 'When clicked the OK button, this would save this program and template',
+        nzOnOk: () =>{
+                // new Promise((resolve, reject) => {
+                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+                
+                // }).catch(() => console.log('Oops errors!'))
+                let qteHeader: QuoteHeaderDTO;
+                qteHeader = {
+                    personId: this.user.id
+                };
+                this.listS.createtempdoc(qteHeader).subscribe(data => {
+                    console.log(data);
+                    this.tableDocumentId = data;
+                    this.listCarePlanAndGolas(data);
+                    this.disableAddTabs = false
+                });
+            }
+        });
+    }
+
 
 
   determineRosterType(data: any){
@@ -538,6 +578,7 @@ export class AddQuoteComponent implements OnInit {
   }
 
   handleCancel(){
+      console.log('close quotes modal')
       this.quotesOpen = false;
       this.inActiveOpen = false;
       this.activeOpen = false;
@@ -637,12 +678,17 @@ export class AddQuoteComponent implements OnInit {
     saveCarePlan(){
 
       if(!this.isUpdateGoal){
+
+          this.goalsAndStratergiesForm.patchValue({
+            PersonID: this.tableDocumentId
+          });
+
           this.timeS.postGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
               takeUntil(this.unsubscribe))
               .subscribe(data => {
                   this.globalS.sToast('Success', 'Data Inserted');
                   this.goalAndStrategiesmodal = false;
-                  this.listCarePlanAndGolas();
+                  this.listCarePlanAndGolas(this.tableDocumentId);
                   this.cd.markForCheck();
               });
       }else{
@@ -651,7 +697,7 @@ export class AddQuoteComponent implements OnInit {
               .subscribe(data => {
                   this.globalS.sToast('Success', 'Data Inserted');
                   this.goalAndStrategiesmodal = false;
-                  this.listCarePlanAndGolas();
+                  this.listCarePlanAndGolas(this.tableDocumentId);
                   this.isUpdateGoal = false;
                   this.cd.markForCheck();
 
@@ -663,6 +709,8 @@ export class AddQuoteComponent implements OnInit {
 
   saveStrategy(){
       this.stratergiesForm.controls.PersonID.setValue(this.personIdForStrategy);
+    //   console.log(this.personIdForStrategy)
+    //   return;
       if(!this.isUpdateStrategy){
           this.timeS.postplanStrategy(this.stratergiesForm.value).pipe(
               takeUntil(this.unsubscribe))
@@ -685,9 +733,10 @@ export class AddQuoteComponent implements OnInit {
       this.cd.markForCheck();
   }
 
-  listCarePlanAndGolas(){
+  listCarePlanAndGolas(docid: any = '45976'){
       this.loading = true;
-      this.listS.getCareplangoals('45976').subscribe(data => {
+      
+      this.listS.getCareplangoals(docid).subscribe(data => {
           this.goalsAndStratergies = data;
           this.loading = false;
           this.cd.markForCheck();
@@ -704,11 +753,12 @@ export class AddQuoteComponent implements OnInit {
   }
 
   deleteCarePlanGoal(data: any){
+
     this.timeS.deleteCarePlangoals(data.recordnumber)
         .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data) {
                 this.globalS.sToast('Success', 'Data Deleted!');
-                this.listCarePlanAndGolas();
+                this.listCarePlanAndGolas(this.tableDocumentId);
                 this.cd.markForCheck();
             return;
          }
@@ -717,6 +767,8 @@ export class AddQuoteComponent implements OnInit {
     }
 
     deleteCarePlanStrategy(data: any){
+        console.log(data)
+        return;
         this.timeS.deleteCarePlanStrategy(data.recordnumber)
         .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data) {

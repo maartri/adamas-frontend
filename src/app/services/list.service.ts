@@ -20,6 +20,11 @@ export class ListService {
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+
+    createtempdoc(data: any): Observable<any>{
+        return this.auth.post(`${list}/create-temp-doc`, data);
+    }
+    
     getquotetype(): Observable<any>{
         return this.auth.get(`${list}/goalplan/list`);
     }
@@ -176,7 +181,7 @@ export class ListService {
         return this.auth.get(`${list}/is-hcp-cdc-programs/${personID}`);
     }
 
-    getCareplangoals(personID: string): Observable<any>{
+    getCareplangoals(personID: any): Observable<any>{
         return this.auth.get(`${list}/quote/careplangoal/list/${personID}`)
     }
     getStrategies(personID: string): Observable<any>{

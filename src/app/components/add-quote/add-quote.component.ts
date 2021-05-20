@@ -1127,7 +1127,7 @@ export class AddQuoteComponent implements OnInit {
                
                test = (this.price * this.quantity * this.length)
         //       this.globalS.baseamount  = this.globalS.baseamount + test
-        this.globalS.baseamount  =this.globalS.baseamount  + test
+        this.globalS.baseamount  +=  + test
         //       console.log(temp1)
             
         } 
@@ -1183,10 +1183,11 @@ export class AddQuoteComponent implements OnInit {
             let j = this.specindex
             this.admincharges = 0;
           
-               for(let i =0;i < temp.length;i++){
+            //   for(let i =0;i < temp.length ,i =j;i++){
                     
                 
                 
+                //this.price = temp[j].unitBillRate
                 this.price = temp[j].unitBillRate
                 this.quantity = temp[j].qty
                 this.length  = temp[j].quoteQty
@@ -1196,7 +1197,7 @@ export class AddQuoteComponent implements OnInit {
                    this.admincharges =this.admincharges +  test
                 //   this.admincharges =  this.admincharges + this.admincharges
            
-            } 
+            //} 
            
             console.log(this.admincharges)                    
        

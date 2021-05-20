@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
 import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, CallProcedure } from '../../modules/modules';
-import { ListService, GlobalService, quantity, unit, dateFormat, ClientService } from '@services/index';
+import { ListService, GlobalService, quantity, unit, dateFormat, ClientService,timeSteps } from '@services/index';
 import { SqlWizardService } from '@services/sqlwizard.service';
 import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
@@ -151,6 +151,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   notifDocumentsGroup: any;
   followups: Array<string>;
   notifications: Array<string>;
+  timeSteps:Array<string>;
   documentlist: Array<string>;
   datalist: Array<string>;
   private destroy$ = new Subject();
@@ -183,6 +184,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";
   file: File;
   originalPackageName: string;
+  admissionActiviType: any;
   
   constructor(
     private listS: ListService,
@@ -382,8 +384,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         referralDate: null,
         admissionDate:new Date(),
         adminsssion:null,
+        admisointype:null,
         time: new Date(),
-        timeSpent: new Date(),
+        timeSpent: new Date().setHours(0, 15),
       });
       
      
@@ -401,8 +404,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
             })
           ).subscribe(data => {
               console.log(  + data)
+              this.admissionActiviType = data;
+              if(data.length == 1){
+                this.admitGroup.patchValue({
+                  admisointype: this.admissionActiviType[0]
+                })
+              }
        });
 
+       console.log(this.admitGroup.get('programs').value + "------------")
 
 
        this.assessGroup = this.fb.group({
@@ -1114,24 +1124,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     // this.changeNoteEvent();
                 })
                 
-                // this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
-                // .subscribe(data => {
-                //   this.whatOptionVar = {
-                //     title: 'Admission Wizard',
-                //     wizardTitle: '',
-                //     programsArr: data.map(x => {
-                //       return {
-                //         program: x.program,
-                //         checked: false,
-                //         selected: ''
-                //       }
-                //     })
-                //   }
-                  
-                //   this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.ADMIN);
-                //   this.changeDetection();
-                // })
-                
+                this.timeSteps = timeSteps;
+
                 this.listS.getfollowups().pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifFollowUpGroup = data.map(x => {
                     return {

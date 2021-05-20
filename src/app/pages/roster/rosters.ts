@@ -447,15 +447,27 @@ ClearMultishift(){
         this.spreadsheet.resumePaint();
         return;
     }
-  
+    var text,code;
     for(var r of this.rosters){
             
         if (r.dayNo>this.Days_View) break;
 
             col=r.dayNo-1;
             row = this.getrow(r.start_Time);//self.time_map.get(r.Start_Time); //
+            if (this.viewType=="Staff")
+                code= r.clientCode ;
+            else
+                code= r.carerCode 
+            
+            if (code=="!MULTIPLE")
+                    code="GROUP SHIFT";
+            if (code=="!INTERNAL")
+                    code="ADMIN SHIFT";
+                
+                text= code + " (" + r.serviceType + ")";
+
             if (row!=null && col !=null)
-            this.draw_Cells(sheet,row,col,r.duration, r.type, r.recordNo, r.serviceType)
+            this.draw_Cells(sheet,row,col,r.duration, r.type, r.recordNo, text)
         
     }
 
@@ -524,7 +536,7 @@ ClearMultishift(){
                   service=self.cell_value.service;
                  
                   if (service!=null)
-                    self.ActiveCellText=self.cell_value.recordNo + " - " + service + ", type=" + type;
+                    self.ActiveCellText=self.cell_value.recordNo + " - " + service 
                   } 
                   // duration=10;
                   // Allow selection of multiple ranges

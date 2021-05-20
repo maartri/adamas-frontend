@@ -143,6 +143,18 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   checked: boolean = false;
   noteArray: Array<any> = []; 
   remindersRecipientArray: Array<string>;
+  
+  //last 4 tabs
+  notifCheckBoxGroup: any;
+  notifCheckBoxes: Array<string> = []
+  notifFollowUpGroup: any;
+  notifDocumentsGroup: any;
+  followups: Array<string>;
+  notifications: Array<string>;
+  documentlist: Array<string>;
+  datalist: Array<string>;
+  private destroy$ = new Subject();
+
 
   dischargeTypes: Array<any> = [];
 
@@ -272,7 +284,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       reminderDate: null,
       reminderTo: null,
       emailNotif: null,
-      multipleStaff: null
+      multipleStaff: null,
     });
 
     this.deceaseGroup = this.fb.group({
@@ -1177,6 +1189,33 @@ NOTES:
                             this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.ADMIN);
                             this.changeDetection();
                         })
+                        
+                        this.listS.getfollowups().pipe(takeUntil(this.destroy$)).subscribe(data => {
+                          this.notifFollowUpGroup = data.map(x => {
+                            return {
+                              label: x,
+                              value: x,
+                              disabled: false,
+                              checked: false
+                            }
+                          })
+                        })
+                    
+                    
+                        this.listS.getdocumentslist().pipe(takeUntil(this.destroy$)).subscribe(data => {
+                          this.notifDocumentsGroup = data.map(x => {
+                            return {
+                              label: x,
+                              value: x,
+                              disabled: false,
+                              checked: false
+                            }
+                          })
+                        })
+                    
+                        this.listS.getdatalist().pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+                          this.datalist = data
+                        });          
                     break;
         case RECIPIENT_OPTION.ITEM:
           this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
@@ -1682,7 +1721,22 @@ NOTES:
       
     }; 
     
-
+    doc(data:any){
+    
+      var temp = data.find(x => x.checked === true)
+      this.globalS.doc = temp.label.toString();
+      
+    }
+    notif(data: any){  
+    var temp1 = data.find(x => x.checked === true)
+        this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)  
+    }
+   
+    followup(data: any){
+    var temp
+    temp = data.find(x => x.checked === true)
+    this.globalS.followups = temp
+    }
  
  
 

@@ -97,14 +97,14 @@
                     <nz-option *ngFor="let recipi of recipients" [nzValue]="recipi.name" [nzLabel]="recipi.name"></nz-option> 
                     </nz-select>
                 </div>
-                <div nz-row nzGutter="24" class="">
+                <div nz-row nzGutter="24" class="" *ngIf="inputForm.get('ltype').value == 'INCIDENT'">
                     <label for="CDC Item" nzSpan="6" >Severity:</label>
                     <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="saverity" nzShowSearch nzAllowClear style="width:100%;">
                     <nz-option *ngFor="let sever of severity" [nzValue]="sever" [nzLabel]="sever"></nz-option> 
                     </nz-select>
                 </div>
                 <div nz-row nzGutter="24" class="">
-                    <label for="CDC Item" nzSpan="6" >Mandatory Notification:</label>
+                    <label for="CDC Item" nzSpan="6" >Notification Mandatory:</label>
                     <label nz-checkbox nzSpan="14"  formControlName="mandatory"><span class="small-font">Staff will be a mandatory notifyee for incidents linked to this list profile with no user choice</span></label>
                 </div>
                 <div nz-row nzGutter="24" class="" *ngIf="inputForm.get('ltype').value === 'INCIDENT'">

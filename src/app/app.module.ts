@@ -69,7 +69,7 @@ import { ComponentModule } from '@components/component.module'
 import { AgGridModule } from 'ag-grid-angular';
 import { BranchesComponent } from './pages/admin/configuration/genrel-setup/branches/branches.component';
 import { FundingRegionsComponent } from './pages/admin/configuration/genrel-setup/funding-regions/funding-regions.component';
-import { SpreadSheetsModule } from "@grapecity/spread-sheets-angular";
+import { SpreadSheetsModule } from "./components/spread-sheets-angular/grapecity-spread-sheets-angular";
 import {DocusignComponent} from './pages/docusign/docusign'
 
 import { ContextMenuModule } from 'ngx-contextmenu';

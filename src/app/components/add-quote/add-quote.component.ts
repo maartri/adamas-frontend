@@ -1121,6 +1121,18 @@ export class AddQuoteComponent implements OnInit {
       this.quoteListForm.reset();
   }
 
+  domenticaChange(event: any){
+    if(event.target.checked){
+        this.supplements.patchValue({
+            levelSupplement : this.programLevel,
+        })
+    }else{
+        this.supplements.patchValue({
+            levelSupplement : '',
+        })
+    }
+  }
+
   populateDropdDowns() {
         
       this.expecteOutcome = expectedOutcome;

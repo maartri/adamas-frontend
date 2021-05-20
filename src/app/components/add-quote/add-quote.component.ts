@@ -1288,6 +1288,17 @@ export class AddQuoteComponent implements OnInit {
 
     return this.globalS.baseamount.toFixed(2) ;
   }
+  domenticaChange(event: any){
+    if(event.target.checked){
+        this.supplements.patchValue({
+            levelSupplement : this.programLevel,
+        })
+    }else{
+        this.supplements.patchValue({
+            levelSupplement : '',
+    })
+    }
+  }
   govtContribution
   govtcontribute(){
     var temp  :number;

@@ -991,10 +991,19 @@ export class AddQuoteComponent implements OnInit {
       }
   }
 
+  generate_total(){
+      var total: number = 0;
+      this.quoteLines.forEach(x => {
+        total = total + this.totalamount(x.price,x.quoteQty,x.tax,x.quantity);
+      });
+      return total;
+  }
+
+  total_quote: any;
   GENERATE_QUOTE_LINE(){
        if(this.option == 'add')
        {
-           console.log(this.quoteListForm.getRawValue())
+        //    console.log(this.quoteListForm.getRawValue())
            const quote  = this.quoteListForm.getRawValue();
            var _quote = {
             billUnit: quote.billUnit,
@@ -1007,9 +1016,12 @@ export class AddQuoteComponent implements OnInit {
             tax: quote.gst,
             itemId: quote.itemId
            }
-        //    return;
+
             setTimeout(() => {
                 this.quoteLines = [...this.quoteLines, _quote];
+
+                this.total_quote = (this.generate_total()).toFixed(2);
+                console.log(this.total_quote);
                 this.handleCancelLine();
                 this.detectChanges();
             }, 0);
@@ -1271,7 +1283,7 @@ export class AddQuoteComponent implements OnInit {
     return product.toFixed(2)
 
   }
-  totalamount(var1:number,var2:number,var3:number,var4:number){
+  totalamount(var1:number,var2:number,var3:number,var4:number) {
     var product : number;
     
     if(var3 != null && var3 != 0){
@@ -1281,8 +1293,7 @@ export class AddQuoteComponent implements OnInit {
     }
      
     this.globalS.baseamount =  product
-    return product.toFixed(2)
-
+    return product
   }
   fbasequote(){
       
@@ -1343,11 +1354,13 @@ export class AddQuoteComponent implements OnInit {
     temp = (this.quoteForm.value.govtContrib -  this.admincharges - this.globalS.baseamount)
     return temp.toFixed(2)
   }
+
   totalQuote(){
     var temp :Number;
     temp =  (this.admincharges + this.globalS.baseamount)
     return temp.toFixed(2)
   }
+  
   admincharge(){
       
     var id,stype;

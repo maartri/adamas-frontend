@@ -14,7 +14,11 @@ import { NzModalService } from 'ng-zorro-antd';
   styles:[`
   .mrg-btm{
     margin-bottom:0rem !important;
-  }`]
+  }
+  span.small-font{
+    font-size:12px;
+  }
+  `]
 })
 export class DistributionlistComponent implements OnInit {
   events: Array<any>;
@@ -304,7 +308,7 @@ export class DistributionlistComponent implements OnInit {
         })
       )
       .subscribe(data => {
-        console.log(data);
+        this.events = data;
       })
     }
     

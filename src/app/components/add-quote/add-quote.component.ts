@@ -252,6 +252,11 @@ export class AddQuoteComponent implements OnInit {
     
     if(this.option == 'add'){
         this.quoteLines = [];
+
+        this.total_base_quote = 0;
+        this.total_admin = 0;
+        this.total_quote = 0;
+        this.remaining_fund = 0;
     }
 
     this.disableAddTabs = true;
@@ -475,6 +480,7 @@ export class AddQuoteComponent implements OnInit {
                           govtContrib: (x.quantity*365).toFixed(2),
                           programId: x.recordNumber
                       });
+                      this.remaining_fund = this.quoteForm.value.govtContrib;
                   }
                   this.detectChanges();
                   return this.listS.getpensionandfee();
@@ -1001,6 +1007,8 @@ export class AddQuoteComponent implements OnInit {
 
   total_quote: any;
   total_base_quote: any;
+  total_admin: any;
+  remaining_fund: any;
   GENERATE_QUOTE_LINE(){
        if(this.option == 'add')
        {
@@ -1021,8 +1029,11 @@ export class AddQuoteComponent implements OnInit {
             setTimeout(() => {
                 this.quoteLines = [...this.quoteLines, _quote];
 
-                this.total_quote = (this.generate_total() + 10361.62).toFixed(2) ;
-                this.total_base_quote = (this.total_quote - 10361.62).toFixed(2)
+                this.total_admin = 10361.62;
+                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+                this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
+
+                this.remaining_fund = this.quoteForm.value.govtContrib - this.total_quote;
                 console.log(this.total_quote);
                 this.handleCancelLine();
                 this.detectChanges();

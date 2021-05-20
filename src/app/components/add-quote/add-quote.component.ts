@@ -24,6 +24,10 @@ import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
 
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { PrintPdfComponent } from '@components/print-pdf/print-pdf.component';
+import { filter, toLength } from 'lodash';
+
+// import { Console } from 'node:console';
 
 
 const noop = () => {};
@@ -114,7 +118,7 @@ export class AddQuoteComponent implements OnInit {
     codes: Array<any>;
     strategies: Array<any>;
     recipientProperties: any;
-
+    cpid:any;
     radioValue: any;
     filters: any;
     disciplineList: any;
@@ -128,10 +132,15 @@ export class AddQuoteComponent implements OnInit {
     userCopy: any;
 
     quoteLines: Array<any> = [];
+    fquotehdr: Array<any> = [];
+    mainGroup: Array<any> = [];
 
     quoteLinesTemp: Array<any> = [];
 
     loggedInUser: any;
+    admincharges :number = 0;
+    specindex:number;
+    dochdr:any;
 
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     token:any;
@@ -401,6 +410,41 @@ export class AddQuoteComponent implements OnInit {
         //   }
       });
 
+      this.quoteListForm.get('code').valueChanges.pipe(
+          switchMap(x => {
+              if(!x)
+                  return EMPTY;
+
+              return this.listS.getprogramproperties(x)
+          })
+      ).subscribe(data => {
+          this.recipientProperties = data;
+          
+          if(this.option == 'add'){
+            this.quoteListForm.patchValue({ 
+                displayText: data.billText, 
+                price: data.amount, 
+                roster: 'None',
+                itemId: data.recnum 
+            })
+          }
+
+          if(this.option == 'update'){
+              console.log(this.updateValues)
+            this.quoteListForm.patchValue({ 
+                displayText: data.billText, 
+                price: data.amount,
+                itemId: data.recnum,
+                roster: this.determineRosterType(this.updateValues)
+            });
+          }
+      });
+
+      this.quoteListForm.get('roster').valueChanges.subscribe(data => {
+          this.weekly = data;
+          this.setPeriod(data);
+      });
+
       this.quoteForm.get('program').valueChanges
       .pipe(
           switchMap(x => {
@@ -436,35 +480,35 @@ export class AddQuoteComponent implements OnInit {
         this.showConfirm();
       });
 
-      this.quoteListForm.get('code').valueChanges.pipe(
-          switchMap(x => {
-              if(!x)
-                  return EMPTY;
+    //   this.quoteListForm.get('code').valueChanges.pipe(
+    //       switchMap(x => {
+    //           if(!x)
+    //               return EMPTY;
 
-              return this.listS.getprogramproperties(x)
-          })
-      ).subscribe(data => {
-          this.recipientProperties = data;
+    //           return this.listS.getprogramproperties(x)
+    //       })
+    //   ).subscribe(data => {
+    //       this.recipientProperties = data;
           
-          if(this.option == 'add'){
-            this.quoteListForm.patchValue({ 
-                displayText: data.billText, 
-                price: data.amount, 
-                roster: 'None',
-                itemId: data.recnum 
-            })
-          }
+    //       if(this.option == 'add'){
+    //         this.quoteListForm.patchValue({ 
+    //             displayText: data.billText, 
+    //             price: data.amount, 
+    //             roster: 'None',
+    //             itemId: data.recnum 
+    //         })
+    //       }
 
-          if(this.option == 'update'){
-              console.log(this.updateValues)
-            this.quoteListForm.patchValue({ 
-                displayText: data.billText, 
-                price: data.amount,
-                itemId: data.recnum,
-                roster: this.determineRosterType(this.updateValues)
-            });
-          }
-      });
+    //       if(this.option == 'update'){
+    //           console.log(this.updateValues)
+    //         this.quoteListForm.patchValue({ 
+    //             displayText: data.billText, 
+    //             price: data.amount,
+    //             itemId: data.recnum,
+    //             roster: this.determineRosterType(this.updateValues)
+    //         });
+    //       }
+    //   });
 
 
 
@@ -496,7 +540,7 @@ export class AddQuoteComponent implements OnInit {
           this.setPeriod(data);
       });
   }
-
+  
 
   tableDocumentId: number;
 
@@ -851,6 +895,7 @@ export class AddQuoteComponent implements OnInit {
   }
 
   showEditStrategyModal(data:any){
+      
       this.isUpdateStrategy = true;
       this.strategiesmodal = true;
       this.stratergiesForm.patchValue({
@@ -882,12 +927,12 @@ export class AddQuoteComponent implements OnInit {
   quoteLineIndex: number;
 
   showEditQuoteModal(data: any, index: number){
-
+    
     this.quoteLineIndex = index;
 
     this.listS.getquotelinedetails(data.recordNumber)
         .subscribe(x => {
-            this.updateValues = x;
+            this.updateValues = x;                         
             setTimeout(() => {
                 this.quoteListForm.patchValue({
                     chargeType: this.getChargeType(x.mainGroup),
@@ -1153,13 +1198,18 @@ export class AddQuoteComponent implements OnInit {
       {
           this.listS.getquotedetails(this.record).subscribe(data => {
               console.log(data)
+               this.cpid = data.cpid
+               
               this.quoteForm.patchValue({
                   recordNumber: data.recordNumber,
                   program: data.program
               });
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
-                  console.log(x)
+
+                //  console.log(x)
+                this.fquotehdr = x;
+                 this.dochdr = x.docHdrId
                   return {
                     code: x.serviceType,
                     displayText: x.displayText,
@@ -1170,9 +1220,15 @@ export class AddQuoteComponent implements OnInit {
                     recordNumber: x.recordNumber,
                     tax: x.tax , 
                     lengthInWeeks:x.lengthInWeeks,
-                    basequote: x.unitBillRate * x.frequency
+                    quoteQty:x.quoteQty
+                  //  basequote: ,
+
+
+                    
+
                   }
               }) : [];
+              
               
           })
       }
@@ -1185,13 +1241,13 @@ export class AddQuoteComponent implements OnInit {
     return product.toFixed(2)
 
   }
-  totalamount(var1:number,var2:number,var3:number){
+  totalamount(var1:number,var2:number,var3:number,var4:number){
     var product : number;
     
     if(var3 != null && var3 != 0){
-    product = ((var1 * var2 ) * var3);
+    product = ((var1 * var2 ) * var3 * var4);
     }else{
-        product = (var1 * var2 );
+        product = (var1 * var2 * var4);
     }
      
     this.globalS.baseamount =  product
@@ -1199,19 +1255,121 @@ export class AddQuoteComponent implements OnInit {
 
   }
   fbasequote(){
+      
+        let temp = this.fquotehdr        
+        var test :number;
+        
+        let price,quantity,length;
+    //    console.log(temp)
+   
+    if (this.option == 'update'){
+        for(let i = 0;i < temp.length+1;i++){
+            
+          
+            //    console.log(this.quoteLines[i].lengthInWeeks)
+            //    console.log(this.quoteLines[i].quantity)
+            //    console.log(this.quoteLines[i].price)
+            //if(stype == "ADMINISTRATION"){ }
+                price = temp[i].price
+                quantity = temp[i].quantity
+                length  = temp[i].quoteQty
+               //console.log(price)
+               
+               test = (price * quantity * length)
+               this.globalS.baseamount  = this.globalS.baseamount + test
+        //       console.log(temp1)
+            
+        } 
+    }
+      
+    
+
     // console.log(this.quoteLines)
+
     return this.globalS.baseamount.toFixed(2) ;
   }
-  domenticaChange(event: any){
-    if(event.target.checked){
-        this.supplements.patchValue({
-            levelSupplement : this.programLevel,
-        })
-    }else{
-        this.supplements.patchValue({
-            levelSupplement : '',
-        })
-    }
+  govtContribution
+  govtcontribute(){
+    var temp  :number;
+    temp = this.quoteForm.value.govtContrib 
+//    temp =  51808.10;
+    return temp.toFixed(2) ;
   }
+  remainingfund(){
+      var temp :Number;
+    temp = (this.quoteForm.value.govtContrib -  this.admincharges - this.globalS.baseamount)
+    return temp.toFixed(2)
+  }
+  totalQuote(){
+    var temp :Number;
+    temp =  (this.admincharges + this.globalS.baseamount)
+    return temp.toFixed(2)
+  }
+  admincharge(){
+      
+    var id,stype;
+   
+    id  = this.cpid  ;
+   // id  = '46010'  ;
+    this.listS.GetQuotetype(id).subscribe( x => {
+        this.specindex = x.indexOf("ADMINISTRATION")
+        //console.log(stype)
 
-}//this.quoteLines
+    })
+   
+ //   if(stype == "ADMINISTRATION" ){
+
+    let temp = this.fquotehdr   
+        console.log(temp)
+    var temp1 : number;
+    var test :number;
+    
+    let price,quantity,length;
+//    console.log(this.specindex)
+    if (this.option == 'update'){
+        
+            
+            let j = this.specindex
+          
+               for(let i =0;i < temp.length+1;i++){
+                    
+                
+                
+                price = temp[i].price
+                quantity = temp[i].quantity
+                length  = temp[i].quoteQty
+                //    console.log(price)
+                    
+                       test = (price * quantity * length)
+                    //   temp1 = test
+                    this.admincharges = this.admincharges + test
+                //       console.log(temp1)
+           
+            } 
+        
+            console.log(test)
+       
+    }
+  
+
+return this.admincharges;
+
+  }
+  dailyliving(){
+    let daily;
+     
+    var temp = this.dochdr
+      this.listS.GetDailyliving(temp).subscribe(x => {
+        
+         daily = x;
+         console.log(x);
+      });
+   return daily;
+  
+
+}
+
+
+
+
+}//

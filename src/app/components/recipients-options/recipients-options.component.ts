@@ -375,7 +375,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         radioGroup: 'case',
         notes: null,
         programChecked:null,
-        caseCategory: null,
+        caseCategory: 'ADMISSION',
         publishToApp: false,
         reminderDate: null,
         reminderTo: null,
@@ -412,7 +412,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               }
        });
 
-       console.log(this.admitGroup.get('programs').value + "------------")
+      //  console.log(this.admitGroup.get('programs').)
 
 
        this.assessGroup = this.fb.group({

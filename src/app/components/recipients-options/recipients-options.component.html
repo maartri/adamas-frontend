@@ -986,14 +986,17 @@
                             <div nz-col nzSpan="24">
                                 <div nz-col nzSpan="14">
                                     <div class="form-group">
-                                        <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
+                                        <!-- <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
                                             <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
+                                        </nz-select> -->
+                                        <nz-select formControlName="caseCategory" nzAllowClear>
+                                            <nz-option [nzValue]="'ADMISSION'" [nzLabel]="'ADMISSION'"></nz-option>
                                         </nz-select>
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="8" class="text-center">
                                     <div class="form-group">
-                                        <label nz-checkbox formControlName="adminsssion" [nzDisabled]="admission"> ADMISSION </label>
+                                        <label nz-checkbox formControlName="adminsssion" [nzDisabled]="admission"> Public To Mobile App </label>
                                     </div>
                                 </div>
                             </div>

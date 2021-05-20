@@ -1033,7 +1033,7 @@ export class AddQuoteComponent implements OnInit {
                 this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
                 this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
 
-                this.remaining_fund = this.quoteForm.value.govtContrib - this.total_quote;
+                this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
                 console.log(this.total_quote);
                 this.handleCancelLine();
                 this.detectChanges();

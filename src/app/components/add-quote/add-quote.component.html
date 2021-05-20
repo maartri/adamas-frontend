@@ -463,14 +463,14 @@
                         <div nz-col nzSpan="12" nzOffset="4">
                              <nz-card>
                                 <div nz-col nzSpan="16" class="text-right pad-r-5">
-                                    Domentica/Congnition/Veterans's Supplement <label nz-checkbox formControlName="domentica"></label>
+                                    Dementia/Cognition/Veterans Supplement <label nz-checkbox formControlName="domentica" (change)="domenticaChange($event)"></label>
                                 </div>
                                 <div nz-col nzSpan="6" class="text-center">
                                     <nz-radio-group formControlName="levelSupplement">
-                                        <label nz-radio nzValue="Level 1" [nzDisabled]="!this.supplements.get('domentica').value">Level 1</label>
-                                        <label nz-radio nzValue="Level 2" [nzDisabled]="!this.supplements.get('domentica').value">Level 2</label>
-                                        <label nz-radio nzValue="Level 3" [nzDisabled]="!this.supplements.get('domentica').value">Level 3</label>
-                                        <label nz-radio nzValue="Level 4" [nzDisabled]="!this.supplements.get('domentica').value">Level 4</label>
+                                        <label nz-radio nzValue="LEVEL 1" [nzDisabled]="!this.supplements.get('domentica').value">LEVEL 1</label>
+                                        <label nz-radio nzValue="LEVEL 2" [nzDisabled]="!this.supplements.get('domentica').value">LEVEL 2</label>
+                                        <label nz-radio nzValue="LEVEL 3" [nzDisabled]="!this.supplements.get('domentica').value">LEVEL 3</label>
+                                        <label nz-radio nzValue="LEVEL 4" [nzDisabled]="!this.supplements.get('domentica').value">LEVEL 4</label>
                                     </nz-radio-group>
                                 </div>
                              </nz-card>
@@ -517,13 +517,13 @@
                                 </div>
                                 <div nz-col nzSpan="6" class="text-center">
                                     <nz-radio-group formControlName="viabilitySupplement">
-                                        <label nz-radio nzValue="Level 1" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 1</label>
-                                        <label nz-radio nzValue="Level 2" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 2</label>
-                                        <label nz-radio nzValue="Level 3" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 3</label>
-                                        <label nz-radio nzValue="Level 4" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 4</label>
-                                        <label nz-radio nzValue="Level 5" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 5</label>
-                                        <label nz-radio nzValue="Level 6" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 6</label>
-                                        <label nz-radio nzValue="Level 7" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">Level 7</label>
+                                        <label nz-radio nzValue="MMM 1" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">MMM 1</label>
+                                        <label nz-radio nzValue="MMM 2" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">MMM 2</label>
+                                        <label nz-radio nzValue="MMM 3" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">MMM 3</label>
+                                        <label nz-radio nzValue="MMM 4" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">MMM 4</label>
+                                        <label nz-radio nzValue="MMM 5" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">MMM 5</label>
+                                        <label nz-radio nzValue="MMM 6" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">MMM 6</label>
+                                        <label nz-radio nzValue="MMM 7" [nzDisabled]="!this.supplements.get('viabilitySuplement').value">MMM 7</label>
                                     </nz-radio-group>
                                 </div>
                             </nz-card>

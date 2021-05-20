@@ -109,7 +109,7 @@ export class AddQuoteComponent implements OnInit {
     quoteProgramList: Array<string>;
 
     IS_CDC: boolean = false;
-
+    programLevel:any;
 
     codes: Array<any>
     recipientProperties: any;
@@ -1176,6 +1176,17 @@ export class AddQuoteComponent implements OnInit {
   fbasequote(){
     // console.log(this.quoteLines)
     return this.globalS.baseamount.toFixed(2) ;
+  }
+  domenticaChange(event: any){
+    if(event.target.checked){
+        this.supplements.patchValue({
+            levelSupplement : this.programLevel,
+        })
+    }else{
+        this.supplements.patchValue({
+            levelSupplement : '',
+        })
+    }
   }
 
 }//this.quoteLines

@@ -1000,6 +1000,7 @@ export class AddQuoteComponent implements OnInit {
   }
 
   total_quote: any;
+  total_base_quote: any;
   GENERATE_QUOTE_LINE(){
        if(this.option == 'add')
        {
@@ -1021,6 +1022,7 @@ export class AddQuoteComponent implements OnInit {
                 this.quoteLines = [...this.quoteLines, _quote];
 
                 this.total_quote = (this.generate_total() + 10361.62).toFixed(2) ;
+                this.total_base_quote = (this.total_quote - 10361.62).toFixed(2)
                 console.log(this.total_quote);
                 this.handleCancelLine();
                 this.detectChanges();

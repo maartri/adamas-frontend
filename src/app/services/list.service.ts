@@ -20,6 +20,19 @@ export class ListService {
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+
+    deletetempdoc(docId: any):Observable<any>{
+        return this.auth.delete(`${list}/delete-temp-doc/${docId}`);
+    }
+
+    geteventlifecycle(): Observable<any>{
+        return this.auth.get(`${list}/event-life-cycle`);
+    }
+
+    createtempdoc(data: any): Observable<any>{
+        return this.auth.post(`${list}/create-temp-doc`, data);
+    }
+    
     getquotetype(): Observable<any>{
         return this.auth.get(`${list}/goalplan/list`);
     }
@@ -163,6 +176,13 @@ export class ListService {
     getchargetype(data: any): Observable<any>{
         return this.auth.get(`${list}/quote/chargeType`, data);
     }
+    GetQuotetype(id: string): Observable<any>{
+        return this.auth.get(`${list}/getquotetype/${id}`);
+    }
+    
+    GetDailyliving(id: string): Observable<any>{
+        return this.auth.get(`${list}/getdailyliving/${id}`);
+    }
 
     getglobaltemplate(): Observable<any>{
         return this.auth.get(`${list}/template/list`);
@@ -176,7 +196,7 @@ export class ListService {
         return this.auth.get(`${list}/is-hcp-cdc-programs/${personID}`);
     }
 
-    getCareplangoals(personID: string): Observable<any>{
+    getCareplangoals(personID: any): Observable<any>{
         return this.auth.get(`${list}/quote/careplangoal/list/${personID}`)
     }
     getStrategies(personID: string): Observable<any>{

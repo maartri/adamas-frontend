@@ -56,10 +56,10 @@
     <div nz-row nzGutter="16">
         
         <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSelectedIndex]="tabFindIndex">
-            <nz-tab nzTitle="General" (nzClick)="tabFindChange(0)"> </nz-tab>
-            <nz-tab nzTitle="Goals & Strategies" (nzClick)="tabFindChange(1)"> </nz-tab>
+            <nz-tab nzTitle="General" [nzDisabled]="disableAddTabs" (nzClick)="tabFindChange(0)"> </nz-tab>
+            <nz-tab nzTitle="Goals & Strategies" [nzDisabled]="disableAddTabs" (nzClick)="tabFindChange(1)"> </nz-tab>
             <nz-tab nzTitle="Quote" (nzClick)="tabFindChange(2)"></nz-tab>
-            <nz-tab nzTitle="Supplements" (nzClick)="tabFindChange(3)" *ngIf="IS_CDC"></nz-tab>
+            <nz-tab nzTitle="Supplements" [nzDisabled]="disableAddTabs" (nzClick)="tabFindChange(3)" *ngIf="IS_CDC"></nz-tab>
         </nz-tabset>
         
         <div nzGutter="16">
@@ -255,6 +255,7 @@
             </div>
             
             </div>
+            
             <div *ngIf="tabFindIndex == 2" >
 
             <div nz-row nzGutter="32" [formGroup]="quoteForm">
@@ -343,11 +344,11 @@
 
                         <td>{{data.billUnit}}</td>
                         <td>{{data.frequency}}</td>
-                        <td>{{data.lengthInWeeks}}</td>
+                        <td>{{data.quoteQty}}</td>
                         <td>${{data.price}}</td>
-                        <td>$ {{amount(data.price,data.lengthInWeeks)}}  </td>                        
+                        <td>$ {{amount(data.price,data.quoteQty)}}  </td>                        
                         <td>{{data.tax}}</td>
-                        <td>${{totalamount(data.price,data.lengthInWeeks,data.tax)}}</td>
+                        <td>${{totalamount(data.price,data.quoteQty,data.tax,data.quantity)}}</td>
                         <td>
                             <a (click)="showEditQuoteModal(data, i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
@@ -366,7 +367,7 @@
                             <span class="title">Initial Budget</span>
                             <input nz-input class="mini" placeholder="" nzSize="small" formControlName="initialBudget" />
                         </div>
-                        <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm">
+                        <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
                             <span class="title">Gov't Contribution</span>
                             <input nz-input class="mini" placeholder="" nzSize="small" formControlName="govtContrib" />
                         </div>
@@ -438,15 +439,15 @@
                             </div>
                             <div>
                                 <div>Admin & Case Management</div>
-                                <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <span nz-input nzSize="small"> $ {{admincharge()}} </span></div>
                             </div>
                             <div>
                                 <div>Total Quote</div>
-                                <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <span nz-input nzSize="small"> $ {{totalQuote()}} </span></div>
                             </div>
                             <div>
                                 <div>Remaining Funds</div>
-                                <div> <input nz-input placeholder="Basic usage" nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <span nz-input nzSize="small"> $ {{(remainingfund()  )}} </span></div>
                             </div>
                         </div>
                     </div>
@@ -598,7 +599,7 @@
                 <div class="form-group">
                     <label for="">Strategy</label>
                     <nz-select formControlName="strategy" nzSize="small" nzAllowClear nzPlaceHolder="Strategy">
-                        <!-- <nz-option nzValue="jack" nzLabel="Jack"></nz-option> -->
+                        <nz-option *ngFor="let d of strategies" [nzValue]="d.recordNumber" [nzLabel]="d.strategy"></nz-option>
                     </nz-select>
                 </div>
             </div>
@@ -650,6 +651,11 @@
                             <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
                             <span>% of Quote Budget</span>
                         </div>
+                        <div nz-row class="spacing">
+                           
+                            <span>{{dailyliving()}}</span>
+                           
+                        </div>
                     </div>
                 </div>
 
@@ -660,12 +666,16 @@
 
                 </div>
             </div>
+            
         </div>
     </div>
 
     <div *nzModalFooter>
+        <button nz-button nzType="default"><strong>Current Quote Value ${{totalQuote()}} </strong> </button>
+        <button nz-button nzType="default" ><strong> Remaining Funds ${{remainingfund()}} </strong> </button>
         <button nz-button nzType="default" (click)="handleCancelLine()">Cancel</button>
         <button nz-button nzType="primary" (click)="GENERATE_QUOTE_LINE()">Save</button>
+        
     </div>
 
   </nz-modal>

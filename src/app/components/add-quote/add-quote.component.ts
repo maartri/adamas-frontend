@@ -146,6 +146,13 @@ export class AddQuoteComponent implements OnInit {
     plangoalachivementlis: any;
     personIdForStrategy: any;
 
+    price:number;
+    quantity:number;
+    length:number;
+
+    fdata
+  
+
   constructor(
     private timeS: TimeSheetService,
     private sharedS: ShareService,
@@ -1038,7 +1045,8 @@ export class AddQuoteComponent implements OnInit {
       {
           this.listS.getquotedetails(this.record).subscribe(data => {
               console.log(data)
-               this.cpid = data.cpid
+               this.cpid = data.cpid;
+               this.fdata = data.quoteLines;
                
               this.quoteForm.patchValue({
                   recordNumber: data.recordNumber,
@@ -1050,6 +1058,7 @@ export class AddQuoteComponent implements OnInit {
                 //  console.log(x)
                 this.fquotehdr = x;
                  this.dochdr = x.docHdrId
+            
                   return {
                     code: x.serviceType,
                     displayText: x.displayText,
@@ -1096,27 +1105,29 @@ export class AddQuoteComponent implements OnInit {
   }
   fbasequote(){
       
-        let temp = this.fquotehdr        
+        //let temp = this.fquotehdr        
+        let temp = this.fdata 
         var test :number;
         
-        let price,quantity,length;
+    //    let price,quantity,length;
     //    console.log(temp)
    
     if (this.option == 'update'){
-        for(let i = 0;i < temp.length+1;i++){
+        for(let i = 0;i < temp.length; i++){
             
           
             //    console.log(this.quoteLines[i].lengthInWeeks)
             //    console.log(this.quoteLines[i].quantity)
             //    console.log(this.quoteLines[i].price)
             //if(stype == "ADMINISTRATION"){ }
-                price = temp[i].price
-                quantity = temp[i].quantity
-                length  = temp[i].quoteQty
+            this.price = temp[i].unitBillRate
+            this.quantity = temp[i].qty
+            this.length  = temp[i].quoteQty
                //console.log(price)
                
-               test = (price * quantity * length)
-               this.globalS.baseamount  = this.globalS.baseamount + test
+               test = (this.price * this.quantity * this.length)
+        //       this.globalS.baseamount  = this.globalS.baseamount + test
+        this.globalS.baseamount  =this.globalS.baseamount  + test
         //       console.log(temp1)
             
         } 
@@ -1159,35 +1170,35 @@ export class AddQuoteComponent implements OnInit {
    
  //   if(stype == "ADMINISTRATION" ){
 
-    let temp = this.fquotehdr   
+    let temp = this.fdata  
         console.log(temp)
     var temp1 : number;
     var test :number;
     
-    let price,quantity,length;
+//    let price,quantity,length;
 //    console.log(this.specindex)
     if (this.option == 'update'){
         
-            
+        console.log(temp.length)
             let j = this.specindex
+            this.admincharges = 0;
           
-               for(let i =0;i < temp.length+1;i++){
+               for(let i =0;i < temp.length;i++){
                     
                 
                 
-                price = temp[i].price
-                quantity = temp[i].quantity
-                length  = temp[i].quoteQty
-                //    console.log(price)
-                    
-                       test = (price * quantity * length)
-                    //   temp1 = test
-                    this.admincharges = this.admincharges + test
-                //       console.log(temp1)
+                this.price = temp[j].unitBillRate
+                this.quantity = temp[j].qty
+                this.length  = temp[j].quoteQty
+            //    console.log((temp[i].quantity).toString());
+                   console.log(this.quantity);
+                   test =(this.price * this.quantity * this.length)                    
+                   this.admincharges =this.admincharges +  test
+                //   this.admincharges =  this.admincharges + this.admincharges
            
             } 
-        
-            console.log(test)
+           
+            console.log(this.admincharges)                    
        
     }
   

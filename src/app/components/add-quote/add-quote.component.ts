@@ -159,6 +159,11 @@ export class AddQuoteComponent implements OnInit {
     personIdForStrategy: any;
     supplements: FormGroup;
 
+    price:number;
+    quantity:number;
+    length:number;
+    fdata : any;
+
   constructor(
     private timeS: TimeSheetService,
     private sharedS: ShareService,
@@ -1207,7 +1212,8 @@ export class AddQuoteComponent implements OnInit {
       {
           this.listS.getquotedetails(this.record).subscribe(data => {
               console.log(data)
-               this.cpid = data.cpid
+               this.cpid = data.cpid;
+               this.fdata = data.quoteLines;
                
               this.quoteForm.patchValue({
                   recordNumber: data.recordNumber,
@@ -1339,7 +1345,59 @@ export class AddQuoteComponent implements OnInit {
    
  //   if(stype == "ADMINISTRATION" ){
 
-    let temp = this.fquotehdr   
+    let temp = this.fdata  
+        console.log(temp)
+    var temp1 : number;
+    var test :number;
+    
+//    let price,quantity,length;
+//    console.log(this.specindex)
+    if (this.option == 'update'){
+        
+        console.log(temp.length)
+            let j = this.specindex
+            this.admincharges = 0;
+          
+            //   for(let i =0;i < temp.length ,i =j;i++){
+                    
+                
+                
+                //this.price = temp[j].unitBillRate
+                this.price = temp[j].unitBillRate
+                this.quantity = temp[j].qty
+                this.length  = temp[j].quoteQty
+            //    console.log((temp[i].quantity).toString());
+                   console.log(this.quantity);
+                   test =(this.price * this.quantity * this.length)                    
+                   this.admincharges =this.admincharges +  test
+                //   this.admincharges =  this.admincharges + this.admincharges
+           
+            //} 
+           
+            console.log(this.admincharges)                    
+       
+    }
+  
+
+return this.admincharges;
+
+  }
+  /*admincharge(){
+      
+    var id,stype;
+   
+    id  = this.cpid  ;
+   // id  = '46010'  ;
+    this.listS.GetQuotetype(id).subscribe( x => {
+        this.specindex = x.indexOf("ADMINISTRATION")
+        //console.log(stype)
+
+    })
+   
+ //   if(stype == "ADMINISTRATION" ){
+
+//    let temp = this.fquotehdr 
+    let temp = this.fdata  
         console.log(temp)
     var temp1 : number;
     var test :number;
@@ -1351,13 +1409,13 @@ export class AddQuoteComponent implements OnInit {
             
             let j = this.specindex
           
-               for(let i =0;i < temp.length+1;i++){
+            //   for(let i =0;i < temp.length+1;i++){
                     
                 
                 
-                price = temp[i].price
-                quantity = temp[i].quantity
-                length  = temp[i].quoteQty
+                price = temp[j].unitBillRate
+                quantity = temp[j].quantity
+                length  = temp[j].quoteQty
                 //    console.log(price)
                     
                        test = (price * quantity * length)
@@ -1365,7 +1423,7 @@ export class AddQuoteComponent implements OnInit {
                     this.admincharges = this.admincharges + test
                 //       console.log(temp1)
            
-            } 
+        //    } 
         
             console.log(test)
        
@@ -1374,7 +1432,9 @@ export class AddQuoteComponent implements OnInit {
 
 return this.admincharges;
 
-  }
+  } */
+  
+  
   dailyliving(){
     let daily;
      

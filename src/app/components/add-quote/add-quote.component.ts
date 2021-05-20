@@ -1020,7 +1020,7 @@ export class AddQuoteComponent implements OnInit {
             setTimeout(() => {
                 this.quoteLines = [...this.quoteLines, _quote];
 
-                this.total_quote = (this.generate_total()).toFixed(2);
+                this.total_quote = (this.generate_total() + 10361.62).toFixed(2) ;
                 console.log(this.total_quote);
                 this.handleCancelLine();
                 this.detectChanges();

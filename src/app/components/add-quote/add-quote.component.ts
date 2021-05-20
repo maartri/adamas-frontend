@@ -595,6 +595,7 @@ export class AddQuoteComponent implements OnInit {
 
   handleCancel(){
       console.log('close quotes modal')
+      this.listS.deletetempdoc(this.tableDocumentId).subscribe(data => console.log(data))
       this.quotesOpen = false;
       this.inActiveOpen = false;
       this.activeOpen = false;

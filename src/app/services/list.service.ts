@@ -21,6 +21,14 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    deletetempdoc(docId: any):Observable<any>{
+        return this.auth.delete(`${list}/delete-temp-doc/${docId}`);
+    }
+
+    geteventlifecycle(): Observable<any>{
+        return this.auth.get(`${list}/event-life-cycle`);
+    }
+
     createtempdoc(data: any): Observable<any>{
         return this.auth.post(`${list}/create-temp-doc`, data);
     }

@@ -2120,7 +2120,8 @@ reload(reload: boolean){
         // console.log(format(startOfMonth(date),'yyyy/MM/dd'));
         if(!this.recipient) return;
         
-
+           this.ActiveCellText="";
+            
         this.staffS.getroster({
             RosterType: this.recipient.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',            
             AccountNo: this.recipient.data,

@@ -385,6 +385,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         admissionDate:new Date(),
         adminsssion:null,
         admisointype:null,
+        timePeriod: [],
         time: new Date(),
         timeSpent: new Date().setHours(0, 15),
       });

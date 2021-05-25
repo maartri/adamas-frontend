@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="consentOpen" nzTitle="Add Consent" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="consentOpen" [nzTitle]="addOREdit == 1 ? 'Add Consent' : 'Update Consent'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div>
         
         <div nz-row nzGutter="16">

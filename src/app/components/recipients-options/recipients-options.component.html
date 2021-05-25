@@ -214,9 +214,9 @@
                                     <label>Admission Type</label>
                                 </div>
                                 <div nz-col nzSpan="16">
-                                        <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
-                                            <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
-                                        </nz-select>
+                                    <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
+                                        <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
+                                    </nz-select>
                                 </div>
                             </div>    
                         </nz-card>
@@ -291,7 +291,7 @@
                                 <div nz-col nzSpan="8" class="">
                                     <div class="form-group">
                                         <label> Reminder Date </label>
-                                            <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
+                                        <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                                     </div>  
                                 </div>
                             </div>
@@ -312,47 +312,47 @@
                             </div>
                         </nz-card>
                     </div>                
-            </div>
-            <div nz-row *ngIf="current == 1">
-                <div [formGroup]="adminGroup">
-                    <div class="form-group">  
-                        <label for="">Notifications</label>
-                        <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
-                    </div>
-                    
                 </div>
-            </div>
-
-            <div nz-row *ngIf="current == 2">
-                <div [formGroup]="adminGroup">
-                    <div class="form-group">
-                        <label for="">Followup</label>
-                        <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <div nz-row *ngIf="current == 1">
+                    <div [formGroup]="adminGroup">
+                        <div class="form-group">  
+                            <label for="">Notifications</label>
+                            <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                        </div>
+                        
                     </div>
                 </div>
-            </div>
-
-            <div nz-row *ngIf="current == 3">
-                <div [formGroup]="adminGroup">
-                    <div class="form-group">
-                        <label for="">Documents</label>
-                        <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="doc(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                
+                <div nz-row *ngIf="current == 2">
+                    <div [formGroup]="adminGroup">
+                        <div class="form-group">
+                            <label for="">Followup</label>
+                            <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div nz-row *ngIf="current == 4">
-                <div [formGroup]="adminGroup">
-                    <div class="form-group">
-                        <label for="">Data List</label>
-                        <div *ngFor="let l of datalist"> 
-                            <a [href]="l.link" target="_blank">{{l.form}}</a>
+                
+                <div nz-row *ngIf="current == 3">
+                    <div [formGroup]="adminGroup">
+                        <div class="form-group">
+                            <label for="">Documents</label>
+                            <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="doc(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                        </div>
+                    </div>
+                </div>
+                
+                <div nz-row *ngIf="current == 4">
+                    <div [formGroup]="adminGroup">
+                        <div class="form-group">
+                            <label for="">Data List</label>
+                            <div *ngFor="let l of datalist"> 
+                                <a [href]="l.link" target="_blank">{{l.form}}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
         
         <div *nzModalFooter>
             <ng-container>
@@ -914,6 +914,7 @@
                 <nz-step class="mini" nzTitle="Followups" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Documents" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Additional Data" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Roster Date selection" nzDescription=""></nz-step>
             </nz-steps>
             
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
@@ -923,9 +924,9 @@
                     <div nz-row nzJustify class="mrg-btm-half">
                         <nz-card [nzBodyStyle]="{'padding':'5px'}">
                             <div style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
-                            <nz-radio-group formControlName="programChecked">
-                                <label nz-radio *ngFor="let program of admitGroup.get('programs').value;let i = index" [nzValue]="program">{{ admitGroup.get('programs')['controls'][i].value.program }}</label>
-                            </nz-radio-group>
+                                <nz-radio-group formControlName="programChecked">
+                                    <label nz-radio *ngFor="let program of admitGroup.get('programs').value;let i = index" [nzValue]="program">{{ admitGroup.get('programs')['controls'][i].value.program }}</label>
+                                </nz-radio-group>
                             </div>
                             <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                         </nz-card>
@@ -959,7 +960,7 @@
                                     <label>Time Spent</label>
                                     <!-- <nz-select>
                                         <nz-option *ngFor="let admissionActivity of admissionActiviType" [nzValue]="admissionActivity" [nzLabel]="admissionActivity"></nz-option>
-
+                                        
                                     </nz-select> -->
                                     <nz-time-picker formControlName="timeSpent"  nzFormat="HH:mm"></nz-time-picker>
                                 </div>
@@ -1021,7 +1022,7 @@
                                 <div nz-col nzSpan="8" class="">
                                     <div class="form-group">
                                         <label> Reminder Date </label>
-                                            <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
+                                        <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                                     </div>  
                                 </div>
                             </div>
@@ -1042,48 +1043,55 @@
                             </div>
                         </nz-card>
                     </div>                
-            </div>
-            <div nz-row *ngIf="current == 1">
-                <div [formGroup]="admitGroup">
-                    <div class="form-group">  
-                        <label for="">Notifications</label>
-                        <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
-                    </div>
-                    
                 </div>
-            </div>
-
-            <div nz-row *ngIf="current == 2">
-                <div [formGroup]="admitGroup">
-                    <div class="form-group">
-                        <label for="">Followup</label>
-                        <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <div nz-row *ngIf="current == 1">
+                    <div [formGroup]="admitGroup">
+                        <div class="form-group">  
+                            <label for="">Notifications</label>
+                            <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                        </div>
+                        
                     </div>
                 </div>
-            </div>
-
-            <div nz-row *ngIf="current == 3">
-                <div [formGroup]="admitGroup">
-                    <div class="form-group">
-                        <label for="">Documents</label>
-                        <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="doc(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
-                    </div>
-                </div>
-            </div>
-
-            <div nz-row *ngIf="current == 4">
-                <div [formGroup]="admitGroup">
-                    <div class="form-group">
-                        <label for="">Data List</label>
-                        <div *ngFor="let l of datalist"> 
-                            <a [href]="l.link" target="_blank">{{l.form}}</a>
+                
+                <div nz-row *ngIf="current == 2">
+                    <div [formGroup]="admitGroup">
+                        <div class="form-group">
+                            <label for="">Followup</label>
+                            <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                         </div>
                     </div>
                 </div>
+                
+                <div nz-row *ngIf="current == 3">
+                    <div [formGroup]="admitGroup">
+                        <div class="form-group">
+                            <label for="">Documents</label>
+                            <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="doc(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                        </div>
+                    </div>
+                </div>
+                
+                <div nz-row *ngIf="current == 4">
+                    <div [formGroup]="admitGroup">
+                        <div class="form-group">
+                            <label for="">Data List</label>
+                            <div *ngFor="let l of datalist"> 
+                                <a [href]="l.link" target="_blank">{{l.form}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div nz-row *ngif="current == 5">
+                    <div [formGroup]="admitGroup">
+                            <div nz-row class="form-group">
+                                <label for="">Time Period</label>
+                                <nz-range-picker formControlName="timePeriod"></nz-range-picker>
+                            </div>
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
-        
     </div>
     
     <div *nzModalFooter>
@@ -1100,8 +1108,6 @@
         </ng-container>
     </div>
 </nz-modal>
-
-
 <!-- ASSESS -->
 
 <nz-modal [(nzVisible)]="assessOpen" [nzWidth]="800" [nzTitle]="whatOptionVar?.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" (nzAfterClose)="handleClose()">

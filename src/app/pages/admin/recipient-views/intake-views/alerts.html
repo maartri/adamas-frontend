@@ -48,7 +48,7 @@
 </div>
 
 
-<nz-modal [(nzVisible)]="alertOpen" [nzTitle]="addOREdit == 1 ? 'Add Competency' : 'Update Competency'"  (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="alertOpen" [nzTitle]="addOREdit == 0 ? 'Add Competency' : 'Update Competency'"  (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div>
         
         <div nz-row nzGutter="16">

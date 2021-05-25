@@ -60,7 +60,7 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="definedOpen" nzTitle="addOREdit == 1 ? 'Add User Group' : 'Update User Group'" (nzOnCancel)="handleCancel(1)" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="definedOpen" [nzTitle]="addOREdit == 1 ? 'Add User Group' : 'Update User Group'" (nzOnCancel)="handleCancel(1)" (nzOnOk)="handleOk()">
     <div>
         
         <div nz-row nzGutter="16" class="mrg-btm" >

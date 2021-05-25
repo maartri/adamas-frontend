@@ -132,7 +132,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     clientId: number;
 
     size: string = 'small'
-
+    from: string = 'quote';
     quoteGeneralForm : FormGroup;
     title: string = 'Add New Quote';
     slots: any;

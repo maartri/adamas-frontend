@@ -105,7 +105,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
             alert: new FormControl(false),
             date1: new FormControl(null),
             date2: new FormControl(null),
-            email: new FormControl(null),
+            email: new FormControl(''),
          })
          
          this.preferenceForm = this.formBuilder.group({

@@ -914,7 +914,7 @@
                 <nz-step class="mini" nzTitle="Followups" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Documents" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Additional Data" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Roster Date selection" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Roster Date selection" nzDescription="" *ngIf="from == 'quote'"></nz-step>
             </nz-steps>
             
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
@@ -1099,7 +1099,7 @@
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
                 <span>Previous</span>
             </button>
-            <button nz-button nzType="default" (click)="next()" *ngIf="current < 4" [disabled]="!canGoNext">
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 5" [disabled]="!canGoNext">
                 <span>Next</span>
             </button>
             <button nz-button nzType="primary" (click)="done()" [disabled]="!canBeDone">

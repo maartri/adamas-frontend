@@ -1249,13 +1249,15 @@ ClearMultishift(){
 
     for (let i=0; i<=this.Days_View ; i++)   {
                 
-      sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
-      
-      
+     // sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
+     
+      var head_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
+      sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
       var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
       row_header.backColor("#002060");
       row_header.foreColor("#ffffff");
       
+
       if (this.Days_View>=30)
         sheet.setColumnWidth(i, 40.0,GC.Spread.Sheets.SheetArea.viewport);
       else if (this.Days_View>=14)
@@ -1263,20 +1265,13 @@ ClearMultishift(){
       else 
         sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
       
-        //weekend
-       // sheet.autoFitColumn(i)
-       // sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
-
-        //sheet.setRowResizable(3,false,GC.Spread.Sheets.SheetArea.viewport);
-        //sheet.setColumnResizable(3,false,GC.Spread.Sheets.SheetArea.viewport);
-        //sheet.getRange(1, -1, 1, -1, GC.Spread.Sheets.SheetArea.viewport).resizable(false);
-        //sheet.getRange(-1, 1, -1, 1, GC.Spread.Sheets.SheetArea.viewport).resizable(false);
-        
+       
                         
 
       if ((this.DayOfWeek( date.getDay())=="Sa") || (this.DayOfWeek( date.getDay())=="Su")){
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
+          sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'black' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
           
       //row_header.backColor("#D1A6BC");
      
@@ -1300,14 +1295,20 @@ ClearMultishift(){
 
     for (let j=0; j<this.time_slot; j++)   {      
    
-     
+        var row_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
+        
        if (time.minutes==0){
-            sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
+            //sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
+            row_txt = this.numStr(time.hours)  + ":" + this.numStr(time.minutes) 
        }else if (time.minutes%15==0)
-            sheet.setValue(j, 0,  "     "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
+          //  sheet.setValue(j, 0,  "     "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
+          row_txt = "     "+this.numStr(time.minutes)  ;
         else
-         sheet.setValue(j, 0,  ""  , GC.Spread.Sheets.SheetArea.rowHeader);
+            row_txt= "";
+         //sheet.setValue(j, 0,  ""  , GC.Spread.Sheets.SheetArea.rowHeader);
 
+         sheet.setValue(j, 0, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
+       
         sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))

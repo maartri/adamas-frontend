@@ -79,6 +79,34 @@ IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context)
     ctx.restore();
 };
 
+function IconCellType2(img) {
+    this.typeName = "IconCellType";
+    this.img = img;
+}
+
+IconCellType2.prototype = new GC.Spread.Sheets.CellTypes.Base();
+// EllipsisTextCellType.prototype
+IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
+    if (!ctx) {
+        return;
+    }
+    ctx.save();
+
+    // draw inside the cell's boundary
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+
+    // draw text
+    GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x, y, w, h, style, context]);
+    ctx.beginPath();
+    // let img = document.getElementById('icon-lock');
+   // ctx.drawImage(this.img, x + 2, y + 2, 16, 16);
+    ctx.fill();
+    ctx.stroke();
+    
+
+    ctx.restore();
+};
 @Component({
     styles: [`
       
@@ -134,6 +162,9 @@ masterCycle:string="CYCLE 1";
   select_StaffModal:boolean;
   select_RecipientModal:boolean;
   
+  include_fee:boolean=false;
+  include_item:boolean=false;
+
   time_slot:number=288;
 
     isVisible: boolean = false;
@@ -170,7 +201,8 @@ masterCycle:string="CYCLE 1";
     val3:boolean=true;
     val4:boolean=false;
     master:boolean=false;
-    
+    tval1:boolean=true;
+    dval1:boolean=true;
     sample: any;
     searchStaffModal:boolean=false;
     ViewStaffDetail:boolean=false;
@@ -428,14 +460,22 @@ UnAllocate(){
 
 }
 showViews(){
-    this.show_views=true;
+    this.show_views=false;
+    this.Already_loaded=false;
+    this.prepare_Sheet();
+    this.load_rosters();
 }
 show_MoreOptions(){
     this.show_More=true;
 }
 
 
-hide_MoreOptions(){
+hide_MoreOptions(i:number){
+    if (i==0)
+        this.include_fee=true;
+    if (i==1)
+        this.include_item=true;
+
     this.show_More=false;
 }
 SaveMasterRosters(){
@@ -480,14 +520,12 @@ ClearMultishift(){
     if (this.master){
         //cell.backColor("#FF8080");
         cell.backColor("white");
-        cell.text("").cellType(new IconCellType(document.getElementById('icon-21')));
+        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
     }else{
         cell.backColor("white");
-        cell.text("").cellType(new IconCellType(document.getElementById('icon-21')));
+        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
     }
     cell.text("")
-    
-    
     
           
     let row=-1, col=-1;
@@ -500,6 +538,9 @@ ClearMultishift(){
             
         if (r.dayNo>this.Days_View) break;
 
+            if (r.recordNo==246364 || r.shiftbookNo==246364){
+                code= r.carerCode 
+            }
             col=r.dayNo-1;
             row = this.getrow(r.start_Time);//self.time_map.get(r.Start_Time); //
             if (this.viewType=="Staff")
@@ -552,7 +593,10 @@ ClearMultishift(){
       spread= GC.Spread.Sheets.Workbook = args.spread;  
       let sheet = spread.getActiveSheet();  
       //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
-  
+      spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.normal;
+      spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.normal;
+     // spread.options.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
+
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
 
@@ -1225,7 +1269,7 @@ ClearMultishift(){
 
    let sheet:any=this.spreadsheet.getActiveSheet(); 
    this.spreadsheet.suspendPaint();
-   
+  
      // Set the default styles.
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "Segoe UI";
@@ -1244,7 +1288,8 @@ ClearMultishift(){
     this.Days_View==days
    }
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
-  
+    
+   
   
 
     for (let i=0; i<=this.Days_View ; i++)   {
@@ -1265,8 +1310,10 @@ ClearMultishift(){
       else 
         sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
       
-       
-                        
+        sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
+        //sheet.options.resizeZeroIndicator = GC.Spread.Sheets.SheetArea.Enhanced
+        
+        //sheet.autoFitColumn(i)            
 
       if ((this.DayOfWeek( date.getDay())=="Sa") || (this.DayOfWeek( date.getDay())=="Su")){
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
@@ -1315,7 +1362,9 @@ ClearMultishift(){
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#002060");
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#ffffff");
         sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
-        sheet.autoFitRow(j)
+        
+        sheet.setRowResizable(j,true, GC.Spread.Sheets.SheetArea.rowHeader);
+
         if (this.time_slot==288)
             time.minutes+=5;
         else if (this.time_slot==144)
@@ -1337,12 +1386,19 @@ ClearMultishift(){
       
   }
 
+  set_Time_Interval(t:number)
+  {
+     // this.show_views=false;
+      this.time_slot=t;
+     
+  }  
+  
   set_day_view(d:number)
   {
-    this.show_views=false;
+    //this.show_views=false;
       this.Days_View=d;
-      this.prepare_Sheet();
-      this.load_rosters();
+    //   this.prepare_Sheet();
+    //   this.load_rosters();
   }  
   
   setIcon(r:number, c:number, type:number,RecordNo:number,Servicetype:any) {
@@ -1406,7 +1462,7 @@ ClearMultishift(){
          // if (this.master)
            // sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-22')));
       
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-21')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType2(document.getElementById('icon-21')));
             
     }
        
@@ -1505,11 +1561,11 @@ ClearMultishift(){
     h=Number(starttime.substr(0,2));
     m=Number(starttime.substr(3,2));
     if (this.time_slot==288)
-        r=h*12+m/5;
+        r=h*12+Math.floor(m/5);
     else if (this.time_slot==144)
-        r=h*12+m/10;
+        r=h*6+Math.floor(m/10);
     else if (this.time_slot==96)
-        r=h*12+m/15;
+        r=h*4+Math.floor(m/15);
 
     
   
@@ -1540,7 +1596,7 @@ ClearMultishift(){
 
       for (let m=0; m<new_duration; m++){
       if (m==0) {
-        sheet.getCell(r+m,c).backColor("#D5D6DE");
+        sheet.getCell(r,c).backColor("#D5D6DE");
         //sheet.getCell(r,c).backColor("#4ea0cf");
        // sheet.getCell(r,c).backgroundImage(rowImage)
         this.setIcon(r,c,type,RecordNo, service);
@@ -1548,7 +1604,7 @@ ClearMultishift(){
        else{
             
             sheet.getCell(r+m,c).backColor("#D5D6DE");
-            
+           // this.setIcon(r,c,21,RecordNo, service);
         }
         //sheet.getCell(r+m,c).field=duration;
         sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
@@ -1991,9 +2047,9 @@ ngAfterViewInit(){
     {
         
             //value = new GC.Spread.Sheets.Workbook(host);
-         var spread = new GC.Spread.Sheets.Workbook($("#ss")[0],{sheetCount:1, font:"12pt Arial"});
+        // var spread = new GC.Spread.Sheets.Workbook($("#ss")[0],{sheetCount:1, font:"12pt Arial"});
         
-         this.workbookInit(spread);
+        // this.workbookInit(spread);
     }
 }
 

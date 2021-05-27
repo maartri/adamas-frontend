@@ -249,7 +249,9 @@ export interface AddBooking {
     Notes?: string,
     PermanentBookings?: PermanentBookings[],
     RealDateBookings?:PermanentBookings[],
-    Summary?: string
+    Summary?: string,
+    RecipientPersonId?: string,
+    ManagerPersonId?: string
 }
 
 export interface PermanentBookings{

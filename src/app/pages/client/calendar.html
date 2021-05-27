@@ -41,7 +41,7 @@
 
         <div nz-row>
             <div nz-col nzSpan="22">
-                <nz-switch nzSize="small" [ngModel]="toggleAdminFees" (ngModelChange)="toggle($event)"></nz-switch>
+                <nz-switch class="master-class" nzSize="small" [ngModel]="toggleAdminFees" (ngModelChange)="toggle($event)"></nz-switch>
                 <label for="" style="margin-left:10px">Admin Fees</label>
             </div>
             <div class="clearfix" *ngIf="view === CalendarView.Day">

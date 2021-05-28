@@ -54,6 +54,7 @@ function IconCellType(img) {
     this.typeName = "IconCellType";
     this.img = img;
 }
+
 IconCellType.prototype = new GC.Spread.Sheets.CellTypes.Base();
 // EllipsisTextCellType.prototype
 IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
@@ -80,7 +81,9 @@ IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context)
 
 @Component({
     styles: [`
-       
+      
+        nz-switch.master-class >>> button.ant-switch-checked{ background-color:red; }; 
+        
     `],
     templateUrl: './rosters.html'
 })
@@ -94,7 +97,8 @@ export class RostersAdmin implements AfterViewInit  {
       overflow: 'auto',
       float: 'left'
     };  
-  
+   
+    
 
 timesheets: Array<any> = [];
 timesheetsGroup: Array<any> = [];   
@@ -103,6 +107,7 @@ defaultActivity: any = null;
 defaultCategory: any = null;
 Timesheet_label:any="Add Timesheet";
 payTotal:any;
+masterCycle:string="CYCLE 1";
  Days_View:number=31;
     data:any=[];  
     ActiveCellText:any;
@@ -114,7 +119,8 @@ payTotal:any;
   prev_cell:any = {row:0,col:0,duration:0, type:0, recordNo:0, service:""} 
   cell_value:any = {row:0,col:0,duration:0, type:0,recordNo:0, service:""} 
   copy_value:any = {row:0,col:0,duration:0, type:0,recordNo:0, service:""} 
-
+  show_More:boolean=false;
+  show_views:boolean=false;
   notes:string="";
   bodyText:string;
   recipientDetailsModal:boolean=false;
@@ -124,6 +130,11 @@ payTotal:any;
   eventLog: string;
   token:any;
   addBookingModel:boolean=false;
+  type_to_add:number;
+  select_StaffModal:boolean;
+  select_RecipientModal:boolean;
+  
+  time_slot:number=288;
 
     isVisible: boolean = false;
     hahays = new Subject<any>();
@@ -232,9 +243,11 @@ normalRoutePass(): void{
 }
 
 doneBooking(){
+
     this.addBookingModel=false;
     this.add_UnAllocated=false;
-   
+    this.serviceType=this.type_to_add;
+
     //this.fixStartTimeDefault();
         let date=this.date;
         let time = {startTime:this.defaultStartTime, endTime:this.defaultEndTime, duration:0};
@@ -291,7 +304,7 @@ doneBooking(){
             taxPercent: tsheet.bill.tax || 0,
             transferred: 0,
             // type: this.activity_value,
-            type: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
+            type: this.DETERMINE_SERVICE_TYPE_NUMBER(this.serviceType),
             unitBillRate:( tsheet.bill.rate || 0),
             unitPayRate: tsheet.pay.rate || 0,
             yearNo: parseInt(format(tsheet.date, 'yyyy')),
@@ -313,7 +326,22 @@ doneBooking(){
 
     
 }
-addBooking(){
+
+start_adding_Booking(type:any){
+    if (this.viewType=="Staff")
+        this.select_RecipientModal=true;
+    else
+        this.select_StaffModal=true;
+    
+}
+
+addBooking(type:any){
+    
+    
+    this.select_StaffModal=false;
+    this.select_RecipientModal=false;
+    
+    this.type_to_add=type;
     this.addBookingModel=true;
     this.add_UnAllocated=true;    
     this.Timesheet_label = "Add Timesheet " 
@@ -348,6 +376,10 @@ addBooking(){
         this.serviceActivityList = d.map(x => x.serviceType);
 
     });
+    if (this.programActivityList==null || this.programActivityList.length==0){
+        this.addBookingModel=false;
+        this.globalS.sToast('Booking', 'No Program setting found to proceed');
+    }
 
 //     let sql ="SELECT DISTINCT [Program] AS ProgName FROM RecipientPrograms INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID INNER JOIN HumanResourceTypes pr ON RecipientPrograms.Program = pr.name WHERE Recipients.AccountNo = '" + this.recipient.data +"' AND  (ISNULL(pr.CloseDate, '2000/01/01') < '2021/05/05') AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]"
 //     this.listS.getlist (sql).subscribe(data=>{
@@ -395,7 +427,17 @@ UnAllocate(){
 
 
 }
+showViews(){
+    this.show_views=true;
+}
+show_MoreOptions(){
+    this.show_More=true;
+}
 
+
+hide_MoreOptions(){
+    this.show_More=false;
+}
 SaveMasterRosters(){
 
     if (this.rosters==null) return;
@@ -429,16 +471,22 @@ ClearMultishift(){
     
     this.spreadsheet.suspendPaint();
     let sheet = this.spreadsheet.getActiveSheet()
+    var cell:any;
     
-    var cell= sheet.getRange(0, 0, 288, 30, GC.Spread.Sheets.SheetArea.viewport)
-    cell.text("").cellType(new IconCellType(document.getElementById('icon-21')));
+     cell= sheet.getRange(0, 0, this.time_slot, 30, GC.Spread.Sheets.SheetArea.viewport)
+    
+      
     cell.setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
-    if (this.master)
-        cell.backColor("#FF8080");
-    else
+    if (this.master){
+        //cell.backColor("#FF8080");
         cell.backColor("white");
-    
+        cell.text("").cellType(new IconCellType(document.getElementById('icon-21')));
+    }else{
+        cell.backColor("white");
+        cell.text("").cellType(new IconCellType(document.getElementById('icon-21')));
+    }
     cell.text("")
+    
     
     
           
@@ -476,16 +524,23 @@ ClearMultishift(){
   
   setMasterRoster($event:any){
       console.log("Master Roster")
-      this.master=!this.master;
-      if (this.master)
-        this.date="1900/01/01"
-    else{
+      
+      
+      //this.master=!this.master;
+      this.master=$event;
+      if (this.master){
+        this.date="1900/01/01";
+        
+      }else{
         
         this.date = moment()
        
     }
+  
     this.searchRoster(this.date);
      
+    var divMaster = document.getElementById("divMaster");    
+   // divMaster.style.backgroundColor= this.bgcolor;
     
   }
   spreadsheet:any;
@@ -498,7 +553,7 @@ ClearMultishift(){
       let sheet = spread.getActiveSheet();  
       //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
   
-      sheet.setRowCount(288, GC.Spread.Sheets.SheetArea.viewport);
+      sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
 
           spread.suspendPaint();
@@ -520,7 +575,9 @@ ClearMultishift(){
                   console.log(menuData);
                   
                   //Clear Previous selection
-                  
+                  if (self.prev_cell.duration==null || self.prev_cell.duration==0)
+                  self.prev_cell.duration=1;
+
                   self.ActiveCellText="";
                   sheet.getRange(self.prev_cell.row, self.prev_cell.col, self.prev_cell.duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
   
@@ -538,14 +595,27 @@ ClearMultishift(){
                   if (service!=null)
                     self.ActiveCellText=self.cell_value.recordNo + " - " + service 
                   } 
-                  // duration=10;
+                
+
+                  var new_duration:number;
+                  if (self.time_slot==288)
+                    new_duration=Number(duration);
+                  else if (self.time_slot==144)
+                    new_duration= Math.ceil(Number(duration)/2); 
+                  else if (self.time_slot==96)
+                    new_duration= Math.ceil(Number(duration)/3); 
+            
+                if (new_duration<=0)
+                    new_duration=1;
+
+                      // duration=10;
                   // Allow selection of multiple ranges
                   sheet.selectionPolicy(GC.Spread.Sheets.SelectionPolicy.multiRange);
                  
                   // Create two different selection ranges.
-                  sheet.addSelection(row, col, duration, 1);
-                  
-                  let len =row+Number(duration);
+                  sheet.addSelection(row, col, new_duration, 1);
+
+                  let len =row+new_duration;
                    // Set border lines to cell(1,1).
                    for (let i=row; i<len; i++){
                   var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
@@ -571,7 +641,7 @@ ClearMultishift(){
 
             self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
            
-            let data:any = self.find_roster(self.cell_value.RecordNo);
+            let data:any = self.find_roster(self.cell_value.recordNo);
            
             if (data!=null)
                 self.details(data);
@@ -1156,6 +1226,12 @@ ClearMultishift(){
    let sheet:any=this.spreadsheet.getActiveSheet(); 
    this.spreadsheet.suspendPaint();
    
+     // Set the default styles.
+     var defaultStyle = new GC.Spread.Sheets.Style();
+     defaultStyle.font = "Segoe UI";
+     defaultStyle.themeFont = "Segoe UI";
+     sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+
     let date:Date = new Date(this.date);
     let m = date.getMonth()+1;
     let y=date.getFullYear();
@@ -1177,7 +1253,9 @@ ClearMultishift(){
       
       
       var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-      row_header.backColor("#476794");
+      row_header.backColor("#002060");
+      row_header.foreColor("#ffffff");
+      
       if (this.Days_View>=30)
         sheet.setColumnWidth(i, 40.0,GC.Spread.Sheets.SheetArea.viewport);
       else if (this.Days_View>=14)
@@ -1186,10 +1264,20 @@ ClearMultishift(){
         sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
       
         //weekend
-      
+       // sheet.autoFitColumn(i)
+       // sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
+
+        //sheet.setRowResizable(3,false,GC.Spread.Sheets.SheetArea.viewport);
+        //sheet.setColumnResizable(3,false,GC.Spread.Sheets.SheetArea.viewport);
+        //sheet.getRange(1, -1, 1, -1, GC.Spread.Sheets.SheetArea.viewport).resizable(false);
+        //sheet.getRange(-1, 1, -1, 1, GC.Spread.Sheets.SheetArea.viewport).resizable(false);
+        
+                        
+
       if ((this.DayOfWeek( date.getDay())=="Sa") || (this.DayOfWeek( date.getDay())=="Su")){
-          sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#d1e6e6");
+          sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
+          
       //row_header.backColor("#D1A6BC");
      
       }
@@ -1210,22 +1298,30 @@ ClearMultishift(){
         
     
 
-    for (let j=0; j<288; j++)   {      
+    for (let j=0; j<this.time_slot; j++)   {      
    
      
        if (time.minutes==0){
-        sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
-       }else
-        sheet.setValue(j, 0,  "   : "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
-         
+            sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
+       }else if (time.minutes%15==0)
+            sheet.setValue(j, 0,  "     "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
+        else
+         sheet.setValue(j, 0,  ""  , GC.Spread.Sheets.SheetArea.rowHeader);
+
         sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
-        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#083a80");
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#002060");
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#ffffff");
         sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
+        sheet.autoFitRow(j)
+        if (this.time_slot==288)
+            time.minutes+=5;
+        else if (this.time_slot==144)
+            time.minutes+=10;
+        else if (this.time_slot==96)
+            time.minutes+=15;
 
-        time.minutes+=5;
         if (time.minutes==60){
           time.minutes=0;
           time.hours+=1;
@@ -1242,6 +1338,7 @@ ClearMultishift(){
 
   set_day_view(d:number)
   {
+    this.show_views=false;
       this.Days_View=d;
       this.prepare_Sheet();
       this.load_rosters();
@@ -1305,6 +1402,9 @@ ClearMultishift(){
                 sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-15')));
                 break; 
         default:
+         // if (this.master)
+           // sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-22')));
+      
             sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-21')));
             
     }
@@ -1403,7 +1503,14 @@ ClearMultishift(){
    let h,m,r;
     h=Number(starttime.substr(0,2));
     m=Number(starttime.substr(3,2));
-    r=h*12+m/5;
+    if (this.time_slot==288)
+        r=h*12+m/5;
+    else if (this.time_slot==144)
+        r=h*12+m/10;
+    else if (this.time_slot==96)
+        r=h*12+m/15;
+
+    
   
     return r;
   
@@ -1418,22 +1525,38 @@ ClearMultishift(){
       var cell= sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport);
       cell.setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
     
-  
-      
-      for (let m=0; m<duration; m++){
+    var new_duration:number=0;
+
+    if (this.time_slot==288)
+        new_duration=duration;
+     else if (this.time_slot==144)
+         new_duration= Math.ceil(duration/2); 
+    else if (this.time_slot==96)
+        new_duration= Math.ceil(duration/3); 
+
+    if (new_duration<=1)
+        new_duration=3;
+
+      for (let m=0; m<new_duration; m++){
       if (m==0) {
-        sheet.getCell(r,c).backColor("#4ea0cf");
+        sheet.getCell(r+m,c).backColor("#D5D6DE");
+        //sheet.getCell(r,c).backColor("#4ea0cf");
        // sheet.getCell(r,c).backgroundImage(rowImage)
         this.setIcon(r,c,type,RecordNo, service);
        }  
        else{
-           // this.setIcon(r,c,21,0, "");
-            sheet.getCell(r+m,c).backColor("#d7dbd9");
+            
+            sheet.getCell(r+m,c).backColor("#D5D6DE");
+            
         }
         //sheet.getCell(r+m,c).field=duration;
         sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(this.cell_value)
        }
+       
+       //sheet.addSpan(r, c+1, duration, 1, GC.Spread.Sheets.SheetArea.viewport);
+
+       //sheet.autoMerge(cell, GC.Spread.Sheets.AutoMerge.AutoMergeDirection.column, GC.Spread.Sheets.AutoMerge.AutoMergeMode.restricted);
 
        
     }
@@ -1443,11 +1566,23 @@ ClearMultishift(){
       
       //sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C6EFEC", GC.Spread.Sheets.LineStyle.thin), {all:true});
       this.cell_value ={row:-1,col:-1,duration:0};
+      var new_duration:number=0;
+
+      if (this.time_slot==288)
+          new_duration=duration;
+       else if (this.time_slot==144)
+           new_duration= Math.ceil(duration/2); 
+      else if (this.time_slot==96)
+          new_duration= Math.ceil(duration/3); 
   
-      for (let m=0; m<duration; m++){
+      if (new_duration<=0)
+          new_duration=1;
+
+      for (let m=0; m<new_duration; m++){
       if (m==0) {
         if (this.master)           
-            sheet.getCell(r+m,c).backColor("#FF8080");
+           // sheet.getCell(r+m,c).backColor("#FF8080");
+           sheet.getCell(r+m,c).backColor("white");
         else
             sheet.getCell(r+m,c).backColor("white");
         
@@ -1456,8 +1591,9 @@ ClearMultishift(){
        }  
        else {
             if (this.master)           
-            sheet.getCell(r+m,c).backColor("#FF8080");
-                else
+                //sheet.getCell(r+m,c).backColor("#FF8080");
+                sheet.getCell(r+m,c).backColor("white");
+            else
             sheet.getCell(r+m,c).backColor("white");
        }
         //sheet.getCell(r+m,c).field=duration;

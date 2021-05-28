@@ -333,7 +333,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     this.emailManagerOpen = true;
     this.caseManagerDetails = this.casemanagers.find(x => { return x.description == this.user.recipient_Coordinator });
-    
+    console.log(this.caseManagerDetails)
     this.emailManagerNoEmailShowNotif = this.globalS.isEmpty(this.caseManagerDetails) ? false : true; 
   }
 

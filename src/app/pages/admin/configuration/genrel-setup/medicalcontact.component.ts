@@ -283,7 +283,7 @@ export class MedicalcontactComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 from HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 from HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
       
       const headerDict = {
         'Content-Type': 'application/json',

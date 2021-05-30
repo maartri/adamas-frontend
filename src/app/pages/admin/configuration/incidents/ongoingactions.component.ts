@@ -236,7 +236,7 @@ export class OngoingactionsComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='IMActionOn'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='IMActionOn'";
           
           const headerDict = {
             'Content-Type': 'application/json',

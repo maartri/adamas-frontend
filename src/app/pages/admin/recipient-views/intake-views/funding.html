@@ -75,8 +75,8 @@
                             <label nzFor="Priority"> Priority : </label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <nz-select style="width:100%" nzAllowClear  nzPlaceHolder="">
-                                
+                            <nz-select style="width:100%" nzAllowClear  nzPlaceHolder="" formControlNmae="priority">
+                                <nz-option *ngFor="let prior of fundingprioritylist" [nzLabel]="prior" [nzValue]="prior"></nz-option>                                
                             </nz-select>
                         </div>
                     </div>

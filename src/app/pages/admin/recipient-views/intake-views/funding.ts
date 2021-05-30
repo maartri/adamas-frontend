@@ -46,6 +46,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
     packageTerm: string[];
     status: string[];
     type: string[];
+    fundingprioritylist: any;
     
     constructor(
         private timeS: TimeSheetService,
@@ -104,6 +105,8 @@ export class IntakeFunding implements OnInit, OnDestroy {
         }
         dropDowns(){
             this.timeS.getprogrampackages(this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => this.programsNames = data)
+            this.listS.getfundingprioritylist().pipe(takeUntil(this.unsubscribe)).subscribe(data => this.fundingprioritylist = data)
+            
             console.log(this.programsNames);
             this.period = ['ANNUAL','MONTH','QUARTER'];
             this.levels = ['Level 1','Level 2','Level 3','Level 4','STRC'];
@@ -124,6 +127,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 type:'',
                 status:'',
                 expireUsing:'',
+                priority:'',
                 notes:'',
                 expire_amount:'',
                 expire_costType:'',

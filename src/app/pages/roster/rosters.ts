@@ -190,13 +190,13 @@ masterCycle:string="CYCLE 1";
 
     let day:String="";
     switch(n){
-    case 1 : day="Mo"; break;
-    case 2 : day="Tu" ; break;
-    case 3 : day="We" ; break;
-    case 4 : day="Th" ; break;
-    case 5 : day="Fr" ; break;
-    case 6 : day="Sa" ; break;
-    case 0 : day="Su" ; break;
+    case 1 : day="Mon"; break;
+    case 2 : day="Tue" ; break;
+    case 3 : day="Wed" ; break;
+    case 4 : day="Thu" ; break;
+    case 5 : day="Fri" ; break;
+    case 6 : day="Sat" ; break;
+    case 0 : day="Sun" ; break;
     }
     return day;
   
@@ -1228,10 +1228,15 @@ ClearMultishift(){
    
      // Set the default styles.
      var defaultStyle = new GC.Spread.Sheets.Style();
-     defaultStyle.font = "Segoe UI";
-     defaultStyle.themeFont = "Segoe UI";
-     sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+     defaultStyle.font = "8pt Arial";
+     
+     
+     //defaultStyle.themeFont = "11pt Segoe UI";
+     sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.colHeader);
+     sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.rowHeader);
+     sheet.getRange(2, -1, 1, -1, GC.Spread.Sheets.SheetArea.rowHeader).hAlign(GC.Spread.Sheets.HorizontalAlign.right);
 
+     //sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
     let date:Date = new Date(this.date);
     let m = date.getMonth()+1;
     let y=date.getFullYear();
@@ -1257,9 +1262,9 @@ ClearMultishift(){
       row_header.foreColor("#ffffff");
       
       if (this.Days_View>=30)
-        sheet.setColumnWidth(i, 40.0,GC.Spread.Sheets.SheetArea.viewport);
+        sheet.setColumnWidth(i, 52.0,GC.Spread.Sheets.SheetArea.viewport);
       else if (this.Days_View>=14)
-        sheet.setColumnWidth(i, 70.0,GC.Spread.Sheets.SheetArea.viewport);
+        sheet.setColumnWidth(i, 110.0,GC.Spread.Sheets.SheetArea.viewport);
       else 
         sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
       
@@ -1274,7 +1279,7 @@ ClearMultishift(){
         
                         
 
-      if ((this.DayOfWeek( date.getDay())=="Sa") || (this.DayOfWeek( date.getDay())=="Su")){
+      if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")){
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
           
@@ -1539,14 +1544,15 @@ ClearMultishift(){
 
       for (let m=0; m<new_duration; m++){
       if (m==0) {
-        sheet.getCell(r+m,c).backColor("#D5D6DE");
+        sheet.getCell(r+m,c).backColor("#F3F4FB");
+        //sheet.getCell(r+m,c).backColor("#D5D6DE");
         //sheet.getCell(r,c).backColor("#4ea0cf");
        // sheet.getCell(r,c).backgroundImage(rowImage)
         this.setIcon(r,c,type,RecordNo, service);
        }  
        else{
             
-            sheet.getCell(r+m,c).backColor("#D5D6DE");
+            sheet.getCell(r+m,c).backColor("#F3F4FB");
             
         }
         //sheet.getCell(r+m,c).field=duration;

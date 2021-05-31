@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { GlobalService, ListService, TimeSheetService, ShareService,expectedOutcome,qoutePlantype, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { dateFormat } from '@services/global.service'
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
@@ -13,7 +13,7 @@ import { billunit, periodQuote, basePeriod } from '@services/global.service';
 
 import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotesClient } from '@client/notes';
 
@@ -409,7 +409,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.quoteListForm.get('chargeType').valueChanges
         .pipe(
-            switchMap(x => {                
+            switchMap(x => {   
+                console.log(x)             
                 this.resetQuotePrimary();
                 if(!x) return EMPTY;
                 return this.listS.getchargetype({
@@ -1080,9 +1081,12 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         }
 
-        this.listS.getpostquote(qteHeader)
-            .subscribe(data => {
+        this.listS.getpostquote(qteHeader).subscribe(data => {
+                console.log(data);
                 this.globalS.sToast('Success','Quote Added');
+            }, (error: any) => {
+                console.log(error)
+                this.globalS.eToast('Error', error.error.message)
             }) 
     }
     

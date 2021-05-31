@@ -1304,8 +1304,10 @@ ClearMultishift(){
       row_header.backColor("#002060");
       row_header.foreColor("#ffffff");
       
-     var new_width = 1000 / this.Days_View;
-     sheet.setColumnWidth(i, new_width,GC.Spread.Sheets.SheetArea.viewport);
+     var new_width = 100 / this.Days_View;
+     //sheet.setColumnWidth(i, new_width,GC.Spread.Sheets.SheetArea.viewport);
+     
+     sheet.setColumnWidth(i, new_width +"*",GC.Spread.Sheets.SheetArea.viewport);
 
     //   if (this.Days_View>=30)
     //     sheet.setColumnWidth(i, 40.0,GC.Spread.Sheets.SheetArea.viewport);

@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 
 import { GlobalService, ListService, TimeSheetService, ShareService,fundingDropDowns, leaveTypes, ClientService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
-import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { forkJoin, Subscription, Observable, Subject,EMPTY } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -47,6 +47,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
     status: string[];
     type: string[];
     fundingprioritylist: any;
+    IS_CDC: boolean;
     
     constructor(
         private timeS: TimeSheetService,
@@ -119,11 +120,13 @@ export class IntakeFunding implements OnInit, OnDestroy {
             this.DefPeriod = fundingDropDowns.period;
             this.expireUsing   = fundingDropDowns.expireUsing;
             this.unitsArray    = fundingDropDowns.perUnit;
+            this.levels        = fundingDropDowns.levels;
             this.dailyArry     = ['DAILY'];
         }
         buildForm() {
             this.packageDetailForm = this.formBuilder.group({
                 programname:'',
+                level:'',
                 type:'',
                 status:'',
                 expireUsing:'',
@@ -163,8 +166,47 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 viabilitySupplement:'',
                 financialSup:''
               });
+
+
+        this.packageDetailForm.get('programname').valueChanges
+        .pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                return this.listS.getprogramlevel(x)
+            }),
+            switchMap(x => {                
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
+                    this.packageDetailForm.get('level').disable()
+                    this.packageDetailForm.controls.level.setValue(x.level);
+                    this.packageDetailForm.get('expire_amount').disable()
+                    this.packageDetailForm.controls.expire_amount.setValue(x.quantity);
+                    
+                    // if(x.quantity && x.timeUnit == 'DAY'){
+                    //     this.quoteForm.patchValue({
+                    //         govtContrib: (x.quantity*365).toFixed(2),
+                    //         programId: x.recordNumber
+                    //     });
+                    // }
+                    this.detectChanges();
+                    return this.listS.getpensionandfee();
+                }else{
+                    this.packageDetailForm.get('expire_amount').enable()
+                    this.packageDetailForm.get('level').enable()
+                }
+                this.detectChanges();
+                return EMPTY;
+            })
+        ).subscribe(data => {
+            console.log(  + data)
+            this.detectChanges();
+        });
         }
-        
+        detectChanges(){
+            this.cd.markForCheck();
+            this.cd.detectChanges();
+        }
         save() {
             
         }

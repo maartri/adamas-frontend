@@ -79,6 +79,34 @@ IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context)
     ctx.restore();
 };
 
+function IconCellType2(img) {
+    this.typeName = "IconCellType";
+    this.img = img;
+}
+
+IconCellType2.prototype = new GC.Spread.Sheets.CellTypes.Base();
+// EllipsisTextCellType.prototype
+IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
+    if (!ctx) {
+        return;
+    }
+    ctx.save();
+
+    // draw inside the cell's boundary
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+
+    // draw text
+    GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x, y, w, h, style, context]);
+    ctx.beginPath();
+    // let img = document.getElementById('icon-lock');
+    ctx.drawImage(this.img, x, y , 20, 20);
+    ctx.fill();
+    ctx.stroke();
+    
+
+    ctx.restore();
+};
 @Component({
     styles: [`
       
@@ -134,6 +162,9 @@ masterCycle:string="CYCLE 1";
   select_StaffModal:boolean;
   select_RecipientModal:boolean;
   
+  include_fee:boolean=false;
+  include_item:boolean=false;
+
   time_slot:number=288;
 
     isVisible: boolean = false;
@@ -170,7 +201,8 @@ masterCycle:string="CYCLE 1";
     val3:boolean=true;
     val4:boolean=false;
     master:boolean=false;
-    
+    tval1:boolean=true;
+    dval1:boolean=true;
     sample: any;
     searchStaffModal:boolean=false;
     ViewStaffDetail:boolean=false;
@@ -389,24 +421,25 @@ addBooking(type:any){
 }
 SaveAdditionalInfo(notes:string){
     this.notes=notes;
-    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
-    this.ProcessRoster("Additional", this.cell_value.RecordNo);
+    if (this.cell_value==null || this.cell_value.recordNo==0) return;
+    this.ProcessRoster("Additional", this.cell_value.recordNo);
    
 }
 deleteRoster(){
-    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
-    this.ProcessRoster("Delete",this.cell_value.RecordNo);
+    if (this.cell_value==null || this.cell_value.recordNo==0) return;
+    this.ProcessRoster("Delete",this.cell_value.recordNo);
 
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
     this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
     this.operation="Delete";                 
     this.spreadsheet.resumePaint();
+    this.deleteRosterModal=false;
 }
 reAllocate(){
-    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+    if (this.cell_value==null || this.cell_value.recordNo==0) return;
 
-    this.ProcessRoster("Re-Allocate", this.cell_value.RecordNo);
+    this.ProcessRoster("Re-Allocate", this.cell_value.recordNo);
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
     this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
@@ -419,7 +452,7 @@ reAllocate(){
 UnAllocate(){
    // if (this.cell_value==null || this.cell_value.RecordNo==0) return;
 
-    this.ProcessRoster("Un-Allocate", this.cell_value.RecordNo);
+    this.ProcessRoster("Un-Allocate", this.cell_value.recordNo);
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
     this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
@@ -428,14 +461,22 @@ UnAllocate(){
 
 }
 showViews(){
-    this.show_views=true;
+    this.show_views=false;
+    this.Already_loaded=false;
+    this.prepare_Sheet();
+    this.load_rosters();
 }
 show_MoreOptions(){
     this.show_More=true;
 }
 
 
-hide_MoreOptions(){
+hide_MoreOptions(i:number){
+    if (i==0)
+        this.include_fee=true;
+    if (i==1)
+        this.include_item=true;
+
     this.show_More=false;
 }
 SaveMasterRosters(){
@@ -452,17 +493,17 @@ SaveMasterRosters(){
         this.ProcessRoster("Client Master", RecordNo);
 }
 SetMultishift(){
-    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+    if (this.cell_value==null || this.cell_value.recordNo==0) return;
 
     
-    this.ProcessRoster("SetMultishift", this.cell_value.RecordNo);
+    this.ProcessRoster("SetMultishift", this.cell_value.recordNo);
     
 
 }
 ClearMultishift(){
-    if (this.cell_value==null || this.cell_value.RecordNo==0) return;
+    if (this.cell_value==null || this.cell_value.recordNo==0) return;
 
-    this.ProcessRoster("ClearMultishift", this.cell_value.RecordNo);
+    this.ProcessRoster("ClearMultishift", this.cell_value.recordNo);
     
 
 }
@@ -480,14 +521,12 @@ ClearMultishift(){
     if (this.master){
         //cell.backColor("#FF8080");
         cell.backColor("white");
-        cell.text("").cellType(new IconCellType(document.getElementById('icon-21')));
+        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
     }else{
         cell.backColor("white");
-        cell.text("").cellType(new IconCellType(document.getElementById('icon-21')));
+        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
     }
     cell.text("")
-    
-    
     
           
     let row=-1, col=-1;
@@ -500,6 +539,9 @@ ClearMultishift(){
             
         if (r.dayNo>this.Days_View) break;
 
+            if (r.recordNo==246364 || r.shiftbookNo==246364){
+                code= r.carerCode 
+            }
             col=r.dayNo-1;
             row = this.getrow(r.start_Time);//self.time_map.get(r.Start_Time); //
             if (this.viewType=="Staff")
@@ -512,7 +554,7 @@ ClearMultishift(){
             if (code=="!INTERNAL")
                     code="ADMIN SHIFT";
                 
-                text= code + " (" + r.serviceType + ")";
+                text=  r.start_Time + "-" + r.end_Time + " " + code + " (" + r.serviceType + ")";
 
             if (row!=null && col !=null)
             this.draw_Cells(sheet,row,col,r.duration, r.type, r.recordNo, text)
@@ -551,8 +593,14 @@ ClearMultishift(){
       this.spreadsheet = GC.Spread.Sheets.Workbook = args.spread;  
       spread= GC.Spread.Sheets.Workbook = args.spread;  
       let sheet = spread.getActiveSheet();  
+
+     
       //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
-  
+      spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
+      spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
+     // spread.options.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
+    //  spread.options.resizeZeroIndicator = GC.Spread.Sheets.SheetArea.Enhanced
+
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
 
@@ -906,7 +954,7 @@ ClearMultishift(){
                         Commands.startTransaction(context, options);
                         var sheet = spread.getActiveSheet();
                         spread.suspendPaint()
-                        sheet.options.isProtected = false;
+                       // sheet.options.isProtected = false;
                         console.log("Paste Operation")
                         var sels = sheet.getSelections();
                         var sel = sels[0];
@@ -936,7 +984,7 @@ ClearMultishift(){
                       //sheet.getCell(row,col).backgroundImage(sheet.getCell(selected_Cell.row, selected_Cell.col).backgroundImage);
   
                         Commands.endTransaction(context, options);
-                        sheet.options.isProtected = true;
+                      //  sheet.options.isProtected = true;
                         spread.resumePaint();
                         return true;
                     }
@@ -1162,7 +1210,7 @@ ClearMultishift(){
             
                         self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
                        
-                        let data:any = self.find_roster(self.cell_value.RecordNo);
+                        let data:any = self.find_roster(self.cell_value.recordNo);
                        
                         if (data!=null)
                             self.details(data);
@@ -1194,7 +1242,7 @@ ClearMultishift(){
             
                         self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
                        
-                        let data:any = self.find_roster(self.cell_value.RecordNo);
+                        let data:any = self.find_roster(self.cell_value.recordNo);
                         self.notes ="";
                         self.notes=data.notes;
                         self.defaultStartTime=data.startTime;
@@ -1209,7 +1257,7 @@ ClearMultishift(){
                     }
                 }
             });
-            sheet.options.isProtected = true;
+           // sheet.options.isProtected = true;
             spread.options.allowContextMenu = true;
                
          
@@ -1225,7 +1273,7 @@ ClearMultishift(){
 
    let sheet:any=this.spreadsheet.getActiveSheet(); 
    this.spreadsheet.suspendPaint();
-   
+  
      // Set the default styles.
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "8pt Arial";
@@ -1249,39 +1297,37 @@ ClearMultishift(){
     this.Days_View==days
    }
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
-  
-  
 
+    
     for (let i=0; i<=this.Days_View ; i++)   {
                 
-      sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
-      
-      
+     // sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
+     
+      var head_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
+      sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
       var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
       row_header.backColor("#002060");
       row_header.foreColor("#ffffff");
       
-      if (this.Days_View>=30)
-        sheet.setColumnWidth(i, 52.0,GC.Spread.Sheets.SheetArea.viewport);
-      else if (this.Days_View>=14)
-        sheet.setColumnWidth(i, 110.0,GC.Spread.Sheets.SheetArea.viewport);
-      else 
-        sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
-      
-        //weekend
-       // sheet.autoFitColumn(i)
-       // sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
+     var new_width = 1000 / this.Days_View;
+     sheet.setColumnWidth(i, new_width,GC.Spread.Sheets.SheetArea.viewport);
 
-        //sheet.setRowResizable(3,false,GC.Spread.Sheets.SheetArea.viewport);
-        //sheet.setColumnResizable(3,false,GC.Spread.Sheets.SheetArea.viewport);
-        //sheet.getRange(1, -1, 1, -1, GC.Spread.Sheets.SheetArea.viewport).resizable(false);
-        //sheet.getRange(-1, 1, -1, 1, GC.Spread.Sheets.SheetArea.viewport).resizable(false);
+    //   if (this.Days_View>=30)
+    //     sheet.setColumnWidth(i, 40.0,GC.Spread.Sheets.SheetArea.viewport);
+    //   else if (this.Days_View>=14)
+    //     sheet.setColumnWidth(i, 70.0,GC.Spread.Sheets.SheetArea.viewport);
+    //   else 
+    //     sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
+      
+        sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
         
-                        
+        //        
+       // sheet.autoFitColumn(i)            
 
       if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")){
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
+          sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'black' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
           
       //row_header.backColor("#D1A6BC");
      
@@ -1305,21 +1351,29 @@ ClearMultishift(){
 
     for (let j=0; j<this.time_slot; j++)   {      
    
-     
+        var row_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
+        
        if (time.minutes==0){
-            sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
+            //sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
+            row_txt = this.numStr(time.hours)  + ":" + this.numStr(time.minutes) 
        }else if (time.minutes%15==0)
-            sheet.setValue(j, 0,  "     "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
+          //  sheet.setValue(j, 0,  "     "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
+          row_txt = "     "+this.numStr(time.minutes)  ;
         else
-         sheet.setValue(j, 0,  ""  , GC.Spread.Sheets.SheetArea.rowHeader);
+            row_txt= "";
+         //sheet.setValue(j, 0,  ""  , GC.Spread.Sheets.SheetArea.rowHeader);
 
+         sheet.setValue(j, 0, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
+       
         sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#002060");
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#ffffff");
         sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
-        sheet.autoFitRow(j)
+        
+        sheet.setRowResizable(j,true, GC.Spread.Sheets.SheetArea.rowHeader);
+
         if (this.time_slot==288)
             time.minutes+=5;
         else if (this.time_slot==144)
@@ -1341,12 +1395,19 @@ ClearMultishift(){
       
   }
 
+  set_Time_Interval(t:number)
+  {
+     // this.show_views=false;
+      this.time_slot=t;
+     
+  }  
+  
   set_day_view(d:number)
   {
-    this.show_views=false;
+    //this.show_views=false;
       this.Days_View=d;
-      this.prepare_Sheet();
-      this.load_rosters();
+    //   this.prepare_Sheet();
+    //   this.load_rosters();
   }  
   
   setIcon(r:number, c:number, type:number,RecordNo:number,Servicetype:any) {
@@ -1406,87 +1467,15 @@ ClearMultishift(){
         case 15:
                 sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-15')));
                 break; 
+        case 20:
+                sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-20')));
+                break; 
         default:
-         // if (this.master)
-           // sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-22')));
-      
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-21')));
+           sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-21')));
             
     }
        
-    this.spreadsheet.resumePaint();
-
-    // var base = GC.Spread.Sheets.ConditionalFormatting.IconSetRule.getIcon;;
-    //     GC.Spread.Sheets.ConditionalFormatting.IconSetRule.getIcon = function (iconSetType, iconIndex) {
-    //                         var icon = base.apply(this, arguments);
-                               
-    //                             if (iconIndex === 0) {
-    //                                 icon = "/assets/images/r1.png";
-    //                             } else if (iconIndex === 1){
-    //                                 icon = "/assets/images/r2.jpg";
-    //                             } else if (iconIndex === 2) {
-    //                                 icon =  "/assets/images/r3.png";
-    //                             }else if (iconIndex === 3) {
-    //                                 icon =  "/assets/images/r4.png";
-    //                             }else if (iconIndex === 4) {
-    //                                 icon =  "/assets/images/r5.png";
-    //                             }else if (iconIndex === 5) {
-    //                                 icon =  "/assets/images/r6.png";
-    //                             }else if (iconIndex === 6) {
-    //                                 icon =  "/assets/images/r7.png";
-    //                             }else if (iconIndex === 7) {
-    //                                 icon =  "/assets/images/r8.png";
-    //                             }else if (iconIndex === 8) {
-    //                                 icon =  "/assets/images/r9.png";
-    //                             }else if (iconIndex === 9) {
-    //                                 icon =  "/assets/images/r10.jpg";
-    //                             }else if (iconIndex === 10) {
-    //                                 icon =  "/assets/images/r11.jpg";
-    //                             }else if (iconIndex === 11) {
-    //                                 icon =  "/assets/images/r12.png";
-    //                             }else if (iconIndex === 12) {
-    //                                 icon =  "/assets/images/r13.png";
-    //                             }else if (iconIndex === 13) {
-    //                                 icon =  "/assets/images/r14.png";
-    //                             }else if (iconIndex === 14) {
-    //                                 icon =  "/assets/images/r15.png";
-    //                             }
-                            
-    //                         return icon;
-    //                     };
-        
-    // var iconSetRule = new GC.Spread.Sheets.ConditionalFormatting.IconSetRule(iconType,range);
-    // var iconCriteria = iconSetRule.iconCriteria();
-    // iconCriteria[0] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 1);
-    // iconCriteria[1] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 2);
-    // iconCriteria[2] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 3);
-    // iconCriteria[3] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 4);
-    // iconCriteria[4] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 5);
-    // iconCriteria[5] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 6);
-    // iconCriteria[6] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 7);
-    // iconCriteria[7] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 8);
-    // iconCriteria[8] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 9);
-    // iconCriteria[9] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 10);
-    // iconCriteria[10] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 11);
-    // iconCriteria[11] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 12);
-    // iconCriteria[12] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 13);
-    // iconCriteria[13] = new GC.Spread.Sheets.ConditionalFormatting.IconCriterion(true, GC.Spread.Sheets.ConditionalFormatting.IconValueType.number, 14);
-    
-   // sheet.getCell(r,c).text(Servicetype + "-" +RecordNo + "").cellType(new IconCellType(iconType));
-   
-
-//console.log("icon " +  " = " + base )
-//console.log("iconSetRule " + r + " = " + type + "\n" + iconType )
-// iconSetRule.reverseIconOrder(false);
-// iconSetRule.showIconOnly(false);
-// sheet.conditionalFormats.addRule(iconSetRule);
-
-
-//sheet.getCell(0, 0).text("This is Circle text.").cellType(new IconCellType(document.getElementById('icon-lock')));
-
-//sheet.getCell(2, 0).text("Orange").cellType(new IconCellType(document.getElementById('icon-lock')));
-
-
+    this.spreadsheet.resumePaint();   
        
   }
 
@@ -1509,11 +1498,11 @@ ClearMultishift(){
     h=Number(starttime.substr(0,2));
     m=Number(starttime.substr(3,2));
     if (this.time_slot==288)
-        r=h*12+m/5;
+        r=h*12+Math.floor(m/5);
     else if (this.time_slot==144)
-        r=h*12+m/10;
+        r=h*6+Math.floor(m/10);
     else if (this.time_slot==96)
-        r=h*12+m/15;
+        r=h*4+Math.floor(m/15);
 
     
   
@@ -1526,7 +1515,7 @@ ClearMultishift(){
       this.cell_value ={"row":r,"col":c,"duration":duration, "type":type, "recordNo":RecordNo, "service":service};
       var rowImage = "/assets/images/r1.jpg";
      
-      sheet.options.isProtected = true;
+     // sheet.options.isProtected = true;
       var cell= sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport);
       cell.setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
     
@@ -1544,19 +1533,19 @@ ClearMultishift(){
 
       for (let m=0; m<new_duration; m++){
       if (m==0) {
-        sheet.getCell(r+m,c).backColor("#F3F4FB");
-        //sheet.getCell(r+m,c).backColor("#D5D6DE");
-        //sheet.getCell(r,c).backColor("#4ea0cf");
+        sheet.getCell(r,c).backColor("#D5D6DE");
+      //  sheet.getCell(r,c).backColor("#ffffff");
        // sheet.getCell(r,c).backgroundImage(rowImage)
         this.setIcon(r,c,type,RecordNo, service);
        }  
        else{
             
-            sheet.getCell(r+m,c).backColor("#F3F4FB");
-            
+            sheet.getCell(r+m,c).backColor("#D5D6DE");
+         //  sheet.getCell(r,c).backColor("#ffffff");
+            this.setIcon(r+m,c,20,RecordNo, "");
         }
         //sheet.getCell(r+m,c).field=duration;
-        sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
+       sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(this.cell_value)
        }
        
@@ -1607,7 +1596,7 @@ ClearMultishift(){
         sheet.getRange(r+m, c, 1, 1).tag(null);
         sheet.getRange(r+m, c, 1, 1).text("");
   
-       // sheet.getCell(r+m,c).locked(true);
+       
        //this.addOpenDialog();    
        
       }
@@ -1996,9 +1985,9 @@ ngAfterViewInit(){
     {
         
             //value = new GC.Spread.Sheets.Workbook(host);
-         var spread = new GC.Spread.Sheets.Workbook($("#ss")[0],{sheetCount:1, font:"12pt Arial"});
+        // var spread = new GC.Spread.Sheets.Workbook($("#ss")[0],{sheetCount:1, font:"12pt Arial"});
         
-         this.workbookInit(spread);
+        // this.workbookInit(spread);
     }
 }
 

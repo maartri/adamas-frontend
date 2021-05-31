@@ -18,23 +18,11 @@
             <nz-button-group >
                 <button  nz-button nzType="primary" (click)="prev_date()"><i nz-icon nzType="left"></i></button>
                 <button  nz-button nzType="primary" (click)="next_date()"><i nz-icon nzType="right"></i></button>
-                <button  nz-button nzType="primary" (click)="showViews()" style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
+                <button  nz-button nzType="primary" (click)="show_views=true" style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
                 <!-- <label nz-box style=" padding:2px; height:32px; background-color: #1E91E8; color:white ">Views</label>         -->
                 
-            </nz-button-group>  
-            <nz-radio-group *ngIf="show_views">
-                <label nz-radio  (click)="set_day_view(14)" nzValue="val1">Fortnight</label>                   
-                <label nz-radio  (click)="set_day_view(5)" nzValue="val2">5 Day Week</label>
-                <label nz-radio  (click)="set_day_view(31)" nzValue="val3" >Calendar Month</label>
-                <label nz-radio  (click)="set_day_view(7)" nzValue="val4">7 Day Week</label>
-              
-            </nz-radio-group> 
-               <!-- <nz-select *ngIf="show_More" nzPlaceHolder="Calendar Month" [nzDropdownMatchSelectWidth]="false" style="">
-                    <nz-option (output)="set_day_view(14)" nzValue="Fortnight" nzLabel="Fortnight"></nz-option>
-                    <nz-option (nzChange)="set_day_view(5)" nzValue="5 Day Week" nzLabel="5 Day Week"></nz-option>
-                    <nz-option (nzChange)="set_day_view(31)" nzValue="Calendar Month" nzLabel="Calendar Month"></nz-option>
-                    <nz-option (nzChange)="set_day_view(7)" nzValue="7 Day Week" nzLabel="7 Day Week" ></nz-option>
-                </nz-select> -->
+            </nz-button-group>          
+           
                
                
         </div>
@@ -43,8 +31,8 @@
             <button nz-button nzType="primary" (click)="show_MoreOptions()">More ...</button >
                
                 <nz-checkbox-wrapper *ngIf="show_More">
-                    <label nz-checkbox style="margin-left: 8px;" [ngModel]="show_More" (ngModelChange)="hide_MoreOptions()"  nzValue="show_More">Include Fees</label>
-                    <label nz-checkbox style="margin-left: 8px;" [ngModel]="show_More" (ngModelChange)="hide_MoreOptions()" nzValue="show_More">Include Item</label>             
+                    <label nz-checkbox style="margin-left: 8px;" [ngModel]="include_fee" (ngModelChange)="hide_MoreOptions(0)"  nzValue="c1">Include Fees</label>
+                    <label nz-checkbox style="margin-left: 8px;" [ngModel]="include_item" (ngModelChange)="hide_MoreOptions(1)" nzValue="c2">Include Item</label>             
                   
                 </nz-checkbox-wrapper>     
                 
@@ -114,8 +102,42 @@
         
 </div>
 
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="show_views" nzTitle="Select View Options" (nzOnCancel)="show_views = false" >
 
 
+    <div class="flexy" style="min-height:2rem">
+        <div nz-row>
+            <div nz-col nzSpan="10" style=" padding:3px">
+                <nz-label style=" font:bold 14px Segoe UI ; padding-bottom: 5px; background-color: white; width:400px; border-radius: 3px; margin-top: 3px; height: 32px; text-align: center; color: gray; padding-top: 4px; vertical-align: middle">Day View Options</nz-label>
+                <nz-radio-group style=" padding:5px;">
+                    <label style=" padding:3px;" nz-radio  (click)="set_day_view(31)" nzValue="dval1" >Calendar Month</label>
+                    <label style=" padding:3px;" nz-radio  (click)="set_day_view(14)" nzValue="dval2">Fortnight</label>    
+                    <label style=" padding:3px;" nz-radio  (click)="set_day_view(7)" nzValue="dval3">7 Days Week</label>               
+                    <label style=" padding:3px;" nz-radio  (click)="set_day_view(5)" nzValue="dval4">5 Days Week</label>
+                    <label style=" padding:3px;" nz-radio  (click)="set_day_view(1)" nzValue="dval5">1 Day Week</label>
+                    
+                          
+                </nz-radio-group> 
+            </div>
+            <div nz-col nzSpan="10" style=" padding:3px; margin-left: 5px;">
+                
+                <nz-label style="font:bold 14px Segoe UI ;padding-bottom: 5px; background-color: white; width:400px; border-radius: 3px; margin-top: 3px; height: 32px; text-align: center; color: gray; padding-top: 4px; vertical-align: middle">Time Slot View Options</nz-label>
+                <nz-radio-group style=" padding:5px;">
+                    <label style=" padding:3px;" nz-radio  (click)="set_Time_Interval(288)" nzValue="tval1">5 Min Interval</label>                   
+                    <label style=" padding:3px;" nz-radio  (click)="set_Time_Interval(144)" nzValue="tval2">10 Min Interval</label>
+                    <label style=" padding:3px;" nz-radio  (click)="set_Time_Interval(96)" nzValue="tval3" >15 Min Interval</label>     
+                    <label   nzValue="tval4" ></label>                           
+                </nz-radio-group> 
+            </div>
+    </div>
+</div>
+
+
+<div *nzModalFooter>
+    <button nz-button nzType="default"  (click)="showViews()">Done</button>
+    <button nz-button nzType="default"  (click)="show_views=false">Cancel</button>
+</div>
+</nz-modal>
 
 <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="deleteRosterModal" nzTitle="Delete Roster" (nzOnCancel)="deleteRosterModal = false" >
     <div class="flexy" style="min-height:3rem">
@@ -582,23 +604,23 @@
 </nz-modal>
 
 <div>
-    <img id="icon-1" style="display:none"  src="/assets/images/r1.png"/>
-    <img id="icon-2" style="display:none"  src="/assets/images/r2.png"/>
-    <img id="icon-3" style="display:none"  src="/assets/images/r3.png"/>
-    <img id="icon-4" style="display:none"  src="/assets/images/r4.png"/>
-    <img id="icon-5" style="display:none"  src="/assets/images/r5.png"/>
-    <img id="icon-6" style="display:none"  src="/assets/images/r6.png"/>
+    <img id="icon-1" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r1.png"/>
+    <img id="icon-2" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r2.png"/>
+    <img id="icon-3" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r3.png"/>
+    <img id="icon-4" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r4.png"/>
+    <img id="icon-5" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r5.png"/>
+    <img id="icon-6" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r6.png"/>
 
-    <img id="icon-7" style="display:none"  src="/assets/images/r7.png"/>
-    <img id="icon-8" style="display:none"  src="/assets/images/r8.png"/>
-    <img id="icon-9" style="display:none"  src="/assets/images/r9.png"/>
-    <img id="icon-10" style="display:none"  src="/assets/images/r10.png"/>
-    <img id="icon-11" style="display:none"  src="/assets/images/r11.png"/>
-    <img id="icon-12" style="display:none"  src="/assets/images/r12.png"/>
-    <img id="icon-13" style="display:none"  src="/assets/images/r13.png"/>
-    <img id="icon-14" style="display:none"  src="/assets/images/r14.png"/>
-    <img id="icon-15" style="display:none"  src="/assets/images/r15.png"/>
-    <img id="icon-20" style="display:none"  src="/assets/images/r20.png"/>
-    <img id="icon-21" style="display:none"  src="/assets/images/r21.jpg"/>
-    <img id="icon-22" style="display:none"  src="/assets/images/r22.jpg"/>
+    <img id="icon-7" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r7.png"/>
+    <img id="icon-8" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r8.png"/>
+    <img id="icon-9" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r9.png"/>
+    <img id="icon-10" style="display:none; background-color: #D5D6DE;" src="/assets/images/r10.png"/>
+    <img id="icon-11" style="display:none;background-color: #D5D6DE;"  src="/assets/images/r11.png"/>
+    <img id="icon-12" style="display:none; background-color: #D5D6DE;" src="/assets/images/r12.png"/>
+    <img id="icon-13" style="display:none; background-color: #D5D6DE;" src="/assets/images/r13.png"/>
+    <img id="icon-14" style="display:none; background-color: #D5D6DE;" src="/assets/images/r14.png"/>
+    <img id="icon-15" style="display:none; background-color: #D5D6DE;" src="/assets/images/r15.png"/>
+    <img id="icon-20" style="display:none; background-color: #D5D6DE;" src="/assets/images/r20.png"/>
+    <img id="icon-21" style="display:none; background-color: #D5D6DE;" src="/assets/images/r21.jpg"/>
+    <img id="icon-22" style="display:none; background-color: #D5D6DE;" src="/assets/images/r22.jpg"/>
 </div>

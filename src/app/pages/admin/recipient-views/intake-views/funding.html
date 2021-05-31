@@ -39,9 +39,14 @@
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label nzFor="Title/ID">Name : </label>
                         </div>
-                        <div nz-col nzSpan="16">
-                            <nz-select style="width:100%" nzAllowClear  nzPlaceHolder="" formControlName="programname">
+                        <div nz-col nzSpan="16" class="pad-r-5">
+                            <nz-select style="width:100%" nzAllowClear nzShowSearch formControlName="programname">
                                 <nz-option *ngFor="let prog of programsNames" [nzLabel]="prog" [nzValue]="prog"></nz-option>
+                            </nz-select>
+                        </div>
+                        <div nz-col nzSpan="4" *ngIf="IS_CDC">
+                            <nz-select style="width:100%" nzAllowClear nzShowSearch formControlName="level">
+                                <nz-option *ngFor="let level of levels" [nzLabel]="level" [nzValue]="level"></nz-option>
                             </nz-select>
                         </div>
                     </div>

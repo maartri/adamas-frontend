@@ -88,7 +88,7 @@ export class HolidaysComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="Select ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS row_num,RECORDNO,DATE,DESCRIPTION,Stats,PublicHolidayRegion,xDeletedRecord as is_deleted from PUBLIC_HOLIDAYS "+this.whereString+" order by DATE desc";
+      let sql ="Select ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS row_num,RECORDNO,DATE,DESCRIPTION,Stats,PublicHolidayRegion,xDeletedRecord as is_deleted from PUBLIC_HOLIDAYS "+this.whereString+" Order By DESCRIPTION";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -245,7 +245,7 @@ export class HolidaysComponent implements OnInit {
       
       this.loading = true;
       // xDeletedRecord
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,CONVERT(varchar, [DATE],105) as Field4 from PUBLIC_HOLIDAYS  order by DATE desc";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,CONVERT(varchar, [DATE],105) as Field4 from PUBLIC_HOLIDAYS  Order By DESCRIPTION";
       
       const headerDict = {
         'Content-Type': 'application/json',

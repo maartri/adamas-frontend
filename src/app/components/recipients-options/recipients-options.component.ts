@@ -50,7 +50,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   @Input() open: any;
   @Input() option: RECIPIENT_OPTION;
   @Input() user: any;
-  
+  @Input() from:any;
+
   dateFormat: string = dateFormat;
   
   referralRadioValue: any;
@@ -385,6 +386,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         admissionDate:new Date(),
         adminsssion:null,
         admisointype:null,
+        timePeriod: [],
         time: new Date(),
         timeSpent: new Date().setHours(0, 15),
       });
@@ -1653,6 +1655,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 
                 handleCancel() {
                   this.open = false;
+                  this.from = 0;
                   this.itemOpen = false;
                   this.adminOpen = false;
                   this.deceaseOpen = false;

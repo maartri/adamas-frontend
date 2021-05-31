@@ -5,6 +5,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { dateFormat } from '@services/global.service'
+
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -14,6 +15,7 @@ import { billunit, periodQuote, basePeriod } from '@services/global.service';
 import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { RECIPIENT_OPTION } from '@modules/modules';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotesClient } from '@client/notes';
 
@@ -131,7 +133,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     clientId: number;
 
     size: string = 'small'
-
+    from: string = 'quote';
     quoteGeneralForm : FormGroup;
     title: string = 'Add New Quote';
     slots: any;
@@ -184,7 +186,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     quoteLineOpen: boolean = false;
     activeOpen: boolean = false;
     inActiveOpen: boolean = false;
-
+    admitOpen: boolean = false;
     newQuoteModal: boolean = false;
 
     goalAndStrategiesmodal : boolean = false;
@@ -234,6 +236,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     supplements: FormGroup;
     isSuplement: boolean = false;
     disabledRadio:boolean = true;
+    recipientOptionOpen: any;
+    recipientOption: string;
+    RECIPIENT_OPTION = RECIPIENT_OPTION;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -290,6 +295,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             shiftChange: false,
             smsMessage: false
         });
+        
 
         this.inActiveForm = this.formBuilder.group({
             timePeriod: []
@@ -678,16 +684,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     showAcceptModal(item: any) {
+        console.log(item.programStatus)
         if(['REFERRAL','INACTIVE'].includes(item.programStatus)){
             console.log('referral')
-            this.inActiveOpen = true;
+            this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
+            this.recipientOptionOpen = {};
+            // this.inActiveOpen = true;
         }
-
         if(['ACTIVE','ONHOLD'].includes(item.programStatus)){
             console.log('active')
             this.activeOpen = true;
         }
-
     }
 
     filterChange(data: any){

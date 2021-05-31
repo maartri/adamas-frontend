@@ -755,7 +755,9 @@ export class TimeSheetService {
     getprogramop(personID: string): Observable<any> {
         return this.auth.get(`${timesheet}/program-opnote/${personID}`)
     }
-
+    getprogrampackages(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/program-packages/${personID}`)
+    }
     getdisciplineop(): Observable<any> {
         return this.auth.get(`${timesheet}/discipline-opnote`)
     }

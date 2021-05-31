@@ -7,16 +7,16 @@
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
             <thead>
                 <tr>
-                    <th class="left">Contact Group</th>
                     <th class="left">Name Title</th>
+                    <th class="left">Contact Group</th>
                     <th class="left">End Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;">
+                    <td class="left">{{ data.title  }} </td>
                 <td class="left">{{ data.staff  }} </td>
-                <td class="left">{{ data.title  }} </td>
                 <td class="left">{{ data.end_date | date: 'dd/MM/y' }}</td>
                 <td *ngIf="!data.is_deleted">
                     <a (click)="showEditModal(i)">Update</a>

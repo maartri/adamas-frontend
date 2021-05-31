@@ -190,6 +190,7 @@ export class BookingClientManager implements OnInit, OnDestroy {
     selectedInputParams: any;
 
     user: any;
+    userObject: any;
     token: any;
 
     services: Array<any>;
@@ -218,6 +219,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
     dayKeys: Array<string> = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 
     currUser: string;
+    currUserObject: any;
+
     finalBooking: any;
     constructor(
         private clientS: ClientService,
@@ -236,10 +239,13 @@ export class BookingClientManager implements OnInit, OnDestroy {
         this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode();
         this.date = addDays(this.date, this._settings.BOOKINGLEADTIME());
 
+        this.userObject = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
+
         // console.log(this.token)
         // console.log(this.globalS.decode())
 
         this.currUser = this.globalS.decode()['nameid'];
+        this.currUserObject = this.globalS.decode();
 
         this.listS.getrosterpublishedenddate()
             .subscribe(data => {
@@ -434,38 +440,6 @@ export class BookingClientManager implements OnInit, OnDestroy {
         this.bookingModalOpen = true;
     }
 
-    // book() {
-    //     let booking: AddBooking = {
-    //         BookType: this.bookType,
-    //         StaffCode: !(this.aprovider) ? this.selectedStaff.accountNo : "",
-    //         Service: this.selectedService,
-    //         StartDate: moment(this.date).format('YYYY/MM/DD'),
-    //         StartTime: format(this.startTime,'HH:mm'),
-    //         ClientCode: this.user,
-    //         Duration: format(this.endTime, 'HH:mm'),
-    //         Username: this.token['nameid'],
-    //         AnyProvider: this.aprovider,
-    //         BookingType: this.once ? 'Normal' : this.permanent ? this.weekly : '',
-    //         Notes: this.notes
-    //     }
-
-    //     this.loadBooking = true;
-
-    //     this.clientS.addbooking(booking).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-    //         let resultRows = parseInt(data);
-    //         if (resultRows == 1) {
-    //             this.notification.create('success', 'Booking Success', 'A booking record has been successfully inserted');
-    //         } else if (resultRows > 1)
-    //             this.globalS.eToast('Error', 'You already have a booking in that timeslot');
-
-    //         this.resetStepper();
-    //         this.bookingModalOpen = false;
-    //     }, (err) => {
-    //         this.globalS.eToast('Error', 'Booking Unsuccessful')
-    //     });
-
-    // }
-
     createBookingObject(){
         var bookType = this.once ? 'Normal' : this.permanent ? this.weekly : '';
 
@@ -488,7 +462,9 @@ export class BookingClientManager implements OnInit, OnDestroy {
                 moment(this.date).format('MMM DD,YYYY'), 
                 moment(this.publishedEndDate).format('MMM DD,YYYY'), 
                 this.buildPermanentBookings()
-            )
+            ),
+            RecipientPersonId: this.userObject.uniqueID,
+            ManagerPersonId: this.currUserObject.uniqueID
         }
         this.finalBooking = booking;
     }
@@ -503,6 +479,9 @@ export class BookingClientManager implements OnInit, OnDestroy {
         var id = this.globalS.loadingMessage('Processing booking...');
 
         console.log(this.finalBooking);
+        console.log(this.currUser);
+        console.log(this.token);
+        console.log(this.userObject)
 
         // return;
 

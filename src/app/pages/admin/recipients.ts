@@ -138,7 +138,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     recipientOptionOpen: any;
     recipientOption: string;
-
+    from:string = 'admit';
     fileList2: Array<any> = [];
     urlPath: string = `api/v2/file/upload-document-remote`;
     acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";

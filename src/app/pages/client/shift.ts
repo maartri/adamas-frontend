@@ -241,7 +241,8 @@ export class ShiftClient implements OnInit, OnDestroy {
         }
 
         // this.tabStream.next(this.tabActive);
-
+        // console.log(booking)
+        // return;
         this.clientS.postcancelbooking(booking)
             .subscribe(data => {
                 if (data) {

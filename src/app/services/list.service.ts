@@ -80,7 +80,9 @@ export class ListService {
     getprogramlevel(program: string): Observable<any> {
         return this.auth.get(`${list}/program-level/${program}`);
     }
-
+    getlevelRate(level: string): Observable<any> {
+        return this.auth.get(`${list}/level-rate/${level}`);
+    }
     gettypeother(caseName: string): Observable<any> {
         return this.auth.get(`${list}/type-other/${caseName}`);
     }

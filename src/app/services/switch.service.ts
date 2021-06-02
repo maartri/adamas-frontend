@@ -1068,6 +1068,7 @@ export class SwitchService {
                         embedded: 0,
                         user1: '',
                         user2: '',
+                        HACCCODe: inputVariables.type,
                         endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains'
@@ -1767,7 +1768,7 @@ export class SwitchService {
                 case 'Staff Teams':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.item,
+                        description: inputVariables.item.toUpperCase(),
                         user1: inputVariables.rate,
                         endDate: inputVariables.end_date,
                     },
@@ -1778,12 +1779,28 @@ export class SwitchService {
                 case 'Contact Type':
                 this.anyVariable = {
                     variables: {
-                        description: inputVariables.title,
+                        description: inputVariables.title.toUpperCase(),
                         HACCCODe: inputVariables.contact_group,
                         endDate: inputVariables.end_date,
                     },
                     table: 'DataDomains',
                     where: `WHERE RecordNumber = ${inputVariables.recordNumber}`
+                }
+                break;
+                case 'Incident Sub Categories':
+                this.anyVariable = {
+                    variables: {
+                        description: (inputVariables.display).toUpperCase(),
+                        domain: 'INCIDENTSUBGROUP',
+                        dataset: 'USER',
+                        embedded: 0,
+                        user1: '',
+                        user2: '',
+                        HACCCODe: inputVariables.type,
+                        endDate: inputVariables.end_date,
+                    },
+                    table: 'DataDomains',
+                    where: `WHERE RecordNumber = ${inputVariables.primaryId}`
                 }
                 break;
             }

@@ -158,6 +158,7 @@ export class IncidentsubcatComponent implements OnInit {
         }, 
         this.inputVariables = {
           display: group.get('name').value,
+          type:group.get('incident_type').value,
           end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
           domain: 'INCIDENTSUBGROUP', 
         }
@@ -189,6 +190,7 @@ export class IncidentsubcatComponent implements OnInit {
           }, 
           this.inputVariables = {
             display: group.get('name').value,
+            type:group.get('incident_type').value,
             end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             primaryId:group.get('recordNumber').value,
             domain: 'INCIDENTSUBGROUP',

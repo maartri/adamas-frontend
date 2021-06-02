@@ -32,7 +32,7 @@ export class TasksComponent implements OnInit {
   dateFormat: string ='dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   temp_title: any;
@@ -113,7 +113,7 @@ export class TasksComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
         this.loadData();
       }
     }
@@ -231,7 +231,7 @@ export class TasksComponent implements OnInit {
           
           this.loading = true;
           
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='Task'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains  "+this.whereString+" Domain='Task'";
           
           const headerDict = {
             'Content-Type': 'application/json',

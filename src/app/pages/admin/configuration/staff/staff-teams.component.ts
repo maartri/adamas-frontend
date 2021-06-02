@@ -157,8 +157,8 @@ export class StaffTeamsComponent implements OnInit {
             title: 'Staff Teams'
           }, 
           this.inputVariables = {
-            item: group.get('item').value,
-            rate: group.get('rate').value,
+            display: group.get('rate').value,
+            rate: group.get('item').value,
             end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             domain: 'STAFFTEAM',
           }
@@ -189,8 +189,8 @@ export class StaffTeamsComponent implements OnInit {
             title: 'Staff Teams'
           }, 
           this.inputVariables = {
-          item: group.get('item').value,
-          rate: group.get('rate').value,
+          rate: group.get('item').value,
+          item: group.get('rate').value,
           end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
           recordNumber:group.get('recordNumber').value,
             domain: 'STAFFTEAM',
@@ -244,7 +244,7 @@ export class StaffTeamsComponent implements OnInit {
       
       this.drawerVisible = true;
       this.loading = true;
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,User1 as Field3,CONVERT(varchar, [enddate],105) as Field4 "+this.whereString+" Domain='STAFFTEAM'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,User1 as Field3,CONVERT(varchar, [enddate],105) as Field4 from DataDomains "+this.whereString+" Domain='STAFFTEAM'";
       
       const headerDict = {
         'Content-Type': 'application/json',

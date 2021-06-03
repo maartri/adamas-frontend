@@ -229,25 +229,25 @@ export class IntakeFunding implements OnInit, OnDestroy {
                         this.detectChanges();
                         return this.listS.getlevelRate(x.level);
                     }
-                    else{
-                        this.packageDetailForm.controls.quantity.setValue(null);
-                        this.packageDetailForm.get('quantity').enable()
-                        this.packageDetailForm.controls.packageType.setValue(null)
-                        this.packageDetailForm.get('packageType').enable()
-                        this.packageDetailForm.controls.expireUsing.setValue(null)
-                        this.packageDetailForm.get('expireUsing').enable()
-                        this.packageDetailForm.controls.packageLevel.setValue(null)
-                        this.packageDetailForm.get('packageLevel').enable()
-                        this.packageDetailForm.controls.itemUnit.setValue(null);
-                        this.packageDetailForm.get('perUnit').enable()
-                        this.packageDetailForm.controls.perUnit.setValue(null);
-                        this.packageDetailForm.get('period').enable()
-                        this.packageDetailForm.controls.period.setValue(null);
-                        this.packageDetailForm.get('expireUsing').enable()
-                        this.packageDetailForm.controls.expireUsing.setValue(null)
-                        this.packageDetailForm.get('itemUnit').enable()
-                        this.packageDetailForm.controls.itemUnit.setValue(null)
-                    }
+                    // else{
+                    //     this.packageDetailForm.controls.quantity.setValue('2');
+                    //     this.packageDetailForm.get('quantity').enable()
+                    //     this.packageDetailForm.controls.packageType.setValue('3')
+                    //     this.packageDetailForm.get('packageType').enable()
+                    //     this.packageDetailForm.controls.expireUsing.setValue('4')
+                    //     this.packageDetailForm.get('expireUsing').enable()
+                    //     this.packageDetailForm.controls.packageLevel.setValue('5')
+                    //     this.packageDetailForm.get('packageLevel').enable()
+                    //     this.packageDetailForm.controls.itemUnit.setValue(null);
+                    //     this.packageDetailForm.get('perUnit').enable()
+                    //     this.packageDetailForm.controls.perUnit.setValue(null);
+                    //     this.packageDetailForm.get('period').enable()
+                    //     this.packageDetailForm.controls.period.setValue(null);
+                    //     this.packageDetailForm.get('expireUsing').enable()
+                    //     this.packageDetailForm.controls.expireUsing.setValue(null)
+                    //     this.packageDetailForm.get('itemUnit').enable()
+                    //     this.packageDetailForm.controls.itemUnit.setValue(null)
+                    // }
                     this.detectChanges();
                     return EMPTY;
                 })
@@ -289,6 +289,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
                     this.cd.markForCheck();
                     this.packageDetailForm.patchValue({
                         program:this.selectedProgram.program,
+                        programStatus:this.selectedProgram.programStatus,
                         packageType:this.selectedProgram.packageType,
                         expireUsing:this.selectedProgram.expireUsing,
                         perUnit:this.selectedProgram.perUnit,
@@ -298,12 +299,10 @@ export class IntakeFunding implements OnInit, OnDestroy {
                         timeUnit:this.selectedProgram.timeUnit,
                         aP_CostType:this.selectedProgram.aP_CostType,
                         aP_Period:this.selectedProgram.aP_Period,
+                        programSummary:this.selectedProgram.programSummary,
                         recordNumber:this.selectedProgram.recordNumber,
                     });
                 });
-                
-                
-                
                 this.modalOpen = true;
             }
             

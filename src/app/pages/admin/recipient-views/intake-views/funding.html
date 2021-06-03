@@ -47,9 +47,14 @@
                             <label nzFor="Title/ID">Name : </label>
                         </div>
                         <div nz-col nzSpan="16" class="pad-r-5">
+                            <div class="form-group" *ngIf="addOREdit == 1">
                             <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear nzShowSearch formControlName="program">
                                 <nz-option *ngFor="let prog of programsNames" [nzLabel]="prog" [nzValue]="prog"></nz-option>
                             </nz-select>
+                            </div>
+                            <div class="form-group" *ngIf="addOREdit == 2">
+                                <input nz-input formControlName="program" disabled />
+                            </div>
                         </div>
                         <div nz-col nzSpan="4" *ngIf="IS_CDC">
                             <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear nzShowSearch formControlName="packageLevel">

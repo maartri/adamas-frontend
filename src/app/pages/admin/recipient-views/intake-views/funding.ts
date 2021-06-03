@@ -126,10 +126,11 @@ export class IntakeFunding implements OnInit, OnDestroy {
         }
         buildForm() {
             this.packageDetailForm = this.formBuilder.group({
-                programname:'',
-                level:'',
+                personID:'',
+                program:'',
+                packageLevel:'',
                 type:'',
-                status:'',
+                programStatus:'',
                 expireUsing:'',
                 priority:'',
                 notes:'',
@@ -141,20 +142,20 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 p_alert_type:'',
                 packg_balance:false,
                 recurant:false,
-                commencing_date:null,
+                commencing_date:'',
                 p_alert_period:'',
-                allowed:'',
-                yellow:'',
-                green:'',
-                red:'',
+                totalAllocation:'',
+                AP_YellowQty:'',
+                AP_OrangeQty:'',
+                AP_RedQty:'',
                 shared:false,
-                startFunding:null,
-                endFunding:null,
-                reminderDate:null,
-                packageTerm:'',
+                startDate:'',
+                expiryDate:'',
+                reminderDate:'',
+                packageTermType:'',
                 autoRenew:false,
-                rolloverFunding:false,
-                deactivateExpiry:false,
+                rolloverRemainder:false,
+                deactivateOnExpiry:false,
                 dailyBasicFee:'',
                 monthlyBasicFee:'',
                 dailyTestedFee:'$0.00',
@@ -179,19 +180,19 @@ export class IntakeFunding implements OnInit, OnDestroy {
             });
             this.packageDetailForm.get('commencing_date').valueChanges.subscribe(data => {
                 if(this.globalS.isEmpty(data)){
-                this.packageDetailForm.get('allowed').disable()
-                this.packageDetailForm.get('red').disable()
-                this.packageDetailForm.get('green').disable()
-                this.packageDetailForm.get('yellow').disable()
+                    this.packageDetailForm.get('totalAllocation').disable()
+                    this.packageDetailForm.get('AP_RedQty').disable()
+                    this.packageDetailForm.get('AP_OrangeQty').disable()
+                    this.packageDetailForm.get('AP_YellowQty').disable()
                 }else{
-                this.packageDetailForm.get('allowed').enable()
-                this.packageDetailForm.get('red').enable()
-                this.packageDetailForm.get('green').enable()
-                this.packageDetailForm.get('yellow').enable()
+                    this.packageDetailForm.get('totalAllocation').enable()
+                    this.packageDetailForm.get('AP_RedQty').enable()
+                    this.packageDetailForm.get('AP_OrangeQty').enable()
+                    this.packageDetailForm.get('AP_YellowQty').enable()
                 }
             });
             
-            this.packageDetailForm.get('programname').valueChanges
+            this.packageDetailForm.get('program').valueChanges
             .pipe(
                 switchMap(x => {
                     if(!x) return EMPTY;
@@ -209,8 +210,8 @@ export class IntakeFunding implements OnInit, OnDestroy {
                         }
                         this.type.push(typeOpt);
                         
-                        this.packageDetailForm.get('level').disable()
-                        this.packageDetailForm.controls.level.setValue(x.level);
+                        this.packageDetailForm.get('packageLevel').disable()
+                        this.packageDetailForm.controls.packageLevel.setValue(x.level);
                         this.packageDetailForm.get('expire_amount').disable()
                         this.packageDetailForm.controls.expire_amount.setValue(x.quantity);
                         this.packageDetailForm.get('type').disable()
@@ -233,8 +234,8 @@ export class IntakeFunding implements OnInit, OnDestroy {
                         this.packageDetailForm.get('type').enable()
                         this.packageDetailForm.controls.expireUsing.setValue(null)
                         this.packageDetailForm.get('expireUsing').enable()
-                        this.packageDetailForm.controls.level.setValue(null)
-                        this.packageDetailForm.get('level').enable()
+                        this.packageDetailForm.controls.packageLevel.setValue(null)
+                        this.packageDetailForm.get('packageLevel').enable()
                         this.packageDetailForm.controls.expire_costType.setValue(null);
                         this.packageDetailForm.get('expire_unit').enable()
                         this.packageDetailForm.controls.expire_unit.setValue(null);
@@ -258,7 +259,25 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 this.cd.detectChanges();
             }
             save() {
-                
+                this.packageDetailForm.controls['personID'].setValue(this.user.id)
+                const packageDetail = this.packageDetailForm.value;
+
+                if(this.addOREdit == 1){
+                    this.timeS.postprogramdetails(packageDetail)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Package Details Added');
+                        this.search();
+                        // this.handleCancel();
+                    });
+                }
+                if(this.addOREdit == 2){
+                    this.timeS.updateprogramdetails(packageDetail)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Package Details Added');
+                        this.search();
+                        // this.handleCancel();
+                    });
+                }
             }
             
             showEditModal(index: number) {

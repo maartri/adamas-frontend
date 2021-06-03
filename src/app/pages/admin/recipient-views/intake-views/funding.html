@@ -11,6 +11,7 @@
                 <th>Status</th>
                 <th>Case Manager</th>
                 <th>Details</th>
+                <th class="action">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -20,7 +21,13 @@
                 <td>{{ data.program }}</td>
                 <td>{{ data.status }}</td>
                 <td>{{ data.cm }}</td>
-                <td>{{ data.details }}</td>                   
+                <td>{{ data.details }}</td>       
+                <td>
+                    <a (click)="showEditModal(data)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Funding?" nzPopconfirmPlacement="bottom"
+                        (nzOnConfirm)="delete(data)">Delete</a>
+                </td>            
             </tr>
         </tbody>
     </nz-table>
@@ -40,12 +47,12 @@
                             <label nzFor="Title/ID">Name : </label>
                         </div>
                         <div nz-col nzSpan="16" class="pad-r-5">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear nzShowSearch formControlName="programname">
+                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear nzShowSearch formControlName="program">
                                 <nz-option *ngFor="let prog of programsNames" [nzLabel]="prog" [nzValue]="prog"></nz-option>
                             </nz-select>
                         </div>
                         <div nz-col nzSpan="4" *ngIf="IS_CDC">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear nzShowSearch formControlName="level">
+                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear nzShowSearch formControlName="packageLevel">
                                 <nz-option *ngFor="let level of levels" [nzLabel]="level" [nzValue]="level"></nz-option>
                             </nz-select>
                         </div>
@@ -64,7 +71,7 @@
                             <label nzFor="Status">Status : </label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear  nzPlaceHolder="" formControlName="status">
+                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear  nzPlaceHolder="" formControlName="programStatus">
                                 <nz-option *ngFor="let stat of status" [nzLabel]="stat" [nzValue]="stat"></nz-option>
                             </nz-select>
                         </div>
@@ -159,7 +166,7 @@
                                     <label nzFor="Allowed"><b>Allowed:</b></label>
                                 </div>
                                 <div nz-col nzSpan="10" class="pad-r-5">
-                                    <input nz-input [nzSize]="'small'" Disabled="!this.packageDetailForm.get('commencing_date').value" formControlName="allowed" />
+                                    <input nz-input [nzSize]="'small'" Disabled="!this.packageDetailForm.get('commencing_date').value" formControlName="totalAllocation" />
                                 </div>
                                 <div nz-col nzSpan="6">
                                     <label nz-checkbox  formControlName="shared" nzDisabled="this.packageDetailForm.get('commencing_date').value" >Shared</label>
@@ -171,7 +178,7 @@
                                         <label nzFor="Yellow"><b>Yellow:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="yellow" Disabled="!this.packageDetailForm.get('commencing_date').value" />
+                                        <input nz-input [nzSize]="'small'" formControlName="AP_YellowQty" Disabled="!this.packageDetailForm.get('commencing_date').value" />
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="24" class="mrg-btm">
@@ -179,7 +186,7 @@
                                         <label nzFor="green"><b>Green:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="green" Disabled="!this.packageDetailForm.get('commencing_date').value" />
+                                        <input nz-input [nzSize]="'small'" formControlName="AP_OrangeQty" Disabled="!this.packageDetailForm.get('commencing_date').value" />
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="24" class="mrg-btm">
@@ -187,7 +194,7 @@
                                         <label nzFor="Red"><b>Red:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="red" Disabled="!this.packageDetailForm.get('commencing_date').value" />
+                                        <input nz-input [nzSize]="'small'" formControlName="AP_RedQty" Disabled="!this.packageDetailForm.get('commencing_date').value" />
                                     </div>
                                 </div>
                             </div>
@@ -255,7 +262,7 @@
                                 <label nzFor="Start of Current Plan Funcding">Start of Current Plan Funding:</label>
                             </div>
                             <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                <nz-date-picker  [nzSize]="'small'"  formControlName="startFunding" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker  [nzSize]="'small'"  formControlName="StartDate" [nzFormat]="dateFormat"></nz-date-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="12">
@@ -263,7 +270,7 @@
                                 <label nzFor="Package Term:">Package Term:</label>
                             </div>
                             <div nz-col nzSpan="16" class="text-right pad-r-5">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="packageTerm"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="packageTermType"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let term of packageTerm" [nzLabel]="term" [nzValue]="term"></nz-option>
                                 </nz-select>
                             </div>
@@ -275,7 +282,7 @@
                                 <label nzFor="Start of Current Plan Funcding">End of Current Plan Funding:</label>
                             </div>
                             <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                <nz-date-picker  [nzSize]="'small'"  formControlName="endFunding" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker  [nzSize]="'small'"  formControlName="expiryDate" [nzFormat]="dateFormat"></nz-date-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="12">
@@ -292,10 +299,10 @@
                             Auto Renew On Expiry : <label nz-checkbox formControlName="autoRenew"></label>
                         </div>
                         <div nz-col nzSpan="8">
-                            Rollover Remaining Funding : <label nz-checkbox formControlName="rolloverFunding"></label>
+                            Rollover Remaining Funding : <label nz-checkbox formControlName="rolloverRemainder"></label>
                         </div>
                         <div nz-col nzSpan="8">
-                            Deactivate On Expiry : <label nz-checkbox formControlName="deactivateExpiry"></label>
+                            Deactivate On Expiry : <label nz-checkbox formControlName="deactivateOnExpiry"></label>
                         </div>
                     </div>    
                 </nz-card>    

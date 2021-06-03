@@ -49,6 +49,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
     type: string[];
     fundingprioritylist: any;
     IS_CDC: boolean;
+    selectedProgram: any;
     
     constructor(
         private timeS: TimeSheetService,
@@ -129,21 +130,21 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 personID:'',
                 program:'',
                 packageLevel:'',
-                type:'',
+                packageType:'',
                 programStatus:'',
                 expireUsing:'',
                 priority:'',
                 notes:'',
-                expire_amount:'',
-                expire_costType:'',
-                expire_unit:'',
-                expire_period:'',
-                expire_length:'',
-                p_alert_type:'',
+                quantity:'',
+                itemUnit:'',
+                perUnit:'',
+                period:'',
+                timeUnit:'',
+                aP_CostType:'',
                 packg_balance:false,
                 recurant:false,
                 commencing_date:'',
-                p_alert_period:'',
+                aP_Period:'',
                 totalAllocation:'',
                 AP_YellowQty:'',
                 AP_OrangeQty:'',
@@ -152,7 +153,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 startDate:'',
                 expiryDate:'',
                 reminderDate:'',
-                packageTermType:'',
+                programSummary:'',
                 autoRenew:false,
                 rolloverRemainder:false,
                 deactivateOnExpiry:false,
@@ -163,6 +164,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 contingency:'',
                 perDayBilling:'',
                 currentlyBanked:'',
+                recordNumber:'',
             });
             this.supplements = this.formBuilder.group({
                 domentica:false,
@@ -175,7 +177,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 viabilitySupplement:'',
                 financialSup:''
             });
-            this.packageDetailForm.get('p_alert_type').valueChanges.subscribe(data => {
+            this.packageDetailForm.get('aP_CostType').valueChanges.subscribe(data => {
                 this.packageDetailForm.get('recurant').enable()
             });
             this.packageDetailForm.get('commencing_date').valueChanges.subscribe(data => {
@@ -212,45 +214,45 @@ export class IntakeFunding implements OnInit, OnDestroy {
                         
                         this.packageDetailForm.get('packageLevel').disable()
                         this.packageDetailForm.controls.packageLevel.setValue(x.level);
-                        this.packageDetailForm.get('expire_amount').disable()
-                        this.packageDetailForm.controls.expire_amount.setValue(x.quantity);
-                        this.packageDetailForm.get('type').disable()
-                        this.packageDetailForm.controls.type.setValue(typeOpt);
-                        this.packageDetailForm.get('expire_costType').disable()
-                        this.packageDetailForm.controls.expire_costType.setValue('DOLLARS');
-                        this.packageDetailForm.get('expire_unit').disable()
-                        this.packageDetailForm.controls.expire_unit.setValue('PER');
-                        this.packageDetailForm.get('expire_period').disable()
-                        this.packageDetailForm.controls.expire_period.setValue('DAY');
+                        this.packageDetailForm.get('quantity').disable()
+                        this.packageDetailForm.controls.quantity.setValue(x.quantity);
+                        this.packageDetailForm.get('packageType').disable()
+                        this.packageDetailForm.controls.packageType.setValue(typeOpt);
+                        this.packageDetailForm.get('itemUnit').disable()
+                        this.packageDetailForm.controls.itemUnit.setValue('DOLLARS');
+                        this.packageDetailForm.get('perUnit').disable()
+                        this.packageDetailForm.controls.perUnit.setValue('PER');
+                        this.packageDetailForm.get('period').disable()
+                        this.packageDetailForm.controls.period.setValue('DAY');
                         this.packageDetailForm.get('expireUsing').disable()
                         this.packageDetailForm.controls.expireUsing.setValue('CHARGE RATE')
                         this.detectChanges();
                         return this.listS.getlevelRate(x.level);
                     }
                     else{
-                        this.packageDetailForm.controls.expire_amount.setValue(null);
-                        this.packageDetailForm.get('expire_amount').enable()
-                        this.packageDetailForm.controls.type.setValue(null)
-                        this.packageDetailForm.get('type').enable()
+                        this.packageDetailForm.controls.quantity.setValue(null);
+                        this.packageDetailForm.get('quantity').enable()
+                        this.packageDetailForm.controls.packageType.setValue(null)
+                        this.packageDetailForm.get('packageType').enable()
                         this.packageDetailForm.controls.expireUsing.setValue(null)
                         this.packageDetailForm.get('expireUsing').enable()
                         this.packageDetailForm.controls.packageLevel.setValue(null)
                         this.packageDetailForm.get('packageLevel').enable()
-                        this.packageDetailForm.controls.expire_costType.setValue(null);
-                        this.packageDetailForm.get('expire_unit').enable()
-                        this.packageDetailForm.controls.expire_unit.setValue(null);
-                        this.packageDetailForm.get('expire_period').enable()
-                        this.packageDetailForm.controls.expire_period.setValue(null);
+                        this.packageDetailForm.controls.itemUnit.setValue(null);
+                        this.packageDetailForm.get('perUnit').enable()
+                        this.packageDetailForm.controls.perUnit.setValue(null);
+                        this.packageDetailForm.get('period').enable()
+                        this.packageDetailForm.controls.period.setValue(null);
                         this.packageDetailForm.get('expireUsing').enable()
                         this.packageDetailForm.controls.expireUsing.setValue(null)
-                        this.packageDetailForm.get('expire_costType').enable()
-                        this.packageDetailForm.controls.expire_costType.setValue(null)
+                        this.packageDetailForm.get('itemUnit').enable()
+                        this.packageDetailForm.controls.itemUnit.setValue(null)
                     }
                     this.detectChanges();
                     return EMPTY;
                 })
                 ).subscribe(data => {
-                    this.packageDetailForm.controls.expire_amount.setValue(data.levelRate);
+                    this.packageDetailForm.controls.quantity.setValue(data.levelRate);
                     this.detectChanges();
                 });
             }
@@ -281,7 +283,28 @@ export class IntakeFunding implements OnInit, OnDestroy {
             }
             
             showEditModal(index: number) {
+                this.addOREdit = 2;
+                this.timeS.getprogramdetails(index).subscribe(data=>{
+                    this.selectedProgram = data;
+                    this.cd.markForCheck();
+                    this.packageDetailForm.patchValue({
+                        program:this.selectedProgram.program,
+                        packageType:this.selectedProgram.packageType,
+                        expireUsing:this.selectedProgram.expireUsing,
+                        perUnit:this.selectedProgram.perUnit,
+                        period:this.selectedProgram.period,
+                        itemUnit:this.selectedProgram.itemUnit,
+                        quantity:this.selectedProgram.quantity,
+                        timeUnit:this.selectedProgram.timeUnit,
+                        aP_CostType:this.selectedProgram.aP_CostType,
+                        aP_Period:this.selectedProgram.aP_Period,
+                        recordNumber:this.selectedProgram.recordNumber,
+                    });
+                });
                 
+                
+                
+                this.modalOpen = true;
             }
             
             delete(index: number) {

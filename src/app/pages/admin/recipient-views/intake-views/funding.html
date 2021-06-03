@@ -23,7 +23,7 @@
                 <td>{{ data.cm }}</td>
                 <td>{{ data.details }}</td>       
                 <td>
-                    <a (click)="showEditModal(data)">Update</a>
+                    <a (click)="showEditModal(data.recordNumber)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
                     <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Funding?" nzPopconfirmPlacement="bottom"
                         (nzOnConfirm)="delete(data)">Delete</a>
@@ -63,7 +63,7 @@
                             <label nzFor="Type">Type : </label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear  nzPlaceHolder="" formControlName="type">
+                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear  nzPlaceHolder="" formControlName="packageType">
                                 <nz-option *ngFor="let typ of type" [nzLabel]="typ" [nzValue]="typ"></nz-option>
                             </nz-select>
                         </div>
@@ -101,29 +101,29 @@
                         <div nz-col nzSpan="20">
                             <div nz-col nzSpan="4"  class="pad-r-5">
                                 <label for="">Amount</label>
-                                <input nz-input placeholder="" [nzSize]="'small'" formControlName="expire_amount" />
+                                <input nz-input placeholder="" [nzSize]="'small'" formControlName="quantity" />
                             </div>
                             <div nz-col nzSpan="5" class="pad-r-5">
                                 <label for="">Cost Type</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="expire_costType"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="itemUnit"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="4" class="pad-r-5">
                                 <label for="">Per Unit</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="expire_unit"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="perUnit"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let unit of unitsArray" [nzLabel]="unit" [nzValue]="unit"></nz-option>
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="5" class="pad-r-5">
                                 <label for="">Period</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="expire_period"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="period"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="4">
                                 <label for="">Length</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="expire_length"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="timeUnit"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                 </nz-select>
                             </div>
@@ -133,7 +133,7 @@
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="4" class="text-center" style="padding: 0px 20px;">
                             <label for="" class="space-top">Alerts</label>
-                            <nz-select  nz-col nzSpan="22" nzOffset = "1" [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="p_alert_type"  nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select  nz-col nzSpan="22" nzOffset = "1" [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="aP_CostType"  nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
                             </nz-select>
                         </div>
@@ -143,15 +143,15 @@
                             </div>
                             <div nz-col nzSpan="12">
                                 <div nz-col nzSpan="24">
-                                    <label nz-checkbox (change)="packgChange($event)"     nzDisabled="!this.packageDetailForm.get('p_alert_type').value" formControlName="packg_balance">Package Balance</label>
+                                    <label nz-checkbox (change)="packgChange($event)"     nzDisabled="!this.packageDetailForm.get('aP_CostType').value" formControlName="packg_balance">Package Balance</label>
                                 </div>
                                 <div nz-col nzSpan="24">
-                                    <label nz-checkbox (change)="recurrentChange($event)" nzDisabled="!this.packageDetailForm.get('p_alert_type').value"  formControlName="recurant">Recurrent Usage</label>
+                                    <label nz-checkbox (change)="recurrentChange($event)" nzDisabled="!this.packageDetailForm.get('aP_CostType').value"  formControlName="recurant">Recurrent Usage</label>
                                 </div>
                             </div>
                             <div nz-col nzSpan="12" class="pad-r-5 space-top" *ngIf="this.packageDetailForm.get('recurant').value">
                                 <label for="period">period</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="p_alert_period"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="aP_Period"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                 </nz-select>
                             </div>
@@ -262,7 +262,7 @@
                                 <label nzFor="Start of Current Plan Funcding">Start of Current Plan Funding:</label>
                             </div>
                             <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                <nz-date-picker  [nzSize]="'small'"  formControlName="StartDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker  [nzSize]="'small'"  formControlName="startDate" [nzFormat]="dateFormat"></nz-date-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="12">
@@ -270,7 +270,7 @@
                                 <label nzFor="Package Term:">Package Term:</label>
                             </div>
                             <div nz-col nzSpan="16" class="text-right pad-r-5">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="packageTermType"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="programSummary"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let term of packageTerm" [nzLabel]="term" [nzValue]="term"></nz-option>
                                 </nz-select>
                             </div>

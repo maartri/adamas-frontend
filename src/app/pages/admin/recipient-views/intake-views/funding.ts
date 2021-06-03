@@ -7,6 +7,7 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import * as moment from 'moment';
 
 @Component({
     selector: '',
@@ -154,6 +155,13 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 autoRenew:false,
                 rolloverFunding:false,
                 deactivateExpiry:false,
+                dailyBasicFee:'',
+                monthlyBasicFee:'',
+                dailyTestedFee:'$0.00',
+                monthlyTestedFee:'$0.00',
+                contingency:'',
+                perDayBilling:'',
+                currentlyBanked:'',
             });
             this.supplements = this.formBuilder.group({
                 domentica:false,
@@ -165,89 +173,131 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 viabilitySuplement:false,
                 viabilitySupplement:'',
                 financialSup:''
-              });
-
-
-        this.packageDetailForm.get('programname').valueChanges
-        .pipe(
-            switchMap(x => {
-                if(!x) return EMPTY;
-                return this.listS.getprogramlevel(x)
-            }),
-            switchMap(x => {                
-                this.IS_CDC = false;
-                if(x.isCDC){
-                    this.IS_CDC = true;
-                    this.packageDetailForm.get('level').disable()
-                    this.packageDetailForm.controls.level.setValue(x.level);
-                    this.packageDetailForm.get('expire_amount').disable()
-                    this.packageDetailForm.controls.expire_amount.setValue(x.quantity);
-                    
-                    // if(x.quantity && x.timeUnit == 'DAY'){
-                    //     this.quoteForm.patchValue({
-                    //         govtContrib: (x.quantity*365).toFixed(2),
-                    //         programId: x.recordNumber
-                    //     });
-                    // }
-                    this.detectChanges();
-                    return this.listS.getpensionandfee();
+            });
+            this.packageDetailForm.get('p_alert_type').valueChanges.subscribe(data => {
+                this.packageDetailForm.get('recurant').enable()
+            });
+            this.packageDetailForm.get('commencing_date').valueChanges.subscribe(data => {
+                if(this.globalS.isEmpty(data)){
+                this.packageDetailForm.get('allowed').disable()
+                this.packageDetailForm.get('red').disable()
+                this.packageDetailForm.get('green').disable()
+                this.packageDetailForm.get('yellow').disable()
                 }else{
-                    this.packageDetailForm.get('expire_amount').enable()
-                    this.packageDetailForm.get('level').enable()
+                this.packageDetailForm.get('allowed').enable()
+                this.packageDetailForm.get('red').enable()
+                this.packageDetailForm.get('green').enable()
+                this.packageDetailForm.get('yellow').enable()
                 }
-                this.detectChanges();
-                return EMPTY;
-            })
-        ).subscribe(data => {
-            console.log(  + data)
-            this.detectChanges();
-        });
-        }
-        detectChanges(){
-            this.cd.markForCheck();
-            this.cd.detectChanges();
-        }
-        save() {
+            });
             
-        }
-        
-        showEditModal(index: number) {
-            
-        }
-        
-        delete(index: number) {
-            
-        }
-        
-        handleCancel() {
-            this.modalOpen = false;   
-        }
-        tabFindIndex: number = 0;
-        tabFindChange(index: number){
-            this.tabFindIndex = index;
-        }
-        showAddModal() {
-            this.addOREdit = 1;
-            this.modalOpen = true;
-        }
-        domenticaChange(event: any){
-            if(event.target.checked){
-                this.supplements.patchValue({
-                    levelSupplement : this.programLevel,
+            this.packageDetailForm.get('programname').valueChanges
+            .pipe(
+                switchMap(x => {
+                    if(!x) return EMPTY;
+                    return this.listS.getprogramlevel(x)
+                }),
+                switchMap(x => {                
+                    this.IS_CDC = false;
+                    if(x.isCDC){
+                        this.IS_CDC = true;
+                        var typeOpt = '';
+                        if(x.user2 == 'Various'){
+                            typeOpt = 'CDC-HCP';
+                        }else{
+                            typeOpt = x.user2;
+                        }
+                        this.type.push(typeOpt);
+                        
+                        this.packageDetailForm.get('level').disable()
+                        this.packageDetailForm.controls.level.setValue(x.level);
+                        this.packageDetailForm.get('expire_amount').disable()
+                        this.packageDetailForm.controls.expire_amount.setValue(x.quantity);
+                        this.packageDetailForm.get('type').disable()
+                        this.packageDetailForm.controls.type.setValue(typeOpt);
+                        this.packageDetailForm.get('expire_costType').disable()
+                        this.packageDetailForm.controls.expire_costType.setValue('DOLLARS');
+                        this.packageDetailForm.get('expire_unit').disable()
+                        this.packageDetailForm.controls.expire_unit.setValue('PER');
+                        this.packageDetailForm.get('expire_period').disable()
+                        this.packageDetailForm.controls.expire_period.setValue('DAY');
+                        this.packageDetailForm.get('expireUsing').disable()
+                        this.packageDetailForm.controls.expireUsing.setValue('CHARGE RATE')
+                        this.detectChanges();
+                        return this.listS.getlevelRate(x.level);
+                    }
+                    else{
+                        this.packageDetailForm.controls.expire_amount.setValue(null);
+                        this.packageDetailForm.get('expire_amount').enable()
+                        this.packageDetailForm.controls.type.setValue(null)
+                        this.packageDetailForm.get('type').enable()
+                        this.packageDetailForm.controls.expireUsing.setValue(null)
+                        this.packageDetailForm.get('expireUsing').enable()
+                        this.packageDetailForm.controls.level.setValue(null)
+                        this.packageDetailForm.get('level').enable()
+                        this.packageDetailForm.controls.expire_costType.setValue(null);
+                        this.packageDetailForm.get('expire_unit').enable()
+                        this.packageDetailForm.controls.expire_unit.setValue(null);
+                        this.packageDetailForm.get('expire_period').enable()
+                        this.packageDetailForm.controls.expire_period.setValue(null);
+                        this.packageDetailForm.get('expireUsing').enable()
+                        this.packageDetailForm.controls.expireUsing.setValue(null)
+                        this.packageDetailForm.get('expire_costType').enable()
+                        this.packageDetailForm.controls.expire_costType.setValue(null)
+                    }
+                    this.detectChanges();
+                    return EMPTY;
                 })
-            }else{
-                this.supplements.patchValue({
-                    levelSupplement : '',
-            })
+                ).subscribe(data => {
+                    this.packageDetailForm.controls.expire_amount.setValue(data.levelRate);
+                    this.detectChanges();
+                });
+            }
+            detectChanges(){
+                this.cd.markForCheck();
+                this.cd.detectChanges();
+            }
+            save() {
+                
+            }
+            
+            showEditModal(index: number) {
+                
+            }
+            
+            delete(index: number) {
+                
+            }
+            
+            handleCancel() {
+                this.modalOpen = false;   
+            }
+            tabFindIndex: number = 0;
+            tabFindChange(index: number){
+                this.tabFindIndex = index;
+            }
+            showAddModal() {
+                this.addOREdit = 1;
+                this.modalOpen = true;
+            }
+            domenticaChange(event: any){
+                if(event.target.checked){
+                    this.supplements.patchValue({
+                        levelSupplement : this.programLevel,
+                    })
+                }else{
+                    this.supplements.patchValue({
+                        levelSupplement : '',
+                    })
+                }
+            }
+            packgChange(e){
+            }
+            recurrentChange(e){
+                if(e.target.checked){
+                    this.visibleRecurrent = true;
+                }else{
+                    this.visibleRecurrent = false;
+                }
             }
         }
-        packgChange(e){
-        }
-        recurrentChange(e){
-          if(e.target.checked){
-            this.visibleRecurrent = true;
-          }else{
-            this.visibleRecurrent = false;
-          }
-        }
-    }

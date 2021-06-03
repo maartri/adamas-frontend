@@ -110,6 +110,7 @@ export interface QuoteHeaderDTO {
     personId?: string,
    
     quoteLines?: Array<QuoteLineDTO>,
+    goals?: Array<string>,
     program?: string,
     user?: string,
     template?: string,

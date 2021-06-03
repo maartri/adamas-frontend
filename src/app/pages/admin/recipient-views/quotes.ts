@@ -1087,7 +1087,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             personId: this.user.id
 
         }
-
+        // console.log(qteHeader)
+        // return;
         this.listS.getpostquote(qteHeader).subscribe(data => {
                 console.log(data);
                 this.globalS.sToast('Success','Quote Added');

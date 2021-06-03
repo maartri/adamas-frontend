@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder,FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService, MenuService} from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { isEmpty } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd';
+import { ContextMenuComponent } from 'ngx-contextmenu';
 import { empty, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
@@ -105,6 +106,7 @@ export class ProgramPackagesComponent implements OnInit {
   current: number = 0;
   checked:boolean=false;
   checkedflag:boolean = true;
+  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
   dateFormat: string = 'dd/MM/yyyy';
   inputvalueSearch:string;
   inputForm: FormGroup;
@@ -281,13 +283,10 @@ export class ProgramPackagesComponent implements OnInit {
       let insertOne = false;
       if(!this.isUpdatePackageType){
         this.checkedPackageProfileServices.forEach( (element) => {
-          // let is_exist   = this.globalS.isCompetencyExists(this.listApprovedServicesByPersonId,element);
-          // if(!is_exist){
             let sql = "INSERT INTO ServiceOverview([Service Type], PersonID, [ServiceProgram], [ServiceStatus]) VALUES ('"+element+"','"+this.personId+"', 'CAPACITY BUILDING - 31600', 'ACTIVE')";
             this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
               insertOne = true;
             });
-          // }
         });
         if(insertOne){
           this.globalS.sToast('Success', 'Saved successful');
@@ -1001,34 +1000,21 @@ export class ProgramPackagesComponent implements OnInit {
         +","+defaultWithNoticeCancel+","+noNoticeCancelRate+","+shortNoticeCancelRate+","+defaultWithNoticeProgram;
         
         let sqlz = "insert into humanresourcetypes ([Group],[Name],[type],[address1],[address2],[Suburb],[HRT_DATASET],[USER1],[Phone2],[gst],[GSTRate],[budgetamount],[budget_1],[budgetperiod],[fax],[email],[phone1],[CloseDate],[Postcode],[UserYesNo3],[User2],[User3],[User4],[User10],[BudgetEnforcement],[BudgetRosterEnforcement],[UserYesNo1],[UserYesNo2],[User8],[User9],[User11],[User12],[P_Def_Alert_Type],[P_Def_Alert_Period],[P_Def_Alert_Allowed],[P_Def_Alert_Yellow],[P_Def_Alert_Orange],[P_Def_Alert_Red],[P_Def_Expire_Amount],[P_Def_Expire_CostType],[P_Def_Expire_Unit],[P_Def_Expire_Period],[P_Def_Expire_Length],[P_Def_Fee_BasicCare],[P_Def_Contingency_PercAmt],[P_Def_Admin_AdminType],[P_Def_Admin_CMType],[P_Def_Admin_CM_PercAmt],[p_Def_Admin_Admin_PercAmt],[P_Def_StdDisclaimer],[P_Def_Admin_AdminFrequency],[P_Def_Admin_CMFrequency],[P_Def_Admin_AdminDay] ,[P_Def_Admin_CMDay],[P_Def_Expire_Using],[P_Def_Contingency_Max],[DefaultCHGTravelWithinActivity],[DefaultCHGTravelWithinPayType],[DefaultNCTravelWithinProgram],[DefaultNCTravelWithinActivity],[DefaultNCTravelWithinPayType],[DefaultCHGTravelBetweenActivity],[DefaultCHGTravelBetweenPayType],[DefaultNCTravelBetweenProgram],[DefaultNCTravelBetweenActivity],[DefaultNCTravelBetweenPayType],[DefaultCHGTRAVELBetweenProgram],[DefaultCHGTRAVELWithInProgram],[P_Def_IncludeClientFeesInCont],[P_Def_IncludeIncomeTestedFeeInAdmin],[P_Def_IncludeBasicCareFeeInAdmin],[P_Def_IncludeTopUpFeeInAdmin],[CDCStatementText1],[DefaultDailyFee],[NoNoticeLeadTime],[ShortNoticeLeadTime],[NoNoticeLeaveActivity],[ShortNoticeLeaveActivity],[DefaultNoNoticeCancel],[DefaultNoNoticeBillProgram],[DefaultNoNoticePayProgram],[DefaultNoNoticePayType],[DefaultShortNoticeCancel],[DefaultShortNoticeBillProgram],[DefaultShortNoticePayProgram],[DefaultShortNoticePayType],[DefaultWithNoticeCancel],[NoNoticeCancelRate],[ShortNoticeCancelRate],[DefaultWithNoticeProgram]) values("+values+");select @@IDENTITY";
-        // console.log(sqlz);
+        
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
-            // console.log(data+"data");
             this.personId = data;
-            
-            // console.log("if humanresourcetype.recordnumber "+this.personId)
-
             this.globalS.sToast('Success', 'Saved successful');
             this.loadData();
             this.postLoading = false;   
-            this.loading = false;       
-            
-            // this.handleCancel();
-            
-            // this.resetModal();
-          
+            this.loading = false;
           }
           else{
-            // console.log(data+"data");
             this.personId = data;
-            // console.log("else humanresourcetype.recordnumber "+this.personId)
             this.globalS.sToast('Success', 'Saved successful');
             this.loadData();
             this.loading = false;   
-            this.postLoading = false;          
-            // this.handleCancel();
-            // this.resetModal();
+            this.postLoading = false;
           }
         });
       }

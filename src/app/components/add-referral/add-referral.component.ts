@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef,ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap, startWith } from 'rxjs/operators';
@@ -8,6 +8,14 @@ import * as moment from 'moment';
 import { RemoveFirstLast } from '@pipes/pipes';
 import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, contactGroups, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { Observable, of, from, Subject, EMPTY, combineLatest } from 'rxjs';
+import { getMultipleValuesInSingleSelectionError } from '@angular/cdk/collections';
+import { Reminders } from '@modules/modules';
+import format from 'date-fns/format';
+import { setDate } from 'date-fns';
+import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import id from 'date-fns/locale/id';
+
 
 @Component({
   selector: 'app-add-referral',
@@ -15,7 +23,7 @@ import { Observable, of, from, Subject, EMPTY, combineLatest } from 'rxjs';
   styleUrls: ['./add-referral.component.css']
 })
   
-export class AddReferralComponent implements OnInit {
+export class AddReferralComponent implements OnInit, OnDestroy {
 
   private verifyAccount = new Subject<any>();
 
@@ -23,6 +31,9 @@ export class AddReferralComponent implements OnInit {
 
   @Input() open: boolean = false;
   @Input() type: string = 'referral';
+  @ViewChild('sample', { static: false }) _lastname: ElementRef;
+  
+  @Input() followupremind: string = '';
 
   @Output() openRefer = new EventEmitter();
 
@@ -31,6 +42,7 @@ export class AddReferralComponent implements OnInit {
   dateFormat: string = dateFormat;
 
   notifCheckBoxGroup: any;
+  notifCheckBoxes: Array<string> = []
   notifFollowUpGroup: any;
   notifDocumentsGroup: any;
 
@@ -40,6 +52,13 @@ export class AddReferralComponent implements OnInit {
   addressType: Array<string> = []
   contactType: Array<string> = []
 
+  email: Array<string> = []
+  acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";
+  file :File;
+  fileList2: Array<any> = [];
+  urlPath: string = `api/v2/file/upload-incident-document-procedure`;
+  loadedFiles: Array<any> = [];
+  
 
   loading: boolean;
 
@@ -52,6 +71,7 @@ export class AddReferralComponent implements OnInit {
   notifications: Array<string>;
   documentlist: Array<string>;
   datalist: Array<string>;
+  adddoc :boolean = false;
 
   private addresses: FormArray;
   private contacts: FormArray;
@@ -60,20 +80,30 @@ export class AddReferralComponent implements OnInit {
   current: number = 0;
   generatedAccount: string;
   accountTaken: boolean;
+  default_branch: string  = '';
+  default_manager: string = '';
+  default_agency: string  = '';
+  defaultDate: string;
+
+  private destroy$ = new Subject();
+
+  token :any ;
+  date: any;
 
   constructor(
     private clientS: ClientService,
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
     private listS: ListService,
-    private cd: ChangeDetectorRef
+    private elemtRef :ElementRef,
+    private cd: ChangeDetectorRef,
+    private timeS: TimeSheetService,
+    private msg: NzMessageService,
   ) {
 
   }
-
   ngOnInit() {
     this.resetGroup();    
-
     this.verifyAccount.pipe(
       debounceTime(300),
       concatMap(e => {
@@ -102,7 +132,15 @@ export class AddReferralComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(){
+    this.destroy$.next();  // trigger the unsubscribe
+    this.destroy$.complete(); // finalize & clean up the subject stream
+  }
+
   ngOnChanges(changes: SimpleChanges) {
+    setTimeout(() => {
+      this._lastname.nativeElement.focus();
+    });
     for (let property in changes) {
       if (property == 'open' && 
             !changes[property].firstChange &&
@@ -112,12 +150,35 @@ export class AddReferralComponent implements OnInit {
       }
     }
   }
+  getdefaultDate(){
+   this.defaultDate = this.globalS.getAgedCareDate()
+  }
+
+  defaultBirthDate(): Date{
+    var currDate = new Date();
+    currDate.setFullYear(currDate.getFullYear() - 65);
+    return currDate;
+  }
+
+  firstOpenChange: boolean = false;
+  dateOpenChange(data: any){
+    if(this.firstOpenChange || !data) return;
+    this.firstOpenChange = true;
+    this.referralGroup.patchValue({
+      dob: this.defaultBirthDate()
+    });
+  }
 
   resetGroup() {
+    setTimeout(() => {
+      this._lastname.nativeElement.focus();
+    });
 
+    this.firstOpenChange = false;
+    
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
-      dob: new FormControl('', Validators.required),
+      dob: new FormControl(null, Validators.required),
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),
@@ -134,16 +195,19 @@ export class AddReferralComponent implements OnInit {
       otherContacts: new FormArray([this.createOtherContact()]),
       gpDetails: new FormArray([this.createGpDetails()]),
 
-      branch: new FormControl(''),
-      agencyDefinedGroup: new FormControl(''),
-      recipientCoordinator: new FormControl(''),
+      branch: new FormControl(this.default_branch),
+      agencyDefinedGroup: new FormControl(this.default_agency),
+      recipientCoordinator: new FormControl(this.default_manager),
+      document: new FormControl(null),
+      followup: new FormControl(null),
+      notifications: new FormControl(null),
+      dataList: new FormControl(null),
+
       referral: new FormControl(''),
       confirmation: new FormControl(null),
 
-      dataList: new FormControl(null),
-      document: new FormControl(null),
-      followup: new FormControl(null),
-      notifications: new FormControl(null)
+      
+      
     });
 
 
@@ -162,12 +226,14 @@ export class AddReferralComponent implements OnInit {
       })
     ).subscribe((data: any) => {
         // this.notifications = data;
-        this.notifCheckBoxGroup = data.map(x => {
+        //this.notifCheckBoxGroup = data.map(x => {
+          
+          this.notifCheckBoxes = data.map(x => {
           return {
             label: x.staffToNotify,
             value: x.staffToNotify,
             disabled: x.mandatory ? true : false,
-            checked: x.mandatory ? true : false
+            check: x.mandatory ? true : false
           }
         })
     });
@@ -233,9 +299,8 @@ export class AddReferralComponent implements OnInit {
         }
         this.verifyAccount.next();
       });
-
   }
-
+  
   // contactTypeChange(index: number) {
   //   var contact = this.referralGroup.get('contacts') as FormArray;
   //   contact.controls[index].get('contact').reset();
@@ -283,9 +348,55 @@ export class AddReferralComponent implements OnInit {
     // numbers only /[0-9\+\-\ ]/
     if (!event.key.match(/^[a-zA-Z ]*$/)) return false;
   }
-
-  log(data: any){
+  getemails(data){
+    
+    
+    
+    var temp1 = data.find(x => x.checked === true)
+    
+  
+      this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)
+   
+       
+    
+    
+  }
+  log(data:any){
     console.log(data)
+  }
+  doc(data:any){
+    
+    var temp = data.find(x => x.checked === true)
+    this.globalS.doc = temp.label.toString();
+    
+  }
+  notif(data: any){
+    
+    var temp1 = data.find(x => x.checked === true)
+    
+  
+      this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)
+   
+      
+      
+        
+  
+    
+    
+  }
+ 
+  followup(data: any){
+    
+    
+    
+    var temp
+   
+  
+  temp = data.find(x => x.checked === true)
+  this.globalS.followups = temp
+    
+  
+   
   }
 
   isNamesComplete(): boolean {
@@ -319,24 +430,41 @@ export class AddReferralComponent implements OnInit {
   }
 
   populateDropdowns(): void {
-    this.clientS.getcontacttype().subscribe(data => {
+    this.clientS.getcontacttype().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.contactType = data.map(x => {
         return (new RemoveFirstLast().transform(x.description)).trim();
       });
     })
-    this.clientS.getaddresstype().subscribe(data => {
+    this.clientS.getaddresstype().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.addressType = data.map(x => {
         return new RemoveFirstLast().transform(x.description)
       });
     })
-    this.listS.getlistbranches().subscribe(data => this.branches = data.map(x => x.toUpperCase()));
-    this.clientS.getmanagers().subscribe(data => this.managers = data.map(x => {
+    this.listS.getlistbranches().pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.branches = data.map(x => x.toUpperCase())
+      if(this.branches.length == 1){
+        this.default_branch = this.branches[0];
+      }
+    });
+    this.clientS.getmanagers().pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.managers = data.map(x => {
         x['description'] =  x['description'].toUpperCase();
-        return x;
-    }));
-    this.listS.getserviceregion().subscribe(data => this.agencies = data.map(x => x.toUpperCase()));
+        return x;})
+        if(this.managers.length == 1){
+            this.default_manager = this.managers[0];
+        }
+        
+    });
+    this.listS.getserviceregion().pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.agencies = data.map(x => x.toUpperCase())
+        if(this.agencies.length == 1){
+          this.default_agency = this.agencies[0];
+        }
+      console.log();
+      }
+    );
 
-    this.listS.getfollowups().subscribe(data => {
+    this.listS.getfollowups().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.notifFollowUpGroup = data.map(x => {
         return {
           label: x,
@@ -348,7 +476,7 @@ export class AddReferralComponent implements OnInit {
     })
 
 
-    this.listS.getdocumentslist().subscribe(data => {
+    this.listS.getdocumentslist().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.notifDocumentsGroup = data.map(x => {
         return {
           label: x,
@@ -359,7 +487,7 @@ export class AddReferralComponent implements OnInit {
       })
     })
 
-    this.listS.getdatalist().subscribe(data =>  {
+    this.listS.getdatalist().pipe(takeUntil(this.destroy$)).subscribe(data =>  {
       this.datalist = data
     });
 
@@ -368,6 +496,7 @@ export class AddReferralComponent implements OnInit {
   add() {
 
     this.referralGroup.controls["dob"].setValue(this.referralGroup.value.dob ? moment(this.referralGroup.value.dob).format() : '')
+    this.current = 1;
     // var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
     // this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
 
@@ -387,12 +516,17 @@ export class AddReferralComponent implements OnInit {
 
     this.clientS.postprofile(this.referralGroup.value)
       .subscribe(data => {
+        
         this.handleCancel();
         this.openRefer.emit(data);
+        
         this.globalS.sToast('Success', 'Recipient Added')        
+      
       });
+     
+     
   }
-
+  
   clearFormArray = (formArray: FormArray) => {
     while (formArray.length !== 0) {
       formArray.removeAt(0)
@@ -524,6 +658,13 @@ export class AddReferralComponent implements OnInit {
       fax: new FormControl(''),
     });
   }
+  createFolloupDetails():FormGroup { 
+    return this.formBuilder.group({ 
+    //  notifCheckBoxes :new FormControl()
+
+    });
+  }
+
 
   verify() {
 
@@ -554,8 +695,10 @@ export class AddReferralComponent implements OnInit {
     this.generatedAccount = null;
     this.accountTaken = null;
     this.current = 0;
+    this.adddoc = false;
 
-    this.resetGroup();
+    // this.resetGroup();
+    this.ngOnDestroy();
   }
 
   next() {
@@ -572,6 +715,21 @@ export class AddReferralComponent implements OnInit {
 
   get canGoNext(): boolean {
     //if (this.current == 0) return true;
+
+    if(this.current == 6 || this.current == 7 || this.current == 8 || this.current == 9){
+      const validateForm = this.referralGroup ;
+      
+      let branch =  this.globalS.isValueNull(validateForm.get('branch').value);
+      let agencyDefinedGroup         =  this.globalS.isValueNull(validateForm.get('agencyDefinedGroup').value);
+      let recipientCoordinator         =  this.globalS.isValueNull(validateForm.get('recipientCoordinator').value);
+      
+      if(this.globalS.isVarNull(branch) || this.globalS.isVarNull(agencyDefinedGroup) || this.globalS.isVarNull(recipientCoordinator)){
+        this.globalS.iToast('Alert', 'First Complete Step No 6  Administration !');
+        this.current = 5; 
+      }
+    }
+
+
     if (this.current == 0 && this.accountTaken == false) return true;
     if (this.current == 1) return true;
     if (this.current == 2) return true;
@@ -609,4 +767,40 @@ export class AddReferralComponent implements OnInit {
     }    
   }
 
+
+beforeUpload = (file: File): boolean => {
+  this.file = file;
+  console.log(file);
+  
+  this.referralGroup.patchValue({
+    name: this.globalS.removeExtension(this.file.name)
+  });
+
+  
+
+  return false;
+};
+handleChange({ file, fileList }: UploadChangeParam): void {
+  const status = file.status;
+  if (status !== 'uploading') {
+    // console.log(file, fileList);
+  }
+  if (status === 'done') {
+    this.msg.success(`${file.name} file uploaded successfully.`);
+    this.loadFiles();
+  } else if (status === 'error') {
+    this.msg.error(`${file.name} file upload failed.`);
+  }
 }
+
+loadFiles() {
+  this.timeS. getincidentdocuments(id)
+      .subscribe(data => {
+        this.loadedFiles = data;
+
+        this.cd.detectChanges();
+        this.cd.markForCheck();
+      });
+}
+
+}//

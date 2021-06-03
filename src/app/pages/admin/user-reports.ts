@@ -51,51 +51,52 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   valArr: Array<any>;
   data: Array<any> = [];
   nodes = [
-    { title: 'Name and Address', key: '00' },
-    { title: 'General Demographics', key: '01' },
-    { title: 'Admin Information', key: '02' },
-    { title: 'Staff', key: '03' },
-    { title: 'Other Genral', key: '04' },
-    { title: 'Contacts & Next of Kin', key: '05' },
-    { title: 'Carer Info', key: '06' },
-    { title: 'Documents', key: '07' },
-    { title: 'Consents', key: '08' },
-    { title: 'Goals of Care', key: '09' },
-    { title: 'Reminders', key: '10' },
-    { title: 'User Groups', key: '11' },
-    { title: 'Prefrences', key: '12' },
-    { title: 'Fixed Review Dates', key: '13' },
-    { title: 'Staffing Inclusion/Exclusion', key: '14' },
-    { title: 'Agreed Funding Information', key: '15' },
-    { title: 'Legacy Care Plan', key: '16' },
-    { title: 'Agreed Service Information', key: '17' },
-    { title: 'Clinical Information', key: '18' },
-    { title: 'Billing Information', key: '19' },
-    { title: 'Time Logging ', key: '20' },
+    { title: 'Name and Address', key: '000' },
+    { title: 'General Demographics', key: '001' },
+    { title: 'Admin Information', key: '002' },
+    { title: 'Staff', key: '003' },
+    { title: 'Other Genral', key: '004' },
+    { title: 'Contacts & Next of Kin', key: '005' },
+    { title: 'Carer Info', key: '006' },
+    { title: 'Documents', key: '007' },
+    { title: 'Consents', key: '008' },
+    { title: 'Goals of Care', key: '009' },
+    { title: 'Reminders', key: '010' },
+    { title: 'User Groups', key: '011' },
+    { title: 'Prefrences', key: '012' },
+    { title: 'Fixed Review Dates', key: '013' },
+    { title: 'Staffing Inclusion/Exclusion', key: '014' },
+    { title: 'Agreed Funding Information', key: '015' },
+    { title: 'Legacy Care Plan', key: '016' },
+    { title: 'Agreed Service Information', key: '017' },
+    { title: 'Clinical Information', key: '018' },
+    { title: 'Billing Information', key: '019' },
+    { title: 'Time Logging ', key: '020' },
     { title: 'Notes', key: '21' },
-    { title: 'Insurance and Pension', key: '22' },
-    { title: 'HACCS Dataset Fields', key: '23' },
+    { title: 'Insurance and Pension', key: '022' },
+    { title: 'HACCS Dataset Fields', key: '023' },
     { title: 'DEX', key: '24' },
-    { title: 'CSTDA Dataset Fields', key: '25' },
-    { title: 'NRCP Dataset Fields', key: '26' },
-    { title: 'ONI Core', key: '27' },
-    { title: 'ONI-Functional Profile', key: '28' },
-    { title: 'ONI-Living Arrangements Profile', key: '29' },
-    { title: 'ONI-Health Conditions Profile', key: '30' },
-    { title: 'ONI-Psychosocial Profile', key: '31' },
-    { title: 'ONI-Health Behaviours Profile', key: '32' },
-    { title: 'ONI-Carer Profile', key: '33' },
-    { title: 'ONI-Cultural Profile', key: '34' },
-    { title: 'Loan Items', key: '35' },
-    { title: 'Service Information Fields', key: '36' },
-    { title: 'Service Specific Competencies', key: '37' },
-    { title: 'Recipient OP Notes', key: '38' },
-    { title: 'Recipient Clinical Notes', key: '39' },
-    { title: 'Recipient Incidents', key: '40' },
-    { title: 'Recipient Competencies', key: '41' },
-    { title: 'Care Plan', key: '42' },
-    { title: 'Mental Health', key: '43' },
-    { title: 'Recipient Placements', key: '44' },
+    { title: 'CSTDA Dataset Fields', key: '025' },
+    { title: 'NRCP Dataset Fields', key: '026' },
+    { title: 'ONI Core', key: '027' },
+    { title: 'ONI-Functional Profile', key: '028' },
+    { title: 'ONI-Living Arrangements Profile', key: '029' },
+    { title: 'ONI-Health Conditions Profile', key: '030' },
+    { title: 'ONI-Psychosocial Profile', key: '031' },
+    { title: 'ONI-Health Behaviours Profile', key: '032' },
+    { title: 'ONI-Carer Profile', key: '033' },
+    { title: 'ONI-Cultural Profile', key: '034' },
+    { title: 'Loan Items', key: '035' },
+    { title: 'Service Information Fields', key: '036' },
+    { title: 'Service Specific Competencies', key: '037' },
+    { title: 'Recipient OP Notes', key: '038' },
+    { title: 'Recipient Clinical Notes', key: '039' },
+    { title: 'Recipient Incidents', key: '040' },
+    { title: 'Recipient Competencies', key: '041' },
+    { title: 'Care Plan', key: '042' },
+    { title: 'Mental Health', key: '043' },
+    { title: 'Recipient Placements', key: '044' },
+    { title: 'Quote Goals and Stratagies', key: '045' },
   ];
 
 
@@ -1137,6 +1138,20 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           { "title": "Placement Notes", "key": "06", isLeaf: true },
         ]
         break;
+       //Quote Goals and stratagies
+       case "45":
+        this.data = [
+          { "title": "Quote Goal ", "key": "00", isLeaf: true },
+          { "title": "Goal Expected Completion Date ", "key": "01", isLeaf: true },
+          { "title": "Goal Last Review Date ", "key": "02", isLeaf: true },
+          { "title": "Goal Completed Date ", "key": "03", isLeaf: true },
+          { "title": "Goal  AChieved ", "key": "04", isLeaf: true },
+          { "title": "Quote Strategy ", "key": "05", isLeaf: true },
+          { "title": "Strategy Expected Outcome ", "key": "06", isLeaf: true },
+          { "title": "Strategy Contracted ID", "key": "07", isLeaf: true },
+          { "title": "Strategy DS Services", "key": "08", isLeaf: true },
+        ]
+        break;
 
 
 
@@ -1160,7 +1175,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
         });
       }
     }
-    if (event.eventName === 'click') {
+    if (event.eventName === 'click' && event.keys[0].length < 3 ) {
       
       
       if (this.list == null){

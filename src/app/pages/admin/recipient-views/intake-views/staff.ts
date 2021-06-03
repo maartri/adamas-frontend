@@ -48,6 +48,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
   checkedListApproved: any;
   inputvalueSearch:string = '';
   listArray: Array<any>;
+  listStaff: any;
   
   constructor(
     private timeS: TimeSheetService,
@@ -95,10 +96,12 @@ export class IntakeStaff implements OnInit, OnDestroy {
       forkJoin([
         this.timeS.getexcludedstaff(user.id),
         this.timeS.getincludedstaff(user.id),
+        this.listS.getintakestaff(user.id)
       ]).subscribe(staff => {
         this.loading = false;
         this.excludedStaff = staff[0];
         this.includedStaff = staff[1];
+        this.listStaff = staff[2];
         this.cd.markForCheck();
       });
       
@@ -108,14 +111,14 @@ export class IntakeStaff implements OnInit, OnDestroy {
       this.inputForm = this.formBuilder.group({
         recordNumber: '',
         personID: '',
-        name: '',
+        list: '',
         notes: ''
       })
     }
     
     get title() {
       const str = this.whatView == 1 ? 'Excluded Staff' : 'Approved Staff';
-      const pro = this.editOrAdd == 1 ? 'Add' : 'Edit';
+      const pro = this.editOrAdd == 1 ? 'Add' : 'Update';
       return `${pro} ${str}`;
     }
     trackByFn(index, item) {
@@ -145,12 +148,13 @@ export class IntakeStaff implements OnInit, OnDestroy {
       const index = this.whatView;
       this.isLoading = true;
       
-      if (index == 1) {            
-        this.timeS.postuserdefined1({
-          notes: notes,
-          // group: list,
-          personID: this.user.id,
-          groupList: list
+      if (index == 1) {    
+        this.timeS.postintakestaff({
+          Notes: notes,
+          PersonID: this.user.id,
+          Name: list,
+          StaffCategory:0,
+          DateCreated: this.globalS.getCurrentDate()
         }).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
           if (data) {
@@ -162,11 +166,12 @@ export class IntakeStaff implements OnInit, OnDestroy {
       }
       
       if (index == 2) {
-        this.timeS.postuserdefined2({
+        this.timeS.postintakestaff({
           notes: notes,
-          // group: list,
           personID: this.user.id,
-          groupList: list
+          name: list,
+          staffCategory:1,
+          dateCreated: this.globalS.getCurrentDate()
         }).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
           if (data) {
@@ -187,15 +192,15 @@ export class IntakeStaff implements OnInit, OnDestroy {
       if (!this.inputForm.valid)
       return;
       
-      const { list, notes, id } = this.inputForm.value;
+      const { list, notes, recordNumber } = this.inputForm.value;
       const index = this.whatView;
       this.isLoading = true;
       
       if (index == 1) {
-        this.timeS.updateshareduserdefined({
-          group: list,
-          notes,
-          recordNumber: id
+        this.timeS.updateintakestaff({
+          name: list,
+          notes:notes,
+          recordNumber:recordNumber
         }).pipe(
           takeUntil(this.unsubscribe))
           .subscribe(data => {
@@ -208,10 +213,10 @@ export class IntakeStaff implements OnInit, OnDestroy {
         }
         
         if (index == 2) {
-          this.timeS.updateshareduserdefined({
-            group: list,
-            notes,
-            recordNumber: id
+          this.timeS.updateintakestaff({
+            name: list,
+            notes:notes,
+            recordNumber:recordNumber
           }).pipe(
             takeUntil(this.unsubscribe))
             .subscribe(data => {
@@ -231,37 +236,37 @@ export class IntakeStaff implements OnInit, OnDestroy {
         
         showEditModal(view: number, index: number) {
 
-          // if (view == 1) {
-          //     const { group, notes, recordNumber } = this.userdefined1[index];
-  
-          //     this.inputForm.patchValue({
-          //         list: group,
-          //         notes: notes,
-          //         id: recordNumber
-          //     });
-  
-          //     this.listArray = this.userdefined1List;
-          // }
-  
-          // if (view == 2) {
-          //     const { preference, notes, recordNumber } = this.userdefined2[index];
-  
-          //     this.inputForm.patchValue({
-          //         list: preference,
-          //         notes: notes,
-          //         id: recordNumber
-          //     });
-  
-          //     this.listArray = this.userdefined2List;
-          // }
-          
+          if (view == 1) {
+            console.log(this.excludedStaff[index]);
+              const { name, notes, recordNumber } = this.excludedStaff[index];
+              this.inputForm.patchValue({
+                  list: name,
+                  notes: notes,
+                  recordNumber: recordNumber
+              });
+          }
+          if (view == 2) {
+              const { name, notes, recordNumber } = this.includedStaff[index];
+              this.inputForm.patchValue({
+                  list: name,
+                  notes: notes,
+                  recordNumber: recordNumber
+              });
+          }
           this.whatView = view;
           this.editOrAdd = 2;
           this.modalOpen = true;
       }
         
-        delete(index: number) {
-          
+        delete(recordNo: number) {
+          this.timeS.deleteintakestaff(recordNo)
+            .subscribe(data => {
+                if (data) {
+                    this.handleCancel();
+                    this.success();
+                    this.globalS.sToast('Success', 'Data Deleted');
+                }
+            });
         }
         
         handleCancel() {
@@ -271,9 +276,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
         }
         
         showAddModal(view : number) {
-          if (view == 1) this.listArray = [];
-          if (view == 2) this.listArray = [];
-          
           this.whatView = view;
           this.editOrAdd = 1;
           this.modalOpen = true;
@@ -281,5 +283,8 @@ export class IntakeStaff implements OnInit, OnDestroy {
         
         log(value: string[]): void {
         }
-        
+        tabFindIndex: number = 0;
+        tabFindChange(index: number){
+         this.tabFindIndex = index;
+        }
       }

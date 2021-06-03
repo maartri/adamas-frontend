@@ -76,6 +76,7 @@ export const fundingDropDowns = {
     period: ['DAY', 'WEEK', 'FORTNIGHT', '4 WEEKS', 'MONTH', '6 WEEKS', 'QUARTER', '6 MONTHS', 'YEAR'],
     length: ['WEEK', 'FORTNIGHT', '4 WEEKS', 'MONTH', '6 WEEKS', 'QUARTER', '6 MONTHS', 'YEAR', 'ONGOING', 'OTHER'],
     alerts: ['HOURS', 'DOLLARS', 'SERVICES'],
+    levels: ['LEVEL 1', 'LEVEL 2', 'LEVEL 3','LEVEL 4'],
     cycle: ['CYCLE 1', 'CYCLE 2', 'CYCLE 3', 'CYCLE 4', 'CYCLE 5', 'CYCLE 6', 'CYCLE 7', 'CYCLE 8', 'CYCLE 9', 'CYCLE 10']
 }
 
@@ -90,6 +91,7 @@ export const period = ['DAY', 'WEEKLY', 'FNIGHTLY', 'MONTH', 'QUARTER', 'HALF YE
 export const periodQuote = ['ONCE OFF', 'WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'QUARTERLY', 'HALF YEARLY', 'YEARLY']
 export const status = ['WAIT LIST', 'ON HOLD', 'ACTIVE', 'INACTIVE']
 export const achievementIndex = ['(1) NOT ACHIEVED', '(2) PARTIALLY ACHIEVED', '(3) MOSTLY ACHIEVED', '(4) FULLY ACHIEVED', '(5) ONGOING', '(6) FUNDING NOT APPROVED']
+export const expectedOutcome = ['(1) Daily Living', '(2) Home', '(3) Health and Well-being', '(4) Lifelong Learning', '(5) Work', '(6) Social and Community Participation','(7) Relationships','(8) Choice and Control']
 export const caldStatuses = ['CALD BACKGROUND', 'NOT CALD BACKGROUND']
 export const titles = ["Mr", "Ms", "Mrs", "Dr"]
 export const types = ['BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
@@ -111,8 +113,16 @@ export const contactGroups: Array<string> = ['1-NEXT OF KIN', '2-CARER', '3-MEDI
 
 @Injectable()
 export class GlobalService {
-var1 = 'value1'
-var2 = 'value2'
+var1 = '';
+var2 = '';
+emailaddress:Array<string> = []  ;
+followups:any ;
+doc:any; 
+stafftonotiify:any = "ABFLAT GISELBERT";
+id: any;
+baseamount :number = 0;
+admincharges :number = 0;
+
     constructor(
         private router: Router,
         private toastr: ToastrService,
@@ -298,11 +308,14 @@ var2 = 'value2'
         }); 
     }
     
-    isCompetencyExists(tableData,username){
-        return tableData.some(function(el) {
-            username = username.replace(/'/g, '');
-            return el.competency.trim().toUpperCase() === username.trim().toUpperCase();
-          })
+    isCompetencyExists(tableData,username){        
+            if(tableData.length > 0 ){
+                return tableData.some(function(el) {
+                    username = username.replace(/'/g, '');
+                    return el.competency.trim().toUpperCase() === username.trim().toUpperCase();
+                  })
+            }
+            return false;
     }
     isTitleExists(tableData,username) {
         return tableData.some(function(el) {
@@ -505,6 +518,9 @@ var2 = 'value2'
         const newDate = format(Date.parse(date),'dd/MM/yyyy');
         return newDate;
     }
+    getCurrentDate(){
+        return moment().format('yyyy-MM-DD')
+    }
     convertDbDate(date:string){
         const newDate = format(Date.parse(date),'yyyy/MM/dd');
         return newDate;
@@ -653,6 +669,9 @@ var2 = 'value2'
     curreentDate(){
         return moment(new Date()).format('MM-DD-YYYY');
     } 
+    getAgedCareDate(){
+        return moment().startOf('year').subtract(65, 'years').format('MM/DD/YYYY');
+    }
     filterDate(date: any): string {
         return moment(date).format('DD/MM/YYYY')
     }

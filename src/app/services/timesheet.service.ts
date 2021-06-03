@@ -18,7 +18,7 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
-
+        
     getincidentdocuments(data: any): Observable<any>{
         return this.auth.get(`${timesheet}/incident-documents`, data);
     }
@@ -96,8 +96,8 @@ export class TimeSheetService {
     getquotedetails(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/quote/details/${id}`);
     }
-
     
+
     updatepackagesupplement(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/packagesupplement`, data);
     }
@@ -443,6 +443,10 @@ export class TimeSheetService {
     deleteintakeservicecompetency(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/intake/services/competency/${recordNo}`)
     }
+    deleteintakerservice(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/rservices/${recordNo}`)
+    }
+    
 
     /** */
 
@@ -472,7 +476,6 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/intake/competency`, data)
     }
    
-
     updateintakecompetency(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/competency`, data)
     }
@@ -480,8 +483,24 @@ export class TimeSheetService {
     deleteintakecompetency(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/intake/competency/${recordNo}`)
     }
+    /** */
 
-    de
+    /**
+     *  Service Competency
+     */
+
+     postintakeServicecompetency(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/Servicecompetency`, data)
+    }
+   
+    updateintakeServicecompetency(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/Servicecompetency`, data)
+    }
+
+    deleteintakeServicecompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/Servicecompetency/${recordNo}`)
+    }
+
     /** */
 
     /**
@@ -503,7 +522,21 @@ export class TimeSheetService {
     deleteCarePlangoals(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/quote/careplangoal/${recordNo}`)
     }
-
+    deleteCarePlanStrategy(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/quote/careplanstrategy/${recordNo}`)
+    }
+    postGoalsAndStratergies(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/quote/GoalsAndStratergies`, data)
+    }
+    updateGoalsAndStratergies(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/quote/GoalsAndStratergies`, data)
+    }
+    postplanStrategy(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/quote/planStrategy`, data)
+    }
+    updateplanStrategy(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/quote/planStrategy`, data)
+    }
     /** */
 
     /**
@@ -604,7 +637,10 @@ export class TimeSheetService {
     postremindersrecipient(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/recipient/reminders`, data)
     }
-
+    
+    PostRecipientFollowReminders(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/recipient/followup`, data)
+    }
     updateremindersrecipient(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/recipient/reminders`, data)
     }
@@ -719,7 +755,9 @@ export class TimeSheetService {
     getprogramop(personID: string): Observable<any> {
         return this.auth.get(`${timesheet}/program-opnote/${personID}`)
     }
-
+    getprogrampackages(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/program-packages/${personID}`)
+    }
     getdisciplineop(): Observable<any> {
         return this.auth.get(`${timesheet}/discipline-opnote`)
     }
@@ -1050,15 +1088,21 @@ export class TimeSheetService {
     getintakeservices(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/services/${id}`)
     }
+    
 
     postintakeservices(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/services`, data)
+    }
+    postintakeRservices(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/rservices`, data)
     }
 
     updateintakeservices(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/services`, data)
     }
-
+    updateintakeRservices(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/rservices`, data)
+    }
     getplacements(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/placements/${id}`)
     }

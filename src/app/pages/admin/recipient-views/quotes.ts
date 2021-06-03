@@ -1,17 +1,23 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation, AfterViewInit } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService,qoutePlantype, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService,expectedOutcome,qoutePlantype, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { dateFormat } from '@services/global.service'
+
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
 
-import { Filters } from '@modules/modules';
+import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
+
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { RECIPIENT_OPTION } from '@modules/modules';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NotesClient } from '@client/notes';
 
 @Component({
     styleUrls:['./quotes.css'],
@@ -86,7 +92,7 @@ import { Filters } from '@modules/modules';
         margin-right:5px;
     }
     .mini{
-        width:4rem;
+        width:5rem;
     }
     .spacing > *{
         margin-right:5px;
@@ -113,6 +119,10 @@ import { Filters } from '@modules/modules';
 export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     private unsubscribe: Subject<void> = new Subject();
+
+    option: string = 'add';
+
+    quoteIdsForm: FormGroup;
     quoteForm: FormGroup;
     quoteListForm: FormGroup;
 
@@ -120,8 +130,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     periodArr: Array<string> = periodQuote;
     basePeriodArr: Array<string> = basePeriod;
 
-    size: string = 'small'
+    clientId: number;
 
+    size: string = 'small'
+    from: string = 'quote';
     quoteGeneralForm : FormGroup;
     title: string = 'Add New Quote';
     slots: any;
@@ -154,7 +166,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     dateFormat: string = dateFormat;
     date: Date = new Date();
     nzSize: string = "small"
-
     user: any;
 
     inputForm: FormGroup;
@@ -170,13 +181,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     acceptedQuotes: boolean = false;
 
     loading: boolean = false;
-
+    postLoading: boolean = false;
     quotesOpen: boolean = false;
     quoteLineOpen: boolean = false;
     activeOpen: boolean = false;
     inActiveOpen: boolean = false;
+    admitOpen: boolean = false;
+    newQuoteModal: boolean = false;
 
-
+    goalAndStrategiesmodal : boolean = false;
+    isUpdateGoal:boolean = false;
+    isUpdateStrategy:boolean = false;  
     value: any;
 
     quoteTemplateList: Array<string>;
@@ -202,7 +217,28 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     quoteLines: Array<any> = [];
 
     quoteLinesTemp: Array<any> = [];
-
+    
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+    token:any;
+    tocken: any;
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;  
+    goalsAndStratergiesForm: FormGroup;
+    reportDataParent:any;
+    stratergiesList: any;
+    pdfdata:any;
+    stratergiesForm: FormGroup;
+    strategiesmodal: boolean;
+    expecteOutcome: string[];
+    plangoalachivementlis: any;
+    personIdForStrategy: any;
+    supplements: FormGroup;
+    isSuplement: boolean = false;
+    disabledRadio:boolean = true;
+    recipientOptionOpen: any;
+    recipientOption: string;
+    RECIPIENT_OPTION = RECIPIENT_OPTION;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -211,6 +247,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
+        private http: HttpClient,
+        private sanitizer: DomSanitizer,
+        private ModalS: NzModalService,
         private cd: ChangeDetectorRef
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -234,8 +273,259 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit(): void {
+        this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.user = this.sharedS.getPicked();
         this.buildForm();
+        this.quoteGeneralForm.controls.discipline.setValue("NOT SPECIFIED");
+        this.quoteGeneralForm.controls.careDomain.setValue("NOT SPECIFIED");
+    }
+
+    buildForm() {
+
+        this.inputForm = this.formBuilder.group({
+            autoLogout: [''],
+            emailMessage: false,
+            excludeShiftAlerts: false,
+            excludeFromTravelinterpretation:false,
+            inAppMessage: false,
+            logDisplay: false,
+            pin: [''],
+            staffTimezoneOffset:[''],
+            rosterPublish: false,
+            shiftChange: false,
+            smsMessage: false
+        });
+        
+
+        this.inActiveForm = this.formBuilder.group({
+            timePeriod: []
+        });
+
+        this.activeForm = this.formBuilder.group({
+            aUpdateActivities: true,
+            aUpdateApplicable: true,
+            aCreateBookings: true,
+            aDeleteActivities: false,
+
+            bUpdateActivities: true,
+            bUpdateApplicable: true,
+            bCreateBookings: true,
+            bDeleteActivities: false,
+
+            timePeriod: []
+        });
+
+        this.quoteGeneralForm = this.formBuilder.group({
+            id:null,
+            planType:null,
+            name:null,
+            program: 'NOT SPECIFIED',
+            discipline: 'NOT SPECIFIED',
+            careDomain: 'NOT SPECIFIED',
+            starDate:null,
+            signOfDate:null,
+            reviewDate:null,
+            rememberText:null,
+            publishToApp:false
+        });
+
+        this.quoteForm = this.formBuilder.group({
+            program: null,
+            template: null,
+            no: null,
+            type: null,
+            period: [],
+            basePeriod: null,
+
+            initialBudget: null,
+            daysCalc: 365,
+            govtContrib: null,
+
+            programId: null
+
+        });
+
+        this.quoteIdsForm = this.formBuilder.group({
+            itemId: null
+        });
+
+        this.goalsAndStratergiesForm = this.formBuilder.group({
+            recordnumber:null,
+            goal:'',
+            PersonID:'45976',
+            title : "Goal Of Care : ",
+            ant   : null,
+            lastReview : null,
+            completed:null,
+            percent : null,
+            achievementIndex:'',
+            notes:'',
+            dateAchieved:null,
+            lastReviewed:null,
+            achievementDate:null,
+            achievement:'',
+        });
+
+        this.stratergiesForm = this.formBuilder.group({
+            detail:'',
+            PersonID:this.personIdForStrategy,
+            outcome:null,
+            strategyId:'',
+            serviceTypes:'',
+            recordNumber:'',
+        });
+
+        this.quoteListForm = this.formBuilder.group({
+            chargeType: null,
+            code: null,
+            displayText: null,
+            strategy: null,
+            sequenceNo: null,
+
+            quantity: null,
+            billUnit: null,
+            period: null,
+            weekNo: null,
+            itemId: null,
+
+            price: null,
+            gst: null,
+            min: null,
+            quoteValue: null,
+            quoteBudget: null,
+
+            roster: null,
+            rosterString: null,
+            notes: null,
+
+            editable: true
+        });
+
+        this.supplements = this.formBuilder.group({
+            domentica:false,
+            levelSupplement:'',
+            oxygen:false,
+            feedingSuplement:false,
+            feedingSupplement:'',
+            EACHD:false,
+            viabilitySuplement:false,
+            viabilitySupplement:'',
+            financialSup:''
+        });
+
+        this.quoteListForm.get('chargeType').valueChanges
+        .pipe(
+            switchMap(x => {   
+                console.log(x)             
+                this.resetQuotePrimary();
+                if(!x) return EMPTY;
+                return this.listS.getchargetype({
+                    program: this.quoteForm.get('program').value,
+                    index: x
+                  })
+            })
+        ).subscribe(data => {
+            this.codes = data;
+        });
+
+        this.quoteListForm.get('code').valueChanges.pipe(
+            switchMap(x => {
+                if(!x)
+                    return EMPTY;
+
+                return this.listS.getprogramproperties(x)
+            })
+        ).subscribe(data => {
+            this.recipientProperties = data;
+            
+            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None',itemId: data.recnum })
+        });
+
+        this.quoteListForm.get('roster').valueChanges.subscribe(data => {
+            this.weekly = data;
+            this.setPeriod(data);
+        });
+
+        this.quoteForm.get('program').valueChanges
+        .pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                return this.listS.getprogramlevel(x)
+            }),
+            switchMap(x => {                
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
+                    if(x.quantity && x.timeUnit == 'DAY'){
+                        this.quoteForm.patchValue({
+                            govtContrib: (x.quantity*365).toFixed(2),
+                            programId: x.recordNumber
+                        });
+                    }
+                    this.detectChanges();
+                    return this.listS.getpensionandfee();
+                }
+                this.detectChanges();
+                return EMPTY;
+            })
+        ).subscribe(data => {
+            console.log(  + data)
+            this.detectChanges();
+        });
+
+        this.supplements.get('levelSupplement').valueChanges.pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                console.log("value "+ x);
+                return this.listS.getprogramlevel(x)
+            }),
+            switchMap(x => {                
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
+                    if(x.quantity && x.timeUnit == 'DAY'){
+                        this.quoteForm.patchValue({
+                            govtContrib: (x.quantity*365).toFixed(2),
+                            programId: x.recordNumber
+                        });
+                    }
+                    this.detectChanges();
+                    return this.listS.getpensionandfee();
+                }
+                this.detectChanges();
+                return EMPTY;
+            })
+           ).subscribe(data => {
+            console.log(data)
+            this.detectChanges();
+        });
+
+        // .pipe(
+        //     switchMap(x => {
+        //         if(!x) return EMPTY;
+        //         return this.listS.getprogramlevel(x)
+        //     }),
+        //     switchMap(x => {                
+        //         this.IS_CDC = false;
+        //         if(x.isCDC){
+        //             this.IS_CDC = true;
+        //             if(x.quantity && x.timeUnit == 'DAY'){
+        //                 this.quoteForm.patchValue({
+        //                     govtContrib: (x.quantity*365).toFixed(2),
+        //                     programId: x.recordNumber
+        //                 });
+        //             }
+        //             this.detectChanges();
+        //             return this.listS.getpensionandfee();
+        //         }
+        //         this.detectChanges();
+        //         return EMPTY;
+        //     })
+        // ).subscribe(data => {
+        //     console.log(data)
+        //     this.detectChanges();
+        // });
+
     }
 
     // buildForm() {
@@ -394,16 +684,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     showAcceptModal(item: any) {
+        console.log(item.programStatus)
         if(['REFERRAL','INACTIVE'].includes(item.programStatus)){
             console.log('referral')
-            this.inActiveOpen = true;
+            this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
+            this.recipientOptionOpen = {};
+            // this.inActiveOpen = true;
         }
-
         if(['ACTIVE','ONHOLD'].includes(item.programStatus)){
             console.log('active')
             this.activeOpen = true;
         }
-
     }
 
     filterChange(data: any){
@@ -412,6 +703,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     showQuoteModal(){
         this.quotesOpen = true;
+        this.IS_CDC = false;
         this.tabFindIndex = 2; 
 
         let id = this.user.id.substr(this.user.id - 5)
@@ -423,30 +715,143 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.listS.getglobaltemplate().subscribe(data => this.quoteTemplateList = data);
         
         this.listCarePlanAndGolas();
-
+        this.quoteGeneralForm.controls.careDomain.setValue("NOT SPECIFIED");
+        this.quoteGeneralForm.controls.discipline.setValue("NOT SPECIFIED");
+        this.quoteForm.get('program').value ? this.quoteGeneralForm.controls.careDomain.setValue("NOT SPECIFIED") : this.quoteForm.get('program').value;
         this.quoteGeneralForm.patchValue({
             id: this.carePlanID.itemId,
             planType:"SUPPORT PLAN",
             name:this.quoteForm.get('template').value,
-            careDomain:"CARE DOMAIN",
-            discipline:"NOT SPECIFIED",
-            program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
             starDate   :this.date,
             signOfDate :this.date,
             reviewDate :this.date,
             publishToApp:false
+        });
+
+        // console.log(this.user)
+        this.listS.getrecipientsqlid(this.user.id).subscribe(data => {
+            this.clientId = data;
         })
+
+        this.quoteForm.reset({
+            program: null,
+            template: null,
+            no: null,
+            type: null,
+            period: [],
+            basePeriod: null,
+            programId: null
+        });
+
 
         this.detectChanges();       
     }
-
     listCarePlanAndGolas(){
         this.loading = true;
-        this.listS.getCareplangoals('45976').subscribe(data => this.goalsAndStratergies = data);
-        this.loading = false;
+        this.listS.getCareplangoals('45976').subscribe(data => {
+            this.goalsAndStratergies = data;
+            this.loading = false;
+            this.cd.markForCheck();
+        });
+    }
+    listStrtegies(personID:any){
+        this.loading = true;
+        this.listS.getStrategies(personID).subscribe(data => {
+            this.stratergiesList = data;
+            this.loading = false;
+            this.cd.markForCheck();
+        });
+    }
+    saveCarePlan(){
+
+        if(!this.isUpdateGoal){
+            this.timeS.postGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
+                takeUntil(this.unsubscribe))
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.goalAndStrategiesmodal = false;
+                    this.listCarePlanAndGolas();
+                    this.cd.markForCheck();
+                });
+        }else{
+            this.timeS.updateGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
+                takeUntil(this.unsubscribe))
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.goalAndStrategiesmodal = false;
+                    this.listCarePlanAndGolas();
+                    this.isUpdateGoal = false;
+                    this.cd.markForCheck();
+
+            });
+        }
+        this.cd.markForCheck();
+    }
+    
+
+    saveStrategy(){
+        this.stratergiesForm.controls.PersonID.setValue(this.personIdForStrategy);
+        if(!this.isUpdateStrategy){
+            this.timeS.postplanStrategy(this.stratergiesForm.value).pipe(
+                takeUntil(this.unsubscribe))
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.strategiesmodal = false;
+                    this.listStrtegies(this.personIdForStrategy);
+                    this.cd.markForCheck();
+                });
+        }else{
+            this.timeS.updateplanStrategy(this.stratergiesForm.value).pipe(
+                takeUntil(this.unsubscribe))
+                .subscribe(data => {
+                    this.globalS.sToast('Success', 'Data Inserted');
+                    this.strategiesmodal = false;
+                    this.listStrtegies(this.personIdForStrategy);
+                    this.cd.markForCheck();
+                });
+        }
         this.cd.markForCheck();
     }
 
+    showCarePlanStrategiesModal(){
+        this.goalAndStrategiesmodal = true;
+        this.personIdForStrategy = '';
+        this.listS.getgoalofcare().subscribe(data => this.goalOfCarelist = data);
+    }
+    showStrategiesModal(){
+        this.stratergiesForm.reset();
+        this.isUpdateStrategy = false;
+        this.strategiesmodal = true;
+    }
+    showEditCarePlanModal(data:any){
+        this.goalAndStrategiesmodal = true;
+        this.isUpdateGoal = true;
+        this.listStrtegies(data.recordnumber);
+        this.personIdForStrategy = data.recordnumber;
+        this.goalsAndStratergiesForm.patchValue({
+            title : "Goal Of Care : ",
+            goal  : data.goal,
+            achievementDate  : data.achievementDate,
+            dateAchieved     : data.dateAchieved,
+            lastReviewed     : data.lastReviewed,
+            achievementIndex : data.achievementIndex,
+            achievement      : data.achievement,
+            notes            : data.notes,
+            recordnumber     : data.recordnumber,
+        })
+    }
+    showEditStrategyModal(data:any){
+        this.isUpdateStrategy = true;
+        this.strategiesmodal = true;
+        this.stratergiesForm = this.formBuilder.group({
+            detail:data.strategy,
+            PersonID:data.recordnumber,
+            outcome:data.achieved,
+            strategyId:data.contractedId,
+            serviceTypes:data.dsServices,
+            recordNumber:data.recordnumber,
+        });
+    }
     quoteLineModal(){
         this.quoteLineOpen = true;
         this.quoteListForm.reset();
@@ -469,9 +874,29 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     tabFindIndex: number = 0;
     tabFindChange(index: number){
         this.tabFindIndex = index;
+        if(this.tabFindIndex == 0){
+            this.quoteGeneralForm.patchValue({
+                name:this.quoteForm.get('template').value,
+                program:this.globalS.isEmpty(this.quoteForm.get('program').value) ? "NOT SPECIFIED" : this.quoteForm.get('program').value,
+                id: this.carePlanID.itemId,
+                planType:"SUPPORT PLAN",
+                careDomain:"NOT SPECIFIED",
+                discipline:"NOT SPECIFIED",
+                starDate   :this.date,
+                signOfDate :this.date,
+                reviewDate :this.date,
+                publishToApp:false
+            })
+        }
+    }
+    tabFinderIndexbtn:number = 0;
+    tabFindChangeStrategies(index: number){
+        this.tabFinderIndexbtn = index;
     }
 
     search(user: any) {
+        console.log(user);
+
         this.loading = true;
         this.user = user;
         
@@ -491,23 +916,29 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             this.loading = false;
             this.cd.markForCheck();
         })
-        this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.detectChanges();});
+        this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.cd.markForCheck();});
     }
     populateDropdDowns() {
         
+        this.expecteOutcome = expectedOutcome;
+
         let notSpecified =["NOT SPECIFIED"];
         
-        this.listS.getdiscipline().subscribe(data => {this.disciplineList = data;
-            this.disciplineList.push(notSpecified);
+        this.listS.getdiscipline().subscribe(data => {
+            data.push('NOT SPECIFIED');
+            this.disciplineList = data;
         });
-        this.listS.getcaredomain().subscribe(data => {this.careDomainList = data;
-            this.careDomainList.push(notSpecified);
+        this.listS.getcaredomain().subscribe(data => {
+            data.push('NOT SPECIFIED');
+            this.careDomainList = data
         }); 
-        this.listS.getndiaprograms().subscribe(data => {this.programList = data;
-            this.programList.push(notSpecified);
+        this.listS.getndiaprograms().subscribe(data => {
+            data.push('NOT SPECIFIED');
+            this.programList = data;
         });
         this.listS.getcareplan().subscribe(data => {this.quotePlanType = data;})
         
+        this.listS.getplangoalachivement().subscribe(data=> this.plangoalachivementlis = data)
         this.detectChanges();
     }
     patchData(data: any) {
@@ -522,142 +953,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             shiftChange: data.shiftChange,
             smsMessage: data.smsMessage
         });
-    }
-
-
-    buildForm() {
-
-        this.inputForm = this.formBuilder.group({
-            autoLogout: [''],
-            emailMessage: false,
-            excludeShiftAlerts: false,
-            excludeFromTravelinterpretation:false,
-            inAppMessage: false,
-            logDisplay: false,
-            pin: [''],
-            staffTimezoneOffset:[''],
-            rosterPublish: false,
-            shiftChange: false,
-            smsMessage: false
-        });
-
-        this.inActiveForm = this.formBuilder.group({
-            timePeriod: []
-        });
-
-        this.activeForm = this.formBuilder.group({
-            aUpdateActivities: true,
-            aUpdateApplicable: true,
-            aCreateBookings: true,
-            aDeleteActivities: false,
-
-            bUpdateActivities: true,
-            bUpdateApplicable: true,
-            bCreateBookings: true,
-            bDeleteActivities: false,
-
-            timePeriod: []
-        });
-
-        this.quoteGeneralForm = this.formBuilder.group({
-            id:null,
-            planType:null,
-            name:null,
-            careDomain:null,
-            discipline:null,
-            program:null,
-            starDate:null,
-            signOfDate:null,
-            reviewDate:null,
-            rememberText:null,
-            publishToApp:false
-        });
-
-        this.quoteForm = this.formBuilder.group({
-            program: null,
-            template: null,
-            no: null,
-            type: null,
-            period: [],
-            basePeriod: null,
-        });
-
-
-        this.quoteListForm = this.formBuilder.group({
-            chargeType: null,
-            code: null,
-            displayText: null,
-            strategy: null,
-            sequenceNo: null,
-
-            quantity: null,
-            billUnit: null,
-            period: null,
-            weekNo: null,
-
-            price: null,
-            gst: null,
-            min: null,
-            quoteValue: null,
-            quoteBudget: null,
-
-            roster: null,
-            rosterString: null,
-            notes: null,
-
-            editable: true
-        });
-
-        this.quoteListForm.get('chargeType').valueChanges
-        .pipe(
-            switchMap(x => {                
-                this.resetQuotePrimary();
-                if(!x) return EMPTY;
-                return this.listS.getchargetype({
-                    program: this.quoteForm.get('program').value,
-                    index: x
-                  })
-            })
-        ).subscribe(data => {
-            this.codes = data;
-        });
-
-        this.quoteListForm.get('code').valueChanges.pipe(
-            switchMap(x => {
-                if(!x)
-                    return EMPTY;
-
-                return this.listS.getprogramproperties(x)
-            })
-        ).subscribe(data => {
-            this.recipientProperties = data;
-            this.quoteListForm.patchValue({ displayText: data.billText, price: data.amount, roster: 'None' })
-        });
-
-        this.quoteListForm.get('roster').valueChanges.subscribe(data => {
-            this.weekly = data;
-            this.setPeriod(data);
-        });
-
-        this.quoteForm.get('program').valueChanges
-        .pipe(
-            switchMap(x => this.listS.getprogramlevel(x)),
-            switchMap(x => {                
-                this.IS_CDC = false;
-                if(x.isCDC){
-                    this.IS_CDC = true;
-                    this.detectChanges();
-                    return this.listS.getpensionandfee();
-                }
-                this.detectChanges();
-                return EMPTY;
-            })
-        ).subscribe(data => {
-            console.log(data)
-            this.detectChanges();
-        });
-
-    }
+    }    
 
     detectChanges(){
         this.cd.markForCheck();
@@ -743,18 +1039,190 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     saveQuote(){
-        console.log(this.quoteLines);
-        console.log(this.quoteForm.value)
+        let qteLineArr: Array<QuoteLineDTO> = [];
+        let qteHeader: QuoteHeaderDTO;
+
+        const quoteForm = this.quoteForm.getRawValue();
+        // console.log(quoteForm)
+
+        console.log( this.quoteLines);
+        // console.log(qteHeader);
+
+        this.quoteLines.forEach(x => {
+            let da: QuoteLineDTO = {
+                sortOrder: 0,
+                billUnit: x.billUnit,
+                itemId: x.itemId,
+                qty: x.quantity,
+                displayText: x.displayText,
+
+                unitBillRate: x.price,
+                frequency: x.period,
+                lengthInWeeks: x.weekNo,
+                roster: x.rosterString
+            };
+            qteLineArr.push(da);
+        });
+
+        qteHeader = {
+            programId: quoteForm.programId,
+            clientId: this.clientId,
+            quoteLines: qteLineArr,
+            daysCalc: 365,
+            budget: "51808.1",
+            quoteBase: 'ANNUALLY',
+            govtContribution: 51808.10,
+            packageSupplements: '000000000000000000',
+            agreedTopUp: '0.00',
+            balanceAtQuote: '0.00',
+            clAssessedIncomeTestedFee: '0.00',
+
+            feesAccepted: 0,
+            basePension: 'SINGLE',
+            dailyBasicCareFee: '$0.00',
+            dailyIncomeTestedFee: '$0.00',
+            dailyAgreedTopUp: '$0.00',
+            quoteView: 'ANNUALLY',
+
+            personId: this.user.id
+
+        }
+        // console.log(qteHeader)
+        // return;
+        this.listS.getpostquote(qteHeader).subscribe(data => {
+                console.log(data);
+                this.globalS.sToast('Success','Quote Added');
+            }, (error: any) => {
+                console.log(error)
+                this.globalS.eToast('Error', error.error.message)
+            }) 
     }
     
     deleteCarePlanGoal(data: any){
-        this.timeS.deleteCarePlangoals(data.recordnumber)
-            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                if (data) {
-                    this.globalS.sToast('Success', 'Data Deleted!');
-                    this.listCarePlanAndGolas();
-                return;
-            }
-        });
+    this.timeS.deleteCarePlangoals(data.recordnumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+                this.globalS.sToast('Success', 'Data Deleted!');
+                this.listCarePlanAndGolas();
+                this.cd.markForCheck();
+            return;
+         }
+         this.cd.markForCheck();
+      });
     }
+
+    deleteCarePlanStrategy(data: any){
+        this.timeS.deleteCarePlanStrategy(data.recordnumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+                this.globalS.sToast('Success', 'Data Deleted!');
+                this.listStrtegies(this.personIdForStrategy);
+                this.cd.markForCheck();
+            return;
+         }
+         this.cd.markForCheck();
+      });
+    }
+
+      handleOkTop(type:any) {
+        this.generatePdf(type);
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+      }
+      handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+      }
+      generatePdf(type:any){
+        this.drawerVisible = true;
+        this.loading = true;
+        if(type==1)
+        var fQuery = "SELECT RecordNumber as recordnumber,CONVERT(varchar, [Date1],105) as Field1,CONVERT(varchar, [Date2],105) as Field2,CONVERT(varchar, [DateInstalled],105) as Field3,[State] as Field4, User1 AS Field5 FROM HumanResources WHERE PersonID = '45976' AND [Type] = 'CAREPLANGOALS' ORDER BY Name";
+        else
+        var fQuery = "SELECT RecordNumber, Notes AS Field1, Address1 AS Field2, [State] AS Field3, User1 AS Field4 FROM HumanResources WHERE [PersonID] = '45976' AND [GROUP] = 'PLANSTRATEGY'";
+        
+        
+        const headerDict = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+        
+        const requestOptions = {
+          headers: new HttpHeaders(headerDict)
+        };
+        
+        if(type ==1 ){
+             this.pdfdata = {
+                "template": { "_id": "0RYYxAkMCftBE9jc" },
+                "options": {
+                  "reports": { "save": false },
+                  "txtTitle": "Care Plan Goals List",
+                  "sql": fQuery,
+                  "userid":this.tocken.user,
+                  "head1" : "Ant Complete",
+                  "head2" : "Last Review",
+                  "head3" : "Completed",
+                  "head4" : "Percent",
+                  "head5" : "Goal",
+                }
+              }
+        }else{
+            this.pdfdata = {
+                "template": { "_id": "0RYYxAkMCftBE9jc" },
+                "options": {
+                  "reports": { "save": false },
+                  "txtTitle": "Care Plan Strategies List",
+                  "sql": fQuery,
+                  "userid":this.tocken.user,
+                  "head1" : "Strategy",
+                  "head2" : "Achieved",
+                  "head3" : "Contracted ID",
+                  "head4" : "DS Services",
+                }
+    
+              }
+        }
+        
+
+        this.http.post(this.rpthttp, JSON.stringify(this.pdfdata), { headers: requestOptions.headers, responseType: 'blob' })
+        .subscribe((blob: any) => {
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.loading = false;
+          this.detectChanges();
+        }, err => {
+          console.log(err);
+          this.loading = false;
+          this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+              this.drawerVisible = false;
+            },
+          });
+        });
+        this.detectChanges();
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
+      }
+    handlegoalsStarCancel(){
+        this.goalAndStrategiesmodal = false;
+        this.isUpdateGoal = false;
+        this.personIdForStrategy = '';
+    }
+    handleStarCancel(){
+        this.strategiesmodal = false;
+        this.isUpdateStrategy = false;
+    }
+
+    record: any;
+    updateQuoteModal(data: any){
+        console.log(  data);
+        this.option = 'update';
+        this.record = data.recordNumber;
+        this.newQuoteModal = !this.newQuoteModal
+    }
+
 }

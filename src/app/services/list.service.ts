@@ -21,6 +21,11 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    printquote(data: any):Observable<any>{
+        // return this.http.post(`${fileV2}/download-document-remote`, data, { responseType: 'blob', reportProgress: true });
+        return this.http.post(`${list}/quotes-print`, data,  { responseType: 'blob', reportProgress: true })
+    }
+
     deletetempdoc(docId: any):Observable<any>{
         return this.auth.delete(`${list}/delete-temp-doc/${docId}`);
     }

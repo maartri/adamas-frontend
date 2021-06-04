@@ -239,6 +239,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     recipientOptionOpen: any;
     recipientOption: string;
     RECIPIENT_OPTION = RECIPIENT_OPTION;
+
+    document_print_quote: any;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -894,6 +897,24 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.tabFinderIndexbtn = index;
     }
 
+    print(){
+        this.listS.printquote(this.document_print_quote)
+            .subscribe(blob => {
+                var file = new Blob([blob], {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+                console.log(file);
+                
+                let data = window.URL.createObjectURL(file);
+                let link = document.createElement('a');
+                link.href = data;
+                link.download = "quotes.docx";
+                link.click();
+        
+                setTimeout(() => {
+                  window.URL.revokeObjectURL(data);
+                }, 100);
+            });
+    }
+
     search(user: any) {
         console.log(user);
 
@@ -911,11 +932,14 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             filters: this.filters
         }
 
+        this.document_print_quote = data;
+
         this.listS.getlistquotes(data).subscribe(data => {
             this.tableData = data;
             this.loading = false;
             this.cd.markForCheck();
         })
+
         this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.cd.markForCheck();});
     }
     populateDropdDowns() {

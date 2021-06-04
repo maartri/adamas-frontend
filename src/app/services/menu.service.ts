@@ -48,11 +48,11 @@ export class MenuService {
         GetlistRecipientAbsenses(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/recipientAbsenses/${is_where}`)
         }
-        Getlistequipments():Observable<any>{
-            return this.auth.get(`${menu}/equipments`)
+        Getlistequipments(is_where:boolean):Observable<any>{
+            return this.auth.get(`${menu}/equipments/${is_where}`)
         }
-        GetlistagencyPayTypes():Observable<any>{
-            return this.auth.get(`${menu}/agencyPayTypes`)
+        GetlistagencyPayTypes(is_where:boolean):Observable<any>{
+            return this.auth.get(`${menu}/agencyPayTypes/${is_where}`)
         }
         getlistFundingSource(is_where: boolean): Observable<any>{
             return this.auth.get(`${menu}/fundingSource/${is_where}`)
@@ -179,8 +179,14 @@ export class MenuService {
         deleteEquipmentslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/Equipments/${recordNo}`)
         }
+        activateEquipmentslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/Equipments/${recordNo}`)
+        }
         deletePayTypeslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/PayTypes/${recordNo}`)
+        }
+        activatePayTypeslist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/configuration/activate/PayTypes/${recordNo}`)
         }
         deleteProgarmPackageslist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/ProgarmPackages/${recordNo}`)

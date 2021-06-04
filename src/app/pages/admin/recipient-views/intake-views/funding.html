@@ -162,7 +162,7 @@
                             </div>
                             <div nz-col nzSpan="12" class="space-top" *ngIf="this.packageDetailForm.get('recurant').value">
                                 <label for="Commencing">Commencing</label>
-                                <nz-date-picker  [nzSize]="'small'"   formControlName="commencing_date" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker  [nzSize]="'small'"   formControlName="alertStartDate" [nzFormat]="dateFormat"></nz-date-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="12" style="padding: 0px 20px;" class="space-top">
@@ -171,10 +171,10 @@
                                     <label nzFor="Allowed"><b>Allowed:</b></label>
                                 </div>
                                 <div nz-col nzSpan="10" class="pad-r-5">
-                                    <input nz-input [nzSize]="'small'" Disabled="!this.packageDetailForm.get('commencing_date').value" formControlName="totalAllocation" />
+                                    <input nz-input [nzSize]="'small'" Disabled="!this.packageDetailForm.get('alertStartDate').value" formControlName="aP_BasedOn" />
                                 </div>
                                 <div nz-col nzSpan="6">
-                                    <label nz-checkbox  formControlName="shared" nzDisabled="this.packageDetailForm.get('commencing_date').value" >Shared</label>
+                                    <label nz-checkbox  formControlName="shared" nzDisabled="this.packageDetailForm.get('alertStartDate').value" >Shared</label>
                                 </div>
                             </div>
                             <div nz-col nzSpan="18">
@@ -183,7 +183,7 @@
                                         <label nzFor="Yellow"><b>Yellow:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="AP_YellowQty" Disabled="!this.packageDetailForm.get('commencing_date').value" />
+                                        <input nz-input [nzSize]="'small'" formControlName="aP_YellowQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="24" class="mrg-btm">
@@ -191,7 +191,7 @@
                                         <label nzFor="green"><b>Green:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="AP_OrangeQty" Disabled="!this.packageDetailForm.get('commencing_date').value" />
+                                        <input nz-input [nzSize]="'small'" formControlName="aP_OrangeQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="24" class="mrg-btm">
@@ -199,7 +199,7 @@
                                         <label nzFor="Red"><b>Red:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="AP_RedQty" Disabled="!this.packageDetailForm.get('commencing_date').value" />
+                                        <input nz-input [nzSize]="'small'" formControlName="aP_RedQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
                                     </div>
                                 </div>
                             </div>
@@ -226,13 +226,13 @@
                                 <tbody>
                                     <tr>
                                         <td>Basic Care Fee</td>
-                                        <td><input nz-input [nzSize]="'small'" formControlName="dailyBasicFee" /></td>
-                                        <td><input nz-input [nzSize]="'small'" formControlName="monthlyBasicFee" /></td>  
+                                        <td><input nz-input [nzSize]="'small'" formControlName="dailyBasicCareFee" /></td>
+                                        <td><input nz-input [nzSize]="'small'" formControlName="clientCont" /></td>  
                                    </tr>
                                    <tr>
                                         <td>Income Tested Fee</td>
-                                        <td><input nz-input [nzSize]="'small'" formControlName="dailyTestedFee" /></td>
-                                        <td><input nz-input [nzSize]="'small'" formControlName="monthlyTestedFee" /></td>  
+                                        <td><input nz-input [nzSize]="'small'" formControlName="dailyIncomeTestedFee" /></td>
+                                        <td><input nz-input [nzSize]="'small'" formControlName="incomeTestedFee" /></td>  
                                    </tr>
                                 </tbody>
                             </nz-table>
@@ -241,13 +241,13 @@
                                     <label>Contingency:</label>
                                 </div>
                                 <div nz-col nzSpan="3" class="pad-r-5">
-                                    <label><input nz-input [nzSize]="'small'" formControlName="contingency" /></label>
+                                    <label><input nz-input [nzSize]="'small'" formControlName="contingency_Start" /></label>
                                 </div>
                                 <div nz-col nzSpan="4" class="pad-r-5">
                                     <label>Per Day Billing To:</label>
                                 </div>
                                 <div nz-col nzSpan="3" class="pad-r-5">
-                                    <label><input nz-input [nzSize]="'small'" formControlName="perDayBilling" /></label>
+                                    <label><input nz-input [nzSize]="'small'" formControlName="contingency" /></label>
                                 </div>
                                 <div nz-col nzSpan="4" class="pad-r-5">
                                     <label>Currently Banked:</label>
@@ -275,7 +275,7 @@
                                 <label nzFor="Package Term:">Package Term:</label>
                             </div>
                             <div nz-col nzSpan="16" class="text-right pad-r-5">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="programSummary"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="packageTermType"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let term of packageTerm" [nzLabel]="term" [nzValue]="term"></nz-option>
                                 </nz-select>
                             </div>
@@ -394,7 +394,7 @@
                                 Financial Hardship Supplement 
                             </div>
                             <div nz-col nzSpan="4" class="text-right pad-r-5">
-                                <div> <input nz-input  nzSize="small" formControlName="financialSup" /></div>
+                                <div> <input nz-input  nzSize="small" formControlName="hardShipSupplement" /></div>
                             </div>
                             <div nz-col nzSpan="4" class="text-right pad-r-5">
                                 <label>Per Day</label>
@@ -407,8 +407,14 @@
     </div>
     <div *nzModalFooter>
         <ng-container>
+            <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="getPayout()" *ngIf="IS_CDC">
+                <span>Get Payout</span>
+            </button>
             <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
                 <span>Save</span>
+            </button>
+            <button nz-button nzType="default" (click)="handleCancel()">
+                <span>Cancel</span>
             </button>
         </ng-container>
     </div>

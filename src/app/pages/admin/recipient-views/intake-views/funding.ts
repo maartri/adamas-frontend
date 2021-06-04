@@ -111,15 +111,15 @@ export class IntakeFunding implements OnInit, OnDestroy {
             this.listS.getfundingprioritylist().pipe(takeUntil(this.unsubscribe)).subscribe(data => this.fundingprioritylist = data)
             
             console.log(this.programsNames);
-            this.period = ['ANNUAL','MONTH','QUARTER'];
-            this.levels = ['Level 1','Level 2','Level 3','Level 4','STRC'];
-            this.cycles = fundingDropDowns.cycle;
+            this.period        = ['ANNUAL','MONTH','QUARTER'];
+            this.levels        = ['Level 1','Level 2','Level 3','Level 4','STRC'];
+            this.cycles        = fundingDropDowns.cycle;
             this.budgetEnforcement = ['HARD','SOFT'];
-            this.alerts   = fundingDropDowns.alerts;
-            this.packageTerm = fundingDropDowns.packageTerm;
-            this.type = fundingDropDowns.type;
-            this.status = fundingDropDowns.status;
-            this.DefPeriod = fundingDropDowns.period;
+            this.alerts        = fundingDropDowns.alerts;
+            this.packageTerm   = fundingDropDowns.packageTerm;
+            this.type          = fundingDropDowns.type;
+            this.status        = fundingDropDowns.status;
+            this.DefPeriod     = fundingDropDowns.period;
             this.expireUsing   = fundingDropDowns.expireUsing;
             this.unitsArray    = fundingDropDowns.perUnit;
             this.levels        = fundingDropDowns.levels;
@@ -143,26 +143,26 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 aP_CostType:'',
                 packg_balance:false,
                 recurant:false,
-                commencing_date:'',
+                alertStartDate:'',
                 aP_Period:'',
-                totalAllocation:'',
-                AP_YellowQty:'',
-                AP_OrangeQty:'',
-                AP_RedQty:'',
+                aP_BasedOn:'',
+                aP_YellowQty:'',
+                aP_OrangeQty:'',
+                aP_RedQty:'',
                 shared:false,
                 startDate:'',
                 expiryDate:'',
                 reminderDate:'',
-                programSummary:'',
+                packageTermType:'',
                 autoRenew:false,
                 rolloverRemainder:false,
                 deactivateOnExpiry:false,
-                dailyBasicFee:'',
-                monthlyBasicFee:'',
-                dailyTestedFee:'$0.00',
-                monthlyTestedFee:'$0.00',
+                dailyBasicCareFee:'$0.00',
+                clientCont:'$1234',
+                dailyIncomeTestedFee:'$0.00',
+                incomeTestedFee:'$1234',
+                contingency_Start:'',
                 contingency:'',
-                perDayBilling:'',
                 currentlyBanked:'',
                 recordNumber:'',
             });
@@ -175,22 +175,22 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 EACHD:false,
                 viabilitySuplement:false,
                 viabilitySupplement:'',
-                financialSup:''
+                hardShipSupplement:''
             });
             this.packageDetailForm.get('aP_CostType').valueChanges.subscribe(data => {
                 this.packageDetailForm.get('recurant').enable()
             });
-            this.packageDetailForm.get('commencing_date').valueChanges.subscribe(data => {
+            this.packageDetailForm.get('alertStartDate').valueChanges.subscribe(data => {
                 if(this.globalS.isEmpty(data)){
-                    this.packageDetailForm.get('totalAllocation').disable()
-                    this.packageDetailForm.get('AP_RedQty').disable()
-                    this.packageDetailForm.get('AP_OrangeQty').disable()
-                    this.packageDetailForm.get('AP_YellowQty').disable()
+                    this.packageDetailForm.get('aP_BasedOn').disable()
+                    this.packageDetailForm.get('aP_RedQty').disable()
+                    this.packageDetailForm.get('aP_OrangeQty').disable()
+                    this.packageDetailForm.get('aP_YellowQty').disable()
                 }else{
-                    this.packageDetailForm.get('totalAllocation').enable()
-                    this.packageDetailForm.get('AP_RedQty').enable()
-                    this.packageDetailForm.get('AP_OrangeQty').enable()
-                    this.packageDetailForm.get('AP_YellowQty').enable()
+                    this.packageDetailForm.get('aP_BasedOn').enable()
+                    this.packageDetailForm.get('aP_RedQty').enable()
+                    this.packageDetailForm.get('aP_OrangeQty').enable()
+                    this.packageDetailForm.get('aP_YellowQty').enable()
                 }
             });
             
@@ -284,6 +284,8 @@ export class IntakeFunding implements OnInit, OnDestroy {
             
             showEditModal(index: number) {
                 this.addOREdit = 2;
+
+            
                 this.timeS.getprogramdetails(index).subscribe(data=>{
                     this.selectedProgram = data;
                     this.cd.markForCheck();
@@ -299,9 +301,30 @@ export class IntakeFunding implements OnInit, OnDestroy {
                         timeUnit:this.selectedProgram.timeUnit,
                         aP_CostType:this.selectedProgram.aP_CostType,
                         aP_Period:this.selectedProgram.aP_Period,
-                        programSummary:this.selectedProgram.programSummary,
+                        aP_YellowQty:this.selectedProgram.aP_YellowQty,
+                        aP_OrangeQty:this.selectedProgram.aP_OrangeQty,
+                        aP_RedQty:this.selectedProgram.aP_RedQty,
+                        aP_BasedOn:this.selectedProgram.aP_BasedOn,
+                        alertStartDate:this.selectedProgram.alertStartDate,
+                        dailyBasicCareFee:this.selectedProgram.dailyBasicCareFee,
+                        clientCont:this.selectedProgram.clientCont,
+                        dailyIncomeTestedFee:this.selectedProgram.dailyIncomeTestedFee,
+                        incomeTestedFee:this.selectedProgram.incomeTestedFee,
+                        startDate:this.selectedProgram.startDate,
+                        reminderDate:this.selectedProgram.reminderDate,
+                        expiryDate:this.selectedProgram.expiryDate,
+                        autoRenew:this.selectedProgram.autoRenew,
+                        recurant:this.globalS.isEmpty(this.selectedProgram.aP_Period) ? false : true,
+                        rolloverRemainder:this.selectedProgram.rolloverRemainder,
+                        deactivateOnExpiry:this.selectedProgram.deactivateOnExpiry,
+                        packageTermType:this.selectedProgram.packageTermType,
+                        contingency_Start:this.selectedProgram.contingency_Start,
+                        contingency:this.selectedProgram.contingency,
                         recordNumber:this.selectedProgram.recordNumber,
                     });
+                    this.packageDetailForm.patchValue({
+                        hardShipSupplement:this.selectedProgram.hardShipSupplement,
+                    })
                 });
                 this.modalOpen = true;
             }
@@ -309,7 +332,9 @@ export class IntakeFunding implements OnInit, OnDestroy {
             delete(index: number) {
                 
             }
-            
+            getPayout(){
+
+            }
             handleCancel() {
                 this.modalOpen = false;   
             }

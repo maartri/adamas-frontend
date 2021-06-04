@@ -202,7 +202,7 @@ export class IntakeAlerts implements OnInit, OnDestroy {
     }
 
     showAddModal() {
-        this.addOREdit = 0;
+        this.addOREdit = 1;
         this.clearForm();
         this.alertOpen = true;
     }
@@ -222,7 +222,7 @@ export class IntakeAlerts implements OnInit, OnDestroy {
     }
 
     updatecompetency(data: any){
-        this.addOREdit = 1;
+        this.addOREdit = 0;
 
         this.alertOpen = true;
 

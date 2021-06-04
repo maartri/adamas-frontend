@@ -42,6 +42,8 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
 
     isUpdate: boolean = false;
 
+    addOREdit: number;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -124,12 +126,14 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     showAddModal() {
         this.resetModal();      
         this.modalOpen = true;
+        this.addOREdit = 1;
     }
 
     showEditModal(index: any) {
         this.isUpdate = true;
         this.current = 0;
         this.modalOpen = true;
+        this.addOREdit = 0;
 
         const { 
             recordNumber, 

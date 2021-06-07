@@ -60,7 +60,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   isUpdate: boolean = false;
   check: boolean = false;
   title:string = "Add New Facility/Location";
-  whereString:string = " WHERE ( [group] = 'PROGRAMS' ) ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
   inputValue: string = 'NEW OUTLET';
   private unsubscribe: Subject<void> = new Subject();
   tocken: any;
@@ -251,7 +251,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         let adress             = this.globalS.isValueNull(group.get('adress').value);
         let subrub             = this.globalS.isValueNull(group.get('subrub').value);
         let sla                = this.globalS.isValueNull(group.get('sla').value);
-        let name               = this.globalS.isValueNull(group.get('name').value);
+        let name               = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let outletid           = this.globalS.isValueNull(group.get('outletid').value);
         let postcode           = this.globalS.isValueNull(group.get('postcode').value);
 
@@ -329,7 +329,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         let adress             = this.globalS.isValueNull(group.get('adress').value);
         let subrub             = this.globalS.isValueNull(group.get('subrub').value);
         let sla                = this.globalS.isValueNull(group.get('sla').value);
-        let name               = this.globalS.isValueNull(group.get('name').value);
+        let name               = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let outletid           = this.globalS.isValueNull(group.get('outletid').value);
         let postcode           = this.globalS.isValueNull(group.get('postcode').value);
         let jurisdiction       = this.globalS.isValueNull(group.get('fundingjunc').value);
@@ -426,7 +426,7 @@ export class CentrFacilityLocationComponent implements OnInit {
       }
       this.numbers = arr;      
       this.loading = true;
-      this.menuS.getlistcenterFacilityLoc().subscribe(data => {
+      this.menuS.getlistcenterFacilityLoc(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
@@ -451,10 +451,10 @@ export class CentrFacilityLocationComponent implements OnInit {
     }
     fetchAll(e){
       if(e.target.checked){
-        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) ";
+        this.whereString = "";
         this.loadData();
       }else{
-        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate()) ) ";
+        this.whereString = " Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
         this.loadData();
       }
     }
@@ -470,6 +470,18 @@ export class CentrFacilityLocationComponent implements OnInit {
         }
       });
     }
+    active(data:any){
+      const group = this.inputForm;
+      this.menuS.activateCenterFacitlityLoclist(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });      
+    }
+    
     onCheckboxChange(option, event) {
       if(event.target.checked){
         this.checkedList.push(option.description);
@@ -576,7 +588,7 @@ export class CentrFacilityLocationComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [NAME]) AS Field1,[Name] as Field2, ServiceOutletID as Field3, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Field4 FROM CSTDAOutlets WHERE ( EndDate is NULL OR EndDate >= Getdate()) ORDER BY [NAME]";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [NAME]) AS Field1,[Name] as Field2, ServiceOutletID as Field3, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Field4 FROM CSTDAOutlets WHERE "+this.whereString+" ORDER BY [NAME]";
       
       const headerDict = {
         'Content-Type': 'application/json',

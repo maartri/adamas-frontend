@@ -85,8 +85,8 @@ export class MenuService {
         getlistactivityGroups(is_where:boolean):Observable<any>{
             return this.auth.get(`${menu}/activityGroups/${is_where}`)
         }
-        getlistcenterFacilityLoc():Observable<any>{
-            return this.auth.get(`${menu}/centerFacilityLoc`)
+        getlistcenterFacilityLoc(is_where:boolean):Observable<any>{
+            return this.auth.get(`${menu}/centerFacilityLoc/${is_where}`)
         }
         getlistserviceNotesCat():Observable<any>{
             return this.auth.get(`${menu}/serviceNotesCat`)
@@ -208,6 +208,9 @@ export class MenuService {
         }
         deleteCenterFacilityLoclist(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/configuration/delete/CenterFacilityLoc/${recordNo}`)
+        }
+        activateCenterFacitlityLoclist(recordNo: number): Observable<any>{
+            return this.auth.delete(`${menu}/configuration/activate/centerFacilityLoc/${recordNo}`)
         }
         
 

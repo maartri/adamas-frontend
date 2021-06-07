@@ -322,8 +322,10 @@ export class IntakeFunding implements OnInit, OnDestroy {
                         contingency:this.selectedProgram.contingency,
                         recordNumber:this.selectedProgram.recordNumber,
                     });
-                    this.packageDetailForm.patchValue({
+                    this.supplements.patchValue({
                         hardShipSupplement:this.selectedProgram.hardShipSupplement,
+                        levelSupplement:this.selectedProgram.packageLevel,
+                        domentica:true
                     })
                 });
                 this.modalOpen = true;

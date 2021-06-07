@@ -49,6 +49,7 @@ export class IntakeFunding implements OnInit, OnDestroy {
     type: string[];
     fundingprioritylist: any;
     IS_CDC: boolean;
+    selectedProgram: any;
     
     constructor(
         private timeS: TimeSheetService,
@@ -110,15 +111,15 @@ export class IntakeFunding implements OnInit, OnDestroy {
             this.listS.getfundingprioritylist().pipe(takeUntil(this.unsubscribe)).subscribe(data => this.fundingprioritylist = data)
             
             console.log(this.programsNames);
-            this.period = ['ANNUAL','MONTH','QUARTER'];
-            this.levels = ['Level 1','Level 2','Level 3','Level 4','STRC'];
-            this.cycles = fundingDropDowns.cycle;
+            this.period        = ['ANNUAL','MONTH','QUARTER'];
+            this.levels        = ['Level 1','Level 2','Level 3','Level 4','STRC'];
+            this.cycles        = fundingDropDowns.cycle;
             this.budgetEnforcement = ['HARD','SOFT'];
-            this.alerts   = fundingDropDowns.alerts;
-            this.packageTerm = fundingDropDowns.packageTerm;
-            this.type = fundingDropDowns.type;
-            this.status = fundingDropDowns.status;
-            this.DefPeriod = fundingDropDowns.period;
+            this.alerts        = fundingDropDowns.alerts;
+            this.packageTerm   = fundingDropDowns.packageTerm;
+            this.type          = fundingDropDowns.type;
+            this.status        = fundingDropDowns.status;
+            this.DefPeriod     = fundingDropDowns.period;
             this.expireUsing   = fundingDropDowns.expireUsing;
             this.unitsArray    = fundingDropDowns.perUnit;
             this.levels        = fundingDropDowns.levels;
@@ -126,42 +127,44 @@ export class IntakeFunding implements OnInit, OnDestroy {
         }
         buildForm() {
             this.packageDetailForm = this.formBuilder.group({
-                programname:'',
-                level:'',
-                type:'',
-                status:'',
+                personID:'',
+                program:'',
+                packageLevel:'',
+                packageType:'',
+                programStatus:'',
                 expireUsing:'',
                 priority:'',
                 notes:'',
-                expire_amount:'',
-                expire_costType:'',
-                expire_unit:'',
-                expire_period:'',
-                expire_length:'',
-                p_alert_type:'',
+                quantity:'',
+                itemUnit:'',
+                perUnit:'',
+                period:'',
+                timeUnit:'',
+                aP_CostType:'',
                 packg_balance:false,
                 recurant:false,
-                commencing_date:null,
-                p_alert_period:'',
-                allowed:'',
-                yellow:'',
-                green:'',
-                red:'',
+                alertStartDate:'',
+                aP_Period:'',
+                aP_BasedOn:'',
+                aP_YellowQty:'',
+                aP_OrangeQty:'',
+                aP_RedQty:'',
                 shared:false,
-                startFunding:null,
-                endFunding:null,
-                reminderDate:null,
-                packageTerm:'',
+                startDate:'',
+                expiryDate:'',
+                reminderDate:'',
+                packageTermType:'',
                 autoRenew:false,
-                rolloverFunding:false,
-                deactivateExpiry:false,
-                dailyBasicFee:'',
-                monthlyBasicFee:'',
-                dailyTestedFee:'$0.00',
-                monthlyTestedFee:'$0.00',
+                rolloverRemainder:false,
+                deactivateOnExpiry:false,
+                dailyBasicCareFee:'$0.00',
+                clientCont:'$1234',
+                dailyIncomeTestedFee:'$0.00',
+                incomeTestedFee:'$1234',
+                contingency_Start:'',
                 contingency:'',
-                perDayBilling:'',
                 currentlyBanked:'',
+                recordNumber:'',
             });
             this.supplements = this.formBuilder.group({
                 domentica:false,
@@ -172,26 +175,26 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 EACHD:false,
                 viabilitySuplement:false,
                 viabilitySupplement:'',
-                financialSup:''
+                hardShipSupplement:''
             });
-            this.packageDetailForm.get('p_alert_type').valueChanges.subscribe(data => {
+            this.packageDetailForm.get('aP_CostType').valueChanges.subscribe(data => {
                 this.packageDetailForm.get('recurant').enable()
             });
-            this.packageDetailForm.get('commencing_date').valueChanges.subscribe(data => {
+            this.packageDetailForm.get('alertStartDate').valueChanges.subscribe(data => {
                 if(this.globalS.isEmpty(data)){
-                this.packageDetailForm.get('allowed').disable()
-                this.packageDetailForm.get('red').disable()
-                this.packageDetailForm.get('green').disable()
-                this.packageDetailForm.get('yellow').disable()
+                    this.packageDetailForm.get('aP_BasedOn').disable()
+                    this.packageDetailForm.get('aP_RedQty').disable()
+                    this.packageDetailForm.get('aP_OrangeQty').disable()
+                    this.packageDetailForm.get('aP_YellowQty').disable()
                 }else{
-                this.packageDetailForm.get('allowed').enable()
-                this.packageDetailForm.get('red').enable()
-                this.packageDetailForm.get('green').enable()
-                this.packageDetailForm.get('yellow').enable()
+                    this.packageDetailForm.get('aP_BasedOn').enable()
+                    this.packageDetailForm.get('aP_RedQty').enable()
+                    this.packageDetailForm.get('aP_OrangeQty').enable()
+                    this.packageDetailForm.get('aP_YellowQty').enable()
                 }
             });
             
-            this.packageDetailForm.get('programname').valueChanges
+            this.packageDetailForm.get('program').valueChanges
             .pipe(
                 switchMap(x => {
                     if(!x) return EMPTY;
@@ -209,47 +212,47 @@ export class IntakeFunding implements OnInit, OnDestroy {
                         }
                         this.type.push(typeOpt);
                         
-                        this.packageDetailForm.get('level').disable()
-                        this.packageDetailForm.controls.level.setValue(x.level);
-                        this.packageDetailForm.get('expire_amount').disable()
-                        this.packageDetailForm.controls.expire_amount.setValue(x.quantity);
-                        this.packageDetailForm.get('type').disable()
-                        this.packageDetailForm.controls.type.setValue(typeOpt);
-                        this.packageDetailForm.get('expire_costType').disable()
-                        this.packageDetailForm.controls.expire_costType.setValue('DOLLARS');
-                        this.packageDetailForm.get('expire_unit').disable()
-                        this.packageDetailForm.controls.expire_unit.setValue('PER');
-                        this.packageDetailForm.get('expire_period').disable()
-                        this.packageDetailForm.controls.expire_period.setValue('DAY');
+                        this.packageDetailForm.get('packageLevel').disable()
+                        this.packageDetailForm.controls.packageLevel.setValue(x.level);
+                        this.packageDetailForm.get('quantity').disable()
+                        this.packageDetailForm.controls.quantity.setValue(x.quantity);
+                        this.packageDetailForm.get('packageType').disable()
+                        this.packageDetailForm.controls.packageType.setValue(typeOpt);
+                        this.packageDetailForm.get('itemUnit').disable()
+                        this.packageDetailForm.controls.itemUnit.setValue('DOLLARS');
+                        this.packageDetailForm.get('perUnit').disable()
+                        this.packageDetailForm.controls.perUnit.setValue('PER');
+                        this.packageDetailForm.get('period').disable()
+                        this.packageDetailForm.controls.period.setValue('DAY');
                         this.packageDetailForm.get('expireUsing').disable()
                         this.packageDetailForm.controls.expireUsing.setValue('CHARGE RATE')
                         this.detectChanges();
                         return this.listS.getlevelRate(x.level);
                     }
-                    else{
-                        this.packageDetailForm.controls.expire_amount.setValue(null);
-                        this.packageDetailForm.get('expire_amount').enable()
-                        this.packageDetailForm.controls.type.setValue(null)
-                        this.packageDetailForm.get('type').enable()
-                        this.packageDetailForm.controls.expireUsing.setValue(null)
-                        this.packageDetailForm.get('expireUsing').enable()
-                        this.packageDetailForm.controls.level.setValue(null)
-                        this.packageDetailForm.get('level').enable()
-                        this.packageDetailForm.controls.expire_costType.setValue(null);
-                        this.packageDetailForm.get('expire_unit').enable()
-                        this.packageDetailForm.controls.expire_unit.setValue(null);
-                        this.packageDetailForm.get('expire_period').enable()
-                        this.packageDetailForm.controls.expire_period.setValue(null);
-                        this.packageDetailForm.get('expireUsing').enable()
-                        this.packageDetailForm.controls.expireUsing.setValue(null)
-                        this.packageDetailForm.get('expire_costType').enable()
-                        this.packageDetailForm.controls.expire_costType.setValue(null)
-                    }
+                    // else{
+                    //     this.packageDetailForm.controls.quantity.setValue('2');
+                    //     this.packageDetailForm.get('quantity').enable()
+                    //     this.packageDetailForm.controls.packageType.setValue('3')
+                    //     this.packageDetailForm.get('packageType').enable()
+                    //     this.packageDetailForm.controls.expireUsing.setValue('4')
+                    //     this.packageDetailForm.get('expireUsing').enable()
+                    //     this.packageDetailForm.controls.packageLevel.setValue('5')
+                    //     this.packageDetailForm.get('packageLevel').enable()
+                    //     this.packageDetailForm.controls.itemUnit.setValue(null);
+                    //     this.packageDetailForm.get('perUnit').enable()
+                    //     this.packageDetailForm.controls.perUnit.setValue(null);
+                    //     this.packageDetailForm.get('period').enable()
+                    //     this.packageDetailForm.controls.period.setValue(null);
+                    //     this.packageDetailForm.get('expireUsing').enable()
+                    //     this.packageDetailForm.controls.expireUsing.setValue(null)
+                    //     this.packageDetailForm.get('itemUnit').enable()
+                    //     this.packageDetailForm.controls.itemUnit.setValue(null)
+                    // }
                     this.detectChanges();
                     return EMPTY;
                 })
                 ).subscribe(data => {
-                    this.packageDetailForm.controls.expire_amount.setValue(data.levelRate);
+                    this.packageDetailForm.controls.quantity.setValue(data.levelRate);
                     this.detectChanges();
                 });
             }
@@ -258,17 +261,82 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 this.cd.detectChanges();
             }
             save() {
-                
+                this.packageDetailForm.controls['personID'].setValue(this.user.id)
+                const packageDetail = this.packageDetailForm.value;
+
+                if(this.addOREdit == 1){
+                    this.timeS.postprogramdetails(packageDetail)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Package Details Added');
+                        this.search();
+                        // this.handleCancel();
+                    });
+                }
+                if(this.addOREdit == 2){
+                    this.timeS.updateprogramdetails(packageDetail)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Package Details Added');
+                        this.search();
+                        // this.handleCancel();
+                    });
+                }
             }
             
             showEditModal(index: number) {
-                
+                this.addOREdit = 2;
+
+            
+                this.timeS.getprogramdetails(index).subscribe(data=>{
+                    this.selectedProgram = data;
+                    this.cd.markForCheck();
+                    this.packageDetailForm.patchValue({
+                        program:this.selectedProgram.program,
+                        programStatus:this.selectedProgram.programStatus,
+                        packageType:this.selectedProgram.packageType,
+                        expireUsing:this.selectedProgram.expireUsing,
+                        perUnit:this.selectedProgram.perUnit,
+                        period:this.selectedProgram.period,
+                        itemUnit:this.selectedProgram.itemUnit,
+                        quantity:this.selectedProgram.quantity,
+                        timeUnit:this.selectedProgram.timeUnit,
+                        aP_CostType:this.selectedProgram.aP_CostType,
+                        aP_Period:this.selectedProgram.aP_Period,
+                        aP_YellowQty:this.selectedProgram.aP_YellowQty,
+                        aP_OrangeQty:this.selectedProgram.aP_OrangeQty,
+                        aP_RedQty:this.selectedProgram.aP_RedQty,
+                        aP_BasedOn:this.selectedProgram.aP_BasedOn,
+                        alertStartDate:this.selectedProgram.alertStartDate,
+                        dailyBasicCareFee:this.selectedProgram.dailyBasicCareFee,
+                        clientCont:this.selectedProgram.clientCont,
+                        dailyIncomeTestedFee:this.selectedProgram.dailyIncomeTestedFee,
+                        incomeTestedFee:this.selectedProgram.incomeTestedFee,
+                        startDate:this.selectedProgram.startDate,
+                        reminderDate:this.selectedProgram.reminderDate,
+                        expiryDate:this.selectedProgram.expiryDate,
+                        autoRenew:this.selectedProgram.autoRenew,
+                        recurant:this.globalS.isEmpty(this.selectedProgram.aP_Period) ? false : true,
+                        rolloverRemainder:this.selectedProgram.rolloverRemainder,
+                        deactivateOnExpiry:this.selectedProgram.deactivateOnExpiry,
+                        packageTermType:this.selectedProgram.packageTermType,
+                        contingency_Start:this.selectedProgram.contingency_Start,
+                        contingency:this.selectedProgram.contingency,
+                        recordNumber:this.selectedProgram.recordNumber,
+                    });
+                    this.supplements.patchValue({
+                        hardShipSupplement:this.selectedProgram.hardShipSupplement,
+                        levelSupplement:this.selectedProgram.packageLevel,
+                        domentica:true
+                    })
+                });
+                this.modalOpen = true;
             }
             
             delete(index: number) {
                 
             }
-            
+            getPayout(){
+
+            }
             handleCancel() {
                 this.modalOpen = false;   
             }

@@ -282,12 +282,16 @@
                 <div nz-col nzSpan="6">
                     <input nz-input formControlName="no" placeholder="Quote No" [disabled]="true" nzSize="small" />
                 </div>
-                <div nz-col nzSpan="6">
+                
+                <div nz-col nzSpan="4">
                     <nz-select  class="select" formControlName="type" nzSize="small" nzAllowClear nzPlaceHolder="Type">
                         <nz-option *ngFor="let list of typeList" [nzValue]="list" [nzLabel]="list"></nz-option>
                     </nz-select>
                 </div>
-                <div nz-col nzSpan="8" nzOffset="4">
+                <div nz-col nzSpan="6" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null">
+                    <label nz-checkbox formControlName="charges">Accept fee and Admin Charges</label>
+                </div>
+                <div nz-col nzSpan="8" >
                     <div class="right">
                         <nz-range-picker nzSize="small" formControlName="period"></nz-range-picker>
 

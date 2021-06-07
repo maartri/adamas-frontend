@@ -178,7 +178,23 @@ export class ListService {
     GetQuotetype(id: string): Observable<any>{
         return this.auth.get(`${list}/getquotetype/${id}`);
     }
+    /*GetCharges(id: string): Observable<any>{
+        return this.auth.get(`${list}/getcharges/${id}`);
+    } */
+    GetCMPERC(id: string): Observable<any>{
+        return this.auth.get(`${list}/getcmperc/${id}`);
+    }
+    GetTOpUP(id: string): Observable<any>{
+        return this.auth.get(`${list}/gettopup/${id}`);
+    }
+    GetBasicCare(id: string): Observable<any>{
+        return this.auth.get(`${list}/getbasiccare/${id}`);
+    }
+    GetAdmPerc(id: string): Observable<any>{
+        return this.auth.get(`${list}/getadmperc/${id}`);
+    }
     
+    getadmperc
     GetDailyliving(id: string): Observable<any>{
         return this.auth.get(`${list}/getdailyliving/${id}`);
     }

@@ -629,7 +629,7 @@ stafftypeArr: Array<any> = constants.types;
 
 
     constructor(
-        private formBuilder: FormBuilder,
+        
         private listS: ListService,
         private TimesheetS: TimeSheetService,
         private GlobalS:GlobalService,
@@ -1938,7 +1938,7 @@ stafftypeArr: Array<any> = constants.types;
     } */
 
     handleOk() {
-          this.btnid = this.GlobalS.var2
+        //  this.btnid = this.GlobalS.var2
         console.log(this.btnid)
         this.reportRender(this.btnid);
         this.tryDoctype = "";        
@@ -1963,7 +1963,7 @@ stafftypeArr: Array<any> = constants.types;
         this.isVisibleTop = false;
         this.budgetvisible = false;
         //   this.inputForm.reset(inputFormDefault);            
-
+        console.log(this.btnid)
         this.reportRender(this.btnid);
         this.tryDoctype = ""
         this.pdfTitle = ""
@@ -2142,7 +2142,7 @@ stafftypeArr: Array<any> = constants.types;
 
 
          this.GlobalS.var2 = this.btnid
-        // console.log(strdate)   
+         console.log(idbtn)   
         switch (idbtn) {
             case 'btn-refferallist':
                 this.Refeeral_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
@@ -5983,7 +5983,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     IncidentRegister(branch, SvcType, Staff, incidenttype, category, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT AccountNo, Branch, AccountNo + ' - ' + CASE WHEN [Surname/Organisation]<> '' THEN Upper([Surname/Organisation]) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN pSuburb <> '' THEN ' ' + pSuburb  ELSE ' '  END + CASE WHEN R.[Phone] <> '' THEN ' Ph.' + R.[Phone]  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.*, Date as ReportedDate FROM IM_Master I INNER JOIN RECIPIENTS R ON I.PERSONID = R.UNIQUEID WHERE"
+        var fQuery = "SELECT AccountNo, Branch, AccountNo + ' - ' + CASE WHEN [Surname/Organisation]<> '' THEN Upper([Surname/Organisation]) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN pSuburb <> '' THEN ' ' + pSuburb  ELSE ' '  END + CASE WHEN R.[Phone] <> '' THEN ' Ph.' + R.[Phone]  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.*, format(Date, 'dd/MM/yyyy') as ReportedDate FROM IM_Master I INNER JOIN RECIPIENTS R ON I.PERSONID = R.UNIQUEID WHERE"
         var lblcriteria;
 
 
@@ -6043,7 +6043,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY DATE  "
 
-        // //////console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 

@@ -25,7 +25,8 @@ import endOfMonth from 'date-fns/endOfMonth';
 
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { PrintPdfComponent } from '@components/print-pdf/print-pdf.component';
-import { filter, toLength } from 'lodash';
+import { filter, toLength, xor } from 'lodash';
+import { parseJSON } from 'date-fns';
 
 // import { Console } from 'node:console';
 
@@ -130,6 +131,12 @@ export class AddQuoteComponent implements OnInit {
     goalOfCarelist: any;
     goalsAndStratergies: any;
     userCopy: any;
+
+    temp1: any;
+    topup: any;
+    basiccarefee: any;
+    PercAmt: any;
+    AdmPErcAmt: any;
 
     quoteLines: Array<any> = [];
     fquotehdr: Array<any> = [];
@@ -241,7 +248,8 @@ export class AddQuoteComponent implements OnInit {
           type: null,
           period: [],
           basePeriod: 'ANNUALLY',
-          programId: null
+          programId: null,
+          charges:false,
       });
 
 
@@ -320,7 +328,9 @@ export class AddQuoteComponent implements OnInit {
           daysCalc: 365,
           govtContrib: null,
 
-          programId: null
+          programId: null,
+
+          charges:false,
       });
 
       this.quoteIdsForm = this.formBuilder.group({
@@ -1014,7 +1024,69 @@ export class AddQuoteComponent implements OnInit {
        {
         //    console.log(this.quoteListForm.getRawValue())
            const quote  = this.quoteListForm.getRawValue();
-           var _quote = {
+           var _quote,_quote1,_quote2;
+           if(this.quoteForm.value.charges == true){
+            
+        
+            var sqlTopUpFee = "SELECT P_Def_IncludeTopUpFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+            var sqlBasicCareFee = "SELECT P_Def_IncludeBasicCareFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+            var sqlCMPercAmt = "SELECT P_Def_Admin_CM_PercAmt FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+            var sqlAdminPercAmt ="Select P_Def_Admin_Admin_PercAmt FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+      
+            this.listS.GetTOpUP(sqlTopUpFee).subscribe(x => {
+                this.topup = x;
+               
+            } );
+//          
+            this.listS.GetBasicCare(sqlBasicCareFee).subscribe(x => {
+                this.basiccarefee = x;
+               
+            });
+            
+            this.listS.GetCMPERC(sqlCMPercAmt).subscribe(x =>{ 
+                this.PercAmt = x;                                        
+              });
+           
+               this.listS.GetAdmPerc(sqlAdminPercAmt).subscribe(x => {
+                this.AdmPErcAmt = x;
+              
+              
+      
+                    });
+       var temp:number = this.quoteForm.value.govtContrib
+        
+        if(this.basiccarefee == true){
+             _quote1 = {
+        
+                code: '*HCP-PACKAGE ADMIN' ,
+                displayText: 'Charges' ,
+                billUnit:'Service',
+            //  quantity:(((this.PercAmt/100)  * temp)/ 365).toFixed(2),
+                quantity: 1,
+                frequency: 'Daily'  ,
+                quoteQty: 365 , 
+                price: this.PercAmt,              
+               }
+            }
+            if(this.topup == true){   
+                _quote2 = {
+        
+                code: '*HCP-PACKAGE ADMIN' ,
+                displayText: 'Charges' ,
+                billUnit:'Service',
+            //  quantity:(((this.PercAmt/100)  * temp)/ 365).toFixed(2),
+                quantity: 1,
+                frequency: 'Daily'  ,
+                quoteQty: 365 , 
+                price: this.AdmPErcAmt,
+                //
+              
+               }
+            }
+               _quote = [_quote1,_quote2]
+              
+           }  else{
+            _quote = {
             billUnit: quote.billUnit,
             code: quote.code,
             displayText: quote.displayText,
@@ -1025,7 +1097,8 @@ export class AddQuoteComponent implements OnInit {
             tax: quote.gst,
             itemId: quote.itemId
            }
-
+        }
+        console.log(_quote)
             setTimeout(() => {
                 this.quoteLines = [...this.quoteLines, _quote];
 
@@ -1089,13 +1162,20 @@ export class AddQuoteComponent implements OnInit {
   }
 
   saveQuote(){
+      
     let qteLineArr: Array<QuoteLineDTO> = [];
     let qteHeader: QuoteHeaderDTO;
 
+   
     const quoteForm = this.quoteForm.getRawValue();
     console.log(quoteForm);
     console.log(this.quoteLines);
-
+    
+    if (this.quoteForm.value.charges == true){
+        
+        this.applycharges();
+        }
+      
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
             sortOrder: 0,
@@ -1111,9 +1191,10 @@ export class AddQuoteComponent implements OnInit {
             serviceType: x.code,
             strategyId: x.strategy
         };
+       
         qteLineArr.push(da);
     });
-
+        
     qteHeader = {
         programId: quoteForm.programId,
         program: quoteForm.program,
@@ -1127,12 +1208,14 @@ export class AddQuoteComponent implements OnInit {
         agreedTopUp: '0.00',
         balanceAtQuote: '0.00',
         clAssessedIncomeTestedFee: '0.00',
-
-        feesAccepted: 0,
-        basePension: 'SINGLE',
-        dailyBasicCareFee: '$0.00',
-        dailyIncomeTestedFee: '$0.00',
-        dailyAgreedTopUp: '$0.00',
+       
+               
+            feesAccepted: 0,
+            basePension: 'SINGLE',
+            dailyBasicCareFee: '$0.00',
+            dailyIncomeTestedFee: '$0.00',
+            dailyAgreedTopUp: '$0.00',
+        
         quoteView: 'ANNUALLY',
 
         personId: this.user.id,
@@ -1145,7 +1228,7 @@ export class AddQuoteComponent implements OnInit {
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
-        });
+        }); 
   }
 
   refreshQuoteLines(recordNo: any){
@@ -1276,7 +1359,7 @@ export class AddQuoteComponent implements OnInit {
                     tax: x.tax , 
                     lengthInWeeks:x.lengthInWeeks,
                     quoteQty:x.quoteQty
-                  //  basequote: ,
+                  //basequote: ,
 
 
                     
@@ -1355,7 +1438,7 @@ export class AddQuoteComponent implements OnInit {
     })
     }
   }
-  govtContribution
+//  govtContribution
   govtcontribute(){
     var temp  :number;
     temp = this.quoteForm.value.govtContrib 
@@ -1494,7 +1577,91 @@ return this.admincharges;
   
 
 }
+applycharges(){
+    let qteLineArr: Array<QuoteLineDTO> = [];
+    let qteHeader: QuoteHeaderDTO;
+        /**
+         * SELECT P_Def_IncludeTopUpFeeInAdmin FROM HumanResourceTypes WHERE [Name] = 'HCP-L4-ABBOTS MORGANICA 17102011' AND [GROUP] = 'PROGRAMS'
+        SELECT P_Def_IncludeBasicCareFeeInAdmin FROM HumanResourceTypes WHERE [Name] = 'HCP-L4-ABBOTS MORGANICA 17102011' AND [GROUP] = 'PROGRAMS'
+         */
+        
+        var temp, temp1; 
+        
+        var sqlTopUpFee = "SELECT P_Def_IncludeTopUpFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+        var sqlBasicCareFee = "SELECT P_Def_IncludeBasicCareFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+        
+    // temp =   this.listS.GetCharges(sqlTopUpFee).subscribe(x => console.log(x));
+    // temp1 =   this.listS.GetCharges(sqlBasicCareFee).subscribe(x => console.log(x));
+    //    console.log(temp.toString());
+     //   console.log(temp1.toString());
+     //   this.GENERATE_QUOTE_LINE();
 
+     //const quote  = this.quoteListForm.getRawValue();
+
+    this.option = 'add';
+    this.GENERATE_QUOTE_LINE();
+/*     var _quote = {
+        
+        code: '*HCP-PACKAGE ADMIN' ,
+        displayText: null ,
+        quantity: 10/100 ,
+        frequency: 'Daily'  ,
+        quoteQty: 365 , 
+        price: (10/100 * 51808.1)/ 365 ,
+      
+       }
+       let xtracharges: QuoteLineDTO = {
+        sortOrder: 0,               
+        qty: _quote.quantity,
+        displayText: _quote.displayText,
+        unitBillRate:_quote.price,
+        frequency: _quote.frequency,        
+        serviceType: _quote.code,        
+       }
+
+       return xtracharges;
+       qteLineArr.push(xtracharges);
+       qteHeader = {
+    //    programId: programId,
+        program: this.quoteForm.value.program,
+        clientId: this.clientId,
+        quoteLines: qteLineArr,
+        daysCalc: 365,
+        budget: "51808.1",
+        quoteBase: 'ANNUALLY',
+        govtContribution: 51808.10,
+        packageSupplements: '000000000000000000',
+        agreedTopUp: '0.00',
+        balanceAtQuote: '0.00',
+        clAssessedIncomeTestedFee: '0.00',
+       
+               
+            feesAccepted: 0,
+            basePension: 'SINGLE',
+    //        this.listS.GetCharges(sqlTopUpFee).subscribe(x => console.log(x));
+  //          this.listS.GetCharges(sqlBasicCareFee).subscribe(x => console.log(x));
+      
+    //        dailyBasicCareFee: '$0.00',
+    //        dailyIncomeTestedFee: '$0.00',
+            dailyBasicCareFee:temp.toFixed(2),
+            dailyAgreedTopUp: temp1.toFixed(2),
+        
+        quoteView: 'ANNUALLY',
+
+        personId: this.user.id,
+        user: this.loggedInUser.user,
+         
+        documentId: this.tableDocumentId
+    }
+
+    this.listS.getpostquote(qteHeader)
+        .subscribe(data => {
+            this.globalS.sToast('Success','Quote Added');
+            console.log(data)
+        });
+       
+   */
+}
 
 
 

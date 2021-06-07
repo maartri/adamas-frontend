@@ -51,7 +51,7 @@
                         </div>
                         <div nz-col nzSpan="18">
                             <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="type" nzPlaceHolder="Type" nzShowSearch nzAllowClear style="width:100%;" required>
-                                <nz-option *ngFor="let mtype of medicaltype" [nzValue]="mtype" [nzLabel]="mtype"></nz-option> 
+                                <nz-option *ngFor="let mtype of medicaltype" [nzValue]="mtype.description" [nzLabel]="mtype.description"></nz-option> 
                                 </nz-select>
                         </div>
                     </div>

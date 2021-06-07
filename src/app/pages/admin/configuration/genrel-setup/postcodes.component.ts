@@ -104,7 +104,6 @@ export class PostcodesComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      // debugger;
       this.title = "Edit Postcodes"
       this.isUpdate = true;
       this.current = 0;

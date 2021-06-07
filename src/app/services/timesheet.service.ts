@@ -466,6 +466,23 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/intake/staff/${recordNo}`)
     }
 
+    /**
+     * center facility location staff
+     */
+
+    postcenterlocationstaff(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/centerLocation/staff`, data)
+    }
+
+    updatecenterlocationstaff(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/centerLocation/staff`, data)
+    }
+
+    deletecenterlocationstaff(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/centerLocation/staff/${recordNo}`)
+    }
+
+
     /** */
 
     /**

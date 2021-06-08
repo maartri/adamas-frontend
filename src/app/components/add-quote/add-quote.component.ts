@@ -135,7 +135,7 @@ export class AddQuoteComponent implements OnInit {
     temp1: any;
     topup: any;
     basiccarefee: any;
-    PercAmt: any;
+    PercAmt: any ;
     AdmPErcAmt: any;
 
     quoteLines: Array<any> = [];
@@ -146,6 +146,9 @@ export class AddQuoteComponent implements OnInit {
 
     loggedInUser: any;
     admincharges :number = 0;
+    
+    
+
     specindex:number;
     dochdr:any;
 
@@ -1025,8 +1028,9 @@ export class AddQuoteComponent implements OnInit {
         //    console.log(this.quoteListForm.getRawValue())
            const quote  = this.quoteListForm.getRawValue();
            var _quote,_quote1,_quote2;
+           
            if(this.quoteForm.value.charges == true){
-            
+           
         
             var sqlTopUpFee = "SELECT P_Def_IncludeTopUpFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
             var sqlBasicCareFee = "SELECT P_Def_IncludeBasicCareFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
@@ -1044,19 +1048,17 @@ export class AddQuoteComponent implements OnInit {
             });
             
             this.listS.GetCMPERC(sqlCMPercAmt).subscribe(x =>{ 
-                this.PercAmt = x;                                        
+                this.PercAmt = x;                                                     
               });
-           
-               this.listS.GetAdmPerc(sqlAdminPercAmt).subscribe(x => {
-                this.AdmPErcAmt = x;
               
-              
-      
-                    });
+              this.listS.GetAdmPerc(sqlAdminPercAmt).subscribe(x => {
+                this.AdmPErcAmt = x;                                
+               }); 
+               
        var temp:number = this.quoteForm.value.govtContrib
+       
         
-        if(this.basiccarefee == true){
-             _quote1 = {
+             _quote = {
         
                 code: '*HCP-PACKAGE ADMIN' ,
                 displayText: 'Charges' ,
@@ -1067,24 +1069,24 @@ export class AddQuoteComponent implements OnInit {
                 quoteQty: 365 , 
                 price: this.PercAmt,              
                }
-            }
-            if(this.topup == true){   
-                _quote2 = {
+            
+              
+               _quote2 = {
         
                 code: '*HCP-PACKAGE ADMIN' ,
                 displayText: 'Charges' ,
                 billUnit:'Service',
-            //  quantity:(((this.PercAmt/100)  * temp)/ 365).toFixed(2),
+            //  quantity:(((this.AdmPErcAmt/100)  * temp)/ 365).toFixed(2),
                 quantity: 1,
                 frequency: 'Daily'  ,
                 quoteQty: 365 , 
-                price: this.AdmPErcAmt,
+                price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365),
                 //
               
                }
-            }
-               _quote = [_quote1,_quote2]
-              
+            
+            //   _quote = {_quote1,_quote2}
+           
            }  else{
             _quote = {
             billUnit: quote.billUnit,
@@ -1098,16 +1100,16 @@ export class AddQuoteComponent implements OnInit {
             itemId: quote.itemId
            }
         }
-        console.log(_quote)
+        //console.log(_quote)
             setTimeout(() => {
-                this.quoteLines = [...this.quoteLines, _quote];
-
+                this.quoteLines = [...this.quoteLines, _quote,_quote2];
+                
                 this.total_admin = 10361.62;
                 this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
                 this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
 
                 this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
-                console.log(this.total_quote);
+            //    console.log(this.total_quote);
                 this.handleCancelLine();
                 this.detectChanges();
             }, 0);
@@ -1130,7 +1132,7 @@ export class AddQuoteComponent implements OnInit {
                 roster: quoteLine.rosterString,
                 serviceType: quoteLine.code
             };
-            console.log(quoteLine)
+        //    console.log(quoteLine)
 
 
             // return;
@@ -1168,13 +1170,10 @@ export class AddQuoteComponent implements OnInit {
 
    
     const quoteForm = this.quoteForm.getRawValue();
-    console.log(quoteForm);
-    console.log(this.quoteLines);
+ //   console.log(quoteForm);
+ //   console.log(this.quoteLines);
     
-    if (this.quoteForm.value.charges == true){
-        
-        this.applycharges();
-        }
+    
       
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
@@ -1224,7 +1223,7 @@ export class AddQuoteComponent implements OnInit {
         type: quoteForm.type,
         documentId: this.tableDocumentId
     }
-
+//    console.log(qteHeader)
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
@@ -1383,9 +1382,9 @@ export class AddQuoteComponent implements OnInit {
     var product : number;
     
     if(var3 != null && var3 != 0){
-    product = ((var1 * var2 ) * var3 * var4);
+    product = ((var1 * var2 ) * var3 * var4) ;
     }else{
-        product = (var1 * var2 * var4);
+        product = (var1 * var2 * var4) ;
     }
      
     this.globalS.baseamount =  product
@@ -1576,91 +1575,15 @@ return this.admincharges;
    return daily;
   
 
+   
 }
-applycharges(){
-    let qteLineArr: Array<QuoteLineDTO> = [];
-    let qteHeader: QuoteHeaderDTO;
-        /**
-         * SELECT P_Def_IncludeTopUpFeeInAdmin FROM HumanResourceTypes WHERE [Name] = 'HCP-L4-ABBOTS MORGANICA 17102011' AND [GROUP] = 'PROGRAMS'
-        SELECT P_Def_IncludeBasicCareFeeInAdmin FROM HumanResourceTypes WHERE [Name] = 'HCP-L4-ABBOTS MORGANICA 17102011' AND [GROUP] = 'PROGRAMS'
-         */
-        
-        var temp, temp1; 
-        
-        var sqlTopUpFee = "SELECT P_Def_IncludeTopUpFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
-        var sqlBasicCareFee = "SELECT P_Def_IncludeBasicCareFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
-        
-    // temp =   this.listS.GetCharges(sqlTopUpFee).subscribe(x => console.log(x));
-    // temp1 =   this.listS.GetCharges(sqlBasicCareFee).subscribe(x => console.log(x));
-    //    console.log(temp.toString());
-     //   console.log(temp1.toString());
-     //   this.GENERATE_QUOTE_LINE();
+checkValue(event){
+    console.log(event)
+    if (event.target.checked){
+       this.option = 'add';
+        this.GENERATE_QUOTE_LINE();
+}
 
-     //const quote  = this.quoteListForm.getRawValue();
-
-    this.option = 'add';
-    this.GENERATE_QUOTE_LINE();
-/*     var _quote = {
-        
-        code: '*HCP-PACKAGE ADMIN' ,
-        displayText: null ,
-        quantity: 10/100 ,
-        frequency: 'Daily'  ,
-        quoteQty: 365 , 
-        price: (10/100 * 51808.1)/ 365 ,
-      
-       }
-       let xtracharges: QuoteLineDTO = {
-        sortOrder: 0,               
-        qty: _quote.quantity,
-        displayText: _quote.displayText,
-        unitBillRate:_quote.price,
-        frequency: _quote.frequency,        
-        serviceType: _quote.code,        
-       }
-
-       return xtracharges;
-       qteLineArr.push(xtracharges);
-       qteHeader = {
-    //    programId: programId,
-        program: this.quoteForm.value.program,
-        clientId: this.clientId,
-        quoteLines: qteLineArr,
-        daysCalc: 365,
-        budget: "51808.1",
-        quoteBase: 'ANNUALLY',
-        govtContribution: 51808.10,
-        packageSupplements: '000000000000000000',
-        agreedTopUp: '0.00',
-        balanceAtQuote: '0.00',
-        clAssessedIncomeTestedFee: '0.00',
-       
-               
-            feesAccepted: 0,
-            basePension: 'SINGLE',
-    //        this.listS.GetCharges(sqlTopUpFee).subscribe(x => console.log(x));
-  //          this.listS.GetCharges(sqlBasicCareFee).subscribe(x => console.log(x));
-      
-    //        dailyBasicCareFee: '$0.00',
-    //        dailyIncomeTestedFee: '$0.00',
-            dailyBasicCareFee:temp.toFixed(2),
-            dailyAgreedTopUp: temp1.toFixed(2),
-        
-        quoteView: 'ANNUALLY',
-
-        personId: this.user.id,
-        user: this.loggedInUser.user,
-         
-        documentId: this.tableDocumentId
-    }
-
-    this.listS.getpostquote(qteHeader)
-        .subscribe(data => {
-            this.globalS.sToast('Success','Quote Added');
-            console.log(data)
-        });
-       
-   */
 }
 
 

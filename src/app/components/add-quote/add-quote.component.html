@@ -289,7 +289,7 @@
                     </nz-select>
                 </div>
                 <div nz-col nzSpan="6" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null">
-                    <label nz-checkbox formControlName="charges">Accept fee and Admin Charges</label>
+                    <label nz-checkbox formControlName="charges" (change)="checkValue($event)">Accept fee and Admin Charges</label>
                 </div>
                 <div nz-col nzSpan="8" >
                     <div class="right">

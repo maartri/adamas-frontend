@@ -897,12 +897,15 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.tabFinderIndexbtn = index;
     }
 
+    printLoad: boolean = false;
     print(){
+        this.printLoad = true;
         this.listS.printquote(this.document_print_quote)
             .subscribe(blob => {
                 var file = new Blob([blob], {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
                 console.log(file);
-                
+                this.printLoad = false;
+
                 let data = window.URL.createObjectURL(file);
                 let link = document.createElement('a');
                 link.href = data;

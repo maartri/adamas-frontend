@@ -1,7 +1,7 @@
 <div nz-row>
     
     <button class="botton success" style="margin-right: 5px;" (click)="option = 'add';newQuoteModal = !newQuoteModal">Add Quote</button>
-    <button nz-button nzType="primary" (click)="print()"><i nz-icon nzType="printer" nzTheme="outline"></i> Print Quote</button>
+    <button nz-button nzType="primary" [nzLoading]="printLoad" (click)="print()"><i nz-icon nzType="printer" nzTheme="outline"></i> Print Quote</button>
     <app-filter [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
     <!-- {{ filters | json }} -->
 </div>

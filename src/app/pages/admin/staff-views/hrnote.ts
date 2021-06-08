@@ -146,7 +146,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
 
     showEditModal(index: any) {
         
-        this.addORView = 2;
+        this.addORView = 0;
         const { alarmDate, detail, isPrivate, category, creator, recordNumber } = this.tableData[index];
 
         this.inputForm.patchValue({

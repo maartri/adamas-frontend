@@ -27,7 +27,7 @@ export class EquipmentsComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) AND ";
   inputForm: FormGroup;
   serviceForm:FormGroup;
   modalVariables:any;
@@ -171,7 +171,7 @@ export class EquipmentsComponent implements OnInit {
         const group = this.inputForm;
         if(group.get('type').value){
           let type            = this.globalS.isValueNull(group.get('type').value);
-          let description     = this.globalS.isValueNull(group.get('description').value.trim().toUppercase());
+          let description     = this.globalS.isValueNull(group.get('description').value.trim());
           let asset           = this.globalS.isValueNull(group.get('asset_no').value);
           let serial_no       = this.globalS.isValueNull(group.get('serial_no').value);
           let purchase_am     = this.globalS.isValueNull(group.get('purchase_am').value);
@@ -187,7 +187,7 @@ export class EquipmentsComponent implements OnInit {
           this.menuS.InsertDomain(sql_last_id).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
             if (data){
               person_id = data;
-              group.setValue({'type':''});
+              // group.setValue({'type':''});
               this.resetModal();
               this.globalS.sToast('Success', 'Saved successful');
             }
@@ -206,7 +206,7 @@ export class EquipmentsComponent implements OnInit {
         const group       = this.inputForm;
         
         let type            = this.globalS.isValueNull(group.get('type').value);
-        let description     = this.globalS.isValueNull(group.get('description').value.trim().toUppercase());
+        let description     = this.globalS.isValueNull(group.get('description').value.trim());
         let asset           = this.globalS.isValueNull(group.get('asset_no').value);
         let serial_no       = this.globalS.isValueNull(group.get('serial_no').value);
         let purchase_am     = this.globalS.isValueNull(group.get('purchase_am').value);
@@ -288,7 +288,7 @@ export class EquipmentsComponent implements OnInit {
     }
     loadData(){
       this.loading = true;
-      this.menuS.Getlistequipments().subscribe(data => {
+      this.menuS.Getlistequipments(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
@@ -300,7 +300,7 @@ export class EquipmentsComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -328,6 +328,18 @@ export class EquipmentsComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });
+    }
+    activateEquipment(data:any){
+      this.postLoading = true;     
+      const group = this.inputForm;
+      this.menuS.activateEquipmentslist(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Activated!');
           this.loadData();
           return;
         }

@@ -3,8 +3,9 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { GlobalService, ListService, TimeSheetService, ShareService,expectedOutcome,qoutePlantype, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { dateFormat } from '@services/global.service'
+
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -13,7 +14,8 @@ import { billunit, periodQuote, basePeriod } from '@services/global.service';
 
 import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { RECIPIENT_OPTION } from '@modules/modules';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotesClient } from '@client/notes';
 
@@ -131,7 +133,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     clientId: number;
 
     size: string = 'small'
-
+    from: string = 'quote';
     quoteGeneralForm : FormGroup;
     title: string = 'Add New Quote';
     slots: any;
@@ -184,7 +186,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     quoteLineOpen: boolean = false;
     activeOpen: boolean = false;
     inActiveOpen: boolean = false;
-
+    admitOpen: boolean = false;
     newQuoteModal: boolean = false;
 
     goalAndStrategiesmodal : boolean = false;
@@ -234,6 +236,12 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     supplements: FormGroup;
     isSuplement: boolean = false;
     disabledRadio:boolean = true;
+    recipientOptionOpen: any;
+    recipientOption: string;
+    RECIPIENT_OPTION = RECIPIENT_OPTION;
+
+    document_print_quote: any;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -290,6 +298,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             shiftChange: false,
             smsMessage: false
         });
+        
 
         this.inActiveForm = this.formBuilder.group({
             timePeriod: []
@@ -409,7 +418,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         this.quoteListForm.get('chargeType').valueChanges
         .pipe(
-            switchMap(x => {                
+            switchMap(x => {   
+                console.log(x)             
                 this.resetQuotePrimary();
                 if(!x) return EMPTY;
                 return this.listS.getchargetype({
@@ -677,16 +687,17 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     showAcceptModal(item: any) {
+        console.log(item.programStatus)
         if(['REFERRAL','INACTIVE'].includes(item.programStatus)){
             console.log('referral')
-            this.inActiveOpen = true;
+            this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
+            this.recipientOptionOpen = {};
+            // this.inActiveOpen = true;
         }
-
         if(['ACTIVE','ONHOLD'].includes(item.programStatus)){
             console.log('active')
             this.activeOpen = true;
         }
-
     }
 
     filterChange(data: any){
@@ -886,6 +897,27 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.tabFinderIndexbtn = index;
     }
 
+    printLoad: boolean = false;
+    print(){
+        this.printLoad = true;
+        this.listS.printquote(this.document_print_quote)
+            .subscribe(blob => {
+                var file = new Blob([blob], {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+                console.log(file);
+                this.printLoad = false;
+
+                let data = window.URL.createObjectURL(file);
+                let link = document.createElement('a');
+                link.href = data;
+                link.download = "quotes.docx";
+                link.click();
+        
+                setTimeout(() => {
+                  window.URL.revokeObjectURL(data);
+                }, 100);
+            });
+    }
+
     search(user: any) {
         console.log(user);
 
@@ -903,11 +935,14 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             filters: this.filters
         }
 
+        this.document_print_quote = data;
+
         this.listS.getlistquotes(data).subscribe(data => {
             this.tableData = data;
             this.loading = false;
             this.cd.markForCheck();
         })
+
         this.timeS.getCarePlanID().subscribe(data => {this.carePlanID = data[0];this.cd.markForCheck();});
     }
     populateDropdDowns() {
@@ -1079,10 +1114,14 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             personId: this.user.id
 
         }
-
-        this.listS.getpostquote(qteHeader)
-            .subscribe(data => {
+        // console.log(qteHeader)
+        // return;
+        this.listS.getpostquote(qteHeader).subscribe(data => {
+                console.log(data);
                 this.globalS.sToast('Success','Quote Added');
+            }, (error: any) => {
+                console.log(error)
+                this.globalS.eToast('Error', error.error.message)
             }) 
     }
     

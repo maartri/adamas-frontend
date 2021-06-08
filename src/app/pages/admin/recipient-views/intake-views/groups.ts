@@ -105,7 +105,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
             alert: new FormControl(false),
             date1: new FormControl(null),
             date2: new FormControl(null),
-            email: new FormControl(null),
+            email: new FormControl(''),
          })
          
          this.preferenceForm = this.formBuilder.group({
@@ -130,10 +130,10 @@ export class IntakeGroups implements OnInit, OnDestroy {
         this.addOREdit = 1;
         if (view == 1){
             this.definedOpen = false;
-            this.userGroupForm.reset();
+            // this.userGroupForm.reset();
         }else{
             this.preferenceOpen = false;
-            this.preferenceForm.reset();
+            // this.preferenceForm.reset();
         }
     }
 
@@ -158,10 +158,8 @@ export class IntakeGroups implements OnInit, OnDestroy {
     showAddModal(view: number) {
         this.addOREdit = 1;
         if (view == 1){
-            this.userGroupForm.reset();
             this.definedOpen = true;
         }else{
-            this.preferenceForm.reset();
             this.preferenceOpen = true;
         }
     }

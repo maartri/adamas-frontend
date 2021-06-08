@@ -233,7 +233,7 @@ export class AwardLevelsComponent implements OnInit {
           
           this.drawerVisible = true;
           this.loading = true;
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" AND Domain='AWARDLEVEL'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='AWARDLEVEL'";
           
           const headerDict = {
             'Content-Type': 'application/json',

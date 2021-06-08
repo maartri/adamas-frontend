@@ -232,7 +232,7 @@ whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 ,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" AND Domain='DEBTORTERMS'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 ,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='DEBTORTERMS'";
       
       const headerDict = {
         'Content-Type': 'application/json',

@@ -5,7 +5,9 @@ import { map,retry, takeUntil, catchError, delay } from 'rxjs/operators';
 
 import { GlobalService } from './global.service';
 
-const headers = new HttpHeaders().set('Content-Type','application/json')
+const headers = new HttpHeaders()
+                    .append('Content-Type','application/json')
+                    .append('Accept','application/json');
             
 @Injectable({
     providedIn: 'root'
@@ -25,6 +27,13 @@ export class AuthService implements ErrorHandler{
             .pipe(
                 catchError(err => this.handleError(err))
             )
+    }
+
+    post_get_document(url: string, data: any, _headers: HttpHeaders = null): Observable<any>{
+        return this.http.post(url, data, { headers: _headers || headers, responseType: 'text' })
+                        .pipe(
+                            catchError(err => this.handleError(err))
+                        )
     }
 
     post(url: string, data: any, _headers: HttpHeaders = null): Observable<any>{
@@ -65,7 +74,15 @@ export class AuthService implements ErrorHandler{
                     )
     }
 
-    handleError(error: Error | HttpErrorResponse) {       
+    handleError(error: HttpErrorResponse) {
+        console.log(error)
+
+        var err = error.error;
+        if(!err.success)
+        {
+            this.GlobalS.eToast('Error', err.error)
+        }
+        
         // if (error.message === "No JWT present or has expired") {
         //     this.global.TokenExpired = 'true';
         //     this.global.logout();

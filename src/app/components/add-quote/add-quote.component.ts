@@ -1166,15 +1166,28 @@ export class AddQuoteComponent implements OnInit {
   saveQuote(){
       
     let qteLineArr: Array<QuoteLineDTO> = [];
+    let goals: Array<any> = [];
+
     let qteHeader: QuoteHeaderDTO;
 
    
     const quoteForm = this.quoteForm.getRawValue();
+
  //   console.log(quoteForm);
  //   console.log(this.quoteLines);
     
     
       
+
+//    console.log(quoteForm);
+//    console.log(this.quoteLines);
+//    console.log(this.goalsAndStratergies);
+
+    this.goalsAndStratergies.forEach(e => {
+        goals.push(e.goal);
+    });
+
+
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
             sortOrder: 0,
@@ -1184,8 +1197,8 @@ export class AddQuoteComponent implements OnInit {
             displayText: x.displayText,
 
             unitBillRate: x.price,
-            frequency: x.period,
-            lengthInWeeks: x.weekNo,
+            frequency: x.frequency,
+            lengthInWeeks: x.quoteQty,
             roster: x.rosterString,
             serviceType: x.code,
             strategyId: x.strategy
@@ -1221,7 +1234,8 @@ export class AddQuoteComponent implements OnInit {
         user: this.loggedInUser.user,
         template: quoteForm.template,
         type: quoteForm.type,
-        documentId: this.tableDocumentId
+        documentId: this.tableDocumentId,
+        goals: goals
     }
 //    console.log(qteHeader)
     this.listS.getpostquote(qteHeader)

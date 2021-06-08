@@ -239,7 +239,11 @@ export class IntakeGoals implements OnInit, OnDestroy {
                         }
                         
                         showStrategiesModal(){
-                            this.stratergiesForm.reset();
+                            this.stratergiesForm.patchValue({
+                                detail:'',
+                                outcome:'',
+                                strategyId:'',
+                            });
                             this.isUpdateStrategy = false;
                             this.strategiesmodal = true;
                         }
@@ -249,7 +253,7 @@ export class IntakeGoals implements OnInit, OnDestroy {
                             this.isUpdateGoal = true;
                             this.isUpdateGoal = true;
                             this.listStrtegies(data.recordNumber);
-                            this.personIdForStrategy = data.recordnumber;
+                            this.personIdForStrategy = data.recordNumber;
                             this.goalsAndStratergiesForm.patchValue({
                                 title : "Goal Of Care : ",
                                 goal  : data.goal,

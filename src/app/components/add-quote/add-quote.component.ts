@@ -1073,7 +1073,7 @@ export class AddQuoteComponent implements OnInit {
               
                _quote2 = {
         
-                code: '*HCP-PACKAGE ADMIN' ,
+                code: '*HCP FEE-PACKAGE ADMINISTRATION' ,
                 displayText: 'Charges' ,
                 billUnit:'Service',
             //  quantity:(((this.AdmPErcAmt/100)  * temp)/ 365).toFixed(2),

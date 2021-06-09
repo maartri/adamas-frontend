@@ -553,7 +553,9 @@ export class ListService {
     getintakestaff(personID: string): Observable<any>{
         return this.auth.get(`${list}/intake/staff/${personID}`)
     }
-
+    getcenterlocationstaff(): Observable<any>{
+        return this.auth.get(`${list}/centerLocation/staff/`)
+    }    
     GetTraccsStaffCodes(): Observable<any>{
         return this.auth.get(`${list}/Users/TraccsStaffCodes`)
     }

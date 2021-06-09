@@ -470,6 +470,14 @@ export class TimeSheetService {
      * center facility location staff
      */
 
+    getcenterlocationexcludedstaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/excludedstaff/${id}`)
+    }
+
+    getcenterLocationincludedstaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/includedstaff/${id}`)
+    }
+
     postcenterlocationstaff(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/centerLocation/staff`, data)
     }
@@ -481,7 +489,10 @@ export class TimeSheetService {
     deletecenterlocationstaff(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/centerLocation/staff/${recordNo}`)
     }
-
+    getcenterlocationcompetency(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/competency/${id}`)
+    }
+    
 
     /** */
 

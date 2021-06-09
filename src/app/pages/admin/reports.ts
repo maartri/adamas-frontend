@@ -1774,6 +1774,14 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.frm_SVCTypes = true;
                 break;
+            case 'btn-report-BilledItems':
+                this.bodystyle = { height:'450px', overflow: 'auto'}
+                this.ModalName = "BILLED ITEMS REPORT "
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                this.frm_SVCTypes = true;
+                break;
             case 'btn-report-DatasetUnitCost':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "DATASET RECIPIENT UNIT COST"
@@ -2505,7 +2513,10 @@ stafftypeArr: Array<any> = constants.types;
                 this.DatasetoutputSummary(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                 break;
             case 'btn-report-UnbilledItems':
-                this.UnbilledItems(s_Branches, s_Programs, s_SvcType, strdate, endate)
+                this.UnbilledItems(s_Branches, s_Programs, s_SvcType, strdate, endate,tempsdate, tempedate)
+                break;
+            case 'btn-report-BilledItems':
+                this.BilledItems(s_Branches, s_Programs, s_SvcType, strdate, endate,tempsdate, tempedate)
                 break;
             case 'btn-FORPT-ActivityRecipientRpt':
                 this.ActivityRecipientReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
@@ -15697,10 +15708,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
 
     }
-    UnbilledItems(branch, program, SvcType, startdate, enddate) {
+    UnbilledItems(branch, program, SvcType, startdate, enddate,tempsdate, tempedate) {
 
-
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno], [Recipients].[BRANCH]  FROM Roster  INNER JOIN Recipients ON Roster.[CLient Code] = Recipients.[Accountno]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')  AND Roster.[Type] in (1,2,5) "
+    var fQuery = "SELECT [Roster].[RecordNo], FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] + ([Roster].[Unit Bill Rate] * [Roster].[BillQty] * IsNull([Roster].[TaxPercent], 0) / 100) As [Amount], [Roster].[Yearno], [Recipients].[BRANCH], [Roster].[InvoiceNumber], [Roster].[Batch#]  FROM Roster  LEFT JOIN Recipients ON Roster.[CLient Code] = Recipients.[Accountno]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')  AND Roster.[Status] in (1,2,5)  AND (ISNULL(Roster.[Unit Bill Rate], 0) <> 0 AND ISNULL(Roster.[BillQty], 0) <> 0)   "
+    //    var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate] as [UnitBillRate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno], [Recipients].[BRANCH],[Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate] as [UnitBillRate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] + ([Roster].[Unit Bill Rate] * [Roster].[BillQty] * IsNull([Roster].[TaxPercent], 0) / 100) As [Amount], [Roster].[Yearno], [Recipients].[BRANCH], [Roster].[InvoiceNumber], [Roster].[Batch#]  FROM Roster  INNER JOIN Recipients ON Roster.[CLient Code] = Recipients.[Accountno]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')  AND Roster.[Type] in (1,2,5) "
         var lblcriteria;
 
 
@@ -15709,7 +15720,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         //(RO.[DATE] BETWEEN '2020/08/01' AND '2020/08/31') AND
         if (startdate != "" || enddate != "") {
-            this.s_DateSQL = " [Roster].[Date] BETWEEN '" + startdate + ("'AND'") + enddate + "'";
+            this.s_DateSQL = " [Roster].[Date] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
         }
         if (branch != "") {
@@ -15745,7 +15756,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         fQuery = fQuery + " ORDER BY  [Date], [Service Type], [Program]"
 
 
-        //  //////console.log(fQuery)
+     //   console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -15780,6 +15791,102 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = "UnBilled Items Report.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                this.loading = false;
+
+            }, err => {
+                console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
+                  });
+            });
+    }
+    BilledItems(branch, program, SvcType, startdate, enddate,tempsdate, tempedate) {
+
+        var fQuery ="SELECT [Roster].[RecordNo], FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate] as [UnitBillRate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] + ([Roster].[Unit Bill Rate] * [Roster].[BillQty] * IsNull([Roster].[TaxPercent], 0) / 100) As [Amount], [Roster].[Yearno], [Recipients].[BRANCH], [Roster].[InvoiceNumber], [Roster].[Batch#]  FROM Roster  LEFT JOIN Recipients ON Roster.[CLient Code] = Recipients.[Accountno]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')  AND Roster.[Status] in (3,4) AND isNull(InvoiceNumber, '') <> ''  AND (ISNULL(Roster.[Unit Bill Rate], 0) <> 0 AND ISNULL(Roster.[BillQty], 0) <> 0) "        
+        var lblcriteria;
+
+
+
+
+
+        //(RO.[DATE] BETWEEN '2020/08/01' AND '2020/08/31') AND
+        if (startdate != "" || enddate != "") {
+            this.s_DateSQL = " [Roster].[Date] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        }
+        if (branch != "") {
+            this.s_BranchSQL = "[Recipients].BRANCH in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        if (program != "") {
+            this.s_ProgramSQL = " ([Roster].PROGRAM in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+        if (SvcType != "") {
+            this.s_SvcTypeSQL = " ([Service Type] in ('" + SvcType.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_SvcTypeSQL }
+        }
+
+        if (branch != "") {
+            lblcriteria = "Branches:" + branch.join(",") + "; "
+        }
+        else { lblcriteria = " All Branches " }
+        if (startdate != "") {
+            lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
+        }
+        else { lblcriteria = lblcriteria + " All Dated " }
+        if (program != "") {
+            lblcriteria = lblcriteria + " Programs " + program.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Programs." }
+        if (SvcType != "") {
+            lblcriteria = lblcriteria + " Service Type " + SvcType.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Svc. Types" }
+
+        fQuery = fQuery + " ORDER BY  [Date], [Service Type], [Program] "
+
+
+     //   console.log(fQuery)
+
+        this.drawerVisible = true;
+
+        const data = {
+            "template": { "_id": "FgNttxKsmc7gqOPj" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+
+                let _blob: Blob = blob;
+
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Billed Items Report.pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
 

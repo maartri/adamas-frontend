@@ -70,7 +70,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   tryDoctype: any;
   drawerVisible: boolean =  false;
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
-  center_perosn_id: string = '118';
+  center_perosn_id: string = '-1';
   excludedStaff: unknown;
   listStaff: unknown;
   includedStaff: any;
@@ -78,6 +78,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   categoryList: any;
   addOrEdit: number = 0;
   staffForm: FormGroup;
+  competencyForm: FormGroup;
   
   constructor(
     private globalS: GlobalService,
@@ -111,7 +112,7 @@ export class CentrFacilityLocationComponent implements OnInit {
       this.resetModal();
       this.modalOpen = true;
     }
-
+    
     showstaffModal(stafftype:number){
       if(stafftype == 1){
         this.staffApproved = true;
@@ -129,7 +130,6 @@ export class CentrFacilityLocationComponent implements OnInit {
         notes : data.notes,
         recordNumber:data.recordNumber
       })
-      // console.log(stafftype);
       if(stafftype == 1){
         this.addOrEdit     = 1;
         this.staffApproved = true;
@@ -140,7 +140,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         this.staffUnApproved = true;
       }
     }
-
+    
     showCompetencyModal(){
       this.competencymodal = true;
     }
@@ -160,6 +160,7 @@ export class CentrFacilityLocationComponent implements OnInit {
     showEditModal(index: any) {
       this.title = "Edit New Facility/Location"
       this.isUpdate = true;
+      this.isNewRecord = false;
       this.current = 0;
       this.modalOpen = true;
       const { 
@@ -209,7 +210,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         weeksPerCollectionPeriodOfOperation_NoPattern,
         weeksPerYear,
       } = this.tableData[index-1];
-        this.inputForm.patchValue({
+      this.inputForm.patchValue({
         branch : branch,
         adress : address,
         subrub : suburb,
@@ -252,14 +253,17 @@ export class CentrFacilityLocationComponent implements OnInit {
         dayPatern: (daysPerWeekOfOperation_NoPattern) ? true : false,
         weekPatern:(weeksPerCollectionPeriodOfOperation_NoPattern) ? true : false,
         serviceUsers:noServiceUsers,       
-        anualhours:serviceAnnualHours,         
-        
+        anualhours:serviceAnnualHours,
         recordNumber:recordNumber,
       });
     }
     
     handleCancel() {
       this.modalOpen = false;
+      this.isUpdate = false;
+      this.isNewRecord = false;
+      this.addOrEdit = 0;
+      this.loadData();
     }
     handleCompCancel() {
       this.competencymodal = false;
@@ -282,9 +286,8 @@ export class CentrFacilityLocationComponent implements OnInit {
         }
       }
       if(this.current == 2 || this.current == 3){
-          this.staffDetails(118);
+        this.staffDetails(this.center_perosn_id);
       }
-      
     }
     save() {
       this.postLoading = true;     
@@ -298,7 +301,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         let name               = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let outletid           = this.globalS.isValueNull(group.get('outletid').value);
         let postcode           = this.globalS.isValueNull(group.get('postcode').value);
-
+        
         let jurisdiction       = this.globalS.isValueNull(group.get('fundingjunc').value);
         let agencysector       = this.globalS.isValueNull(group.get('agencysector').value);
         let fundingtype        = this.globalS.isValueNull(group.get('fundingtype').value);
@@ -341,29 +344,23 @@ export class CentrFacilityLocationComponent implements OnInit {
         let sheetalert         = this.globalS.isValueNull(group.get('sheetalert').value);
         
         let vari               = (jurisdiction == 'FEDERAL') ? "'93'" : "'13'";
-
+        
         let values = jurisdiction+","+vari+","+agencysector+","+weeksYear+","+dayweeks+","+hourYears+","+serviceUsers+","+servicetype+","+anualhours+","+weekPatern+","+dayPatern+","+hourPatern+","+maxUserWeek+","+minUserWeek+","+maxStaffHour+","+minStaffHour+","+glrevenue+","+glcost+","+gloveride+","+cstdaoutlet+","+dsci+","+branch+","+places+","+earlyStart+","+lateStart+","+earlyFinish+","+lateFinish+","+overstay+","+understay+","+t2earlyStart+","+t2lateStart+","+t2earlyFinish+","+t2lateFinish+","+t2overstay+","+t2understay+","+fundingtype+","+sheetalert+","+name+","+outletid+","+postcode+","+adress+","+subrub+","+sla;
         let sqlz = "insert into CSTDAOutlets ([FundingSource],[Jurisdiction],[AgencySector],[WeeksPerYear],[DaysPerWeek],[HoursPerDay],[NoServiceUsers],[CSTDAServiceType],[ServiceAnnualHours],[WeeksPerCollectionPeriodOfOperation_NoPattern],[DaysPerWeekOfOperation_NoPattern],[HoursPerDayOfOperation_NoPattern],[MAXWeeklyRecipientHours],[MINWeeklyRecipientHours],[MAXWeeklyStaffHours],[MINWeeklyStaffHours],[GLRevenue],[GLCost],[GLOverride],[CSTDA],[DCSI],[Branch],[Places],[BH_EarlyStart],[BH_LateStart],[BH_EarlyFinish],[BH_LateFinish],[BH_OverStay],[BH_UndrStay],[AH_EarlyStart],[AH_LateStart],[AH_EarlyFinish],[AH_LateFinish],[AH_OverStay],[AH_UndrStay],[FundingType],[RunsheetAlerts],[Name],[ServiceOutletID],[Postcode],[AddressLine1],[Suburb],[CSTDASLA]) values("+values+");select @@IDENTITY"; 
-
+        
         
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
             this.center_perosn_id = data;
-            // this.postLoading = false;   
-            // this.loading = false;
+            this.postLoading = false;   
+            this.loading = false;
+            this.isUpdate = true;
             this.isNewRecord = true;
-            // this.handleCancel();
-            this.resetModal();
           }
           else{
             this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
             this.loading = false;   
-            this.postLoading = false;          
-            // this.handleCancel();
-            this.resetModal();
           }
         });
       }else{
@@ -415,15 +412,15 @@ export class CentrFacilityLocationComponent implements OnInit {
         let t2lateFinish       = this.globalS.isValueNull(group.get('t2lateFinish').value);
         let t2overstay         = this.globalS.isValueNull(group.get('t2overstay').value);
         let t2understay        = this.globalS.isValueNull(group.get('t2understay').value);
-
+        
         let sheetalert         = this.globalS.isValueNull(group.get('sheetalert').value);
-
+        
         let vari               = (jurisdiction == 'FEDERAL') ? "'93'" : "'13'";
-        let recordNumber       = group.get('recordNumber').value;
-
+        let recordNumber       = (this.isUpdate && this.isNewRecord) ? this.center_perosn_id : group.get('recordNumber').value ;
+        
         let sqlz = "Update CSTDAOutlets SET [FundingSource]="+jurisdiction+",[Jurisdiction]="+vari+",[AgencySector]="+agencysector+",[WeeksPerYear]="+weeksYear+",[DaysPerWeek]="+dayweeks+",[HoursPerDay]="+hourYears+",[NoServiceUsers]="+serviceUsers+",[CSTDAServiceType]="+servicetype+",[ServiceAnnualHours]="+anualhours+",[WeeksPerCollectionPeriodOfOperation_NoPattern]="+weekPatern+",[DaysPerWeekOfOperation_NoPattern]="+dayPatern+",[HoursPerDayOfOperation_NoPattern]="+hourPatern+",[MAXWeeklyRecipientHours]="+maxUserWeek+",[MINWeeklyRecipientHours]="+minUserWeek+",[MAXWeeklyStaffHours]="+maxStaffHour+",[MINWeeklyStaffHours]="+minStaffHour+",[GLRevenue]="+glrevenue+",[GLCost]="+glcost+",[GLOverride]="+gloveride+",[CSTDA]="+cstdaoutlet+",[DCSI]="+dsci+",[Branch]="+branch+",[Places]="+places+",[BH_EarlyStart]="+earlyStart+",[BH_LateStart]="+lateStart+",[BH_EarlyFinish]="+earlyFinish+",[BH_LateFinish]="+lateFinish+",[BH_OverStay]="+overstay+",[BH_UndrStay]="+understay+",[AH_EarlyStart]="+t2earlyStart+",[AH_LateStart]="+t2lateStart+",[AH_EarlyFinish]="+t2earlyFinish+",[AH_LateFinish]="+t2lateFinish+",[AH_OverStay]="+t2overstay+",[AH_UndrStay]="+t2understay+",[FundingType]="+fundingtype+",[RunsheetAlerts]="+sheetalert+",[Name]="+name+",[ServiceOutletID]="+outletid+",[Postcode]="+postcode+",[AddressLine1]="+adress+",[Suburb]="+subrub+",[CSTDASLA]="+sla+" WHERE [RecordNumber] ='"+recordNumber+"'"; 
         
-        console.log(sqlz);
+        // console.log(sqlz);
         
         
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
@@ -472,34 +469,60 @@ export class CentrFacilityLocationComponent implements OnInit {
       const group = this.inputForm;
       let insertOne = false;
       if(this.addOrEdit == 0){
+        
         if(!this.isUpdate){
           if(!this.isNewRecord){
             this.save();
           }
-      }
+        }
 
-        var stafftype = (type == 1) ? "'CENTRE_STAFFI'":"'CENTRE_STAFFX'"; 
+        var stafftype = (type == 1) ? 0 : 1;
         var approvedExcludeList = (type == 1) ? this.checkedListApproved : this.checkedListExcluded;
         
         approvedExcludeList.forEach( (element) => {
-            let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('"+this.center_perosn_id+"',"+stafftype+","+stafftype+",'"+element+"','')";
-                this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
-                    insertOne = true;
-                });
+          this.timeS.postcenterlocationstaff({
+            Notes: '',
+            PersonID: this.center_perosn_id,
+            Name: element,
+            StaffCategory:stafftype,
+            DateCreated: this.globalS.getCurrentDate()
+          }).pipe(takeUntil(this.unsubscribe))
+          .subscribe(data => {
+            if (data) {
+              insertOne = true;
+              (type == 1) ? this.loadApprovedStaff() : this.loadExcludedStaff();
+            }
+          })
         });
         
         if(insertOne){
           this.globalS.sToast('Success', 'Saved successful');
         }
         this.postLoading = false;
-        
+        approvedExcludeList = [];
         (type == 1) ? this.handleAprfCancel()  : this.handleUnAprfCancel();
         (type == 1) ? this.loadApprovedStaff() : this.loadExcludedStaff();
         (type == 1) ? this.checkedListApproved = [] : this.checkedListExcluded = [] ;
-
+        
       }
       else
       {
+        this.postLoading  = false;
+        const { staffTitle, notes, recordNumber } = this.staffForm.value;
+        this.timeS.updatecenterlocationstaff({
+          name: staffTitle,
+          notes:notes,
+          recordNumber:recordNumber
+        }).pipe(
+          takeUntil(this.unsubscribe))
+          .subscribe(data => {
+            if (data) {
+              (type == 1) ? this.handleAprfCancel()  : this.handleUnAprfCancel();
+              (type == 1) ? this.loadApprovedStaff() : this.loadExcludedStaff();
+              this.globalS.sToast('Success', 'Data Updated');
+              this.postLoading  = false;
+            }
+          })
       }
     }
     trueString(data: any): string{
@@ -537,7 +560,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         this.branches = data;
         this.loading = false;
       });
-
+      
       let compet = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       
       this.listS.getlist(compet).subscribe(data => {
@@ -567,30 +590,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         this.cd.markForCheck();
       });
     }
-    // deleteApprovedStaff(data:any){
-    //   const group = this.inputForm;
-    //     // this.loading = true;
-    //     this.menuS.deleteApprovedStaff(data.recordNumber)
-    //     .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-    //       if (data) {
-    //         this.globalS.sToast('Success', 'Data Deleted!');
-    //         this.loadApprovedStaff();
-    //         return;
-    //       }
-    //     });
-    // }
-    // deleteExcludedStaff(data:any){
-    //   const group = this.inputForm;
-    //     // this.loading = true;
-    //     this.menuS.deleteExcludedStaff(data.recordNumber)
-    //     .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-    //       if (data) {
-    //         this.globalS.sToast('Success', 'Data Deleted!');
-    //         this.loadExcludedStaff();
-    //         return;
-    //       }
-    //     });
-    // }
+    
     // deleteCompetency(data:any){
     //   const group = this.inputForm;
     //     this.loading = true;
@@ -603,203 +603,220 @@ export class CentrFacilityLocationComponent implements OnInit {
     //       }
     //     });
     // }
-    staffDetlete(){
-
-    }
-    editCompetencyModal(){
-
-    }
-    deleteCompetency(){
-
-    }
-    fetchAll(e){
-      if(e.target.checked){
-        this.whereString = "";
-        this.loadData();
-      }else{
-        this.whereString = " Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
-        this.loadData();
+    staffDetlete(stafftype:number,data:any){
+      this.timeS.deletecenterlocationstaff(data.recordNumber).pipe(
+        takeUntil(this.unsubscribe)).subscribe(data => {
+          if(data){
+            (stafftype == 1) ? this.loadApprovedStaff() : this.loadExcludedStaff();
+            this.globalS.sToast('Success','Staff Deleted')
+          }
+        })
       }
-    }
-    delete(data: any) { 
-      this.postLoading = true;     
-      const group = this.inputForm;
-      this.menuS.deleteCenterFacilityLoclist(data.recordNumber)
-      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        if (data) {
-          this.globalS.sToast('Success', 'Data Deleted!');
+      editCompetencyModal(data:any){
+        this.addOrEdit = 1;
+        this.competencyForm.patchValue({
+          competencyTitle : data.competency,
+          mandatory : data.mandatory,
+          recordNumber:data.recordNumber,
+        })
+        this.competencymodal = true;
+      }
+      deleteCompetency(){
+        
+      }
+      fetchAll(e){
+        if(e.target.checked){
+          this.whereString = "";
           this.loadData();
-          return;
-        }
-      });
-    }
-    active(data:any){
-      const group = this.inputForm;
-      this.menuS.activateCenterFacitlityLoclist(data.recordNumber)
-      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        if (data) {
-          this.globalS.sToast('Success', 'Data Deleted!');
+        }else{
+          this.whereString = " Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
           this.loadData();
-          return;
         }
-      });      
+      }
+      delete(data: any) { 
+        this.postLoading = true;     
+        const group = this.inputForm;
+        this.menuS.deleteCenterFacilityLoclist(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadData();
+            return;
+          }
+        });
+      }
+      active(data:any){
+        const group = this.inputForm;
+        this.menuS.activateCenterFacitlityLoclist(data.recordNumber)
+        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          if (data) {
+            this.globalS.sToast('Success', 'Data Deleted!');
+            this.loadData();
+            return;
+          }
+        });      
+      }
+      
+      onCheckboxChange(option, event) {
+        if(event.target.checked){
+          this.checkedList.push(option.description);
+        } else {
+          this.checkedList = this.checkedList.filter(m=>m!= option.description)
+        }
+        console.log(this.checkedList);
+      }
+      onCheckboxUnapprovedChange(option, event) {
+        if(event.target.checked){
+          this.checkedListExcluded.push(option);
+        } else {
+          this.checkedListExcluded = this.checkedListExcluded.filter(m=>m!= option)
+        }
+      }
+      onCheckboxapprovedChange(option, event)
+      {
+        if(event.target.checked){
+          this.checkedListApproved.push(option);
+        } else {
+          this.checkedListApproved = this.checkedListApproved.filter(m=>m!= option)
+        }
+      }
+      buildForm() {
+        this.inputForm = this.formBuilder.group({
+          type: '',
+          outletid:0,
+          cstdaoutlet:false,
+          dsci:false,
+          name:'',
+          branch:'',
+          adress:'',
+          sla:'',
+          postcode:'',
+          subrub:'',
+          places:'',
+          cat:'',
+          category:'',
+          unaprstaff:'',
+          anualhours:'',
+          serviceUsers:'',
+          minUserWeek:'',
+          maxUserWeek:'',
+          minStaffHour:'',
+          maxStaffHour:'',
+          aprstaff:'',
+          competences:'',
+          agencysector:'',
+          servicetype:'',
+          fundingjunc:'',
+          fundingtype:'',
+          sheetalert:'',
+          hour:'',
+          week:'',
+          day:'',
+          weekPatern:false,
+          dayPatern:false,
+          hourPatern:true,
+          description: '',
+          asset_no:'',
+          serial_no:'',
+          purchase_am:'',
+          purchase_date:'',
+          last_service:'',
+          lockloct:'',
+          lockcode:'',
+          disposal:'',
+          notes:'',
+          glRevene:'',
+          glCost:'',
+          gloveride:false,
+          centerName:'',
+          addrLine1:'',
+          addrLine2:'',
+          Phone:'',
+          startHour:'',
+          finishHour:'',
+          earlyStart:'',
+          lateStart:'',
+          earlyFinish:'',
+          lateFinish:'',
+          overstay:'',
+          understay:'',
+          t2earlyStart:'',
+          t2lateStart:'',
+          t2earlyFinish:'',
+          t2lateFinish:'',
+          t2overstay:'',
+          t2understay:'',
+          recordNumber:null
+        });
+        this.staffForm = this.formBuilder.group({
+          staffTitle : '',
+          notes : '',
+          recordNumber:null,
+        });
+        this.competencyForm = this.formBuilder.group({
+          competencyTitle : '',
+          mandatory : '',
+          recordNumber:null,
+        });
+      }
+      handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+      }
+      handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+      }
+      generatePdf(){
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [NAME]) AS Field1,[Name] as Field2, ServiceOutletID as Field3, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Field4 FROM CSTDAOutlets WHERE "+this.whereString+" ORDER BY [NAME]";
+        
+        const headerDict = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+        
+        const requestOptions = {
+          headers: new HttpHeaders(headerDict)
+        };
+        
+        const data = {
+          "template": { "_id": "0RYYxAkMCftBE9jc" },
+          "options": {
+            "reports": { "save": false },
+            "txtTitle": "Center/Facility/Locations List",
+            "sql": fQuery,
+            "userid":this.tocken.user,
+            "head1" : "Sr#",
+            "head2" : "Title",
+            "head3" : "Service",
+            "head4" : "Address"
+          }
+        }
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+        .subscribe((blob: any) => {
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.loading = false;
+        }, err => {
+          console.log(err);
+          this.loading = false;
+          this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+              this.drawerVisible = false;
+            },
+          });
+        });
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
+      }
     }
     
-    onCheckboxChange(option, event) {
-      if(event.target.checked){
-        this.checkedList.push(option.description);
-      } else {
-        this.checkedList = this.checkedList.filter(m=>m!= option.description)
-      }
-      console.log(this.checkedList);
-    }
-    onCheckboxUnapprovedChange(option, event) {
-      if(event.target.checked){
-        this.checkedListExcluded.push(option);
-      } else {
-        this.checkedListExcluded = this.checkedListExcluded.filter(m=>m!= option)
-      }
-    }
-    onCheckboxapprovedChange(option, event)
-    {
-      if(event.target.checked){
-        this.checkedListApproved.push(option);
-      } else {
-        this.checkedListApproved = this.checkedListApproved.filter(m=>m!= option)
-      }
-    }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        type: '',
-        outletid:0,
-        cstdaoutlet:false,
-        dsci:false,
-        name:'',
-        branch:'',
-        adress:'',
-        sla:'',
-        postcode:'',
-        subrub:'',
-        places:'',
-        cat:'',
-        category:'',
-        unaprstaff:'',
-        anualhours:'',
-        serviceUsers:'',
-        minUserWeek:'',
-        maxUserWeek:'',
-        minStaffHour:'',
-        maxStaffHour:'',
-        aprstaff:'',
-        competences:'',
-        agencysector:'',
-        servicetype:'',
-        fundingjunc:'',
-        fundingtype:'',
-        sheetalert:'',
-        hour:'',
-        week:'',
-        day:'',
-        weekPatern:false,
-        dayPatern:false,
-        hourPatern:true,
-        description: '',
-        asset_no:'',
-        serial_no:'',
-        purchase_am:'',
-        purchase_date:'',
-        last_service:'',
-        lockloct:'',
-        lockcode:'',
-        disposal:'',
-        notes:'',
-        glRevene:'',
-        glCost:'',
-        gloveride:false,
-        centerName:'',
-        addrLine1:'',
-        addrLine2:'',
-        Phone:'',
-        startHour:'',
-        finishHour:'',
-        earlyStart:'',
-        lateStart:'',
-        earlyFinish:'',
-        lateFinish:'',
-        overstay:'',
-        understay:'',
-        t2earlyStart:'',
-        t2lateStart:'',
-        t2earlyFinish:'',
-        t2lateFinish:'',
-        t2overstay:'',
-        t2understay:'',
-        recordNumber:null
-      });
-      this.staffForm = this.formBuilder.group({
-        staffTitle : '',
-        notes : '',
-        recordNumber:null,
-      });
-    }
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
-    generatePdf(){
-      this.drawerVisible = true;
-      
-      this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [NAME]) AS Field1,[Name] as Field2, ServiceOutletID as Field3, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Field4 FROM CSTDAOutlets WHERE "+this.whereString+" ORDER BY [NAME]";
-      
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-      
-      const data = {
-        "template": { "_id": "0RYYxAkMCftBE9jc" },
-        "options": {
-          "reports": { "save": false },
-          "txtTitle": "Center/Facility/Locations List",
-          "sql": fQuery,
-          "userid":this.tocken.user,
-          "head1" : "Sr#",
-          "head2" : "Title",
-          "head3" : "Service",
-          "head4" : "Address"
-        }
-      }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loading = false;
-      }, err => {
-        console.log(err);
-        this.loading = false;
-        this.ModalS.error({
-          nzTitle: 'TRACCS',
-          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-          nzOnOk: () => {
-            this.drawerVisible = false;
-          },
-        });
-      });
-      this.loading = true;
-      this.tryDoctype = "";
-      this.pdfTitle = "";
-    }
-  }
-  

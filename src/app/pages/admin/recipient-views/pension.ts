@@ -133,7 +133,7 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
             notes
         });
 
-        this.addOREdit = 2;
+        this.addOREdit = 0;
         this.modalOpen = true;
     }
 

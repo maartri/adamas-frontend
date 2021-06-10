@@ -57,9 +57,9 @@ export class MedicalcontactComponent implements OnInit {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
       this.buildForm();
-      this.medicaltype = ['GENERAL PRACTITIONER','GP'];
       this.loading = false;
       this.loadData();
+      this.loadDropdown();
       this.cd.detectChanges();
     }
     loadTitle()
@@ -108,6 +108,13 @@ export class MedicalcontactComponent implements OnInit {
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+      });
+    }
+    loadDropdown(){
+      let sql1 = "select distinct Description from DataDomains where Domain = 'CONTACTSUBGROUP'  and HACCCode = '3-MEDICAL'";
+      this.listS.getlist(sql1).subscribe(data => {
+        this.medicaltype = data;
         this.loading = false;
       });
     }

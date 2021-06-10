@@ -245,7 +245,7 @@ export class HolidaysComponent implements OnInit {
       
       this.loading = true;
       // xDeletedRecord
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,CONVERT(varchar, [DATE],105) as Field4 from PUBLIC_HOLIDAYS  Order By DESCRIPTION";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY DESCRIPTION) AS Field1,[DESCRIPTION] as Field2 ,[Stats] as Field3,CONVERT(varchar, [DATE],105) as Field4 from PUBLIC_HOLIDAYS "+this.whereString+"Order By DESCRIPTION";
       
       const headerDict = {
         'Content-Type': 'application/json',

@@ -174,7 +174,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     }
 
     showEditModal(index: any) {
-        this.addOREdit = 2;
+        this.addOREdit = 0;
         const { alarmDate, detail, isPrivate, category, creator, recordNumber } = this.tableData[index];
 
         this.inputForm.patchValue({

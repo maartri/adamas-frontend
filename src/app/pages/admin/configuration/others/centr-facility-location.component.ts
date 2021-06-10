@@ -2,10 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService } from '@services/index';
+import { GlobalService, ListService, MenuService, TimeSheetService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
-import { Subject } from 'rxjs';
+import { Subject,forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
@@ -58,9 +58,10 @@ export class CentrFacilityLocationComponent implements OnInit {
   inputVariables:any; 
   postLoading: boolean = false;
   isUpdate: boolean = false;
+  isNewRecord: boolean = false;
   check: boolean = false;
   title:string = "Add New Facility/Location";
-  whereString:string = " WHERE ( [group] = 'PROGRAMS' ) ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
   inputValue: string = 'NEW OUTLET';
   private unsubscribe: Subject<void> = new Subject();
   tocken: any;
@@ -69,12 +70,21 @@ export class CentrFacilityLocationComponent implements OnInit {
   tryDoctype: any;
   drawerVisible: boolean =  false;
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  center_perosn_id: string = '118';
+  excludedStaff: unknown;
+  listStaff: unknown;
+  includedStaff: any;
+  competencies: any;
+  categoryList: any;
+  addOrEdit: number = 0;
+  staffForm: FormGroup;
   
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
     private listS:ListService,
+    private timeS: TimeSheetService,
     private menuS:MenuService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -101,13 +111,36 @@ export class CentrFacilityLocationComponent implements OnInit {
       this.resetModal();
       this.modalOpen = true;
     }
-    showstaffApprovedModal(){
-      // this.resetModal();
-      this.staffApproved = true;
+
+    showstaffModal(stafftype:number){
+      if(stafftype == 1){
+        this.staffApproved = true;
+        this.addOrEdit     = 0;  
+      }else{
+        this.staffUnApproved = true;
+        this.addOrEdit     = 0;  
+      }
     }
-    showstaffUnApprovedModal(){
-      this.staffUnApproved = true;
+    staffEditModal(stafftype:number,data:any){
+      
+      
+      this.staffForm.patchValue({
+        staffTitle : data.name,
+        notes : data.notes,
+        recordNumber:data.recordNumber
+      })
+      // console.log(stafftype);
+      if(stafftype == 1){
+        this.addOrEdit     = 1;
+        this.staffApproved = true;
+      }
+      else
+      {
+        this.addOrEdit     = 1;
+        this.staffUnApproved = true;
+      }
     }
+
     showCompetencyModal(){
       this.competencymodal = true;
     }
@@ -239,19 +272,30 @@ export class CentrFacilityLocationComponent implements OnInit {
     }
     onIndexChange(index: number): void {
       this.current = index;
+      if(this.current == 2 || this.current == 3){
+        const validateForm = this.inputForm ;
+        let fundingSource =  this.globalS.isValueNull(validateForm.get('branch').value);
+        let title         =  this.globalS.isValueNull(validateForm.get('name').value);
+        if(this.globalS.isVarNull(fundingSource) || this.globalS.isVarNull(title)){
+          this.globalS.iToast('Alert', 'Please Add Branch and Name First !');
+          this.current = 0; 
+        }
+      }
+      if(this.current == 2 || this.current == 3){
+          this.staffDetails(118);
+      }
+      
     }
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){
-        
         const group = this.inputForm;
-        
         let branch             = this.globalS.isValueNull(group.get('branch').value);
         let adress             = this.globalS.isValueNull(group.get('adress').value);
         let subrub             = this.globalS.isValueNull(group.get('subrub').value);
         let sla                = this.globalS.isValueNull(group.get('sla').value);
-        let name               = this.globalS.isValueNull(group.get('name').value);
+        let name               = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let outletid           = this.globalS.isValueNull(group.get('outletid').value);
         let postcode           = this.globalS.isValueNull(group.get('postcode').value);
 
@@ -300,16 +344,17 @@ export class CentrFacilityLocationComponent implements OnInit {
 
         let values = jurisdiction+","+vari+","+agencysector+","+weeksYear+","+dayweeks+","+hourYears+","+serviceUsers+","+servicetype+","+anualhours+","+weekPatern+","+dayPatern+","+hourPatern+","+maxUserWeek+","+minUserWeek+","+maxStaffHour+","+minStaffHour+","+glrevenue+","+glcost+","+gloveride+","+cstdaoutlet+","+dsci+","+branch+","+places+","+earlyStart+","+lateStart+","+earlyFinish+","+lateFinish+","+overstay+","+understay+","+t2earlyStart+","+t2lateStart+","+t2earlyFinish+","+t2lateFinish+","+t2overstay+","+t2understay+","+fundingtype+","+sheetalert+","+name+","+outletid+","+postcode+","+adress+","+subrub+","+sla;
         let sqlz = "insert into CSTDAOutlets ([FundingSource],[Jurisdiction],[AgencySector],[WeeksPerYear],[DaysPerWeek],[HoursPerDay],[NoServiceUsers],[CSTDAServiceType],[ServiceAnnualHours],[WeeksPerCollectionPeriodOfOperation_NoPattern],[DaysPerWeekOfOperation_NoPattern],[HoursPerDayOfOperation_NoPattern],[MAXWeeklyRecipientHours],[MINWeeklyRecipientHours],[MAXWeeklyStaffHours],[MINWeeklyStaffHours],[GLRevenue],[GLCost],[GLOverride],[CSTDA],[DCSI],[Branch],[Places],[BH_EarlyStart],[BH_LateStart],[BH_EarlyFinish],[BH_LateFinish],[BH_OverStay],[BH_UndrStay],[AH_EarlyStart],[AH_LateStart],[AH_EarlyFinish],[AH_LateFinish],[AH_OverStay],[AH_UndrStay],[FundingType],[RunsheetAlerts],[Name],[ServiceOutletID],[Postcode],[AddressLine1],[Suburb],[CSTDASLA]) values("+values+");select @@IDENTITY"; 
-        
-        console.log(sqlz);
+
         
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');
             this.loadData();
-            this.postLoading = false;   
-            this.loading = false;       
-            this.handleCancel();
+            this.center_perosn_id = data;
+            // this.postLoading = false;   
+            // this.loading = false;
+            this.isNewRecord = true;
+            // this.handleCancel();
             this.resetModal();
           }
           else{
@@ -317,7 +362,7 @@ export class CentrFacilityLocationComponent implements OnInit {
             this.loadData();
             this.loading = false;   
             this.postLoading = false;          
-            this.handleCancel();
+            // this.handleCancel();
             this.resetModal();
           }
         });
@@ -329,7 +374,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         let adress             = this.globalS.isValueNull(group.get('adress').value);
         let subrub             = this.globalS.isValueNull(group.get('subrub').value);
         let sla                = this.globalS.isValueNull(group.get('sla').value);
-        let name               = this.globalS.isValueNull(group.get('name').value);
+        let name               = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let outletid           = this.globalS.isValueNull(group.get('outletid').value);
         let postcode           = this.globalS.isValueNull(group.get('postcode').value);
         let jurisdiction       = this.globalS.isValueNull(group.get('fundingjunc').value);
@@ -384,23 +429,78 @@ export class CentrFacilityLocationComponent implements OnInit {
         this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data){
             this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
+            // this.loadData();
             this.postLoading = false;   
             this.loading = false;       
-            this.handleCancel();
-            this.resetModal();
+            // this.handleCancel();
+            // this.resetModal();
           }
           else{
             this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
+            // this.loadData();
             this.loading = false;   
             this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
+            // this.handleCancel();
+            // this.resetModal();
           }
         });
       }
-      
+    }
+    loadApprovedStaff(){
+      this.timeS.getcenterLocationincludedstaff(this.center_perosn_id).subscribe(data => {
+        this.includedStaff = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadExcludedStaff(){
+      this.timeS.getcenterlocationexcludedstaff(this.center_perosn_id).subscribe(data => {
+        this.excludedStaff = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadCompetency(){
+      this.timeS.getcenterlocationcompetency(this.center_perosn_id).subscribe(data => {
+        this.competencies = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    saveStaff(type:any){
+      this.postLoading = true;
+      const group = this.inputForm;
+      let insertOne = false;
+      if(this.addOrEdit == 0){
+        if(!this.isUpdate){
+          if(!this.isNewRecord){
+            this.save();
+          }
+      }
+
+        var stafftype = (type == 1) ? "'CENTRE_STAFFI'":"'CENTRE_STAFFX'"; 
+        var approvedExcludeList = (type == 1) ? this.checkedListApproved : this.checkedListExcluded;
+        
+        approvedExcludeList.forEach( (element) => {
+            let sql = "INSERT INTO HumanResources (PersonID, [Group], Type, Name, Notes) VALUES ('"+this.center_perosn_id+"',"+stafftype+","+stafftype+",'"+element+"','')";
+                this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{  
+                    insertOne = true;
+                });
+        });
+        
+        if(insertOne){
+          this.globalS.sToast('Success', 'Saved successful');
+        }
+        this.postLoading = false;
+        
+        (type == 1) ? this.handleAprfCancel()  : this.handleUnAprfCancel();
+        (type == 1) ? this.loadApprovedStaff() : this.loadExcludedStaff();
+        (type == 1) ? this.checkedListApproved = [] : this.checkedListExcluded = [] ;
+
+      }
+      else
+      {
+      }
     }
     trueString(data: any): string{
       return data ? '1': '0';
@@ -426,7 +526,7 @@ export class CentrFacilityLocationComponent implements OnInit {
       }
       this.numbers = arr;      
       this.loading = true;
-      this.menuS.getlistcenterFacilityLoc().subscribe(data => {
+      this.menuS.getlistcenterFacilityLoc(this.check).subscribe(data => {
         this.tableData = data;
         this.loading = false;
         this.cd.detectChanges();
@@ -437,24 +537,87 @@ export class CentrFacilityLocationComponent implements OnInit {
         this.branches = data;
         this.loading = false;
       });
-      let staf = "Select AccountNo from Staff WHERE AccountNo > '!z' AND (CommencementDate is not null) and (TerminationDate is null) AND (Accountno NOT IN (Select [Name] AS Accountno FROM HumanResources WHERE [Group] = 'INCLUDEDSTAFF' AND PersonID = '1094') AND  Accountno NOT IN (Select [Name] AS Accountno FROM HumanResources WHERE [Group] = 'INCLUDEDSTAFF' AND PersonID = 'T0100005501')) ORDER BY AccountNo";
-      this.listS.getlist(staf).subscribe(data => {
-        this.staffList = data;
-        this.loading = false;
-      });
+
       let compet = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
       
       this.listS.getlist(compet).subscribe(data => {
         this.competencyList = data;
         this.loading = false;
+      });
+      let cat    = "SELECT DESCRIPTION FROM DATADOMAINS WHERE  ISNULL(DataDomains.DeletedRecord, 0) = 0 AND DOMAIN = 'STAFFADMINCAT'";
+      this.listS.getlist(cat).subscribe(data => {
+        this.categoryList = data;
+        this.loading = false;
       });    
+    }
+    staffDetails(person_id: any = this.center_perosn_id) {
+      this.cd.reattach();
+      this.loading = true;
+      forkJoin([
+        this.timeS.getcenterLocationincludedstaff(person_id),
+        this.timeS.getcenterlocationexcludedstaff(person_id),
+        this.listS.getcenterlocationstaff(),
+        this.timeS.getcenterlocationcompetency(person_id)
+      ]).subscribe(staff => {
+        this.loading = false;
+        this.includedStaff  = staff[0];
+        this.excludedStaff  = staff[1];
+        this.listStaff      = staff[2];
+        this.competencies   = staff[3];
+        this.cd.markForCheck();
+      });
+    }
+    // deleteApprovedStaff(data:any){
+    //   const group = this.inputForm;
+    //     // this.loading = true;
+    //     this.menuS.deleteApprovedStaff(data.recordNumber)
+    //     .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //       if (data) {
+    //         this.globalS.sToast('Success', 'Data Deleted!');
+    //         this.loadApprovedStaff();
+    //         return;
+    //       }
+    //     });
+    // }
+    // deleteExcludedStaff(data:any){
+    //   const group = this.inputForm;
+    //     // this.loading = true;
+    //     this.menuS.deleteExcludedStaff(data.recordNumber)
+    //     .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //       if (data) {
+    //         this.globalS.sToast('Success', 'Data Deleted!');
+    //         this.loadExcludedStaff();
+    //         return;
+    //       }
+    //     });
+    // }
+    // deleteCompetency(data:any){
+    //   const group = this.inputForm;
+    //     this.loading = true;
+    //     this.menuS.deleteCompetency(data.recordNumber)
+    //     .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //       if (data) {
+    //         this.globalS.sToast('Success', 'Data Deleted!');
+    //         this.loadCompetency();
+    //         return;
+    //       }
+    //     });
+    // }
+    staffDetlete(){
+
+    }
+    editCompetencyModal(){
+
+    }
+    deleteCompetency(){
+
     }
     fetchAll(e){
       if(e.target.checked){
-        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) ";
+        this.whereString = "";
         this.loadData();
       }else{
-        this.whereString = " WHERE ( [group] = 'PROGRAMS' ) AND ( enddate IS NULL OR enddate >= getDate()) ) ";
+        this.whereString = " Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
         this.loadData();
       }
     }
@@ -470,31 +633,43 @@ export class CentrFacilityLocationComponent implements OnInit {
         }
       });
     }
+    active(data:any){
+      const group = this.inputForm;
+      this.menuS.activateCenterFacitlityLoclist(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadData();
+          return;
+        }
+      });      
+    }
+    
     onCheckboxChange(option, event) {
       if(event.target.checked){
         this.checkedList.push(option.description);
       } else {
         this.checkedList = this.checkedList.filter(m=>m!= option.description)
       }
+      console.log(this.checkedList);
     }
     onCheckboxUnapprovedChange(option, event) {
       if(event.target.checked){
-        this.checkedListExcluded.push(option.accountNo);
+        this.checkedListExcluded.push(option);
       } else {
-        this.checkedListExcluded = this.checkedListExcluded.filter(m=>m!= option.accountNo)
+        this.checkedListExcluded = this.checkedListExcluded.filter(m=>m!= option)
       }
     }
     onCheckboxapprovedChange(option, event)
     {
       if(event.target.checked){
-        this.checkedListApproved.push(option.accountNo);
+        this.checkedListApproved.push(option);
       } else {
-        this.checkedListApproved = this.checkedListApproved.filter(m=>m!= option.accountNo)
+        this.checkedListApproved = this.checkedListApproved.filter(m=>m!= option)
       }
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
-        
         type: '',
         outletid:0,
         cstdaoutlet:false,
@@ -527,7 +702,7 @@ export class CentrFacilityLocationComponent implements OnInit {
         day:'',
         weekPatern:false,
         dayPatern:false,
-        hourPatern:false,
+        hourPatern:true,
         description: '',
         asset_no:'',
         serial_no:'',
@@ -561,6 +736,11 @@ export class CentrFacilityLocationComponent implements OnInit {
         t2understay:'',
         recordNumber:null
       });
+      this.staffForm = this.formBuilder.group({
+        staffTitle : '',
+        notes : '',
+        recordNumber:null,
+      });
     }
     handleOkTop() {
       this.generatePdf();
@@ -576,7 +756,7 @@ export class CentrFacilityLocationComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [NAME]) AS Field1,[Name] as Field2, ServiceOutletID as Field3, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Field4 FROM CSTDAOutlets WHERE ( EndDate is NULL OR EndDate >= Getdate()) ORDER BY [NAME]";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [NAME]) AS Field1,[Name] as Field2, ServiceOutletID as Field3, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Field4 FROM CSTDAOutlets WHERE "+this.whereString+" ORDER BY [NAME]";
       
       const headerDict = {
         'Content-Type': 'application/json',

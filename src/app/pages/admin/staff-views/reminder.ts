@@ -203,7 +203,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
             }
             
             showEditModal(index: any) {
-                this.addOREdit = 2;
+                this.addOREdit = 0;
                 const { recordNumber, personID, alert, reminderDate, dueDate, address1, address2, recurring, state, email, notes} = this.tableData[index];
                 
                 this.inputForm.patchValue({

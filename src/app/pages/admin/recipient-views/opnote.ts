@@ -35,6 +35,9 @@ import { Filters } from '@modules/modules';
         .chkboxes{
             padding:4px;
         }
+        button{
+            margin-right:1rem;
+        }
     `],
     templateUrl: './opnote.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -55,6 +58,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
     modalOpen: boolean = false;
     addOrEdit: number;
     dateFormat: string = 'dd/MM/yyyy';
+    printLoad: boolean = false;
 
     filters: Filters = {
         acceptedQuotes: false,
@@ -116,6 +120,10 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();
         // this.search(this.user);
         this.buildForm();
+    }
+
+    print(){
+
     }
 
     ngOnDestroy(): void {

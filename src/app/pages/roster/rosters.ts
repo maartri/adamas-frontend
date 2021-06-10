@@ -47,8 +47,9 @@ interface UserView{
     staffRecordView: string,
     staff: number
 }
-const license = "E427689893651433#B0ASSrpndudjTsh4V8U7UwM6LzVTb9UkZNZkZtVXc7oVT8QVWRFmV6NFa4EDOqx6bjFlT6pXSj9We73CVOBXRY54akZ7d8dFezsWWCVnYiNWZFNGTRZHMqdzKyVlT6hTOxU4VuhWYv9EW8hHSipUS8kGa9VkQ5JWRoJGVzQmN8sCZtpWT5UlavcWN9ZXeVNzNUtEbxIGZ8tSdqtCaJtkUOdzUDFUMCxkVD94R4llMBl6dV96SxIGayNGVzQlQVdXRxt6b5sCcQhzLZBFTzgXZrpXaiNUU656LGhlb8hEZDZjREZEM8ETQvpVNRNlbwkGViojITJCLikjN6YDR7UUNiojIIJCL7kTOwMDOzYjM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiIxQTOwMDMgYDM5ATMyAjMiojI4J7QiwiI5AjNwEjMwIjI0ICc8VkIsIych5WYkFkI0ISYONkIsUWdyRnOiwmdFJCLiMzM4ETN6MTO8kDO6cjM4IiOiQWSiwSfdtlOicGbmJCLlNHbhZmOiI7ckJye0ICbuFkI1pjIEJCLi4TP7V6RGBzZ8t4cSplZUhTashjVuJ5L0JUUPhXRzFUMvonUzAHciJTapZ5a54EdxpXNEVkejBFZrFWdpZUaXFVNJRnZ92UTzJjUP5mWL5GeqJlailHMENmSV5kM7N5YzZFN7JjQxB3f1";
 
+const license = "479215118998299#B02ZN2yZkZTZaxEUCRlWqdjV7U5aN5GemlnRZJzTBlER5U6ZRdmdS9EZ9oWViJ4QQN5MQd5aNFlVDVEVnNzKSZ5N4BFc5hFZkZ4L82EOw9mY9NlUYVlSMtSRzVXVMdVa8lUb8tmUMdEZ0dmbyVDMWV4MrUFSnJkU8MDWClFRWlXd85Ue9hUYxJkV92GU7Une484Y9hjeldlS7MVOUJEZ0R6S9RnW7kmQvhHbiR7bj9kRyYmQKlVbsR5RvxWYDtEbxM4aD3EcM3CeZhDdTNjMxAzYyZGe42yZvFlN9hnYMtCV4IVazs6TGdXYHVHMCJjYzEHW52yVKNHaiojITJCLiQzNxYDNxITNiojIIJCLxcjM4QzMwMjM0IicfJye#4Xfd5nIFVUSWJiOiMkIsICNx8idgAyUKBCZhVmcwNlI0IiTis7W0ICZyBlIsISMxITM5ADI8AjNwEjMwIjI0ICdyNkIsICMuAjLw8CMvIXZudWazVGZiojIz5GRiwiIz96bpRXds36UgUGdhJ7bwJ7bDBych5WYkFkI0ISYONkIsISO9IDO9kDOxETNxITO7QjI0ICZJJCL355W0IyZsZmIsUWdyRnOiI7ckJye0ICbuFkI1pjIEJCLi4TPRVzbztGNCdje9hHZMRkY5gjWroXV0tCZEBjdI3SVvNjM9MGVwMUUlJ5MQ3WW7tEVSN5R0FzKxIGTMFlSBJzbMRVZKtUN0Z4a5ZmQ4I4aj9kd8ImeyUTWyVnbkFXTfo";
+GC.Spread.Sheets.LicenseKey = license;
 
 function IconCellType(img) {
     this.typeName = "IconCellType";
@@ -1970,14 +1971,12 @@ ClearMultishift(){
 
     }
     ngOnInit(): void {
-        GC.Spread.Sheets.LicenseKey = license;
-       
-        this.date = moment();
-        this.buildForm(); 
-         this.token = this.globalS.decode();    
+            // GC.Spread.Sheets.LicenseKey = license;
         
-       
-}
+            this.date = moment();
+            this.buildForm(); 
+            this.token = this.globalS.decode();        
+    }
 
 ngAfterViewInit(){
 

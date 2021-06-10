@@ -1,5 +1,7 @@
 <div nz-row>
     <button class="botton success" (click)="showAddModal()">Add OP Note</button>
+    <button nz-button nzType="primary" [nzLoading]="printLoad" (click)="print()"><i nz-icon nzType="printer" nzTheme="outline"></i></button>
+
     <app-filter [tabs]="'OPNOTES'"  [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
 </div>
 <div nz-row>

@@ -1070,7 +1070,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         let qteHeader: QuoteHeaderDTO;
 
         const quoteForm = this.quoteForm.getRawValue();
-        // console.log(quoteForm)
+        console.log(quoteForm)
 
         console.log( this.quoteLines);
         // console.log(qteHeader);
@@ -1115,7 +1115,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
         }
         // console.log(qteHeader)
-        // return;
+        return;
         this.listS.getpostquote(qteHeader).subscribe(data => {
                 console.log(data);
                 this.globalS.sToast('Success','Quote Added');

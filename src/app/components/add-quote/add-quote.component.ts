@@ -475,17 +475,28 @@ export class AddQuoteComponent implements OnInit {
               this.IS_CDC = false;
               if(x.isCDC){
                   this.IS_CDC = true;
-                  if(x.quantity && x.timeUnit == 'DAY'){
-                      this.quoteForm.patchValue({
-                          govtContrib: (x.quantity*365).toFixed(2),
-                          programId: x.recordNumber
-                      });
-                      this.remaining_fund = this.quoteForm.value.govtContrib;
-                  }
-                  this.detectChanges();
-                  return this.listS.getpensionandfee();
+                //   if(x.quantity && x.timeUnit == 'DAY'){
+                //       this.quoteForm.patchValue({
+                //           govtContrib: (x.quantity*365).toFixed(2),
+                //           programId: x.recordNumber
+                //       });
+                //       console.log(this.quoteForm.value)
+                //       this.remaining_fund = this.quoteForm.value.govtContrib;
+                //   }
+                //   this.detectChanges();
+                //   return this.listS.getpensionandfee();
               }
+
+                this.quoteForm.patchValue({
+                    govtContrib: x.quantity ? (x.quantity*365).toFixed(2) : 0,
+                    programId: x.recordNumber
+                });
+
+                // console.log(this.quoteForm.value)
+                this.remaining_fund = this.quoteForm.value.govtContrib;
+
               this.detectChanges();
+              this.listS.getpensionandfee();
               return EMPTY;
           })
       ).subscribe(data => {
@@ -1095,9 +1106,9 @@ export class AddQuoteComponent implements OnInit {
     let qteHeader: QuoteHeaderDTO;
 
     const quoteForm = this.quoteForm.getRawValue();
-    console.log(quoteForm);
-    console.log(this.quoteLines);
-    console.log(this.goalsAndStratergies);
+    // console.log(quoteForm);
+    // console.log(this.quoteLines);
+    // console.log(this.goalsAndStratergies);
 
     this.goalsAndStratergies.forEach(e => {
         goals.push(e.goal);
@@ -1149,7 +1160,8 @@ export class AddQuoteComponent implements OnInit {
         documentId: this.tableDocumentId,
         goals: goals
     }
-
+    // console.log(qteHeader);
+    // return;
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');

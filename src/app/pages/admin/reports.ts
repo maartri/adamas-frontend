@@ -210,7 +210,7 @@ const inputFormDefault = {
     DatetypeArr: ['Service Date'],
     statuscategoryArr: ['All services'],
     branchprimacyArr: ['Automatic'],
-    AGE_ATSI_StatusArr: ['ALL'],
+    AGE_ATSI_StatusArr: ['All'],
     Additional_inclusion: ['Default Display'],
     Rpt_Format: ['Detail'],
     Roster_staffinclusion : ['Show Staff Code']    ,
@@ -525,10 +525,10 @@ stafftypeArr: Array<any> = constants.types;
     settting_vehicleArr: Array<any> = [];
     OPnotesArr: Array<any> = [];
     hrnotesArr: Array<any> = [];
-    DatetypeArr: Array<any> = ['Billing Date', 'Pay Period EndDate', 'Service Date'];
+    DatetypeArr: Array<any> = ['Billing Date', 'Pay Period EndDate', 'Service Date','Other'];
     statuscategoryArr: Array<any> = ['All services', 'Approved Services Only', 'UnApproved Services Only'];
     branchprimacyArr: Array<any> = ['Automatic', 'Recipient Branch Overrides ', 'Staff Branch Overrides '];
-    AGE_ATSI_StatusArr: Array<any> = ['ALL','Over 64 OR ATSI Over 49   ', 'Under 65 OR ATSI under 50'];
+    AGE_ATSI_StatusArr: Array<any> = ['All','Over 64 OR ATSI Over 49   ', 'Under 65 OR ATSI under 50'];
     incidentcategoryArr: Array<any> = ['Open', 'Close'];
     Additional_inclusion: Array<any> = [];
     RosterCategory: Array<any> = []; 
@@ -1838,6 +1838,9 @@ stafftypeArr: Array<any> = constants.types;
                 break;
              case 'btn-FORPT-StaffAllowanceRpt':
                 this.FORptModelTitle = "STAFF ALLOWANCE  " ;
+             break;             
+             case 'btn-FORPT-StaffDateProgramRpt':
+                this.FORptModelTitle = "STAFF DATE PROGRAM  " ;                                                
              break;
              case 'btn-FORPT-StaffProgramUtilisation':
                 this.FORptModelTitle = "STAFF PROGRAM UTILIZATION  " ;
@@ -2539,7 +2542,7 @@ stafftypeArr: Array<any> = constants.types;
             case 'btn-UnsedFunding':
                 this.UnsedFunding(s_Programs, s_Managers, s_Recipient, s_ServiceRegions)
                 break; 
-            case 'btn-FORPT-StaffDateProgram':
+            case 'btn-FORPT-StaffDateProgramRpt':
                 this.StaffDateProgram(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                 break;
             case 'btn-BUDGE-Recpientbudgetaudit':   
@@ -8914,7 +8917,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -9412,7 +9415,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL" ) {
+        if (Age != "" && Age != "All" ) {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -9822,7 +9825,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -10245,7 +10248,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -10716,7 +10719,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -11125,7 +11128,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -11717,7 +11720,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -12124,7 +12127,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -12531,7 +12534,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -12936,7 +12939,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -13340,7 +13343,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -13743,7 +13746,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -14139,7 +14142,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -14535,7 +14538,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -15012,7 +15015,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -15401,7 +15404,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -16000,7 +16003,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -16399,7 +16402,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -16806,7 +16809,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -17216,14 +17219,14 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
     StaffDateProgram(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
 
-        var fQuery = " SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo]   "
-        var lblcriteria;
+        var fQuery = " SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], ([Roster].[Unit Bill Rate] * [Roster].[BillQty]) + ([Roster].[Unit Bill Rate] * [Roster].[BillQty] * (ISNULL([Roster].TaxPercent, 0) / 100)) As [LineBill], [Roster].[Yearno] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]    "
+        var lblcriteria; //INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo]
 
         if (funders != "" || mdsagencyID != "") {
-            fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
+            fQuery = fQuery + "LEFT JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
         }
         if (stfgroup != "" || Staff != "" || staffteam != "" || stafftype != "") {
-            var join = "INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo]";
+            var join = "LEFT JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo]";
             fQuery = fQuery + join;
 
         }
@@ -17306,7 +17309,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":
@@ -17529,7 +17532,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
 
 
-        console.log(fQuery)
+     //   console.log(fQuery)
 
         switch (format) {
             case "Detailed":
@@ -17537,13 +17540,13 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 this.reportid = "MXXQYfoclIO6RAj0";
                 break;
             case "Standard":
-                //Title = Title + "-STANDARD"
-                this.reportid = " ";
+                Title = Title + "-STANDARD"
+                this.reportid = "FTvlg15wIkR9j3mw";
 
                 break;
             default:
                 Title = Title + "-SUMMARY"
-                this.reportid = " "
+                this.reportid = "pCzQMu3RbgGilk6R"
                 break;
         }
 
@@ -17994,7 +17997,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
         }
 
-        if (Age != "" && Age != "ALL") {
+        if (Age != "" && Age != "All") {
             let tempkay = (Age.toString()).substring(0, 8);
             switch (tempkay) {
                 case "Under 65":

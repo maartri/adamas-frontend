@@ -100,7 +100,7 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x, y, w, h, style, context]);
     ctx.beginPath();
     // let img = document.getElementById('icon-lock');
-    ctx.drawImage(this.img, x, y , 20, 20);
+    //ctx.drawImage(this.img, x, y , 20, 20);
     ctx.fill();
     ctx.stroke();
     
@@ -521,10 +521,10 @@ ClearMultishift(){
     if (this.master){
         //cell.backColor("#FF8080");
         cell.backColor("white");
-        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
+        cell.text(""); //.cellType(new IconCellType2(document.getElementById('icon-21')));
     }else{
         cell.backColor("white");
-        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
+        cell.text(""); //.cellType(new IconCellType2(document.getElementById('icon-21')));
     }
     cell.text("")
     
@@ -1279,12 +1279,12 @@ ClearMultishift(){
      defaultStyle.font = "8pt Arial";
      
      
-     //defaultStyle.themeFont = "11pt Segoe UI";
-     sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.colHeader);
-     sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.rowHeader);
-     sheet.getRange(2, -1, 1, -1, GC.Spread.Sheets.SheetArea.rowHeader).hAlign(GC.Spread.Sheets.HorizontalAlign.right);
+    //defaultStyle.themeFont = "11pt Segoe UI";
+    sheet.setDefaultStyle(defaultStyle, sheet.colHeader);
+    sheet.setDefaultStyle(defaultStyle, sheet.rowHeader);
+    sheet.getRange(2, -1, 1, -1, GC.Spread.Sheets.SheetArea.rowHeader).hAlign(GC.Spread.Sheets.HorizontalAlign.right);
 
-     //sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+    //sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
     let date:Date = new Date(this.date);
     let m = date.getMonth()+1;
     let y=date.getFullYear();
@@ -1293,55 +1293,46 @@ ClearMultishift(){
     date.setDate(date.getDate()-d)  
     
     let days:number =this.getDaysInMonth(m,y);
-   if (this.Days_View==31){
-    this.Days_View==days
-   }
-    sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
 
+    if (this.Days_View==31) {this.Days_View==days}
     
-    for (let i=0; i<=this.Days_View ; i++)   {
-                
-     // sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
-     
-      var head_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
-      sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-      var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-      row_header.backColor("#002060");
-      row_header.foreColor("#ffffff");
-      
-     var new_width = 1000 / this.Days_View;
-     sheet.setColumnWidth(i, new_width,GC.Spread.Sheets.SheetArea.viewport);
-
-    //   if (this.Days_View>=30)
-    //     sheet.setColumnWidth(i, 40.0,GC.Spread.Sheets.SheetArea.viewport);
-    //   else if (this.Days_View>=14)
-    //     sheet.setColumnWidth(i, 70.0,GC.Spread.Sheets.SheetArea.viewport);
-    //   else 
-    //     sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
-      
-        sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
+    sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
+    
+    for (let i=0; i<=this.Days_View ; i++)   
         
-        //        
-       // sheet.autoFitColumn(i)            
+        {
+                
+        var head_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
+        sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+        var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
+        row_header.backColor("#002060"); row_header.foreColor("#ffffff");
+      
+        //if (this.Days_View>=30)
+        //   sheet.setColumnWidth(i, 70.0,GC.Spread.Sheets.SheetArea.viewport);
+        //else if (this.Days_View>=14)
+        //    sheet.setColumnWidth(i, 140.0,GC.Spread.Sheets.SheetArea.viewport);
+        //else 
+        //    sheet.setColumnWidth(i, 220.0,GC.Spread.Sheets.SheetArea.viewport);
+      
+        if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun"))
+            {
+            
+            sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
+            sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
+            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'black' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            
+            }
+        date.setDate(date.getDate()+1); 
+      
+        }
 
-      if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")){
-          sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
-          sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
-          sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'black' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-          
-      //row_header.backColor("#D1A6BC");
-     
-      }
-      date.setDate(date.getDate()+1); 
-    }
-
-   // sheet.deleteColumns(days+1,31-days );    
-  
    if (this.Already_loaded)
-   {
-    this.spreadsheet.resumePaint();
-    return;
-   } 
+        {
+        
+        this.spreadsheet.resumePaint();
+        return;
+        
+        }   
 
     let time:Time;
     time={hours:0,
@@ -1353,18 +1344,14 @@ ClearMultishift(){
    
         var row_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
         
-       if (time.minutes==0){
-            //sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
+        if (time.minutes==0){
             row_txt = this.numStr(time.hours)  + ":" + this.numStr(time.minutes) 
-       }else if (time.minutes%15==0)
-          //  sheet.setValue(j, 0,  "     "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
-          row_txt = "     "+this.numStr(time.minutes)  ;
+        }else if (time.minutes%15==0)
+            row_txt = "     "+this.numStr(time.minutes)  ;
         else
             row_txt= "";
-         //sheet.setValue(j, 0,  ""  , GC.Spread.Sheets.SheetArea.rowHeader);
 
-         sheet.setValue(j, 0, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
-       
+        sheet.setValue(j, 0, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, sheet.rowHeader);        
         sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
@@ -1423,55 +1410,55 @@ ClearMultishift(){
         text=Servicetype + "-" +RecordNo + ", type=" + type;
     switch(Number(type)){
         case 1:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-1')));                    
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-1')));                    
         break;
         case 2:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-2')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-2')));
             break;
         case 3:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-3')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-3')));
             break;
         case 4:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-4')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-4')));
             break;
         case 5:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-5')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-5')));
             break;
         case 6:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-6')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-6')));
             break;
         case 7:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-7')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-7')));
             break;           
         case 8:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-8')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-8')));
             break;   
         case 9:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-9')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-9')));
             break;   
         case 10:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-10')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-10')));
             break;
         case 11:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-11')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-11')));
             break;        
          case 12:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-12')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-12')));
             break;
         case 13:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-13')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-13')));
             break;
         case 14:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-14')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-14')));
             break; 
         case 15:
-                sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-15')));
+                sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-15')));
                 break; 
         case 20:
-                sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-20')));
+                sheet.getCell(r,c).text(""); // .cellType(new IconCellType2(document.getElementById('icon-20')));
                 break; 
         default:
-           sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-21')));
+           sheet.getCell(r,c).text(""); // .cellType(new IconCellType2(document.getElementById('icon-21')));
             
     }
        
@@ -1517,7 +1504,9 @@ ClearMultishift(){
      
      // sheet.options.isProtected = true;
       var cell= sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport);
-      cell.setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
+     // cell.borderRight(new GC.Spread.Sheets.LineBorder("#084F58", GC.Spread.Sheets.LineStyle.thin), {all:true});
+      cell.setBorder(new GC.Spread.Sheets.LineBorder("#CAF0F5", GC.Spread.Sheets.LineStyle.thin), {all:true}); 
+      //sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).borderRight(new GC.Spread.Sheets.LineBorder("#084F58", GC.Spread.Sheets.LineStyle.thin))
     
     var new_duration:number=0;
 
@@ -1533,16 +1522,17 @@ ClearMultishift(){
 
       for (let m=0; m<new_duration; m++){
       if (m==0) {
-        sheet.getCell(r,c).backColor("#D5D6DE");
+        sheet.getCell(r,c).backColor("#CAF0F5");
       //  sheet.getCell(r,c).backColor("#ffffff");
        // sheet.getCell(r,c).backgroundImage(rowImage)
-        this.setIcon(r,c,type,RecordNo, service);
+        
+       this.setIcon(r,c,type,RecordNo, service);
        }  
        else{
             
-            sheet.getCell(r+m,c).backColor("#D5D6DE");
+            sheet.getCell(r+m,c).backColor("#CAF0F5");
          //  sheet.getCell(r,c).backColor("#ffffff");
-            this.setIcon(r+m,c,20,RecordNo, "");
+            this.setIcon(r+m,c,20,RecordNo, ""); //TPW REMMED
         }
         //sheet.getCell(r+m,c).field=duration;
        sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);

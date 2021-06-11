@@ -207,7 +207,7 @@ const inputFormDefault = {
 
     radioFormat: ['Summary'],
 
-    DatetypeArr: ['Service Date'],
+    DatetypeArr: ['Default Date'],
     statuscategoryArr: ['All services'],
     branchprimacyArr: ['Automatic'],
     AGE_ATSI_StatusArr: ['All'],
@@ -525,7 +525,7 @@ stafftypeArr: Array<any> = constants.types;
     settting_vehicleArr: Array<any> = [];
     OPnotesArr: Array<any> = [];
     hrnotesArr: Array<any> = [];
-    DatetypeArr: Array<any> = ['Billing Date', 'Pay Period EndDate', 'Service Date','Other'];
+    DatetypeArr: Array<any> = ['Billing Date', 'Pay Period EndDate', 'Service Date','Default Date'];
     statuscategoryArr: Array<any> = ['All services', 'Approved Services Only', 'UnApproved Services Only'];
     branchprimacyArr: Array<any> = ['Automatic', 'Recipient Branch Overrides ', 'Staff Branch Overrides '];
     AGE_ATSI_StatusArr: Array<any> = ['All','Over 64 OR ATSI Over 49   ', 'Under 65 OR ATSI under 50'];
@@ -10666,7 +10666,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                     this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
                     break;
                 default:
-
+                    this.s_DateSQL = " ([Date Invoice] >=  '" + tempsdate + ("' AND [Date Invoice] <= '") + tempedate + "' )";
                     break;
             }
 
@@ -11075,7 +11075,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                     this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
                     break;
                 default:
-
+                    this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
                     break;
             }
 
@@ -13289,7 +13289,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                     this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" + tempsdate + ("' AND [Date Timesheet] <= '") + tempedate + "' )";
 
                     break;
             }
@@ -13692,7 +13692,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                     this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
                     break;
                 default:
-                    this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
+                    this.s_DateSQL = " ([Date Timesheet] >=  '" + tempsdate + ("' AND [Date Timesheet] <= '") + tempedate + "' )";
 
                     break;
             }

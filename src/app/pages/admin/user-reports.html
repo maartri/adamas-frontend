@@ -1,32 +1,35 @@
 <div nz-layout >
     <div nz-row>
         <div nz-col nzSpan="6">
-           <div class="tree_frame">
-                <nz-tree [nzData]="nodes" nzAsyncData = "true" (nzClick)="nzEvent($event)" (nzExpandChange)="nzEvent($event)"> </nz-tree>         
+           <div class="tree_frame" >
+                <nz-tree [nzData]="nodes" nzAsyncData = "false" (nzClick)="nzEvent($event)" (nzExpandChange)="nzEvent($event)"> </nz-tree>         
             </div>
         </div>
     
-        <div nz-col nzSpan="18" [formGroup]="inputForm">
-            <div nz-row *ngIf="frm_nodelist" >
-                <div nz-col nzSpan="22" class="list_frame"  >
+        <div nz-col nzSpan="18" >
+            <div nz-row *ngIf="frm_nodelist"  >
+                <div nz-col nzSpan="16" class="list_frame"  >
                     <nz-list [nzGrid] >
-                        <nz-list-item *ngFor="let item of list">                            
-                       {{item}}
+                        <nz-list-item *ngFor="let item of list;let indexofelement= index;">                            
+                      <div> {{item}}  </div>
+                        
+                       <div style="align-items: flex-end;"> <a  nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(indexofelement)">Delete</a>
+                        </div>
                         </nz-list-item>
                     </nz-list>
                 </div>
             </div>
             <div nz-row class="margin">
                 <div nz-col nzSpan="10" >
-                    <div class="form-group" >                                 
-                                    
+                    <div class="form-group" [formGroup]="inputForm">                                                                     
                         <nz-select formControlName="exportitemsArr"   >
                             <nz-option *ngFor="let option of exportitemsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                         </nz-select>                             
                     </div>
                 </div>
                 <div nz-col nzSpan="12"  >
-                    <div class="form-group" class="margin">                                 
+                    <div class="form-group" class="margin" [formGroup]="inputForm">                                 
                         <label class="checks" nz-checkbox formControlName="activeonly">Active only</label> <br>
                         <label class="checks" nz-checkbox formControlName="incl_internalCostclient">Include internal cost client</label>                                                              
                     </div>                                                                                                                                                               
@@ -34,7 +37,7 @@
             </div>
                 <div nz-row class="margin">
                     <div nz-col nzSpan="10"  >
-                        <div class="form-group">                                 
+                        <div class="form-group"  [formGroup]="inputForm">                                 
                             <nz-select formControlName="functionsArr"   >
                                 <nz-option *ngFor="let option of functionsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                             </nz-select>                                                               
@@ -43,21 +46,91 @@
                 </div>
                 <div nz-row class="margin">
                     <div nz-col nzSpan="10"  >
-                        <div class="form-group">                                 
-                            <nz-select formControlName="Arr"   >
+                        <div class="form-group"  [formGroup]="inputForm"> 
+                            <input nz-input placeholder=" Values"formControlName="Arr"/>                                
+                        <!--    <nz-select formControlName="Arr"   >
                                 <nz-option *ngFor="let option of Arr" [nzLabel]="option" [nzValue]="option"></nz-option> 
-                            </nz-select>                                                               
+                            </nz-select>    -->                                                           
                         </div>
                     </div>                
                     <div nz-col nzSpan="10"   class="margin" >
-                        <div class="form-group">                                 
-                            <nz-select formControlName="valArr"   >
+                        <div class="form-group"  [formGroup]="inputForm">  
+                            <input nz-input placeholder=" Values"formControlName="valArr"/>                              
+                        <!--    <nz-select formControlName="valArr"   >
                                 <nz-option *ngFor="let option of valArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
-                            </nz-select>                                                               
+                            </nz-select>    -->                                                           
                         </div>
                     </div>
                 </div>
-        
+                <div>
+                    <button nzType="default"  nzJustify="start" (click)="apply()">Apply</button>
+                </div>
+                <div nz-row   >
+                    <div nz-col nzSpan="22"  class="criteria" >                       
+                            <table>                            
+                                    <tr>
+                                        <td>
+                                            <span>Entity </span>
+                                        </td>
+                                        <td>
+                                            <span>Condition </span>
+                                        </td>
+                                        <td>
+                                            <span> Value </span>
+                                        </td>
+                                        <td>
+                                            <span> Action </span>
+                                        </td>
+                                    </tr>                                                            
+                                    <tr>
+                                        <td *ngFor="let item of entity;let indexofelement= index;">                            
+                                            {{item}}
+                                        </td>
+                                        <td *ngFor="let item of condition;let indexofelement= index;">                            
+                                            {{item}}
+                                        </td>
+                                        <td *ngFor="let item of value;let indexofelement= index;">                            
+                                            {{item}}
+                                        </td>
+                                        <td>
+                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete ?"
+                                            nzPopconfirmPlacement="bottom" >Delete</a>
+                                        </td> 
+                                        <br>
+                                    </tr> 
+                                    <tr >                                              
+                                        <td   *ngFor="let item of datarow;let indexofelement= index;">   
+                                            
+                                            {{item}}
+                                            
+                                        </td>
+                                        <td>
+                                            <div  > <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(datarow)">Delete</a>
+                                                </div>
+                                        </td>
+                                  </tr>                                                                
+                            </table>                                               
+                    </div>
+                    <div class="form-group"  [formGroup]="inputForm">
+                        <nz-radio-group formControlName="radiofiletr">
+                            <label nz-radio nzValue="meet">Onlyy Records that meet selection Criteria</label>
+                            <label nz-radio nzValue="donotmeet">Only Records that do not meet selection Criteria</label>                                                        
+                        </nz-radio-group>
+                    </div>
+                    <div>
+                        <button nzType="default"  nzJustify="start" (click)="QueryFormation()">Preview</button>                       
+                    </div>
+                </div>        
         </div> 
     </div>    
 </div>
+
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loading">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    </div>
+</nz-drawer>

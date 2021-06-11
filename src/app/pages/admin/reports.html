@@ -145,7 +145,7 @@
                                                 <i nz-icon nzType="user"></i>
                                                 <strong>AGENCY LISTINGS</strong>
                                                 <div>                                        
-                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()" disabled >
+                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()"  disabled >
                                                         <i nz-icon nzType="plus"></i>
                                                     USER REPORTS
                                                 </button> 
@@ -552,9 +552,18 @@
                                                 </button>
                                         </div>
                                         <div>
+                                            <hr style="border-top: 3px solid #bbb;"> 
+                                        </div>
+                                        <div>
                                             <button nz-button nzType="default" id="btn-FORPT-ActivityRecipientRpt" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Activity Recipient Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-FORPT-ActivityProgramRpt" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Activity Program Report
                                                 </button>
                                         </div>
                                         <div>
@@ -573,6 +582,12 @@
                                             <button nz-button nzType="default" id="btn-report-UnbilledItems" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Unbilled Items Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-report-BilledItems" (click)="showModal(this.id)"  >
+                                                <i nz-icon nzType="printer"></i>
+                                                Billed Items Report
                                                 </button>
                                         </div>
                                         <div>
@@ -631,12 +646,12 @@
                                                 Funder Payroll Type
                                                 </button>
                                         </div>
-                                    <!--    <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" disabled >
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffDateProgramRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Date Program
                                                 </button>
-                                        </div> -->
+                                        </div> 
                                         <div>
                                             <button nz-button nzType="default" id = "btn-FORPT-StaffAllowanceRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>

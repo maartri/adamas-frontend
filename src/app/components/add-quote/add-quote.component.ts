@@ -25,7 +25,8 @@ import endOfMonth from 'date-fns/endOfMonth';
 
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { PrintPdfComponent } from '@components/print-pdf/print-pdf.component';
-import { filter, toLength } from 'lodash';
+import { filter, toLength, xor } from 'lodash';
+import { parseJSON } from 'date-fns';
 
 // import { Console } from 'node:console';
 
@@ -131,6 +132,12 @@ export class AddQuoteComponent implements OnInit {
     goalsAndStratergies: any;
     userCopy: any;
 
+    temp1: any;
+    topup: any;
+    basiccarefee: any;
+    PercAmt: any ;
+    AdmPErcAmt: any;
+
     quoteLines: Array<any> = [];
     fquotehdr: Array<any> = [];
     mainGroup: Array<any> = [];
@@ -139,6 +146,9 @@ export class AddQuoteComponent implements OnInit {
 
     loggedInUser: any;
     admincharges :number = 0;
+    
+    
+
     specindex:number;
     dochdr:any;
 
@@ -241,7 +251,8 @@ export class AddQuoteComponent implements OnInit {
           type: null,
           period: [],
           basePeriod: 'ANNUALLY',
-          programId: null
+          programId: null,
+          charges:false,
       });
 
 
@@ -320,7 +331,9 @@ export class AddQuoteComponent implements OnInit {
           daysCalc: 365,
           govtContrib: null,
 
-          programId: null
+          programId: null,
+
+          charges:false,
       });
 
       this.quoteIdsForm = this.formBuilder.group({
@@ -1025,7 +1038,68 @@ export class AddQuoteComponent implements OnInit {
        {
         //    console.log(this.quoteListForm.getRawValue())
            const quote  = this.quoteListForm.getRawValue();
-           var _quote = {
+           var _quote,_quote1,_quote2;
+           
+           if(this.quoteForm.value.charges == true){
+           
+        
+            var sqlTopUpFee = "SELECT P_Def_IncludeTopUpFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+            var sqlBasicCareFee = "SELECT P_Def_IncludeBasicCareFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+            var sqlCMPercAmt = "SELECT P_Def_Admin_CM_PercAmt FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+            var sqlAdminPercAmt ="Select P_Def_Admin_Admin_PercAmt FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
+      
+            this.listS.GetTOpUP(sqlTopUpFee).subscribe(x => {
+                this.topup = x;
+               
+            } );
+//          
+            this.listS.GetBasicCare(sqlBasicCareFee).subscribe(x => {
+                this.basiccarefee = x;
+               
+            });
+            
+            this.listS.GetCMPERC(sqlCMPercAmt).subscribe(x =>{ 
+                this.PercAmt = x;                                                     
+              });
+              
+              this.listS.GetAdmPerc(sqlAdminPercAmt).subscribe(x => {
+                this.AdmPErcAmt = x;                                
+               }); 
+               
+       var temp:number = this.quoteForm.value.govtContrib
+       
+        
+             _quote = {
+        
+                code: '*HCP-PACKAGE ADMIN' ,
+                displayText: 'Charges' ,
+                billUnit:'Service',
+            //  quantity:(((this.PercAmt/100)  * temp)/ 365).toFixed(2),
+                quantity: 1,
+                frequency: 'Daily'  ,
+                quoteQty: 365 , 
+                price: this.PercAmt,              
+               }
+            
+              
+               _quote2 = {
+        
+                code: '*HCP FEE-PACKAGE ADMINISTRATION' ,
+                displayText: 'Charges' ,
+                billUnit:'Service',
+            //  quantity:(((this.AdmPErcAmt/100)  * temp)/ 365).toFixed(2),
+                quantity: 1,
+                frequency: 'Daily'  ,
+                quoteQty: 365 , 
+                price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365),
+                //
+              
+               }
+            
+            //   _quote = {_quote1,_quote2}
+           
+           }  else{
+            _quote = {
             billUnit: quote.billUnit,
             code: quote.code,
             displayText: quote.displayText,
@@ -1036,16 +1110,17 @@ export class AddQuoteComponent implements OnInit {
             tax: quote.gst,
             itemId: quote.itemId
            }
-
+        }
+        //console.log(_quote)
             setTimeout(() => {
-                this.quoteLines = [...this.quoteLines, _quote];
-
+                this.quoteLines = [...this.quoteLines, _quote,_quote2];
+                
                 this.total_admin = 10361.62;
                 this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
                 this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
 
                 this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
-                console.log(this.total_quote);
+            //    console.log(this.total_quote);
                 this.handleCancelLine();
                 this.detectChanges();
             }, 0);
@@ -1068,7 +1143,7 @@ export class AddQuoteComponent implements OnInit {
                 roster: quoteLine.rosterString,
                 serviceType: quoteLine.code
             };
-            console.log(quoteLine)
+        //    console.log(quoteLine)
 
 
             // return;
@@ -1100,19 +1175,29 @@ export class AddQuoteComponent implements OnInit {
   }
 
   saveQuote(){
+      
     let qteLineArr: Array<QuoteLineDTO> = [];
     let goals: Array<any> = [];
 
     let qteHeader: QuoteHeaderDTO;
 
+   
     const quoteForm = this.quoteForm.getRawValue();
-    // console.log(quoteForm);
-    // console.log(this.quoteLines);
-    // console.log(this.goalsAndStratergies);
+
+ //   console.log(quoteForm);
+ //   console.log(this.quoteLines);
+    
+    
+      
+
+//    console.log(quoteForm);
+//    console.log(this.quoteLines);
+//    console.log(this.goalsAndStratergies);
 
     this.goalsAndStratergies.forEach(e => {
         goals.push(e.goal);
     });
+
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
@@ -1129,9 +1214,10 @@ export class AddQuoteComponent implements OnInit {
             serviceType: x.code,
             strategyId: x.strategy
         };
+       
         qteLineArr.push(da);
     });
-
+        
     qteHeader = {
         programId: quoteForm.programId,
         program: quoteForm.program,
@@ -1145,12 +1231,14 @@ export class AddQuoteComponent implements OnInit {
         agreedTopUp: '0.00',
         balanceAtQuote: '0.00',
         clAssessedIncomeTestedFee: '0.00',
-
-        feesAccepted: 0,
-        basePension: 'SINGLE',
-        dailyBasicCareFee: '$0.00',
-        dailyIncomeTestedFee: '$0.00',
-        dailyAgreedTopUp: '$0.00',
+       
+               
+            feesAccepted: 0,
+            basePension: 'SINGLE',
+            dailyBasicCareFee: '$0.00',
+            dailyIncomeTestedFee: '$0.00',
+            dailyAgreedTopUp: '$0.00',
+        
         quoteView: 'ANNUALLY',
 
         personId: this.user.id,
@@ -1160,12 +1248,11 @@ export class AddQuoteComponent implements OnInit {
         documentId: this.tableDocumentId,
         goals: goals
     }
-    // console.log(qteHeader);
-    // return;
+//    console.log(qteHeader)
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
-        });
+        }); 
   }
 
   refreshQuoteLines(recordNo: any){
@@ -1296,7 +1383,7 @@ export class AddQuoteComponent implements OnInit {
                     tax: x.tax , 
                     lengthInWeeks:x.lengthInWeeks,
                     quoteQty:x.quoteQty
-                  //  basequote: ,
+                  //basequote: ,
 
 
                     
@@ -1320,9 +1407,9 @@ export class AddQuoteComponent implements OnInit {
     var product : number;
     
     if(var3 != null && var3 != 0){
-    product = ((var1 * var2 ) * var3 * var4);
+    product = ((var1 * var2 ) * var3 * var4) ;
     }else{
-        product = (var1 * var2 * var4);
+        product = (var1 * var2 * var4) ;
     }
      
     this.globalS.baseamount =  product
@@ -1375,7 +1462,7 @@ export class AddQuoteComponent implements OnInit {
     })
     }
   }
-  govtContribution
+//  govtContribution
   govtcontribute(){
     var temp  :number;
     temp = this.quoteForm.value.govtContrib 
@@ -1513,8 +1600,16 @@ return this.admincharges;
    return daily;
   
 
+   
+}
+checkValue(event){
+    console.log(event)
+    if (event.target.checked){
+       this.option = 'add';
+        this.GENERATE_QUOTE_LINE();
 }
 
+}
 
 
 

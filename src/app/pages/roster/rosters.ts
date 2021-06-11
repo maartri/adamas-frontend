@@ -37,7 +37,7 @@ import * as $ from 'jquery';
 import { SpreadSheetsModule } from '@grapecity/spread-sheets-angular';
 import * as GC from "@grapecity/spread-sheets";
 import { NZ_ICONS, NZ_ICON_DEFAULT_TWOTONE_COLOR } from 'ng-zorro-antd';
-
+import './styles.css';
 
 interface AddTimesheetModalInterface {
     index: number,
@@ -47,7 +47,9 @@ interface UserView{
     staffRecordView: string,
     staff: number
 }
-const license = "E427689893651433#B0ASSrpndudjTsh4V8U7UwM6LzVTb9UkZNZkZtVXc7oVT8QVWRFmV6NFa4EDOqx6bjFlT6pXSj9We73CVOBXRY54akZ7d8dFezsWWCVnYiNWZFNGTRZHMqdzKyVlT6hTOxU4VuhWYv9EW8hHSipUS8kGa9VkQ5JWRoJGVzQmN8sCZtpWT5UlavcWN9ZXeVNzNUtEbxIGZ8tSdqtCaJtkUOdzUDFUMCxkVD94R4llMBl6dV96SxIGayNGVzQlQVdXRxt6b5sCcQhzLZBFTzgXZrpXaiNUU656LGhlb8hEZDZjREZEM8ETQvpVNRNlbwkGViojITJCLikjN6YDR7UUNiojIIJCL7kTOwMDOzYjM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiIxQTOwMDMgYDM5ATMyAjMiojI4J7QiwiI5AjNwEjMwIjI0ICc8VkIsIych5WYkFkI0ISYONkIsUWdyRnOiwmdFJCLiMzM4ETN6MTO8kDO6cjM4IiOiQWSiwSfdtlOicGbmJCLlNHbhZmOiI7ckJye0ICbuFkI1pjIEJCLi4TP7V6RGBzZ8t4cSplZUhTashjVuJ5L0JUUPhXRzFUMvonUzAHciJTapZ5a54EdxpXNEVkejBFZrFWdpZUaXFVNJRnZ92UTzJjUP5mWL5GeqJlailHMENmSV5kM7N5YzZFN7JjQxB3f1";
+const license = "";//"479215118998299#B02ZN2yZkZTZaxEUCRlWqdjV7U5aN5GemlnRZJzTBlER5U6ZRdmdS9EZ9oWViJ4QQN5MQd5aNFlVDVEVnNzKSZ5N4BFc5hFZkZ4L82EOw9mY9NlUYVlSMtSRzVXVMdVa8lUb8tmUMdEZ0dmbyVDMWV4MrUFSnJkU8MDWClFRWlXd85Ue9hUYxJkV92GU7Une484Y9hjeldlS7MVOUJEZ0R6S9RnW7kmQvhHbiR7bj9kRyYmQKlVbsR5RvxWYDtEbxM4aD3EcM3CeZhDdTNjMxAzYyZGe42yZvFlN9hnYMtCV4IVazs6TGdXYHVHMCJjYzEHW52yVKNHaiojITJCLiQzNxYDNxITNiojIIJCLxcjM4QzMwMjM0IicfJye#4Xfd5nIFVUSWJiOiMkIsICNx8idgAyUKBCZhVmcwNlI0IiTis7W0ICZyBlIsISMxITM5ADI8AjNwEjMwIjI0ICdyNkIsICMuAjLw8CMvIXZudWazVGZiojIz5GRiwiIz96bpRXds36UgUGdhJ7bwJ7bDBych5WYkFkI0ISYONkIsISO9IDO9kDOxETNxITO7QjI0ICZJJCL355W0IyZsZmIsUWdyRnOiI7ckJye0ICbuFkI1pjIEJCLi4TPRVzbztGNCdje9hHZMRkY5gjWroXV0tCZEBjdI3SVvNjM9MGVwMUUlJ5MQ3WW7tEVSN5R0FzKxIGTMFlSBJzbMRVZKtUN0Z4a5ZmQ4I4aj9kd8ImeyUTWyVnbkFXTfo";
+
+// "E427689893651433#B0ASSrpndudjTsh4V8U7UwM6LzVTb9UkZNZkZtVXc7oVT8QVWRFmV6NFa4EDOqx6bjFlT6pXSj9We73CVOBXRY54akZ7d8dFezsWWCVnYiNWZFNGTRZHMqdzKyVlT6hTOxU4VuhWYv9EW8hHSipUS8kGa9VkQ5JWRoJGVzQmN8sCZtpWT5UlavcWN9ZXeVNzNUtEbxIGZ8tSdqtCaJtkUOdzUDFUMCxkVD94R4llMBl6dV96SxIGayNGVzQlQVdXRxt6b5sCcQhzLZBFTzgXZrpXaiNUU656LGhlb8hEZDZjREZEM8ETQvpVNRNlbwkGViojITJCLikjN6YDR7UUNiojIIJCL7kTOwMDOzYjM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiIxQTOwMDMgYDM5ATMyAjMiojI4J7QiwiI5AjNwEjMwIjI0ICc8VkIsIych5WYkFkI0ISYONkIsUWdyRnOiwmdFJCLiMzM4ETN6MTO8kDO6cjM4IiOiQWSiwSfdtlOicGbmJCLlNHbhZmOiI7ckJye0ICbuFkI1pjIEJCLi4TP7V6RGBzZ8t4cSplZUhTashjVuJ5L0JUUPhXRzFUMvonUzAHciJTapZ5a54EdxpXNEVkejBFZrFWdpZUaXFVNJRnZ92UTzJjUP5mWL5GeqJlailHMENmSV5kM7N5YzZFN7JjQxB3f1";
 
 
 function IconCellType(img) {
@@ -73,6 +75,7 @@ IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context)
     // let img = document.getElementById('icon-lock');
     ctx.drawImage(this.img, x + 2, y + 2, 16, 16);
     ctx.fill();
+    //ctx.fillStyle = "gray";
     ctx.stroke();
     
 
@@ -100,7 +103,8 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x, y, w, h, style, context]);
     ctx.beginPath();
     // let img = document.getElementById('icon-lock');
-    ctx.drawImage(this.img, x, y , 20, 20);
+   // ctx.drawImage(this.img, x, y , 20, 20);
+   
     ctx.fill();
     ctx.stroke();
     
@@ -111,6 +115,17 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     styles: [`
       
         nz-switch.master-class >>> button.ant-switch-checked{ background-color:red; }; 
+        gc-group-line{
+            border-width:2px;
+            border-style:solid;
+            border-color:red;
+        };
+        gc-scroll-mobile-thumb {
+            border: none;
+            background-color: skyblue;
+            background-image: linear-gradient( 45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent );
+        }
+        gc-scroll-mobile-container { border-radius, opacity, padding }    
         
     `],
     templateUrl: './rosters.html'
@@ -139,7 +154,8 @@ masterCycle:string="CYCLE 1";
  Days_View:number=31;
     data:any=[];  
     ActiveCellText:any;
-  //rosters:any=[];
+     startRoster:any;
+     endRoster:any;
   rosters: Array<any> = [];
   current_roster:any;
   time_map = new Map();
@@ -159,12 +175,14 @@ masterCycle:string="CYCLE 1";
   token:any;
   addBookingModel:boolean=false;
   type_to_add:number;
-  select_StaffModal:boolean;
-  select_RecipientModal:boolean;
+  select_StaffModal:boolean=false;
+  select_RecipientModal:boolean=false;
+  booking_case:number=0;
   
   include_fee:boolean=false;
   include_item:boolean=false;
-
+  spreadsheet:any;
+  customizeHref: string;
   time_slot:number=288;
 
     isVisible: boolean = false;
@@ -187,6 +205,7 @@ masterCycle:string="CYCLE 1";
     rosterGroup: string;
     rosterForm: FormGroup;
     bookingForm: FormGroup;
+    
     viewType: any;
     start_date:string="";
     end_date:string=""
@@ -196,13 +215,10 @@ masterCycle:string="CYCLE 1";
     StartTime:String="";
     EndTime:String=""
     Duration:String="5";
-    val1:boolean=false;
-    val2:boolean=false;
-    val3:boolean=true;
-    val4:boolean=false;
+   
     master:boolean=false;
-    tval1:boolean=true;
-    dval1:boolean=true;
+    tval:number;
+    dval:number;
     sample: any;
     searchStaffModal:boolean=false;
     ViewStaffDetail:boolean=false;
@@ -278,7 +294,16 @@ doneBooking(){
 
     this.addBookingModel=false;
     this.add_UnAllocated=false;
-    this.serviceType=this.type_to_add;
+    this.select_StaffModal=false;
+    this.current = 0;
+    this.booking_case=0;
+    //const { Servicetype } = this.bookingForm.value;
+
+    if (this.type_to_add<=0){
+        this.serviceType=this.DETERMINE_SERVICE_TYPE_NUMBER(this.rosterGroup)
+    }else
+        this.serviceType=this.type_to_add;
+    //const { recipientCode, Program, serviceActivity, isMultipleRecipient } = this.bookingForm.value;
 
     //this.fixStartTimeDefault();
         let date=this.date;
@@ -297,13 +322,25 @@ doneBooking(){
             serviceDscr:'N/A',
             serviceType:this.serviceType,
             recordNo:0,
-            staffCode:'BOOKED'
+            staffCode: this.viewType=='Staff' ? this.selected : bForm.staffCode
 
         }
-        let clientCode = this.recipient.data;
+        let clientCode ='';
+        let carerCode = '';
+        if (this.viewType=="Staff"){
+            clientCode = bForm.recipientCode;
+            carerCode= this.selected;
+        }
+        
+        if (this.viewType=="Recipient"){
+            carerCode = bForm.staffCode
+            clientCode=this.recipient.data
+        }
+                
+        if ( this.serviceType==1)
+            carerCode = "BOOKED"
 
         var durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));
-        
         
         if(typeof this.date === 'string'){
             this.date = parseISO(this.datepipe.transform(this.date, 'yyyy-MM-dd'));
@@ -314,7 +351,7 @@ doneBooking(){
             billTo: clientCode,
             billUnit: tsheet.bill.unit || 0,
             blockNo: durationObject.blockNo,
-            carerCode: this.selected.option == 0 ? this.selected.data : tsheet.staffCode,
+            carerCode: this.selected.option == 0 ? this.selected.data : carerCode,
             clientCode: this.selected.option == 0 ? clientCode : this.selected.data,
             costQty: tsheet.pay.quantity || 0,
             costUnit: tsheet.pay.unit || 0,
@@ -336,7 +373,7 @@ doneBooking(){
             taxPercent: tsheet.bill.tax || 0,
             transferred: 0,
             // type: this.activity_value,
-            type: this.DETERMINE_SERVICE_TYPE_NUMBER(this.serviceType),
+            type: this.serviceType,
             unitBillRate:( tsheet.bill.rate || 0),
             unitPayRate: tsheet.pay.rate || 0,
             yearNo: parseInt(format(tsheet.date, 'yyyy')),
@@ -350,20 +387,29 @@ doneBooking(){
                 this.globalS.sToast('Success', 'Roster has been added');
                 this.addTimesheetVisible = false;
                // this.picked(this.selected);
+
                this.searchRoster(tsheet.date)
             });
         
+           // this.resetBookingFormModal()
        
     
 
     
 }
 
-start_adding_Booking(type:any){
-    if (this.viewType=="Staff")
+start_adding_Booking(bCase:any){
+   // this.resetBookingFormModal();
+    this.booking_case=bCase;
+    if (this.viewType=="Staff"){
         this.select_RecipientModal=true;
-    else
-        this.select_StaffModal=true;
+        
+    }else{
+        if (this.booking_case==2)
+            this.booking_case=3;
+        this.addBookingModel=true;
+        this.addBooking(0);
+    }
     
 }
 
@@ -373,50 +419,77 @@ addBooking(type:any){
     this.select_StaffModal=false;
     this.select_RecipientModal=false;
     
+    this.current=0;
+    
     this.type_to_add=type;
-    this.addBookingModel=true;
-    this.add_UnAllocated=true;    
+   if (type==1){
+    this.add_UnAllocated=true;
+    this.type_to_add=1;
+   }else
+   {
+    this.add_UnAllocated=false;
+   }
+   
     this.Timesheet_label = "Add Timesheet " 
     //this.whatProcess = PROCESS.ADD;
    // this.addTimesheetVisible = true;
    // this.resetAddTimesheetModal();
    // this.AddViewRosterDetails.next(2);
+   
     let sheet = this.spreadsheet.getActiveSheet();
     var range=sheet.getSelections();
     // console.log(range)
     let dt= new Date(this.date);
     //let dt = moment.utc(this.date).local();
+    if (range==null || range.length==0){
+        this.globalS.eToast('Booking', 'Please select some time range to proceed');
+        return;
+    }
     let date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(range[0].col+1);
     let f_row= range[0].row;
     let l_row=f_row+range[0].rowCount;
-    let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
-
-    let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
+     let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
+     let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+    //let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
 
     this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
     this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
     this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
-    this.current = 0;
+   
     this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
    // this.bookingForm.patchValue({date:date})
 
+   
+    let FetchCode = "";
     //this.date = parseISO(new Date(date).toISOString());
-                            
-        this.GETPROGRAMS( this.recipient.data).subscribe(d => {
+    const { recipientCode, debtor, serviceType, isMultipleRecipient } = this.bookingForm.value;
+    
+    if (this.viewType=="Staff")
+        FetchCode=recipientCode;
+    else
+        FetchCode = this.selected.data;
+    
+     
+
+        this.GETPROGRAMS( FetchCode).subscribe(d => {
         this.programActivityList=d;
         this.programsList = d.map(x => x.progName);
-        this.serviceActivityList = d.map(x => x.serviceType);
-
+        //remove duplicate values
+        this.programsList = this.programsList.filter((v, i, a) => a.indexOf(v) === i);
+        //this.serviceActivityList = d.map(x => x.serviceType);
+       // this.serviceActivityList = this.serviceActivityList.filter((v, i, a) => a.indexOf(v) === i);
+        
+      
+        if (this.programsList==null || this.programsList.length==0){
+          // 
+            this.globalS.sToast('Booking', 'No Program setting found to proceed');
+            this.addBookingModel=false;
+        }else{
+            this.addBookingModel=true;
+                
+        }
     });
-    if (this.programActivityList==null || this.programActivityList.length==0){
-        this.addBookingModel=false;
-        this.globalS.sToast('Booking', 'No Program setting found to proceed');
-    }
-
-//     let sql ="SELECT DISTINCT [Program] AS ProgName FROM RecipientPrograms INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID INNER JOIN HumanResourceTypes pr ON RecipientPrograms.Program = pr.name WHERE Recipients.AccountNo = '" + this.recipient.data +"' AND  (ISNULL(pr.CloseDate, '2000/01/01') < '2021/05/05') AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]"
-//     this.listS.getlist (sql).subscribe(data=>{
-//         this.serviceActivityList=data;
-//    });
+ 
     
 }
 SaveAdditionalInfo(notes:string){
@@ -514,6 +587,10 @@ ClearMultishift(){
     let sheet = this.spreadsheet.getActiveSheet()
     var cell:any;
     
+    if (this.viewType=="Staff")
+        sheet.name("Staff Rosters");
+    else
+        sheet.name("Recipient Rosters");
      cell= sheet.getRange(0, 0, this.time_slot, 30, GC.Spread.Sheets.SheetArea.viewport)
     
       
@@ -522,11 +599,13 @@ ClearMultishift(){
         //cell.backColor("#FF8080");
         cell.backColor("white");
         cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
+        
     }else{
         cell.backColor("white");
         cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
     }
     cell.text("")
+    cell.tag(null);
     
           
     let row=-1, col=-1;
@@ -537,12 +616,17 @@ ClearMultishift(){
     var text,code;
     for(var r of this.rosters){
             
-        if (r.dayNo>this.Days_View) break;
+       // if (r.dayNo>this.Days_View) break;
 
             if (r.recordNo==246364 || r.shiftbookNo==246364){
                 code= r.carerCode 
             }
-            col=r.dayNo-1;
+            if (this.Days_View>=30)
+                col=r.dayNo-1;
+            else{
+                let dt= new Date(this.startRoster);
+                col=r.dayNo- Number(dt.getDate());
+                }
             row = this.getrow(r.start_Time);//self.time_map.get(r.Start_Time); //
             if (this.viewType=="Staff")
                 code= r.clientCode ;
@@ -572,20 +656,30 @@ ClearMultishift(){
       this.master=$event;
       if (this.master){
         this.date="1900/01/01";
-        
-      }else{
-        
-        this.date = moment()
+       
+      }else{        
+        this.date = moment()      
        
     }
-  
+    if(this.Days_View==31 || this.Days_View==30){
+        this.date = moment(this.date).add('month', 1);       
+        this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+        this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
+    }else{
+                   
+        this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+         this.date = moment(this.startRoster).add('day', this.Days_View-1);
+         this.endRoster = moment(this.date).format('YYYY/MM/DD');
+         this.prepare_Sheet();
+       }
     this.searchRoster(this.date);
      
     var divMaster = document.getElementById("divMaster");    
    // divMaster.style.backgroundColor= this.bgcolor;
     
   }
-  spreadsheet:any;
+  
+
   //MainSpread:any=GC.Spread;
     workbookInit(args) {  
       let spread = args.spread;
@@ -593,14 +687,6 @@ ClearMultishift(){
       this.spreadsheet = GC.Spread.Sheets.Workbook = args.spread;  
       spread= GC.Spread.Sheets.Workbook = args.spread;  
       let sheet = spread.getActiveSheet();  
-
-     
-      //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
-      spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
-      spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
-     // spread.options.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
-    //  spread.options.resizeZeroIndicator = GC.Spread.Sheets.SheetArea.Enhanced
-
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
 
@@ -608,29 +694,83 @@ ClearMultishift(){
           let spreadNS = GC.Spread.Sheets;
           let self = this;
         
-          
-  
-          spread.bind(spreadNS.Events.CellClick, function (e: any, args: any) {
+     
+      //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
+      spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
+      spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
+      spread.options.scrollbarAppearance = GC.Spread.Sheets.ScrollbarAppearance.mobile;
+      spread.options.scrollByPixel = true;
+      spread.options.scrollPixel = 5;
+      
+      //sheet.options.selectionBorderColor = 'blue';
+      //sheet.options.selectionBackColor = '#e0e0de';
+     
+     // spread.options.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
+    //  spread.options.resizeZeroIndicator = GC.Spread.Sheets.SheetArea.Enhanced
+
+            sheet.bind(GC.Spread.Sheets.Events.LeaveCell, function (event, infos) {
+            //    var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
+            //    // Reset the backcolor of cell before moving
+            //    if (self.prev_cell.service==null)
+            //        sheet.getCell(infos.row, infos.col).backColor(undefined);
+            //    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor(undefined);
+            //     var res:string = infos.sheet.getText(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader);
+
+            //     if ( res.substring(3, 4)=="S"){
+            //         infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
+            //         infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
+            //      } else{
+            //         infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
+            //         infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
+            //     }
+                
+                });
+
+              
+            
+                sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
+                   
+                //    if (self.prev_cell.service==null)
+                //        sheet.getCell(infos.row, infos.col).backColor("#cfcfca");
+
+                //     sheet.getCell(infos.row, infos.col).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
+                 
+                //    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#ff2060");
+                //    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
+                // //Set the backcolor of destination cells (currently active cells)
+                //     infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
+                //    // infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).text("#002060")
+            });
+            
+         
+           spread.bind(spreadNS.Events.CellClick, function (e: any, args: any) {
             let row,col, duration=0,type=0,service;
             spread.suspendPaint();
               let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
+             
+              if(args.sheetArea==1 || args.sheetArea==2){
+                return;
+            }
+
               self.eventLog =
                   'SpreadEvent: ' + GC.Spread.Sheets.Events.CellClick + ' event called' + '\n' +
                   'sheetArea: ' + sheetArea + '\n' +
                   'row: ' + args.row + '\n' +
-                  'col: ' + args.col;
-                  var menuData = spread.contextMenu.menuData;
-                  console.log(menuData);
-                  
-                  //Clear Previous selection
+                  'col: ' + args.col;      
+
                   if (self.prev_cell.duration==null || self.prev_cell.duration==0)
                   self.prev_cell.duration=1;
-
+                  
+                 // sheet.clearSelection();
                   self.ActiveCellText="";
                   sheet.getRange(self.prev_cell.row, self.prev_cell.col, self.prev_cell.duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
-  
+                 if (self.prev_cell.service==null)
+                  sheet.getCell(self.prev_cell.row, self.prev_cell.col).backColor("#ffffff");
+                 
                   row=args.row;
                   col=args.col;
+                
+
                   if (sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)!=null) {
                   self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
                  
@@ -640,11 +780,11 @@ ClearMultishift(){
                   type=self.cell_value.type;
                   service=self.cell_value.service;
                  
+                  
+
                   if (service!=null)
                     self.ActiveCellText=self.cell_value.recordNo + " - " + service 
-                  } 
-                
-
+                 
                   var new_duration:number;
                   if (self.time_slot==288)
                     new_duration=Number(duration);
@@ -664,21 +804,27 @@ ClearMultishift(){
                   sheet.addSelection(row, col, new_duration, 1);
 
                   let len =row+new_duration;
+               
                    // Set border lines to cell(1,1).
+                 //7c996d
                    for (let i=row; i<len; i++){
                   var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
-                      cell.borderLeft(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
-                      cell.borderRight(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                      cell.borderLeft(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                      cell.borderRight(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
                       if (i==row)
-                      cell.borderTop(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                      cell.borderTop(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
                       if (i==len-1)
-                      cell.borderBottom(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
-  
+                      cell.borderBottom(new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.thick));                      
   
                   }
-  
+                }else {
+                  
+                  // sheet.getCell(row, col).backColor("#cfcfca");
+                  // sheet.getCell(row, col).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
+                 
+            }
                   self.prev_cell = {row,col,duration, type,service};
-
+                
                   spread.resumePaint();
           });
           spread.bind(GC.Spread.Sheets.Events.CellDoubleClick, function (sender, args) {
@@ -686,6 +832,11 @@ ClearMultishift(){
             //console.log("Double clicked row index: " + args.row);
             let col= args.col;
             let row=args.row;
+            
+            self.ActiveCellText="";
+            sheet.getRange(self.prev_cell.row, self.prev_cell.col, self.prev_cell.duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
+           if (self.prev_cell.service==null)
+            sheet.getCell(self.prev_cell.row, self.prev_cell.col).backColor("#ffffff");
 
             self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
            
@@ -708,21 +859,26 @@ ClearMultishift(){
         
             
         });
-          spread.bind(spreadNS.Events.SelectionChanging, function (e: any, args: any) {
-              let selection = args.newSelections.pop();
-              let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
-              self.eventLog =
-                  'SpreadEvent: ' + GC.Spread.Sheets.Events.SelectionChanging + ' event called' + '\n' +
-                  'sheetArea: ' + sheetArea + '\n' +
-                  'row: ' + selection.row + '\n' +
-                  'column: ' + selection.col + '\n' +
-                  'rowCount: ' + selection.rowCount + '\n' +
-                  'colCount: ' + selection.colCount;
-          });
+        //   spread.bind(spreadNS.Events.SelectionChanging, function (e: any, args: any) {
+        //       let selection = args.newSelections.pop();
+        //       let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
+        //       self.eventLog =
+        //           'SpreadEvent: ' + GC.Spread.Sheets.Events.SelectionChanging + ' event called' + '\n' +
+        //           'sheetArea: ' + sheetArea + '\n' +
+        //           'row: ' + selection.row + '\n' +
+        //           'column: ' + selection.col + '\n' +
+        //           'rowCount: ' + selection.rowCount + '\n' +
+        //           'colCount: ' + selection.colCount;
+        //   });
           spread.bind(spreadNS.Events.SelectionChanged, function (e: any, args: any) {
-              let selection = args.newSelections.pop();
-              if (selection.rowCount > 1 && selection.colCount > 1) {
+              let selection = args.newSelections;
+              //if (selection.rowCount > 1 && selection.colCount > 1) {
                   let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
+                  
+                  if(args.sheetArea==1 || args.sheetArea==2){
+                      return;
+                  }
+                  return;
                   self.eventLog =
                       'SpreadEvent: ' + GC.Spread.Sheets.Events.SelectionChanged + ' event called' + '\n' +
                       'sheetArea: ' + sheetArea + '\n' +
@@ -730,6 +886,26 @@ ClearMultishift(){
                       'column: ' + selection.col + '\n' +
                       'rowCount: ' + selection.rowCount + '\n' +
                       'colCount: ' + selection.colCount;
+
+                      var len =selection[0].rowCount;
+                      var row=selection[0].row;
+                      var col = selection[0].col;
+                      
+
+                      if (sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)==null) {
+                        self.prev_cell ={row:row,col:col,duration:len};
+                      len =row+len;
+                       for (let i=row; i<len; i++){
+                      var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
+                          cell.borderLeft(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                          cell.borderRight(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                          if (i==row)
+                          cell.borderTop(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                          if (i==len-1)
+                          cell.borderBottom(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));    
+                          
+      
+                      }
               }
           });
           spread.bind(spreadNS.Events.EditStarting, function (e: any, args: any) {
@@ -967,14 +1143,14 @@ ClearMultishift(){
                        
                         
                         if (self.copy_value.row>=0){
-                          self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.RecordNo,self.copy_value.service)
+                          self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
                          
                         }
                         if (self.operation==="cut"){
-                            self.ProcessRoster("Cut",self.copy_value.RecordNo);
+                            self.ProcessRoster("Cut",self.copy_value.recordNo);
                             self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
                         }else
-                            self.ProcessRoster("Copy",self.copy_value.RecordNo);
+                            self.ProcessRoster("Copy",self.copy_value.recordNo);
                         
                        
                        
@@ -1278,14 +1454,23 @@ ClearMultishift(){
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "Segoe UI";
      defaultStyle.themeFont = "Segoe UI";
+     sheet.clearSelection();
      sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+     let date:Date = new Date(this.date);
 
-    let date:Date = new Date(this.date);
+    if (this.startRoster==null){
+        date =  new Date(this.date);
+        let d = date.getDate()-1;
+        date.setDate(date.getDate()-d)  
+        
+    }else
+        date = new Date(this.startRoster);
+
     let m = date.getMonth()+1;
     let y=date.getFullYear();
-    let d = date.getDate()-1;
+  
     
-    date.setDate(date.getDate()-d)  
+   //
     
     let days:number =this.getDaysInMonth(m,y);
    if (this.Days_View==31){
@@ -1301,9 +1486,11 @@ ClearMultishift(){
       var head_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
       sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
       var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-      row_header.backColor("#002060");
-      row_header.foreColor("#ffffff");
+       row_header.backColor("#002060");
+      //row_header.foreColor("#ffffff");
       
+      sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).tag(date);
+
      var new_width = 100 / this.Days_View;
      //sheet.setColumnWidth(i, new_width,GC.Spread.Sheets.SheetArea.viewport);
      
@@ -1323,8 +1510,7 @@ ClearMultishift(){
 
       if ((this.DayOfWeek( date.getDay())=="Sa") || (this.DayOfWeek( date.getDay())=="Su")){
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
-          sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
-          sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'black' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+          sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: '#c7060c' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
           
       //row_header.backColor("#D1A6BC");
      
@@ -1362,7 +1548,8 @@ ClearMultishift(){
 
          sheet.setValue(j, 0, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
        
-        sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
+       // sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#002060");
@@ -1396,7 +1583,7 @@ ClearMultishift(){
   {
      // this.show_views=false;
       this.time_slot=t;
-     
+      console.log(this.tval);
   }  
   
   set_day_view(d:number)
@@ -1405,6 +1592,20 @@ ClearMultishift(){
       this.Days_View=d;
     //   this.prepare_Sheet();
     //   this.load_rosters();
+        if (this.Days_View>30){ 
+            this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+            this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
+        }else{
+            this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+
+            this.date = moment(this.startRoster).add('day', this.Days_View-1);
+            this.endRoster = moment(this.date).format('YYYY/MM/DD');
+        }
+
+        this.date= moment(this.startRoster).add('day', 0);
+       
+
+    console.log(this.dval);
   }  
   
   setIcon(r:number, c:number, type:number,RecordNo:number,Servicetype:any) {
@@ -1500,8 +1701,6 @@ ClearMultishift(){
         r=h*6+Math.floor(m/10);
     else if (this.time_slot==96)
         r=h*4+Math.floor(m/15);
-
-    
   
     return r;
   
@@ -1528,28 +1727,32 @@ ClearMultishift(){
     if (new_duration<=1)
         new_duration=3;
 
+      
       for (let m=0; m<new_duration; m++){
       if (m==0) {
-        sheet.getCell(r,c).backColor("#D5D6DE");
+        //sheet.getCell(r,c).backColor("#CAF0F5");
+        //sheet.getCell(r+m,c).backColor({degree: 90, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#0A8598"},{position:1, color:"#80B1B9"},]});
+        sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#CAF0F5"},{position:1, color:"#CAF0F5"},]});
+
       //  sheet.getCell(r,c).backColor("#ffffff");
        // sheet.getCell(r,c).backgroundImage(rowImage)
         this.setIcon(r,c,type,RecordNo, service);
        }  
        else{
             
-            sheet.getCell(r+m,c).backColor("#D5D6DE");
+            //sheet.getCell(r+m,c).backColor("#CAF0F5");
+            sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#CAF0F5"},{position:1, color:"#CAF0F5"},]});
          //  sheet.getCell(r,c).backColor("#ffffff");
-            this.setIcon(r+m,c,20,RecordNo, "");
+            //this.setIcon(r+m,c,20,RecordNo, "");
         }
         //sheet.getCell(r+m,c).field=duration;
        sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(this.cell_value)
        }
-       
-       //sheet.addSpan(r, c+1, duration, 1, GC.Spread.Sheets.SheetArea.viewport);
-
-       //sheet.autoMerge(cell, GC.Spread.Sheets.AutoMerge.AutoMergeDirection.column, GC.Spread.Sheets.AutoMerge.AutoMergeMode.restricted);
-
+      
+     // if (new_duration>1)
+     //sheet.addSpan(r, c, new_duration, 1);
+      //sheet.getCell(5, 4).value("Demo-" +c).hAlign(1).vAlign(1);
        
     }
 
@@ -1598,14 +1801,14 @@ ClearMultishift(){
        
       }
     }
-    numStr(n:number):string{
+    numStr(n:number):string {
       let val="" + n;
       if (n<10) val = "0" + n;
       
       return val;
     }
     
-    ProcessRoster(Option:any, recordNo:string):any{
+    ProcessRoster(Option:any, recordNo:string):any {
         let dt= new Date(this.date);
         
         let sheet = this.spreadsheet.getActiveSheet();
@@ -1613,7 +1816,10 @@ ClearMultishift(){
         let date = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(range[0].col+1);
         let f_row= range[0].row;
         let l_row=f_row+range[0].rowCount;
-        let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
+       // let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
+        let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+        let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+
 
         if (this.master){
 
@@ -1627,7 +1833,8 @@ ClearMultishift(){
             "isMaster": this.master,
             "roster_Date" : date,
             "start_Time":startTime,
-            "carer_code":this.selectedCarer,
+            "carer_code":this.viewType =="Staff" ? this.recipient : this.selectedCarer,
+            "recipient_code":this.viewType =="Staff" ? "" : this.recipient,
             "notes" : this.notes
         }
         this.timeS.ProcessRoster(inputs).subscribe(data => {
@@ -1754,12 +1961,19 @@ ClearMultishift(){
         // console.log(range)
         let dt= new Date(this.date);
         //let dt = moment.utc(this.date).local();
-        let date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(range[0].col+1);
         let f_row= range[0].row;
-        let l_row=f_row+range[0].rowCount;
-        let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
+        let l_row=f_row+range[0].rowCount;        
+        let col=range[0].col;
+       
+        let date = sheet.getCell(0,col,GC.Spread.Sheets.SheetArea.colHeader).tag();
+       //  date = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(range[0].col+1);
+        date = format(date, 'yyyy/MM/dd');
 
-        let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
+         let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+         let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+
+        // let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
+        // let endTime =sheet.getTag(l_row,-1,GC.Spread.Sheets.SheetArea.viewport);
 
         this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
@@ -1972,20 +2186,14 @@ ClearMultishift(){
         this.date = moment();
         this.buildForm(); 
          this.token = this.globalS.decode();    
-        
+         this.tval=1;
+         this.dval=1;
        
 }
 
 ngAfterViewInit(){
 
-    if (this.spreadsheet==null)
-    {
-        
-            //value = new GC.Spread.Sheets.Workbook(host);
-        // var spread = new GC.Spread.Sheets.Workbook($("#ss")[0],{sheetCount:1, font:"12pt Arial"});
-        
-        // this.workbookInit(spread);
-    }
+    
 }
 
 refreshPage() {
@@ -2063,6 +2271,10 @@ reload(reload: boolean){
             return 7;
         }
 
+        if(index == 'ADMISSION'){
+            return 7;
+        }
+
         // ITEM
         if(index == 'ITEM'){
             return 15;
@@ -2119,6 +2331,7 @@ reload(reload: boolean){
             this.end_date= moment(this.date).endOf('month').format('YYYY/MM/DD')
         }  
         this.viewType = this.whatType(data.option);
+        
         this.loading = true;
         this.enable_buttons=true;
 
@@ -2244,17 +2457,19 @@ reload(reload: boolean){
     }
     searchRoster(date: any): void{
 
-       
-        // console.log(format(startOfMonth(date),'yyyy/MM/dd'));
-        if(!this.recipient) return;
+       if (this.startRoster==null){                 
+            this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+            this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
+            this.date= this.endRoster;
+       }
+       if(!this.recipient) return;
         
-           this.ActiveCellText="";
-            
+           this.ActiveCellText="";     
         this.staffS.getroster({
             RosterType: this.recipient.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',            
             AccountNo: this.recipient.data,
-            StartDate: moment(date).startOf('month').format('YYYY/MM/DD'),
-            EndDate: moment(date).endOf('month').format('YYYY/MM/DD')
+            StartDate: this.startRoster,
+            EndDate: this.endRoster
         }).pipe(takeUntil(this.unsubscribe)).subscribe(roster => {
 
             this.rosters = roster;
@@ -2295,15 +2510,41 @@ reload(reload: boolean){
     }
 
     next_date(){
-        this.date = moment(this.date).add('month', 1);
-       // var calendar = this.calendarComponent.getApi(); 
-       // calendar.next();
+      
+        if(this.Days_View==31 || this.Days_View==30){
+            this.date = moment(this.date).add('month', 1);       
+            this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+            this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
+        }else{
+             this.date = new Date (this.endRoster);             
+             this.date = moment(this.date).add('day', 1);            
+             this.startRoster  = moment(this.date).format('YYYY/MM/DD');
+             this.date = moment(this.date).add('day', this.Days_View-1);
+             this.endRoster = moment(this.date).format('YYYY/MM/DD');
+             
+           }
+           this.prepare_Sheet();
 
         this.upORdown.next(true);
     }
 
     prev_date(){
-        this.date = moment(this.date).subtract('month', 1);
+        
+      
+            if(this.Days_View==31 || this.Days_View==30){
+                this.date = moment(this.date).subtract('month', 1);       
+                this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+                this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
+            }else{
+                 this.date = new Date (this.startRoster);             
+                 this.date = moment(this.date).subtract('day', 1);                             
+                 this.endRoster  = moment(this.date).format('YYYY/MM/DD');
+                 this.date = moment(this.date).subtract('day', this.Days_View-1);
+                 this.startRoster = moment(this.date).format('YYYY/MM/DD');
+                 
+               }
+               this.prepare_Sheet();
+
        // var calendar = this.calendarComponent.getApi(); 
        // calendar.prev();
         this.upORdown.next(false);
@@ -2351,6 +2592,7 @@ reload(reload: boolean){
 
     handleCancel(){
             this.addTimesheetVisible=false;
+            this.addBookingModel=false;
     }
     handleOk(){
 
@@ -2363,24 +2605,24 @@ reload(reload: boolean){
         if (type === 'ADMINISTRATION' || type === 'ALLOWANCE NON-CHARGEABLE' || type === 'ITEM' || (type == 'SERVICE' && !isMultipleRecipient)) {
             sql = `SELECT Distinct [Name] AS ProgName FROM HumanResourceTypes WHERE [group] = 'PROGRAMS' AND ISNULL(UserYesNo3,0) = 0 AND (EndDate Is Null OR EndDate >=  '${this.currentDate}') ORDER BY [ProgName]`;
         } else {
-            // sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
-            //     INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
-            //     WHERE Recipients.AccountNo = '${type}' AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]`
+            sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
+                INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
+                WHERE Recipients.AccountNo = '${type}' AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]`
 
             
-            sql =`SELECT ACCOUNTNO, PROGRAM AS ProgName, [SERVICE TYPE] as serviceType, [SERVICESTATUS],
-                (CASE WHEN ISNULL(S.ForceSpecialPrice,0) = 0 THEN
-                (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
-                 WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
-                 WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
-                 WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5                       
-                 WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
-                ELSE I.Amount END )
-                ELSE S.[UNIT BILL RATE] END ) AS BILLRATE
-                FROM RECIPIENTS C INNER JOIN RECIPIENTPROGRAMS RP ON C.UNIQUEID = RP.PERSONID 
-                INNER JOIN ServiceOverview S ON C.UNIQUEID = S.PersonID AND RP.PROGRAM = S.ServiceProgram
-                INNER JOIN ITEMTYPES I ON S.[SERVICE TYPE] = I.TITLE AND ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM')
-                WHERE ACCOUNTNO = '${type}'`
+            // sql =`SELECT ACCOUNTNO, PROGRAM AS ProgName, [SERVICE TYPE] as serviceType, [SERVICESTATUS],
+            //     (CASE WHEN ISNULL(S.ForceSpecialPrice,0) = 0 THEN
+            //     (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+            //      WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+            //      WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+            //      WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5                       
+            //      WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            //     ELSE I.Amount END )
+            //     ELSE S.[UNIT BILL RATE] END ) AS BILLRATE
+            //     FROM RECIPIENTS C INNER JOIN RECIPIENTPROGRAMS RP ON C.UNIQUEID = RP.PERSONID 
+            //     INNER JOIN ServiceOverview S ON C.UNIQUEID = S.PersonID AND RP.PROGRAM = S.ServiceProgram
+            //     INNER JOIN ITEMTYPES I ON S.[SERVICE TYPE] = I.TITLE AND ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM')
+            //     WHERE ACCOUNTNO = '${type}'`
         }
         if (!sql) return EMPTY;
         return this.listS.getlist(sql);
@@ -2427,9 +2669,29 @@ reload(reload: boolean){
             });
         }
         else {
-             let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
-                 WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
+            //  let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
+            //      WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
             
+         let sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+                (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+                (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+                 WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+                 WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+                 WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+                 WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+                ELSE I.Amount END )
+                ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE
+                FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+                INNER JOIN Recipients C ON C.AccountNO = 'ABRAHIM NORMIE'
+                INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+                WHERE SO.ServiceProgram = '${ program}' 
+                AND EXISTS
+                (SELECT Title
+                FROM ItemTypes ITM
+                WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = 'ADMISSION'
+                AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+                ORDER BY [Service Type]`;
+
             return this.listS.getlist(sql);
                 //  return this.listS.getserviceprogramactivity({                  
                 //     program,
@@ -2663,7 +2925,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 tax: '1'
             })
             
-        })
+        });
 
         this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         this.fixStartTimeDefault();
@@ -2844,6 +3106,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 haccType: this.rosterGroup
             })
         }); 
+
      //--------------------------an other booking form-------------------------------- 
         this.bookingForm = this.formBuilder.group({
             recordNo: [''],
@@ -2877,33 +3140,134 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 tax: '1'
             })
             
-        })
+        });
+        
+        //     recordNo: [''],
+        //     date: [this.payPeriodEndDate, Validators.required],
+        //     serviceType: ['', Validators.required],
+        //     program: ['', Validators.required],
+        //     serviceActivity: ['', Validators.required],
+        //     payType: ['', Validators.required],
+        //     analysisCode: [''],
+        //     recipientCode:  [''],
+        //     haccType: '',
+        //     staffCode:  [''],
+        //     debtor:  [''],
+        //     isMultipleRecipient: false,
+        //     isTravelTimeChargeable: false,
+        //     sleepOverTime: '',
+        //     time: this.formBuilder.group({
+        //         startTime:  [''],
+        //         endTime:  [''],
+        //     }),
+        //     pay: this.formBuilder.group({
+        //         unit:  ['HOUR'],
+        //         rate:  ['0'],
+        //         quantity:  ['1'],
+        //         position: ''
+        //     }),
+        //     bill: this.formBuilder.group({
+        //         unit: ['HOUR'],
+        //         rate: ['0'],
+        //         quantity: ['1'],
+        //         tax: '1'
+        //     })
+            
+        // });
 
-        this.bookingForm.get('program').valueChanges.pipe(
+this.bookingForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
                 if(!x) return EMPTY;
-               // this.serviceActivityList = [];
+                this.serviceActivityList = [];
                 this.bookingForm.patchValue({
                     serviceActivity: null
                 });
-
-              //  return items.filter(item => item.title.indexOf(filter.title) !== -1);
-              //  return  this.programActivityList.filter(item => item.ProgName.indexOf(filter.title) !== -1);
+                return   this.GETSERVICEACTIVITY(x);                
+                                        
+                
             })
         ).subscribe((d: Array<any>) => {
 
-           // this.serviceActivityList = d.map(x => x.activity);
+            this.serviceActivityList = d.map(x => x.activity);
+         
+            if(this.whatProcess == PROCESS.UPDATE){
+                setTimeout(() => {
+                    this.bookingForm.patchValue({
+                        serviceActivity: this.defaultActivity                     
+                        
+                    });
+                }, 0);
+            }
            
-
-            if(this.serviceActivityList.length == 1){
+            if(d && d.length == 1){
                 this.bookingForm.patchValue({
-                    serviceActivity: this.serviceActivityList[0]
+                    serviceActivity: d[0]               
+                    
+
                 });
             }
         });
-    }
+     
+
+    this.bookingForm.get('serviceActivity').valueChanges.pipe(
+        distinctUntilChanged(),      
+
+        switchMap(x => {
+            if (!x) {
+                this.rosterGroup = '';
+                return EMPTY;
+            };
+           
+            return forkJoin(
+                this.GETROSTERGROUP(x), 
+                this.GETPAYTYPE(x),
+                this.GETANALYSISCODE()
+                                    
+            )
+            
+        })
+    ).subscribe(d => {
+        
+        //console.log(d);
+        //if (d.length > 1 || d.length == 0) return false;
+        let lst =d[0];
+        this.rosterGroup = (lst[0].rosterGroup);
+        this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
+        this.payTypeList = d[1];
+        this.analysisCodeList = d[2];
+        this.bookingForm.patchValue({
+            haccType: this.rosterGroup
+        })
+
+      
+    }); 
+    //     this.bookingForm.get('program').valueChanges.pipe(
+    //         distinctUntilChanged(),
+    //         switchMap(x => {
+    //             if(!x) return EMPTY;
+    //            // this.serviceActivityList = [];
+    //             this.bookingForm.patchValue({
+    //                 serviceActivity: null
+    //             });
+
+    //           //  return items.filter(item => item.title.indexOf(filter.title) !== -1);
+    //           //  return  this.programActivityList.filter(item => item.ProgName.indexOf(filter.title) !== -1);
+    //         })
+    //     ).subscribe((d: Array<any>) => {
+
+    //        // this.serviceActivityList = d.map(x => x.activity);
+           
+
+    //         if(this.serviceActivityList.length == 1){
+    //             this.bookingForm.patchValue({
+    //                 serviceActivity: this.serviceActivityList[0]
+    //             });
+    //         }
+    //     });
+   //  }
    
+}
     GET_ACTIVITY_VALUE(roster: string) {
         // ADMINISTRATION
         // ADMISSION
@@ -3018,7 +3382,46 @@ isServiceTypeMultipleRecipient(type: string): boolean {
         this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
         this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);        
     }
+    resetBookingFormModal() {
+        this.current = 0;
+        this.rosterGroup = '';
+        this.selectedCarer="";
+        this.defaultProgram="";
+        this.defaultActivity="";
+        this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
+        this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);        
 
+        this.bookingForm.reset({
+            date: this.payPeriodEndDate,
+            serviceType: '',
+            program: '',
+            serviceActivity: '',
+            payType: '',
+            analysisCode: '',
+            recipientCode: '',
+            debtor: '',
+            isMultipleRecipient: false,
+            isTravelTimeChargeable: false,
+            sleepOverTime: new Date(0, 0, 0, 9, 0, 0),
+            time: this.formBuilder.group({
+                startTime: '',
+                endTime: '',
+            }),
+            pay: this.formBuilder.group({
+                unit: 'HOUR',
+                rate: '0',
+                quantity: '1',
+                position: ''
+            }),
+            bill: this.formBuilder.group({
+                unit: 'HOUR',
+                rate: 0,
+                quantity: '1',
+                tax: '1'
+            }),
+        });
+
+           }
     pre_roster(): void {
         this.current -= 1;
     }
@@ -3092,6 +3495,30 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             }            
         }
     }
+    pre_tab(): void {
+        this.current -= 1;
+        if (this.viewType=="Staff" && this.current == 1 && this.booking_case>=4){
+            this.current -= 1;
+        }
+    }
+
+    next_tab(): void {
+        this.current += 1;
+
+        
+        if(this.current == 1 && this.booking_case==3){
+            if (this.viewType=="Recipient"){
+                this.booking_case=2;
+                
+            }
+        }
+        
+        if (this.viewType=="Staff" && this.current == 1 && this.booking_case>=4){
+            this.current += 1;
+        }
+
+    }
+    
     DEFAULT_NUMERIC(data: any): number{
         if(!this.globalS.isEmpty(data) && !isNaN(data)){
             return data;
@@ -3110,9 +3537,11 @@ isServiceTypeMultipleRecipient(type: string): boolean {
         return this.current < 4;
     }
 
+ 
+
     get showDone(){
        
-            return this.current >= 4 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3) ;
+            return this.current >= 4 ||    this.booking_case==2 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3) ;
     }
     get isFormValid(){
         return  this.rosterForm.valid;

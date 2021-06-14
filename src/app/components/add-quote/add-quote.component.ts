@@ -1037,55 +1037,99 @@ export class AddQuoteComponent implements OnInit {
             var sqlCMPercAmt = "SELECT P_Def_Admin_CM_PercAmt FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
             var sqlAdminPercAmt ="Select P_Def_Admin_Admin_PercAmt FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
       
-            this.listS.GetTOpUP(sqlTopUpFee).subscribe(x => {
-                this.topup = x;
-               
-            } );
-//          
-            this.listS.GetBasicCare(sqlBasicCareFee).subscribe(x => {
-                this.basiccarefee = x;
-               
-            });
-            
-            this.listS.GetCMPERC(sqlCMPercAmt).subscribe(x =>{ 
-                this.PercAmt = x;                                                     
-              });
-              
-              this.listS.GetAdmPerc(sqlAdminPercAmt).subscribe(x => {
-                this.AdmPErcAmt = x;                                
-               }); 
-               
-       var temp:number = this.quoteForm.value.govtContrib
+
+            forkJoin([
+                this.listS.GetTOpUP(sqlTopUpFee),
+                this.listS.GetBasicCare(sqlBasicCareFee),
+                this.listS.GetCMPERC(sqlCMPercAmt),
+                this.listS.GetAdmPerc(sqlAdminPercAmt)
+            ]).subscribe(x => {
+                this.topup = x[0];
+                this.basiccarefee = x[1];
+                this.PercAmt = x[2];
+                this.AdmPErcAmt = x[3];
+
+                var temp:number = this.quoteForm.value.govtContrib
        
         
-             _quote = {
+                _quote = {        
+                    code: '*HCP-PACKAGE ADMIN' ,
+                    displayText: 'Charges' ,
+                    billUnit:'Service',
+                    quantity: 1,
+                    frequency: 'Daily'  ,
+                    quoteQty: 365 , 
+                    price: this.PercAmt,              
+                }
+                
+                
+                _quote2 = {        
+                    code: '*HCP FEE-PACKAGE ADMINISTRATION' ,
+                    displayText: 'Charges' ,
+                    billUnit:'Service',
+                    quantity: 1,
+                    frequency: 'Daily'  ,
+                    quoteQty: 365 , 
+                    price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365)
+                }
+
+       
+                this.quoteLines = [...this.quoteLines, _quote,_quote2];
+                
+                this.total_admin = 10361.62;
+                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+                this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
+
+                this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
+    
+                this.handleCancelLine();
+                this.detectChanges();
+             
+            })
+
+
+            // this.listS.GetTOpUP(sqlTopUpFee).subscribe(x => {
+            //     this.topup = x;               
+            // } );
         
-                code: '*HCP-PACKAGE ADMIN' ,
-                displayText: 'Charges' ,
-                billUnit:'Service',
-            //  quantity:(((this.PercAmt/100)  * temp)/ 365).toFixed(2),
-                quantity: 1,
-                frequency: 'Daily'  ,
-                quoteQty: 365 , 
-                price: this.PercAmt,              
-               }
+            // this.listS.GetBasicCare(sqlBasicCareFee).subscribe(x => {
+            //     this.basiccarefee = x;
+               
+            // });
+            
+            // this.listS.GetCMPERC(sqlCMPercAmt).subscribe(x =>{ 
+            //     this.PercAmt = x;                                                     
+            // });
+              
+            // this.listS.GetAdmPerc(sqlAdminPercAmt).subscribe(x => {
+            //     this.AdmPErcAmt = x;                                
+            // }); 
+
+          
+               
+            // var temp:number = this.quoteForm.value.govtContrib
+       
+        
+            //  _quote = {        
+            //     code: '*HCP-PACKAGE ADMIN' ,
+            //     displayText: 'Charges' ,
+            //     billUnit:'Service',
+            //     quantity: 1,
+            //     frequency: 'Daily'  ,
+            //     quoteQty: 365 , 
+            //     price: this.PercAmt,              
+            //    }
             
               
-               _quote2 = {
-        
-                code: '*HCP FEE-PACKAGE ADMINISTRATION' ,
-                displayText: 'Charges' ,
-                billUnit:'Service',
-            //  quantity:(((this.AdmPErcAmt/100)  * temp)/ 365).toFixed(2),
-                quantity: 1,
-                frequency: 'Daily'  ,
-                quoteQty: 365 , 
-                price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365),
-                //
-              
-               }
-            
-            //   _quote = {_quote1,_quote2}
+            // _quote2 = {        
+            //     code: '*HCP FEE-PACKAGE ADMINISTRATION' ,
+            //     displayText: 'Charges' ,
+            //     billUnit:'Service',
+            //     quantity: 1,
+            //     frequency: 'Daily'  ,
+            //     quoteQty: 365 , 
+            //     price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365)
+            // }
            
            }  else{
             _quote = {
@@ -1099,20 +1143,18 @@ export class AddQuoteComponent implements OnInit {
             tax: quote.gst,
             itemId: quote.itemId
            }
-        }
-        //console.log(_quote)
-            setTimeout(() => {
-                this.quoteLines = [...this.quoteLines, _quote,_quote2];
-                
-                this.total_admin = 10361.62;
-                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
-                this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
 
-                this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
-            //    console.log(this.total_quote);
-                this.handleCancelLine();
-                this.detectChanges();
-            }, 0);
+           this.quoteLines = [...this.quoteLines, _quote];
+                
+           this.total_admin = 10361.62;
+           this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+           this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
+
+           this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
+
+           this.handleCancelLine();
+           this.detectChanges();
+        }
        }
 
        if(this.option == 'update'){

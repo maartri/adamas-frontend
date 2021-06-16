@@ -489,11 +489,28 @@ export class TimeSheetService {
     deletecenterlocationstaff(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/centerLocation/staff/${recordNo}`)
     }
+    
+    
+    /** */
+
+    /**
+     *  Center Location competency
+     */
     getcenterlocationcompetency(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/centerLocation/competency/${id}`)
     }
-    
 
+    postcenterlocationcompetency(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/centerlocation/competency`, data)
+    }
+   
+    updatecenterlocationcompetency(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/centerlocation/competency`, data)
+    }
+
+    deletecenterlocationcompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/centerlocation/competency/${recordNo}`)
+    }
     /** */
 
     /**

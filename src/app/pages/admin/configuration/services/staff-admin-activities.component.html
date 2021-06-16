@@ -155,7 +155,7 @@
                                             Life Cycle Event:
                                         </div>
                                         <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="lifeCycleEvent"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="lifeCycle"  nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let clycle of lifeCycleList" [nzLabel]="clycle.description" [nzValue]="clycle.description"></nz-option>
                                             </nz-select>
                                         </div>
@@ -410,14 +410,14 @@
                             <div nz-col nzSpan="20" class="mrg-btm">
                                 <div class="mrg-btm" nz-col nzSpan="24">
                                     <label for="Can Only Be Roasted" class="mrg-btm">Can Only Be Roasted:</label> 
-                                    Mon <label nz-checkbox  formControlName="day1"></label>
-                                    Tue <label nz-checkbox  formControlName="day2"></label>
-                                    Wed <label nz-checkbox  formControlName="day3"></label>
-                                    Thu <label nz-checkbox  formControlName="day4"></label>
-                                    Fri <label nz-checkbox  formControlName="day5"></label>
-                                    Sat <label nz-checkbox  formControlName="day6"></label>
-                                    Sun <label nz-checkbox  formControlName="day7"></label>
-                                    Pub Hol <label nz-checkbox  formControlName="day0"></label>
+                                    Mon <label nz-checkbox  formControlName="noMonday"></label>
+                                    Tue <label nz-checkbox  formControlName="noTuesday"></label>
+                                    Wed <label nz-checkbox  formControlName="noWednesday"></label>
+                                    Thu <label nz-checkbox  formControlName="noThursday"></label>
+                                    Fri <label nz-checkbox  formControlName="noFriday"></label>
+                                    Sat <label nz-checkbox  formControlName="noSaturday"></label>
+                                    Sun <label nz-checkbox  formControlName="noSunday"></label>
+                                    Pub Hol <label nz-checkbox  formControlName="noPubHol"></label>
                                 </div>
                                 <div nz-row nzSpan="24">
                                     <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
@@ -443,19 +443,19 @@
                                             <label>Min Duration</label>
                                         </div>
                                         <div nz-col nzSpan="4">
-                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="min" />
+                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="minDurtn" />
                                         </div>
                                         <div nz-col nzSpan="4">
                                             <label style="margin-left:20px;">Max Duration</label>
                                         </div>
                                         <div nz-col nzSpan="4">
-                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="max" />
+                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="maxDurtn" />
                                         </div>
                                         <div nz-col nzSpan="4">
                                             <label style="margin-left:20px;">Roasted Time</label>
                                         </div>
                                         <div nz-col nzSpan="4"> 
-                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="forceRostedTime" />
+                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="fixedTime" />
                                         </div>
                                     </div>
                                     <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
@@ -464,10 +464,10 @@
                                         </div>
                                         <div nz-col nzSpan="16">
                                             <div>
-                                                <label nz-checkbox formControlName="rostedDay">Rosted Day</label>
+                                                <label nz-checkbox formControlName="noChangeDate">Rosted Day</label>
                                             </div>
                                             <div>
-                                                <label nz-checkbox formControlName="rostedTime">Rosted Time</label>
+                                                <label nz-checkbox formControlName="noChangeTime">Rosted Time</label>
                                             </div>
                                         </div>
                                     </div>
@@ -476,7 +476,7 @@
                                             <span>Time Must Be withIn:</span>
                                         </div>
                                         <div nz-col nzSpan="8">
-                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="orignalminute" />
+                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="timeChangeLimit"/>
                                         </div>
                                         <div nz-col nzSpan="8" style="text-align: center;">
                                             <span>Minutes of Orignal Start</span>
@@ -802,7 +802,7 @@
                             End Date:
                         </div>
                         <div nz-col nzSpan="3" class="text-right pad-r-5"> 
-                            <nz-date-picker  [nzSize]="'small'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
+                            <nz-date-picker  [nzSize]="'small'" formControlName="endDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                         <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
                             <span>SAVE</span>

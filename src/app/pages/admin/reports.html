@@ -364,7 +364,7 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-staff-competencyrenewal" (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id="btn-competenciesrenewal" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Competency Renewal Report
                                                 </button>
@@ -380,7 +380,13 @@
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Leaves Register
                                                 </button>
-                                        </div>                                                                        
+                                        </div>  
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-staff-svcnotesregister" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Service Notes Register
+                                                </button>
+                                        </div>                                                                       
                                     </li>                  
                                 </ul>
                             </div>
@@ -449,7 +455,7 @@
                                                 </button>
                                         </div> 
                                         <div>
-                                            <button nz-button nzType="default" id="btn-competenciesrenewal" (click)="showModal(this.id)"  >
+                                            <button nz-button nzType="default" id="btn-staff-competencyrenewal" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                Staff Competencies Renewal
                                                 </button>
@@ -811,7 +817,7 @@
                 (nzOnCancel)="handleCancelTop()"
                 (nzOnOk)="handleOkTop()"
                 >
-                <!-- mufeed   <div style="margin-bottom: 20px;">
+                <!--    <div style="margin-bottom: 20px;">
                     <span>
                         <strong>CRITERIA</strong>
                     </span>
@@ -891,6 +897,17 @@
                         </div>
                         </div>
                     </div>
+                    <div nz-row *ngIf="frm_SVCNotes" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Service Notes Category</label>
+                                <label class="checks" nz-checkbox formControlName="allstaffSvcnotes"  >Service Notes</label>                                        
+                                <nz-select formControlName="staffsvcNoteArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allstaffSvcnotes" >
+                                    <nz-option *ngFor="let option of staffsvcNoteArr" [nzLabel]="option" [nzValue]="option"  ></nz-option>
+                                </nz-select>                                        
+                        </div>
+                        </div>
+                    </div>          
                     <div nz-row *ngIf="frm_vehicles" >
                         <div nz-col nzSpan="20">
                             <div class="form-group">
@@ -1204,6 +1221,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_pagebreak" ><label class="checks" nz-checkbox formControlName="pgbreak"   >Page break on New Employee</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_inactive" ><label class="checks" nz-checkbox formControlName="incl_inactive"   >Include InActive</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_outstanding" ><label class="checks" nz-checkbox formControlName="incl_outstanding"   >Include Only Outstanding Items</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_incl_achived" ><label class="checks" nz-checkbox formControlName="incl_archived"   >Include Archived</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_exclude_expirydates" ><label class="checks" nz-checkbox formControlName="excl_missing"   >Exclude Missing Expiry Dates</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_Contacts" ><label class="checks" nz-checkbox formControlName="incl_Contacts"   >Include Contacts</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_asAddressLabel" ><label class="checks" nz-checkbox formControlName="printaslabel"  >Print as Address Label</label></div>

@@ -55,6 +55,9 @@ const inputFormDefault = {
     svcTypeArr: [[]],
     allSvctypes: [true],
 
+    staffsvcNoteArr: [[]],
+    allstaffSvcnotes: [true],
+
     vehiclesArr: [[]],
     allVehicles: [true],
 
@@ -156,6 +159,7 @@ const inputFormDefault = {
     incl_Contacts: [false],
     excl_missing: [false],
     incl_outstanding: [false],
+    incl_archived: [false],
     incl_inactive: [false],
     pgbreak: [false],
     incl_approved_programs: [false],
@@ -342,6 +346,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_Incidents: boolean;
     frm_Incidentcategories: boolean;
     frm_Staff: boolean;
+    frm_SVCNotes: boolean;
     frm_Recipients: boolean;
     frm_Items: boolean;
     frm_PlanTypes: boolean;
@@ -376,6 +381,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     chkbx_pagebreak: boolean;
     chkbx_incl_inactive: boolean;
     chkbx_incl_outstanding: boolean;
+    chkbx_incl_achived: boolean;    
     chkbx_exclude_inactivestaff: boolean;
     chkbx_exclude_staffondate: boolean;
     chkbx_exclude_expirydates: boolean;
@@ -425,6 +431,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     incl_Contacts: [false];
     excl_missing: [false];
     incl_outstanding: [false];
+    incl_archived : [false];
     incl_inactive: [false];
     pgbreak: [false];
     incl_approved_programs: [false];
@@ -496,6 +503,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     staffArr: Array<any> = [];
     vehiclesArr: Array<any> = [];
     svcTypeArr: Array<any> = [];
+    staffsvcNoteArr: Array<any> = [];    
     disciplineArr: Array<any> = [];
     casenotesArr: Array<any> = [];
     caredomainArr: Array<any> = [];
@@ -576,6 +584,7 @@ stafftypeArr: Array<any> = constants.types;
     s_StafftypeSQL: string;
     s_PlantypeSQL: string;
     s_CaseNoteSQL: string;
+    s_SvcNoteSQL: string;
     s_CareDomainSQL: string;
     s_DisciplineSQL: string;
     s_TrainingTypeSQL: string;
@@ -745,6 +754,12 @@ stafftypeArr: Array<any> = constants.types;
                 svcTypeArr: []
             });
         });
+        this.inputForm.get('allstaffSvcnotes').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                staffsvcNoteArr: []
+            });
+        });
+        
         this.inputForm.get('allDisciplines').valueChanges.subscribe(data => {
             this.inputForm.patchValue({
                 disciplineArr: []
@@ -909,6 +924,7 @@ stafftypeArr: Array<any> = constants.types;
         this.listS.getcstdaoutlets().subscribe(x => this.outletsArr = x);
         this.listS.GetVehicles().subscribe(x => this.vehiclesArr = x);
         this.listS.GetStaffServiceTypes().subscribe(x => this.svcTypeArr = x);
+        this.listS.getstaffcategory().subscribe(x => this.staffsvcNoteArr = x);        
         this.listS.GetRecipientAll().subscribe(x => this.recipientArr = x);
         this.listS.Getrpttraccsuser().subscribe(x => this.traccsuserArr = x);
         this.listS.Getrptagencyid().subscribe(x => this.agencyidArr = x);
@@ -984,6 +1000,7 @@ stafftypeArr: Array<any> = constants.types;
         this.frm_Incidents = false;
         this.frm_Incidentcategories = false;
         this.frm_Staff = false;
+        this.frm_SVCNotes = false;
         this.frm_Recipients = false;
         this.frm_Items = false;
         this.frm_PlanTypes = false;
@@ -1017,6 +1034,7 @@ stafftypeArr: Array<any> = constants.types;
         this.chkbx_pagebreak = false;
         this.chkbx_incl_inactive = false;
         this.chkbx_incl_outstanding = false;
+        this.chkbx_incl_achived = false;
         this.chkbx_exclude_inactivestaff = false;
         this.chkbx_exclude_staffondate = false;
         this.chkbx_exclude_expirydates = false;
@@ -1479,6 +1497,17 @@ stafftypeArr: Array<any> = constants.types;
                 this.ModalName = "STAFF LEAVES REGISTER "
                 this.frm_Date = true;
                 break;
+                case 'btn-staff-svcnotesregister':
+                this.bodystyle = { height:'450px', overflow: 'auto'}
+                this.ModalName = "STAFF SERVICE NOTES REGISTER "
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Staff = true;
+                this.frm_SVCNotes = true;
+                this.frm_options = true;
+                this.chkbx_incl_achived = true;
+                break;
+                
             case 'btn-staff-staffnotworked':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "STAFF NOT WORKED REGISTER"
@@ -1516,6 +1545,8 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_StaffType = true;
                 this.frm_StaffGroup = true;
+                this.frm_options = true;
+                this.chkbx_include_AdditionalInfo = true;
 
                 break;
             case 'btn-staff-Roster':
@@ -2010,6 +2041,7 @@ stafftypeArr: Array<any> = constants.types;
         var s_StfGroup = this.inputForm.value.staffgroupsArr;
         var s_Recipient = this.inputForm.value.recipientArr;
         var s_SvcType = this.inputForm.value.svcTypeArr;
+        var s_StaffSvcNote = this.inputForm.value.staffsvcNoteArr;       
         var s_incidenttype = this.inputForm.value.incidentArr;
         var s_Incidentcategory = this.inputForm.value.incidentcategoryArr;
         var s_LoanItems = this.inputForm.value.itemArr;
@@ -2318,6 +2350,9 @@ stafftypeArr: Array<any> = constants.types;
                 break;
             case 'btn-staff-leaveregister':
                 this.StaffLeaveRegister(strdate, endate, tempsdate, tempedate)
+                break;                
+                case 'btn-staff-svcnotesregister':
+                this.StaffSvcNotesRegister(s_Branches,s_Staff,s_StaffSvcNote ,strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-staff-staffnotworked':
                 this.StaffNotWorkedReport(s_Branches, s_StfGroup, s_Staff, strdate, endate,tempsdate, tempedate)
@@ -2616,7 +2651,7 @@ stafftypeArr: Array<any> = constants.types;
         if (this.inputForm.value.printaslabel == true){
             
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by RecipientName "
            
         }
         else {
@@ -2628,7 +2663,7 @@ stafftypeArr: Array<any> = constants.types;
         
 
 
-//          console.log(fQuery)
+//        console.log(fQuery)
         //  console.log(this.inputForm.value.printaslabel)
         
         
@@ -2748,7 +2783,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "zrBLd931LZblcnNH" 
@@ -2974,7 +3009,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
         if (stafftype != "") {
             lblcriteria = " Branches:" + stafftype.join(",") + "; "
         }
@@ -2986,7 +3021,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Assigned To: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
         if (startdate != "") {
             lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
         }
@@ -3788,7 +3823,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
         if (stafftype != "") {
             lblcriteria = " Branches:" + stafftype.join(",") + "; "
         }
@@ -3800,7 +3835,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Assigned To: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
         if (s_Cycle != "") {
             lblcriteria = lblcriteria + " Date  " + s_Cycle.toString() + "; "
         }
@@ -4062,7 +4097,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "4ohDCZRbiaKS4ocK" 
@@ -4181,7 +4216,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "EqrRIePxJeNTXk0b" 
@@ -4405,7 +4440,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "0BnEO8OTruJxvLwX" 
@@ -4846,7 +4881,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "69u2ZyBtQbSyxVxf" 
@@ -5030,7 +5065,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             var lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
 
         if (manager != "") {
             lblcriteria = lblcriteria + " Manager: " + manager.join(",") + "; "
@@ -5041,7 +5076,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Groups: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
 
 
         fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
@@ -5051,7 +5086,8 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //  console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
+    //        console.log(fQuery)
         }
         else {
             this.reportid   = "LQO71slAArEu36fo" 
@@ -5137,7 +5173,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Groups: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
 
 
 
@@ -5147,7 +5183,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
         }
         else {
             this.reportid   = "6NauxB95CSDc096v" 
@@ -5224,7 +5260,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             var lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
 
         if (manager != "") {
             lblcriteria = lblcriteria + " Manager: " + manager.join(",") + "; "
@@ -5235,7 +5271,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Groups: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
 
 
 
@@ -5319,7 +5355,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             var lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
 
         if (manager != "") {
             lblcriteria = lblcriteria + " Manager: " + manager.join(",") + "; "
@@ -5330,7 +5366,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Groups: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
 
 
 
@@ -5413,7 +5449,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             var lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
 
         if (manager != "") {
             lblcriteria = lblcriteria + " Manager: " + manager.join(",") + "; "
@@ -5424,7 +5460,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Groups: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
 
 
        
@@ -5506,7 +5542,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             var lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
 
         if (manager != "") {
             lblcriteria = lblcriteria + " Manager: " + manager.join(",") + "; "
@@ -5517,14 +5553,14 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Groups: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
 
 
         
         // console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by StaffName"
         }
         else {
             this.reportid   = "lcl6jxcRDYzgs7kJ" 
@@ -6303,6 +6339,115 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                   });
             });
     }
+    StaffSvcNotesRegister(branch,Staff,svcnotes,startdate, enddate, tempsdate, tempedate) {
+
+// History.DetailDate Between '06-01-2021' AND '06-30-2021 23:59:59'     
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT  (S.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN PRIMARYADDRESS <> '' THEN  lower(PRIMARYADDRESS) ELSE lower(OTHERADDRESS) END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, S.AccountNo AS StaffCode, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(convert(datetime,History.DetailDate),'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join STAFF as S ON S.AccountNo = Ro.[Carer Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON S.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON S.UNIQUEID = P.PERSONID WHERE ExtraDetail1 = 'SVCNOTE'  "
+        var lblcriteria;
+
+        if (startdate != "" || enddate != "") {
+            this.s_DateSQL = "History.DetailDate BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " and " + this.s_DateSQL };
+        }
+        if (branch != "") {
+            this.s_BranchSQL = "(S.[STF_DEPARTMENT] in ('" + branch.join("','") + "'))";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        if (Staff != "") {
+            this.s_StfSQL = "([AccountNo] in ('" + Staff.join("','") + "'))";
+            if (this.s_StfSQL != "") { fQuery = fQuery + " AND " + this.s_StfSQL };
+        }
+        if (svcnotes != "") {
+            this.s_SvcNoteSQL = "([ExtraDetail2] in ('" + svcnotes.join("','") + "'))";
+            if (this.s_SvcNoteSQL != "") { fQuery = fQuery + " AND " + this.s_SvcNoteSQL };
+        }
+        //
+
+
+        if (startdate != "") {
+            lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+        }
+        else { lblcriteria = " All Dated " }
+       
+        if (branch != "") {
+            lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + " All Branches " }
+       
+        if (Staff != "") {
+            lblcriteria = lblcriteria + " Assigned To: " + Staff.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Staff ," }
+
+        if (svcnotes != "") {
+            lblcriteria = lblcriteria + " Service Notes: " + svcnotes.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Service Notes ," }
+
+
+
+
+        fQuery = fQuery + " AND [CARER CODE] > '!Z' AND [CLIENT CODE] IN ('!INTERNAL', '!MULTIPLE')  "
+        if(this.inputForm.value.incl_archived == true){
+            fQuery = fQuery + " AND (History.DeletedRecord = 1)  ) ROP "
+            lblcriteria = lblcriteria + " Archived Notes Included."
+            
+        }else{
+            fQuery = fQuery + " AND (History.DeletedRecord = 0)  ) ROP "
+        }
+        //
+        fQuery = fQuery + " ORDER BY ROP.[StaffName], ROP.DateCreated  "
+
+//        console.log(fQuery)
+
+        this.drawerVisible = true;
+
+        const data = {
+            //"shortid":"Yh_8YURVWa"
+            "template": { "shortid": "Yh_8YURVWa" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+
+        this.loading = true;
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+
+                let _blob: Blob = blob;
+
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Staff Service Notes Register.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                this.loading = false;
+
+            }, err => {
+                console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
+                  });
+            });
+    }
 
     StaffNotWorkedReport(branch, stfgroup, staff, startdate, enddate,tempsdate, tempedate) {
 
@@ -6341,7 +6486,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Assigned To: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
         if (startdate != "") {
             lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
         }
@@ -6406,7 +6551,12 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     StaffCompetencyRenewal(branch, staff, competency, manager, staffteam,stfgroup, competencygroup, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT  IsNull([PAN_MANAGER],'') as Coordinator , UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName,Staff.StaffGroup,Staff.Category,Staff.STF_DEPARTMENT,HumanResources.Name as Competency,CASE WHEN HumanResources.Date1 IS NULL THEN 'MISSING' ELSE format (HumanResources.Date1, 'dd/MM/yyyy mm:hh') END AS [Expiry Date],HumanResources.Notes FROM Staff INNER JOIN HumanResources ON Staff.UniqueID = HumanResources.PersonID WHERE (HumanResources.[Type] = 'STAFFATTRIBUTE')   "
+        var fQuery = "SELECT  IsNull([PAN_MANAGER],'') as Coordinator , UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName,Staff.StaffGroup,Staff.Category,Staff.STF_DEPARTMENT,HumanResources.Name as Competency,CASE WHEN HumanResources.Date1 IS NULL THEN 'MISSING' ELSE format (HumanResources.Date1, 'dd/MM/yyyy mm:hh') END AS [Expiry Date],HumanResources.Notes "
+        if(this.inputForm.value.printaslabel == true){ 
+            fQuery = fQuery + " Title,AccountNo,Staff.Address1,Staff.Address2,Staff.Suburb,Staff.Postcode "
+        }
+
+        fQuery = fQuery + " FROM Staff INNER JOIN HumanResources ON Staff.UniqueID = HumanResources.PersonID WHERE (HumanResources.[Type] = 'STAFFATTRIBUTE')   "
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {
@@ -6517,19 +6667,30 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         else { lblcriteria = lblcriteria + " All Managers," }
 
-        if(this.inputForm.value.groupbyCoordinators == true){            
-             fQuery = fQuery + " ORDER BY PAN_MANAGER, Staff.[LastName], Staff.[FirstName] "
-        }else{
-            fQuery = fQuery + " ORDER BY Staff.[LastName], Staff.[FirstName] "
-        }
-       
 
-    // console.log(fQuery)
+        if(this.inputForm.value.printaslabel == true){ 
+            
+            fQuery = "Select Distinct StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
+            this.reportid = "6dfbj72obyLi9qxJ"
+           
+        }else{
+            this.reportid = "Nl0aajvRfsYjDEsb"
+        }
+
+        if(this.inputForm.value.printaslabel == false){ 
+            if(this.inputForm.value.groupbyCoordinators == true){            
+                fQuery = fQuery + " ORDER BY PAN_MANAGER, Staff.[LastName], Staff.[FirstName] "
+            }else{
+                fQuery = fQuery + " ORDER BY Staff.[LastName], Staff.[FirstName] "
+            }
+        }
+
+    //mufeed console.log(fQuery) 
 
         this.drawerVisible = true;
 
         const data = {
-            "template": { "_id": "Nl0aajvRfsYjDEsb" },
+            "template": { "_id": this.reportid},
             "options": {
                 "reports": { "save": false },
 
@@ -6607,19 +6768,19 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
         if (stafftype != "") {
             lblcriteria = " Branches:" + stafftype.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Branches" }
+        else { lblcriteria = lblcriteria + " All Staff types, " }
         if (staff != "") {
             lblcriteria = " Staff:" + staff.join(",") + "; "
         }
-        else { lblcriteria = "All Staff" }
+        else { lblcriteria = " All Staff, " }
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Assigned To: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = lblcriteria + " All Staff Groups, " }
         if (startdate != "") {
             lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
         }
@@ -6628,7 +6789,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + "  ORDER BY [Carer Code], Date, [Start Time] "
 
-        // console.log(fQuery)
+        //console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -6640,6 +6801,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
+                "notes" : this.inputForm.value.include_AdditionalInfo,
 
 
             }
@@ -6822,19 +6984,19 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (branch != "") {
             lblcriteria = " Branches:" + branch.join(",") + "; "
         }
-        else { lblcriteria = "All Branches" }
+        else { lblcriteria = " All Branches, " }
         if (stafftype != "") {
             lblcriteria = lblcriteria + " Staff Type:" + stafftype.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Types" }
+        else { lblcriteria = lblcriteria + " All Staff types, " }
         if (staff != "") {
             lblcriteria = " Staff:" + staff.join(",") + "; "
         }
-        else { lblcriteria = "All Staff" }
+        else { lblcriteria = " All Staff, " }
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Group: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
         if (startdate != "") {
             lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
         }
@@ -6958,7 +7120,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY HumanResources.Name "
 
-        console.log(fQuery)
+    //    console.log(fQuery)
 
 
         this.drawerVisible = true;
@@ -7220,7 +7382,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         fQuery = fQuery + "AND ExtraDetail1 = 'SVCNOTE'  AND (History.DeletedRecord = 0)  ) ROP "
         fQuery = fQuery + " ORDER BY ROP.[ClientName], ROP.DateCreated   "
 
-        console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -7967,7 +8129,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY DATE  "
 
-        console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -8096,7 +8258,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Group: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
 
         fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time] "
         /*   
@@ -8194,7 +8356,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " ORDER BY ActionDate "
 
-        console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -8401,7 +8563,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Group: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
         if (recipient != "") {
             lblcriteria = lblcriteria + " Recipients: " + recipient.join(",") + "; "
         }
@@ -8655,7 +8817,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "") {
             lblcriteria = lblcriteria + " Staff Group: " + stfgroup.join(",") + "; "
         }
-        else { lblcriteria = lblcriteria + "All Staff Groups," }
+        else { lblcriteria = " All Staff, " }
         if (recipient != "") {
             lblcriteria = lblcriteria + " Recipients: " + recipient.join(",") + "; "
         }
@@ -9632,7 +9794,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + "ORDER BY [Service Description], [Program], Date, [Start Time]";
 
-        console.log(fQuery)
+    //    console.log(fQuery)
 
         switch (format) {
             case "Detailed":

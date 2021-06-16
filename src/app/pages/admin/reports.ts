@@ -6410,11 +6410,11 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {
-            this.s_DateSQL = " ((HumanResources.[Date1] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "') ";
+            this.s_DateSQL = " (HumanResources.[Date1] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "') ";
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
         }
         if (this.inputForm.value.excl_missing == false){
-            fQuery = fQuery + " OR ISNULL(HumanResources.[Date1], '') = '')"
+            fQuery = fQuery + " OR ISNULL(HumanResources.[Date1], '') = '' "
         }
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -6524,7 +6524,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
        
 
-    // console.log(fQuery)
+     console.log(fQuery) 
 
         this.drawerVisible = true;
 

@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService, MenuService, TimeSheetService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
-import { Subject,forkJoin } from 'rxjs';
+import { Subject,forkJoin,timer,interval } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
@@ -79,6 +79,7 @@ export class CentrFacilityLocationComponent implements OnInit {
   addOrEdit: number = 0;
   staffForm: FormGroup;
   competencyForm: FormGroup;
+  competencyGroup: FormGroup;
   
   constructor(
     private globalS: GlobalService,
@@ -267,6 +268,9 @@ export class CentrFacilityLocationComponent implements OnInit {
     }
     handleCompCancel() {
       this.competencymodal = false;
+      this.isUpdate = false;
+      this.isNewRecord = false;
+      this.addOrEdit = 0;
     }
     handleAprfCancel(){
       this.staffApproved = false;
@@ -286,7 +290,8 @@ export class CentrFacilityLocationComponent implements OnInit {
         }
       }
       if(this.current == 2 || this.current == 3){
-        this.staffDetails(this.center_perosn_id);
+        if(this.center_perosn_id != '-1')
+           this.staffDetails(this.center_perosn_id);
       }
     }
     save() {
@@ -360,7 +365,11 @@ export class CentrFacilityLocationComponent implements OnInit {
           }
           else{
             this.globalS.sToast('Success', 'Saved successful');
-            this.loading = false;   
+            this.center_perosn_id = data;
+            this.postLoading = false;
+            this.loading = false;
+            this.isUpdate = true;
+            this.isNewRecord = true;
           }
         });
       }else{
@@ -469,13 +478,11 @@ export class CentrFacilityLocationComponent implements OnInit {
       const group = this.inputForm;
       let insertOne = false;
       if(this.addOrEdit == 0){
-        
         if(!this.isUpdate){
           if(!this.isNewRecord){
             this.save();
           }
         }
-
         var stafftype = (type == 1) ? 0 : 1;
         var approvedExcludeList = (type == 1) ? this.checkedListApproved : this.checkedListExcluded;
         
@@ -523,300 +530,323 @@ export class CentrFacilityLocationComponent implements OnInit {
               this.postLoading  = false;
             }
           })
-      }
-    }
-    trueString(data: any): string{
-      return data ? '1': '0';
-    }
-    
-    isChecked(data: string): boolean{
-      return '1' == data ? true : false;
-    }
-    
-    loadData(){
-      
-      this.jurisdiction = [{'id':'13','name':'STATE'},{'id':'93','name':'FEDERAL'}];
-      
-      this.agencySector = [{'id':'1','name':'Commonwealth Government'},{'id':'2','name':'State Territory Government'},{'id':'3','name':'Local Government'},{'id':'4','name':'Income Tax Exempt Charity'},{'id':'5','name':'Non-Income Tax Exempt'}];
-      
-      this.serviceType  = ['1.01-LARGE RESIDENTIAL/INSTITUTION (>20 PEOPLE) - 24 HOUR CARE','1.014-ADDITIONAL ACCOMMODATION SUPPORT – LARGE RESIDENTIAL/INSTITUTION (>20 PLACES)','1.02-SMALL RESIDENTIAL/INSTITUTION (7-20 PEOPLE) - 24 HOUR CARE','1.024-ADDITIONAL ACCOMMODATION SUPPORT – SMALL RESIDENTIAL/INSTITUTION (7-20 PLACES)','1.03-HOSTELS - GENERALLY NOT 24 HOUR CARE','1.041-GROUP HOME (<7 PLACES)','1.042-GROUP HOME (<7 PLACES) – NO DIRECT FINANCIAL CONTROL','1.044-ADDITIONAL ACCOMMODATION SUPPORT – GROUP HOME (<7 PLACES)','1.05-ATTENDANT CARE/PERSONAL CARE','1.06-IN-HOME ACCOMMODATION SUPPORT','1.07-ALTERNATIVE FAMILY PLACEMENT','1.081-ACCOMMODATION PROVIDED SO THAT INDIVIDUALS CAN ACCESS SPECIALIST SERVICES OR FURTHER EDUCATION','1.082-EMERGENCY OR CRISIS ACCOMMODATION SUPPORT (E.G. FOLLOWING THE DEATH OF A PARENT OR CARER)','1.083-HOUSES OR FLATS FOR HOLIDAY ACCOMMODATION','2.01-THERAPY SUPPORT FOR INDIVIDUALS','2.02-EARLY CHILDHOOD INTERVENTION','2.021-EARLY INTERVENTION','2.03-BEHAVIOUR/SPECIALIST INTERVENTION','2.04-COUNSELLING (INDIVIDUAL/FAMILY/GROUP)','2.05-REGIONAL RESOURCE AND SUPPORT TEAMS','2.061-PROGRAM SUPPORTS FACILITATION','2.062-CASE MANAGEMENT','2.063-LOCAL AREA COORDINATION','2.064-COMMUNITY DEVELOPMENT','2.066-SELF DIRECTED SUPPORT-MANAGEMENT','2.067-SELF DIRECTED SUPPORT-ESTABLISHMENT','2.071-OTHER COMMUNITY SUPPORT','2.072-OTHER COMMUNITY SUPPORT','2.073-OTHER COMMUNITY SUPPORT']
-      this.fundTypes    = ['Block Funded','Both','Individually Funded','N/A'];
-      
-      let arr = [];
-      for(let i=1;i<=90;i++)
-      {
-        arr.push(i);
-      }
-      this.numbers = arr;      
-      this.loading = true;
-      this.menuS.getlistcenterFacilityLoc(this.check).subscribe(data => {
-        this.tableData = data;
-        this.loading = false;
-        this.cd.detectChanges();
-      });
-      
-      let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'BRANCHES' ORDER BY Description";
-      this.listS.getlist(branch).subscribe(data => {
-        this.branches = data;
-        this.loading = false;
-      });
-      
-      let compet = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
-      
-      this.listS.getlist(compet).subscribe(data => {
-        this.competencyList = data;
-        this.loading = false;
-      });
-      let cat    = "SELECT DESCRIPTION FROM DATADOMAINS WHERE  ISNULL(DataDomains.DeletedRecord, 0) = 0 AND DOMAIN = 'STAFFADMINCAT'";
-      this.listS.getlist(cat).subscribe(data => {
-        this.categoryList = data;
-        this.loading = false;
-      });    
-    }
-    staffDetails(person_id: any = this.center_perosn_id) {
-      this.cd.reattach();
-      this.loading = true;
-      forkJoin([
-        this.timeS.getcenterLocationincludedstaff(person_id),
-        this.timeS.getcenterlocationexcludedstaff(person_id),
-        this.listS.getcenterlocationstaff(),
-        this.timeS.getcenterlocationcompetency(person_id)
-      ]).subscribe(staff => {
-        this.loading = false;
-        this.includedStaff  = staff[0];
-        this.excludedStaff  = staff[1];
-        this.listStaff      = staff[2];
-        this.competencies   = staff[3];
-        this.cd.markForCheck();
-      });
-    }
-    
-    // deleteCompetency(data:any){
-    //   const group = this.inputForm;
-    //     this.loading = true;
-    //     this.menuS.deleteCompetency(data.recordNumber)
-    //     .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-    //       if (data) {
-    //         this.globalS.sToast('Success', 'Data Deleted!');
-    //         this.loadCompetency();
-    //         return;
-    //       }
-    //     });
-    // }
-    staffDetlete(stafftype:number,data:any){
-      this.timeS.deletecenterlocationstaff(data.recordNumber).pipe(
-        takeUntil(this.unsubscribe)).subscribe(data => {
-          if(data){
-            (stafftype == 1) ? this.loadApprovedStaff() : this.loadExcludedStaff();
-            this.globalS.sToast('Success','Staff Deleted')
-          }
-        })
-      }
-      editCompetencyModal(data:any){
-        this.addOrEdit = 1;
-        this.competencyForm.patchValue({
-          competencyTitle : data.competency,
-          mandatory : data.mandatory,
-          recordNumber:data.recordNumber,
-        })
-        this.competencymodal = true;
-      }
-      deleteCompetency(){
-        
-      }
-      fetchAll(e){
-        if(e.target.checked){
-          this.whereString = "";
-          this.loadData();
-        }else{
-          this.whereString = " Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
-          this.loadData();
         }
       }
-      delete(data: any) { 
-        this.postLoading = true;     
+      saveCompetency(){
+        this.postLoading = true;
         const group = this.inputForm;
-        this.menuS.deleteCenterFacilityLoclist(data.recordNumber)
-        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          if (data) {
-            this.globalS.sToast('Success', 'Data Deleted!');
-            this.loadData();
-            return;
+        let insertOne = false;
+        if(this.addOrEdit == 0){
+          if(!this.isUpdate){
+            if(!this.isNewRecord){
+              this.save();
+            }
           }
-        });
-      }
-      active(data:any){
-        const group = this.inputForm;
-        this.menuS.activateCenterFacitlityLoclist(data.recordNumber)
-        .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-          if (data) {
-            this.globalS.sToast('Success', 'Data Deleted!');
-            this.loadData();
-            return;
-          }
-        });      
-      }
-      
-      onCheckboxChange(option, event) {
-        if(event.target.checked){
-          this.checkedList.push(option.description);
-        } else {
-          this.checkedList = this.checkedList.filter(m=>m!= option.description)
-        }
-        console.log(this.checkedList);
-      }
-      onCheckboxUnapprovedChange(option, event) {
-        if(event.target.checked){
-          this.checkedListExcluded.push(option);
-        } else {
-          this.checkedListExcluded = this.checkedListExcluded.filter(m=>m!= option)
-        }
-      }
-      onCheckboxapprovedChange(option, event)
-      {
-        if(event.target.checked){
-          this.checkedListApproved.push(option);
-        } else {
-          this.checkedListApproved = this.checkedListApproved.filter(m=>m!= option)
-        }
-      }
-      buildForm() {
-        this.inputForm = this.formBuilder.group({
-          type: '',
-          outletid:0,
-          cstdaoutlet:false,
-          dsci:false,
-          name:'',
-          branch:'',
-          adress:'',
-          sla:'',
-          postcode:'',
-          subrub:'',
-          places:'',
-          cat:'',
-          category:'',
-          unaprstaff:'',
-          anualhours:'',
-          serviceUsers:'',
-          minUserWeek:'',
-          maxUserWeek:'',
-          minStaffHour:'',
-          maxStaffHour:'',
-          aprstaff:'',
-          competences:'',
-          agencysector:'',
-          servicetype:'',
-          fundingjunc:'',
-          fundingtype:'',
-          sheetalert:'',
-          hour:'',
-          week:'',
-          day:'',
-          weekPatern:false,
-          dayPatern:false,
-          hourPatern:true,
-          description: '',
-          asset_no:'',
-          serial_no:'',
-          purchase_am:'',
-          purchase_date:'',
-          last_service:'',
-          lockloct:'',
-          lockcode:'',
-          disposal:'',
-          notes:'',
-          glRevene:'',
-          glCost:'',
-          gloveride:false,
-          centerName:'',
-          addrLine1:'',
-          addrLine2:'',
-          Phone:'',
-          startHour:'',
-          finishHour:'',
-          earlyStart:'',
-          lateStart:'',
-          earlyFinish:'',
-          lateFinish:'',
-          overstay:'',
-          understay:'',
-          t2earlyStart:'',
-          t2lateStart:'',
-          t2earlyFinish:'',
-          t2lateFinish:'',
-          t2overstay:'',
-          t2understay:'',
-          recordNumber:null
-        });
-        this.staffForm = this.formBuilder.group({
-          staffTitle : '',
-          notes : '',
-          recordNumber:null,
-        });
-        this.competencyForm = this.formBuilder.group({
-          competencyTitle : '',
-          mandatory : '',
-          recordNumber:null,
-        });
-      }
-      handleOkTop() {
-        this.generatePdf();
-        this.tryDoctype = ""
-        this.pdfTitle = ""
-      }
-      handleCancelTop(): void {
-        this.drawerVisible = false;
-        this.pdfTitle = ""
-      }
-      generatePdf(){
-        this.drawerVisible = true;
-        
-        this.loading = true;
-        
-        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [NAME]) AS Field1,[Name] as Field2, ServiceOutletID as Field3, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Field4 FROM CSTDAOutlets WHERE "+this.whereString+" ORDER BY [NAME]";
-        
-        const headerDict = {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        }
-        
-        const requestOptions = {
-          headers: new HttpHeaders(headerDict)
-        };
-        
-        const data = {
-          "template": { "_id": "0RYYxAkMCftBE9jc" },
-          "options": {
-            "reports": { "save": false },
-            "txtTitle": "Center/Facility/Locations List",
-            "sql": fQuery,
-            "userid":this.tocken.user,
-            "head1" : "Sr#",
-            "head2" : "Title",
-            "head3" : "Service",
-            "head4" : "Address"
-          }
-        }
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-        .subscribe((blob: any) => {
-          let _blob: Blob = blob;
-          let fileURL = URL.createObjectURL(_blob);
-          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-          this.loading = false;
-        }, err => {
-          console.log(err);
-          this.loading = false;
-          this.ModalS.error({
-            nzTitle: 'TRACCS',
-            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-            nzOnOk: () => {
-              this.drawerVisible = false;
-            },
+          var checkedcompetency = this.checkedList;
+            checkedcompetency.forEach( (element) => {
+              this.timeS.postcenterlocationcompetency({
+                competencyValue:element,
+                notes:this.competencyGroup.value.notes,
+                personID:this.center_perosn_id,
+                }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  if(data)
+                  {
+                    insertOne = true;
+                  }
+                  if(insertOne){
+                    this.globalS.sToast('Success', 'Competency Added');
+                    this.timeS.getcenterlocationcompetency(this.center_perosn_id);
+                  }
+                  this.handleCompCancel();
+              })
           });
-        });
-        this.loading = true;
-        this.tryDoctype = "";
-        this.pdfTitle = "";
+          
+        }else{
+          
+        }
       }
-    }
+      trueString(data: any): string{
+        return data ? '1': '0';
+      }
+      
+      isChecked(data: string): boolean{
+        return '1' == data ? true : false;
+      }
+      
+      loadData(){
+        
+        this.jurisdiction = [{'id':'13','name':'STATE'},{'id':'93','name':'FEDERAL'}];
+        
+        this.agencySector = [{'id':'1','name':'Commonwealth Government'},{'id':'2','name':'State Territory Government'},{'id':'3','name':'Local Government'},{'id':'4','name':'Income Tax Exempt Charity'},{'id':'5','name':'Non-Income Tax Exempt'}];
+        
+        this.serviceType  = ['1.01-LARGE RESIDENTIAL/INSTITUTION (>20 PEOPLE) - 24 HOUR CARE','1.014-ADDITIONAL ACCOMMODATION SUPPORT – LARGE RESIDENTIAL/INSTITUTION (>20 PLACES)','1.02-SMALL RESIDENTIAL/INSTITUTION (7-20 PEOPLE) - 24 HOUR CARE','1.024-ADDITIONAL ACCOMMODATION SUPPORT – SMALL RESIDENTIAL/INSTITUTION (7-20 PLACES)','1.03-HOSTELS - GENERALLY NOT 24 HOUR CARE','1.041-GROUP HOME (<7 PLACES)','1.042-GROUP HOME (<7 PLACES) – NO DIRECT FINANCIAL CONTROL','1.044-ADDITIONAL ACCOMMODATION SUPPORT – GROUP HOME (<7 PLACES)','1.05-ATTENDANT CARE/PERSONAL CARE','1.06-IN-HOME ACCOMMODATION SUPPORT','1.07-ALTERNATIVE FAMILY PLACEMENT','1.081-ACCOMMODATION PROVIDED SO THAT INDIVIDUALS CAN ACCESS SPECIALIST SERVICES OR FURTHER EDUCATION','1.082-EMERGENCY OR CRISIS ACCOMMODATION SUPPORT (E.G. FOLLOWING THE DEATH OF A PARENT OR CARER)','1.083-HOUSES OR FLATS FOR HOLIDAY ACCOMMODATION','2.01-THERAPY SUPPORT FOR INDIVIDUALS','2.02-EARLY CHILDHOOD INTERVENTION','2.021-EARLY INTERVENTION','2.03-BEHAVIOUR/SPECIALIST INTERVENTION','2.04-COUNSELLING (INDIVIDUAL/FAMILY/GROUP)','2.05-REGIONAL RESOURCE AND SUPPORT TEAMS','2.061-PROGRAM SUPPORTS FACILITATION','2.062-CASE MANAGEMENT','2.063-LOCAL AREA COORDINATION','2.064-COMMUNITY DEVELOPMENT','2.066-SELF DIRECTED SUPPORT-MANAGEMENT','2.067-SELF DIRECTED SUPPORT-ESTABLISHMENT','2.071-OTHER COMMUNITY SUPPORT','2.072-OTHER COMMUNITY SUPPORT','2.073-OTHER COMMUNITY SUPPORT']
+        this.fundTypes    = ['Block Funded','Both','Individually Funded','N/A'];
+        
+        let arr = [];
+        for(let i=1;i<=90;i++)
+        {
+          arr.push(i);
+        }
+        this.numbers = arr;      
+        this.loading = true;
+        this.menuS.getlistcenterFacilityLoc(this.check).subscribe(data => {
+          this.tableData = data;
+          this.loading = false;
+          this.cd.detectChanges();
+        });
+        
+        let branch = "SELECT RecordNumber, Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain =  'BRANCHES' ORDER BY Description";
+        this.listS.getlist(branch).subscribe(data => {
+          this.branches = data;
+          this.loading = false;
+        });
+        
+        let compet = "SELECT Description from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+        
+        this.listS.getlist(compet).subscribe(data => {
+          this.competencyList = data;
+          this.loading = false;
+        });
+        let cat    = "SELECT DESCRIPTION FROM DATADOMAINS WHERE  ISNULL(DataDomains.DeletedRecord, 0) = 0 AND DOMAIN = 'STAFFADMINCAT'";
+        this.listS.getlist(cat).subscribe(data => {
+          this.categoryList = data;
+          this.loading = false;
+        });    
+      }
+      staffDetails(person_id: any = this.center_perosn_id) {
+        this.cd.reattach();
+        this.loading = true;
+        forkJoin([
+          this.timeS.getcenterLocationincludedstaff(person_id),
+          this.timeS.getcenterlocationexcludedstaff(person_id),
+          this.listS.getcenterlocationstaff(),
+          this.timeS.getcenterlocationcompetency(person_id)
+        ]).subscribe(staff => {
+          this.loading = false;
+          this.includedStaff  = staff[0];
+          this.excludedStaff  = staff[1];
+          this.listStaff      = staff[2];
+          this.competencies   = staff[3];
+          this.cd.markForCheck();
+        });
+      }
     
+      staffDetlete(stafftype:number,data:any){
+        this.timeS.deletecenterlocationstaff(data.recordNumber).pipe(
+          takeUntil(this.unsubscribe)).subscribe(data => {
+            if(data){
+              (stafftype == 1) ? this.loadApprovedStaff() : this.loadExcludedStaff();
+              this.globalS.sToast('Success','Staff Deleted')
+            }
+          })
+        }
+        editCompetencyModal(data:any){
+          this.addOrEdit = 1;
+          this.competencyGroup.patchValue({
+            competencValue : data.competency,
+            mandatory : data.mandatory,
+            recordNumber:data.recordNumber,
+          })
+          this.competencymodal = true;
+        }
+        deleteCompetency(){
+          
+        }
+        fetchAll(e){
+          if(e.target.checked){
+            this.whereString = "";
+            this.loadData();
+          }else{
+            this.whereString = " Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
+            this.loadData();
+          }
+        }
+        delete(data: any) { 
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteCenterFacilityLoclist(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        }
+        active(data:any){
+          const group = this.inputForm;
+          this.menuS.activateCenterFacitlityLoclist(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });      
+        }
+        
+        onCheckboxChange(option, event) {
+          if(event.target.checked){
+            this.checkedList.push(option.description);
+          } else {
+            this.checkedList = this.checkedList.filter(m=>m!= option.description)
+          }
+        }
+        onCheckboxUnapprovedChange(option, event) {
+          if(event.target.checked){
+            this.checkedListExcluded.push(option);
+          } else {
+            this.checkedListExcluded = this.checkedListExcluded.filter(m=>m!= option)
+          }
+        }
+        onCheckboxapprovedChange(option, event)
+        {
+          if(event.target.checked){
+            this.checkedListApproved.push(option);
+          } else {
+            this.checkedListApproved = this.checkedListApproved.filter(m=>m!= option)
+          }
+        }
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            type: '',
+            outletid:0,
+            cstdaoutlet:false,
+            dsci:false,
+            name:'',
+            branch:'',
+            adress:'',
+            sla:'',
+            postcode:'',
+            subrub:'',
+            places:'',
+            cat:'',
+            category:'',
+            unaprstaff:'',
+            anualhours:'',
+            serviceUsers:'',
+            minUserWeek:'',
+            maxUserWeek:'',
+            minStaffHour:'',
+            maxStaffHour:'',
+            aprstaff:'',
+            competences:'',
+            agencysector:'',
+            servicetype:'',
+            fundingjunc:'',
+            fundingtype:'',
+            sheetalert:'',
+            hour:'',
+            week:'',
+            day:'',
+            weekPatern:false,
+            dayPatern:false,
+            hourPatern:true,
+            description: '',
+            asset_no:'',
+            serial_no:'',
+            purchase_am:'',
+            purchase_date:'',
+            last_service:'',
+            lockloct:'',
+            lockcode:'',
+            disposal:'',
+            notes:'',
+            glRevene:'',
+            glCost:'',
+            gloveride:false,
+            centerName:'',
+            addrLine1:'',
+            addrLine2:'',
+            Phone:'',
+            startHour:'',
+            finishHour:'',
+            earlyStart:'',
+            lateStart:'',
+            earlyFinish:'',
+            lateFinish:'',
+            overstay:'',
+            understay:'',
+            t2earlyStart:'',
+            t2lateStart:'',
+            t2earlyFinish:'',
+            t2lateFinish:'',
+            t2overstay:'',
+            t2understay:'',
+            recordNumber:null
+          });
+          this.staffForm = this.formBuilder.group({
+            staffTitle : '',
+            notes : '',
+            recordNumber:null,
+          });
+          this.competencyGroup = this.formBuilder.group({
+            competencyValue: '',
+            mandatory: false,
+            notes: '',
+            personID: '',
+            recordNumber: 0
+        })
+        }
+        handleOkTop() {
+          this.generatePdf();
+          this.tryDoctype = ""
+          this.pdfTitle = ""
+        }
+        handleCancelTop(): void {
+          this.drawerVisible = false;
+          this.pdfTitle = ""
+        }
+        generatePdf(){
+          this.drawerVisible = true;
+          
+          this.loading = true;
+          
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [NAME]) AS Field1,[Name] as Field2, ServiceOutletID as Field3, AddressLine1 + CASE WHEN Suburb is null Then ' ' ELSE ' ' + Suburb END as Field4 FROM CSTDAOutlets WHERE "+this.whereString+" ORDER BY [NAME]";
+          
+          const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+          
+          const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+          };
+          
+          const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+              "reports": { "save": false },
+              "txtTitle": "Center/Facility/Locations List",
+              "sql": fQuery,
+              "userid":this.tocken.user,
+              "head1" : "Sr#",
+              "head2" : "Title",
+              "head3" : "Service",
+              "head4" : "Address"
+            }
+          }
+          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+          .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+          }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                this.drawerVisible = false;
+              },
+            });
+          });
+          this.loading = true;
+          this.tryDoctype = "";
+          this.pdfTitle = "";
+        }
+      }
+      

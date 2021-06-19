@@ -16,6 +16,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import * as _ from 'lodash';
 
 
+
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { NzStepsModule, NzStepComponent } from 'ng-zorro-antd/steps';
 
@@ -38,6 +39,9 @@ import { SpreadSheetsModule } from '@grapecity/spread-sheets-angular';
 import * as GC from "@grapecity/spread-sheets";
 import { NZ_ICONS, NZ_ICON_DEFAULT_TWOTONE_COLOR } from 'ng-zorro-antd';
 import './styles.css';
+import { ElementSchemaRegistry } from '@angular/compiler';
+import { interval } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 interface AddTimesheetModalInterface {
     index: number,
@@ -141,12 +145,12 @@ export class RostersAdmin implements AfterViewInit  {
       float: 'left'
     };  
    
-    
-
+   
 timesheets: Array<any> = [];
 timesheetsGroup: Array<any> = [];   
 defaultProgram: any = null;
 defaultActivity: any = null;
+selectedActivity: any = null;
 defaultCategory: any = null;
 Timesheet_label:any="Add Timesheet";
 payTotal:any;
@@ -231,7 +235,7 @@ masterCycle:string="CYCLE 1";
     ClearMultiShiftModal:boolean=false;
     SetMultiShiftModal:boolean=false;
     deleteRosterModal:boolean=false;
-
+    isTravel:boolean=false;
     add_UnAllocated:boolean=false;
 
  DayOfWeek(n:number): String{
@@ -249,6 +253,8 @@ masterCycle:string="CYCLE 1";
     return day;
   
   }
+  
+
   listChange(event: any) {
 
     if (event == null) {
@@ -259,6 +265,9 @@ masterCycle:string="CYCLE 1";
     }
 
       this.selectedCarer=event.accountNo;
+      this.bookingForm.patchValue({
+            staffCode:event.accountNo
+      });
 
     this.user = {
         code: event.accountNo,
@@ -308,52 +317,54 @@ doneBooking(){
     //this.fixStartTimeDefault();
         let date=this.date;
         let time = {startTime:this.defaultStartTime, endTime:this.defaultEndTime, duration:0};
-        const bForm =  this.bookingForm.value;
-        const tsheet:any = {
-            date: date,
-            time : time,
-            analysisCode:'',
-            bill:{rate:0,quantity:"0", unit:"0", tax:0},
-            pay:{rate:0,quantity:"0", unit:"0"},
-            haccType:"",
-            program:bForm.program,
-            serviceActivity:bForm.serviceActivity,
-            payType:'N/A',
-            serviceDscr:'N/A',
-            serviceType:this.serviceType,
-            recordNo:0,
-            staffCode: this.viewType=='Staff' ? this.selected : bForm.staffCode
+        const tsheet =  this.bookingForm.value;
+        // const tsheet:any = {
+        //     date: date,
+        //     time : time,
+        //     analysisCode:'',
+        //     bill:bForm.bill,
+        //     pay:bForm.pay,
+        //     haccType:"",
+        //     program:bForm.program,
+        //     serviceActivity:bForm.serviceActivity.activity,
+        //     payType:'N/A',
+        //     serviceDscr: bForm.serviceActivity.service_Description,
+        //     serviceType:this.serviceType,
+        //     recordNo:0,
+        //     staffCode: this.viewType=='Staff' ? this.selected :  bForm.staffCode
 
-        }
+
+        // }
         let clientCode ='';
         let carerCode = '';
         if (this.viewType=="Staff"){
-            clientCode = bForm.recipientCode;
+            clientCode = tsheet.recipientCode;
             carerCode= this.selected;
         }
         
         if (this.viewType=="Recipient"){
-            carerCode = bForm.staffCode
+            carerCode = tsheet.staffCode
             clientCode=this.recipient.data
         }
+       
                 
         if ( this.serviceType==1)
             carerCode = "BOOKED"
 
-        var durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));
-        
-        if(typeof this.date === 'string'){
-            this.date = parseISO(this.datepipe.transform(this.date, 'yyyy-MM-dd'));
-        }
+        var durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));        
+        this.date = parseISO(this.datepipe.transform(this.date, 'yyyy-MM-dd'));
+        tsheet.date=this.date;
+
+        tsheet.recordNo=0;
         let inputs = {
             anal: tsheet.analysisCode || "",
-            billQty: tsheet.bill.quantity || 0,
+            billQty: (tsheet.bill.quantity==null || tsheet.bill.quantity==0) ? (tsheet.bill.unit=='HOUR'? durationObject.duration/12 : 1):0 || 0,
             billTo: clientCode,
             billUnit: tsheet.bill.unit || 0,
             blockNo: durationObject.blockNo,
             carerCode: this.selected.option == 0 ? this.selected.data : carerCode,
             clientCode: this.selected.option == 0 ? clientCode : this.selected.data,
-            costQty: tsheet.pay.quantity || 0,
+            costQty: (tsheet.pay.quantity==null || tsheet.pay.quantity==0)? (tsheet.pay.unit=='HOUR'? durationObject.duration/12 : 1 ):0 || 0,
             costUnit: tsheet.pay.unit || 0,
             date: format(tsheet.date,'yyyy/MM/dd'),
             dayno: parseInt(format(tsheet.date, 'd')),
@@ -362,23 +373,23 @@ doneBooking(){
             haccType: tsheet.haccType || "",
             monthNo: parseInt(format(tsheet.date, 'M')),
             program: tsheet.program,
-            serviceDescription:  tsheet.serviceDscr || "",
-            serviceSetting: null || "",
-            serviceType: tsheet.serviceActivity || "",
+            serviceDescription:  tsheet.serviceActivity.service_Description || "",
+            serviceSetting: tsheet.serviceSetting || "",
+            serviceType: tsheet.serviceActivity.activity || "",
             paytype: tsheet.payType,
             // serviceType: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
             staffPosition: null || "",
-            startTime: format(tsheet.time.startTime,'HH:mm'),
+            startTime: format(time.startTime,'HH:mm'),
             status: "1",
             taxPercent: tsheet.bill.tax || 0,
-            transferred: 0,
-            // type: this.activity_value,
+            transferred: 0,            
             type: this.serviceType,
             unitBillRate:( tsheet.bill.rate || 0),
             unitPayRate: tsheet.pay.rate || 0,
             yearNo: parseInt(format(tsheet.date, 'yyyy')),
             serviceTypePortal: tsheet.serviceType,
-            recordNo: tsheet.recordNo
+            recordNo: tsheet.recordNo,
+            date_Timesheet: this.date_Timesheet
         };
         
       
@@ -392,24 +403,116 @@ doneBooking(){
             });
         
            // this.resetBookingFormModal()
-       
-    
-
     
 }
 
-start_adding_Booking(bCase:any){
-   // this.resetBookingFormModal();
-    this.booking_case=bCase;
-    if (this.viewType=="Staff"){
-        this.select_RecipientModal=true;
-        
+RecordStaffAdmin(){
+    this.booking_case=6;
+    this.isTravel=false;
+    this.serviceType ="ADMINISTRATION";
+    // this.rosterForm.patchValue({
+    //     serviceType:"ADMINISTRATION"
+    // });
+  
+        if (this.viewType=='Staff'){
+            this.bookingForm.patchValue({
+                recipientCode:"!INTERNAL"
+            });
+        }else{
+            this.bookingForm.patchValue({
+                staffCode:"!INTERNAL"
+            });
+        }
+
+        this.addBookingModel=true;
+        this.addBooking(0);
+    
+}
+setUnavailablity(){
+
+    this.booking_case=7;
+    this.serviceType ="UNAVAILABLE";
+    this.rosterGroup="UNAVAILABLE";
+ 
+  
+        if (this.viewType=='Staff'){
+            this.bookingForm.patchValue({
+                recipientCode:"!INTERNAL",
+                program:"!INTERNAL",
+                serviceActivity: {
+                    activity:"UNAVAILABLE",
+                    service_Description:"UNAVAILABLE"
+                    
+                }
+            });
+        }        
+        this.addBooking(0);
+    
+}
+
+setTravel(val:number){
+
+    this.isTravel=false;
+    this.serviceType="TRAVEL TIME"
+    // this.rosterForm.patchValue({
+    //     serviceType:"TRAVEL TIME"
+    // });
+    if (val==1){
+            if (this.viewType=='Staff')
+                this.select_RecipientModal=true;
+            else
+                this.select_StaffModal=true;
     }else{
-        if (this.booking_case==2)
-            this.booking_case=3;
+      
+        if (this.viewType=='Staff'){
+            this.bookingForm.patchValue({
+                recipientCode:"!INTERNAL"
+            });
+        }else{
+            this.bookingForm.patchValue({
+                staffCode:"!INTERNAL"
+            });
+        }
+
         this.addBookingModel=true;
         this.addBooking(0);
     }
+}
+start_adding_Booking(bCase:any){
+    this.resetBookingFormModal();
+    this.booking_case=bCase;
+    this.isTravel=false;
+    if (this.booking_case==2){
+        this.serviceType="ADMISSION";
+        // this.rosterForm.patchValue({
+        //     serviceType:"ADMISSION"
+        // });
+    }  else if (this.booking_case==5){
+        //this.isTravelTimeChargeable=true;
+        this.isTravel=true;
+        this.serviceType="TRAVEL TIME";
+        // this.rosterForm.patchValue({            
+        //     serviceType:"TRAVEL TIME"
+        // });
+        return;
+    }else{
+        //  this.rosterForm.patchValue({
+        //     serviceType:""
+        // });  
+        this.serviceType="";
+    }
+    if (this.viewType=="Staff"){
+        this.select_RecipientModal=true;     
+        
+    }else {
+        
+        if (this.booking_case==2){
+            this.booking_case=3;          
+        }
+        this.addBookingModel=true;
+        this.addBooking(0);
+    }
+
     
 }
 
@@ -459,19 +562,24 @@ addBooking(type:any){
     this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
    // this.bookingForm.patchValue({date:date})
 
-   
-    let FetchCode = "";
+   if (this.booking_case==7){
+       this.type_to_add=13;
+        this.doneBooking();
+        return;
+   }
+       
+    
     //this.date = parseISO(new Date(date).toISOString());
     const { recipientCode, debtor, serviceType, isMultipleRecipient } = this.bookingForm.value;
     
     if (this.viewType=="Staff")
-        FetchCode=recipientCode;
+        this.FetchCode= recipientCode;
     else
-        FetchCode = this.selected.data;
+    this.FetchCode = this.selected.data;
     
      
 
-        this.GETPROGRAMS( FetchCode).subscribe(d => {
+        this.GETPROGRAMS( this.FetchCode).subscribe(d => {
         this.programActivityList=d;
         this.programsList = d.map(x => x.progName);
         //remove duplicate values
@@ -1985,7 +2093,7 @@ ClearMultishift(){
         //this.date = parseISO(new Date(date).toISOString());
         
     }
-   
+    mySub: Subscription;
     currentDate: string;
 
     dateStream = new Subject<any>();
@@ -2019,7 +2127,9 @@ ClearMultishift(){
         private sharedS: ShareService,
       
     ) {
-        
+        // this.mySub = interval(2000).subscribe((func => {
+        //     this.onIdSelect();
+        //   }))
         this.currentDate = format(new Date(), 'yyyy/MM/dd');
 
         this.dateStream.pipe(
@@ -2097,6 +2207,8 @@ ClearMultishift(){
         
     }
    
+    
+ 
     
       
     whatProcess = PROCESS.ADD;
@@ -2257,43 +2369,39 @@ reload(reload: boolean){
 
      DETERMINE_SERVICE_TYPE_NUMBER(index: string): number{
         // ALLOWANCE NON CHARGEABLE 
-        if(index == 'ALLOWANCE NON-CHARGEABLE' || index == 'ALLOWANCE CHARGEABLE'){
-            return 9;
-        }
+        
+        if(index == "ONEONONE")
+                 return 2
+        else if(index ==  "ADMINISTRATION"){
+                 if (this.defaultActivity == "UNAVAILABLE" )
+                     return 13
+                 else
+                     return 6                 
+                 }
+        else if(index ==  "ADMISSION")
+                 return 7
+        else if(index ==  "ALLOWANCE")
+                 return 9;
+        else if (index ==   "CENTREBASED")
+                 return 11;
+         else if (index ==  "GROUPACTIVITY")
+                 return 12;
+         else if (index ==  "RECPTABSENCE")
+                 return 4;
+         else if (index ==  "SLEEPOVER")
+                 return 8;
+         else if (index ==  "TRANSPORT")
+                 return 10;
+         else if (index ==  "TRAVELTIME")
+                 return 5;
+         else if (index ==  "UNAVAILABLE")
+                 return 13;
+         else if (index ==  "ITEM")
+                 return 14;
+        else
+                return 2;
 
-        // ADMINISTRATION
-        if(index == 'ADMINISTRATION'){            
-            return 6;
-        }
-
-        // CASE MANAGEMENT
-        if(index == 'CASE MANAGEMENT'){
-            return 7;
-        }
-
-        if(index == 'ADMISSION'){
-            return 7;
-        }
-
-        // ITEM
-        if(index == 'ITEM'){
-            return 15;
-        }
-
-        // SLEEPOVER
-        if(index == 'SLEEPOVER'){
-
-            return 8;
-        }
-
-        // TRAVEL TIME
-        if(index == 'TRAVEL TIME'){
-
-            return 5;
-        }
-
-        //SERVICE
-        return 2;
+                 
      }
 
   
@@ -2340,6 +2448,9 @@ reload(reload: boolean){
         }
 
         if(this.viewType == 'Recipient'){
+            this.rosterForm.patchValue ({recipientCode:data.data});
+            this.bookingForm.patchValue ({recipientCode:data.data});
+
             this.clientS.getagencydefinedgroup(this.selected.data)
                 .subscribe(data => {
                     this.agencyDefinedGroup = data.data;
@@ -2602,9 +2713,10 @@ reload(reload: boolean){
         let sql;
         if (!type) return EMPTY;
         const { isMultipleRecipient } = this.rosterForm.value;
-        if (type === 'ADMINISTRATION' || type === 'ALLOWANCE NON-CHARGEABLE' || type === 'ITEM' || (type == 'SERVICE' && !isMultipleRecipient)) {
+        if (type =='!INTERNAL' || type === 'ADMINISTRATION' || type === 'ALLOWANCE NON-CHARGEABLE' || type === 'ITEM' || (type == 'SERVICE' && !isMultipleRecipient)) {
             sql = `SELECT Distinct [Name] AS ProgName FROM HumanResourceTypes WHERE [group] = 'PROGRAMS' AND ISNULL(UserYesNo3,0) = 0 AND (EndDate Is Null OR EndDate >=  '${this.currentDate}') ORDER BY [ProgName]`;
-        } else {
+        }         
+        else {
             sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
                 INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
                 WHERE Recipients.AccountNo = '${type}' AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]`
@@ -2643,54 +2755,185 @@ reload(reload: boolean){
 
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
-        const { serviceType } = this.rosterForm.value;
+        const { serviceType, date, time } = this.rosterForm.value;
 
-        //console.log("arshad:"+ this.selected.option)
-
+        var _date = date;
         if (!program) return EMPTY;
-        console.log(this.rosterForm.value)
 
-        
         if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
-            // const { recipientCode, debtor } = this.rosterForm.value;
+
+            if(typeof date === 'string'){
+                _date = parseISO(_date);
+            }
+
             return this.listS.getserviceactivityall({
-                recipient: this.GETRECIPIENT(this.selected.option),
                 program,
-                ForceAll: this.ForceAll,
+                recipient: this.GETRECIPIENT(this.selected.option),
                 mainGroup: serviceType,
-                subGroup: this.subGroup,
                 viewType: this.viewType,
-                Date:this.RosterDate,
-                StartTime:this.StartTime,
-                EndTime : this.EndTime,
-                Duration: this.Duration
-
-
+                date: format(_date, 'yyyy/MM/dd'),
+                startTime: format(this.defaultStartTime,'hh:mm'),
+                endTime: format(this.defaultEndTime,'hh:mm'),
+                duration: this.durationObject?.duration
             });
         }
         else {
-            //  let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
-            //      WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
+            let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
+                WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
             
-         let sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
-                (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
-                (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
-                 WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
-                 WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
-                 WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
-                 WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
-                ELSE I.Amount END )
-                ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE
-                FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
-                INNER JOIN Recipients C ON C.AccountNO = 'ABRAHIM NORMIE'
-                INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
-                WHERE SO.ServiceProgram = '${ program}' 
-                AND EXISTS
-                (SELECT Title
-                FROM ItemTypes ITM
-                WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = 'ADMISSION'
-                AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
-                ORDER BY [Service Type]`;
+            // let sql = `SELECT DISTINCT [Service Type] AS activity FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            //     WHERE SO.ServiceProgram = '${ program}' AND EXISTS (SELECT Title FROM ItemTypes ITM WHERE Title = SO.[Service Type] AND 
+            //     ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}')) ORDER BY [Service Type]`;
+            return this.listS.getlist(sql);
+        }
+    }
+
+    GETSERVICEACTIVITY2(program: any): Observable<any> {
+
+        let serviceType=this.serviceType;
+        const { recipientCode }  = this.bookingForm.value;
+
+        if (recipientCode!="" && recipientCode!=null){
+            this.FetchCode=recipientCode;
+          }
+        let sql ="";
+        if (!program) return EMPTY;
+       // console.log(this.rosterForm.value)
+
+   
+        
+       if (serviceType == 'ADMINISTRATION' ){
+        // const { recipientCode, debtor } = this.rosterForm.value;
+        sql =` SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,     
+              I.Amount AS BILLRATE,
+              I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,
+              (select case when UseAwards=1 then 'AWARD' ELSE '' END from registratioconvert(varchar,convert(datetime,PayPeriodEndDate),111)n) as Service_Description
+              ,HACCType,c.AgencyDefinedGroup as Anal,(select top 1  as PayPeriodEndDate from SysTable) as date_Timesheet			
+              FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID        
+              INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+              WHERE SO.ServiceProgram = '${program}'  and I.[Status] = 'NONATTRIBUTABLE'
+              AND EXISTS
+              (SELECT Title
+              FROM ItemTypes ITM
+              WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = 'ADMINISTRATION'
+              AND ITM.[Status] = 'NONATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+              ORDER BY [Service Type]`;
+
+    }else if (serviceType == 'ADMISSION' || serviceType =='ALLOWANCE NON-CHARGEABLE' || serviceType == 'ITEM'  || serviceType == 'SERVICE') {
+            // const { recipientCode, debtor } = this.rosterForm.value;
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END)
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${ program}' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = '${serviceType}'
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`;
+    
+        }else if (serviceType == 'TRAVEL TIME' || serviceType == 'TRAVELTIME') {
+
+            sql=` SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${ program}'
+			AND I.[RosterGroup] = 'TRAVELTIME' AND (I.EndDate Is Null OR I.EndDate >='${this.currentDate}') `
+
+            
+
+         }else if (this.booking_case==4){
+
+           
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO 
+            INNER JOIN Recipients C ON C.UNIQUEID=SO.PERSONID AND C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${program}' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] 
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`;
+        }
+         else {
+           
+
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${program}' AND [SO].[ServiceStatus] = 'ACTIVE' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] 
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`; 
+
+            // return this.listS.getserviceactivityall({
+            //     recipient: this.GETRECIPIENT(this.selected.option),
+            //     program,
+            //     ForceAll: this.ForceAll,
+            //     mainGroup: serviceType,
+            //     subGroup: this.subGroup,
+            //     viewType: this.viewType,
+            //     Date:this.RosterDate,
+            //     StartTime:this.StartTime,
+            //     EndTime : this.EndTime,
+            //     Duration: this.Duration
+
+
+            // });
+            
+                }
 
             return this.listS.getlist(sql);
                 //  return this.listS.getserviceprogramactivity({                  
@@ -2704,8 +2947,13 @@ reload(reload: boolean){
             //     WHERE SO.ServiceProgram = '${ program}' AND EXISTS (SELECT Title FROM ItemTypes ITM WHERE Title = SO.[Service Type] AND 
             //     ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}')) ORDER BY [Service Type]`;
             //return this.listS.getlist(sql);
-        }
+        
     };
+
+    GETSERVICEGROUP(): Observable<any>{
+        
+        return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'ACTIVITYGROUPS' AND Description Is NOT Null AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY DESCRIPTION`);
+    }
 
     GETANALYSISCODE(): Observable<any>{
         return this.listS.getserviceregion();
@@ -2762,7 +3010,7 @@ reload(reload: boolean){
     }
 
     selected: any = null;
-    
+    FetchCode = "";
     payPeriodEndDate: Date;
     unitsArr: Array<string> = ['HOUR', 'SERVICE'];
 
@@ -2819,10 +3067,11 @@ reload(reload: boolean){
     programsList: Array<any> = [];
     serviceActivityList: Array<any>;
     payTypeList: Array<any> = [];
-    analysisCodeList: Array<any> = []
-    programActivityList:Array<any>=[]
-   
-    
+    analysisCodeList: Array<any> = [];
+    programActivityList:Array<any>=[];
+    ServiceGroups_list:Array<any>=[];
+    serviceSetting:string;
+    date_Timesheet:any;
     clearLowerLevelInputs() {
 
         this.rosterForm.patchValue({
@@ -3183,13 +3432,13 @@ this.bookingForm.get('program').valueChanges.pipe(
                 this.bookingForm.patchValue({
                     serviceActivity: null
                 });
-                return   this.GETSERVICEACTIVITY(x);                
+                return   this.GETSERVICEACTIVITY2(x);                
                                         
                 
             })
         ).subscribe((d: Array<any>) => {
 
-            this.serviceActivityList = d.map(x => x.activity);
+            this.serviceActivityList = d;//d.map(x => x.activity);
          
             if(this.whatProcess == PROCESS.UPDATE){
                 setTimeout(() => {
@@ -3218,11 +3467,14 @@ this.bookingForm.get('program').valueChanges.pipe(
                 this.rosterGroup = '';
                 return EMPTY;
             };
-           
-            return forkJoin(
-                this.GETROSTERGROUP(x), 
-                this.GETPAYTYPE(x),
-                this.GETANALYSISCODE()
+            this.selectedActivity=x;
+
+            return forkJoin(                
+                this.GETROSTERGROUP(x.activity), 
+                this.GETPAYTYPE(x.activity),
+                this.GETANALYSISCODE(),
+                this.GETSERVICEGROUP()
+                                    
                                     
             )
             
@@ -3236,10 +3488,28 @@ this.bookingForm.get('program').valueChanges.pipe(
         this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
         this.payTypeList = d[1];
         this.analysisCodeList = d[2];
-        this.bookingForm.patchValue({
-            haccType: this.rosterGroup
-        })
+        this.date_Timesheet=this.selectedActivity.date_Timesheet;
 
+        this.bookingForm.patchValue({
+           
+            bill:{
+            unit: this.selectedActivity.unitType,
+            rate: this.selectedActivity.billrate,            
+            tax: this.selectedActivity.taxrate,
+            
+            },
+            pay:{
+                unit: this.selectedActivity.unitType,
+                rate: this.selectedActivity.payrate,
+                tax: this.selectedActivity.taxrate
+            },
+            haccType: this.selectedActivity.haccType,
+            analysisCode: this.selectedActivity.anal,
+            
+        })
+        if (this.activity_value==12){
+            this.ServiceGroups_list = d[3].map(x => x.description);;
+        }
       
     }); 
     //     this.bookingForm.get('program').valueChanges.pipe(
@@ -3328,7 +3598,7 @@ this.bookingForm.get('program').valueChanges.pipe(
             this.activity_value = 10;
         }
 
-        if (roster === 'TRAVEL TIME') {
+        if (roster === 'TRAVEL TIME' || roster ==='TRAVELTIME') {
             this.activity_value = 5;
         }
     }
@@ -3500,6 +3770,9 @@ this.bookingForm.get('program').valueChanges.pipe(
         if (this.viewType=="Staff" && this.current == 1 && this.booking_case>=4){
             this.current -= 1;
         }
+        if ( this.booking_case==5){
+            this.current -= 2;
+        }
     }
 
     next_tab(): void {
@@ -3516,7 +3789,10 @@ this.bookingForm.get('program').valueChanges.pipe(
         if (this.viewType=="Staff" && this.current == 1 && this.booking_case>=4){
             this.current += 1;
         }
-
+        if ( this.booking_case==5){
+            this.current += 2;
+            
+        }
     }
     
     DEFAULT_NUMERIC(data: any): number{
@@ -3541,7 +3817,7 @@ this.bookingForm.get('program').valueChanges.pipe(
 
     get showDone(){
        
-            return this.current >= 4 ||    this.booking_case==2 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3) ;
+            return this.current >= 2 ||    this.booking_case==2 ||  this.booking_case>=5 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3) ;
     }
     get isFormValid(){
         return  this.rosterForm.valid;
@@ -3579,7 +3855,7 @@ this.bookingForm.get('program').valueChanges.pipe(
             monthNo: parseInt(format(tsheet.date, 'M')),
             program: tsheet.program,
             serviceDescription:  tsheet.payType || "",
-            serviceSetting: null || "",
+            serviceSetting: this.serviceSetting || "",
             serviceType: tsheet.serviceActivity || "",
             paytype: tsheet.payType.paytype,
             // serviceType: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),

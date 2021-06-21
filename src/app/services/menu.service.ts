@@ -42,9 +42,21 @@ export class MenuService {
         GetlistcaseManagement(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/caseManagement/${is_where}`)
         }
+
+        
+        /**
+         *  Staff Admin Activities
+        */
+        
         GetlistStaffAdminActivities(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/staffAdminActivities/${is_where}`)
         }
+        poststaffAdminActivities(data: any): Observable<any> {
+            return this.auth.post(`${menu}/staffAdminActivities/`, data)
+        }
+
+        /** */
+
         GetlistRecipientAbsenses(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/recipientAbsenses/${is_where}`)
         }

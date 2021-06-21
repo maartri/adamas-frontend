@@ -81,6 +81,8 @@ export class ItemsConsumablesComponent implements OnInit {
   addressTypes: any;
   contactTypes: any;
   timesteps: string[];
+  serviceoutIds: any;
+  emptyList: any[];
   
   constructor(
     private globalS: GlobalService,
@@ -109,7 +111,6 @@ export class ItemsConsumablesComponent implements OnInit {
     
     showAddModal() {
       this.title = "Add New Items/Consumables"
-      this.resetModal();
       this.inputForm.patchValue({
         mainGroup :'ITEM',
         subgroup  :'GENERAL',
@@ -321,7 +322,7 @@ export class ItemsConsumablesComponent implements OnInit {
         taUnderstayTH:taUnderstayTH,
         taNoWorkTH:taNoWorkTH,
         end_date:endDate,
-        recordNumber:recordNumber,
+        recnum:recordNumber,
     });
     }
     onIndexChange(index: number): void {
@@ -368,89 +369,7 @@ export class ItemsConsumablesComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      if(!this.isUpdate){
-        this.postLoading = true;
-        const group = this.inputForm;
-        
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let casuals           = group.get('casuals').value;
-        let exportfrompay     = group.get('exportfrompay').value;
-        let conflict          = group.get('conflict').value;
-        let day0              = group.get('day1').value;
-        let day1              = group.get('day2').value;
-        let day2              = group.get('day3').value;
-        let day3              = group.get('day4').value;
-        let day4              = group.get('day5').value;
-        let day5              = group.get('day6').value;
-        let day6              = group.get('day7').value;
-        
-        let values = status+"','"+process+"','"+code+"','"+description+"','"+type+"','"+payrate+"','"+unit+"','"+payid+"','"+mainGroup+"','"+subgroup+"','"+end;
-        let sqlz = "insert into itemtypes ([Status],[ProcessClassification],[Title],[billText],[RosterGroup],[Amount],[Unit],[AccountingIdentifier],[MainGroup],[MinorGroup],[EndDate]) values('"+values+"');select @@IDENTITY"; 
-        this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data){
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.postLoading = false;   
-            this.loading = false;       
-            this.handleCancel();
-            this.resetModal();
-          }
-          else{
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }
-        });
-      }
-      else{
-        this.postLoading = true;     
-        const group = this.inputForm;
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = "" ; //  (group.get('end').value == '') ? '' : this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let recordNumber      = group.get('recordNumber').value;
-        
-        let sql  = "Update itemtypes SET [Status]='"+ status + "',[ProcessClassification] = '"+ process + "',[Title] = '"+ code + "',[billText] = '"+ description+ "',[RosterGroup] = '"+ type + "',[Amount] = '"+ payrate + "',[Unit] = '"+ unit+ "',[AccountingIdentifier] = '"+ payid+ "',[MainGroup] = '"+ mainGroup + "',[MinorGroup] = '"+ subgroup + "' WHERE [Recnum] ='"+recordNumber+"'";
-        // console.log(sql);
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data){
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }else{
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }
-        });
-      }
+    
     }
     loadData(){
       this.loading = true;
@@ -478,6 +397,9 @@ export class ItemsConsumablesComponent implements OnInit {
     }
     populateDropdowns(): void {
 
+      let todayDate       = this.globalS.curreentDate();
+      
+      this.emptyList      = [];
       this.mainGroupList  = ['ITEM'];
       this.subGroupList   = ['GENERAL','NOT APPLICABLE']
       this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
@@ -492,8 +414,6 @@ export class ItemsConsumablesComponent implements OnInit {
                               "1":'QRCODE',
                               "2":'SIGNATURE',
                             };
-      
-      let todayDate       = this.globalS.curreentDate();
       
       let sql ="SELECT distinct Description from DataDomains Where  Domain = 'LIFECYCLEEVENTS'";
       this.loading = true;
@@ -532,6 +452,10 @@ export class ItemsConsumablesComponent implements OnInit {
       let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
       this.listS.getlist(prog).subscribe(data => {
         this.programz = data;
+      });
+      let seroutIds = "select distinct ServiceOutletID AS Description from CSTDAOutlets";
+      this.listS.getlist(seroutIds).subscribe(data => {
+        this.serviceoutIds = data;
       });
       this.timesteps = timeSteps;
       this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
@@ -651,7 +575,7 @@ export class ItemsConsumablesComponent implements OnInit {
         taOverstayTHWho:'',
         taNoWorkTHWho:'',
         branch:'',        
-        recordNumber:null
+        recnum:null
       });
     }
     handleOkTop() {

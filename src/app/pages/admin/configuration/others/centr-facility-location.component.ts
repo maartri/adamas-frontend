@@ -289,7 +289,10 @@ export class CentrFacilityLocationComponent implements OnInit {
           this.current = 0; 
         }
       }
-      if(this.current == 2 || this.current == 3){
+      if(this.current == 2){
+        this.staffDetails(this.center_perosn_id);
+      }
+      if(this.current == 3){
         if(this.center_perosn_id != '-1')
            this.staffDetails(this.center_perosn_id);
       }
@@ -368,8 +371,8 @@ export class CentrFacilityLocationComponent implements OnInit {
             this.center_perosn_id = data;
             this.postLoading = false;
             this.loading = false;
-            this.isUpdate = true;
-            this.isNewRecord = true;
+            this.isUpdate = false;
+            this.isNewRecord = false;
           }
         });
       }else{

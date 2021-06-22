@@ -2457,7 +2457,7 @@ stafftypeArr: Array<any> = constants.types;
             case 'btn-FORPT-DailyStaffHrs':
                 this.DailyStaffHrs(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                 break;
-            case 'btn-FORPT-ProgramActivitySpread':
+            case 'btn-FORPT-ProgramActivitySpread': 
                 this.ProgramReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                 break;
             case 'btn-FORPT-ProgramStaffUtilized':
@@ -8249,8 +8249,6 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         var fQuery = "SELECT H.[NAME], H.[TYPE], S.[SERVICE TYPE], S.SERVICESTATUS FROM HUMANRESOURCETYPES H INNER JOIN SERVICEOVERVIEW S ON CONVERT(VARCHAR(15),H.RECORDNUMBER) = S.PERSONID WHERE [GROUP] = 'PROGRAMS'  ";
         var lblcriteria;
 
-
-
         if (program != "") {
             this.s_ProgramSQL = " ([Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
@@ -10166,6 +10164,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 break;
         }
 
+
         var lblcriteria;
         
 
@@ -11637,8 +11636,21 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             fQuery = fQuery + join;
 
         }
-        fQuery = fQuery + "WHERE  ([Client Code] > '!MULTIPLE')  And (([Roster].[Type] IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] <> '!MULTIPLE')"
+        fQuery = fQuery + "WHERE  ([Client Code] > '!MULTIPLE')  "
+        //And (([Roster].[Type] IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] <> '!MULTIPLE')"
 
+        
+        if (this.inputForm.value.NotAllocated == true){
+            var notinclude = " 1,"
+        }else{var notinclude = " "}
+        if (this.inputForm.value.RecipientLeave == true){
+            fQuery = fQuery + " And (([Roster].[Type] IN ( "+ notinclude + " 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] <> '!MULTIPLE') "
+        }else{
+            fQuery = fQuery + " And (([Roster].[Type] IN ( "+ notinclude + " 2, 3, 5, 6, 7, 8, 10, 11, 12, 14)) And ([Client Code] <> '!MULTIPLE')) "
+        }
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
 
         var Title = "ACTIVITY GROUP REPORT";
         var Report_Definer = "";
@@ -12045,7 +12057,20 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             fQuery = fQuery + join;
 
         }
-        fQuery = fQuery + "WHERE ([Carer Code] > '!MULTIPLE')  And ( [Roster].[Type] In (1,2,5,6,7,8,10,11,12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') ) "
+        fQuery = fQuery + " WHERE ([Carer Code] > '!MULTIPLE')  "
+        
+
+        if (this.inputForm.value.NotAllocated == true){
+            var notinclude = " 1,"
+        }else{var notinclude = " "}
+        if (this.inputForm.value.allowances == true){
+            var allowances = " 9, "
+        }else{var allowances = " "}
+        fQuery = fQuery + "And ( [Roster].[Type] In ("+notinclude +" 2,5,6,7,8, "+allowances+" 10,11,12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') ) "
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
+
 
         var Title = "STAFF ACTIVITY REPORT";
         var Report_Definer = "";
@@ -12453,7 +12478,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         }
 
-        fQuery = fQuery + "WHERE ([Carer Code] <> '!MULTIPLE')  And [Roster].[Type] in (1, 6) "
+        fQuery = fQuery + "WHERE ([Carer Code] <> '!MULTIPLE')  "
+         
+        if (this.inputForm.value.NotAllocated == true){
+            fQuery = fQuery + " And [Roster].[Type] in (1, 6) "
+        }else{
+            fQuery = fQuery + " And [Roster].[Type] = 6 "
+        }
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }        
         var Title = "STAFF ADMIN REPORT";
         var Report_Definer = "";
 
@@ -12857,8 +12891,13 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             fQuery = fQuery + join;
 
         }
-        fQuery = fQuery + "WHERE ([Carer Code] > '!MULTIPLE')  And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 9 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6)) And [Client Code] <> '!MULTIPLE' AND ([Service Type] <> 'CONTRIBUTION') "
-
+        if(this.inputForm.value.NotAllocated){
+            var notinclude = " [Roster].[Type] = 1 Or  "
+        }else{var notinclude = "  "}
+        fQuery = fQuery + "WHERE ([Carer Code] > '!MULTIPLE')  And (( "+ notinclude+ "  [Roster].[Type] = 2 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 9 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6)) And [Client Code] <> '!MULTIPLE' AND ([Service Type] <> 'CONTRIBUTION') "
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
         var Title = "STAFF RECIPIENT REPORT";
         var Report_Definer = "";
 
@@ -13261,8 +13300,15 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         }
         //WHERE ([Date Timesheet] >= '2020-11-01' And [Date Timesheet] <= '2020-11-30') AND         
-        fQuery = fQuery + "WHERE ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And ([Roster].[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')) And [Carer Code] <> '!MULTIPLE'AND ([service type] <> 'CONTRIBUTION')";
+        fQuery = fQuery + "WHERE ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') "
+        //And ([Roster].[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')) And [Carer Code] <> '!MULTIPLE'AND ([service type] <> 'CONTRIBUTION')";
 
+        if (this.inputForm.value.NotAllocated == true){
+            fQuery = fQuery + " And ([Roster].[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') "    
+        }else {fQuery = fQuery + " And ([Roster].[Type] IN (2, 5, 6, 7, 8, 9, 10, 11, 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION')"}
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
         var Title = "STAFF PAYS REPORT";
         var Report_Definer = "";
 
@@ -13662,10 +13708,14 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if (stfgroup != "" || Staff != "" || staffteam != "" || stafftype != "") {
             var join = "INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo]";
             fQuery = fQuery + join;
-
         }
-        fQuery = fQuery + " WHERE ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION')";
-
+        if (this.inputForm.value.NotAllocated == true){
+            var notinclude = " [Roster].[Type] = 1 Or  "    
+        }else {var notinclude = "  "}
+        fQuery = fQuery + " WHERE ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And (( "+ notinclude + " [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION')";
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
         var Title = "STAFF PROGRAM PAYTYPE";
         var Report_Definer = "";
 
@@ -14059,9 +14109,13 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], CASE ISNULL(ISNULL([Staff].[stf_code],''),'') WHEN '' Then [Roster].[Carer Code] Else [Carer Code] + ' - ' + ISNULL([Staff].[stf_code],'') end as [Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty  ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , PT.[AccountingIdentifier] AS PayrollType , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1] , [Staff].[UniqueID] As StaffID, [Staff].[Award]  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo]  INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN ITEMTYPES PT ON [Roster].[Service Description] = PT.[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name "
         var lblcriteria;
 
-//
-        fQuery = fQuery + " WHERE  ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') ";
-
+      if (this.inputForm.value.NotAllocated == true){
+                var notinclude = " [Roster].[Type] = 1 Or  "    
+            }else {var notinclude = "  "}
+        fQuery = fQuery + " WHERE  ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And (( "+ notinclude +"  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') ";
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
         var Title = "STAFF FUNDER PAYROLL TYPE";
         var Report_Definer = "";
 
@@ -14455,9 +14509,13 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , PT.[AccountingIdentifier] AS PayrollType , [HumanResourceTypes].[Type] AS MDS, [HumanResourceTypes].[Address1]  FROM Roster INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] INNER JOIN ITEMTYPES PT ON [Roster].[Service Description] = PT.[Title] INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] "
         var lblcriteria;
 
-
-        fQuery = fQuery + " WHERE ([Roster].[Status] >= '2') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION' AND PT.MinorGroup NOT IN ('PAID LEAVE', 'UNPAID LEAVE')) ";
-
+        if (this.inputForm.value.NotAllocated == true){
+            var notinclude = " [Roster].[Type] = 1 Or  "    
+            }else {var notinclude = "  "}
+        fQuery = fQuery + " WHERE ([Roster].[Status] >= '2') And ((" + notinclude +" [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION' AND PT.MinorGroup NOT IN ('PAID LEAVE', 'UNPAID LEAVE')) ";
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
         var Title = "FUNDER PAYROLL TYPE";
         var Report_Definer = "";
 
@@ -15324,6 +15382,8 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         fQuery = fQuery + " WHERE ([ItemTypes].[IT_Dataset] IN ('DEX', 'HACC', 'QCSS', 'CSTDA', 'NRCP', 'NRCP-SAR'))  And (([Roster].[Type] IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] <> '!MULTIPLE')";
 
+
+
         var Title = "DATASET OUTPUT SUMMARY REPORT";
         var Report_Definer = "";
 
@@ -15921,6 +15981,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
         fQuery = fQuery + " WHERE ([Client Code] > '!MULTIPLE')"
 
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
+        
+       
+        if (this.inputForm.value.RecipientLeave == true){
+            fQuery = fQuery + " And (([Roster].[Type] IN (2, 3, 5, 7, 8, 9, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') OR ([Roster].[Type] = 4 And [Carer Code] = '!MULTIPLE') ) "
+        }else{
+            fQuery = fQuery + " And ([Roster].[Type] IN (2, 3, 5, 7, 8, 9, 10, 11, 12, 14)) And ([Client Code] > '!MULTIPLE') "
+        }
+         
+        
 
         var Title = "ACTIVITY RECIPIENT REPORT";
         var Report_Definer = "";
@@ -16323,7 +16395,23 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             fQuery = fQuery + join;
 
         }
-        fQuery = fQuery + " WHERE  ([Carer Code] > '!MULTIPLE')  And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' ";
+        fQuery = fQuery + " WHERE  ([Carer Code] > '!MULTIPLE')  "
+        //And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9))  ";
+        //And [Carer Code] <> '!MULTIPLE'
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
+        if (this.inputForm.value.NotAllocated == true){
+                     var notinclude = " 1, "    
+        }else {var notinclude = "  "}
+         
+        if (this.inputForm.value.RecipientLeave == true){
+            fQuery = fQuery + " And (([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8,  10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) "
+        }else{
+            fQuery = fQuery + " And ([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8,  10, 11, 12, 14))  "
+        }
+         
+
 
         if (branch != "") {
             this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -16730,7 +16818,19 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             fQuery = fQuery + join;
 
         }
-        fQuery = fQuery + " WHERE ([Carer Code] > '!MULTIPLE')  And ([Roster].[Type] In (1,9)) And ([Carer Code] <> '!MULTIPLE') AND ([service type] <> 'CONTRIBUTION') ";
+        fQuery = fQuery + " WHERE ([Carer Code] > '!MULTIPLE') "
+        //  ";
+
+         
+        if (this.inputForm.value.NotAllocated == true){
+            fQuery = fQuery + " And ([Roster].[Type] In (1,9)) And ([Carer Code] <> '!MULTIPLE') AND ([service type] <> 'CONTRIBUTION') "    
+        }else {
+            fQuery = fQuery + " And ([Roster].[Type] In (9)) And ([Carer Code] <> '!MULTIPLE') AND ([service type] <> 'CONTRIBUTION') "    
+        }
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
+
 
         if (branch != "") {
             this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -17230,7 +17330,26 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             fQuery = fQuery + join;
 
         }
-        fQuery = fQuery + " WHERE  ([Carer Code] > '!MULTIPLE')  And ([Roster].[Status] >= '2') And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9)) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') ";
+        fQuery = fQuery + " WHERE  ([Carer Code] > '!MULTIPLE') And ([Roster].[Status] >= '2') And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') "
+        // And (([Roster].[Type] = 1 Or  [Roster].[Type] = 2 Or [Roster].[Type] = 3 Or [Roster].[Type] = 7 Or [Roster].[Type] = 8 Or [Roster].[Type] = 10 Or [Roster].[Type] = 11 Or [Roster].[Type] = 12) Or ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL') Or ([Roster].[Type] = 5) Or ([Roster].[Type] = 6) Or ([Roster].[Type] = 9))  ";
+
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
+        if (this.inputForm.value.NotAllocated == true){
+                     var notinclude = " 1, "    
+        }else {var notinclude = "  "}
+        if (this.inputForm.value.allowances == true){
+            var includeallowances = " 9, "    
+        }else {var includeallowances = " "}
+        if (this.inputForm.value.RecipientLeave == true){
+            fQuery = fQuery + " And (([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8,"+ includeallowances +" 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) "
+        }else{
+            fQuery = fQuery + " And ([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8,"+includeallowances +" 10, 11, 12, 14))  "
+        }
+        if (this.inputForm.value.InternalCost == false){
+        fQuery = fQuery +" AND ([Client Code] > '!INTERNAL') "
+        }
 
         if (branch != "") {
             this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -17915,8 +18034,24 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             fQuery = fQuery + join;
 
         }
-        fQuery = fQuery + " WHERE ([Client Code] > '!MULTIPLE') And (([Roster].[Type] IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')))"
+        fQuery = fQuery + " WHERE ([Client Code] > '!MULTIPLE') "
 
+        if (this.inputForm.value.InfoOnly == true){
+            fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+        }
+        if (this.inputForm.value.NotAllocated == true){
+                     var notinclude = " 1, "    
+        }else {var notinclude = "  "}
+        if (this.inputForm.value.RecipientLeave == true){
+            fQuery = fQuery + " And (([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) "
+        }else{
+            fQuery = fQuery + " And ([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8, 10, 11, 12, 14))  "
+        }
+        if (this.inputForm.value.InternalCost == false){
+        fQuery = fQuery +" AND ([Client Code] > '!INTERNAL') "
+        }
+
+     
 
         var Title = "ACTIVITY PROGRAM REPORT";
         var Report_Definer = "";
@@ -18210,13 +18345,12 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             setting = " All "
         }
 
-
-
+       
 
 
         fQuery = fQuery + " ORDER BY [Service Type], [Program], Date, [Start Time] ";
 
-    //console.log(fQuery) 
+    console.log(fQuery) 
         switch (format) {
             case "Detailed":
                 Title = Title + "-DETAIL"

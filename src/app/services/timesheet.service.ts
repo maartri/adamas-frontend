@@ -18,6 +18,9 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    getbrandinglogo(type: string = 'big'): Observable<any>{
+        return this.auth.get(`${timesheet}/branding-logo/${type}`);
+    }
         
     getincidentdocuments(data: any): Observable<any>{
         return this.auth.get(`${timesheet}/incident-documents`, data);

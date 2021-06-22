@@ -77,6 +77,8 @@ export class PackageClient implements OnInit, OnDestroy {
 
     URL: string = '';
 
+    hideportalbalance: boolean = false;
+
     constructor(
         private clientS: ClientService,
         private globalS: GlobalService,
@@ -90,7 +92,7 @@ export class PackageClient implements OnInit, OnDestroy {
             distinctUntilChanged(),
             switchMap((date: any) => {
                 let data: GetPackage = {
-                    Code: this.client,
+                    Code: this.client.code,
                     PCode: this.program,
                     Date: moment(this.date).format('YYYY/MM/DD')
                 }
@@ -104,7 +106,7 @@ export class PackageClient implements OnInit, OnDestroy {
             distinctUntilChanged(),
             switchMap((program: any) => {
                 let data: GetPackage = {
-                    Code: this.client,
+                    Code: this.client.code,
                     PCode: this.program,
                     Date: moment(this.date).format('YYYY/MM/DD')
                 }
@@ -165,13 +167,14 @@ export class PackageClient implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.client = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode().code;
+        this.client = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
+        console.log(this.client)
 
-        this.clientS.getprofile(this.client).subscribe(data => {
+        this.clientS.getprofile(this.client.code).subscribe(data => {
             this.user = data;
         })
 
-        this.clientS.getactiveprogram({ IsActive: true, Code: this.client })
+        this.clientS.getactiveprogram({ IsActive: true, Code: this.client.code })
             .subscribe(data => {
                 this.loading = false;
 
@@ -180,6 +183,10 @@ export class PackageClient implements OnInit, OnDestroy {
                 this.date = moment().subtract(this.MINUS_MONTH, 'months').format('YYYY-MM-DD')
                 this.dateStream.next();
             })
+
+        this.clientS.gethideportalbalance(this.client.user).subscribe(data => {
+            this.hideportalbalance = false;
+        });
     }
 
     ngOnDestroy() {

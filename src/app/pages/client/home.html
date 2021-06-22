@@ -5,7 +5,10 @@
         [nzBreakpoint]="'lg'"
         [nzCollapsedWidth]="0"
         [nzZeroTrigger]="zeroTrigger">
-        <div class="logo"></div>
+        <!-- <div class="logo"></div> -->
+        <div style="min-height:46px">
+            <img [src]="logoPath" class="logo-new" alt="">
+        </div>
         <ul nz-menu nzTheme="dark" nzMode="inline" class="main-list"[nzInlineCollapsed]="isCollapsed">
             <li *ngIf="pickedUser" class="logged-in-user">
                 <div>

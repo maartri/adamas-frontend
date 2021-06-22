@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, ActivatedRoute, NavigationEnd } from '@angular/router';
 
-import { GlobalService, SettingsService, ShareService, ClientService } from '@services/index';
+import { GlobalService, SettingsService, ShareService, ClientService, TimeSheetService } from '@services/index';
 import { Observable, Subject, EMPTY } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: '',
@@ -131,6 +132,10 @@ import { filter, switchMap } from 'rxjs/operators';
     .logged-in-user i:hover{
         color:#62ff00;
     }
+    .logo-new{
+        height: 46px;
+        margin-left: 1rem;
+    }
         `
     ]
 })
@@ -146,13 +151,17 @@ export class HomeClient implements OnInit {
 
     pickedUser: any;
 
+    logoPath: any;
+
     constructor(
         private globalS: GlobalService,
         private settingS: SettingsService,
         private router: Router,
         private sharedS: ShareService,
         private clientS: ClientService,
-        private activatedRoute: ActivatedRoute
+        private timeS: TimeSheetService,
+        private activatedRoute: ActivatedRoute,
+        private sanitizer: DomSanitizer
     ) {
         
         var {user} = this.globalS.decode();
@@ -201,6 +210,11 @@ export class HomeClient implements OnInit {
         if(this.globalS.pickedMember){
             this.sharedS.emitMemberPickedChange(this.globalS.pickedMember);
         }
+
+        this.timeS.getbrandinglogo('small').subscribe(blob => {
+            let objectURL = 'data:image/jpeg;base64,' + blob;
+            this.logoPath = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+        })
     }
     
     logout() {

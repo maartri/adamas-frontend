@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { LoginService, GlobalService, TYPE_MESSAGE } from '@services/index';
+import { LoginService, GlobalService, TYPE_MESSAGE, TimeSheetService } from '@services/index';
 import { SettingsService } from '@services/settings.service';
 import { ApplicationUser } from '@modules/modules';
 
@@ -23,6 +24,8 @@ export class LoginComponent implements OnInit {
   unauthorized: boolean = false;
   unauthorizedStr: string;
 
+  logoPath: any;
+
   submitForm(): void {
     for (const i in this.loginForm.controls) {
       this.loginForm.controls[i].markAsDirty();
@@ -35,8 +38,12 @@ export class LoginComponent implements OnInit {
     private loginS: LoginService,
     private globalS: GlobalService,
     private settingS: SettingsService,
+    private timeS: TimeSheetService,
+    private sanitizer: DomSanitizer,
     private router: Router
   ) { }
+
+  
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -44,6 +51,11 @@ export class LoginComponent implements OnInit {
       password: [null, [Validators.required]],
       remember: [true]
     });
+
+    this.timeS.getbrandinglogo().subscribe(blob => {
+      let objectURL = 'data:image/jpeg;base64,' + blob;
+      this.logoPath = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    })
   }
 
   login() {

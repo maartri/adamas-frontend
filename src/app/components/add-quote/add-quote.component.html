@@ -311,16 +311,6 @@
                         <div><i nz-icon nzType="printer" nzTheme="outline"></i></div>
                     </div>
                 </div>
-                <!-- <div nz-col nzSpan="8" nzOffset="4">
-                    <div class="right">
-                        <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
-                            <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                            <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                            <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                        </nz-select>
-                        <button nz-button nzSize="small" nzType="primary">Primary</button>
-                    </div>
-                </div> -->
             </div>
 
             <div nz-row *ngIf="quoteForm.get('program').value">
@@ -367,15 +357,15 @@
             <div nz-row class="line" nzGutter="16" *ngIf="quoteForm.get('program').value">
                 <div nz-col nzSpan="18">
                     <div nz-row nzGutter="16"> 
-                        <div nz-col nzSpan="12" class="inline" *ngIf="!IS_CDC" [formGroup]="quoteForm">
+                        <div nz-col nzSpan="10" class="inline" *ngIf="!IS_CDC" [formGroup]="quoteForm">
                             <span class="title">Initial Budget</span>
                             <input nz-input class="mini" placeholder="" nzSize="small" formControlName="initialBudget" />
                         </div>
-                        <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
+                        <div nz-col nzSpan="10" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
                             <span class="title">Gov't Contribution</span>
                             <input nz-input class="mini" placeholder="" nzSize="small" formControlName="govtContrib" />
                         </div>
-                        <div nz-col nzSpan="12" class="inline"  *ngIf="IS_CDC">
+                        <div nz-col nzSpan="14" class="inline"  *ngIf="IS_CDC">
                             <span class="title">Centrelink Income Tested Fee</span>
                             <span>
                                 <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
@@ -675,7 +665,7 @@
     </div>
 
     <div *nzModalFooter>
-        <button nz-button nzType="default"><strong>Current Quote Value ${{totalQuote()}} </strong> </button>
+        <button nz-button nzType="default"><strong>Current Quote Value ${{ current_quote_value | number:'2.0' }} </strong> </button>
         <button nz-button nzType="default" ><strong> Remaining Funds ${{remainingfund()}} </strong> </button>
         <button nz-button nzType="default" (click)="handleCancelLine()">Cancel</button>
         <button nz-button nzType="primary" (click)="GENERATE_QUOTE_LINE()">Save</button>

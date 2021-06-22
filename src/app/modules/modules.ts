@@ -80,9 +80,10 @@ export interface QuoteLineDTO {
     strategyId?: number,
     rcycle?: string,
     notes?: string,
-    sortOrder: number,
+    sortOrder?: number,
 
-    serviceType?: string
+    serviceType?: string,
+    code?: string
 }
 
 export interface QuoteHeaderDTO {

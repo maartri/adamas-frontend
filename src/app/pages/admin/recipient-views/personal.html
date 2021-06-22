@@ -1,3 +1,12 @@
+
 <div *ngIf="transformedUser">
-    <app-profile-page [(ngModel)]="transformedUser" [isAdmin]="true" ngDefaultControl></app-profile-page>
+    <div class="media-container">
+        <button nz-button nzType="primary" (click)="addMedia()">Add Media</button>
+    </div>
+    <div *ngIf="view == 1">
+        <app-profile-page [(ngModel)]="transformedUser" [isAdmin]="true" ngDefaultControl></app-profile-page>
+    </div>
+    <div *ngIf="view == 2">
+        <app-media [isAdmin]="true" [personID]="transformedUser?.name"></app-media>
+    </div>
 </div>

@@ -21,6 +21,10 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    createQuoteLine(data: any):Observable<any>{
+        return this.http.post(`${list}/create-quote-line`, data);
+    }
+
     printquote(data: any):Observable<any>{
         // return this.http.post(`${fileV2}/download-document-remote`, data, { responseType: 'blob', reportProgress: true });
         return this.http.post(`${list}/quotes-print`, data,  { responseType: 'blob', reportProgress: true })

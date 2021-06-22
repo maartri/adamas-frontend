@@ -606,12 +606,11 @@ stafftypeArr: Array<any> = constants.types;
 
     //   enddate: string ;  defaultsratdate defaultenddate
     //   startdate: string ;
-    //format(new Date(), 'dd/MM/yyyy');
-    
+    //format(new Date(), 'dd/MM/yyyy');   
 
     //rpthttp = 'https://45.77.37.207:5488/api/report';
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
- // rpthttp = 'https://127.1.1.1:5488/api/report';
+    // rpthttp = 'https://127.1.1.1:5488/api/report';
   
     dropDownArray: any = {
         branches: Array,
@@ -7113,6 +7112,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
             }
         }
+        
         this.loading = true;
 
         const headerDict = {

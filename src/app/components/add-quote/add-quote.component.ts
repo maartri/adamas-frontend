@@ -1,11 +1,11 @@
-import { Component, OnInit, forwardRef, OnChanges, SimpleChanges, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, forwardRef, OnChanges, SimpleChanges, Input, Output, EventEmitter, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 
 import { GlobalService, ListService, TimeSheetService, ShareService,expectedOutcome,qoutePlantype, leaveTypes } from '@services/index';
 import * as _ from 'lodash';
-import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
+import { forkJoin, Observable, EMPTY, Subject, combineLatest } from 'rxjs';
 import parseISO from 'date-fns/parseISO'
 import { RemoveFirstLast } from '../../pipes/pipes';
 import { mergeMap, debounceTime, distinctUntilChanged, first, take, takeUntil, switchMap, concatMap } from 'rxjs/operators';
@@ -146,6 +146,9 @@ export class AddQuoteComponent implements OnInit {
 
     loggedInUser: any;
     admincharges :number = 0;
+
+    tempIds: any;
+
     
     
 
@@ -186,6 +189,7 @@ export class AddQuoteComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     private modal: NzModalService,
+    private zone: NgZone,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -417,27 +421,32 @@ export class AddQuoteComponent implements OnInit {
       .pipe(
           switchMap(x => {                
               this.resetQuotePrimary();
+              if(this.globalS.isEmpty(this.tableDocumentId))
+              {
+                  this.globalS.eToast('Error', 'Program and Template are required');
+                  return EMPTY;
+              }
               this.listStrategiesDropDown(this.tableDocumentId);
               if(!x) return EMPTY;
               return this.listS.getchargetype({
                   program: this.quoteForm.get('program').value,
                   index: x
-                })
+                });
           })
       ).subscribe(data => {
           this.codes = data;
-        //   if(this.option == 'update')
-        //   {
-        //        var x = this.updateValues;
-        //        console.log(x);
-        //        setTimeout(() => {
-        //         this.quoteListForm.patchValue({
-        //             code: x.title,
-        //             displayText: x.displayText,                
-        //         })
-        //         this.detectChanges();
-        //        }, 100);
-        //   }
+            //   if(this.option == 'update')
+            //   {
+            //        var x = this.updateValues;
+            //        console.log(x);
+            //        setTimeout(() => {
+            //         this.quoteListForm.patchValue({
+            //             code: x.title,
+            //             displayText: x.displayText,                
+            //         })
+            //         this.detectChanges();
+            //        }, 100);
+            //   }
       });
 
       this.quoteListForm.get('code').valueChanges.pipe(
@@ -454,13 +463,13 @@ export class AddQuoteComponent implements OnInit {
             this.quoteListForm.patchValue({ 
                 displayText: data.billText, 
                 price: data.amount, 
-                roster: 'None',
+                roster: 'NONE',
                 itemId: data.recnum 
             })
           }
 
           if(this.option == 'update'){
-              console.log(this.updateValues)
+            console.log(this.updateValues)
             this.quoteListForm.patchValue({ 
                 displayText: data.billText, 
                 price: data.amount,
@@ -473,6 +482,12 @@ export class AddQuoteComponent implements OnInit {
       this.quoteListForm.get('roster').valueChanges.subscribe(data => {
           this.weekly = data;
           this.setPeriod(data);
+      });
+
+      this.quoteListForm.get('period').valueChanges.subscribe(data => {
+        this.quoteListForm.patchValue({
+            weekNo: this.convert_period_to_value(data)
+        });
       });
 
       this.quoteForm.get('program').valueChanges
@@ -501,11 +516,11 @@ export class AddQuoteComponent implements OnInit {
               }
 
                 this.quoteForm.patchValue({
-                    govtContrib: x.quantity ? (x.quantity*365).toFixed(2) : 0,
+                    govtContrib: x.quantity ? (x.quantity * 365).toFixed(2) : 0,
                     programId: x.recordNumber
                 });
 
-                // console.log(this.quoteForm.value)
+                console.log(this.quoteForm.value)
                 this.remaining_fund = this.quoteForm.value.govtContrib;
 
               this.detectChanges();
@@ -521,39 +536,6 @@ export class AddQuoteComponent implements OnInit {
         if(!data)   return;
         this.showConfirm();
       });
-
-    //   this.quoteListForm.get('code').valueChanges.pipe(
-    //       switchMap(x => {
-    //           if(!x)
-    //               return EMPTY;
-
-    //           return this.listS.getprogramproperties(x)
-    //       })
-    //   ).subscribe(data => {
-    //       this.recipientProperties = data;
-          
-    //       if(this.option == 'add'){
-    //         this.quoteListForm.patchValue({ 
-    //             displayText: data.billText, 
-    //             price: data.amount, 
-    //             roster: 'None',
-    //             itemId: data.recnum 
-    //         })
-    //       }
-
-    //       if(this.option == 'update'){
-    //           console.log(this.updateValues)
-    //         this.quoteListForm.patchValue({ 
-    //             displayText: data.billText, 
-    //             price: data.amount,
-    //             itemId: data.recnum,
-    //             roster: this.determineRosterType(this.updateValues)
-    //         });
-    //       }
-    //   });
-
-
-
 
       this.quoteForm.get('basePeriod').valueChanges
             .subscribe(x => {
@@ -581,6 +563,16 @@ export class AddQuoteComponent implements OnInit {
           this.weekly = data;
           this.setPeriod(data);
       });
+
+      combineLatest([
+        this.quoteListForm.get('quantity').valueChanges,
+        this.quoteListForm.get('period').valueChanges,
+        this.quoteListForm.get('price').valueChanges,
+      ]).subscribe(x => {
+            let weekNo = this.convert_period_to_value(x[1]);
+            // console.log(weekNo * x[0]);
+            this.current_quote_value = weekNo * x[0] * x[2]
+      })
   }
   
 
@@ -592,16 +584,17 @@ export class AddQuoteComponent implements OnInit {
         nzContent: 'When clicked the OK button, this would save this program and template',
         nzOnOk: () =>{
                 // new Promise((resolve, reject) => {
-                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
-                
+                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);                
                 // }).catch(() => console.log('Oops errors!'))
+
                 let qteHeader: QuoteHeaderDTO;
                 qteHeader = {
                     personId: this.user.id
                 };
                 this.listS.createtempdoc(qteHeader).subscribe(data => {
-                    console.log(data);
-                    this.tableDocumentId = data;
+                    this.tempIds = data;
+
+                    this.tableDocumentId = data.docId;
                     this.listCarePlanAndGolas(data);
                     this.disableAddTabs = false
                 });
@@ -610,49 +603,69 @@ export class AddQuoteComponent implements OnInit {
     }
 
 
+    convert_period_to_value(data: string){
+        let weekNo = 1;
 
-  determineRosterType(data: any){
-    if(data.roster && data.roster.length > 0)
-    {
-        return data.frequency
+        if(data == "ONCE OFF")
+            weekNo = 1;
+        if(data == "WEEKLY")
+            weekNo = 52
+        if(data == "FORTNIGHTLY")
+            weekNo = 26
+        if(data == "MONTHLY")
+            weekNo = 12
+        if(data == "QUARTERLY")
+            weekNo = 4
+        if(data == "HALF YEARLY")
+            weekNo = 2
+        if(data == "YEARLY")
+            weekNo = 1
+
+        return weekNo;
     }
 
-    if(data.roster == null || this.globalS.isEmpty(data.roster)){
-        return 'NONE';
+    determineRosterType(data: any){
+        if(data.roster && data.roster.length > 0)
+        {
+            return data.frequency
+        }
+
+        if(data.roster == null || this.globalS.isEmpty(data.roster)){
+            return 'NONE';
+        }
     }
-  }
 
-  resetQuotePrimary(){
-      this.quoteListForm.patchValue({
-          code: null,
-          displayText: null,
-          roster: null,
-          strategy: null
-      });
-  }
+    resetQuotePrimary(){
+        this.quoteListForm.patchValue({
+            code: null,
+            displayText: null,
+            roster: null,
+            strategy: null
+        });
+    }
 
-  listStrategiesDropDown(docId: any){
-      this.listS.getstrategyList(docId.toString()).subscribe(data => {
-          this.strategies = data;
-      })
-  }
+    listStrategiesDropDown(docId: any){
+        this.listS.getstrategyList(docId.toString()).subscribe(data => {
+            this.strategies = data;
+        })
+    }
 
-  detectChanges(){
-      this.cd.markForCheck();
-      this.cd.detectChanges();
-  }
+    detectChanges(){
+        this.cd.markForCheck();
+        this.cd.detectChanges();
+    }
 
   setPeriod(data: any){
       
-    if(data && data != 'None'){
-        if(this.option == 'add'){
-            this.quoteListForm.get('period').disable();
+    if(data && data != 'NONE'){
+        this.quoteListForm.get('period').enable();
 
+        if(this.option == 'add'){
             this.quoteListForm.patchValue({
                 period: data.toUpperCase(),
                 billUnit: 'HOUR',
-                weekNo: 52
-            })
+                weekNo: this.convert_period_to_value(data)
+            });
         }
         return;
     }
@@ -680,8 +693,7 @@ export class AddQuoteComponent implements OnInit {
   }
 
   handleCancel(){
-      console.log('close quotes modal')
-      this.listS.deletetempdoc(this.tableDocumentId).subscribe(data => console.log(data))
+    //   this.listS.deletetempdoc(this.tableDocumentId).subscribe(data => console.log(data))
       this.quotesOpen = false;
       this.inActiveOpen = false;
       this.activeOpen = false;
@@ -736,7 +748,7 @@ export class AddQuoteComponent implements OnInit {
                 "head5" : "Goal",
               }
             }
-      }else{
+      } else{
           this.pdfdata = {
               "template": { "_id": "0RYYxAkMCftBE9jc" },
               "options": {
@@ -772,6 +784,7 @@ export class AddQuoteComponent implements OnInit {
           },
         });
       });
+
       this.detectChanges();
       this.loading = true;
       this.tryDoctype = "";
@@ -886,8 +899,6 @@ export class AddQuoteComponent implements OnInit {
 
     deleteQuoteList(data: any, index: number){
         if(this.option == 'update'){
-            // this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
-            // console.log(data)
             this.listS.deletequoteline(data.recordNumber).subscribe(data => {
                 this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
                 this.detectChanges();
@@ -898,7 +909,6 @@ export class AddQuoteComponent implements OnInit {
             console.log('add');
             this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
         }
-        
     }
   
 
@@ -936,8 +946,7 @@ export class AddQuoteComponent implements OnInit {
       })
   }
 
-  showEditStrategyModal(data:any){
-      
+  showEditStrategyModal(data:any){      
       this.isUpdateStrategy = true;
       this.strategiesmodal = true;
       this.stratergiesForm.patchValue({
@@ -988,7 +997,7 @@ export class AddQuoteComponent implements OnInit {
                     notes: x.notes,
                     recordNumber: data.recordNumber
                 })
-                console.log(this.quoteListForm.value)
+                
             }, 100);
             
             this.detectChanges();
@@ -1033,10 +1042,14 @@ export class AddQuoteComponent implements OnInit {
   total_base_quote: any;
   total_admin: any;
   remaining_fund: any;
+
   GENERATE_QUOTE_LINE(){
+
        if(this.option == 'add')
        {
-        //    console.log(this.quoteListForm.getRawValue())
+
+            
+            // return;
            const quote  = this.quoteListForm.getRawValue();
            var _quote,_quote1,_quote2;
            
@@ -1096,77 +1109,54 @@ export class AddQuoteComponent implements OnInit {
                 this.handleCancelLine();
                 this.detectChanges();
              
+            });
+           
+        }  else{
+
+            console.log(this.tempIds);
+            
+            let _quote: QuoteLineDTO = {
+                docHdrId: this.tempIds.quoteHeaderId,
+                billUnit: quote.billUnit,
+                code: quote.code,
+                displayText: quote.displayText,
+                qty: quote.quantity,
+                frequency: quote.period,
+                quoteQty: quote.weekNo, 
+                unitBillRate: quote.price,
+                tax: quote.gst,
+                itemId: quote.itemId
+            }
+
+            console.log(_quote)
+
+            this.listS.createQuoteLine(_quote).subscribe(data => {
+                // console.log(data);
+
+                this.quoteLines = [...this.quoteLines, {
+                    code: data.code,
+                    displayText: data.displayText,
+                    quantity: data.qty,
+                    billUnit: data.billUnit,
+                    frequency: data.frequency,
+                    quoteQty: data.quoteQty,
+                    price: data.unitBillRate,
+                    tax: data.tax
+                }];
             })
 
-
-            // this.listS.GetTOpUP(sqlTopUpFee).subscribe(x => {
-            //     this.topup = x;               
-            // } );
-        
-            // this.listS.GetBasicCare(sqlBasicCareFee).subscribe(x => {
-            //     this.basiccarefee = x;
-               
-            // });
-            
-            // this.listS.GetCMPERC(sqlCMPercAmt).subscribe(x =>{ 
-            //     this.PercAmt = x;                                                     
-            // });
-              
-            // this.listS.GetAdmPerc(sqlAdminPercAmt).subscribe(x => {
-            //     this.AdmPErcAmt = x;                                
-            // }); 
-
-          
-               
-            // var temp:number = this.quoteForm.value.govtContrib
-       
-        
-            //  _quote = {        
-            //     code: '*HCP-PACKAGE ADMIN' ,
-            //     displayText: 'Charges' ,
-            //     billUnit:'Service',
-            //     quantity: 1,
-            //     frequency: 'Daily'  ,
-            //     quoteQty: 365 , 
-            //     price: this.PercAmt,              
-            //    }
-            
-              
-            // _quote2 = {        
-            //     code: '*HCP FEE-PACKAGE ADMINISTRATION' ,
-            //     displayText: 'Charges' ,
-            //     billUnit:'Service',
-            //     quantity: 1,
-            //     frequency: 'Daily'  ,
-            //     quoteQty: 365 , 
-            //     price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365)
-            // }
-           
-           }  else{
-            _quote = {
-            billUnit: quote.billUnit,
-            code: quote.code,
-            displayText: quote.displayText,
-            quantity: quote.quantity,
-            frequency: quote.period,
-            quoteQty: quote.weekNo, 
-            price: quote.price,
-            tax: quote.gst,
-            itemId: quote.itemId
-           }
-
-           this.quoteLines = [...this.quoteLines, _quote];
+        //    this.quoteLines = [...this.quoteLines, _quote];
                 
-           this.total_admin = 10361.62;
-           this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
-           this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
+        //    this.total_admin = 10361.62;
+        //    this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+        //    this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
 
-           this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
+        //    this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
 
            this.handleCancelLine();
            this.detectChanges();
         }
-       }
+    }
 
        if(this.option == 'update'){
            var quoteForm = this.quoteForm.value;
@@ -1226,15 +1216,11 @@ export class AddQuoteComponent implements OnInit {
    
     const quoteForm = this.quoteForm.getRawValue();
 
- //   console.log(quoteForm);
- //   console.log(this.quoteLines);
-    
-    
-      
-
-//    console.log(quoteForm);
-//    console.log(this.quoteLines);
-//    console.log(this.goalsAndStratergies);
+    // console.log(quoteForm);
+    // console.log(this.quoteLines);
+    // console.log(quoteForm);
+    // console.log(this.quoteLines);
+    // console.log(this.goalsAndStratergies);
 
     this.goalsAndStratergies.forEach(e => {
         goals.push(e.goal);
@@ -1290,36 +1276,36 @@ export class AddQuoteComponent implements OnInit {
         documentId: this.tableDocumentId,
         goals: goals
     }
-//    console.log(qteHeader)
+
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
         }); 
   }
 
-  refreshQuoteLines(recordNo: any){
-      
-  }
+    refreshQuoteLines(recordNo: any){
+        
+    }
 
-  slotsChange(data: any){
+    slotsChange(data: any){
+        console.log(data);
+        // This would stop process at the bottom on first load of QuoteLineModal
+        if(this.firstLoadQuoteLine){
+            this.firstLoadQuoteLine = false;
+            //   return;
+        }
 
-      // This would stop process at the bottom on first load of QuoteLineModal
-      if(this.firstLoadQuoteLine){
-          this.firstLoadQuoteLine = false;
-          return;
-      }
+        this.quoteListForm.patchValue({
+            quantity: data.quantity > 0 ? data.quantity : 1,
+            rosterString: data.roster
+        });
+    }
 
-      this.quoteListForm.patchValue({
-          quantity: data.quantity,
-          rosterString: data.roster
-      });
-  }
-
-  quoteLineModal(){
-      this.quoteLineOpen = true;
-      this.firstLoadQuoteLine = true;
-      this.quoteListForm.reset();
-  }
+    quoteLineModal(){
+        this.quoteLineOpen = true;
+        this.firstLoadQuoteLine = true;
+        this.quoteListForm.reset();
+    }
 
   
 
@@ -1517,10 +1503,17 @@ export class AddQuoteComponent implements OnInit {
     return temp.toFixed(2)
   }
 
-  totalQuote(){
-    var temp :Number;
-    temp =  (this.admincharges + this.globalS.baseamount)
-    return temp.toFixed(2)
+  current_quote_value: number;
+
+  calculateQuoteValue(){
+    this.zone.runOutsideAngular(() => {
+        var sss = this.quoteListForm.value;
+        console.log(sss);
+        var temp :Number;
+        temp =  (this.admincharges + this.globalS.baseamount)
+        // return temp.toFixed(2)
+        this.current_quote_value = 0;
+    })
   }
   
   admincharge(){
@@ -1629,28 +1622,24 @@ return this.admincharges;
   } */
   
   
-  dailyliving(){
+dailyliving(){
     let daily;
-     
     var temp = this.dochdr
     if(!temp) return;
-      this.listS.GetDailyliving(temp).subscribe(x => {
+    this.listS.GetDailyliving(temp).subscribe(x => {
         
-         daily = x;
-         console.log(x);
-      });
-   return daily;
-  
+        daily = x;
+        console.log(x);
+    });
 
-   
+    return daily;   
 }
+
 checkValue(event){
-    console.log(event)
     if (event.target.checked){
        this.option = 'add';
         this.GENERATE_QUOTE_LINE();
-}
-
+    }
 }
 
 

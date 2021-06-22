@@ -43,7 +43,7 @@ div.article{
 
 .img-media {
     width: auto;
-    height: 6rem;
+    max-height: 10rem;
 }
 
 video{

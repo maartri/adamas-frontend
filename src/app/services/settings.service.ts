@@ -17,6 +17,7 @@ export class SettingsService {
     getSettings(name: any) {
         this.timeS.getusersettings(name).subscribe(data => {
             this.globalS.settings = data;
+            console.log(data);
         });
     }
 
@@ -120,6 +121,21 @@ export class SettingsService {
         if (!settings) return false;
 
         return this.VERIFY_OUTPUT(settings.viewPackageStatement);
+    }
+
+
+    CANQUERYSERVICE(): boolean {
+        let settings: any = this.globalS.settings;
+        if (!settings) return false;
+
+        return this.VERIFY_OUTPUT(settings.canQueryService);
+    }
+
+    CANCANCELSERVICE(): boolean {
+        let settings: any = this.globalS.settings;
+        if (!settings) return false;
+
+        return this.VERIFY_OUTPUT(settings.canCancelService);
     }
 
     

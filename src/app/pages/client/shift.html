@@ -37,8 +37,8 @@
                                 <td nzWidth="100px">{{ data.bill.bill_Rate | currency: 'USD' }}</td>
                                 <td nzWidth="100px">{{ data.billedTo.accountNo }}</td>
                                 <td nzWidth="200px" nzRight="50px">{{ data.note }}</td>
-                                <td nzWidth="50px" nzRight="0px">
-                                    <button nz-button nzType="danger" class="cancel-btn" (click)="setShift(timesheets,index)" nzDanger="true">Cancel</button>
+                                <td nzWidth="50px"  nzRight="0px">
+                                    <button nz-button nzType="danger" *ngIf="_settings.CANCANCELSERVICE()" class="cancel-btn" (click)="setShift(timesheets,index)" nzDanger="true">Cancel</button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -133,7 +133,7 @@
                                         nzPopconfirmPlacement="bottom"
                                         (nzOnConfirm)="approveShift(index)"
                                         class="cancel-btn" >Approve</button>
-                                    <button nz-button 
+                                    <button nz-button *ngIf="_settings.CANQUERYSERVICE()"
                                     nz-popconfirm
                                     nzPopconfirmTitle="Are you sure query this roster?"
                                     nzPopconfirmPlacement="bottom"

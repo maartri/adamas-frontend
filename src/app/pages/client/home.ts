@@ -171,6 +171,7 @@ export class HomeClient implements OnInit {
             return this.settingS.getSettingsObservable(user);
         })).subscribe(index => {
             this.globalS.settings = index;
+            console.log(index);
         });
 
         this.router.events.pipe(
@@ -198,6 +199,7 @@ export class HomeClient implements OnInit {
             localStorage.removeItem('settings');
 
             this.globalS.settings = data;
+            console.log(data)
             setTimeout(() => {
                 this._settings = this.settingS; 
             }, 100);

@@ -1187,6 +1187,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/intake/specific/competencies/${id}`)
     }
 
+    getgrouplist(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/group-list/${id}`)
+    }
+
     getgrouptypes(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/group/types/${id}`)
     }

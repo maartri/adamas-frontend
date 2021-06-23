@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { GlobalService, UploadService } from '@services/index';
+import { GlobalService, UploadService, TimeSheetService } from '@services/index';
 import { HttpClient, HttpRequest, HttpEventType, HttpResponse, HttpEvent } from '@angular/common/http'
 
 
@@ -25,6 +25,9 @@ export class MediaComponent implements OnInit {
 
   title: string = ''
   description: string = '';
+  group: string;
+
+  groupList: Array<string> = [];
 
   fileList: any[] = [];
 
@@ -34,11 +37,17 @@ export class MediaComponent implements OnInit {
     private uploadS: UploadService,
     private sanitizer: DomSanitizer,
     private cd: ChangeDetectorRef,
-    private msg: NzMessageService
+    private msg: NzMessageService,
+    private timeS: TimeSheetService
   ) { }
 
   ngOnInit(): void {
     this.getMedia();
+
+    this.timeS.getgrouplist(this.personID)
+        .subscribe(x => {
+          this.groupList = x;
+        })
   }
 
   toggleVideo() {
@@ -48,10 +57,13 @@ export class MediaComponent implements OnInit {
   clear(){
     this.title = '';
     this.description = '';
+    this.group = null;
   }
 
 
   getMedia() {
+
+    
 
     this.uploadS.getMedia(this.personID)
       .subscribe(files => {
@@ -109,7 +121,7 @@ export class MediaComponent implements OnInit {
   // }
 
   handleUpload(){
-      console.log(this.fileList);
+
       var formData = new FormData()
        
       for (var file of this.fileList) {
@@ -118,6 +130,7 @@ export class MediaComponent implements OnInit {
   
       formData.append("title", this.title);
       formData.append("description", this.description);
+      formData.append("group", this.group);
 
   
       const req = new HttpRequest('POST', `api/upload/media/${this.personID}`, formData);

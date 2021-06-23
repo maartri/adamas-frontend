@@ -39,6 +39,12 @@
         </div>
 
         <div class="form-group">
+            <nz-select [(ngModel)]="group" nzAllowClear nzPlaceHolder="Media Group">
+                <nz-option *ngFor="let group of groupList" [nzValue]="group" [nzLabel]="group"></nz-option>
+            </nz-select>
+        </div>
+
+        <div class="form-group">
             <nz-upload
                 nzType="drag"
                 [nzMultiple]="false"

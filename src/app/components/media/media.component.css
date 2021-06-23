@@ -54,3 +54,6 @@ video{
     width: 11rem; 
     overflow: hidden;
 }
+nz-select{
+    width:100%;
+}

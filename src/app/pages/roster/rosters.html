@@ -71,7 +71,7 @@
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(5)" nz-tooltip nzTooltipTitle="Record Travel time"><i nz-icon nzType="car" nzTheme="outline"></i></button>
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="RecordStaffAdmin()" *ngIf="viewType=='Staff'" nz-tooltip nzTooltipTitle="Record Staff  Administration time" ><i nz-icon nzType="form"></i></button>
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="setUnavailablity()" *ngIf="viewType=='Staff'"  nz-tooltip nzTooltipTitle="Record Staff Unavailability" ><i nz-icon nzType="stop" nzTheme="outline"></i></button>
-                <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" *ngIf="viewType=='Recipient'" nz-tooltip nzTooltipTitle="Record Client Cancellation"><i nz-icon nzType="close-square" nzTheme="outline"></i></button>
+                <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="recordCancellation()" *ngIf="viewType=='Recipient'" nz-tooltip nzTooltipTitle="Record Client Cancellation"><i nz-icon nzType="close-square" nzTheme="outline"></i></button>
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons"  nz-tooltip nzTooltipTitle="Recurring Service Wizard"><i nz-icon nzType="setting" nzTheme="outline"></i></button>
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons"  nz-tooltip nzTooltipTitle="Load/Unload Staff Compare Roster"><i nz-icon nzType="retweet" nzTheme="outline"></i></button>
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons"  nz-tooltip nzTooltipTitle="Compress Rosters on Screen"><i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i></button>
@@ -539,6 +539,8 @@
     </div>
 </nz-modal>
 
+
+
 <nz-modal [(nzVisible)]="addBookingModel" [nzWidth]="900" nzTitle="Timesheet"  [nzFooter]="modalFooter2" (nzOnCancel)="addBookingModel=false">
     <div class="flexy" style="min-height:21rem">
 
@@ -614,7 +616,7 @@
                                 <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
                             </nz-select>
                         </div>
-                    <div class="form-group">
+                    <div class="form-group" >
                         <label for="">Service/Activity/Item</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                             <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list.activity"></nz-option>
@@ -624,7 +626,15 @@
                             <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="rosterForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
                             <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
                         </div>
-                        <div *ngIf="activity_value==12">
+                        
+                       <div  *ngIf="IsClientCancellation && booking_case==8" >
+                            <label for="">Do you want to record absent/out against a specific facility</label>   
+                             <nz-switch nzSize="small" formControlName="central_Location" [(ngModel)]="ShowCentral_Location"  (ngModelChange)="setCentral_Location($event)"></nz-switch>    
+                                        
+                       </div>
+                                   
+                    
+                        <div  *ngIf="activity_value==12 || ShowCentral_Location">
                         <label for="">Service Settings/Location</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="serviceSetting" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                             <nz-option *ngFor="let list of ServiceGroups_list" [nzValue]="list" [nzLabel]="list"></nz-option>

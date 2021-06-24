@@ -16,3 +16,11 @@ div.background{
     background: linear-gradient(112deg, #7ccfff, #0c8dfb);
     height:100vh;
 }
+div.logo-container{
+    text-align: center;
+}
+
+div.logo-container img{
+    height:5rem;
+    width: auto;
+}

@@ -427,13 +427,13 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   this.getSelect();
 
-  this.timeS.GetIncidentNotifications().subscribe(data => {
-     this.incidentNotifications = data.map(x =>{
-        var o = Object.assign({}, x);
-        o.checked = true;
-        return o;
-    });
-  }); 
+  // this.timeS.GetIncidentNotifications().subscribe(data => {
+  //    this.incidentNotifications = data.map(x =>{
+  //       var o = Object.assign({}, x);
+  //       o.checked = true;
+  //       return o;
+  //   });
+  // }); 
   
   this.timeS.Getincidentmandatorynotifications().subscribe(data => this.incidentmandatoryNotifications = data);
   

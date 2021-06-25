@@ -853,10 +853,13 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/staff/opnotes/${id}`)
     }
 
+
     gethrnotes(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/hrnotes/${name}`)
     }
-
+    getarchivedhrnotes(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/achivedhrnotes/${name}`)
+    }
     deletehrnotes(id: number): Observable<any> {
         return this.auth.delete(`${timesheet}/staff/hrnotes/${id}`)
     }

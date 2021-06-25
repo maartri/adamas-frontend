@@ -39,10 +39,9 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
     modalOpen: boolean = false;
     addORView: number = 1;
     categories: Array<any>;
-
     dateFormat: string = 'dd/MM/yyyy';
     isLoading: boolean = false;
-    
+    check : boolean = false;
     tocken: any;
     pdfTitle: string;
     tryDoctype: any;
@@ -165,11 +164,28 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
         this.timeS.deletehrnotes(recordNumber).pipe(
             takeUntil(this.unsubscribe)).subscribe(data => {
                 if (data) {
-                    this.globalS.sToast('Success', 'Note Deleted');
+                    this.globalS.sToast('Success', 'HR NOTE ARCHIVED');
                     this.search();
                     this.handleCancel();
                 }
             });
+    }
+    getarchivedhrnotes(user: any = this.user){
+            this.cd.reattach();
+            this.loading = true;
+            this.timeS.getarchivedhrnotes(user.code).pipe(delay(200),takeUntil(this.unsubscribe)).subscribe(data => {
+                this.tableData = data;
+                this.loading = false;
+                this.cd.detectChanges()
+            });
+            this.populate();
+    }
+    fetchAll(e){
+        if(e.target.checked){
+            this.getarchivedhrnotes(this.user);
+        }else{
+            this.search(this.user);
+        }
     }
     save() {
         if (!this.globalS.IsFormValid(this.inputForm))

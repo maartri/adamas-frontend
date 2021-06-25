@@ -381,7 +381,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
       this.incidentForm.patchValue({
         accountNo: user.accountNo,
-
+        gender: this.getGender(user.gender),
         subjectName: `${user.firstName} ${user.lastName}`,
         dob: user.dob ? new Date(user.dob) : null
       });
@@ -425,20 +425,18 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   buildValueChanges(){
 
-    this.getSelect();
-    
+  this.getSelect();
+
   this.timeS.GetIncidentNotifications().subscribe(data => {
-    
-    
      this.incidentNotifications = data.map(x =>{
         var o = Object.assign({}, x);
         o.checked = true;
-        
         return o;
-      });
-      
+    });
   }); 
+  
   this.timeS.Getincidentmandatorynotifications().subscribe(data => this.incidentmandatoryNotifications = data);
+  
   this.timeS.Getincidentnonmandatorynotifications().subscribe(data => this.incidentnonmandatoryNotifications = data);
     
     this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{

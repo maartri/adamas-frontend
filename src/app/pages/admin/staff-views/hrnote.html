@@ -1,6 +1,7 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add HR Note</button>
+        <label nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Show Archived Notes </label>
         <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoadingDelay]="100" [nzLoading]="loading"
             [nzData]="tableData">
@@ -22,12 +23,18 @@
                     <td>
                         <a (click)="showEditModal(i)">View</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this HR Note From List?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(i)">Delete</a>
+                        <a *ngIf="!data.is_deleted" nz-popconfirm 
+                        nzPopconfirmTitle="DELETE HR NOTE? (NB - This will not physically delete the note. This will flag the note as deleted so it doesent appear on the this screen or report unless you ask to show archived notes. ??"
+                        nzPopconfirmPlacement="bottom"
+                         (nzOnConfirm)="delete(i)">Delete</a>
                     </td>
                 </tr>
             </tbody>
         </nz-table>
+        
+        <!-- <ng-template #messagealert>
+            <p></p>
+        </ng-template> -->
     </div>
 </div>
 
@@ -35,7 +42,7 @@
     <div [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>
-                <nz-form-label  [nzNoColon]="true">Description</nz-form-label>
+                <nz-form-label  [nzNoColon]="true">Category</nz-form-label>
                 <nz-form-control nzErrorTip="Category is required!">
                     <nz-select formControlName="category" nzAllowClear [nzDropdownMatchSelectWidth]="false">
                         <nz-option *ngFor="let d of categories" [nzValue]="d" [nzLabel]="d">

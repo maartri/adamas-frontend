@@ -1052,25 +1052,25 @@ updateCheckBoxesInStep1(defaultString: string){
   }
 
   next(): void {
-    var  {startTimeOfIncident,endTimeOfIncident} = this.incidentForm.value
+    // var  {startTimeOfIncident,endTimeOfIncident} = this.incidentForm.value
 
      
      
-    if (this.current == 1 && endTimeOfIncident != null ){
-        //this.compareTimeofincidents();
-        if (format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm')){
-          //  alert("End Time of Incient must be greater then Start time")
-            this.modal.error({
-              nzTitle: 'TRACCS',
-                nzContent: 'End Time of Incident Must be greater than Start Time',
-                nzOnOk: () => {},
-              });
-        }
+    // if (this.current == 1 && endTimeOfIncident != null ){
+    //     //this.compareTimeofincidents();
+    //     if (format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm')){
+    //       //  alert("End Time of Incient must be greater then Start time")
+    //         this.modal.error({
+    //           nzTitle: 'TRACCS',
+    //             nzContent: 'End Time of Incident Must be greater than Start Time',
+    //             nzOnOk: () => {},
+    //           });
+    //     }
         
-    }else
+    // }else
         
           this.current += 1;
-      }
+  }
 
   log(event: any) {
     this.selectedStaff = event;

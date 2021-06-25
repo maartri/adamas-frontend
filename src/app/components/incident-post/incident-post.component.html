@@ -57,7 +57,7 @@
                                             <div class="form-group-inline">
                                                 <label for="">Supervisor Name</label>
                                                 <div>
-                                                    <nz-select class="nzselect-min" formControlName="recipient" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                                    <nz-select class="nzselect-min" formControlName="recipient" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear>
                                                         <nz-option *ngFor="let d of listStaff" [nzLabel]="d.accountNo" [nzValue]="d.accountNo"></nz-option>
                                                     </nz-select>
                                                 </div>

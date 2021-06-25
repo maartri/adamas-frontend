@@ -973,7 +973,7 @@ updateCheckBoxesInStep1(defaultString: string){
     this.incidentForm.patchValue({
       summary: data.shortDesc,
       description: data.fullDesc, 
-      
+      recipient:data.currentAssignee,
       other:data.incidentTypeOther,
       otherspecify:  data.followupContactedOther,
       

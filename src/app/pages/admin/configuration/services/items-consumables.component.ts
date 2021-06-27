@@ -83,6 +83,11 @@ export class ItemsConsumablesComponent implements OnInit {
   timesteps: string[];
   serviceoutIds: any;
   emptyList: any[];
+  ndiaItems: any;
+  selectedPrograms: any[];
+  selectedCompetencies: any;
+  competencyForm: FormGroup;
+  parent_person_id: any;
   
   constructor(
     private globalS: GlobalService,
@@ -130,8 +135,17 @@ export class ItemsConsumablesComponent implements OnInit {
       });
       this.modalOpen = true;
     }
-    log(value: string[]): void {
-      // console.log(value);
+    logs(event: any) {
+      this.selectedCompetencies
+    }
+    log(event: any) {
+      this.selectedPrograms = event;
+    }
+    clearPrograms(){
+      this.programz.forEach(x => {
+        x.checked = false
+      });
+      this.selectedPrograms = [];
     }
     
     loadTitle()
@@ -234,6 +248,12 @@ export class ItemsConsumablesComponent implements OnInit {
         taUnderstayTH,
         taNoWorkTH,
         endDate,
+        ndiA_LEVEL2,
+        ndiA_LEVEL3,
+        ndiA_LEVEL4,
+        ndiaClaimType,
+        ndiaPriceType,
+        ndiaTravel,
         recordNumber,
       } = this.tableData[index-1];
       this.inputForm.patchValue({
@@ -322,6 +342,16 @@ export class ItemsConsumablesComponent implements OnInit {
         taUnderstayTH:taUnderstayTH,
         taNoWorkTH:taNoWorkTH,
         end_date:endDate,
+        ndiA_LEVEL2:ndiA_LEVEL2,
+        ndiA_LEVEL3:ndiA_LEVEL3,
+        ndiA_LEVEL4:ndiA_LEVEL4,
+        ndiaClaimType:ndiaClaimType,
+        ndiaPriceType:ndiaPriceType,
+        ndiaTravel:ndiaTravel,
+        deletedRecord:false,
+        HACCUse:false,
+        CSTDAUse:false,
+        NRCPUse:false,
         recnum:recordNumber,
     });
     }
@@ -369,7 +399,24 @@ export class ItemsConsumablesComponent implements OnInit {
       this.current += 1;
     }
     save() {
-    
+      console.log(this.selectedPrograms);
+      if(!this.isUpdate){
+        this.menuS.poststaffAdminActivities(this.inputForm.value)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Added Succesfully');
+        });
+      }else{
+
+      }
+    }
+    saveCompetency(){
+      console.log(this.selectedCompetencies);
+    }
+    clearCompetency(){
+      this.competencyList.forEach(x => {
+        x.checked = false
+    });
+      this.selectedCompetencies = [];
     }
     loadData(){
       this.loading = true;
@@ -458,6 +505,9 @@ export class ItemsConsumablesComponent implements OnInit {
         this.serviceoutIds = data;
       });
       this.timesteps = timeSteps;
+      this.listS.getndiaitems().subscribe(data => {
+        this.ndiaItems = data;
+      })
       this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
       this.paytypes  = ['SALARY','ALLOWANCE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
@@ -574,8 +624,19 @@ export class ItemsConsumablesComponent implements OnInit {
         taUnderstayTHWho:'',
         taOverstayTHWho:'',
         taNoWorkTHWho:'',
-        branch:'',        
-        recnum:null
+        ndiaClaimType:"",//add to api
+        ndiaPriceType:"",//add to api
+        ndiaTravel:false,//add to api
+        ndiA_LEVEL2:'',//add to api
+        ndiA_LEVEL3:'',//add to api
+        ndiA_LEVEL4:'',//add to api
+      });
+      this.competencyForm = this.formBuilder.group({
+        'PersonID': this.parent_person_id,
+        'Group'   :'SVC_COMP',
+        'Type'    :'SVC_COMP',
+        'Name'    : '',
+        'Notes'   : '',
       });
     }
     handleOkTop() {

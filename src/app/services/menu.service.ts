@@ -30,20 +30,60 @@ export class MenuService {
         private ModalS: NzModalService,
         ){ }
        
+        
+        /*******************************************************
+         *  Staff Admin Activities
+        */
+
         getlistServices(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/Services/${is_where}`)
         }
+        
+        postServices(data: any): Observable<any> {
+            return this.auth.post(`${menu}/Services/`, data)
+        }
+
+        /** */
+
+        /**
+         *  Staff Admin Activities
+        */
         getlistItemConsumables(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/itemConsumable/${is_where}`)
         }
+       
+        postItemConsumables(data: any): Observable<any> {
+            return this.auth.post(`${menu}/itemConsumable/`, data)
+        }
+
+        /** */
+
+        /**
+         *  Staff Admin Activities
+        */
+
         getlistMenuMeals(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/menuMeals/${is_where}`)
         }
+
+        postMenuMeals(data: any): Observable<any> {
+            return this.auth.post(`${menu}/menuMeals/`, data)
+        }
+        
+        /** */
+
+        /**
+         *  Staff Admin Activities
+        */
         GetlistcaseManagement(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/caseManagement/${is_where}`)
         }
-
         
+        postcaseManagement(data: any): Observable<any> {
+            return this.auth.post(`${menu}/caseManagement/`, data)
+        }
+        /** */
+
         /**
          *  Staff Admin Activities
         */
@@ -54,12 +94,21 @@ export class MenuService {
         poststaffAdminActivities(data: any): Observable<any> {
             return this.auth.post(`${menu}/staffAdminActivities/`, data)
         }
-
         /** */
-
+        
+        /**
+         *  Recipient Absenses
+        */
         GetlistRecipientAbsenses(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/recipientAbsenses/${is_where}`)
         }
+        postRecipientAbsenses(data: any): Observable<any> {
+            return this.auth.post(`${menu}/recipientAbsenses/`, data)
+        }
+        /***************************************************************************/
+        
+        
+        
         Getlistequipments(is_where:boolean):Observable<any>{
             return this.auth.get(`${menu}/equipments/${is_where}`)
         }

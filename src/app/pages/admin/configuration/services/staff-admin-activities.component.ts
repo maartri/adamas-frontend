@@ -92,6 +92,11 @@ export class StaffAdminActivitiesComponent implements OnInit {
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   emptyList: any[];
+  ndiaItems: any;
+  selectedPrograms: [];
+  competencyForm: FormGroup;
+  selectedCompetencies: any;
+  parent_person_id: any;
   
   constructor(
     private globalS: GlobalService,
@@ -142,10 +147,15 @@ export class StaffAdminActivitiesComponent implements OnInit {
       
       this.modalOpen = true;
     }
-    log(value: string[]): void {
-      // console.log(value);
-    }
     
+    log(event: any) {
+      this.selectedPrograms = event;
+    }
+
+    logs(event: any) {
+        this.selectedCompetencies = event;
+    }
+
     loadTitle()
     {
       return this.title;
@@ -172,7 +182,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
         minChargeRate,
         lifecycle,
         budgetGroup,
+        dicipline,
         dataSet,
+        datasetGroup,
+        datasetCode,
         autoApprove,
         excludeFromAutoLeave,
         infoOnly,
@@ -246,6 +259,12 @@ export class StaffAdminActivitiesComponent implements OnInit {
         taUnderstayTH,
         taNoWorkTH,
         endDate,
+        ndiA_LEVEL2,
+        ndiA_LEVEL3,
+        ndiA_LEVEL4,
+        ndiaClaimType,
+        ndiaPriceType,
+        ndiaTravel,
         recordNumber,
       } = this.tableData[index-1];
       this.inputForm.patchValue({
@@ -259,7 +278,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
         unit:billUnit,
         lifeCycle:lifecycle,
         budgetGroup:budgetGroup,
-        IT_Dataset:dataSet,
+        IT_Dataset:dicipline,
+        dataSet:dataSet,
+        datasetGroup:datasetGroup,
+        HACCType:datasetCode,
         AutoApprove:(autoApprove == true) ? true : false,
         excludeFromAutoLeave:(excludeFromAutoLeave == true) ? true : false,
         infoOnly:(infoOnly == true) ? true : false,
@@ -334,6 +356,12 @@ export class StaffAdminActivitiesComponent implements OnInit {
         taUnderstayTH:taUnderstayTH,
         taNoWorkTH:taNoWorkTH,
         endDate:endDate,
+        ndiA_LEVEL2:ndiA_LEVEL2,
+        ndiA_LEVEL3:ndiA_LEVEL3,
+        ndiA_LEVEL4:ndiA_LEVEL4,
+        ndiaClaimType:ndiaClaimType,//add to api
+        ndiaPriceType:ndiaPriceType,//add to api
+        ndiaTravel:ndiaTravel,//add to api
         recnum:recordNumber,
       });
     }
@@ -375,7 +403,8 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.current = index;
     }
     save() {
-
+      console.log(this.selectedPrograms);
+      // return false;
       if(!this.isUpdate){
         this.menuS.poststaffAdminActivities(this.inputForm.value)
                     .subscribe(data => {
@@ -384,7 +413,15 @@ export class StaffAdminActivitiesComponent implements OnInit {
       }else{
 
       }
-
+    }
+    saveCompetency(){
+      console.log(this.selectedCompetencies);
+    }
+    clearCompetency(){
+      this.competencyList.forEach(x => {
+        x.checked = false
+      });
+      this.selectedCompetencies = [];
     }
     loadData(){
       this.loading = true;
@@ -404,11 +441,11 @@ export class StaffAdminActivitiesComponent implements OnInit {
       }
     }
 
-    clearStaff(){
-      this.listStaff.forEach(x => {
+    clearPrograms(){
+      this.programz.forEach(x => {
         x.checked = false
       });
-      this.selectedStaff = [];
+      this.selectedPrograms = [];
     }
     populateDropdowns(): void {
 
@@ -469,6 +506,11 @@ export class StaffAdminActivitiesComponent implements OnInit {
         this.programz = data;
       });
       this.timesteps = timeSteps;
+
+      this.listS.getndiaitems().subscribe(data => {
+        this.ndiaItems = data;
+      })
+      
       this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
       this.paytypes  = ['SALARY','ALLOWANCE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
@@ -499,8 +541,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
+        dataSet:'',
         datasetGroup:'',
-        datasetType:'',
+        HACCType:'',
         title:'',
         billingText:'',
         rosterGroup:'',
@@ -516,7 +559,6 @@ export class StaffAdminActivitiesComponent implements OnInit {
         AutoApprove:false,
         excludeFromAutoLeave:false,
         infoOnly:false,
-        dataset:'',
         groupMapping:'',
         NDIA_ID:'',
         accountingIdentifier:'',
@@ -597,6 +639,19 @@ export class StaffAdminActivitiesComponent implements OnInit {
         HACCUse:false,
         CSTDAUse:false,
         NRCPUse:false,
+        ndiaClaimType:"",//add to api
+        ndiaPriceType:"",//add to api
+        ndiaTravel:false,//add to api
+        ndiA_LEVEL2:'',//add to api
+        ndiA_LEVEL3:'',//add to api
+        ndiA_LEVEL4:'',//add to api
+      });
+      this.competencyForm = this.formBuilder.group({
+        'PersonID': this.parent_person_id,
+        'Group'   :'SVC_COMP',
+        'Type'    :'SVC_COMP',
+        'Name'    : '',
+        'Notes'   : '',
       });
     }
     handleOkTop() {

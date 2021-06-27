@@ -81,6 +81,12 @@ export class MenuMealsComponent implements OnInit {
   shiftTypes: string[];
   mobileLogModes: { "0": string; "3": string; "1": string; "2": string; };
   timesteps: string[];
+  ndiaItems: any;
+  emptyList: any[];
+  selectedPrograms: any;
+  selectedCompetencies: any[];
+  competencyForm: FormGroup;
+  parent_person_id: any;
   
   constructor(
     private globalS: GlobalService,
@@ -129,10 +135,18 @@ export class MenuMealsComponent implements OnInit {
       });
       this.modalOpen = true;
     }
-    log(value: string[]): void {
+    logs(value: string[]): void {
       // console.log(value);
     }
-    
+    log(event: any) {
+      this.selectedPrograms = event;
+    }
+    clearPrograms(){
+      this.programz.forEach(x => {
+        x.checked = false
+      });
+      this.selectedPrograms = [];
+    }
     loadTitle()
     {
       return this.title;
@@ -233,6 +247,12 @@ export class MenuMealsComponent implements OnInit {
           taUnderstayTH,
           taNoWorkTH,
           endDate,
+          ndiA_LEVEL2,
+          ndiA_LEVEL3,
+          ndiA_LEVEL4,
+          ndiaClaimType,
+          ndiaPriceType,
+          ndiaTravel,
           recordNumber,
         } = this.tableData[index-1];
         this.inputForm.patchValue({
@@ -321,6 +341,16 @@ export class MenuMealsComponent implements OnInit {
           taUnderstayTH:taUnderstayTH,
           taNoWorkTH:taNoWorkTH,
           end_date:endDate,
+          ndiA_LEVEL2:ndiA_LEVEL2,
+          ndiA_LEVEL3:ndiA_LEVEL3,
+          ndiA_LEVEL4:ndiA_LEVEL4,
+          ndiaClaimType:ndiaClaimType,
+          ndiaPriceType:ndiaPriceType,
+          ndiaTravel:ndiaTravel,
+          deletedRecord:false,
+          HACCUse:false,
+          CSTDAUse:false,
+          NRCPUse:false,
           recordNumber:recordNumber,
       });
     }
@@ -339,6 +369,7 @@ export class MenuMealsComponent implements OnInit {
     }
     showCompetencyModal(){
       this.competencymodal = true;
+      this.clearCompetency();
     }
     handleCompetencyCancel(){
       this.competencymodal = false;
@@ -366,89 +397,24 @@ export class MenuMealsComponent implements OnInit {
       this.current += 1;
     }
     save() {
+      console.log(this.selectedPrograms);
       if(!this.isUpdate){
-        this.postLoading = true;
-        const group = this.inputForm;
-        
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let casuals           = group.get('casuals').value;
-        let exportfrompay     = group.get('exportfrompay').value;
-        let conflict          = group.get('conflict').value;
-        let day0              = group.get('day1').value;
-        let day1              = group.get('day2').value;
-        let day2              = group.get('day3').value;
-        let day3              = group.get('day4').value;
-        let day4              = group.get('day5').value;
-        let day5              = group.get('day6').value;
-        let day6              = group.get('day7').value;
-        
-        let values = status+"','"+process+"','"+code+"','"+description+"','"+type+"','"+payrate+"','"+unit+"','"+payid+"','"+mainGroup+"','"+subgroup+"','"+end;
-        let sqlz = "insert into itemtypes ([Status],[ProcessClassification],[Title],[billText],[RosterGroup],[Amount],[Unit],[AccountingIdentifier],[MainGroup],[MinorGroup],[EndDate]) values('"+values+"');select @@IDENTITY"; 
-        this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data){
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.postLoading = false;   
-            this.loading = false;       
-            this.handleCancel();
-            this.resetModal();
-          }
-          else{
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }
+        this.menuS.poststaffAdminActivities(this.inputForm.value)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Added Succesfully');
         });
+      }else{
+
       }
-      else{
-        this.postLoading = true;     
-        const group = this.inputForm;
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = "" ; //  (group.get('end').value == '') ? '' : this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let recordNumber      = group.get('recordNumber').value;
-        
-        let sql  = "Update itemtypes SET [Status]='"+ status + "',[ProcessClassification] = '"+ process + "',[Title] = '"+ code + "',[billText] = '"+ description+ "',[RosterGroup] = '"+ type + "',[Amount] = '"+ payrate + "',[Unit] = '"+ unit+ "',[AccountingIdentifier] = '"+ payid+ "',[MainGroup] = '"+ mainGroup + "',[MinorGroup] = '"+ subgroup + "' WHERE [Recnum] ='"+recordNumber+"'";
-        // console.log(sql);
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data){
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }else{
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }
-        });
-      }
+    }
+    saveCompetency(){
+      console.log(this.selectedCompetencies);
+    }
+    clearCompetency(){
+      this.competencyList.forEach(x => {
+        x.checked = false
+    });
+      this.selectedCompetencies = [];
     }
     loadData(){
       this.loading = true;
@@ -475,7 +441,7 @@ export class MenuMealsComponent implements OnInit {
       this.selectedStaff = [];
     }
     populateDropdowns(): void {
-
+      this.emptyList      = [];
       this.mainGroupList  = ['GROUP ACTIVITY','CENTER BASED ACTIVITY'];
       this.subGroupList   = ['MEALS']
       this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
@@ -531,6 +497,9 @@ export class MenuMealsComponent implements OnInit {
       this.listS.getlist(prog).subscribe(data => {
         this.programz = data;
       });
+      this.listS.getndiaitems().subscribe(data => {
+        this.ndiaItems = data;
+      })
       this.timesteps = timeSteps;
       this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
       this.paytypes  = ['SALARY','ALLOWANCE'];
@@ -649,8 +618,19 @@ export class MenuMealsComponent implements OnInit {
         taUnderstayTHWho:'',
         taOverstayTHWho:'',
         taNoWorkTHWho:'',
-        branch:'',        
-        recordNumber:null
+        ndiaClaimType:"",//add to api
+        ndiaPriceType:"",//add to api
+        ndiaTravel:false,//add to api
+        ndiA_LEVEL2:'',//add to api
+        ndiA_LEVEL3:'',//add to api
+        ndiA_LEVEL4:'',//add to api
+      });
+      this.competencyForm = this.formBuilder.group({
+        'PersonID': this.parent_person_id,
+        'Group'   :'SVC_COMP',
+        'Type'    :'SVC_COMP',
+        'Name'    : '',
+        'Notes'   : '',
       });
     }
     onIndexChange(index: number): void {

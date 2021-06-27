@@ -87,6 +87,7 @@ export interface QuoteLineDTO {
 }
 
 export interface QuoteHeaderDTO {
+    recordNumber?: any,
     docNo?: number,
     clientId?:number,
     programId?:number,

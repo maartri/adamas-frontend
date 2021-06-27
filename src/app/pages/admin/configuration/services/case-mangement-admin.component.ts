@@ -81,6 +81,12 @@ export class CaseMangementAdminComponent implements OnInit {
   shiftTypes: string[];
   mobileLogModes: { "0": string; "3": string; "1": string; "2": string; };
   timesteps: string[];
+  emptyList: any[];
+  ndiaItems: any;
+  selectedPrograms: any;
+  selectedCompetencies: any;
+  competencyForm: FormGroup;
+  parent_person_id: any;
   
   constructor(
     private globalS: GlobalService,
@@ -128,10 +134,18 @@ export class CaseMangementAdminComponent implements OnInit {
       });
       this.modalOpen = true;
     }
-    log(value: string[]): void {
-      // console.log(value);
+    logs(event: any) {
+      this.selectedCompetencies
     }
-    
+    log(event: any) {
+      this.selectedPrograms = event;
+    }
+    clearPrograms(){
+      this.programz.forEach(x => {
+        x.checked = false
+      });
+      this.selectedPrograms = [];
+    }
     loadTitle()
     {
       return this.title;
@@ -232,7 +246,14 @@ export class CaseMangementAdminComponent implements OnInit {
         taUnderstayTH,
         taNoWorkTH,
         endDate,
+        ndiA_LEVEL2,
+        ndiA_LEVEL3,
+        ndiA_LEVEL4,
+        ndiaClaimType,
+        ndiaPriceType,
+        ndiaTravel,
         recordNumber,
+        
       } = this.tableData[index-1];
       this.inputForm.patchValue({
         title:title,
@@ -320,6 +341,17 @@ export class CaseMangementAdminComponent implements OnInit {
         taUnderstayTH:taUnderstayTH,
         taNoWorkTH:taNoWorkTH,
         end_date:endDate,
+        ndiA_LEVEL2:ndiA_LEVEL2,
+        ndiA_LEVEL3:ndiA_LEVEL3,
+        ndiA_LEVEL4:ndiA_LEVEL4,
+        ndiaClaimType:ndiaClaimType,
+        ndiaPriceType:ndiaPriceType,
+        ndiaTravel:ndiaTravel,
+        deletedRecord:false,
+        HACCUse:false,
+        CSTDAUse:false,
+        NRCPUse:false,
+        recnum:recordNumber,
       });
     }
     
@@ -337,6 +369,7 @@ export class CaseMangementAdminComponent implements OnInit {
     }
     showCompetencyModal(){
       this.competencymodal = true;
+      this.clearCompetency();
     }
     handleCompetencyCancel(){
       this.competencymodal = false;
@@ -344,7 +377,6 @@ export class CaseMangementAdminComponent implements OnInit {
     pre(): void {
       this.current -= 1;
     }
-    
     trueString(data: any): string{
       return data ? '1': '0';
     }
@@ -352,102 +384,29 @@ export class CaseMangementAdminComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    onCheckboxChange(option, event) {
-      if(event.target.checked){
-        console.log(option);
-        this.checkedList.push(option.name);
-      } else {
-        this.checkedList = this.checkedList.filter(m=>m!= option.name)
-      }
-    }
     next(): void {
       this.current += 1;
     }
     save() {
       if(!this.isUpdate){
-        this.postLoading = true;
-        const group = this.inputForm;
-        
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let casuals           = group.get('casuals').value;
-        let exportfrompay     = group.get('exportfrompay').value;
-        let conflict          = group.get('conflict').value;
-        let day0              = group.get('day1').value;
-        let day1              = group.get('day2').value;
-        let day2              = group.get('day3').value;
-        let day3              = group.get('day4').value;
-        let day4              = group.get('day5').value;
-        let day5              = group.get('day6').value;
-        let day6              = group.get('day7').value;
-        
-        let values = status+"','"+process+"','"+code+"','"+description+"','"+type+"','"+payrate+"','"+unit+"','"+payid+"','"+mainGroup+"','"+subgroup+"','"+end;
-        let sqlz = "insert into itemtypes ([Status],[ProcessClassification],[Title],[billText],[RosterGroup],[Amount],[Unit],[AccountingIdentifier],[MainGroup],[MinorGroup],[EndDate]) values('"+values+"');select @@IDENTITY"; 
-        this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data){
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.postLoading = false;   
-            this.loading = false;       
-            this.handleCancel();
-            this.resetModal();
-          }
-          else{
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }
+        this.menuS.poststaffAdminActivities(this.inputForm.value)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Added Succesfully');
         });
-      }
-      else{
-        this.postLoading = true;     
-        const group = this.inputForm;
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = "" ; //  (group.get('end').value == '') ? '' : this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let recordNumber      = group.get('recordNumber').value;
-        
-        let sql  = "Update itemtypes SET [Status]='"+ status + "',[ProcessClassification] = '"+ process + "',[Title] = '"+ code + "',[billText] = '"+ description+ "',[RosterGroup] = '"+ type + "',[Amount] = '"+ payrate + "',[Unit] = '"+ unit+ "',[AccountingIdentifier] = '"+ payid+ "',[MainGroup] = '"+ mainGroup + "',[MinorGroup] = '"+ subgroup + "' WHERE [Recnum] ='"+recordNumber+"'";
-        // console.log(sql);
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data){
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }else{
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }
-        });
+      }else{
+
       }
     }
+    saveCompetency(){
+      console.log(this.selectedCompetencies);
+    }
+    clearCompetency(){
+      this.competencyList.forEach(x => {
+        x.checked = false
+    });
+      this.selectedCompetencies = [];
+    }
+
     loadData(){
       this.loading = true;
       this.menuS.GetlistcaseManagement(this.check).subscribe(data => {
@@ -465,14 +424,10 @@ export class CaseMangementAdminComponent implements OnInit {
         this.loadData();
       }
     }
-    clearStaff(){
-      this.listStaff.forEach(x => {
-        x.checked = false
-    });
-      this.selectedStaff = [];
-    }
+    
     populateDropdowns(): void {
-
+      
+      this.emptyList      = [];
       this.mainGroupList  = ['RECIPIENT ADMINISTRATION','TRAVEL TIME','RECIPIENT ABSENCE'];
       //this.subGroupList   = ['FULL DAY-RESPITE','FULL DAY-HOSPITAL','FULL DAY-TRANSITION','FULL DAY-SOCIAL LEAVE','ALTERNATIVE','HOSPITAL','OTHER','TRANSITION'];
       this.subGroupList   = ['REFERRAL-IN','REFERRAL-OUT','ASSESSMENT','ADMISSION','REVIEW','DISCHARGE','DATA UPDATE','FEE','NOT PROCEEDING','OTHER','NOT APPLICABLE','REVIEW','INQUIRY','ADMISSION','DATA UPDATE']
@@ -530,6 +485,10 @@ export class CaseMangementAdminComponent implements OnInit {
         this.programz = data;
       });
       this.timesteps = timeSteps;
+      this.timesteps = timeSteps;
+      this.listS.getndiaitems().subscribe(data => {
+        this.ndiaItems = data;
+      })
       this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
       this.paytypes  = ['SALARY','ALLOWANCE'];
       this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
@@ -649,6 +608,13 @@ export class CaseMangementAdminComponent implements OnInit {
         taNoWorkTHWho:'',
         branch:'',        
         recordNumber:null
+      });
+      this.competencyForm = this.formBuilder.group({
+        'PersonID': this.parent_person_id,
+        'Group'   :'SVC_COMP',
+        'Type'    :'SVC_COMP',
+        'Name'    : '',
+        'Notes'   : '',
       });
     }
     handleOkTop() {

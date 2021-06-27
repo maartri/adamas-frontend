@@ -31,7 +31,7 @@
                         <td nzLeft nzBreakWord>{{data.title}}</td>
                         <td nzLeft nzBreakWord>{{data.rosterGroup}}</td>
                         <td nzLeft nzBreakWord>{{data.subGroup}}</td>
-                        <td nzLeft nzBreakWord>{{data.dataset}}</td>
+                        <td nzLeft nzBreakWord>{{data.dataSet}}</td>
                         <td nzLeft nzBreakWord>{{data.datasetCode}}</td>
                         <td nzLeft nzBreakWord>{{data.outletID}}</td>
                         <td nzLeft nzBreakWord>{{data.datasetGroup}}</td>
@@ -259,6 +259,61 @@
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="budgetGroup"  nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let budget of budgetGroupList" [nzLabel]="budget.description" [nzValue]="budget.description"></nz-option>
                                             </nz-select>
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                            price Type :
+                                        </div>
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiaPriceType"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let khali of emptyList" [nzLabel]="khali" [nzValue]="khali"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                        <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                            NDIA Reason Code if Applicable :
+                                        </div>
+                                        <div nz-col nzSpan="6" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiaClaimType"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let khali of emptyList" [nzLabel]="khali" [nzValue]="khali"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                        </div>
+                                        <div nz-col nzSpan="20" class="pad-r-5"> 
+                                            <label nz-checkbox  class="mrg-btm" formControlName="ndiaTravel"></label> NDIA Travel Before Applicable 
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                            Level 2 :
+                                        </div>
+                                        <div nz-col nzSpan="12" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiA_LEVEL2"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let ndia of ndiaItems" [nzLabel]="ndia" [nzValue]="ndia"></nz-option>
+                                            </nz-select> 
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                            Level 3 :
+                                        </div>
+                                        <div nz-col nzSpan="12" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiA_LEVEL3"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let ndia of ndiaItems" [nzLabel]="ndia" [nzValue]="ndia"></nz-option>
+                                            </nz-select> 
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                            Level 4 :
+                                        </div>
+                                        <div nz-col nzSpan="12" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiA_LEVEL4"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let ndia of ndiaItems" [nzLabel]="ndia" [nzValue]="ndia"></nz-option>
+                                            </nz-select> 
                                         </div>
                                     </div>
                                 </div>    
@@ -646,8 +701,8 @@
                                 <nz-divider nzText="Program Approved Against " nzOrientation="left" style="margin: 0px;color:#1890FF;"></nz-divider>
                             </div>
                             <div nz-col nzSpan="10">
-                                <div nz-col nzSpan="10" ><button style="background-color:#87d068" (click)="clearStaff()" nzSize="small" class="btn-staff" nz-button nzType="success">Select All </button></div>
-                                <div nz-col nzSpan="10"><button (click)="clearStaff()" nzSize="small" class="btn-staff" nz-button nzType="danger">Unselect All </button></div>
+                                <!-- <div nz-col nzSpan="10" ><button style="background-color:#87d068" (click)="clearStaff()" nzSize="small" class="btn-staff" nz-button nzType="success">Select All </button></div> -->
+                                <div nz-col nzSpan="10"><button (click)="clearPrograms()" nzSize="small" class="btn-staff" nz-button nzType="danger">Unselect All </button></div>
                             </div>
                             <div nz-col nzSpan="14">
                                 <div class="staff-wrapper" style="height: 20rem;
@@ -818,10 +873,10 @@
         <div nz-row nzGutter="24">    
             <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                 <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Competencies Required For Work in This Program</h4>
-                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="logs($event)">
                     <div nz-row>
                         <div nz-col nzSpan="24" *ngFor="let comp of competencyList">
-                            <label nz-checkbox [nzValue]="comp.name" [(ngModel)]="comp.checked" (change)="onCheckboxChange(comp,$event)" [ngModelOptions]="{standalone: true}">{{ comp.name }}</label>
+                            <label nz-checkbox [nzValue]="comp.name" [(ngModel)]="comp.checked" [ngModelOptions]="{standalone: true}">{{ comp.name }}</label>
                         </div>
                     </div>
                 </nz-checkbox-wrapper>
@@ -830,8 +885,8 @@
     </form>
     <div *nzModalFooter>
         <ng-container>
-            <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                <span>Save</span>
+            <button nz-button nzType="primary">
+                <span>ADD</span>
             </button>
         </ng-container>
     </div>

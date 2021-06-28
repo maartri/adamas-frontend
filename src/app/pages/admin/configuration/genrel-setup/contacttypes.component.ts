@@ -91,7 +91,7 @@ export class ContacttypesComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber,
       });
-      this.temp_title = name;
+      this.temp_title = title;
     }
     loadTitle()
     {

@@ -80,12 +80,14 @@ export interface QuoteLineDTO {
     strategyId?: number,
     rcycle?: string,
     notes?: string,
-    sortOrder: number,
+    sortOrder?: number,
 
-    serviceType?: string
+    serviceType?: string,
+    code?: string
 }
 
 export interface QuoteHeaderDTO {
+    recordNumber?: any,
     docNo?: number,
     clientId?:number,
     programId?:number,
@@ -110,10 +112,12 @@ export interface QuoteHeaderDTO {
     personId?: string,
    
     quoteLines?: Array<QuoteLineDTO>,
+    goals?: Array<string>,
     program?: string,
     user?: string,
     template?: string,
     type?: string,
+    documentId?: number
 }
 
 export interface Recipients {
@@ -248,7 +252,9 @@ export interface AddBooking {
     Notes?: string,
     PermanentBookings?: PermanentBookings[],
     RealDateBookings?:PermanentBookings[],
-    Summary?: string
+    Summary?: string,
+    RecipientPersonId?: string,
+    ManagerPersonId?: string
 }
 
 export interface PermanentBookings{

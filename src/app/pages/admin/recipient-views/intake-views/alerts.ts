@@ -179,7 +179,6 @@ export class IntakeAlerts implements OnInit, OnDestroy {
         const competency = this.competencyGroup.value;
 
         if(this.addOREdit == 0){
-            
                 this.timeS.postintakecompetency(this.competencyGroup.value)
                     .subscribe(data => {
                         this.globalS.sToast('Success', 'Competency Added');
@@ -194,15 +193,14 @@ export class IntakeAlerts implements OnInit, OnDestroy {
                             if(data){
                                 this.globalS.sToast('Success','Competency Updated')
                                 this.search();
-                                this.handleCancel()
-                                
+                                this.handleCancel()    
                             }
                         });
         }
     }
 
     showAddModal() {
-        this.addOREdit = 0;
+        this.addOREdit = 1;
         this.clearForm();
         this.alertOpen = true;
     }
@@ -222,7 +220,7 @@ export class IntakeAlerts implements OnInit, OnDestroy {
     }
 
     updatecompetency(data: any){
-        this.addOREdit = 1;
+        this.addOREdit = 0;
 
         this.alertOpen = true;
 

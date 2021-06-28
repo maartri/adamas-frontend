@@ -1,0 +1,1 @@
+{"version":3,"file":"spreadSheets.module.d.ts","sources":["spreadSheets.module.d.ts"],"names":[],"mappings":";;;;;AAAA;;;;AACA","sourcesContent":["export declare class SpreadSheetsModule {\r\n}\r\n"]}

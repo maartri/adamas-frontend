@@ -1,7 +1,7 @@
 <div nz-row> 
     <div nz-row>
         <div nz-col nzOffset="1">
-            <button class="botton success" (click)="save()" [disabled]="!inputForm?.dirty">Save Changes</button>
+            <button class="botton success" (click)="save()" [disabled]="!inputForm?.dirty">Save Changes</button>           
         </div>
     </div>
     <div nz-row >
@@ -111,8 +111,9 @@
         <div nz-col nzSpan="20">
             <nz-divider nzText="Pension Information" nzOrientation="left"></nz-divider>
             <div nz-row>
-               <div nz-col nzOffset="1">
+               <div nz-col nzOffset="1" class="btn-container">
                     <button class="botton success" (click)="showAddModal()">Add Pension</button>
+                    <button nz-button nzType="primary" nz-tooltip nzTooltipTitle="Print Pension" [nzLoading]="printLoad" (click)="print()"><i nz-icon nzType="printer" nzTheme="outline"></i></button>
                </div>
             </div>
             <div nz-row [nzGutter]="16" class="divider-subs">

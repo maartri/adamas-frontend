@@ -92,7 +92,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
     search(user: any = this.user) {
       this.cd.reattach();
       this.loading = true;
-      
       forkJoin([
         this.timeS.getexcludedstaff(user.id),
         this.timeS.getincludedstaff(user.id),
@@ -104,7 +103,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
         this.listStaff = staff[2];
         this.cd.markForCheck();
       });
-      
     }
     
     buildForm() {
@@ -118,7 +116,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
     
     get title() {
       const str = this.whatView == 1 ? 'Excluded Staff' : 'Approved Staff';
-      const pro = this.editOrAdd == 1 ? 'Add' : 'Edit';
+      const pro = this.editOrAdd == 1 ? 'Add' : 'Update';
       return `${pro} ${str}`;
     }
     trackByFn(index, item) {

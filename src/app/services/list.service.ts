@@ -21,6 +21,35 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    createQuoteLine(data: any):Observable<any>{
+        return this.http.post(`${list}/create-quote-line`, data);
+    }
+
+    printquote(data: any):Observable<any>{
+        // return this.http.post(`${fileV2}/download-document-remote`, data, { responseType: 'blob', reportProgress: true });
+        return this.http.post(`${list}/quotes-print`, data,  { responseType: 'blob', reportProgress: true })
+    }
+
+    deletetempdoc(docId: any):Observable<any>{
+        return this.auth.delete(`${list}/delete-temp-doc/${docId}`);
+    }
+
+    geteventlifecycle(): Observable<any>{
+        return this.auth.get(`${list}/event-life-cycle`);
+    }
+
+    createtempdoc(data: any): Observable<any>{
+        return this.auth.post(`${list}/create-temp-doc`, data);
+    }
+    
+    getquotetype(): Observable<any>{
+        return this.auth.get(`${list}/goalplan/list`);
+    }
+
+    getquotedetails(recordNo: number): Observable<any>{
+        return this.auth.get(`${list}/quotes-details/${recordNo}`);
+    }
+
     getquoteline(data: any): Observable<any>{
         return this.auth.get(`${list}/quote-line/list/${data}`);
     }
@@ -41,16 +70,12 @@ export class ListService {
         return this.auth.delete(`${list}/quote-lines/${recordNo}`);
     }
 
-    getquotetype(): Observable<any>{
-        return this.auth.get(`${list}/goalplan/list`);
-    }
-
-    getquotedetails(recordNo: number): Observable<any>{
-        return this.auth.get(`${list}/quotes-details/${recordNo}`);
-    }
-
     getrecipientsqlid(id: string): Observable<any> {
         return this.auth.get(`${list}/recipient-sqlid/${id}`);
+    }
+
+    postprintline(data: any):Observable<any>{
+        return this.http.post(`${list}/print-quote-line`, data,  { responseType: 'blob', reportProgress: true });
     }
 
     getpostquote(data: any): Observable<any> {
@@ -68,7 +93,9 @@ export class ListService {
     getprogramlevel(program: string): Observable<any> {
         return this.auth.get(`${list}/program-level/${program}`);
     }
-
+    getlevelRate(level: string): Observable<any> {
+        return this.auth.get(`${list}/level-rate/${level}`);
+    }
     gettypeother(caseName: string): Observable<any> {
         return this.auth.get(`${list}/type-other/${caseName}`);
     }
@@ -92,7 +119,6 @@ export class ListService {
     getdatalist(): Observable<any> {
         return this.auth.get(`${list}/data-list`);
     }
-
 
     getreferraltype_latest(packageName: string): Observable<any> {
         return this.auth.get(`${list}/referral-type/${packageName}`);
@@ -164,6 +190,29 @@ export class ListService {
     getchargetype(data: any): Observable<any>{
         return this.auth.get(`${list}/quote/chargeType`, data);
     }
+    GetQuotetype(id: string): Observable<any>{
+        return this.auth.get(`${list}/getquotetype/${id}`);
+    }
+    /*GetCharges(id: string): Observable<any>{
+        return this.auth.get(`${list}/getcharges/${id}`);
+    } */
+    GetCMPERC(id: string): Observable<any>{
+        return this.auth.get(`${list}/getcmperc/${id}`);
+    }
+    GetTOpUP(id: string): Observable<any>{
+        return this.auth.get(`${list}/gettopup/${id}`);
+    }
+    GetBasicCare(id: string): Observable<any>{
+        return this.auth.get(`${list}/getbasiccare/${id}`);
+    }
+    GetAdmPerc(id: string): Observable<any>{
+        return this.auth.get(`${list}/getadmperc/${id}`);
+    }
+    
+    getadmperc
+    GetDailyliving(id: string): Observable<any>{
+        return this.auth.get(`${list}/getdailyliving/${id}`);
+    }
 
     getglobaltemplate(): Observable<any>{
         return this.auth.get(`${list}/template/list`);
@@ -177,7 +226,7 @@ export class ListService {
         return this.auth.get(`${list}/is-hcp-cdc-programs/${personID}`);
     }
 
-    getCareplangoals(personID: string): Observable<any>{
+    getCareplangoals(personID: any): Observable<any>{
         return this.auth.get(`${list}/quote/careplangoal/list/${personID}`)
     }
     getStrategies(personID: string): Observable<any>{
@@ -533,7 +582,9 @@ export class ListService {
     getintakestaff(personID: string): Observable<any>{
         return this.auth.get(`${list}/intake/staff/${personID}`)
     }
-
+    getcenterlocationstaff(): Observable<any>{
+        return this.auth.get(`${list}/centerLocation/staff/`)
+    }    
     GetTraccsStaffCodes(): Observable<any>{
         return this.auth.get(`${list}/Users/TraccsStaffCodes`)
     }

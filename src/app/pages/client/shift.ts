@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
-import { TimeSheetService, GlobalService, StaffService, ClientService } from '@services/index';
+import { TimeSheetService, GlobalService, StaffService, ClientService, SettingsService } from '@services/index';
 
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, mergeMap, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -85,10 +85,13 @@ export class ShiftClient implements OnInit, OnDestroy {
     currentShift: any;
     settings: any;
     isConfirmLoading: boolean = false;
+    _settings: SettingsService;
+
     constructor(
         private timeS: TimeSheetService,
         private staffS: StaffService,
         private clientS: ClientService,
+        private settingS: SettingsService,
         private globalS: GlobalService
     ) {
         this.tabStream.pipe(
@@ -124,6 +127,9 @@ export class ShiftClient implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this._settings = this.settingS;
+        console.log(this._settings.CANQUERYSERVICE())
+
         this.user = this.id || this.globalS.decode()['code'];
         this.tabStream.next(0);
 
@@ -241,7 +247,8 @@ export class ShiftClient implements OnInit, OnDestroy {
         }
 
         // this.tabStream.next(this.tabActive);
-
+        // console.log(booking)
+        // return;
         this.clientS.postcancelbooking(booking)
             .subscribe(data => {
                 if (data) {

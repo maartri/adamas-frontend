@@ -381,7 +381,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
       this.incidentForm.patchValue({
         accountNo: user.accountNo,
-
+        gender: this.getGender(user.gender),
         subjectName: `${user.firstName} ${user.lastName}`,
         dob: user.dob ? new Date(user.dob) : null
       });
@@ -425,20 +425,18 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   buildValueChanges(){
 
-    this.getSelect();
-    
-  this.timeS.GetIncidentNotifications().subscribe(data => {
-    
-    
-     this.incidentNotifications = data.map(x =>{
-        var o = Object.assign({}, x);
-        o.checked = true;
-        
-        return o;
-      });
-      
-  }); 
+  this.getSelect();
+
+  // this.timeS.GetIncidentNotifications().subscribe(data => {
+  //    this.incidentNotifications = data.map(x =>{
+  //       var o = Object.assign({}, x);
+  //       o.checked = true;
+  //       return o;
+  //   });
+  // }); 
+  
   this.timeS.Getincidentmandatorynotifications().subscribe(data => this.incidentmandatoryNotifications = data);
+  
   this.timeS.Getincidentnonmandatorynotifications().subscribe(data => this.incidentnonmandatoryNotifications = data);
     
     this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
@@ -975,7 +973,7 @@ updateCheckBoxesInStep1(defaultString: string){
     this.incidentForm.patchValue({
       summary: data.shortDesc,
       description: data.fullDesc, 
-      
+      recipient:data.currentAssignee,
       other:data.incidentTypeOther,
       otherspecify:  data.followupContactedOther,
       
@@ -1054,25 +1052,25 @@ updateCheckBoxesInStep1(defaultString: string){
   }
 
   next(): void {
-    var  {startTimeOfIncident,endTimeOfIncident} = this.incidentForm.value
+    // var  {startTimeOfIncident,endTimeOfIncident} = this.incidentForm.value
 
      
      
-    if (this.current == 1 && endTimeOfIncident != null ){
-        //this.compareTimeofincidents();
-        if (format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm')){
-          //  alert("End Time of Incient must be greater then Start time")
-            this.modal.error({
-              nzTitle: 'TRACCS',
-                nzContent: 'End Time of Incident Must be greater than Start Time',
-                nzOnOk: () => {},
-              });
-        }
+    // if (this.current == 1 && endTimeOfIncident != null ){
+    //     //this.compareTimeofincidents();
+    //     if (format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm')){
+    //       //  alert("End Time of Incient must be greater then Start time")
+    //         this.modal.error({
+    //           nzTitle: 'TRACCS',
+    //             nzContent: 'End Time of Incident Must be greater than Start Time',
+    //             nzOnOk: () => {},
+    //           });
+    //     }
         
-    }else
+    // }else
         
           this.current += 1;
-      }
+  }
 
   log(event: any) {
     this.selectedStaff = event;

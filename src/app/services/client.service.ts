@@ -16,6 +16,10 @@ export class ClientService {
         private auth: AuthService
     ) { }
 
+    gethideportalbalance(uname: string):Observable<any>{
+        return this.auth.get(`${client}/hideportalbalance/${uname}`);
+    }
+
     getnotepermissions(id: string): Observable<any>{
         return this.auth.get(`${client}/note-permissions/${id}`);
     }

@@ -2,8 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ListService, MenuService } from '@services/index';
 import { GlobalService } from '@services/global.service';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { takeUntil, switchMap } from 'rxjs/operators';
+import { Subject, EMPTY } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
@@ -14,10 +14,15 @@ import { NzModalService } from 'ng-zorro-antd';
   styles:[`
   .mrg-btm{
     margin-bottom:0rem !important;
-  }`]
+  }
+  span.small-font{
+    font-size:12px;
+  }
+  `]
 })
 export class DistributionlistComponent implements OnInit {
-  
+  events: Array<any>;
+
   tableData: Array<any>;
   staff:Array<any>;
   listType:Array<any>;
@@ -290,7 +295,21 @@ export class DistributionlistComponent implements OnInit {
         end_date:'',
         mandatory:false,
         recordNo:null,
+        event: null
       });
+
+      this.inputForm.get('ltype').valueChanges
+      .pipe(
+        switchMap(x => {
+            if(x != 'EVENT')
+              return EMPTY;
+
+            return this.listS.geteventlifecycle()
+        })
+      )
+      .subscribe(data => {
+        this.events = data;
+      })
     }
     
     handleOkTop() {

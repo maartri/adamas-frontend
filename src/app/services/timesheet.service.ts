@@ -18,6 +18,9 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    getbrandinglogo(type: string = 'big'): Observable<any>{
+        return this.auth.get(`${timesheet}/branding-logo/${type}`);
+    }
         
     getincidentdocuments(data: any): Observable<any>{
         return this.auth.get(`${timesheet}/incident-documents`, data);
@@ -466,6 +469,51 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/intake/staff/${recordNo}`)
     }
 
+    /**
+     * center facility location staff
+     */
+
+    getcenterlocationexcludedstaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/excludedstaff/${id}`)
+    }
+
+    getcenterLocationincludedstaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/includedstaff/${id}`)
+    }
+
+    postcenterlocationstaff(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/centerLocation/staff`, data)
+    }
+
+    updatecenterlocationstaff(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/centerLocation/staff`, data)
+    }
+
+    deletecenterlocationstaff(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/centerLocation/staff/${recordNo}`)
+    }
+    
+    
+    /** */
+
+    /**
+     *  Center Location competency
+     */
+    getcenterlocationcompetency(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/competency/${id}`)
+    }
+
+    postcenterlocationcompetency(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/centerlocation/competency`, data)
+    }
+   
+    updatecenterlocationcompetency(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/centerlocation/competency`, data)
+    }
+
+    deletecenterlocationcompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/centerlocation/competency/${recordNo}`)
+    }
     /** */
 
     /**
@@ -755,7 +803,9 @@ export class TimeSheetService {
     getprogramop(personID: string): Observable<any> {
         return this.auth.get(`${timesheet}/program-opnote/${personID}`)
     }
-
+    getprogrampackages(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/program-packages/${personID}`)
+    }
     getdisciplineop(): Observable<any> {
         return this.auth.get(`${timesheet}/discipline-opnote`)
     }
@@ -803,10 +853,13 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/staff/opnotes/${id}`)
     }
 
+
     gethrnotes(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/hrnotes/${name}`)
     }
-
+    getarchivedhrnotes(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/achivedhrnotes/${name}`)
+    }
     deletehrnotes(id: number): Observable<any> {
         return this.auth.delete(`${timesheet}/staff/hrnotes/${id}`)
     }
@@ -1135,6 +1188,10 @@ export class TimeSheetService {
 
     getspecificcompetencies(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/specific/competencies/${id}`)
+    }
+
+    getgrouplist(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/group-list/${id}`)
     }
 
     getgrouptypes(id: string): Observable<any> {

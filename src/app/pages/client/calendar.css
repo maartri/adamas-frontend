@@ -1,1 +1,5 @@
 @import "../../../../node_modules/bootstrap-css-only/css/bootstrap.min.css";
+
+/* nz-switch.master-class >>> button.ant-switch-checked{
+    background-color:red;
+} */

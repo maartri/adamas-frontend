@@ -82,13 +82,13 @@
     
 </div>
 
-<app-add-quote [open]="newQuoteModal" [user]="user"></app-add-quote>
+<app-add-quote [open]="newQuoteModal" [user]="user" [option]="option"></app-add-quote>
 
 <app-add-referral [open]="newReferralModal" [type]="'referral'" (openRefer)="openReferModal($event)" ></app-add-referral>
 
 <app-refer-in [open]="openReferInModal"></app-refer-in>
 
-<app-recipients-options [open]="recipientOptionOpen" [option]="recipientOption" [user]="user"></app-recipients-options>
+<app-recipients-options [open]="recipientOptionOpen" [option]="recipientOption" [user]="user" [from]="from"></app-recipients-options>
 
 
 <nz-modal [(nzVisible)]="programModalOpen" nzWidth="920" nzTitle="Alert Status and Usage Analysis" (nzOnCancel)="closeProgram()" (nzOnOk)="closeProgram()">

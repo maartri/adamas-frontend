@@ -496,6 +496,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   add() {
 
     this.referralGroup.controls["dob"].setValue(this.referralGroup.value.dob ? moment(this.referralGroup.value.dob).format() : '')
+    this.current = 1;
     // var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
     // this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
 
@@ -522,7 +523,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
         this.globalS.sToast('Success', 'Recipient Added')        
       
       });
-      
+     
      
   }
   

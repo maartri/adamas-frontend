@@ -60,18 +60,18 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="definedOpen" nzTitle="USER GROUP" (nzOnCancel)="handleCancel(1)" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="definedOpen" [nzTitle]="addOREdit == 1 ? 'Add User Group' : 'Update User Group'" (nzOnCancel)="handleCancel(1)" (nzOnOk)="handleOk()">
     <div>
         
         <div nz-row nzGutter="16" class="mrg-btm" >
             <div nz-col nzSpan="12" [formGroup]="userGroupForm" *ngIf="addOREdit == 1">
-                <label for="End Date">Title:</label>
+                <label for="End Date">Group:</label>
                 <nz-select style="width:100%" nzAllowClear formControlName="group">
                     <nz-option *ngFor="let data of dropDowns?.userGroups"  [nzValue]="data" [nzLabel]="data"></nz-option>
                 </nz-select>
             </div>
             <div nz-col nzSpan="12" [formGroup]="userGroupForm" *ngIf="addOREdit == 2">
-                <label for="">Branch</label>
+                <label for="">Group</label>
                 <input nz-input formControlName="group" disabled />
             </div>
             <div nz-col nzSpan="12" [formGroup]="userGroupForm">
@@ -114,7 +114,7 @@
         </div>
     </div>
   </nz-modal>
-  <nz-modal [(nzVisible)]="preferenceOpen" nzTitle="PREFERENCES" (nzOnCancel)="handleCancel(2)" (nzOnOk)="handleOk()">
+  <nz-modal [(nzVisible)]="preferenceOpen" [nzTitle]="addOREdit == 1 ? 'Add Preference' : 'Update Preference'" (nzOnCancel)="handleCancel(2)" (nzOnOk)="handleOk()">
     <div>
         <div nz-row nzGutter="16">
             <div nz-col nzSpan="12" [formGroup]="preferenceForm" *ngIf="addOREdit == 1">

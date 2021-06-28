@@ -64,12 +64,10 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         unallocAdmin: false,
         unallocUnapproved: true,
         unallocMaster: false,
-
-        explanation: null,
-        activityCode: null,
-        payCode: null,
-        program: null,
-
+        explanation: '',
+        activityCode: '',
+        payCode: '',
+        program: '',
         programShow: false
     });
   }

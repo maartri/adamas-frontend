@@ -132,7 +132,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
     }
 
     showAddModal() {
-        this.addOREdit = 0;
+        this.addOREdit = 1;
         this.buildForm();
         this.consentOpen = true;
 
@@ -149,7 +149,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
     updateconsentmodal(data: any){
 
         this.consentOpen = true;
-        this.addOREdit = 1;
+        this.addOREdit = 0;
         
         this.lists = [data.consent];
 

@@ -91,6 +91,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   drawerVisible: boolean =  false;
   private unsubscribe: Subject<void> = new Subject();
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  emptyList: any[];
   
   constructor(
     private globalS: GlobalService,
@@ -120,20 +121,18 @@ export class StaffAdminActivitiesComponent implements OnInit {
     }
     
     showAddModal() {
-
       this.title = "Add New Staff Admin Activities"
-      this.resetModal();
       this.inputForm.patchValue({
         mainGroup :'STAFF ADMINISTRATION',
         subgroup  :'NOT APPLICABLE',
         status    :'NONATTRIBUTABLE',
         unit      :'HOUR',
-        min       :'0',
-        max       :'0',
-        forceRostedTime:'0',
+        minDurtn       :'0',
+        maxDurtn       :'0',
+        fixedTime:'0',
         chargeRate1:'$0.0000',
         minimumChargeRate:'$0.0000',
-        commercial:'$0.0000',
+        billAmount:'$0.0000',
         price2:'$0.0000',
         price3:'$0.0000',
         price4:'$0.0000',
@@ -200,7 +199,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
         noSaturday,
         noSunday,
         noPubHol,
-        dtartTimeLimit,
+        startTimeLimit,
         endTimeLimit,
         minDurtn,
         maxDurtn,
@@ -252,27 +251,26 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.inputForm.patchValue({
         title:title,
         billingText:billText,
-        mainGroup:rosterGroup,
-        subgroup:subGroup,
+        rosterGroup:rosterGroup,
+        minorGroup:subGroup,
         status:status,
         chargeRate1:billAmount,
         minimumChargeRate:minChargeRate,
         unit:billUnit,
-        lifeCycleEvent:lifecycle,
+        lifeCycle:lifecycle,
         budgetGroup:budgetGroup,
-        dicipline:dataSet,
-        AutoApprove:autoApprove,
-        excludeFromAuto:(excludeFromAutoLeave == true) ? true : false,
-        Informational:(infoOnly == true) ? true : false,
-        recordNumber:(recordNumber == true) ? true : false,
-        accountingCode:accountingCode,
+        IT_Dataset:dataSet,
+        AutoApprove:(autoApprove == true) ? true : false,
+        excludeFromAutoLeave:(excludeFromAutoLeave == true) ? true : false,
+        infoOnly:(infoOnly == true) ? true : false,
+        accountingIdentifier:accountingCode,
         glRevenue:glRevenue,
         job:job,
         glCost:glCost,
-        buom:unitCostUOM,
+        unitCostUOM:unitCostUOM,
         unitCost:unitCost,
-        nida:mainGroup,
-        commercial:billAmount,
+        NDIA_ID:mainGroup,
+        billAmount:billAmount,
         excludeFromPayExport:(excludeFromPayExport == true) ? true : false,
         excludeFromUsageStatements:(excludeFromUsageStatements == true) ? true : false,
         price2:price2,
@@ -280,41 +278,41 @@ export class StaffAdminActivitiesComponent implements OnInit {
         price4:price4,
         price5:price5,
         price6:price6,
-        conflict:excludeFromConflicts,
-        day1:(noMonday    == false) ? true : false,
-        day2:(noTuesday   == false) ? true : false,
-        day3:(noWednesday == false) ? true : false,
-        day4:(noThursday  == false) ? true : false,
-        day5:(noFriday    == false) ? true : false,
-        day6:(noSaturday  == false) ? true : false,
-        day7:(noSunday    == false) ? true : false,
-        day0:(noPubHol    == false) ? true : false,
-        startTimeLimit:dtartTimeLimit,
+        excludeFromConflicts:excludeFromConflicts,
+        noMonday:(noMonday    == false) ? true : false,
+        noTuesday:(noTuesday   == false) ? true : false,
+        noWednesday:(noWednesday == false) ? true : false,
+        noThursday:(noThursday  == false) ? true : false,
+        noFriday:(noFriday    == false) ? true : false,
+        noSaturday:(noSaturday  == false) ? true : false,
+        noSunday:(noSunday    == false) ? true : false,
+        noPubHol:(noPubHol    == false) ? true : false,
+        startTimeLimit:startTimeLimit,
         endTimeLimit:endTimeLimit,
-        min:minDurtn,
-        max:maxDurtn,
-        rostedDay:(noChangeDate == true) ? true : false,
-        rostedTime:(noChangeTime== true) ? true : false,
-        forceRostedTime:fixedTime,
-        orignalminute:timeChangeLimit,
-        address:defaultAddress,
-        contact:defaultPhone,
+        minDurtn:minDurtn,
+        maxDurtn:maxDurtn,
+        noChangeDate:(noChangeDate == true) ? true : false,
+        noChangeTime:(noChangeTime== true) ? true : false,
+        fixedTime:fixedTime,
+        timeChangeLimit:timeChangeLimit,
+        defaultAddress:defaultAddress,
+        defaultPhone:defaultPhone,
         autoActivityNotes:(autoActivityNotes == true) ? true : false,
         autoRecipientDetails:(autoRecipientDetails== true) ? true : false,
         jobSheetPrompt:(jobSheetPrompt == true ) ? true : false,
         activityNotes:activityNotes,
-        specialShift:jobType,
-        award1:(excludeFromHigherPayCalculation == true) ? true : false,
-        award2:(noOvertimeAccumulation== true) ? true : false,
-        award3:(payAsRostered== true) ? true : false,
-        award4:(excludeFromTimebands== true) ? true : false,
-        award5:(excludeFromInterpretation== true) ? true : false,
+        jobType:jobType,
+        excludeFromHigherPayCalculation:(excludeFromHigherPayCalculation == true) ? true : false,
+        noOvertimeAccumulation:(noOvertimeAccumulation== true) ? true : false,
+        payAsRostered:(payAsRostered== true) ? true : false,
+        excludeFromTimebands:(excludeFromTimebands== true) ? true : false,
+        excludeFromInterpretation:(excludeFromInterpretation== true) ? true : false,
         excludeFromClientPortalDisplay:(excludeFromClientPortalDisplay == true) ?  true : false,
         excludeFromTravelCalc:(excludeFromTravelCalc ==  true) ? true : false,
         tA_EXCLUDEGEOLOCATION:(tA_EXCLUDEGEOLOCATION == true) ? true : false,
         appExclude1:(appExclude1 == true) ? true : false,
         taexclude1:(taexclude1 == true) ?  true : false,
-        mode:tA_LOGINMODE,
+        tA_LOGINMODE:tA_LOGINMODE,
         taEarlyStartTHEmail:(taEarlyStartTHEmail == true) ?  true : false,
         taEarlyStartTH:taEarlyStartTH,
         taEarlyStartTHWho:taEarlyStartTHWho,
@@ -335,7 +333,8 @@ export class StaffAdminActivitiesComponent implements OnInit {
         taOverstayTH:taOverstayTH,
         taUnderstayTH:taUnderstayTH,
         taNoWorkTH:taNoWorkTH,
-        end_date:endDate,
+        endDate:endDate,
+        recnum:recordNumber,
       });
     }
     
@@ -376,89 +375,16 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.current = index;
     }
     save() {
+
       if(!this.isUpdate){
-        this.postLoading = true;
-        const group = this.inputForm;
-        
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let casuals           = group.get('casuals').value;
-        let exportfrompay     = group.get('exportfrompay').value;
-        let conflict          = group.get('conflict').value;
-        let day0              = group.get('day1').value;
-        let day1              = group.get('day2').value;
-        let day2              = group.get('day3').value;
-        let day3              = group.get('day4').value;
-        let day4              = group.get('day5').value;
-        let day5              = group.get('day6').value;
-        let day6              = group.get('day7').value;
-        
-        let values = status+"','"+process+"','"+code+"','"+description+"','"+type+"','"+payrate+"','"+unit+"','"+payid+"','"+mainGroup+"','"+subgroup+"','"+end;
-        let sqlz = "insert into itemtypes ([Status],[ProcessClassification],[Title],[billText],[RosterGroup],[Amount],[Unit],[AccountingIdentifier],[MainGroup],[MinorGroup],[EndDate]) values('"+values+"');select @@IDENTITY"; 
-        this.menuS.InsertDomain(sqlz).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data){
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.postLoading = false;   
-            this.loading = false;       
-            this.handleCancel();
-            this.resetModal();
-          }
-          else{
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }
+        this.menuS.poststaffAdminActivities(this.inputForm.value)
+                    .subscribe(data => {
+                        this.globalS.sToast('Success', 'Added Succesfully');
         });
+      }else{
+
       }
-      else{
-        this.postLoading = true;     
-        const group = this.inputForm;
-        let status            = "NONATTRIBUTABLE";
-        let process           = "INPUT";
-        let mainGroup         = "DIRECT SERVICE";
-        let code              = group.get('code').value;
-        let description       = group.get('description').value;
-        let type              = group.get('type').value;
-        let subgroup          = group.get('subgroup').value;
-        let payrate           = group.get('payrate').value;
-        let end               = "" ; //  (group.get('end').value == '') ? '' : this.globalS.convertDbDate(group.get('end').value);
-        let unit              = group.get('unit').value;
-        let payid             = group.get('payid').value;
-        let recordNumber      = group.get('recordNumber').value;
-        
-        let sql  = "Update itemtypes SET [Status]='"+ status + "',[ProcessClassification] = '"+ process + "',[Title] = '"+ code + "',[billText] = '"+ description+ "',[RosterGroup] = '"+ type + "',[Amount] = '"+ payrate + "',[Unit] = '"+ unit+ "',[AccountingIdentifier] = '"+ payid+ "',[MainGroup] = '"+ mainGroup + "',[MinorGroup] = '"+ subgroup + "' WHERE [Recnum] ='"+recordNumber+"'";
-        // console.log(sql);
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data){
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }else{
-            this.globalS.sToast('Success', 'Saved successful');
-            this.loadData();
-            this.loading = false;   
-            this.postLoading = false;          
-            this.handleCancel();
-            this.resetModal();
-          }
-        });
-      }
+
     }
     loadData(){
       this.loading = true;
@@ -486,6 +412,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
     }
     populateDropdowns(): void {
 
+      this.emptyList      = [];
       this.mainGroupList  = ['STAFF ADMINISTRATION','TRAVEL TIME'];
       this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','TRAINING','NOT APPLICABLE'];
       this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
@@ -572,31 +499,33 @@ export class StaffAdminActivitiesComponent implements OnInit {
     }
     buildForm() {
       this.inputForm = this.formBuilder.group({
+        datasetGroup:'',
+        datasetType:'',
         title:'',
         billingText:'',
-        mainGroup:'',
-        subgroup:'',
+        rosterGroup:'',
+        minorGroup:'',
         status:'',
         chargeRate1:'',
         minimumChargeRate:'',
-        lifeCycleEvent:'',
+        lifeCycle:'',
         unit:'',
         budgetGroup:'',
-        dicipline:'',
+        IT_Dataset:'',
         colorCode:'',
         AutoApprove:false,
-        excludeFromAuto:false,
-        Informational:false,
+        excludeFromAutoLeave:false,
+        infoOnly:false,
         dataset:'',
         groupMapping:'',
-        nida:'',
-        accountingCode:'',
+        NDIA_ID:'',
+        accountingIdentifier:'',
         glRevenue:'',
         job:'',
         glCost:'',
-        buom:'',
+        unitCostUOM:'',
         unitCost:'',
-        commercial:'',
+        billAmount:'',
         price2:'',
         price3:'',
         price4:'',
@@ -604,54 +533,48 @@ export class StaffAdminActivitiesComponent implements OnInit {
         price6:'',
         excludeFromPayExport:false,
         excludeFromUsageStatements:false,
-        type: '',
-        payrate:'',
-        casuals:false,
-        end:'',
-        end_date:'',
-        payid:'',
-        exportfrompay:false,
-        conflict:false,
-        day0:false,
-        day1:false,
-        day2:false,
-        day3:false,
-        day4:false,
-        day5:false,
-        day6:false,
-        day7:false,
+        endDate:'',
+        excludeFromConflicts:false,
+        noMonday   : false,//day1
+        noTuesday  : false,//day2
+        noWednesday: false,//day3
+        noThursday : false,//day4
+        noFriday   : false,//day5
+        noSaturday : false,//day6
+        noSunday   : false,//day7
+        noPubHol   : false,//day0
         startTimeLimit:'',
         endTimeLimit:'',
-        min:0,
-        max:0,
-        forceRostedTime:0,
-        rostedDay:false,
-        rostedTime:false,
-        orignalminute:0,
-        address:'',
-        contact:'',
+        maxDurtn:0,
+        minDurtn:0,
+        fixedTime:0,
+        noChangeDate:false,
+        noChangeTime:false,
+        timeChangeLimit:0,
+        defaultAddress:'',
+        defaultPhone:'',
         autoActivityNotes:false,
         autoRecipientDetails:false,
         jobSheetPrompt:false,
         activityNotes:'',
-        award1:false,
-        award2:false,
-        award3:false,
-        award4:false,
-        award5:false,
-        specialShift:'',
+        excludeFromHigherPayCalculation:false,
+        noOvertimeAccumulation:false,
+        payAsRostered:false,
+        excludeFromTimebands:false,
+        excludeFromInterpretation:false,
+        jobType:'',
         mtacode:'',
-        mode:'',
+        tA_LOGINMODE:'',
         excludeFromClientPortalDisplay: false,
         excludeFromTravelCalc: false,
         tA_EXCLUDEGEOLOCATION:false,
         appExclude1:false,
         taexclude1:false,
         taEarlyStartTHEmail:false,
-        taEarlyStartTH:false,
-        taEarlyStartTHWho:'',
         taLateStartTHEmail:false,
-        taLateStartTH:false,
+        taEarlyStartTH:'',
+        taLateStartTH:'',
+        taEarlyStartTHWho:'',
         taLateStartTHWho:'',
         taNoGoResend:'',
         taNoShowResend:'',
@@ -670,8 +593,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
         taUnderstayTHWho:'',
         taOverstayTHWho:'',
         taNoWorkTHWho:'',
-        branch:'',        
-        recordNumber:null
+        deletedRecord:false,
+        HACCUse:false,
+        CSTDAUse:false,
+        NRCPUse:false,
       });
     }
     handleOkTop() {

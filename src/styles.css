@@ -233,7 +233,9 @@ nz-step.mini .ant-steps-item-container > .ant-steps-item-content *{
 .space-top-2{
     margin-top: 2rem;
 }
-
+.space-top-3{
+    margin-top: 2rem;
+}
 .word-break{
     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
     white-space: -webkit-pre-wrap;          /* Chrome & Safari */ 

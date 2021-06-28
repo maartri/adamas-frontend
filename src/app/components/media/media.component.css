@@ -43,7 +43,7 @@ div.article{
 
 .img-media {
     width: auto;
-    height: 6rem;
+    max-height: 10rem;
 }
 
 video{
@@ -53,4 +53,7 @@ video{
 .video-container{
     width: 11rem; 
     overflow: hidden;
+}
+nz-select{
+    width:100%;
 }

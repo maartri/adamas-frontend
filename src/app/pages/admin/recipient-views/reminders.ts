@@ -160,7 +160,7 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
             staffAlert: name
         });
 
-        this.addOREdit = 2;
+        this.addOREdit = 0;
         this.modalOpen = true;
     }
 

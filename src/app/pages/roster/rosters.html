@@ -65,7 +65,7 @@
         <div nz-col nzSpan="10" class="nz-button"  >
             <nz-button-group >
                 <button nz-button nzType="default" style="padding: 4px;" [disabled]="!enable_buttons"  (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
-                <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="addBooking(1)"  *ngIf="viewType=='Recipient'"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
+                <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(1)"  *ngIf="viewType=='Recipient'"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(2)"  nz-tooltip nzTooltipTitle="Record Client Administration time"><i nz-icon nzType="font-colors" nzTheme="outline"></i></button>
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(4)" nz-tooltip nzTooltipTitle="Record Service with nominated staff member" ><i nz-icon nzType="team" nzTheme="outline"></i></button>
                 <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(5)" nz-tooltip nzTooltipTitle="Record Travel time"><i nz-icon nzType="car" nzTheme="outline"></i></button>
@@ -545,13 +545,15 @@
     <div class="flexy" style="min-height:21rem">
 
             <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">
-                <nz-step  nzTitle="Program & Service/Activity"></nz-step>
+                <nz-step  nzTitle="Program "></nz-step>
+                <nz-step  nzTitle="Service / Activity "></nz-step>
+                <nz-step  nzTitle="Settings/Location"></nz-step>
                 <nz-step  nzTitle="Staff Details"></nz-step>
-                <nz-step  *ngIf="booking_case>3" nzTitle="Pay Details"></nz-step>
-                <nz-step  *ngIf="booking_case>6 && ifRosterGroupHasTimePayBills(rosterGroup) " nzTitle="Pay"></nz-step>
-                <nz-step  *ngIf=" booking_case>6 && ifRosterGroupHasTimePayBills(rosterGroup) && rosterGroup != 'ADMINISTRATION' "nzTitle="Bills"></nz-step>
+                <nz-step  nzTitle="Pay Details"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Pay"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup) && rosterGroup != 'ADMINISTRATION' "nzTitle="Bills"></nz-step>
+         
             </nz-steps>
-    
             
             
             <div class="steps-content">
@@ -594,9 +596,9 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <div  >
+                    <div  *ngIf="current>0"  class="form-group">
+                       
+                      
                             <div  nz-row *ngIf="multipleRecipientShow">
                                 <label for="">Multiple Recipients</label>
                                 <nz-switch nzSize="small" formControlName="isMultipleRecipient"></nz-switch>
@@ -608,51 +610,121 @@
         
                                 <!-- <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker> -->
                                 <!-- <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch> -->
-                            </div>    
-                        </div>
-                            <label for="">Program</label>
-                            <nz-select nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                                <nz-option *ngFor="let list of programsList" [nzValue]="list" [nzLabel]="list"></nz-option>
-                                <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
-                            </nz-select>
-                        </div>
-                    <div class="form-group" >
-                        <label for="">Service/Activity/Item</label>
-                        <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list.activity"></nz-option>
-                            <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
-                        </nz-select>                        
-                        <div>
-                            <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="rosterForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
-                            <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
-                        </div>
+                            </div> 
+                               
+                    </div>
+                      <div *ngIf="current>=10">
+                        <label nzvisible="false" for="">Program</label>
+                        <nz-select nzvisible="false"  nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of programsList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
+                        </nz-select>
+                      </div>
+                      <div>
+                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                                [nzData]="programsList" [nzScroll]="programsList.length>10 ? {y: '300px'} : 'none'">
+                                
+                                <thead style="margin-left: 0px;">
+                                    <tr>
+                                        <th style="background-color: #d6d3d3; " class="left">Select a Funding Program</th>                                  
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of programsList;let i = index;"  (click)="onItemSelected(data,i,'program')" 
+                                    (dblclick)="onItemDbClick(data,i,'program')" [class.active]="i == HighlightRow">
+                                        <td class="left" >                                         
+                                                {{data}}                                                                           
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                
+                            </nz-table> 
                         
-                       <div  *ngIf="IsClientCancellation && booking_case==8" >
+                    </div>
+                </div>   
+                <div *ngIf="current == 1" [formGroup]="bookingForm">
+                  
+                    <div class="form-group" >
+                        <div *ngIf="current >=10">
+                            <label for="">Service/Activity/Item</label>
+                            <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                                <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list.activity"></nz-option>
+                                <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
+                            </nz-select>                        
+                            <div>
+                                <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="rosterForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
+                                <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                                [nzData]="serviceActivityList"   [nzScroll]="serviceActivityList.length>10 ? {y: '300px'} : 'none'">
+                                <thead>
+                                    <tr>
+                                        <th class="left">Select a Service/Activity/Item</th>                                 
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of serviceActivityList;let i = index;"  (click)="onItemSelected(data,i,'service')" 
+                                    (dblclick)="onItemDbClick(data,i,'service')">
+                                        <td class="left">                                     
+                                                {{ data.activity  }}                                      
+                                           
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table> 
+                        
+                    </div>
+                        
+                       <div style="margin-top: 8px;"  *ngIf="IsClientCancellation && booking_case==8" >
                             <label for="">Do you want to record absent/out against a specific facility</label>   
                              <nz-switch nzSize="small" formControlName="central_Location" [(ngModel)]="ShowCentral_Location"  (ngModelChange)="setCentral_Location($event)"></nz-switch>    
                                         
                        </div>
-                                   
-                    
-                        <div  *ngIf="activity_value==12 || ShowCentral_Location">
+                 </div>  
+                </div>
+                <div *ngIf="current == 2" [formGroup]="bookingForm">
+
+                    <div  *ngIf="current>=10 && (activity_value==12 || ShowCentral_Location)">
                         <label for="">Service Settings/Location</label>
                         <nz-select nzShowSearch nzAllowClear formControlName="serviceSetting" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                             <nz-option *ngFor="let list of ServiceGroups_list" [nzValue]="list" [nzLabel]="list"></nz-option>
                             <nz-option [nzLabel]="serviceSetting" [nzValue]="serviceSetting" nzHide></nz-option>
                         </nz-select>      
                     </div>
-                        
+                    <div>
+                        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                            [nzData]="ServiceGroups_list"   [nzScroll]="ServiceGroups_list.length>10 ? {y: '300px'} : 'none'">
+                            <thead>
+                                <tr>
+                                    <th class="left">Select a Group</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let data of ServiceGroups_list;let i = index;"  (click)="onItemSelected(data,i,'location')" 
+                                (dblclick)="onItemDbClick(data,i,'location')">
+                                    <td class="left">                                     
+                                            {{ data }}     
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </nz-table> 
+                    
                     </div>
-                </div>   
-                <div *ngIf="current == 1" [formGroup]="bookingForm">
-                   
+
+                </div>
+                <div *ngIf="current == 3" [formGroup]="bookingForm">
                     <div class="form-group" *ngIf="viewType=='Recipient' ">
                         <label for="">Staff</label>
                         <app-staff-popup formControlName="staffCode"></app-staff-popup>
                     </div>
-                   
                 </div>
-                <div *ngIf="current == 2" [formGroup]="bookingForm">
+           
+                <div *ngIf="current == 4" [formGroup]="bookingForm">
                     <div class="form-group">
                         <label for="">Pay Type</label>
                         <nz-select formControlName="payType"
@@ -671,9 +743,8 @@
                         </nz-select>
                     </div>
                 </div>
-
-           
-                <div nz-row nzSpan="24" nzGutter="8" [formGroup]="bookingForm" *ngIf="current == 3" style="width: 30rem;">
+                
+                <div *ngIf="current == 5"  nz-row nzSpan="24" nzGutter="8" [formGroup]="bookingForm" style="width: 30rem;">
                     <ng-container formGroupName="pay">
                         <div nz-row>
                             <div nz-col nzSpan="10">
@@ -703,7 +774,7 @@
                     </ng-container>
                 </div>
 
-                <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 4" [formGroup]="bookingForm" style="width: 30rem;">
+                <div *ngIf="current == 6" nz-row nzSpan="24" nzGutter="8"  [formGroup]="bookingForm" style="width: 30rem;">
                     <ng-container formGroupName="bill">
                         <div nz-row>
                             <div nz-col nzSpan="8">
@@ -749,15 +820,15 @@
         <button nz-button nzType="default" (click)="pre_tab()" *ngIf="current > 0">
             <span>Previous</span>
         </button>
-        <button nz-button nzType="default" (click)="next_tab()" *ngIf="( !add_UnAllocated && nextCondition && !showDone)"   [disabled]="nextDisabled" >
+        <button nz-button nzType="default" (click)="next_tab()" *ngIf="( !showDone2)"   [disabled]="nextDisabled" >
             <span>Next</span>
         </button>
-        <button nz-button nzType="primary" (click)="doneBooking()" [disabled]="!isBookingValid" *ngIf="showDone && !add_UnAllocated">
+        <button nz-button nzType="primary" (click)="doneBooking()" [disabled]="!isBookingValid" *ngIf="showDone2">
             <span>Done</span>
         </button>
-        <button nz-button nzType="primary" (click)="doneBooking()" [disabled]="!isBookingValid" *ngIf="add_UnAllocated">
+        <!-- <button nz-button nzType="primary" (click)="doneBooking()" [disabled]="!isBookingValid" *ngIf="add_UnAllocated">
             <span>Done</span>
-        </button>
+        </button> -->
         <!-- <button nz-button nzType="primary" (click)="doneBooking()" [disabled]="!isBookingValid" *ngIf="viewType=='Staff'"> 
             <span>Done</span>
         </button>-->

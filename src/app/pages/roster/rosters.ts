@@ -40,8 +40,7 @@ import * as GC from "@grapecity/spread-sheets";
 import { NZ_ICONS, NZ_ICON_DEFAULT_TWOTONE_COLOR } from 'ng-zorro-antd';
 import './styles.css';
 import { ElementSchemaRegistry } from '@angular/compiler';
-import { interval } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 interface AddTimesheetModalInterface {
     index: number,
@@ -117,19 +116,22 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 };
 @Component({
     styles: [`
-      
+        
+        
         nz-switch.master-class >>> button.ant-switch-checked{ background-color:red; }; 
-        gc-group-line{
-            border-width:2px;
-            border-style:solid;
-            border-color:red;
-        };
-        gc-scroll-mobile-thumb {
-            border: none;
-            background-color: skyblue;
-            background-image: linear-gradient( 45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent );
-        }
-        gc-scroll-mobile-container { border-radius, opacity, padding }    
+       
+
+        nz-table tbody tr.active  {  
+            background-color:#48da24 !important;  
+            color: white;  
+          }   
+
+          class.selected
+          { 
+            background-color:#B98F8F !important;  
+            color: white; 
+      
+          }
         
     `],
     templateUrl: './rosters.html'
@@ -154,6 +156,7 @@ selectedActivity: any = null;
 defaultCategory: any = null;
 Timesheet_label:any="Add Timesheet";
 payTotal:any;
+HighlightRow!: number;
 masterCycle:string="CYCLE 1";
  Days_View:number=31;
     data:any=[];  
@@ -308,6 +311,7 @@ doneBooking(){
     this.addBookingModel=false;
     this.add_UnAllocated=false;
     this.select_StaffModal=false;
+    this.ShowCentral_Location=false
     this.current = 0;
     this.booking_case=0;
     //const { Servicetype } = this.bookingForm.value;
@@ -411,6 +415,8 @@ RecordStaffAdmin(){
     this.resetBookingFormModal();
     this.booking_case=6;
     this.isTravel=false;
+    
+
     this.serviceType ="ADMINISTRATION";
     // this.rosterForm.patchValue({
     //     serviceType:"ADMINISTRATION"
@@ -435,6 +441,8 @@ setCentral_Location(val:any){
    
     //this.ShowCentral_Location=true;
     this.serviceSetting="";
+
+   this.showDone2;
     
 }
 recordCancellation(){
@@ -475,6 +483,7 @@ setTravel(val:number){
     // this.rosterForm.patchValue({
     //     serviceType:"TRAVEL TIME"
     // });
+    this.type_to_add=5;
     if (val==1){
             if (this.viewType=='Staff')
                 this.select_RecipientModal=true;
@@ -493,14 +502,21 @@ setTravel(val:number){
         }
 
         this.addBookingModel=true;
-        this.addBooking(0);
+        this.addBooking(5);
     }
 }
 start_adding_Booking(bCase:any){
     this.resetBookingFormModal();
     this.booking_case=bCase;
     this.isTravel=false;
-    if (this.booking_case==2){
+    if (this.booking_case==1){
+        this.serviceType="BOOKED";
+         this.bookingForm.patchValue({
+            staffCode:"BOOKED"
+         });
+         this.addBooking(1);
+         return;
+    } else if (this.booking_case==2){
         this.serviceType="ADMISSION";
         // this.rosterForm.patchValue({
         //     serviceType:"ADMISSION"
@@ -512,6 +528,7 @@ start_adding_Booking(bCase:any){
         // this.rosterForm.patchValue({            
         //     serviceType:"TRAVEL TIME"
         // });
+        
         return;
     }else{
         //  this.rosterForm.patchValue({
@@ -539,7 +556,7 @@ addBooking(type:any){
    
     this.select_StaffModal=false;
     this.select_RecipientModal=false;
-    
+    this.ShowCentral_Location=false;
     this.current=0;
     
     this.type_to_add=type;
@@ -787,17 +804,17 @@ ClearMultishift(){
         this.date = moment()      
        
     }
-    if(this.Days_View==31 || this.Days_View==30){
-        this.date = moment(this.date).add('month', 1);       
-        this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
-        this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
-    }else{
+    // if(this.Days_View==31 || this.Days_View==30){
+    //     this.date = moment(this.date).add('month', 1);       
+    //     this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+    //     this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
+    // }else{
                    
         this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
          this.date = moment(this.startRoster).add('day', this.Days_View-1);
          this.endRoster = moment(this.date).format('YYYY/MM/DD');
          this.prepare_Sheet();
-       }
+       //}
     this.searchRoster(this.date);
      
     var divMaster = document.getElementById("divMaster");    
@@ -1933,7 +1950,65 @@ ClearMultishift(){
       
       return val;
     }
-    
+
+    onItemSelected(sel: any, i:number, type:string): void {
+            console.log(sel)
+            this.HighlightRow=i;
+            if (type=="program"){          
+                this.defaultProgram=sel;
+                this.bookingForm.patchValue({
+                    program:sel
+                })
+            }else if (type=="service"){
+                this.defaultActivity=sel;
+                this.bookingForm.patchValue({
+                    serviceActivity:sel
+                })
+            }else if (type=="location"){
+                this.serviceSetting=sel;
+                this.bookingForm.patchValue({
+                    serviceSetting:sel
+                })
+            }
+       
+      }
+     
+    onItemDbClick(sel: any, i:number, type:string): void {
+
+        console.log(sel)
+        this.HighlightRow=i;               
+
+        if (type=="program"){          
+            this.defaultProgram=sel;
+            this.bookingForm.patchValue({
+                program:sel
+            })
+        }else if (type=="service"){
+            this.defaultActivity=sel;
+            
+            this.bookingForm.patchValue({
+                serviceActivity:sel
+            })
+            
+        }else if (type=="location"){
+            this.serviceSetting=sel;
+            this.bookingForm.patchValue({
+                serviceSetting:sel
+            })
+        }
+        if (this.showDone2 && this.rosterGroup!=""){
+            this.doneBooking();
+            return;
+        }
+        if (this.current==1 && (this.activity_value==12 || this.booking_case==8)){
+            
+        }else if(this.showDone2==false ){
+            this.next_tab();
+        }
+ 
+       
+   
+  }
     ProcessRoster(Option:any, recordNo:string):any {
         let dt= new Date(this.date);
         
@@ -2778,22 +2853,39 @@ reload(reload: boolean){
         var _date = date;
         if (!program) return EMPTY;
 
+        this.FetchCode=this.GETRECIPIENT(this.selected.option)
+
         if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  || serviceType != 'SERVICE') {
+           let sql =`  SELECT DISTINCT [Service Type] AS Activity
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${program}' AND [SO].[ServiceStatus] = 'ACTIVE' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] 
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`; 
 
-            if(typeof date === 'string'){
-                _date = parseISO(_date);
-            }
+            return this.listS.getlist(sql);
 
-            return this.listS.getserviceactivityall({
-                program,
-                recipient: this.GETRECIPIENT(this.selected.option),
-                mainGroup: serviceType,
-                viewType: this.viewType,
-                date: format(_date, 'yyyy/MM/dd'),
-                startTime: format(this.defaultStartTime,'hh:mm'),
-                endTime: format(this.defaultEndTime,'hh:mm'),
-                duration: this.durationObject?.duration
-            });
+            // if(typeof date === 'string'){
+            //     //_date = parseISO(_date);
+            // }
+
+            // _date = parseISO(this.datepipe.transform(this.date, 'yyyy-MM-dd'));
+            // _date=format(_date, 'yyyy/MM/dd')
+            // return this.listS.getserviceactivityall({
+            //     program,
+            //     recipient: this.GETRECIPIENT(this.selected.option),
+            //     mainGroup: serviceType,
+            //     viewType: this.viewType,
+            //     date: _date,//format(_date, 'yyyy/MM/dd'),
+            //     startTime: format(this.defaultStartTime,'hh:mm'),
+            //     endTime: format(this.defaultEndTime,'hh:mm'),
+            //     duration: this.durationObject?.duration
+            // });
         }
         else {
             let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
@@ -2817,8 +2909,7 @@ reload(reload: boolean){
         let sql ="";
         if (!program) return EMPTY;
        // console.log(this.rosterForm.value)
-
-   
+ 
         
        if (serviceType == 'ADMINISTRATION' ){
         // const { recipientCode, debtor } = this.rosterForm.value;
@@ -2882,11 +2973,9 @@ reload(reload: boolean){
             INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
             WHERE SO.ServiceProgram = '${ program}'
 			AND I.[RosterGroup] = 'TRAVELTIME' AND (I.EndDate Is Null OR I.EndDate >='${this.currentDate}') `
-
             
 
          }else if (this.booking_case==4){
-
            
             sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
             (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
@@ -2912,7 +3001,6 @@ reload(reload: boolean){
             ORDER BY [Service Type]`;
         
     }else if (this.booking_case==8){
-
            
         sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
         I.AMOUNT AS BILLRATE,
@@ -2929,8 +3017,7 @@ reload(reload: boolean){
         AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
         ORDER BY [Service Type]`;
     }
-     else {
-           
+     else {          
 
             sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
             (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
@@ -2955,35 +3042,11 @@ reload(reload: boolean){
             AND ITM.[Status] = 'ATTRIBUTABLE' AND ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
             ORDER BY [Service Type]`; 
 
-            // return this.listS.getserviceactivityall({
-            //     recipient: this.GETRECIPIENT(this.selected.option),
-            //     program,
-            //     ForceAll: this.ForceAll,
-            //     mainGroup: serviceType,
-            //     subGroup: this.subGroup,
-            //     viewType: this.viewType,
-            //     Date:this.RosterDate,
-            //     StartTime:this.StartTime,
-            //     EndTime : this.EndTime,
-            //     Duration: this.Duration
-
-
-            // });
             
-                }
+              }
 
             return this.listS.getlist(sql);
-                //  return this.listS.getserviceprogramactivity({                  
-                //     program,
-                //     recipient: this.GETRECIPIENT(this.selected.option),
-                //     mainGroup: serviceType,
-                //     viewType: this.viewType
-                // });
-
-            // let sql = `SELECT DISTINCT [Service Type] AS activity FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
-            //     WHERE SO.ServiceProgram = '${ program}' AND EXISTS (SELECT Title FROM ItemTypes ITM WHERE Title = SO.[Service Type] AND 
-            //     ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}')) ORDER BY [Service Type]`;
-            //return this.listS.getlist(sql);
+            
         
     };
 
@@ -3020,7 +3083,6 @@ reload(reload: boolean){
     }
 
     // Add Timesheet
-
     
     dateFormat: string = 'dd/MM/yyyy'
     selectAll: boolean = false;
@@ -3098,9 +3160,7 @@ reload(reload: boolean){
         },
     ];
 
-    agencyDefinedGroup: string;
-
-    
+    agencyDefinedGroup: string;    
 
     current = 0;
     nextDisabled: boolean = false;
@@ -3376,8 +3436,8 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 });
             }
         });
-      
-       this.rosterForm.get('serviceActivity').valueChanges.pipe(
+
+        this.rosterForm.get('serviceActivity').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
                 if (!x) {
@@ -3395,7 +3455,9 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             this.rosterForm.patchValue({
                 haccType: this.rosterGroup
             })
-        }); 
+        });        
+    
+
 
      //--------------------------an other booking form-------------------------------- 
         this.bookingForm = this.formBuilder.group({
@@ -3527,7 +3589,7 @@ this.bookingForm.get('program').valueChanges.pipe(
         //console.log(d);
         //if (d.length > 1 || d.length == 0) return false;
         let lst =d[0];
-        this.rosterGroup = (lst[0].rosterGroup);
+        this.rosterGroup = this.selectedActivity.rosterGroup// ( lst[0].rosterGroup);
         this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
         this.payTypeList = d[1];
         this.analysisCodeList = d[2];
@@ -3815,11 +3877,11 @@ this.bookingForm.get('program').valueChanges.pipe(
     }
     pre_tab(): void {
         this.current -= 1;
-        if (this.viewType=="Staff" && this.current == 1 && this.booking_case>=4){
+        if (this.viewType=="Staff" && this.current == 3 && this.booking_case>=4){
             this.current -= 1;
         }
-        if ( this.booking_case==5){
-            this.current -= 2;
+        if(this.current == 2 && !(this.activity_value==12 || this.ShowCentral_Location)){
+            this.current -= 1;
         }
     }
 
@@ -3827,20 +3889,16 @@ this.bookingForm.get('program').valueChanges.pipe(
         this.current += 1;
 
         
-        if(this.current == 1 && this.booking_case==3){
-            if (this.viewType=="Recipient"){
-                this.booking_case=2;
-                
-            }
-        }
         
-        if (this.viewType=="Staff" && this.current == 1 && this.booking_case>=4){
+        if(this.current == 2 && !(this.activity_value==12 || this.ShowCentral_Location)){
             this.current += 1;
         }
-        if ( this.booking_case==5){
-            this.current += 2;
             
+        
+        if (this.viewType=="Staff" && this.current == 3 ){
+            this.current += 1;
         }
+       
     }
     
     DEFAULT_NUMERIC(data: any): number{
@@ -3861,11 +3919,26 @@ this.bookingForm.get('program').valueChanges.pipe(
         return this.current < 4;
     }
 
- 
 
     get showDone(){
-       
-            return this.current >= 2 ||    this.booking_case==2 ||  this.booking_case>=5 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3) ;
+        return this.current >= 4 || (this.rosterGroup == 'ADMINISTRATION' && this.current>=3);
+    }
+
+    get showDone2(){
+
+            if ((this.current >=1 && this.viewType=="Staff") && (this.activity_value!=12 || !this.ShowCentral_Location ))
+                return true;
+            else if  (this.current >=1 && (this.booking_case==1 || this.booking_case==5 ))
+                return true;  
+            else if  (this.current >=1 && (!this.ShowCentral_Location && this.booking_case==8))
+                return true;  
+            else if  (this.current ==2 && (this.ShowCentral_Location && this.booking_case==8))
+                return true;    
+                                
+            else if ((this.current >=3 && this.viewType=="Recipient") )
+                return true;
+            else
+                return false;
     }
     get isFormValid(){
         return  this.rosterForm.valid;

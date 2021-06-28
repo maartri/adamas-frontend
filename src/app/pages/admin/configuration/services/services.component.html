@@ -876,7 +876,7 @@
                 <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="logs($event)">
                     <div nz-row>
                         <div nz-col nzSpan="24" *ngFor="let comp of competencyList">
-                            <label nz-checkbox [nzValue]="comp.name" [(ngModel)]="comp.checked" (change)="onCheckboxChange(comp,$event)" [ngModelOptions]="{standalone: true}">{{ comp.name }}</label>
+                            <label nz-checkbox [nzValue]="comp.name" [(ngModel)]="comp.checked" [ngModelOptions]="{standalone: true}">{{ comp.name }}</label>
                         </div>
                     </div>
                 </nz-checkbox-wrapper>

@@ -74,6 +74,10 @@ export class ListService {
         return this.auth.get(`${list}/recipient-sqlid/${id}`);
     }
 
+    postprintline(data: any):Observable<any>{
+        return this.http.post(`${list}/print-quote-line`, data,  { responseType: 'blob', reportProgress: true });
+    }
+
     getpostquote(data: any): Observable<any> {
         return this.auth.post(`${list}/post-quote`, data);
     }

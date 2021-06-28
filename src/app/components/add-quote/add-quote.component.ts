@@ -1210,22 +1210,15 @@ export class AddQuoteComponent implements OnInit {
       
     let qteLineArr: Array<QuoteLineDTO> = [];
     let goals: Array<any> = [];
-
     let qteHeader: QuoteHeaderDTO;
-
    
     const quoteForm = this.quoteForm.getRawValue();
-
-    // console.log(quoteForm);
-    // console.log(this.quoteLines);
-    // console.log(quoteForm);
-    // console.log(this.quoteLines);
-    // console.log(this.goalsAndStratergies);
 
     this.goalsAndStratergies.forEach(e => {
         goals.push(e.goal);
     });
 
+    
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
@@ -1247,6 +1240,7 @@ export class AddQuoteComponent implements OnInit {
     });
         
     qteHeader = {
+        recordNumber: this.tempIds.quoteHeaderId,
         programId: quoteForm.programId,
         program: quoteForm.program,
         clientId: this.clientId,
@@ -1305,6 +1299,85 @@ export class AddQuoteComponent implements OnInit {
         this.quoteLineOpen = true;
         this.firstLoadQuoteLine = true;
         this.quoteListForm.reset();
+    }
+
+
+    printQuoteLines(){
+        console.log('print quotelines')
+
+        let qteLineArr: Array<QuoteLineDTO> = [];
+        let goals: Array<any> = [];
+        let qteHeader: QuoteHeaderDTO;
+    
+        const quoteForm = this.quoteForm.getRawValue();
+
+        this.goalsAndStratergies.forEach(e => {
+            goals.push(e.goal);
+        });   
+
+        this.quoteLines.forEach(x => {
+            let da: QuoteLineDTO = {
+                sortOrder: 0,
+                billUnit: x.billUnit,
+                itemId: x.itemId,
+                qty: x.quantity,
+                displayText: x.displayText,
+
+                unitBillRate: x.price,
+                frequency: x.frequency,
+                lengthInWeeks: x.quoteQty,
+                roster: x.rosterString,
+                serviceType: x.code,
+                strategyId: x.strategy
+            };
+        
+            qteLineArr.push(da);
+        });
+            
+        qteHeader = {
+            recordNumber: this.tempIds.quoteHeaderId,
+            programId: quoteForm.programId,
+            program: quoteForm.program,
+            clientId: this.clientId,
+            quoteLines: qteLineArr,
+            daysCalc: 365,
+            budget: "51808.1",
+            quoteBase: 'ANNUALLY',
+            govtContribution: 51808.10,
+            packageSupplements: '000000000000000000',
+            agreedTopUp: '0.00',
+            balanceAtQuote: '0.00',
+            clAssessedIncomeTestedFee: '0.00',        
+                
+            feesAccepted: 0,
+            basePension: 'SINGLE',
+            dailyBasicCareFee: '$0.00',
+            dailyIncomeTestedFee: '$0.00',
+            dailyAgreedTopUp: '$0.00',
+            
+            quoteView: 'ANNUALLY',
+
+            personId: this.user.id,
+            user: this.loggedInUser.user,
+            template: quoteForm.template,
+            type: quoteForm.type,
+            documentId: this.tableDocumentId,
+            goals: goals
+        }
+
+        this.listS.postprintline(qteHeader).subscribe(blob => {
+            let data = window.URL.createObjectURL(blob);
+            console.log(data);
+            
+            let link = document.createElement('a');
+            link.href = data;
+            link.download = "ota.docx";
+            link.click();
+      
+            setTimeout(() => {
+              window.URL.revokeObjectURL(data);
+            }, 100);
+        })
     }
 
   
@@ -1644,4 +1717,4 @@ checkValue(event){
 
 
 
-}//
+}

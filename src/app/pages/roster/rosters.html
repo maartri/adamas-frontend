@@ -252,9 +252,7 @@
         </div>
 	</nz-modal>
 
-   
-
-    
+       
 <!-- Add Timesheet -->
 
 <nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Timesheet"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
@@ -496,7 +494,7 @@
     <div class="flexy" style="min-height:10rem">
         <div nz-row>
             <div nz-col nzSpan="6"  style="margin-top: 10px; margin-bottom: 20px; width:400px">
-                <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+                <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample"  (ngDbClick)="listChange($event)" (ngModelChange)="listChange($event)"></app-search-list>
             </div>
             
         </div>
@@ -632,7 +630,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let data of programsList;let i = index;"  (click)="onItemSelected(data,i,'program')" 
-                                    (dblclick)="onItemDbClick(data,i,'program')" [class.active]="i == HighlightRow">
+                                    (dblclick)="onItemDbClick(data,i,'program')" [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
                                         <td class="left" >                                         
                                                 {{data}}                                                                           
                                         </td>
@@ -669,7 +667,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let data of serviceActivityList;let i = index;"  (click)="onItemSelected(data,i,'service')" 
-                                    (dblclick)="onItemDbClick(data,i,'service')">
+                                    (dblclick)="onItemDbClick(data,i,'service')" [ngStyle]="{'backgroundColor': i == HighlightRow2 ? '#bbd7fa'  : 'white' }">
                                         <td class="left">                                     
                                                 {{ data.activity  }}                                      
                                            
@@ -706,7 +704,7 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let data of ServiceGroups_list;let i = index;"  (click)="onItemSelected(data,i,'location')" 
-                                (dblclick)="onItemDbClick(data,i,'location')">
+                                (dblclick)="onItemDbClick(data,i,'location')" [ngStyle]="{'backgroundColor': i == HighlightRow3 ? '#bbd7fa'  : 'white' }">
                                     <td class="left">                                     
                                             {{ data }}     
                                     </td>

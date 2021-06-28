@@ -147,7 +147,7 @@ export class RostersAdmin implements AfterViewInit  {
       float: 'left'
     };  
    
-   
+selectedrow: string ="class.selected"   
 timesheets: Array<any> = [];
 timesheetsGroup: Array<any> = [];   
 defaultProgram: any = null;
@@ -157,6 +157,8 @@ defaultCategory: any = null;
 Timesheet_label:any="Add Timesheet";
 payTotal:any;
 HighlightRow!: number;
+HighlightRow2!: number;
+HighlightRow3!: number;
 masterCycle:string="CYCLE 1";
  Days_View:number=31;
     data:any=[];  
@@ -1953,18 +1955,21 @@ ClearMultishift(){
 
     onItemSelected(sel: any, i:number, type:string): void {
             console.log(sel)
-            this.HighlightRow=i;
-            if (type=="program"){          
+            
+            if (type=="program"){       
+                this.HighlightRow=i;   
                 this.defaultProgram=sel;
                 this.bookingForm.patchValue({
                     program:sel
                 })
             }else if (type=="service"){
+                this.HighlightRow2=i;
                 this.defaultActivity=sel;
                 this.bookingForm.patchValue({
                     serviceActivity:sel
                 })
             }else if (type=="location"){
+                this.HighlightRow3=i;
                 this.serviceSetting=sel;
                 this.bookingForm.patchValue({
                     serviceSetting:sel
@@ -2808,8 +2813,8 @@ reload(reload: boolean){
         const { isMultipleRecipient } = this.rosterForm.value;
         if (type =='!INTERNAL' || type === 'ADMINISTRATION' || type === 'ALLOWANCE NON-CHARGEABLE' || type === 'ITEM' || (type == 'SERVICE' && !isMultipleRecipient)) {
             sql = `SELECT Distinct [Name] AS ProgName FROM HumanResourceTypes WHERE [group] = 'PROGRAMS' AND ISNULL(UserYesNo3,0) = 0 AND (EndDate Is Null OR EndDate >=  '${this.currentDate}') ORDER BY [ProgName]`;
-        }         
-        else {
+       
+        }   else {
             sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
                 INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
                 WHERE Recipients.AccountNo = '${type}' AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]`
@@ -3978,7 +3983,7 @@ this.bookingForm.get('program').valueChanges.pipe(
             serviceDescription:  tsheet.payType || "",
             serviceSetting: this.serviceSetting || "",
             serviceType: tsheet.serviceActivity || "",
-            paytype: tsheet.payType.paytype,
+            paytype: tsheet.payType.paytype==null ? tsheet.payType : tsheet.payType.paytype,
             // serviceType: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
             staffPosition: null || "",
             startTime: format(tsheet.time.startTime,'HH:mm'),

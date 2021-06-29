@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService,timeSteps } from '@services/index';
+import { GlobalService, ListService, MenuService,TimeSheetService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -97,11 +97,15 @@ export class StaffAdminActivitiesComponent implements OnInit {
   competencyForm: FormGroup;
   selectedCompetencies: any;
   parent_person_id: any;
+  competencies: any;
+  addOrEdit: number = 0;
+  isNewRecord: boolean =  false;
   
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
+    private timeS:TimeSheetService,
     private listS:ListService,
     private menuS:MenuService,
     private formBuilder: FormBuilder,
@@ -364,6 +368,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
         ndiaTravel:ndiaTravel,//add to api
         recnum:recordNumber,
       });
+      this.parent_person_id = recordNumber;//set person id for programs and competencies
     }
     
     handleCancel() {
@@ -391,15 +396,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    onCheckboxChange(option, event) {
-      if(event.target.checked){
-        console.log(option);
-        this.checkedList.push(option.name);
-      } else {
-        this.checkedList = this.checkedList.filter(m=>m!= option.name)
-      }
-    }
     onIndexChange(index: number): void {
+      if(index == 7){
+        this.loadCompetency();
+      }
       this.current = index;
     }
     save() {
@@ -415,7 +415,41 @@ export class StaffAdminActivitiesComponent implements OnInit {
       }
     }
     saveCompetency(){
-      console.log(this.selectedCompetencies);
+      this.postLoading = true;
+        const group = this.inputForm;
+        let insertOne = false;
+        if(this.addOrEdit == 0){
+          if(!this.isUpdate){
+            if(!this.isNewRecord){
+              this.save();
+            }
+          }
+          var checkedcompetency = this.selectedCompetencies;
+            checkedcompetency.forEach( (element) => {
+              this.menuS.postconfigurationservicescompetency({
+                competencyValue:element,
+                notes:this.competencyForm.value.notes,
+                personID:this.parent_person_id,
+                }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  if(data)
+                  {
+                    insertOne = true;
+                  }
+                })
+                if(insertOne){
+                  this.globalS.sToast('Success', 'Competency Added');
+                  this.loadCompetency();
+                  this.handleCompCancel();
+                }else{
+                  this.globalS.sToast('Failure', 'Some Thing Weng Wrong Please Try Again');
+                }
+          });
+        }
+        else
+        {
+          
+        }
     }
     clearCompetency(){
       this.competencyList.forEach(x => {
@@ -423,10 +457,29 @@ export class StaffAdminActivitiesComponent implements OnInit {
       });
       this.selectedCompetencies = [];
     }
+    editCompetencyModal(data:any){
+      this.addOrEdit = 1;
+      this.competencyForm.patchValue({
+        competencValue : data.competency,
+        mandatory : data.mandatory,
+        recordNumber:data.recordNumber,
+      })
+      this.competencymodal = true;
+    }
+    deleteCompetency(){
+          
+    }
     loadData(){
       this.loading = true;
       this.menuS.GetlistStaffAdminActivities(this.check).subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadCompetency(){
+      this.menuS.getconfigurationservicescompetency(this.parent_person_id).subscribe(data => {
+        this.checkedList = data;
         this.loading = false;
         this.cd.detectChanges();
       });
@@ -647,12 +700,12 @@ export class StaffAdminActivitiesComponent implements OnInit {
         ndiA_LEVEL4:'',//add to api
       });
       this.competencyForm = this.formBuilder.group({
-        'PersonID': this.parent_person_id,
-        'Group'   :'SVC_COMP',
-        'Type'    :'SVC_COMP',
-        'Name'    : '',
-        'Notes'   : '',
-      });
+            competencyValue: '',
+            mandatory: false,
+            notes: '',
+            personID: this.parent_person_id,
+            recordNumber: 0
+       });
     }
     handleOkTop() {
       this.generatePdf();

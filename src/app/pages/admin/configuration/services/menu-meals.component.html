@@ -233,7 +233,7 @@
                                 <div nz-col nzSpan="24" class="mrg-btm">
                                     <div nz-row nzJustify class="mrg-btm">
                                         <div nz-col nzSpan="4" class="text-right pad-r-5">
-                                            DataSet:
+                                            <nz-form-label  nzRequired nzFor="DataSet">DataSet</nz-form-label>
                                         </div>
                                         <div nz-col nzSpan="8" class="text-right pad-r-5"> 
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="dataset" nzShowSearch nzAllowClear style="width:100%;">
@@ -243,7 +243,7 @@
                                     </div>
                                     <div nz-row nzJustify class="mrg-btm">
                                         <div nz-col nzSpan="4" class="text-right pad-r-5">
-                                            Group:
+                                            <nz-form-label  nzRequired nzFor="Group">Group</nz-form-label>
                                         </div>
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="budgetGroup"  nzShowSearch nzAllowClear style="width:100%;">
@@ -885,7 +885,7 @@
     </form>
     <div *nzModalFooter>
         <ng-container>
-            <button nz-button nzType="primary">
+            <button nz-button nzType="primary" (click)="saveCompetency()">
                 <span>ADD</span>
             </button>
         </ng-container>

@@ -1033,6 +1033,7 @@ export class AddQuoteComponent implements OnInit {
   generate_total(){
       var total: number = 0;
       this.quoteLines.forEach(x => {
+        
         total = total + this.totalamount(x.price,x.quoteQty,x.tax,x.quantity);
       });
       return total;
@@ -1051,7 +1052,7 @@ export class AddQuoteComponent implements OnInit {
             
             // return;
            const quote  = this.quoteListForm.getRawValue();
-           var _quote,_quote1,_quote2;
+           var _quote,_quote2;
            
            if(this.quoteForm.value.charges == true){
            

@@ -30,6 +30,8 @@ export class MenuService {
         private ModalS: NzModalService,
         ){ }
        
+
+
         
         /*******************************************************
          *  Staff Admin Activities
@@ -105,6 +107,27 @@ export class MenuService {
         postRecipientAbsenses(data: any): Observable<any> {
             return this.auth.post(`${menu}/recipientAbsenses/`, data)
         }
+        /**
+         *  Services competencies
+        */
+
+        getconfigurationservicescompetency(id: string): Observable<any> {
+            return this.auth.get(`${menu}/services/competency/${id}`)
+        }
+
+        postconfigurationservicescompetency(data: any): Observable<any> {
+            return this.auth.post(`${menu}/services/competency`, data)
+        }
+       
+        updateconfigurationservicescompetency(data: any): Observable<any> {
+            return this.auth.put(`${menu}/services/competency`, data)
+        }
+    
+        deleteconfigurationservicescompetency(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/services/competency/${recordNo}`)
+        }
+
+        /***/
         /***************************************************************************/
         
         

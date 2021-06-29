@@ -490,7 +490,6 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/centerLocation/staff/${recordNo}`)
     }
     
-    
     /** */
 
     /**
@@ -511,7 +510,7 @@ export class TimeSheetService {
     deletecenterlocationcompetency(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/centerlocation/competency/${recordNo}`)
     }
-    /** */
+    /** */    
 
     /**
      *  Competency

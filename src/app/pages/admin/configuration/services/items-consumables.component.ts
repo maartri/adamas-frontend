@@ -88,6 +88,8 @@ export class ItemsConsumablesComponent implements OnInit {
   selectedCompetencies: any;
   competencyForm: FormGroup;
   parent_person_id: any;
+  addOrEdit: number = 0;
+  isNewRecord: any;
   
   constructor(
     private globalS: GlobalService,
@@ -371,10 +373,14 @@ export class ItemsConsumablesComponent implements OnInit {
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
+      this.addOrEdit = 0;
       this.competencymodal = true;
+      this.clearCompetency();
     }
     handleCompetencyCancel(){
+      this.addOrEdit = 0;
       this.competencymodal = false;
+      this.clearCompetency();
     }
     pre(): void {
       this.current -= 1;
@@ -410,7 +416,41 @@ export class ItemsConsumablesComponent implements OnInit {
       }
     }
     saveCompetency(){
-      console.log(this.selectedCompetencies);
+      this.postLoading = true;
+        const group = this.inputForm;
+        let insertOne = false;
+        if(this.addOrEdit == 0){
+          if(!this.isUpdate){
+            if(!this.isNewRecord){
+              this.save();
+            }
+          }
+          var checkedcompetency = this.selectedCompetencies;
+            checkedcompetency.forEach( (element) => {
+              this.menuS.postconfigurationservicescompetency({
+                competencyValue:element,
+                notes:this.competencyForm.value.notes,
+                personID:this.parent_person_id,
+                }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  if(data)
+                  {
+                    insertOne = true;
+                  }
+                })
+                if(insertOne){
+                  this.globalS.sToast('Success', 'Competency Added');
+                  this.loadCompetency();
+                  this.handleCompCancel();
+                }else{
+                  this.globalS.sToast('Failure', 'Some Thing Weng Wrong Please Try Again');
+                }
+          });
+        }
+        else
+        {
+          
+        }
     }
     clearCompetency(){
       this.competencyList.forEach(x => {
@@ -418,10 +458,37 @@ export class ItemsConsumablesComponent implements OnInit {
     });
       this.selectedCompetencies = [];
     }
+    editCompetencyModal(data:any){
+      this.addOrEdit = 1;
+      this.competencyForm.patchValue({
+        competencyValue : data.competency,
+        mandatory : data.mandatory,
+        recordNumber:data.recordNumber,
+      })
+      this.competencymodal = true;
+    }
+    deleteCompetency(data:any){
+      this.loading = true;
+      this.menuS.deleteconfigurationservicescompetency(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadCompetency();
+          return;
+        }
+      });   
+    }
     loadData(){
       this.loading = true;
       this.menuS.getlistItemConsumables(this.check).subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    loadCompetency(){
+      this.menuS.getconfigurationservicescompetency(this.parent_person_id).subscribe(data => {
+        this.checkedList = data;
         this.loading = false;
         this.cd.detectChanges();
       });
@@ -632,11 +699,11 @@ export class ItemsConsumablesComponent implements OnInit {
         ndiA_LEVEL4:'',//add to api
       });
       this.competencyForm = this.formBuilder.group({
-        'PersonID': this.parent_person_id,
-        'Group'   :'SVC_COMP',
-        'Type'    :'SVC_COMP',
-        'Name'    : '',
-        'Notes'   : '',
+        competencyValue: '',
+        mandatory: false,
+        notes: '',
+        personID: this.parent_person_id,
+        recordNumber: 0
       });
     }
     handleOkTop() {

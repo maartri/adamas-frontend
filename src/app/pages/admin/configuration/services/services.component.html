@@ -836,11 +836,11 @@
                                     <tbody>
                                         <tr *ngFor="let list of checkedList;let j = index;">
                                             <td>{{list}}</td>
-                                            <td></td>
-                                            <td class="left"><a (click)="showEditModal(j)">Update</a>
+                                            <td><label nz-checkbox nzDisabled [ngModel]="list.mandatory" nzDisabled [ngModelOptions]="{standalone: true}"></label></td>
+                                            <td class="left"><a (click)="editCompetencyModal(j)">Update</a>
                                                 <nz-divider nzType="vertical"></nz-divider>
                                                 <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(list)">Delete</a>
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteCompetency(list)">Delete</a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -868,10 +868,10 @@
         </div>
     </div>
 </nz-modal>
-<nz-modal [nzWidth]="400"  [(nzVisible)]="competencymodal" nzTitle="Required Competencies (MANDATORY)" (nzOnCancel)="handleCompetencyCancel()">
-    <form nz-form [formGroup]="inputForm" >
-        <div nz-row nzGutter="24">    
-            <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+<nz-modal [nzWidth]="500"  [(nzVisible)]="competencymodal" nzTitle="COMPETENCIES" (nzOnCancel)="handleCompCancel()">
+    <form nz-form [formGroup]="competencyForm" >
+        <div nz-row>    
+            <div *ngIf="addOrEdit == 0" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                 <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Competencies Required For Work in This Program</h4>
                 <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="logs($event)">
                     <div nz-row>
@@ -881,12 +881,22 @@
                     </div>
                 </nz-checkbox-wrapper>
             </div>
+            <div class="form-group" *ngIf="addOrEdit == 1">
+                <nz-form-label>Title</nz-form-label>
+                <input nz-input formControlName="competencyValue" disabled />
+            </div>
+        </div>
+        <div nz-row *ngIf="addOrEdit == 1">
+            <nz-form-item>
+                <nz-form-label>Mandatory</nz-form-label>
+                <label nz-checkbox formControlName="mandatory"></label>                 
+            </nz-form-item>
         </div>
     </form>
     <div *nzModalFooter>
         <ng-container>
             <button nz-button nzType="primary" (click)="saveCompetency()">
-                <span>ADD</span>
+                <span>{{(addOrEdit == 0) ? 'ADD' : 'Update'}}</span>
             </button>
         </ng-container>
     </div>

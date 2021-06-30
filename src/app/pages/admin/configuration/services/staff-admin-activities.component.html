@@ -836,11 +836,11 @@
                                     <tbody>
                                         <tr *ngFor="let list of checkedList;let j = index;">
                                             <td>{{list.competency}}</td>
-                                            <td><label nz-checkbox nzDisabled [ngModel]="list.mandatory" nzDisabled ></label></td>
+                                            <td><label nz-checkbox nzDisabled [ngModel]="list.mandatory" nzDisabled [ngModelOptions]="{standalone: true}"></label></td>
                                             <td class="left"><a (click)="editCompetencyModal(list)">Update</a>
                                                 <nz-divider nzType="vertical"></nz-divider>
                                                 <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(list)">Delete</a>
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteCompetency(list)">Delete</a>
                                             </td>
                                         </tr>
                                     </tbody>

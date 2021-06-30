@@ -100,6 +100,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   competencies: any;
   addOrEdit: number = 0;
   isNewRecord: boolean =  false;
+  insertOne: number = 0;
   
   constructor(
     private globalS: GlobalService,
@@ -174,6 +175,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.title = "Edit Staff Admin Activities"
       this.isUpdate = true;
       this.current = 0;
+      
       this.modalOpen = true;
       const {
         title,
@@ -271,6 +273,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
         ndiaTravel,
         recordNumber,
       } = this.tableData[index-1];
+
       this.inputForm.patchValue({
         title:title,
         billingText:billText,
@@ -363,9 +366,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
         ndiA_LEVEL2:ndiA_LEVEL2,
         ndiA_LEVEL3:ndiA_LEVEL3,
         ndiA_LEVEL4:ndiA_LEVEL4,
-        ndiaClaimType:ndiaClaimType,//add to api
-        ndiaPriceType:ndiaPriceType,//add to api
-        ndiaTravel:ndiaTravel,//add to api
+        ndiaClaimType:ndiaClaimType,
+        ndiaPriceType:ndiaPriceType,
+        ndiaTravel:ndiaTravel,
         recnum:recordNumber,
       });
       this.parent_person_id = recordNumber;//set person id for programs and competencies
@@ -384,10 +387,13 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
+      this.addOrEdit = 0;
       this.competencymodal = true;
+      this.clearCompetency();
     }
     handleCompetencyCancel(){
       this.competencymodal = false;
+      this.addOrEdit = 0;
     }
     trueString(data: any): string{
       return data ? '1': '0';
@@ -417,7 +423,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
     saveCompetency(){
       this.postLoading = true;
         const group = this.inputForm;
-        let insertOne = false;
+          this.insertOne = 0;
         if(this.addOrEdit == 0){
           if(!this.isUpdate){
             if(!this.isNewRecord){
@@ -432,19 +438,19 @@ export class StaffAdminActivitiesComponent implements OnInit {
                 personID:this.parent_person_id,
                 }).pipe(
                 takeUntil(this.unsubscribe)).subscribe(data => {
-                  if(data)
-                  {
-                    insertOne = true;
-                  }
+                    this.insertOne = 1;
                 })
-                if(insertOne){
-                  this.globalS.sToast('Success', 'Competency Added');
-                  this.loadCompetency();
-                  this.handleCompCancel();
-                }else{
-                  this.globalS.sToast('Failure', 'Some Thing Weng Wrong Please Try Again');
-                }
-          });
+            });
+            if(this.insertOne == 1){
+              console.log("a");
+              this.globalS.sToast('Success', 'Competency Added');
+              this.loadCompetency();
+              this.handleCompCancel();
+              return false;
+            }else{
+              this.globalS.sToast('Failure', 'Some Thing Weng Wrong Please Try Again');
+              return false;
+            }
         }
         else
         {
@@ -466,8 +472,16 @@ export class StaffAdminActivitiesComponent implements OnInit {
       })
       this.competencymodal = true;
     }
-    deleteCompetency(){
-          
+    deleteCompetency(data:any){
+      this.loading = true;
+      this.menuS.deleteconfigurationservicescompetency(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadCompetency();
+          return;
+        }
+      });
     }
     loadData(){
       this.loading = true;
@@ -692,12 +706,12 @@ export class StaffAdminActivitiesComponent implements OnInit {
         HACCUse:false,
         CSTDAUse:false,
         NRCPUse:false,
-        ndiaClaimType:"",//add to api
-        ndiaPriceType:"",//add to api
-        ndiaTravel:false,//add to api
-        ndiA_LEVEL2:'',//add to api
-        ndiA_LEVEL3:'',//add to api
-        ndiA_LEVEL4:'',//add to api
+        ndiaClaimType:"",
+        ndiaPriceType:"",
+        ndiaTravel:false,
+        ndiA_LEVEL2:'',
+        ndiA_LEVEL3:'',
+        ndiA_LEVEL4:'',
       });
       this.competencyForm = this.formBuilder.group({
             competencyValue: '',

@@ -1,6 +1,6 @@
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="putonLeaveModal = !putonLeaveModal">Add Leave</button>
+        <button class="botton success" (click)="showAddModal()">Add Leave</button>
         <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
             [nzData]="tableData">
@@ -24,13 +24,6 @@
                     <td>{{ data.reminderDate }}</td>
                     <td>
                     <label nz-checkbox nzDisabled [ngModel]="data.approved" nzDisabled [ngModelOptions]="{standalone: true}"></label>
-                        <!-- <input type="checkbox" [ngModel]="op.approved" disabled> -->
-                        <!-- <div style="display:inline-block;">
-                            <clr-checkbox-wrapper>
-                                <input type="checkbox" clrCheckbox value="option1" name="options" [(ngModel)]="op.approved"
-                                    (click)="checkBoxChange($event,i)" />
-                            </clr-checkbox-wrapper>
-                        </div> -->
                     </td>
                     <td>
                         <a (click)="showEditModal(i)">Update</a>
@@ -43,6 +36,7 @@
         </nz-table>
     </div>
 </div>
+
 
 <app-leave-application *ngIf="user" [open]="putonLeaveModal" [user]="user"></app-leave-application>
 

@@ -17,7 +17,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
 
   @Input() open: boolean = false;
   @Input() user: any;
-
+  
   leaveGroup: FormGroup;
   isLoading: boolean = false;
 
@@ -71,7 +71,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         programShow: false
     });
   }
-
+  // showAddModal();
   handleCancel(){
     this.open = false;
   }

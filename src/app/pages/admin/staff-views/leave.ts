@@ -87,7 +87,7 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.user = this.sharedS.getPicked();
-        if(this.user || !this.putonLeaveModal){
+        if(this.user){
             this.search(this.user);
             this.buildForm();
             return;

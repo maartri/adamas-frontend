@@ -23,6 +23,7 @@
                     <td>{{ data.notes  }}</td>
                     <td>{{ data.reminderDate }}</td>
                     <td>
+                    <label nz-checkbox nzDisabled [ngModel]="data.approved" nzDisabled [ngModelOptions]="{standalone: true}"></label>
                         <!-- <input type="checkbox" [ngModel]="op.approved" disabled> -->
                         <!-- <div style="display:inline-block;">
                             <clr-checkbox-wrapper>

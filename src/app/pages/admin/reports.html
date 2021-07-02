@@ -386,7 +386,13 @@
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Service Notes Register
                                                 </button>
-                                        </div>                                                                       
+                                        </div>  
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-staff-staffservicenotesreg" (click)="showModal(this.id)"  >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Service Notes Register
+                                        </button> 
+                                        </div>                                                                     
                                     </li>                  
                                 </ul>
                             </div>
@@ -694,14 +700,14 @@
                                                 Staff Daily Hours Report
                                                 </button>
                                         </div> 
-                                    <!--    <div>
-                                            <button nz-button nzType="default" disabled >
+                                       <!--<div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-AwardStaffPayRpt" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Award Staff Pay Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-AwardStaffProgramPayRpt"  (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
                                                 Award Staff Program Pay Report
                                                 </button>
@@ -1237,6 +1243,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_AdditionalInfo" ><label class="checks" nz-checkbox formControlName="include_AdditionalInfo"   >Include Additional Information</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_unavailability" ><label class="checks" nz-checkbox formControlName="include_unavailability"   >Include Unavailability</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_activeStaffonly" ><label class="checks" nz-checkbox formControlName="activeStaffonly"   >Active Staff Only</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_activeClientsonly"><label class="checks" nz-checkbox formControlName="activeclientsonly"   >Active Clients Only</label></div>
                                         
                                        
                                     </div>

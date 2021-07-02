@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormControl, FormArray, } from '@an
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ViewEncapsulation } from '@angular/core';
-import { ListService, states, TimeSheetService,GlobalService } from '@services/index';
+import { ListService, states, TimeSheetService,GlobalService,MenuService,ReportService } from '@services/index';
 import * as FileSaver from 'file-saver';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
@@ -13,6 +13,8 @@ import { concat, constant, now } from 'lodash';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router,ActivatedRoute, ParamMap } from '@angular/router';
 import * as constants from './../../services/global.service'
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { empty, Subject } from 'rxjs';
 
 
 
@@ -313,6 +315,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     validateForm!: FormGroup;
     tocken :any;
 
+    private unsubscribe: Subject<void> = new Subject();
+
     bodystyle:object;
     FOReportsbodystyle : object;
     //{ height:'500px', overflow: 'auto'} 
@@ -389,6 +393,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     chkbx_asAddressLabel: boolean;
 //    chkbx_incl_additionalInfo: boolean;
     chkbx_incl_activeClients: boolean;
+    chkbx_activeClientsonly: boolean;    
     chkbx_grpbyCoordinators: boolean;
     chkbx_incl_activeStaff: boolean;
     chkbx_include_enddated : boolean;
@@ -641,7 +646,9 @@ stafftypeArr: Array<any> = constants.types;
         
         private listS: ListService,
         private TimesheetS: TimeSheetService,
+        private ReportS: ReportService,
         private GlobalS:GlobalService,
+        private menuS:MenuService,
         private http: HttpClient,
         private fb: FormBuilder,
         private sanitizer: DomSanitizer,
@@ -1042,6 +1049,7 @@ stafftypeArr: Array<any> = constants.types;
         this.chkbx_asAddressLabel = false;
 //       this.chkbx_incl_additionalInfo = false;
         this.chkbx_incl_activeClients = false;
+        this.chkbx_activeClientsonly = false;         
         this.chkbx_include_enddated = false;
         this.chkbx_exclude_MandatoryChecking = false;
         this.chkbx_include_PrimarySkills= false;
@@ -1344,7 +1352,8 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 this.frm_options = true;
-                this.chkbx_incl_activeClients = true;
+            //    this.chkbx_incl_activeClients = true;
+                this.chkbx_activeClientsonly= true; 
                 break;
             case 'btn-staff-Activestaff':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1585,6 +1594,14 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;                
                 this.frm_options = true;
                 this.chkbx_incl_outstanding = true;
+                break;                
+            case 'btn-staff-staffservicenotesreg':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
+                this.ModalName = "STAFF SERVICE NOTES REGISTER "
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_CaseNots = true;
+                this.frm_Staff = true;                
                 break;
             case 'btn-Regis-progcasenotes':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1821,9 +1838,14 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_SVCTypes = true;
                 break;
             case 'btn-FORPT-ProgramActivitySpread':
-               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD " ;
-                 
-            break;
+               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD " ;                 
+                break;                
+            case 'btn-FORPT-AwardStaffPayRpt':
+               this.FORptModelTitle = "AWARD STAFF PAY REPORT " ;                 
+                break;                
+            case 'btn-FORPT-AwardStaffProgramPayRpt':
+                this.FORptModelTitle = "AWARD STAFF PROGRAM PAY REPORT " ;                 
+                    break;
             case 'btn-FORPT-ProgramStaffUtilized':
                 this.FORptModelTitle = "PROGRAM STAFF UTILIZED " ;
              break;
@@ -2426,6 +2448,9 @@ stafftypeArr: Array<any> = constants.types;
             case 'btn-staff-loanregister':
                 this.StaffLoanRegister(s_Branches, s_Programs, s_Staff, s_LoanItems, s_StfGroup, strdate, endate, tempsdate, tempedate)
                 break;
+            case 'btn-staff-staffservicenotesreg':
+                this.StaffServiceNotesRegister(s_Branches, s_Staff , s_CaseNotes, strdate, endate, tempsdate, tempedate)
+                break;
             case 'btn-Regis-progcasenotes':
                 this.RecipientProg_CaseReport(s_Branches, s_Programs, s_CaseNotes, s_Recipient, s_Descipiline, s_CareDomain, s_ServiceRegions, s_Managers, strdate, endate, tempsdate, tempedate)
                 break;
@@ -2495,6 +2520,12 @@ stafftypeArr: Array<any> = constants.types;
                 break;
             case 'btn-FORPT-ProgramActivitySpread': 
                 this.ProgramReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
+                break;            
+            case 'btn-FORPT-AwardStaffPayRpt': 
+                this.AwardStaffPayReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
+                break;                  
+            case 'btn-FORPT-AwardStaffProgramPayRpt': 
+                this.AwardStaffProgramPayReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                 break;
             case 'btn-FORPT-ProgramStaffUtilized':
                 this.ProgramReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
@@ -2508,7 +2539,6 @@ stafftypeArr: Array<any> = constants.types;
                 case 'btn-FORPT-ActivityStaff':
                     this.ActivityStaffReport(s_Branches, s_Managers, s_ServiceRegions, s_StfGroup, s_Funders, s_Recipient, s_Staff, s_HACCCategory, s_RosterType, s_Age, s_DateType, s_Programs, s_MdsAgencyID, s_OutLetID, s_StaffTeam, status, strdate, endate, idbtn, s_Stafftype, s_PayType, s_Activity, s_Settings_vehicle, formating, tempsdate, tempedate)
                     break;
-
             case 'btn-BudgetAuditReport':
                 this.ProgramBudgetAudit(s_Branches, s_Programs);
                 break;
@@ -2979,7 +3009,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
 
      
-        fQuery = fQuery + " [Roster].[Start Time], (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108  AS ENDTIME, [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')"
+        fQuery = fQuery + " [Roster].[Start Time], case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME, [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')"
         //Condtion to be added on dynamic input   
         //HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END) <= '2020-07-01'  AND MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) >'2020-07-31' 
        
@@ -3049,7 +3079,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //    console.log("default case")
             break;
     }
-    console.log(fQuery)
+    //console.log(fQuery)
         this.drawerVisible = true;
 
         const data = {
@@ -4963,6 +4993,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         var fQuery = "SELECT DISTINCT T.[Date], R.ACCOUNTNO, R.[Surname/Organisation] as Surname, R.FirstName,  R.Branch,  R.RECIPIENT_CoOrdinator, RP.Program FROM RECIPIENTS R LEFT JOIN RecipientPrograms RP on R.UniqueID = RP.PersonID LEFT JOIN ( SELECT RECORDNO, [Date],[CLIENT CODE], Program FROM ROSTER WHERE [TYPE] IN (2,3,4,5,6,7,8,10,11,12)  "
 
+        if(this.inputForm.value.activeclientsonly == true){
+            fQuery = fQuery + "AND ((R.AdmissionDate is NOT NULL) and (R.DischargeDate is NULL)) "
+        }
        
 
         
@@ -4988,6 +5021,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
         }
         fQuery = fQuery + " AS T ON R.ACCOUNTNO = T.[CLIENT CODE] WHERE ACCOUNTNO > '!Z' AND T.RECORDNO IS NULL"
+        
         if (startdate != "") {
             var lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
         }
@@ -5212,7 +5246,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+         //   fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
         }
         else {
             this.reportid   = "6NauxB95CSDc096v" 
@@ -5308,7 +5342,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
+            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
         }
         else {
             this.reportid   = "3zUoVBKOkYhdU8Z5" 
@@ -5403,13 +5437,15 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
-        }
+            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
+    //        console.log(fQuery) 
+            }
         else {
             this.reportid   = "htp5rccUteYVbXt6" 
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
         fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
         }
+        
         this.drawerVisible = true;
 
         const data = {
@@ -5589,8 +5625,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         // console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by StaffName"
-        }
+            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
+     
+            }
         else {
             this.reportid   = "lcl6jxcRDYzgs7kJ" 
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
@@ -6709,6 +6746,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         if(this.inputForm.value.printaslabel == false){ 
             if(this.inputForm.value.groupbyCoordinators == true){            
                 fQuery = fQuery + " ORDER BY PAN_MANAGER, Staff.[LastName], Staff.[FirstName] "
+                this.reportid = "WEZGNxF91omVDGWq"
             }else{
                 fQuery = fQuery + " ORDER BY Staff.[LastName], Staff.[FirstName] "
             }
@@ -11228,7 +11266,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     }
     ActivityStaffReport (branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
 
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate],[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
+        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,ROUND([Roster].[Unit Pay Rate],2) as UnitPayRate , [Roster].[Unit Pay Rate] , [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title] "
         var lblcriteria;
        
 
@@ -11550,9 +11588,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 this.reportid= "gKDoVHUUaYJZdiE5";
                 break;
             case "Standard":
-                    Title = Title + "-STANDARD"
-                    this.reportid = "5UhTciOEItAwdplv";
-                    break;
+                Title = Title + "-STANDARD"
+                this.reportid = "5UhTciOEItAwdplv";
+                break;
 
             default:
                 Title = Title + "-SUMMARY"
@@ -11560,7 +11598,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 break;
         }
 
-
+        console.log(this.inputForm.value.InclFinancials)
         this.drawerVisible = true;
         
         const data = {
@@ -18105,7 +18143,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
 
     var lblcriteria;
     //SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName], UPPER(Staff.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1], Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35 ,HumanResources.RecordNumber,HumanResources.[Type] ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail] FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE    Staff.[Category] = 'STAFF'  OR Staff.[Category] = 'STAFF'  OR Staff.[Category] = 'BROKERAGE ORGANISATION'   AND (Staff.[commencementdate] is not null and Staff.[terminationdate] is null)  ORDER BY Staff.[LastName]
-    var fQuery = "SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName],  Staff.[LastName] + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Lower (Staff.[Address1] + ' ' + Staff.[Suburb]) as Address1, Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35  ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail],case when SB1 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0022')  end as Skill22 ,case when SB2 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0023')   end as Skill23 ,case when SB3 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0024')   end as Skill24 ,case when SB4 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0025')   end as Skill25,case when SB5 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0026')   end as Skill26,case when SB6 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0027')   end as Skill27 ,case when SB7 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0028')   end as Skill28 ,case when SB8 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0029')   end as Skill29 ,case when SB9 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0030')   end as Skill30 ,case when SB10 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0031')   end as Skill31 ,case when SB11 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0032')   end as Skill32 ,case when SB12 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0033')   end as Skill33 ,case when SB13 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0034')   end as Skill34,case when SB14 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0036')   end as Skill36 ,case when SB15 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0040')   end as Skill40 ,case when SB16 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0041')   end as Skill41 ,case when SB17 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0042')   end as Skill42 ,case when SB18 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0043')   end as Skill43 ,case when SB19 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0044')    end as Skill44 ,case when SB20 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0045')   end as Skill45 ,case when SB21 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0046')   end as Skill46 ,case when SB22 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0047')   end as Skill47 ,case when SB23 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0048')   end as Skill48 ,case when SB24 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0049')   end as Skill49 ,case when SB25 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0050')   end as Skill50 ,case when SB26 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0051')   end as Skill51 ,case when SB27 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0052')   end as Skill52 ,case when SB28 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0053')   end as Skill53 ,case when SB29 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0054')   end as Skill54 ,case when SB30 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0055')   end as Skill55 ,case when SB31 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0056')   end as Skill56 ,case when SB32 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0057')   end as Skill57 ,case  when SB33 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0058')   end as Skill58  ,case when SB34 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0059')    end as Skill59 ,case when SB35 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0060')   end as Skill60  FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE  ([commencementdate] is not null and [terminationdate] is null)  "
+    var fQuery = "SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName],  Staff.[LastName] + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1] + ' ' + Staff.[Suburb] as Address1, Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35  ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail],case when SB1 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0022')  end as Skill22 ,case when SB2 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0023')   end as Skill23 ,case when SB3 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0024')   end as Skill24 ,case when SB4 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0025')   end as Skill25,case when SB5 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0026')   end as Skill26,case when SB6 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0027')   end as Skill27 ,case when SB7 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0028')   end as Skill28 ,case when SB8 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0029')   end as Skill29 ,case when SB9 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0030')   end as Skill30 ,case when SB10 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0031')   end as Skill31 ,case when SB11 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0032')   end as Skill32 ,case when SB12 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0033')   end as Skill33 ,case when SB13 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0034')   end as Skill34,case when SB14 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0036')   end as Skill36 ,case when SB15 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0040')   end as Skill40 ,case when SB16 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0041')   end as Skill41 ,case when SB17 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0042')   end as Skill42 ,case when SB18 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0043')   end as Skill43 ,case when SB19 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0044')    end as Skill44 ,case when SB20 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0045')   end as Skill45 ,case when SB21 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0046')   end as Skill46 ,case when SB22 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0047')   end as Skill47 ,case when SB23 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0048')   end as Skill48 ,case when SB24 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0049')   end as Skill49 ,case when SB25 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0050')   end as Skill50 ,case when SB26 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0051')   end as Skill51 ,case when SB27 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0052')   end as Skill52 ,case when SB28 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0053')   end as Skill53 ,case when SB29 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0054')   end as Skill54 ,case when SB30 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0055')   end as Skill55 ,case when SB31 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0056')   end as Skill56 ,case when SB32 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0057')   end as Skill57 ,case  when SB33 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0058')   end as Skill58  ,case when SB34 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0059')    end as Skill59 ,case when SB35 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0060')   end as Skill60  FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE  ([commencementdate] is not null and [terminationdate] is null)  "
     
     
 
@@ -18637,6 +18675,1091 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
 
     }
+    AwardStaffPayReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
+
+       
+        //  WHERE (Date >= '2021/06/01' And Date <='2021/06/30') AND ([Client Code] > '!MULTIPLE')  And (([Roster].[Type] IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] <> '!MULTIPLE')  
+                var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[Branch] As Branch , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]"
+        //      var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
+                var lblcriteria;
+                
+        
+                if (funders != "" || mdsagencyID != "") {
+                    fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
+                }
+                if (stfgroup != "" || Staff != "" || staffteam != "" || stafftype != "") {
+                    var join = "INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo]";
+                    fQuery = fQuery + join;
+        
+                }
+                fQuery = fQuery + " WHERE ([Client Code] > '!MULTIPLE') "
+        
+                if (this.inputForm.value.InfoOnly == true){
+                    fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+                }
+                if (this.inputForm.value.NotAllocated == true){
+                             var notinclude = " 1, "    
+                }else {var notinclude = "  "}
+                if (this.inputForm.value.RecipientLeave == true){
+                    fQuery = fQuery + " And (([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) "
+                }else{
+                    fQuery = fQuery + " And ([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8, 10, 11, 12, 14))  "
+                }
+                if (this.inputForm.value.InternalCost == false){
+                fQuery = fQuery +" AND ([Client Code] > '!INTERNAL') "
+                }
+        
+             
+        
+                var Title = "AWARD STAFF PAY REPORT";
+                var Report_Definer = "";
+        
+                if (branch != "") {
+                    this.s_BranchSQL = "[Recipients].[Branch] in ('" + branch.join("','") + "')";
+                    if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+                }
+                if (startdate != "" || enddate != "") {
+        
+        
+                    let strkey = Datetype.toString();
+                    switch (strkey) {
+        
+                        case "Pay Period EndDate":
+        
+                            this.s_DateSQL = " ([Date Timesheet] >=  '" + tempsdate + ("' AND [Date Timesheet] <= '") + tempedate + "' )";
+                            break;
+                        case 'Billing Date':
+        
+                            this.s_DateSQL = " ([Date Invoice] >=  '" + tempsdate + ("' AND [Date Invoice] <= '") + tempedate + "' )";
+                            break;
+                        case 'Service Date':
+        
+                            this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
+                            break;
+                        default:
+                            this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
+        
+                            break;
+                    }
+        
+                    if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+                    // console.log("s_DateSQL" + this.s_DateSQL)            
+                }
+                if (manager != "") {
+                    this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','") + "')";
+                    if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+                }
+                if (region != "") {
+                    this.s_CategorySQL = "Anal in ('" + region.join("','") + "')";
+                    if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+                }
+                if (stfgroup != "") {
+                    this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','") + "'))";
+                    if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
+                }
+                if (staffteam != "") {
+                    this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','") + "'))";
+                    if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+                }
+                if (Staff != "") {
+                    this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','") + "'))";
+                    if (this.s_StfSQL != "") { fQuery = fQuery + " AND " + this.s_StfSQL };
+                }
+                if (status != "") {
+                    this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','") + "'))";
+                    if (this.s_statusSQL != "") { fQuery = fQuery + " AND " + this.s_statusSQL };
+                }
+                if (program != "") {
+                    this.s_ProgramSQL = " ([Program] in ('" + program.join("','") + "'))";
+                    if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+                }
+        
+                if (funders != "") {
+                    this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','") + "')";
+                    if (this.s_FundersSQL != "") { fQuery = fQuery + " AND " + this.s_FundersSQL };
+                }
+                if (RosterCategory != "") {
+                    
+                    this.s_RosterCategorySQL = "[Roster].[Type]  in ('" + RosterCategory.join("','") + "')";
+                    if (this.s_RosterCategorySQL != "") { fQuery = fQuery + " AND " + this.s_RosterCategorySQL };
+                }
+                if (HACCCategory != "") {
+                    this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','") + "')";
+                    if (this.s_HACCCategorySQL != "") { fQuery = fQuery + " AND " + this.s_HACCCategorySQL };
+                }
+                if (mdsagencyID != "") {
+                    this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','") + "')";
+                    if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
+                }
+        
+                if (Age != "" && Age != "All") {
+                    let tempkay = (Age.toString()).substring(0, 8);
+                    switch (tempkay) {
+                        case "Under 65":
+                            this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                            break;
+                        case "Over 64 ":
+                            this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                            break;
+        
+                        default:
+                            break;
+                    }
+        
+                    fQuery = fQuery + " AND " + this.s_AgeSQL;
+        
+                }
+        
+                if (outletid != "") {
+                    this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','") + "')";
+                    if (this.s_OutletIDSQL != "") { fQuery = fQuery + " AND " + this.s_OutletIDSQL };
+                }
+                if (recipient != "") {
+                    this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','") + "')";
+                    if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL };
+                }
+                if (stafftype != "") {
+                    this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','") + "')";
+                    if (this.s_StafftypeSQL != "") { fQuery = fQuery + " AND " + this.s_StafftypeSQL };
+                }
+                if (paytype != "") {
+                    this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','") + "')";
+                    if (this.s_paytypeSQL != "") { fQuery = fQuery + " AND " + this.s_paytypeSQL };
+                }
+                if (activity != "") {
+                    this.s_activitySQL = "[Service Type] in ('" + activity.join("','") + "')";
+                    if (this.s_activitySQL != "") { fQuery = fQuery + " AND " + this.s_activitySQL };
+                }
+                if (settings != "") {
+                    this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','") + "')";
+                    if (this.s_setting_vehicleSQL != "") { fQuery = fQuery + " AND " + this.s_setting_vehicleSQL };
+                }
+        
+        
+        
+        
+        
+                if (startdate != "") {
+                    lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+                }
+                else { lblcriteria = " All Dated " }
+                if (branch != "") {
+                    lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
+                }
+                else { lblcriteria = lblcriteria + " All Branches " }
+        
+        
+                if (outletid != "") {
+                    var OutletID = outletid.join(",") + "; "
+                }
+                else {
+                    OutletID = " All "
+                }
+        
+        
+                if (Datetype != "") {
+                    var Datetypes = Datetype + "; "
+                }
+                else {
+                    Datetypes = " Service Date "
+                }
+        
+        
+                if (Age != "") {
+                    var Age_ATSI = Age + "; "
+                }
+                else {
+                    Age_ATSI = " All "
+                }
+        
+        
+        
+                if (mdsagencyID != "") {
+                    var mdsagency = mdsagencyID.join(",") + "; "
+                }
+                else {
+                    mdsagency = " All "
+                }
+        
+        
+        
+                if (HACCCategory != "") {
+                    var HACCCategories = HACCCategory.join(",") + "; "
+                }
+                else {
+                    HACCCategories = " All "
+                }
+        
+        
+        
+                if (RosterCategory != "") {
+                    var RosterCategories = RosterCategory.join(",") + "; "
+                }
+                else {
+                    RosterCategories = " All "
+                }
+        
+                if (program != "") {
+                    var programs = program.join(",") + "; "
+                }
+                else {
+                    programs = " All "
+                }
+        
+        
+        
+                if (Staff != "") {
+                    var Staffs = Staff.join(",") + "; "
+                }
+                else {
+                    Staffs = " All "
+                }
+        
+        
+        
+                if (staffteam != "") {
+                    var staffteams = staffteam.join(",") + "; "
+                }
+                else {
+                    staffteams = " All "
+                }
+        
+        
+        
+                if (stfgroup != "") {
+                    var stfgroups = stfgroup.join(",") + "; "
+                }
+                else {
+                    stfgroups = " All "
+                }
+        
+        
+        
+                if (region != "") {
+                    var regions = region.join(",") + "; "
+                }
+                else {
+                    regions = " All "
+                }
+        
+        
+        
+                if (manager != "") {
+                    var managers = manager.join(",") + "; "
+                }
+                else {
+                    managers = " All "
+                }
+        
+        
+                if (funders != "") {
+                    var fundingsource = funders.join(",") + "; "
+                }
+                else {
+                    fundingsource = " All "
+                }
+        
+        
+                if (status != "") {
+                    var statuscat = status + "; "
+                }
+                else {
+                    statuscat = " All "
+                }
+        
+        
+        
+                if (recipient != "") {
+                    var recipients = recipient.join(",") + "; "
+                }
+                else {
+                    recipients = " All "
+                }
+        
+        
+                if (stafftype != "") {
+                    var stafftypes = stafftype.join(",") + "; "
+                }
+                else {
+                    stafftypes = " All "
+                }
+        
+                if (paytype != "") {
+                    var paytypes = paytype.join(",") + "; "
+                }
+                else {
+                    paytypes = " All "
+                }
+                if (activity != "") {
+                    var activities = activity.join(",") + "; "
+                }
+                else {
+                    activities = " All "
+                }
+                if (settings != "") {
+                    var setting = settings.join(",") + "; "
+                }
+                else {
+                    setting = " All "
+                }
+        
+               
+        
+        
+                fQuery = fQuery + "   ";
+        
+        //    console.log(fQuery) 
+                switch (format) {
+                    case "Detailed":
+                        Title = Title + "-DETAIL"
+                        this.reportid = "vaOXVraOpuzXIUxS";
+                        break;
+                    case "Standard":
+                            Title = Title + "-STANDARD"
+                            this.reportid = "kA2MblWsCNCUc1gb";
+        
+                            break;
+        
+                    default:
+                        Title = Title + "-SUMMARY"
+                        this.reportid  = "g3bkSvDrVnJOAL4u"
+                        break;
+                }
+        
+                this.drawerVisible = true;
+                var rptSQL = " SELECT [Date] , [MonthNo], [DayNo], [BlockNo], [Program], [Client Code], [Carer Code], [Service Type], [Anal], [Service Description], [Type], [ServiceSetting], [Start Time], [Duration], CASE WHEN [Type] = 9 THEN 0 ELSE [Duration] / 12 END AS [DecimalDuration], [CostQty], [CostUnit], CASE WHEN [Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Unit Pay Rate], [Unit Pay Rate] * [CostQty] As [LineCost], [BillQty], [BillUnit], [Unit Bill Rate], ([Unit Bill Rate] * [BillQty]) + ([Unit Bill Rate] * [BillQty] * (ISNULL(TaxPercent, 0) / 100)) As [LineBill], [Yearno] FROM Award_Roster_rpt  ORDER BY [Carer Code], [Service Description], Date, [Start Time]  "
+                var sql = " INSERT INTO Award_Roster_mufee (Award, RecordNo, [Date], [Start Time], Duration, PayType, RuleType, " +
+                " Program, Activity, Activity_Type, JobType, InfoOnly, NoOver, Ros_Day ) " +
+                " SELECT Award,Recordno, [Date], " +
+                " LEFT(CONVERT(VARCHAR,sTime,108),5) AS [Start Time], " +
+                "  DATEDIFF(N,sTime,eTime)/5.0 AS Duration, Paytype,RuleType,Program, " +
+                "  [Service Type], [Type], JobType, InfoOnly, NoOvertimeAccumulation, ROS_DAY From ( " +
+                "  SELECT DENSE_RANK() OVER(PARTITION BY R.RecordNo, R.[DATE], R.[Start Time] ORDER BY "+ 
+                "  CASE WHEN LEFT(DAYTYPE,1) = 'P' THEN 4 WHEN LEFT(DAYTYPE,1) = 'W' THEN 2 " +
+                "     WHEN ISNULL(DAYTYPE,'') = '' THEN 1 ELSE 3 END DESC ) AS RANKING, " +
+                " R.Award, R.Recordno, R.[Date], R.[Start Time], Duration, T.StartTime, T.EndTime, T.RecordNo AS TRecNo," +
+                " CASE WHEN PayAsRostered = 1 OR ExcludeFromTimebands = 1 OR PAR = 1 THEN [Service Description] ELSE T.PayType End As PayType, " +
+                " CASE WHEN PayAsRostered = 1 OR ExcludeFromTimebands = 1 OR PAR = 1 THEN Shift_Start_Time ELSE " +
+                " CASE WHEN StartTime > Shift_Start_Time THEN StartTime ELSE Shift_Start_Time END END AS sTime, " +
+                " CASE WHEN PayAsRostered = 1 Or ExcludeFromTimebands = 1 OR PAR = 1 THEN Shift_End_Time ELSE " +
+                " CASE WHEN EndTime > Shift_End_Time THEN Shift_End_Time ELSE EndTime END END AS eTime, " +
+                " CASE WHEN PayAsRostered = 1 OR PAR = 1 THEN 'Pay As Rostered' WHEN ExcludeFromTimebands = 1 THEN 'Timeband Exclude' ELSE 'Timeband' END AS RuleType, " +
+                "  t.DayType,  Program, [Service Type], [TYPE], JOBTYPE, INFOONLY, NoOvertimeAccumulation, ROS_DAY " +
+                " From ( SELECT R.Recordno, R.[Date], R.[Start Time], Duration," +
+                " CONVERT(SMALLDATETIME,R.[Start Time]) AS Shift_Start_Time, " +
+                "  DATEADD(N, Duration*5, CONVERT(SMALLDATETIME,R.[Start Time])) AS Shift_End_Time, " +
+                " CASE WHEN ISNULL(D.User1,'') ='' THEN 32 ELSE D.USER1 END AS AWARD, " +
+                " CASE WHEN PH.[DATE] IS NULL THEN DATENAME(w, R.[DATE]) ELSE 'Public Holiday' END As [ROS_DAY], " +
+                " I.PayAsRostered , I.ExcludeFromTimebands, R.Program, R.[Service Type], [Service Description], " +
+                " R.[TYPE], I.JOBTYPE, I.INFOONLY, I.NoOvertimeAccumulation, P.PayAsRostered As PAR " +
+                "  FROM ROSTER R INNER JOIN STAFF S ON R.[CARER CODE] = S.ACCOUNTNO " +
+                " INNER JOIN ItemTypes I ON R.[SERVICE TYPE] = I.TITLE AND ISNULL(I.JOBTYPE,'') <> 'EXCURSION' "  +
+                " LEFT JOIN ItemTypes P ON R.[SERVICE DESCRIPTION] = P.TITLE AND P.PROCESSCLASSIFICATION = 'INPUT' " +
+                " LEFT JOIN HUMANRESOURCES H ON R.STAFFPOSITION = H.RECORDNUMBER " +
+                " LEFT JOIN DATADOMAINS D ON H.[NAME] = D.[DESCRIPTION] AND D.DOMAIN = 'STAFFPOSITION' " +
+                " LEFT JOIN PUBLIC_HOLIDAYS PH ON R.[DATE] = PH.[DATE]" +
+                " AND CONVERT(SMALLDATETIME,R.[Start Time]) < ISNULL(CONVERT(SMALLDATETIME,PH.[END TIME]),'1900/01/02') "+
+                " AND DATEADD(N, Duration*5, CONVERT(SMALLDATETIME,R.[Start Time])) "+
+                " > ISNULL(CONVERT(SMALLDATETIME,PH.[START TIME]),'1900/01/01') "+
+                " AND ISNULL(PH.STATS,'') IN ('ALL','NSW','') "+
+                " AND (ISNULL(PH.PublicHolidayRegion,'') = ISNULL(S.PublicHolidayRegion,'') "+
+                " OR ISNULL(PH.PublicHolidayRegion,'') = '') "+
+                    "WHERE (R.DATE >= '"+tempsdate +"' AND R.DATE <='"+tempedate+"')  "
+                    //AND ([CARER CODE] > '!Z')  AND (R.[STATUS] >= '2') AND (R.[TYPE] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) OR (R.[TYPE] = 4 AND [CARER CODE] = '!INTERNAL')) AND [CARER CODE] <> '!MULTIPLE' AND ([SERVICE TYPE] <> 'CONTRIBUTION')"  +
+                    "AND [Carer Code] = '"+'ABFLAT GISELBERT'+"' "+
+                    "AND R.[Date] BETWEEN '"+tempsdate+"' AND '"+tempedate+"' "
+                    
+                    if (this.inputForm.value.NotAllocated == true){
+                         sql = sql +" AND R.[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) OR "
+                    }else{sql = sql + " AND R.[Type] IN(2, 5, 6, 7, 8, 9, 10, 11, 12) OR "}
+                    sql = sql +" ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') "
+    
+                    sql = sql +"AND ISNULL(I.ExcludeFromInterpretation,0) = 0 "+
+                    "AND ISNULL(P.ExcludeFromInterpretation,0) = 0 "+
+                    ") AS R  INNER JOIN TIMEBAND T ON T.AWARD = R.AWARD "+
+                        "AND (( IsNull(PayAsRostered,0) = 0 AND IsNull(PAR,0) = 0 AND IsNull(ExcludeFromTimebands,0) = 0 "+
+                        "AND (CONVERT(SMALLDATETIME,R.[Start Time]) < T.EndTime "+
+                        "AND DATEADD(N, Duration*5, CONVERT(SMALLDATETIME,R.[Start Time])) > T.StartTime) "+
+                        "AND ((ISNULL(DAYTYPE,'') = 'WEEKEND' AND LEFT(ROS_DAY,1) = 'S' ) "+
+                        " OR (ISNULL(DAYTYPE,'') = 'WEEKDAY' AND LEFT(ROS_DAY,1) <> 'S') "+
+                        "OR (ISNULL(DAYTYPE,'') = ROS_DAY ) "+
+                        " OR ISNULL(DAYTYPE,'') = '' )) "+
+                        "OR ((IsNull(PayAsRostered,0) = 1 OR IsNull(PAR,0) = 1 OR IsNull(ExcludeFromTimebands,0) = 1) and vRank = 1)) "+
+                    ") AS Final WHERE RANKING = 1 ORDER BY [Date], [START TIME] "
+    
+    
+                const data = {
+                    "template": { "_id": this.reportid },
+                    "options": {
+                        "reports": { "save": false },
+        
+                        "txtTitle": Title,
+        
+        
+                        "sql": rptSQL,//fQuery,
+                         "test": sql,
+                        "Criteria": lblcriteria,
+        
+                        "txtregions": regions,
+                        "txtstfgroups": stfgroups,
+                        "txtstaffteams": staffteams,
+                        "txtStaffs": Staffs,
+                        "txtprograms": programs,
+                        "txtRosterCategories": RosterCategories,
+                        "txtHACCCategories": HACCCategories,
+                        "txtmdsagency": mdsagency,
+                        "txtAge_ATSI": Age_ATSI,
+                        "txtDatetypes": Datetypes,
+                        "txtmanagers": managers,
+                        "txtfundingsource": fundingsource,
+                        "txtOutletID": OutletID,
+                        "txtstatuscat": statuscat,
+                        "txtrecipients": recipients,
+                        "txtstafftypes": stafftypes,
+                        "txtpaytypes": paytypes,
+                        "txtactivities": activities,
+                        "txtsetting": setting,
+                        "userid": this.tocken.user,
+        
+                        "includeFinancials":this.inputForm.value.InclFinancials,
+                        "Excludeheader":this.inputForm.value.ExcluPgeHeader,
+                    }
+                }
+        
+                this.loading = true;
+                const headerDict = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+        
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict)
+                };
+        
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                    .subscribe((blob: any) => {
+                        console.log(blob);
+        
+                        let _blob: Blob = blob;
+        
+                        let fileURL = URL.createObjectURL(_blob);
+                        this.pdfTitle = Title + ".pdf"
+                        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                        this.loading = false;
+        
+                    }, err => {
+                        console.log(err);
+                        this.ModalS.error({
+                            nzTitle: 'TRACCS',
+        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                            nzOnOk: () => {
+                                     this.drawerVisible = false;
+                                     },
+                          });
+                    });
+        
+    }
+    AwardStaffProgramPayReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
+
+        
+        //  WHERE (Date >= '2021/06/01' And Date <='2021/06/30') AND ([Client Code] > '!MULTIPLE')  And (([Roster].[Type] IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) And ([Client Code] <> '!MULTIPLE')  
+                var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date] , [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[Branch] As Branch , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]"
+        //      var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], CASE ISNULL(ISNULL([Recipients].[URNumber],''),'') WHEN '' Then [Roster].[Client Code] Else [Client Code] + ' - ' + ISNULL([Recipients].[URNumber],'') end as [Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Start Time], [Roster].[Duration], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE [Roster].[Duration] / 12 END AS [DecimalDuration], [Roster].[CostQty], [Roster].[CostUnit], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], CASE WHEN ([Roster].Type = 10 AND ISNULL([Roster].DatasetQty, 0) > 0) THEN ISNULL([Roster].DatasetQty, 0)      WHEN ([ItemTypes].MinorGroup = 'MEALS' OR [Roster].Type = 10) THEN [Roster].BillQty      ELSE [Roster].[Duration] / 12 END AS DatasetQty, [Roster].[BillUnit], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno] , [Recipients].[UniqueID] As RecipientID  FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo] INNER JOIN ITEMTYPES ON [Roster].[Service Type] = [ItemTypes].[Title]  "
+                var lblcriteria;
+                
+        
+                if (funders != "" || mdsagencyID != "") {
+                    fQuery = fQuery + "INNER JOIN HumanResourceTypes ON [Roster].[Program] = HumanResourceTypes.Name  "
+                }
+                if (stfgroup != "" || Staff != "" || staffteam != "" || stafftype != "") {
+                    var join = "INNER JOIN STAFF ON [Roster].[Carer Code] = [Staff].[AccountNo]";
+                    fQuery = fQuery + join;
+        
+                }
+                fQuery = fQuery + " WHERE ([Client Code] > '!MULTIPLE') "
+        
+                if (this.inputForm.value.InfoOnly == true){
+                    fQuery = fQuery + " AND NOT EXISTS ( SELECT * FROM ITEMTYPES I WHERE INFOONLY = 1 AND ROSTER.[SERVICE TYPE] = I.TITLE) "
+                }
+                if (this.inputForm.value.NotAllocated == true){
+                             var notinclude = " 1, "    
+                }else {var notinclude = "  "}
+                if (this.inputForm.value.RecipientLeave == true){
+                    fQuery = fQuery + " And (([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8, 10, 11, 12, 14) OR ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL'))) "
+                }else{
+                    fQuery = fQuery + " And ([Roster].[Type] IN ( "+ notinclude  +" 2, 3, 5, 6, 7, 8, 10, 11, 12, 14))  "
+                }
+                if (this.inputForm.value.InternalCost == false){
+                fQuery = fQuery +" AND ([Client Code] > '!INTERNAL') "
+                }
+        
+             
+        
+                var Title = "AWARD STAFF PROGRAM PAY REPORT";
+                var Report_Definer = "";
+        
+                if (branch != "") {
+                    this.s_BranchSQL = "[Recipients].[Branch] in ('" + branch.join("','") + "')";
+                    if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+                }
+                if (startdate != "" || enddate != "") {
+        
+        
+                    let strkey = Datetype.toString();
+                    switch (strkey) {
+        
+                        case "Pay Period EndDate":
+        
+                            this.s_DateSQL = " ([Date Timesheet] >=  '" + tempsdate + ("' AND [Date Timesheet] <= '") + tempedate + "' )";
+                            break;
+                        case 'Billing Date':
+        
+                            this.s_DateSQL = " ([Date Invoice] >=  '" + tempsdate + ("' AND [Date Invoice] <= '") + tempedate + "' )";
+                            break;
+                        case 'Service Date':
+        
+                            this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
+                            break;
+                        default:
+                            this.s_DateSQL = " (Date >=  '" + tempsdate + ("' AND Date <= '") + tempedate + "' )";
+        
+                            break;
+                    }
+        
+                    if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+                    // console.log("s_DateSQL" + this.s_DateSQL)            
+                }
+                if (manager != "") {
+                    this.s_CoordinatorSQL = "RECIPIENT_COORDINATOR in ('" + manager.join("','") + "')";
+                    if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+                }
+                if (region != "") {
+                    this.s_CategorySQL = "Anal in ('" + region.join("','") + "')";
+                    if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+                }
+                if (stfgroup != "") {
+                    this.s_StfGroupSQL = "([Staff].[StaffGroup] in ('" + stfgroup.join("','") + "'))";
+                    if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
+                }
+                if (staffteam != "") {
+                    this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','") + "'))";
+                    if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+                }
+                if (Staff != "") {
+                    this.s_StfSQL = "([Carer Code] in ('" + Staff.join("','") + "'))";
+                    if (this.s_StfSQL != "") { fQuery = fQuery + " AND " + this.s_StfSQL };
+                }
+                if (status != "") {
+                    this.s_statusSQL = "([Roster].[Status] in ('" + status.join("','") + "'))";
+                    if (this.s_statusSQL != "") { fQuery = fQuery + " AND " + this.s_statusSQL };
+                }
+                if (program != "") {
+                    this.s_ProgramSQL = " ([Program] in ('" + program.join("','") + "'))";
+                    if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+                }
+        
+                if (funders != "") {
+                    this.s_FundersSQL = "HumanResourceTypes.[Type] in ('" + funders.join("','") + "')";
+                    if (this.s_FundersSQL != "") { fQuery = fQuery + " AND " + this.s_FundersSQL };
+                }
+                if (RosterCategory != "") {
+                    
+                    this.s_RosterCategorySQL = "[Roster].[Type]  in ('" + RosterCategory.join("','") + "')";
+                    if (this.s_RosterCategorySQL != "") { fQuery = fQuery + " AND " + this.s_RosterCategorySQL };
+                }
+                if (HACCCategory != "") {
+                    this.s_HACCCategorySQL = "ItemTypes.HACCType in ('" + HACCCategory.join("','") + "')";
+                    if (this.s_HACCCategorySQL != "") { fQuery = fQuery + " AND " + this.s_HACCCategorySQL };
+                }
+                if (mdsagencyID != "") {
+                    this.s_MdsAgencySQL = "HumanResourceTypes.Address1 in ('" + mdsagencyID.join("','") + "')";
+                    if (this.s_MdsAgencySQL != "") { fQuery = fQuery + " AND " + this.s_MdsAgencySQL };
+                }
+        
+                if (Age != "" && Age != "All") {
+                    let tempkay = (Age.toString()).substring(0, 8);
+                    switch (tempkay) {
+                        case "Under 65":
+                            this.s_AgeSQL = "NOT (DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT'))) "
+                            break;
+                        case "Over 64 ":
+                            this.s_AgeSQL = "(DATEADD(YEAR,65, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] OR (DATEADD(YEAR,50, CONVERT(DATETIME,DATEOFBIRTH)) <= [DATE] AND LEFT(IndiginousStatus, 3) IN ('ABO', 'TOR', 'BOT')))";
+                            break;
+        
+                        default:
+                            break;
+                    }
+        
+                    fQuery = fQuery + " AND " + this.s_AgeSQL;
+        
+                }
+        
+                if (outletid != "") {
+                    this.s_OutletIDSQL = "ItemTypes.CSTDAOutletID in ('" + outletid.join("','") + "')";
+                    if (this.s_OutletIDSQL != "") { fQuery = fQuery + " AND " + this.s_OutletIDSQL };
+                }
+                if (recipient != "") {
+                    this.s_RecipientSQL = "[Client Code] in ('" + recipient.join("','") + "')";
+                    if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL };
+                }
+                if (stafftype != "") {
+                    this.s_StafftypeSQL = "[Staff].[Category] in ('" + stafftype.join("','") + "')";
+                    if (this.s_StafftypeSQL != "") { fQuery = fQuery + " AND " + this.s_StafftypeSQL };
+                }
+                if (paytype != "") {
+                    this.s_paytypeSQL = "[Service Description] in ('" + paytype.join("','") + "')";
+                    if (this.s_paytypeSQL != "") { fQuery = fQuery + " AND " + this.s_paytypeSQL };
+                }
+                if (activity != "") {
+                    this.s_activitySQL = "[Service Type] in ('" + activity.join("','") + "')";
+                    if (this.s_activitySQL != "") { fQuery = fQuery + " AND " + this.s_activitySQL };
+                }
+                if (settings != "") {
+                    this.s_setting_vehicleSQL = "ServiceSetting in ('" + settings.join("','") + "')";
+                    if (this.s_setting_vehicleSQL != "") { fQuery = fQuery + " AND " + this.s_setting_vehicleSQL };
+                }
+        
+        
+        
+        
+        
+                if (startdate != "") {
+                    lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
+                }
+                else { lblcriteria = " All Dated " }
+                if (branch != "") {
+                    lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
+                }
+                else { lblcriteria = lblcriteria + " All Branches " }
+        
+        
+                if (outletid != "") {
+                    var OutletID = outletid.join(",") + "; "
+                }
+                else {
+                    OutletID = " All "
+                }
+        
+        
+                if (Datetype != "") {
+                    var Datetypes = Datetype + "; "
+                }
+                else {
+                    Datetypes = " Service Date "
+                }
+        
+        
+                if (Age != "") {
+                    var Age_ATSI = Age + "; "
+                }
+                else {
+                    Age_ATSI = " All "
+                }
+        
+        
+        
+                if (mdsagencyID != "") {
+                    var mdsagency = mdsagencyID.join(",") + "; "
+                }
+                else {
+                    mdsagency = " All "
+                }
+        
+        
+        
+                if (HACCCategory != "") {
+                    var HACCCategories = HACCCategory.join(",") + "; "
+                }
+                else {
+                    HACCCategories = " All "
+                }
+        
+        
+        
+                if (RosterCategory != "") {
+                    var RosterCategories = RosterCategory.join(",") + "; "
+                }
+                else {
+                    RosterCategories = " All "
+                }
+        
+                if (program != "") {
+                    var programs = program.join(",") + "; "
+                }
+                else {
+                    programs = " All "
+                }
+        
+        
+        
+                if (Staff != "") {
+                    var Staffs = Staff.join(",") + "; "
+                }
+                else {
+                    Staffs = " All "
+                }
+        
+        
+        
+                if (staffteam != "") {
+                    var staffteams = staffteam.join(",") + "; "
+                }
+                else {
+                    staffteams = " All "
+                }
+        
+        
+        
+                if (stfgroup != "") {
+                    var stfgroups = stfgroup.join(",") + "; "
+                }
+                else {
+                    stfgroups = " All "
+                }
+        
+        
+        
+                if (region != "") {
+                    var regions = region.join(",") + "; "
+                }
+                else {
+                    regions = " All "
+                }
+        
+        
+        
+                if (manager != "") {
+                    var managers = manager.join(",") + "; "
+                }
+                else {
+                    managers = " All "
+                }
+        
+        
+                if (funders != "") {
+                    var fundingsource = funders.join(",") + "; "
+                }
+                else {
+                    fundingsource = " All "
+                }
+        
+        
+                if (status != "") {
+                    var statuscat = status + "; "
+                }
+                else {
+                    statuscat = " All "
+                }
+        
+        
+        
+                if (recipient != "") {
+                    var recipients = recipient.join(",") + "; "
+                }
+                else {
+                    recipients = " All "
+                }
+        
+        
+                if (stafftype != "") {
+                    var stafftypes = stafftype.join(",") + "; "
+                }
+                else {
+                    stafftypes = " All "
+                }
+        
+                if (paytype != "") {
+                    var paytypes = paytype.join(",") + "; "
+                }
+                else {
+                    paytypes = " All "
+                }
+                if (activity != "") {
+                    var activities = activity.join(",") + "; "
+                }
+                else {
+                    activities = " All "
+                }
+                if (settings != "") {
+                    var setting = settings.join(",") + "; "
+                }
+                else {
+                    setting = " All "
+                }
+        
+               
+        
+        
+                fQuery = fQuery + "   ";
+        
+        //    console.log(fQuery) 
+                switch (format) {
+                    case "Detailed":
+                        Title = Title + "-DETAIL"
+                        this.reportid = "Ef6gbM3Pt5hFjSWe";
+                        break;
+                    case "Standard":
+                            Title = Title + "-STANDARD"
+                            this.reportid = "K2QUhdbMCZMrLQNi";
+        
+                            break;
+        
+                    default:
+                        Title = Title + "-SUMMARY"
+                        this.reportid  = "80PowW6HRXI0ZMQX"
+                        break;
+                }
+        
+                this.drawerVisible = true;
+                var rptSQL = " SELECT [Date] , [MonthNo], [DayNo], [BlockNo], [Program], [Client Code], [Carer Code], [Service Type], [Anal], [Service Description], [Type], [ServiceSetting], [Start Time], [Duration], CASE WHEN [Type] = 9 THEN 0 ELSE [Duration] / 12 END AS [DecimalDuration], [CostQty], [CostUnit], CASE WHEN [Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Unit Pay Rate], [Unit Pay Rate] * [CostQty] As [LineCost], [BillQty], [BillUnit], [Unit Bill Rate], ([Unit Bill Rate] * [BillQty]) + ([Unit Bill Rate] * [BillQty] * (ISNULL(TaxPercent, 0) / 100)) As [LineBill], [Yearno] FROM Award_Roster_rpt  ORDER BY [Carer Code], [Service Description], Date, [Start Time]  "
+        
+                const data = {
+                    "template": { "_id": this.reportid },
+                    "options": {
+                        "reports": { "save": false },
+        
+                        "txtTitle": Title,
+        
+        
+                        "sql": rptSQL,//fQuery,
+                        "Criteria": lblcriteria,
+        
+                        "txtregions": regions,
+                        "txtstfgroups": stfgroups,
+                        "txtstaffteams": staffteams,
+                        "txtStaffs": Staffs,
+                        "txtprograms": programs,
+                        "txtRosterCategories": RosterCategories,
+                        "txtHACCCategories": HACCCategories,
+                        "txtmdsagency": mdsagency,
+                        "txtAge_ATSI": Age_ATSI,
+                        "txtDatetypes": Datetypes,
+                        "txtmanagers": managers,
+                        "txtfundingsource": fundingsource,
+                        "txtOutletID": OutletID,
+                        "txtstatuscat": statuscat,
+                        "txtrecipients": recipients,
+                        "txtstafftypes": stafftypes,
+                        "txtpaytypes": paytypes,
+                        "txtactivities": activities,
+                        "txtsetting": setting,
+                        "userid": this.tocken.user,
+        
+                        "includeFinancials":this.inputForm.value.InclFinancials,
+                        "Excludeheader":this.inputForm.value.ExcluPgeHeader,
+                    }
+                }
+        
+                this.loading = true;
+                const headerDict = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+        
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict)
+                };
+        
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                    .subscribe((blob: any) => {
+                        console.log(blob);
+        
+                        let _blob: Blob = blob;
+        
+                        let fileURL = URL.createObjectURL(_blob);
+                        this.pdfTitle = Title + ".pdf"
+                        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                        this.loading = false;
+        
+                    }, err => {
+                        console.log(err);
+                        this.ModalS.error({
+                            nzTitle: 'TRACCS',
+        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                            nzOnOk: () => {
+                                     this.drawerVisible = false;
+                                     },
+                          });
+                    });
+        
+    }
+    insertAwardroster(tempsdate, tempedate){
+        var sql = " INSERT INTO Award_Roster_mufee (Award, RecordNo, [Date], [Start Time], Duration, PayType, RuleType, " +
+            " Program, Activity, Activity_Type, JobType, InfoOnly, NoOver, Ros_Day ) " +
+            " SELECT Award,Recordno, [Date], " +
+            " LEFT(CONVERT(VARCHAR,sTime,108),5) AS [Start Time], " +
+            "  DATEDIFF(N,sTime,eTime)/5.0 AS Duration, Paytype,RuleType,Program, " +
+            "  [Service Type], [Type], JobType, InfoOnly, NoOvertimeAccumulation, ROS_DAY From ( " +
+            "  SELECT DENSE_RANK() OVER(PARTITION BY R.RecordNo, R.[DATE], R.[Start Time] ORDER BY "+ 
+            "  CASE WHEN LEFT(DAYTYPE,1) = 'P' THEN 4 WHEN LEFT(DAYTYPE,1) = 'W' THEN 2 " +
+            "     WHEN ISNULL(DAYTYPE,'') = '' THEN 1 ELSE 3 END DESC ) AS RANKING, " +
+            " R.Award, R.Recordno, R.[Date], R.[Start Time], Duration, T.StartTime, T.EndTime, T.RecordNo AS TRecNo," +
+            " CASE WHEN PayAsRostered = 1 OR ExcludeFromTimebands = 1 OR PAR = 1 THEN [Service Description] ELSE T.PayType End As PayType, " +
+            " CASE WHEN PayAsRostered = 1 OR ExcludeFromTimebands = 1 OR PAR = 1 THEN Shift_Start_Time ELSE " +
+            " CASE WHEN StartTime > Shift_Start_Time THEN StartTime ELSE Shift_Start_Time END END AS sTime, " +
+            " CASE WHEN PayAsRostered = 1 Or ExcludeFromTimebands = 1 OR PAR = 1 THEN Shift_End_Time ELSE " +
+            " CASE WHEN EndTime > Shift_End_Time THEN Shift_End_Time ELSE EndTime END END AS eTime, " +
+            " CASE WHEN PayAsRostered = 1 OR PAR = 1 THEN 'Pay As Rostered' WHEN ExcludeFromTimebands = 1 THEN 'Timeband Exclude' ELSE 'Timeband' END AS RuleType, " +
+            "  t.DayType,  Program, [Service Type], [TYPE], JOBTYPE, INFOONLY, NoOvertimeAccumulation, ROS_DAY " +
+            " From ( SELECT R.Recordno, R.[Date], R.[Start Time], Duration," +
+            " CONVERT(SMALLDATETIME,R.[Start Time]) AS Shift_Start_Time, " +
+            "  DATEADD(N, Duration*5, CONVERT(SMALLDATETIME,R.[Start Time])) AS Shift_End_Time, " +
+            " CASE WHEN ISNULL(D.User1,'') ='' THEN 32 ELSE D.USER1 END AS AWARD, " +
+            " CASE WHEN PH.[DATE] IS NULL THEN DATENAME(w, R.[DATE]) ELSE 'Public Holiday' END As [ROS_DAY], " +
+            " I.PayAsRostered , I.ExcludeFromTimebands, R.Program, R.[Service Type], [Service Description], " +
+            " R.[TYPE], I.JOBTYPE, I.INFOONLY, I.NoOvertimeAccumulation, P.PayAsRostered As PAR " +
+            "  FROM ROSTER R INNER JOIN STAFF S ON R.[CARER CODE] = S.ACCOUNTNO " +
+            " INNER JOIN ItemTypes I ON R.[SERVICE TYPE] = I.TITLE AND ISNULL(I.JOBTYPE,'') <> 'EXCURSION' "  +
+            " LEFT JOIN ItemTypes P ON R.[SERVICE DESCRIPTION] = P.TITLE AND P.PROCESSCLASSIFICATION = 'INPUT' " +
+            " LEFT JOIN HUMANRESOURCES H ON R.STAFFPOSITION = H.RECORDNUMBER " +
+            " LEFT JOIN DATADOMAINS D ON H.[NAME] = D.[DESCRIPTION] AND D.DOMAIN = 'STAFFPOSITION' " +
+            " LEFT JOIN PUBLIC_HOLIDAYS PH ON R.[DATE] = PH.[DATE]" +
+            " AND CONVERT(SMALLDATETIME,R.[Start Time]) < ISNULL(CONVERT(SMALLDATETIME,PH.[END TIME]),'1900/01/02') "+
+            " AND DATEADD(N, Duration*5, CONVERT(SMALLDATETIME,R.[Start Time])) "+
+            " > ISNULL(CONVERT(SMALLDATETIME,PH.[START TIME]),'1900/01/01') "+
+            " AND ISNULL(PH.STATS,'') IN ('ALL','NSW','') "+
+            " AND (ISNULL(PH.PublicHolidayRegion,'') = ISNULL(S.PublicHolidayRegion,'') "+
+            " OR ISNULL(PH.PublicHolidayRegion,'') = '') "+
+                "WHERE (R.DATE >= '"+tempsdate +"' AND R.DATE <='"+tempedate+"')  "
+                //AND ([CARER CODE] > '!Z')  AND (R.[STATUS] >= '2') AND (R.[TYPE] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) OR (R.[TYPE] = 4 AND [CARER CODE] = '!INTERNAL')) AND [CARER CODE] <> '!MULTIPLE' AND ([SERVICE TYPE] <> 'CONTRIBUTION')"  +
+                "AND [Carer Code] = '"+'ABFLAT GISELBERT'+"' "+
+                "AND R.[Date] BETWEEN '"+tempsdate+"' AND '"+tempedate+"' "
+                
+                if (this.inputForm.value.NotAllocated == true){
+                     sql = sql +" AND R.[Type] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) OR "
+                }else{sql = sql + " AND R.[Type] IN(2, 5, 6, 7, 8, 9, 10, 11, 12) OR "}
+                sql = sql +" ([Roster].[Type] = 4 And [Carer Code] = '!INTERNAL')) And [Carer Code] <> '!MULTIPLE' AND ([service type] <> 'CONTRIBUTION') "
+
+                sql = sql +"AND ISNULL(I.ExcludeFromInterpretation,0) = 0 "+
+                "AND ISNULL(P.ExcludeFromInterpretation,0) = 0 "+
+                ") AS R  INNER JOIN TIMEBAND T ON T.AWARD = R.AWARD "+
+                    "AND (( IsNull(PayAsRostered,0) = 0 AND IsNull(PAR,0) = 0 AND IsNull(ExcludeFromTimebands,0) = 0 "+
+                    "AND (CONVERT(SMALLDATETIME,R.[Start Time]) < T.EndTime "+
+                    "AND DATEADD(N, Duration*5, CONVERT(SMALLDATETIME,R.[Start Time])) > T.StartTime) "+
+                    "AND ((ISNULL(DAYTYPE,'') = 'WEEKEND' AND LEFT(ROS_DAY,1) = 'S' ) "+
+                    " OR (ISNULL(DAYTYPE,'') = 'WEEKDAY' AND LEFT(ROS_DAY,1) <> 'S') "+
+                    "OR (ISNULL(DAYTYPE,'') = ROS_DAY ) "+
+                    " OR ISNULL(DAYTYPE,'') = '' )) "+
+                    "OR ((IsNull(PayAsRostered,0) = 1 OR IsNull(PAR,0) = 1 OR IsNull(ExcludeFromTimebands,0) = 1) and vRank = 1)) "+
+                ") AS Final WHERE RANKING = 1 ORDER BY [Date], [START TIME] "
+
+
+                
+    }
+
+    insert_Award_Roster_Rpt(tempsdate, tempedate){
+       var str_sql =  " INSERT INTO AWARD_ROSTER_RPT ( [RecordNo],[Client Code],[Carer Code],[Service Type],[Service Description],[Program],[Date],[Start Time],[Duration],[Unit Pay Rate],[Unit Bill Rate],[YearNo],[MonthNo],[Dayno],[BlockNo],[Notes],[CarerPhone],[UBDRef],[Type],[Status],[Anal],[Date Entered],[Date Last Mod],[Date Timesheet],[Date Invoice],[Date Payroll],[InvoiceNumber],[TimesheetNumber],[Batch#],[Transferred],[GroupActivity],[BillType],[BillTo],[CostUnit],[CostQty],[HACCType],[HACCID],[BillUnit],[BillQty],[TaxPercent],[TaxAmount],[Link],[Tagged],[UniqueID],[ServiceSetting],[xDeletedRecord] )SELECT  R.[RecordNo],R.[Client Code],R.[Carer Code],R.[Service Type],CASE WHEN A.PayType IS NULL THEN R.[Service Description] ELSE A.PAYTYPE END ,R.[Program],R.[Date],CASE WHEN A.[Start Time] IS NULL THEN R.[Start Time] Else A.[Start Time] End ,CASE WHEN A.Duration IS NULL THEN R.[Duration] ELSE A.Duration END ,CASE WHEN A.PayType IS NULL THEN R.[Unit Pay Rate] ELSE I.Amount END ,R.[Unit Bill Rate],R.[YearNo],R.[MonthNo],R.[Dayno],R.[BlockNo],R.[Notes],R.[CarerPhone],R.[UBDRef],R.[Type],R.[Status],R.[Anal],R.[Date Entered],R.[Date Last Mod],R.[Date Timesheet],R.[Date Invoice],R.[Date Payroll],R.[InvoiceNumber],R.[TimesheetNumber],R.[Batch#],R.[Transferred],R.[GroupActivity],R.[BillType],R.[BillTo],R.[CostUnit],Case When ISNULL(I.Unit,'') = 'HOUR' AND R.[TYPE] <> 9 THEN ROUND(CAST(CASE WHEN A.Duration IS NULL THEN R.[Duration] ELSE A.Duration END  As FLOAT)/12,2) ELSE R.CostQty END ,R.[HACCType],R.[HACCID],R.[BillUnit],R.[BillQty],R.[TaxPercent],R.[TaxAmount],R.[Link],R.[Tagged],R.[UniqueID],R.[ServiceSetting],0 FROM STAFF S INNER JOIN ROSTER R ON S.ACCOUNTNO = R.[CARER CODE] LEFT JOIN [Award_Roster_Mufee] A ON A.RECORDNO = R.RECORDNO LEFT JOIN ITEMTYPES I ON I.TITLE = A.PAYTYPE AND I.PROCESSCLASSIFICATION = 'INPUT' " 
+        "WHERE (R.DATE >= '"+tempsdate+"' AND R.DATE <='"+tempedate+"')  AND ([CARER CODE] > '!Z')  AND (R.[STATUS] >= '2') "
+        "AND (R.[TYPE] IN (1,2, 5, 6, 7, 8, 9, 10, 11, 12) OR (R.[TYPE] = 4 AND [CARER CODE] = '!INTERNAL')) AND [CARER CODE] <> '!MULTIPLE' AND ([SERVICE TYPE] <> 'CONTRIBUTION')  AND [CARER CODE] = '"
+        +'ABFLAT GISELBERT'+ //RUN TIME VALUE
+        "'AND (A.RECORDNO IS NOT NULL OR R.[TYPE] = 9)  "
+    }
+
+    StaffServiceNotesRegister(branch,Staff , casenotecat, startdate, enddate, tempsdate, tempedate) {
+
+    
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(S.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, S.AccountNo AS StaffCode, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(Convert (datetime,History.DetailDate,22),'dd/MM/yyyy MM:HH tt') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join STAFF as S ON S.AccountNo = Ro.[Carer Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON S.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON S.UNIQUEID = P.PERSONID WHERE  "
+        var lblcriteria;
+
+        // History. DetailDate Between '07-01-2021' AND '07-31-2021 23:59:59'' 
+        if (startdate != "" || enddate != "") {
+            this.s_DateSQL = " (History. DetailDate Between '" + tempsdate + ("' AND '") + tempedate + "' )";
+            if (this.s_DateSQL != "") { fQuery = fQuery + "  " + this.s_DateSQL };
+        }
+        if (branch != "") {
+            this.s_BranchSQL = "S.[STF_DEPARTMENT]  in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+         
+        if (casenotecat != "") {
+            this.s_CaseNoteSQL = "[ExtraDetail2] in ('" + casenotecat.join("','") + "')";
+            if (this.s_CaseNoteSQL != "") { fQuery = fQuery + " AND " + this.s_CaseNoteSQL };
+        }
+
+        if (Staff != "") {
+            this.s_StaffSQL = "[AccountNo] in ('" + Staff.join("','") + "')";
+            if (this.s_StaffSQL != "") { fQuery = fQuery + " AND " + this.s_StaffSQL };
+        }
+         
+
+
+
+
+        
+        if (Staff != "") {
+            lblcriteria = " Staff: " + Staff.join(",") + "; "
+        }
+        else { lblcriteria = "All Staff," }
+        if (startdate != "") {
+            lblcriteria = lblcriteria + " Date Between " + startdate + " and " + enddate + "; "
+        }
+        else { lblcriteria = lblcriteria + " All Dated " }
+        
+        if (branch != "") {
+            lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + " All Branches " }
+
+        if (casenotecat != "") {
+            lblcriteria = " Case Notes: " + casenotecat.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Case Notes," }
+                          
+        fQuery = fQuery + " AND ExtraDetail1 = 'SVCNOTE'  AND [CARER CODE] > '!Z' AND [CLIENT CODE] IN ('!INTERNAL', '!MULTIPLE') AND (History.DeletedRecord = 0) "
+        fQuery = fQuery + " ) ROP ORDER BY ROP.[StaffName], ROP.DateCreated "
+
+        //console.log(fQuery)
+
+        this.drawerVisible = true;
+
+        const data = {
+            "template": { "_id": "D9xN7c09VjMDjdaz" },
+            "options": {
+                "reports": { "save": false },
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+
+                let _blob: Blob = blob;
+
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Staff Service Notes Register.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                this.loading = false;
+
+            }, err => {
+                console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
+                  });
+            });
+    }
+
+
+
+
 
 
 } //ReportsAdmin

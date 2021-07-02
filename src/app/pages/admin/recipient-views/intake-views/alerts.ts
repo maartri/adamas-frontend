@@ -195,7 +195,7 @@ export class IntakeAlerts implements OnInit, OnDestroy {
                                 this.search();
                                 this.handleCancel()    
                             }
-                        });
+            });
         }
     }
 

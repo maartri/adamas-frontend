@@ -46,6 +46,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
     pdfTitle: string;
     tryDoctype: any;
     drawerVisible: boolean =  false;
+    whereString :string=" HI.DeletedRecord = 0 ";
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     private default = {
         notes: '',
@@ -55,6 +56,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
         recordNumber: null,
         category: null
     }
+    deletedRecord: string;
 
     
     constructor(
@@ -182,8 +184,10 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
     }
     fetchAll(e){
         if(e.target.checked){
+            this.whereString = " HI.DeletedRecord = 1 ";
             this.getarchivedhrnotes(this.user);
         }else{
+            this.whereString = " HI.DeletedRecord = 0 ";
             this.search(this.user);
         }
     }
@@ -225,7 +229,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
         this.drawerVisible = true;
         this.loadingPDF = true;
 
-        var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'HRNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
+        var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND "+this.whereString+" AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'HRNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
         
         const headerDict = {
             'Content-Type': 'application/json',

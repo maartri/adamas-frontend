@@ -12,20 +12,20 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'app-services',
   templateUrl: './services.component.html',
   styles: [`
-    .mrg-btm{
-      margin-bottom:0.5rem;
-    },
-    textarea{
-      resize:none;
-    },
-    .staff-wrapper{
-      height: 20rem;
-      width: 100%;
-      overflow: auto;
-      padding: .5rem 1rem;
-      border: 1px solid #e9e9e9;
-      border-radius: 3px;
-    }
+  .mrg-btm{
+    margin-bottom:0.5rem;
+  },
+  textarea{
+    resize:none;
+  },
+  .staff-wrapper{
+    height: 20rem;
+    width: 100%;
+    overflow: auto;
+    padding: .5rem 1rem;
+    border: 1px solid #e9e9e9;
+    border-radius: 3px;
+  }
   `]
 })
 export class ServicesComponent implements OnInit {
@@ -89,7 +89,8 @@ export class ServicesComponent implements OnInit {
   competencyForm: FormGroup;
   selectedCompetencies: any[];
   parent_person_id: any;
-  
+  addOrEdit: number = 0;
+  isNewRecord: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -347,7 +348,7 @@ export class ServicesComponent implements OnInit {
         CSTDAUse:false,
         NRCPUse:false,
         recordNumber:recordNumber,
-    });
+      });
     }
     onIndexChange(index: number): void {
       this.current = index;
@@ -365,9 +366,12 @@ export class ServicesComponent implements OnInit {
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
+      this.addOrEdit = 0;
       this.competencymodal = true;
+      this.clearCompetency();
     }
     handleCompetencyCancel(){
+      this.addOrEdit = 0;
       this.competencymodal = false;
     }
     pre(): void {
@@ -396,305 +400,376 @@ export class ServicesComponent implements OnInit {
       console.log(this.selectedPrograms);
       if(!this.isUpdate){
         this.menuS.poststaffAdminActivities(this.inputForm.value)
-                    .subscribe(data => {
-                        this.globalS.sToast('Success', 'Added Succesfully');
+        .subscribe(data => {
+          this.globalS.sToast('Success', 'Added Succesfully');
         });
       }else{
-
+        
       }
     }
     saveCompetency(){
-      console.log(this.selectedCompetencies);
-    }
-    clearCompetency(){
-      this.competencyList.forEach(x => {
-        x.checked = false
-      });
-      this.selectedCompetencies = [];
-    }
-    loadData(){
-      this.loading = true;
-      this.menuS.getlistServices(this.check).subscribe(data => {
-        this.tableData = data;
-        this.loading = false;
-        this.cd.detectChanges();
-      });
-    }
-    fetchAll(e){
-      if(e.target.checked){
-        this.whereString = "WHERE ProcessClassification <> 'INPUT' ";
-        this.loadData();
-      }else{
-        this.whereString = "WHERE ProcessClassification <> 'INPUT' AND ISNULL(DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
-        this.loadData();
-      }
-    }
-    clearPrograms(){
-      this.programz.forEach(x => {
-        x.checked = false
-      });
-      this.selectedPrograms = [];
-    }
-    populateDropdowns(): void {
-      
-      this.emptyList      = [];
-
-      this.mainGroupList  = ['ONE ON ONE','CENTER BASED ACTIVITY','GROUP ACTIVITY','TRANSPORT','SLEEPOVER'];
-      this.subGroupList   = ['GENERAL','NOT APPLICABLE']
-      this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
-      this.units          = ['HOUR','SERVICE'];
-      this.budgetUomList  = ['EACH/SERVICE','HOURS','PLACE','DOLLARS'];
-      this.ndiaList       = ['DIRECT SERVICE','PACKAGE ADMIN','CASE MANAGEMENT','GOODS/EQUIPMENT'];
-      this.datasetList    = ['CACP','CTP','DEX','DFC','DVA','HACC','HAS','ICTD','NDIS','NRCP','NRCP-SAR','OTHER','QCSS'];
-      this.shiftTypes     = ['EXCURSION','MEAL BREAK','SLEEPOVER','TEA BREAK'];
-      this.mobileLogModes = {
-                              "0":'BUTTONS',
-                              "3":'PIN CODE',
-                              "1":'QRCODE',
-                              "2":'SIGNATURE',
-                            };
-      
-      let todayDate       = this.globalS.curreentDate();
-      
-      let sql ="SELECT distinct Description from DataDomains Where  Domain = 'LIFECYCLEEVENTS'";
-      this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
-        this.lifeCycleList = data;
-      });
-      
-      let sql3 ="SELECT distinct Description from DataDomains Where  Domain = 'ADDRESSTYPE'";
-      this.loading = true;
-      this.listS.getlist(sql3).subscribe(data => {
-        this.addressTypes = data;
-      });
-      let sql4 ="SELECT distinct Description from DataDomains Where  Domain = 'CONTACTTYPE'";
-      this.loading = true;
-      this.listS.getlist(sql4).subscribe(data => {
-        this.contactTypes = data;
-      });
-      let sql1 ="SELECT distinct Description from DataDomains Where  Domain = 'BUDGETGROUP'";
-      this.loading = true;
-      this.listS.getlist(sql1).subscribe(data => {
-        this.budgetGroupList = data;
-      });
-      
-      let sql2 ="SELECT distinct Description from DataDomains Where  Domain = 'DISCIPLINE'";
-      this.loading = true;
-      this.listS.getlist(sql2).subscribe(data => {
-        this.diciplineList = data;
-      });
-      
-      let comp = "SELECT distinct Description as name from DataDomains Where  Domain = 'STAFFATTRIBUTE' ORDER BY Description";
-      this.listS.getlist(comp).subscribe(data => {
-        this.competencyList = data;
-        this.loading = false;
-      });  
-      
-      let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
-      this.listS.getlist(prog).subscribe(data => {
-        this.programz = data;
-      });
-      this.timesteps = timeSteps;
-
-      this.listS.getndiaitems().subscribe(data => {
-        this.ndiaItems = data;
-      })
-      
-      this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
-      this.paytypes  = ['SALARY','ALLOWANCE'];
-      this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
-    }
-    delete(data: any) {
-      this.postLoading = true;     
-      const group = this.inputForm;
-      this.menuS.deleteActivityServiceslist(data.recordNumber)
-      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        if (data) {
-          this.globalS.sToast('Success', 'Data Deleted!');
-          this.loadData();
-          return;
+      this.postLoading = true;
+      const group = this.competencyForm.value;
+      let insertOne = false;
+      if(this.addOrEdit == 0){
+        if(!this.isUpdate){
+          if(!this.isNewRecord){
+            this.save();
+          }
         }
-      });
-    }
-
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        title:'',
-        billingText:'',
-        mainGroup:'',
-        subgroup:'',
-        status:'',
-        chargeRate1:'',
-        minimumChargeRate:'',
-        lifeCycleEvent:'',
-        unit:'',
-        budgetGroup:'',
-        dicipline:'',
-        colorCode:'',
-        AutoApprove:false,
-        excludeFromAuto:false,
-        Informational:false,
-        dataset:'',
-        groupMapping:'',
-        nida:'',
-        accountingCode:'',
-        glRevenue:'',
-        job:'',
-        glCost:'',
-        buom:'',
-        unitCost:'',
-        commercial:'',
-        price2:'',
-        price3:'',
-        price4:'',
-        price5:'',
-        price6:'',
-        excludeFromPayExport:false,
-        excludeFromUsageStatements:false,
-        type: '',
-        payrate:'',
-        casuals:false,
-        end:'',
-        end_date:'',
-        payid:'',
-        exportfrompay:false,
-        conflict:false,
-        day0:false,
-        day1:false,
-        day2:false,
-        day3:false,
-        day4:false,
-        day5:false,
-        day6:false,
-        day7:false,
-        startTimeLimit:'',
-        endTimeLimit:'',
-        min:0,
-        max:0,
-        forceRostedTime:0,
-        rostedDay:false,
-        rostedTime:false,
-        orignalminute:0,
-        address:'',
-        contact:'',
-        autoActivityNotes:false,
-        autoRecipientDetails:false,
-        jobSheetPrompt:false,
-        activityNotes:'',
-        award1:false,
-        award2:false,
-        award3:false,
-        award4:false,
-        award5:false,
-        specialShift:'',
-        mtacode:'',
-        mode:'',
-        excludeFromClientPortalDisplay: false,
-        excludeFromTravelCalc: false,
-        tA_EXCLUDEGEOLOCATION:false,
-        appExclude1:false,
-        taexclude1:false,
-        taEarlyStartTHEmail:false,
-        taEarlyStartTH:false,
-        taEarlyStartTHWho:'',
-        taLateStartTHEmail:false,
-        taLateStartTH:false,
-        taLateStartTHWho:'',
-        taNoGoResend:'',
-        taNoShowResend:'',
-        taEarlyFinishTHEmail:false,
-        taLateFinishTHEmail:false,
-        taEarlyFinishTH:'',
-        taLateFinishTH:'',
-        taLateFinishTHWho:'',
-        taEarlyFinishTHWho:'',
-        taOverstayTHEmail:false,
-        taUnderstayTHEmail:false,
-        taNoWorkTHEmail:false,
-        taOverstayTH:'',
-        taUnderstayTH:'',
-        taNoWorkTH:'',
-        taUnderstayTHWho:'',
-        taOverstayTHWho:'',
-        taNoWorkTHWho:'',
-        ndiaClaimType:"",//add to api
-        ndiaPriceType:"",//add to api
-        ndiaTravel:false,//add to api
-        ndiA_LEVEL2:'',//add to api
-        ndiA_LEVEL3:'',//add to api
-        ndiA_LEVEL4:'',//add to api
-      });
-      this.competencyForm = this.formBuilder.group({
-        'PersonID': this.parent_person_id,
-        'Group'   :'SVC_COMP',
-        'Type'    :'SVC_COMP',
-        'Name'    : '',
-        'Notes'   : '',
-      });
-    }
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
-    generatePdf(){
-      this.drawerVisible = true;
-      
-      this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [Title]) AS Field1,[Title] As [Field2], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup END As [Field3],[MinorGroup] As [Field4],[HACCType] As [Field5],[DatasetGroup] As [Field6],  [NDIA_ID] As [Field7],[Amount] As [Field8],[Unit] As [Field9] FROM ItemTypes WHERE ProcessClassification <> 'INPUT' AND (EndDate Is Null OR EndDate >= '04-16-2019')  AND (RosterGroup IN ('ONEONONE', 'CENTREBASED', 'GROUPACTIVITY', 'TRANSPORT','SLEEPOVER') AND MinorGroup <> 'MEALS') ORDER BY Title";
-      
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-      
-      const data = {
-        "template": { "_id": "0RYYxAkMCftBE9jc" },
-        "options": {
-          "reports": { "save": false },
-          "txtTitle": "Sevices List",
-          "sql": fQuery,
-          "userid":this.tocken.user,
-          "head1" : "Sr#",
-          "head2" : "Title",
-          "head3" : "Roaster Group",
-          "head4" : "Sub Group",
-          "head5" : "DataSet Code",
-          "head6" : "DataSet Group",
-          "head7" : "NDIA ID",
-          "head8" : "Bill Amount",
-          "head9" : "Bill Unit",
+        var checkedcompetency = this.selectedCompetencies;
+        checkedcompetency.forEach( (element) => {
+          this.menuS.postconfigurationservicescompetency({
+            competencyValue:element,
+            notes:this.competencyForm.value.notes,
+            personID:this.parent_person_id,
+          }).pipe(
+            takeUntil(this.unsubscribe)).subscribe(data => {
+              if(data)
+              {
+                insertOne = true;
+              }
+            })
+            this.globalS.sToast('Success', 'Competency Added');
+            this.loadCompetency();
+            this.postLoading = false;
+            this.handleCompCancel();
+          });
+        }
+        else
+        {
+          this.menuS.updateconfigurationservicescompetency({
+            competencyValue:group.competencyValue,
+            mandatory:group.mandatory,
+            recordNumber:group.recordNumber,
+          }).pipe(
+            takeUntil(this.unsubscribe)).subscribe(data => {
+              if(data){
+                this.globalS.sToast('Success','Competency Updated')
+                this.postLoading = false;
+                this.loadCompetency();
+                this.handleCompCancel();
+                return false;
+              }
+            });
+          }
+        }
+        clearCompetency(){
+          this.competencyList.forEach(x => {
+            x.checked = false
+          });
+          this.selectedCompetencies = [];
+        }
+        editCompetencyModal(data:any){
+          this.addOrEdit = 1;
+          this.competencyForm.patchValue({
+            competencyValue : data.competency,
+            mandatory : data.mandatory,
+            recordNumber:data.recordNumber,
+          })
+          this.competencymodal = true;
+        }
+        deleteCompetency(data:any){
+          this.loading = true;
+          this.menuS.deleteconfigurationservicescompetency(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadCompetency();
+              return;
+            }
+          });
+        }
+        loadData(){
+          this.loading = true;
+          this.menuS.getlistServices(this.check).subscribe(data => {
+            this.tableData = data;
+            this.loading = false;
+            this.cd.detectChanges();
+          });
+        }
+        loadCompetency(){
+          this.menuS.getconfigurationservicescompetency(this.parent_person_id).subscribe(data => {
+            this.checkedList = data;
+            this.loading = false;
+            this.cd.detectChanges();
+          });
+        }
+        fetchAll(e){
+          if(e.target.checked){
+            this.whereString = "WHERE ProcessClassification <> 'INPUT' ";
+            this.loadData();
+          }else{
+            this.whereString = "WHERE ProcessClassification <> 'INPUT' AND ISNULL(DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE())";
+            this.loadData();
+          }
+        }
+        clearPrograms(){
+          this.programz.forEach(x => {
+            x.checked = false
+          });
+          this.selectedPrograms = [];
+        }
+        populateDropdowns(): void {
+          
+          this.emptyList      = [];
+          
+          this.mainGroupList  = ['ONE ON ONE','CENTER BASED ACTIVITY','GROUP ACTIVITY','TRANSPORT','SLEEPOVER'];
+          this.subGroupList   = ['GENERAL','NOT APPLICABLE']
+          this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
+          this.units          = ['HOUR','SERVICE'];
+          this.budgetUomList  = ['EACH/SERVICE','HOURS','PLACE','DOLLARS'];
+          this.ndiaList       = ['DIRECT SERVICE','PACKAGE ADMIN','CASE MANAGEMENT','GOODS/EQUIPMENT'];
+          this.datasetList    = ['CACP','CTP','DEX','DFC','DVA','HACC','HAS','ICTD','NDIS','NRCP','NRCP-SAR','OTHER','QCSS'];
+          this.shiftTypes     = ['EXCURSION','MEAL BREAK','SLEEPOVER','TEA BREAK'];
+          this.mobileLogModes = {
+            "0":'BUTTONS',
+            "3":'PIN CODE',
+            "1":'QRCODE',
+            "2":'SIGNATURE',
+          };
+          
+          let todayDate       = this.globalS.curreentDate();
+          
+          let sql ="SELECT distinct Description from DataDomains Where  Domain = 'LIFECYCLEEVENTS'";
+          this.loading = true;
+          this.listS.getlist(sql).subscribe(data => {
+            this.lifeCycleList = data;
+          });
+          
+          let sql3 ="SELECT distinct Description from DataDomains Where  Domain = 'ADDRESSTYPE'";
+          this.loading = true;
+          this.listS.getlist(sql3).subscribe(data => {
+            this.addressTypes = data;
+          });
+          let sql4 ="SELECT distinct Description from DataDomains Where  Domain = 'CONTACTTYPE'";
+          this.loading = true;
+          this.listS.getlist(sql4).subscribe(data => {
+            this.contactTypes = data;
+          });
+          let sql1 ="SELECT distinct Description from DataDomains Where  Domain = 'BUDGETGROUP'";
+          this.loading = true;
+          this.listS.getlist(sql1).subscribe(data => {
+            this.budgetGroupList = data;
+          });
+          
+          let sql2 ="SELECT distinct Description from DataDomains Where  Domain = 'DISCIPLINE'";
+          this.loading = true;
+          this.listS.getlist(sql2).subscribe(data => {
+            this.diciplineList = data;
+          });
+          
+          let comp = "SELECT distinct Description as name from DataDomains Where  Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+          this.listS.getlist(comp).subscribe(data => {
+            this.competencyList = data;
+            this.loading = false;
+          });  
+          
+          let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
+          this.listS.getlist(prog).subscribe(data => {
+            this.programz = data;
+          });
+          this.timesteps = timeSteps;
+          
+          this.listS.getndiaitems().subscribe(data => {
+            this.ndiaItems = data;
+          })
+          
+          this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
+          this.paytypes  = ['SALARY','ALLOWANCE'];
+          this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
+        }
+        delete(data: any) {
+          this.postLoading = true;     
+          const group = this.inputForm;
+          this.menuS.deleteActivityServiceslist(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadData();
+              return;
+            }
+          });
+        }
+        
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            title:'',
+            billingText:'',
+            mainGroup:'',
+            subgroup:'',
+            status:'',
+            chargeRate1:'',
+            minimumChargeRate:'',
+            lifeCycleEvent:'',
+            unit:'',
+            budgetGroup:'',
+            dicipline:'',
+            colorCode:'',
+            AutoApprove:false,
+            excludeFromAuto:false,
+            Informational:false,
+            dataset:'',
+            groupMapping:'',
+            nida:'',
+            accountingCode:'',
+            glRevenue:'',
+            job:'',
+            glCost:'',
+            buom:'',
+            unitCost:'',
+            commercial:'',
+            price2:'',
+            price3:'',
+            price4:'',
+            price5:'',
+            price6:'',
+            excludeFromPayExport:false,
+            excludeFromUsageStatements:false,
+            type: '',
+            payrate:'',
+            casuals:false,
+            end:'',
+            end_date:'',
+            payid:'',
+            exportfrompay:false,
+            conflict:false,
+            day0:false,
+            day1:false,
+            day2:false,
+            day3:false,
+            day4:false,
+            day5:false,
+            day6:false,
+            day7:false,
+            startTimeLimit:'',
+            endTimeLimit:'',
+            min:0,
+            max:0,
+            forceRostedTime:0,
+            rostedDay:false,
+            rostedTime:false,
+            orignalminute:0,
+            address:'',
+            contact:'',
+            autoActivityNotes:false,
+            autoRecipientDetails:false,
+            jobSheetPrompt:false,
+            activityNotes:'',
+            award1:false,
+            award2:false,
+            award3:false,
+            award4:false,
+            award5:false,
+            specialShift:'',
+            mtacode:'',
+            mode:'',
+            excludeFromClientPortalDisplay: false,
+            excludeFromTravelCalc: false,
+            tA_EXCLUDEGEOLOCATION:false,
+            appExclude1:false,
+            taexclude1:false,
+            taEarlyStartTHEmail:false,
+            taEarlyStartTH:false,
+            taEarlyStartTHWho:'',
+            taLateStartTHEmail:false,
+            taLateStartTH:false,
+            taLateStartTHWho:'',
+            taNoGoResend:'',
+            taNoShowResend:'',
+            taEarlyFinishTHEmail:false,
+            taLateFinishTHEmail:false,
+            taEarlyFinishTH:'',
+            taLateFinishTH:'',
+            taLateFinishTHWho:'',
+            taEarlyFinishTHWho:'',
+            taOverstayTHEmail:false,
+            taUnderstayTHEmail:false,
+            taNoWorkTHEmail:false,
+            taOverstayTH:'',
+            taUnderstayTH:'',
+            taNoWorkTH:'',
+            taUnderstayTHWho:'',
+            taOverstayTHWho:'',
+            taNoWorkTHWho:'',
+            ndiaClaimType:"",//add to api
+            ndiaPriceType:"",//add to api
+            ndiaTravel:false,//add to api
+            ndiA_LEVEL2:'',//add to api
+            ndiA_LEVEL3:'',//add to api
+            ndiA_LEVEL4:'',//add to api
+          });
+          this.competencyForm = this.formBuilder.group({
+            competencyValue: '',
+            mandatory: false,
+            notes: '',
+            personID: this.parent_person_id,
+            recordNumber: 0
+          });
+        }
+        handleOkTop() {
+          this.generatePdf();
+          this.tryDoctype = ""
+          this.pdfTitle = ""
+        }
+        handleCancelTop(): void {
+          this.drawerVisible = false;
+          this.pdfTitle = ""
+        }
+        generatePdf(){
+          this.drawerVisible = true;
+          
+          this.loading = true;
+          
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [Title]) AS Field1,[Title] As [Field2], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup END As [Field3],[MinorGroup] As [Field4],[HACCType] As [Field5],[DatasetGroup] As [Field6],  [NDIA_ID] As [Field7],[Amount] As [Field8],[Unit] As [Field9] FROM ItemTypes WHERE ProcessClassification <> 'INPUT' AND (EndDate Is Null OR EndDate >= '04-16-2019')  AND (RosterGroup IN ('ONEONONE', 'CENTREBASED', 'GROUPACTIVITY', 'TRANSPORT','SLEEPOVER') AND MinorGroup <> 'MEALS') ORDER BY Title";
+          
+          const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+          
+          const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+          };
+          
+          const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+              "reports": { "save": false },
+              "txtTitle": "Sevices List",
+              "sql": fQuery,
+              "userid":this.tocken.user,
+              "head1" : "Sr#",
+              "head2" : "Title",
+              "head3" : "Roaster Group",
+              "head4" : "Sub Group",
+              "head5" : "DataSet Code",
+              "head6" : "DataSet Group",
+              "head7" : "NDIA ID",
+              "head8" : "Bill Amount",
+              "head9" : "Bill Unit",
+            }
+          }
+          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+          .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+          }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                this.drawerVisible = false;
+              },
+            });
+          });
+          this.loading = true;
+          this.tryDoctype = "";
+          this.pdfTitle = "";
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loading = false;
-      }, err => {
-        console.log(err);
-        this.loading = false;
-        this.ModalS.error({
-          nzTitle: 'TRACCS',
-          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-          nzOnOk: () => {
-            this.drawerVisible = false;
-          },
-        });
-      });
-      this.loading = true;
-      this.tryDoctype = "";
-      this.pdfTitle = "";
-    }
-  }
-  
+      

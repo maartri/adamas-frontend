@@ -147,8 +147,8 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
         
     }
 
-    showEditModal(index: any) {
-
+    showEditModal(data: any) {
+        this.putonLeaveModal = !this.putonLeaveModal;
     }
 
     delete(data: any) {

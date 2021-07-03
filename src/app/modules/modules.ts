@@ -83,7 +83,8 @@ export interface QuoteLineDTO {
     sortOrder?: number,
 
     serviceType?: string,
-    code?: string
+    code?: string,
+    mainGroup?: string,
 }
 
 export interface QuoteHeaderDTO {

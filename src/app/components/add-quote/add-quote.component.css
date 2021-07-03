@@ -38,6 +38,9 @@ nz-range-picker{
     display: table-cell;
     padding: 2px 5px;
 }
+.div-table > div > div:nth-child(2){
+    width: 10rem;
+}
 .form-group nz-select{
     width:100%
 }
@@ -86,3 +89,21 @@ nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-
     background: #717e94;
     color: #fff;
 }
+.accept-admin{
+    padding: 5px;
+    margin: 5px;
+    border-radius: 3px;
+    height: 2rem;
+    font-weight: bolder;
+}
+
+.accept-admin.negative{
+    color: red;
+    background: #ffdede;
+}
+.accept-admin.positive{
+    color: red;
+    background: #ffdede;
+}
+
+

@@ -102,8 +102,9 @@ nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-
     background: #ffdede;
 }
 .accept-admin.positive{
-    color: red;
-    background: #ffdede;
+    color: #3db300;
+    background: #d7ffd0;
+
 }
 
 

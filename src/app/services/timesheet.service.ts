@@ -1019,7 +1019,7 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/leaveapplication/${name}`)
     }
 
-    updateleaveapplication(data: any): Observable<any> {
+    updateleaveapplication(name:string,data: any): Observable<any> {
         return this.auth.put(`${timesheet}/leaveapplication/${name}`, data)
     }
 

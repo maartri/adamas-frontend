@@ -207,8 +207,6 @@ export class AddQuoteComponent implements OnInit {
       if (property == 'open' && 
             !changes[property].firstChange &&
               changes[property].currentValue != null) {
-        // console.log(this.option)
-        // console.log(this.record)
 
         this.search(this.user);
         this.showQuoteModal();
@@ -271,8 +269,7 @@ export class AddQuoteComponent implements OnInit {
         contribution = this.quoteForm.value.govtContrib;
     }
     
-    contribution  = this.globalS.isEmpty(contribution) || !contribution 
-                                ? 0 : contribution;
+    contribution  = this.globalS.isEmpty(contribution) || !contribution ? 0 : contribution;
 
     contribution = (contribution - this.total_quote);
 
@@ -435,10 +432,12 @@ export class AddQuoteComponent implements OnInit {
 
       this.quoteListForm.get('chargeType').valueChanges
       .pipe(
-          switchMap(x => {                
+          switchMap(x => {              
+              console.log(x);  
               this.resetQuotePrimary();
               if(this.globalS.isEmpty(this.tableDocumentId))
               {
+                  console.log(this.tableDocumentId)
                 //   this.globalS.eToast('Error', 'Program and Template are required');
                   return EMPTY;
               }
@@ -966,6 +965,7 @@ export class AddQuoteComponent implements OnInit {
   showEditStrategyModal(data:any){      
       this.isUpdateStrategy = true;
       this.strategiesmodal = true;
+
       this.stratergiesForm.patchValue({
           detail:data.strategy,
           PersonID:data.recordnumber,
@@ -1001,22 +1001,20 @@ export class AddQuoteComponent implements OnInit {
     this.listS.getquotelinedetails(data.recordNumber)
         .subscribe(x => {
             this.updateValues = x;                         
-            setTimeout(() => {
-                this.quoteListForm.patchValue({
-                    chargeType: this.getChargeType(x.mainGroup),
-                    code: x.title,
-                    displayText: x.displayText,
-                    quantity: x.qty,
-                    period: x.frequency,
-                    billUnit: x.billUnit,
-                    weekNo: x.lengthInWeeks,
-                    price: x.rate,
-                    notes: x.notes,
-                    recordNumber: data.recordNumber
-                })
-                
-            }, 100);
-            
+
+            this.quoteListForm.patchValue({
+                chargeType: this.getChargeType(x.mainGroup),
+                code: x.title,
+                displayText: x.displayText,
+                quantity: x.qty,
+                period: x.frequency,
+                billUnit: x.billUnit,
+                weekNo: x.lengthInWeeks,
+                price: x.rate,
+                notes: x.notes,
+                recordNumber: data.recordNumber
+            });
+
             this.detectChanges();
         });
 
@@ -1075,7 +1073,8 @@ export class AddQuoteComponent implements OnInit {
     // remaining_fund: any;
 
   GENERATE_QUOTE_LINE(){
-
+        console.log(this.option)
+        return;
        if(this.option == 'add')
        {
            const quote  = this.quoteListForm.getRawValue();
@@ -1129,7 +1128,7 @@ export class AddQuoteComponent implements OnInit {
                 this.quoteLines = [...this.quoteLines, _quote, _quote2];
                 this.detectChanges();
                 
-                this.total_admin = 10361.62;
+                this.total_admin = 0;
                 this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
                 this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
 
@@ -1169,11 +1168,10 @@ export class AddQuoteComponent implements OnInit {
                     tax: data.tax,
                     mainGroup: data.mainGroup
                 }];
-                    console.log(this.quoteLines)
+                
                 this.total_base_quote = (this.generate_total()).toFixed(2);
                 this.total_admin = this.generate_total_admin();
                 this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
-                
 
                 // this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
 
@@ -1464,7 +1462,7 @@ export class AddQuoteComponent implements OnInit {
       //     this.tableData = data;
       //     this.loading = false;
       //     this.cd.markForCheck();
-      // })
+      // }) 
       
       this.timeS.getCarePlanID().subscribe(data => {
         this.carePlanID = data[0];
@@ -1485,42 +1483,41 @@ export class AddQuoteComponent implements OnInit {
 
       if(this.option == 'update' && this.record)
       {
+        
           this.listS.getquotedetails(this.record).subscribe(data => {
-              console.log(data)
-               this.cpid = data.cpid;
-               this.fdata = data.quoteLines;
-               
-              this.quoteForm.patchValue({
-                  recordNumber: data.recordNumber,
-                  program: data.program
-              });
+
+            this.cpid = data.cpid;
+            this.fdata = data.quoteLines;
+
+            this.tableDocumentId = data.cpid;
+
+            this.quoteForm.patchValue({
+                recordNumber: data.recordNumber,
+                program: data.program
+            });
 
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
+                    this.fquotehdr = x;
+                    this.dochdr = x.docHdrId
 
-                //  console.log(x)
-                this.fquotehdr = x;
-                 this.dochdr = x.docHdrId
-            
-                  return {
-                    code: x.serviceType,
-                    displayText: x.displayText,
-                    quantity: x.qty,
-                    billUnit: x.billUnit,
-                    frequency: x.frequency,
-                    price: x.unitBillRate,
-                    recordNumber: x.recordNumber,
-                    tax: x.tax , 
-                    lengthInWeeks:x.lengthInWeeks,
-                    quoteQty:x.quoteQty
-                  //basequote: ,
-
-
-                    
-
-                  }
+               
+                    return {
+                        code:           x.serviceType,
+                        displayText:    x.displayText,
+                        quantity:       x.qty,
+                        billUnit:       x.billUnit,
+                        frequency:      x.frequency,
+                        price:          x.unitBillRate,
+                        recordNumber:   x.recordNumber,
+                        tax:            x.tax , 
+                        lengthInWeeks:  x.lengthInWeeks,
+                        quoteQty:       x.quoteQty
+                    }
               }) : [];
               
-              
+            this.total_base_quote = (this.generate_total()).toFixed(2);
+            this.total_admin = this.generate_total_admin();
+            this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
           })
       }
   }
@@ -1728,10 +1725,9 @@ dailyliving(){
     let daily;
     var temp = this.dochdr
     if(!temp) return;
+
     this.listS.GetDailyliving(temp).subscribe(x => {
-        
         daily = x;
-        console.log(x);
     });
 
     return daily;   

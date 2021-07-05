@@ -207,11 +207,11 @@ export class ListService {
     GetBasicCare(id: string): Observable<any>{
         return this.auth.get(`${list}/getbasiccare/${id}`);
     }
+    
     GetAdmPerc(id: string): Observable<any>{
         return this.auth.get(`${list}/getadmperc/${id}`);
-    }
+    }    
     
-    getadmperc
     GetDailyliving(id: string): Observable<any>{
         return this.auth.get(`${list}/getdailyliving/${id}`);
     }

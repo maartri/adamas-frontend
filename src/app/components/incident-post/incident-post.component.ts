@@ -1151,8 +1151,8 @@ handleCancelTop(): void {
 }
   generatePdf(){
 
-    var fQuery = this.incidentForm.get('incidentNotes') as FormArray;// needs to be print on report
-    
+    var fData = this.incidentForm.get('incidentNotes') as FormArray;// needs to be print on report
+      // console.log(res);
     this.drawerVisible = true;
     this.loadingPDF = true;
 
@@ -1176,8 +1176,8 @@ handleCancelTop(): void {
         "options": {
             "reports": { "save": false },
             "txtTitle": "Incident Ongoing Notes",
-            "sql": fQuery,
             "userid": this.tocken.user,
+            "dataar": fData,
             "head1" : "Leave Type",
             "head2" : "Start",
             "head3" : "End",

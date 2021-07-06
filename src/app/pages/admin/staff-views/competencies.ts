@@ -32,7 +32,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     loading: boolean = false;
 
     modalOpen: boolean = false;
-
+    skillModal:boolean = false;
     current: number = 0;
     competencies: Array<any>;
 
@@ -41,6 +41,8 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     postLoading: boolean = false;
 
     isUpdate: boolean = false;
+    skills: any;
+    titleskillsForm: FormGroup;
 
     constructor(
         private timeS: TimeSheetService,
@@ -106,6 +108,10 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             competencyException:false,
             emailCompetencyReminders:false,
         });
+        this.titleskillsForm = this.formBuilder.group({
+            identifer:'',
+            recordNumber:'',
+        });
     }
 
     search(user: any = this.user) {
@@ -125,7 +131,22 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.resetModal();      
         this.modalOpen = true;
     }
-
+    showUpdateModal(data:any){
+        this.skillModal  = true;
+        this.titleskillsForm.patchValue({
+            identifer:data.text,
+            recordNumber:data.sqlid,
+        });
+    }
+    updateSkills(){
+        this.skillsForm.value;
+        const input = this.titleskillsForm.value;
+        this.timeS.updateSkills(input).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
+            this.globalS.sToast('Success', 'Update Skill Title');
+            this.handleCancel();
+            this.populateDropDowns();
+        });
+    }
     showEditModal(index: any) {
         this.isUpdate = true;
         this.current = 0;
@@ -154,6 +175,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
 
     handleCancel() {
         this.modalOpen = false;
+        this.skillModal= false;
     }
 
     delete(data: any) {
@@ -179,6 +201,12 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             .getcompetenciesall()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe(data => this.competencies = data)
+
+            this.listS.getskills().subscribe(data => {
+                this.skills = data
+                this.cd.detectChanges();
+            });
+            console.log(this.skills);
     }
 
     pre(): void {

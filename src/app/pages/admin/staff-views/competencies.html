@@ -12,129 +12,73 @@
             </div>
         </div>
         <nz-table #headerTable  [nzSize]="'small'" [nzScroll]="{ y: '240px' }" [nzFrontPagination]="false" [nzLoading]="loading"
-            [nzData]="tableData">
-            <thead>
-                <tr>
-                    <th class="left">Competency</th>
-                    <th>Expiry Date</th>
-                    <th>Reminder Date</th>
-                    <th nzWidth="100px">Mandatory</th>
-                    <th>Cert/Reg.No</th>
-                    <th>Notes</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of headerTable.data;let i = index;trackBy: trackByFn">
+        [nzData]="tableData" [formGroup]="skillsForm">
+        <thead>
+            <tr>
+                <th class="left">Competency</th>
+                <th>Expiry Date</th>
+                <th>Reminder Date</th>
+                <th nzWidth="100px">Mandatory</th>
+                <th>Cert/Reg.No</th>
+                <th>Notes</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of headerTable.data;let i = index;trackBy: trackByFn">
                 <td class="left">{{ data.competency  }}</td>
                 <td>{{ data.expiryDate | date: 'dd/MM/yyyy' }}</td>
                 <td>{{ data.reminderDate | date: 'dd/MM/yyyy'  }}</td>
                 <td>
-                    <label nz-checkbox nzDisabled [ngModel]="data.mandatory" nzDisabled ></label>
+                    <label nz-checkbox nzDisabled [ngModel]="data.mandatory" nzDisabled [ngModelOptions]="{standalone: true}"></label>
                 </td>
                 <td>{{ data.certReg }}</td>
                 <td>{{ data.notes }}</td>
-                    <td>
-                        <a (click)="showEditModal(i)">Update</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete competency?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
-        <nz-card  nzTitle="SKILLS" [nzSize]="'small'" [formGroup]="skillsForm">
-            <div nz-row nzGutter="24" class="mrg-btm-2">
-                    <div nz-col nzSpan="4" class="text-right">
-                        Cert.3 Disabilities : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Cert iV Disabilities : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Cert.3 Children : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Cert 3 Community : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Cert iV Community : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Dip. Community : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Dip. Welfare : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Enrolled Nurse : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Cert 2 Community : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Training / Assessment : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                    </div>
-                    <div nz-col nzSpan="4" class="text-right">
-                        Cert 3 Aged Care   : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Cert iV Youth Work : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Child Protection   : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Manual Handling    : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Assist In Madication : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        PART Training : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Cultural Awareness : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Epilepsy : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Case Management : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Identify Respond : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                    </div>
-                    <div nz-col nzSpan="4" class="text-right">
-                        Cert iV Aged Care : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Supurvised Access : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Dementia Training : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        VPAP : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Safe Food Handling : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        ped/Midazolin : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Wound Care : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Working with Other : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Cert 3 Education : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Dip Early Education : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                    </div>
-                    <div nz-col nzSpan="4" class="text-right">
-                        Facil Behavior : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Doul Diagnosis : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        AIN : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Intro SuperVision : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                        Birth Cert/Passport : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
-                        <br>
-                    </div>
-                </div>
-          </nz-card>
-    </div>
+                <td>
+                    <a (click)="showEditModal(i)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete competency?"
+                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <nz-card  nzTitle="SKILLS" [nzSize]="'small'" [formGroup]="skillsForm">
+        <div nz-row nzGutter="24" class="mrg-btm-2" >
+            <div nz-col nzSpan="6" class="text-right" *ngFor="let skill of skills" style="cursor: pointer;">
+                <span (click)="showUpdateModal(skill)">{{skill.text}}</span> : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+            </div>
+        </div>
+    </nz-card>
 </div>
-
+</div>
+<nz-modal [nzWidth]="350" [(nzVisible)]="skillModal" [nzTitle]="'Update Skill Title'" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+            <div nz-row nzGutter="24" class="mrg-btm-2" [formGroup]="titleskillsForm">
+                    <div class="form-group" nz-col nzSpan="24" style="width:100%;">
+                        <label for="">Title</label>
+                        <input type="text" formControlName="identifer" nz-input  style="width:100%;"/>
+                    </div>
+            </div>
+    </div>
+    <div *nzModalFooter>
+        <ng-container>
+            <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="updateSkills()">
+                <span>UPDATE</span>
+            </button>
+        </ng-container>
+    </div>
+</nz-modal>
 <nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="'Add Competency'" (nzOnCancel)="handleCancel()">
     <div class="flexy">
-
+        
         <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
             <nz-step class="mini" nzTitle="Competencies" nzDescription=""></nz-step>
             <nz-step class="mini" nzTitle="Additional Details" nzDescription=""></nz-step>
         </nz-steps>
-
+        
         <nz-divider class="full-height" nzType="vertical"></nz-divider>
-
+        
         <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
             <div *ngIf="current == 0">
                 <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="competency" nzShowSearch nzAllowClear nzPlaceHolder="Select a competency" >
@@ -163,7 +107,7 @@
                 </div>
             </div>
         </div>
-
+        
     </div>
     <div *nzModalFooter>
         <ng-container>

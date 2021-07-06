@@ -490,6 +490,85 @@
   
 <!-- Add Booking -->
 
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="showGroupShiftRecipient" nzTitle="Select Attendees" (nzOnCancel)="showGroupShiftRecipient = false" >
+    <div class="flexy" style="min-height:8rem; ">
+        <div style=" align-items: center; width:100%">
+            <nz-table #rowSelectionTable nzShowSizeChanger [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+            [nzData]="RecipientList" [nzScroll]="RecipientList.length>10 ? {y: '300px'} : 'none'">
+            
+            <thead style="margin-left: 20px; width:100%">
+                <tr>
+                    <th  style="background-color: #d6d3d3; width: 10%;" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
+        
+                    <th style="background-color: #d6d3d3;" class="right">Attendees</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of RecipientList; let i = index;"  >
+                    
+                    <td nzShowCheckbox [nzChecked]="setOfCheckedId.has(data.accountNo)" (nzCheckedChange)="onItemChecked(data.accountNo, $event)"></td>
+         
+                    <td>                                         
+                            {{data.accountNo}}                                                                           
+                    </td>
+                </tr>
+            </tbody>
+            
+        </nz-table> 
+         
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="addGroupShiftRecipients()">OK</button>
+        <button nz-button nzType="default"  (click)="showGroupShiftRecipient=false">Cancel</button>
+    </div>
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="showGroupShiftModal" nzTitle="Group Shift" (nzOnCancel)="showGroupShiftModal = false" >
+    <div class="flexy" style="min-height:8rem; ">
+        <div style=" align-items: center; width:100%">
+            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+            [nzData]="groupShiftList" >
+            
+            <thead style="margin-left: 20px;width:100%">
+                <tr>
+                    <th style="background-color: #d6d3d3; " class="left">Select a Service Category</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of groupShiftList;let i = index;"  (click)="onItemSelected(data,i,'Category')" 
+                (dblclick)="onItemDbClick(data,i,'Category')" [style.background-color]="i == HighlightRow4 ? '#bbd7fa' : 'white'">
+                    <td class="left" >                                         
+                            {{data}}                                                                           
+                    </td>
+                </tr>
+            </tbody>
+            
+        </nz-table> 
+         
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="addGroupShift()">OK</button>
+        <button nz-button nzType="default"  (click)="showGroupShiftModal=false">Cancel</button>
+    </div>
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="showtMultiRecipientModal" nzTitle="Group Shift" (nzOnCancel)="showtMultiRecipientModal = false" >
+    <div class="flexy" style="min-height:5rem">
+        <div nz-row>
+           
+            <div>
+                <label style="font-size:16px; " >Will this activity invlove Multiple Staff or Multiple Recipient?<br/> If single Staff or Single Recipient press 'No' </label>
+               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="SetMultiRecipient(true)">Yes</button>
+        <button nz-button nzType="default"  (click)="SetMultiRecipient(false)">No</button>
+    </div>
+</nz-modal>
+
+
 <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="select_StaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="searchStaffModal = false" >
     <div class="flexy" style="min-height:10rem">
         <div nz-row>
@@ -723,7 +802,7 @@
                 </div>
            
                 <div *ngIf="current == 4" [formGroup]="bookingForm">
-                    <div class="form-group">
+                    <div *ngIf="current >10" class="form-group">
                         <label for="">Pay Type</label>
                         <nz-select formControlName="payType"
                             [nzDropdownMatchSelectWidth]="false" style="width:15rem">
@@ -731,8 +810,26 @@
                             </nz-option>
                         </nz-select>
                     </div>
-
-                    <div class="form-group">
+                    <div>
+                        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                            [nzData]="payTypeList"   [nzScroll]="payTypeList.length>10 ? {y: '300px'} : 'none'">
+                            <thead>
+                                <tr>
+                                    <th class="left">Select Pay Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let data of payTypeList;let i = index;"  (click)="onItemSelected(data.title,i,'PayType')" 
+                                (dblclick)="onItemDbClick(data.title,i,'PayType')" [ngStyle]="{'backgroundColor': i == HighlightRow5 ? '#bbd7fa'  : 'white' }">
+                                    <td class="left">                                     
+                                            {{ data.title }}     
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </nz-table> 
+                    
+                    </div>
+                    <div *ngIf="current >10" class="form-group">
                         <label for="">Category</label>
                         <nz-select formControlName="analysisCode"
                             [nzDropdownMatchSelectWidth]="false" style="width:15rem">

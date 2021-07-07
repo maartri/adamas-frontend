@@ -43,6 +43,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     isUpdate: boolean = false;
     skills: any;
     titleskillsForm: FormGroup;
+    updateString: string;
 
     constructor(
         private timeS: TimeSheetService,
@@ -105,8 +106,8 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             notes: ''
         });
         this.skillsForm = this.formBuilder.group({
-            competencyException:false,
-            emailCompetencyReminders:false,
+            CompetencyException:false,
+            EmailCompetencyReminders:false,
         });
         this.titleskillsForm = this.formBuilder.group({
             identifer:'',
@@ -120,6 +121,13 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             this.tableData = data;
             this.loading = false;
             this.cd.detectChanges();
+        });
+        this.listS.getcompetenciesheader(user.id).subscribe(data =>{
+            console.log(data);
+            this.skillsForm.patchValue({
+                CompetencyException:data[0].competencyException,
+                EmailCompetencyReminders:data[0].emailCompetencyReminders,
+            })
         });
     }
 
@@ -237,5 +245,21 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.handleCancel();
         this.resetModal();
     }
-
+    changeStatus(e,typ){
+        console.log(this.user.id);
+        if(e.target.checked){
+            if(typ == 1)
+            this.updateString = "CompetencyException = 1";
+            if(typ == 2)
+            this.updateString = "EmailCompetencyReminders = 1";
+        }else{
+            if(typ == 1)
+            this.updateString = "CompetencyException = 0";
+            if(typ == 2)
+            this.updateString = "EmailCompetencyReminders = 0";
+        }
+        this.timeS.updateStaffCompetenciesHeader(this.updateString,this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
+            this.globalS.sToast('Success', 'Competency saved');
+        });
+    }
 }

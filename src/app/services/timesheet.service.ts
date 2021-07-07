@@ -987,6 +987,10 @@ export class TimeSheetService {
     postcompetencies(data: any, id: string): Observable<any> {
         return this.auth.post(`${timesheet}/competencies/${id}`, data)
     }
+    
+    updateStaffCompetenciesHeader(type: string,id:string):Observable<any>{
+        return this.auth.get(`${timesheet}/competenciesheader/${type}/${id}`)
+    }
 
     deletecompetency(id: number): Observable<any> {
         return this.auth.delete(`${timesheet}/staff/competency/${id}`)

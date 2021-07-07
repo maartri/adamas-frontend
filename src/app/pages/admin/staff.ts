@@ -248,17 +248,20 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
 
         if(!this.terminateGroup.valid)  return;
+
         this.isConfirmLoading = true;
         
         const { code, id } = this.user;
 
         this.timeS.posttermination({
-            TerminationDate: this.terminateGroup.value.terminateGroup,
+            TerminationDate: this.terminateGroup.value.terminateDate,
             AccountNo: code,
             PersonID: id
         }).subscribe(data => {
             this.globalS.sToast('Success','Staff has been terminated!');
+            this.terminateModal   = false;
             this.isConfirmLoading = false;
+            this.cd.detectChanges();
         });
     }
 

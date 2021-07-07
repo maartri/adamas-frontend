@@ -89,8 +89,8 @@
                             nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)" (nzOnCancel)="cancel(1)"></i>
                     </div>
-                    <div>{{ data.postCode }} {{ data.address1 }}, {{ data.suburb}}</div>
-                    <b>{{ data.description }}</b>
+                    <div> {{ data.address1 }}, {{ data.suburb}} {{ data.postCode }}</div>
+                    <b>{{ data.description </b>
                 </li>
             </ul>
             <!-- <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
@@ -232,7 +232,7 @@
                                     nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
                                     (nzOnCancel)="cancel(1)"></i>                                        
                                     </div>
-                                    <div>{{ data.postCode }} {{ data.address1 }}, {{ data.suburb}}</div>
+                                    <div> {{ data.address1 }} {{ data.suburb}} {{ data.postCode }} </div>
                                     <b>{{ data.description }}</b>
                                 </li>
                                 <li *ngIf="user?.addresses?.length == 0">
@@ -526,16 +526,6 @@
         </div>
     </div>
 </ng-container>
-
-
-
-
-
-
-
-
-
-
  <nz-modal [(nzVisible)]="profileStaffModal" [nzStyle]="{ top: '20px' }" nzTitle="Update Profile" (nzOnCancel)="handleCancel()">
 
     <div nz-row nzGutter="16" [formGroup]="userForm">

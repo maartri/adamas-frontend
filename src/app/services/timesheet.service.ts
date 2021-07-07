@@ -1231,7 +1231,6 @@ export class TimeSheetService {
     /**      
      * End - Pay Tab
      */
-
     
     updatemiscellaneous(note: MiscellaneousNote): Observable<any> {
         return this.auth.put(`${timesheet}/notes/miscellaneous`, note)
@@ -1249,5 +1248,9 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/attendance/staff/${id}`)
     }
 
+    updateSkills(data:any):Observable<any>{
+        return this.auth.put(`${timesheet}/competency/skill`, data)
+    }
 
 }
+

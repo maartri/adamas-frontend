@@ -146,6 +146,9 @@ export class ListService {
     getndiaitems(): Observable<any>{
         return this.auth.get(`${list}/ndia-items`);
     }
+    getskills(): Observable<any>{
+        return this.auth.get(`${list}/skills`);
+    }
     getclientportalmethod(): Observable<any>{
         return this.auth.get(`${list}/clientportalmethod`);
     }

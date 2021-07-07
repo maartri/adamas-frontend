@@ -62,6 +62,13 @@
                     </div>
             </div>
     </div>
+    <div *nzModalFooter>
+        <ng-container>
+            <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="updateSkills()">
+                <span>UPDATE</span>
+            </button>
+        </ng-container>
+    </div> 
 </nz-modal>
 <!--<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="'Add Competency'" (nzOnCancel)="handleCancel()">-->   
 <nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit ? 'Add Competency' : 'Edit Competency'" (nzOnCancel)="handleCancel()">

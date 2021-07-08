@@ -141,6 +141,8 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
 
     handleCancel() {
         this.modalOpen = false;
+        this.search(this.user);
+        return;
     }
 
     reset() {

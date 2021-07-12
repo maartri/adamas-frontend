@@ -213,21 +213,21 @@
             
                             <div class="form-group">
                                 <label for="">Branch</label>
-                                <nz-select style="width:100%" formControlName="branch" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                <nz-select style="width:100%" formControlName="branch" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select a BRANCH" >
                                     <nz-option *ngFor="let d of branchesArr" [nzLabel]="d" [nzValue]="d"></nz-option>
                                 </nz-select>
                             </div>
             
                             <div class="form-group">
                                 <label for="">Job Category</label>
-                                <nz-select style="width:100%" formControlName="jobCategory" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                <nz-select style="width:100%" formControlName="jobCategory" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select a Job Category" >
                                     <nz-option *ngFor="let d of jobCategoryArr" [nzLabel]="d" [nzValue]="d"></nz-option>
                                 </nz-select>
                             </div>
             
                             <div class="form-group">
                                 <label for="">Coordinator/Manager</label>
-                                <nz-select style="width:100%" formControlName="manager" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
+                                <nz-select style="width:100%" formControlName="manager" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select a Coordinator/Manager " >
                                     <nz-option *ngFor="let d of managerArr" [nzLabel]="d" [nzValue]="d"></nz-option>
                                 </nz-select>
                             </div>

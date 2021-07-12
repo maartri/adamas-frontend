@@ -153,7 +153,7 @@
             <div *ngIf="current == 0">
                 <label for="">Contact Group</label>
                 <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="group" nzShowSearch nzAllowClear
-                    nzPlaceHolder="Select a competency">
+                    nzPlaceHolder="Select a Contact Group">
                     <nz-option *ngFor="let d of contactGroups" [nzLabel]="d" [nzValue]="d"></nz-option>
                 </nz-select>
             </div>
@@ -185,7 +185,7 @@
                         <app-phonefax formControlName="phone1"></app-phonefax>
                     </div>
                     <div nz-col class="contact" nzSpan="12">
-                        <label for="">Phone 1</label>
+                        <label for="">Phone 2</label>
                         <app-phonefax formControlName="phone2"></app-phonefax>
                     </div>
                 </div>

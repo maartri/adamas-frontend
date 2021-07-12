@@ -86,16 +86,16 @@
                             </div>
                             <div nz-col nzSpan="4">
                                 <div class="form-group">
-                                    <label for="">Party Group</label>
-                                    <input type="text" nz-input maxlength="10" formControlName="payGroup">
-                                </div>
-                            </div>
-                            <div nz-col nzSpan="4">
-                                <div class="form-group">
                                     <label for="">Award</label>
                                     <nz-select formControlName="award">
                                         <nz-option *ngFor="let award of awardsArr" [nzValue]="award" [nzLabel]="award"></nz-option>
                                     </nz-select>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="4">
+                                <div class="form-group">
+                                    <label for="">3rd PARTY PAY GROUP</label>
+                                    <input type="text" nz-input maxlength="10" formControlName="payGroup">
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                                 <div class="checkboxes">
                                     <label nz-checkbox formControlName="excludeFromPayExport">Exclude From Pay Export</label>
                                     <label nz-checkbox formControlName="excludeClientAdminFromPay">Exclude Client Administration From Payroll</label>
-                                    <label nz-checkbox formControlName="excludeFromTravelinterpretation">Exclude from travel interpretation</label>
+                                    <label nz-checkbox formControlName="excludeFromTravelInterpretation">Exclude from travel interpretation</label>
                                 </div>
                                 <div class="checkboxes">
                                     <label nz-checkbox formControlName="includeLaundry">Laundry</label>

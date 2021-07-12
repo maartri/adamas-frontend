@@ -30,14 +30,14 @@
                     <tr *ngFor="let data of basicTable.data;let i = index;">
                         <td nzLeft nzBreakWord>{{data.title}}</td>
                         <td nzLeft nzBreakWord>{{data.rosterGroup}}</td>
-                        <td nzLeft nzBreakWord>{{data.subGroup}}</td>
-                        <td nzLeft nzBreakWord>{{data.dataSet}}</td>
-                        <td nzLeft nzBreakWord>{{data.datasetCode}}</td>
+                        <td nzLeft nzBreakWord>{{data.minorGroup}}</td>
+                        <td nzLeft nzBreakWord>{{data.iT_Dataset}}</td>
+                        <td nzLeft nzBreakWord>{{data.haccType}}</td>
                         <td nzLeft nzBreakWord>{{data.outletID}}</td>
                         <td nzLeft nzBreakWord>{{data.datasetGroup}}</td>
                         <td nzLeft nzBreakWord>{{data.ndiaid}}</td>
-                        <td nzLeft nzBreakWord>{{data.accountingCode}}</td>
-                        <td nzLeft nzBreakWord>{{data.billAmount}}</td>
+                        <td nzLeft nzBreakWord>{{data.accountingIdentifier}}</td>
+                        <td nzLeft nzBreakWord>{{data.amount}}</td>
                         <td nzLeft nzBreakWord>{{data.billUnit}}</td>
                         <td nzLeft nzBreakWord>{{data.endDate | date: 'dd/MM/y' }}</td>
                         <td nzLeft nzBreakWord><a (click)="showEditModal(data.row_num)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
@@ -86,7 +86,7 @@
                                             Billing Text:
                                         </div>
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
-                                            <textarea rows="2" nz-input formControlName="billingText"></textarea>
+                                            <textarea rows="2" nz-input formControlName="billText"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -128,7 +128,7 @@
                                                 <nz-form-label  nzRequired nzFor="Charge Rate 1:">Charge Rate 1</nz-form-label>
                                             </div>
                                             <div nz-col nzSpan="12" class="text-right pad-r-5"> 
-                                                <input nz-input  [nzSize]="'small'" formControlName="chargeRate1" />
+                                                <input nz-input  [nzSize]="'small'" formControlName="amount" />
                                             </div>
                                         </div>
                                         <div class="mrg-btm" nz-col nzSpan="12">
@@ -136,7 +136,7 @@
                                                 Minimum Charge Rate:
                                             </div>
                                             <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                                <input nz-input [nzSize]="'small'" formControlName="minimumChargeRate" />
+                                                <input nz-input [nzSize]="'small'" formControlName="minChargeRate" />
                                             </div>
                                         </div>
                                     </div>
@@ -155,7 +155,7 @@
                                             Life Cycle Event:
                                         </div>
                                         <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="lifeCycle"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="lifecycle"  nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let clycle of lifeCycleList" [nzLabel]="clycle.description" [nzValue]="clycle.description"></nz-option>
                                             </nz-select>
                                         </div>
@@ -177,7 +177,7 @@
                                             Dicipline:
                                         </div>
                                         <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="IT_Dataset" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="dataSet" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let dicipline of diciplineList" [nzLabel]="dicipline.description" [nzValue]="dicipline.description"></nz-option>
                                             </nz-select>
                                         </div>
@@ -198,7 +198,7 @@
                                             Auto Approve:
                                         </div>
                                         <div nz-col nzSpan="4" class=""> 
-                                            <label nz-checkbox  formControlName="AutoApprove"></label>
+                                            <label nz-checkbox  formControlName="autoApprove"></label>
                                         </div>
                                     </div>
                                     <div nz-row nzJustify class="mrg-btm">
@@ -236,7 +236,7 @@
                                             <nz-form-label  nzRequired nzFor="DataSet">DataSet</nz-form-label>
                                         </div>
                                         <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="dataSet" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="iT_Dataset" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let dataset of datasetList" [nzLabel]="dataset" [nzValue]="dataset"></nz-option>
                                             </nz-select>
                                         </div>
@@ -248,6 +248,7 @@
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="datasetGroup"  nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let khali of emptyList" [nzLabel]="khali" [nzValue]="khali"></nz-option>
+                                                <nz-option nzValue="STF-LEAVE-LONG SERVICE" nzLabel="STF-LEAVE-LONG SERVICE"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>
@@ -256,8 +257,9 @@
                                             Type :
                                         </div>
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="HACCType"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="haccType"  nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let khali of emptyList" [nzLabel]="khali" [nzValue]="khali"></nz-option>
+                                                <nz-option nzValue="STF-LEAVE-LWP" nzLabel="STF-LEAVE-LWP"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>
@@ -380,7 +382,7 @@
                                 <label for="">CDC/NDIA Group: </label>
                             </div>
                             <div nz-col nzSpan="16">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="NDIA_ID"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiA_ID"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let nida of ndiaList" [nzLabel]="nida" [nzValue]="nida"></nz-option>
                                 </nz-select>
                             </div>
@@ -407,7 +409,7 @@
                                 <label for="">Commercial : </label>
                             </div>
                             <div nz-col nzSpan="16">
-                                <input nz-col nzSpan="16" nz-input  [nzSize]="'small'" placeholder=""  formControlName="billAmount" />
+                                <input nz-col nzSpan="16" nz-input  [nzSize]="'small'" placeholder=""  formControlName="amount" />
                             </div>
                         </div>
                         <div nz-row nzGutter=22 class="mrg-btm">

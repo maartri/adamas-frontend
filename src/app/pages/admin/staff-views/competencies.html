@@ -5,14 +5,14 @@
                 <button class="botton success" (click)="showAddModal()">Add Competency</button>
             </div>
             <div nz-col nzSpan="10">
-                <label nz-checkbox formControlName="competencyException">Exclude Staff Member From Mandatory Competency Checking </label>
+                <label nz-checkbox formControlName="CompetencyException" (change)="changeStatus($event,1)">Exclude Staff Member From Mandatory Competency Checking </label>
             </div>
             <div nz-col nzSpan="10">
-                <label nz-checkbox formControlName="emailCompetencyReminders">Email Competency Reminder</label>
+                <label nz-checkbox formControlName="EmailCompetencyReminders" (change)="changeStatus($event,2)">Email Competency Reminder</label>
             </div>
         </div>
         <nz-table #headerTable  [nzSize]="'small'" [nzScroll]="{ y: '240px' }" [nzFrontPagination]="false" [nzLoading]="loading"
-        [nzData]="tableData" [formGroup]="skillsForm">
+        [nzData]="tableData" [formGroup]="inputForm">
         <thead>
             <tr>
                 <th class="left">Competency</th>
@@ -46,7 +46,7 @@
     <nz-card  nzTitle="SKILLS" [nzSize]="'small'" [formGroup]="skillsForm">
         <div nz-row nzGutter="24" class="mrg-btm-2" >
             <div nz-col nzSpan="6" class="text-right" *ngFor="let skill of skills" style="cursor: pointer;">
-                <span (click)="showUpdateModal(skill)">{{skill.text}}</span> : <label nz-checkbox formControlName="emailCompetencyReminders"></label>
+                <span (click)="showUpdateModal(skill)">{{skill.text}}</span> : <label nz-checkbox></label>
             </div>
         </div>
     </nz-card>

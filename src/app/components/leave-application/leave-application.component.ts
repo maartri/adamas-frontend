@@ -66,7 +66,8 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
 
         dates: [
           [startOfMonth(new Date()), lastDayOfMonth(new Date())], [Validators.required]],
-
+        reminderDate:new Date(),
+        approved:false,
         makeUnavailable: true,
         unallocAdmin: false,
         unallocUnapproved: true,

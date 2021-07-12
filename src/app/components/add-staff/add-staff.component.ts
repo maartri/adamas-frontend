@@ -335,7 +335,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     var groupArr: Array<FormGroup> = [];
 
     groupArr =[ new FormGroup({
-        type: new FormControl('RESIDENTIAL'),
+        type: new FormControl('USUAL'),
         address1: new FormControl(''),
         suburb: new FormControl('')
     }),new FormGroup({
@@ -443,7 +443,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               gender: gender,
               dob: birthDate ? moment(birthDate).format() : null,
               category: type,
-
               commencementDate: commencementDate ? moment(commencementDate).format() : null,
               stf_Department: branch,
               staffGroup: jobCategory,

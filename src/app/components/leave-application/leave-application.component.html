@@ -9,6 +9,17 @@
             </nz-form-item>
         </div>
         <div nz-row>
+            <nz-form-item>
+                <div nz-col nzSpan="12">
+                    <label>Reminder Date </label>
+                    <nz-date-picker [nzFormat]="dateFormat" formControlName="reminderDate"></nz-date-picker>
+                </div>
+                <div nz-col nzSpan="12">
+                    <label nz-checkbox formControlName="approved"> Approved </label>
+                </div>
+            </nz-form-item>
+        </div>
+        <div nz-row>
             <ul>
                 <li>
                     <label nz-checkbox formControlName="makeUnavailable">Make Unavailable for balance of day</label>

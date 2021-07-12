@@ -135,7 +135,9 @@ export class ListService {
     getotherprograms(personID: string): Observable<any> {
         return this.auth.get(`${list}/other-programs/${personID}`);
     }    
-
+    getcompetenciesheader(personID: string): Observable<any> {
+        return this.auth.get(`${list}/competenciesheader/${personID}`);
+    }    
     gethcpprograms(): Observable<any> {
         return this.auth.get(`${list}/hcp-programs`);
     }

@@ -1,9 +1,13 @@
 
    <div nz-row  style="padding:2px; background-color: white;">
-        
+          <!-- <div >
+        <roster-component [info]="{StaffCode:'MELLOW MARSHA', ViewType:'Staff',IsMaster:false | json }"></roster-component>
+
+    </div> -->
+
         <div nz-col nzSpan="8" style=" margin-left: 10px; margin-top: 10px; background-color: white;">
             <div class="calendar-title">            
-                <app-search-timesheet [view]="0" (selected)="picked($event)"></app-search-timesheet>
+                <app-search-timesheet [defautValue]="defaultCode" [view]="0" (selected)="picked($event)"></app-search-timesheet>
             </div>
         </div>
         
@@ -228,10 +232,10 @@
 
     <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ViewStaffDetail" nzTitle="View Staff Details" (nzOnCancel)="ViewStaffDetail = false" >
         <div nz-row>
-            <!-- <div class="form-group" *ngIf="selected?.option === 1"> -->
+             <div class="form-group" [formGroup]="rosterForm"> 
                 <label for="">Staff/Contractor</label>
                 <app-staff-popup formControlName="staffCode"></app-staff-popup>
-            <!-- </div> -->
+             </div> 
         </div>
         <div *nzModalFooter>
             <button nz-button nzType="default" (click)="ViewStaffDetail=false">Save</button>
@@ -604,7 +608,7 @@
 <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="isTravel" nzTitle="Select Travel Status" (nzOnCancel)="isTravel = false" >
     <div class="flexy" style="min-height:6rem">
         <div nz-row>
-            <div class="form-group"  [formGroup]="bookingForm" >
+            <div class="form-group"   >
                 <label for="">Is the Travel Chargeable</label>                
             </div>
            
@@ -634,7 +638,7 @@
             
             
             <div class="steps-content">
-                <div *ngIf="current == 0" [formGroup]="bookingForm">                   
+                <div *ngIf="current == 0" class="form-group" [formGroup]="bookingForm">                   
                                                
                     <div  *ngIf="current>10"  class="form-group">
                         <div  nz-row>
@@ -676,7 +680,7 @@
                     <div  *ngIf="current>0"  class="form-group">
                        
                       
-                            <div  nz-row *ngIf="multipleRecipientShow">
+                            <!-- <div  nz-row *ngIf="multipleRecipientShow">
                                 <label for="">Multiple Recipients</label>
                                 <nz-switch nzSize="small" formControlName="isMultipleRecipient"></nz-switch>
                             </div>
@@ -685,9 +689,9 @@
                                 <label for="">Select the End Time on the following day for the sleepover</label>
                                 <nz-time-picker formControlName="sleepOverTime" [nzDefaultOpenValue]="defaultOpenValue" nzFormat="HH:mm"></nz-time-picker>
         
-                                <!-- <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker> -->
-                                <!-- <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch> -->
-                            </div> 
+                               <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker>
+                                 <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch>
+                            </div>  -->
                                
                     </div>
                       <div *ngIf="current>=10">
@@ -799,6 +803,7 @@
                         <label for="">Staff</label>
                         <app-staff-popup formControlName="staffCode"></app-staff-popup>
                     </div>
+                    
                 </div>
            
                 <div *ngIf="current == 4" [formGroup]="bookingForm">
@@ -815,12 +820,12 @@
                             [nzData]="payTypeList"   [nzScroll]="payTypeList.length>10 ? {y: '300px'} : 'none'">
                             <thead>
                                 <tr>
-                                    <th class="left">Select Pay Type</th>
+                                    <th class="left">{{Select_Pay_Type}}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let data of payTypeList;let i = index;"  (click)="onItemSelected(data.title,i,'PayType')" 
-                                (dblclick)="onItemDbClick(data.title,i,'PayType')" [ngStyle]="{'backgroundColor': i == HighlightRow5 ? '#bbd7fa'  : 'white' }">
+                                <tr *ngFor="let data of payTypeList;let i = index;"  (click)="onItemSelected(data,i,'PayType')" 
+                                (dblclick)="onItemDbClick(data,i,'PayType')" [ngStyle]="{'backgroundColor': i == HighlightRow5 ? '#bbd7fa'  : 'white' }">
                                     <td class="left">                                     
                                             {{ data.title }}     
                                     </td>

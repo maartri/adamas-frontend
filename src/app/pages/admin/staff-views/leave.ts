@@ -106,7 +106,8 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             staffcode: '',
 
             dates: [[], [Validators.required]],
-
+            reminderDate:new Date(),
+            approved:false,
             makeUnavailable: true,
             unallocAdmin: false,
             unallocUnapproved: true,

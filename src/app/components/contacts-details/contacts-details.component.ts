@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, contactGroups, days, gender, types, titles, caldStatuses, roles, ShareService } from '@services/index';
 import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { EMPTY,Subject } from 'rxjs';
 
 import { TitleCasePipe } from '@angular/common';
 
@@ -42,6 +42,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   inputForm: FormGroup;  
 
   contactGroups: Array<string> = contactGroups;
+  contactTypes : Array<string>;
 
   modalOpen: boolean = false;
   postLoading: boolean = false;  
@@ -120,6 +121,19 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       creator: [''],
       recordNumber: null
     })
+
+    this.inputForm.get('group').valueChanges.pipe(
+      switchMap(x => {
+          if(!x)
+              return EMPTY;
+        console.log(x);
+          return this.listS.gettypeother(x)
+      })
+  ).subscribe(data => {
+    this.contactTypes = data;
+  });
+
+
   }
 
   ngAfterViewInit(): void{

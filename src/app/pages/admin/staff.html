@@ -10,21 +10,13 @@
                 <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
             </div>
     
-            <div nz-col nzSpan="6" *ngIf="user">
+            <div nz-col nzSpan="18" *ngIf="user">
                 <ul>
                     <li class="terminate" (click)="terminateModalOpen()"><div><i nz-icon nzType="close" nzTheme="outline"></i></div>Terminate</li>
                     <li class="leave" (click)="putonLeaveModal = !putonLeaveModal"><div><i nz-icon nzType="eye-invisible" nzTheme="outline"></i></div>Put On Leave</li>
                 </ul>
             </div>
-
-            <div nz-col nzSpan="12" *ngIf="user">
-              <ul>
-                  <li class="terminate" (click)="terminateModalOpen()"><div><i nz-icon nzType="printer" nzTheme="outline"></i></div>Print</li>
-                  <li class="terminate" (click)="terminateModalOpen()"><div><i nz-icon nzType="calendar" nzTheme="outline"></i></div>Roster</li>
-                  <li class="leave" (click)="putonLeaveModal = !putonLeaveModal"><div><i nz-icon nzType="calendar" nzTheme="outline"></i></div>Master</li>
-              </ul>
-            </div>
-
+    
             <div nz-col nzSpan="24" *ngIf="userview">
                 <nz-tabset *ngIf="user && userview" [nzTabPosition]="'top'" [nzSelectedIndex]="nzSelectedIndex" [nzType]="'card'">
                     <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>

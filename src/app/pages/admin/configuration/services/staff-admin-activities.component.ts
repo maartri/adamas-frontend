@@ -221,10 +221,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
           this.globalS.sToast('Success', 'Added Succesfully');
         });
       }else{
-        this.menuS.updatestaffAdminActivities(this.inputForm.value)
-        .subscribe(data => {
-          this.globalS.sToast('success','Updated Successfuly');
-        });
+        
       }
     }
     saveCompetency(){
@@ -531,7 +528,6 @@ export class StaffAdminActivitiesComponent implements OnInit {
             ndiA_LEVEL2:'',
             ndiA_LEVEL3:'',
             ndiA_LEVEL4:'',
-            recnum:'',
           });
           this.competencyForm = this.formBuilder.group({
             competencyValue: '',

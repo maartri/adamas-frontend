@@ -44,7 +44,6 @@ export class MenuService {
         postServices(data: any): Observable<any> {
             return this.auth.post(`${menu}/Services/`, data)
         }
-
         /** */
 
         /**
@@ -94,6 +93,9 @@ export class MenuService {
             return this.auth.get(`${menu}/staffAdminActivities/${is_where}`)
         }
         poststaffAdminActivities(data: any): Observable<any> {
+            return this.auth.post(`${menu}/staffAdminActivities/`, data)
+        }
+        updatestaffAdminActivities(data: any): Observable<any> {
             return this.auth.post(`${menu}/staffAdminActivities/`, data)
         }
         /** */

@@ -72,7 +72,9 @@ export class ListService {
     getprogramproperties(program: string): Observable<any> {
         return this.auth.get(`${list}/program-properties/${program}`);
     }
-
+    getcontactTypesByGroup(group: string): Observable<any> {
+        return this.auth.get(`${list}/contact-types/${group}`);
+    }
     getpensionandfee(): Observable<any> {
         return this.auth.get(`${list}/pension-and-percent-fee`);
     }

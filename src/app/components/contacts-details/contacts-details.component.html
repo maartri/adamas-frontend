@@ -160,7 +160,11 @@
 
             <div *ngIf="current == 1">
                 <div nz-row class="mrg-btm-2">
-                    <input type="text" class="uppercase" nz-input  placeholder="Type" formControlName="type" />
+                    <label for="">Contact Type</label>
+                    <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="type"  nzShowSearch nzAllowClear
+                    nzPlaceHolder="Select a Contact Type">
+                    <nz-option *ngFor="let d of contactTypes" [nzLabel]="d" [nzValue]="d"></nz-option>
+                    </nz-select>
                 </div>
                 <div nz-row class="mrg-btm-2">
                     <input type="text" class="uppercase" nz-input placeholder="Name" formControlName="name" />

@@ -19,8 +19,8 @@
             <div nz-col nzSpan="12" *ngIf="user">
               <ul>
                   <li class="terminate"><div><i nz-icon nzType="printer" nzTheme="outline"></i></div>Print</li>
-                  <li class="terminate"><div><i nz-icon nzType="calendar" nzTheme="outline"></i></div>Roster</li>
-                  <li class="leave"><div> <i nz-icon nzType="calendar" nzTheme="outline"></i></div>Master</li>
+                  <li class="terminate" (click)="currentMonthRoster()"><div><i nz-icon nzType="calendar" nzTheme="outline"></i></div>{{longMonth}} Roster</li>
+                  <li class="leave" (click)="rosterMaster()"><div><i nz-icon nzType="calendar" nzTheme="outline"></i></div>Master</li>
               </ul>
             </div>
             <div nz-col nzSpan="24" *ngIf="userview">

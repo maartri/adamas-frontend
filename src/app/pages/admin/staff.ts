@@ -89,8 +89,10 @@ export class StaffAdmin implements OnInit, OnDestroy {
     terminateGroup: FormGroup;
 
     userview: UserView;
-
+    currentDate = new Date();
+    longMonth = this.currentDate.toLocaleString('en-us', { month: 'long' });
     userByPass: ApplicationUser;
+    navigationExtras: { state: { StaffCode: string; ViewType: string; IsMaster: boolean; }; };
 
     listChange(event: any) {
 
@@ -265,6 +267,17 @@ export class StaffAdmin implements OnInit, OnDestroy {
         });
     }
 
+    currentMonthRoster(){
+        console.log(this.user.code + "current");
+        this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Staff',IsMaster:false }};
+            this.router.navigate(["/admin/rosters"],this.navigationExtras )
+    }
+    rosterMaster(){
+        console.log(this.user.code + "master");
+        this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Staff',IsMaster:true }};
+            this.router.navigate(["/admin/rosters"],this.navigationExtras )
+    }
+    
     reloadVal: boolean = false;
     reload(reload: boolean){
         this.reloadVal = !this.reloadVal;

@@ -221,7 +221,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
           this.globalS.sToast('Success', 'Added Succesfully');
         });
       }else{
-        
+        this.menuS.updatestaffAdminActivities(this.inputForm.value)
+        .subscribe(data => {
+          this.globalS.sToast('success','Updated Successfuly');
+        });
       }
     }
     saveCompetency(){

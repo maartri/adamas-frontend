@@ -63,10 +63,10 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
     this.leaveGroup = this.fb.group({
         user: '',
         staffcode: '',
-
         dates: [
           [startOfMonth(new Date()), lastDayOfMonth(new Date())], [Validators.required]],
-
+        reminderDate:new Date(),
+        approved:false,
         makeUnavailable: true,
         unallocAdmin: false,
         unallocUnapproved: true,

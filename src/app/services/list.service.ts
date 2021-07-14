@@ -85,7 +85,9 @@ export class ListService {
     getprogramproperties(program: string): Observable<any> {
         return this.auth.get(`${list}/program-properties/${program}`);
     }
-
+    getcontactTypesByGroup(group: string): Observable<any> {
+        return this.auth.get(`${list}/contact-types/${group}`);
+    }
     getpensionandfee(): Observable<any> {
         return this.auth.get(`${list}/pension-and-percent-fee`);
     }
@@ -135,7 +137,9 @@ export class ListService {
     getotherprograms(personID: string): Observable<any> {
         return this.auth.get(`${list}/other-programs/${personID}`);
     }    
-
+    getcompetenciesheader(personID: string): Observable<any> {
+        return this.auth.get(`${list}/competenciesheader/${personID}`);
+    }    
     gethcpprograms(): Observable<any> {
         return this.auth.get(`${list}/hcp-programs`);
     }
@@ -145,6 +149,9 @@ export class ListService {
     }
     getndiaitems(): Observable<any>{
         return this.auth.get(`${list}/ndia-items`);
+    }
+    getskills(): Observable<any>{
+        return this.auth.get(`${list}/skills`);
     }
     getclientportalmethod(): Observable<any>{
         return this.auth.get(`${list}/clientportalmethod`);
@@ -207,11 +214,11 @@ export class ListService {
     GetBasicCare(id: string): Observable<any>{
         return this.auth.get(`${list}/getbasiccare/${id}`);
     }
+    
     GetAdmPerc(id: string): Observable<any>{
         return this.auth.get(`${list}/getadmperc/${id}`);
-    }
+    }    
     
-    getadmperc
     GetDailyliving(id: string): Observable<any>{
         return this.auth.get(`${list}/getdailyliving/${id}`);
     }

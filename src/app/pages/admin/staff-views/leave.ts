@@ -106,7 +106,8 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             staffcode: '',
 
             dates: [[], [Validators.required]],
-
+            reminderDate:new Date(),
+            approved:false,
             makeUnavailable: true,
             unallocAdmin: false,
             unallocUnapproved: true,
@@ -141,6 +142,8 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
 
     handleCancel() {
         this.modalOpen = false;
+        this.search(this.user);
+        return;
     }
 
     reset() {

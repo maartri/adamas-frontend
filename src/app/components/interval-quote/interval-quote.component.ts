@@ -86,7 +86,6 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     for (let property in changes) {
       if (property == 'interval' && !changes[property].firstChange && changes[property].currentValue != null) {
           this.buildForm();
-          console.log(changes[property].currentValue)
           this.createMultipleWeekFormats(changes[property].currentValue)
       }
     }

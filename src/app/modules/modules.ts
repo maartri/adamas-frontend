@@ -58,6 +58,7 @@ export interface Jwt {
 }
 
 export interface QuoteLineDTO {
+    recordNumber?: any,
     docHdrId?: number,
     lineNo?:number,
     COID?:number,

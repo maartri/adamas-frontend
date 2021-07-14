@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges,forwardRef, OnChanges, Output, EventEmitter  } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges,forwardRef, OnChanges, Output, EventEmitter, ChangeDetectorRef  } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, StaffService, view } from '@services/index';
@@ -12,6 +12,8 @@ import parse from 'date-fns/parse';
 import * as moment from 'moment';
 import { User, NewRelationShip, ProfileInterface, IM_Master } from '@modules/modules';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 
 const noop = () => {
 };
@@ -96,7 +98,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   incidentNotifications: Array<any>;
   incidentmandatoryNotifications : Array<any>;
   incidentnonmandatoryNotifications : Array<any>;
-
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   alist: Array<any> = [];
   blist: Array<any> = [];
   clist: Array<any> = [];
@@ -120,15 +122,23 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     recordNumber: null,
     personID: ''
 }
+  tryDoctype: any;
+  pdfTitle: string;
+  drawerVisible: boolean;
+  loadingPDF: boolean;
 
   constructor(
     private fb: FormBuilder,
+    private cd: ChangeDetectorRef,
     private listS: ListService,
     private globalS: GlobalService,
     private clientS: ClientService,
     private staffS: StaffService,
     private timeS: TimeSheetService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private sanitizer: DomSanitizer,
+    private http: HttpClient,
+    private ModalS: NzModalService,
   ) { 
 
   }
@@ -152,8 +162,12 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   ngOnInit(): void {    
     this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
     this.buildForm();
+    this.cd.detectChanges();
   }
-
+  detectChanges(){
+    this.cd.markForCheck();
+    this.cd.detectChanges();
+  }
   buildForm() {
     
     this.incidentForm = this.fb.group({
@@ -1012,7 +1026,8 @@ updateCheckBoxesInStep1(defaultString: string){
       console.log(value);
 
       if(value.operation == 'UPDATE'){
-          this.timeS.getincidentnotes(value.recordNo).subscribe(data => {
+          
+        this.timeS.getincidentnotes(value.recordNo).subscribe(data => {
               data.map(x => {
                 if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
                   x.detail = x.detailOriginal
@@ -1125,8 +1140,76 @@ updateCheckBoxesInStep1(defaultString: string){
     else{this.current = 2}
   }
 
-  handleOkTop(){
-    
-  }
+  handleOkTop() {
+    this.generatePdf();
+    this.tryDoctype = ""
+    this.pdfTitle = ""
+}
+handleCancelTop(): void {
+    this.drawerVisible = false;
+    this.pdfTitle = ""
+}
+  generatePdf(){
 
+    var fData = this.incidentForm.get('incidentNotes') as FormArray;// needs to be print on report
+      // console.log(res);
+    this.drawerVisible = true;
+    this.loadingPDF = true;
+
+    // var fQuery = "SELECT RECORDNUMBER, NAME AS Field1,CONVERT(varchar, [DATE1],105) as Field2,CONVERT(varchar, [DATE2],105) as Field3,NOTES as Field4,"+
+    //                 "CONVERT(varchar,[DATEINSTALLED],105) as Field5,COMPLETED AS Field6 FROM HUMANRESOURCES HR INNER JOIN Staff ST ON ST.[UniqueId] = HR.[PersonID]"+
+    //                 "WHERE ST.[AccountNo] ='"+this.user.code+"' AND HR.[DELETEDRECORD] = 0"+
+    //                 "AND HR.[GROUP] = 'LEAVEAPP'"+
+    //                 "ORDER BY  DATE1 DESC";
+    
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+            "reports": { "save": false },
+            "txtTitle": "Incident Ongoing Notes",
+            "userid": this.tocken.user,
+            "dataar": fData,
+            "head1" : "Leave Type",
+            "head2" : "Start",
+            "head3" : "End",
+            "head4" : "Notes",
+            "head5" : "REMINDER DATE",
+            "head6" : "Approved",
+        }
+    }
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+       
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+       
+        this.loadingPDF = false;
+        console.log("compiled after data")
+        this.cd.detectChanges();
+    }, err => {
+        console.log(err);
+        this.loadingPDF = false;
+        this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+                this.drawerVisible = false;
+            },
+        });
+    });
+    this.cd.detectChanges();
+    this.loadingPDF = true;
+    this.tryDoctype = "";
+    this.pdfTitle = "";
+}
 }//

@@ -149,7 +149,7 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
             emailTimesheet: false,
             employeeOf: "",
             excludeClientAdminFromPay: false,
-            excludeFromTravelinterpretation:false,
+            excludeFromTravelInterpretation:false,
             excludeFromPayExport: false,
             superPercent:"",
             superFund:"",

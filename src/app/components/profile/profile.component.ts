@@ -745,7 +745,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         this.subscriptionArray = [];
         this.globalS.sToast('Success', 'Profile Updated!');
         this.pathForm(this.innerValue);
-
+        this.handleCancel();
         this.closeDrawer();
         // let result = data.filter(x => x.success == false);
         // if (result.length > 0)

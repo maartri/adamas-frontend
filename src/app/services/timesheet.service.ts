@@ -990,6 +990,10 @@ export class TimeSheetService {
     postcompetencies(data: any, id: string): Observable<any> {
         return this.auth.post(`${timesheet}/competencies/${id}`, data)
     }
+    
+    updateStaffCompetenciesHeader(type: string,id:string):Observable<any>{
+        return this.auth.get(`${timesheet}/competenciesheader/${type}/${id}`)
+    }
 
     deletecompetency(id: number): Observable<any> {
         return this.auth.delete(`${timesheet}/staff/competency/${id}`)
@@ -1231,7 +1235,6 @@ export class TimeSheetService {
     /**      
      * End - Pay Tab
      */
-
     
     updatemiscellaneous(note: MiscellaneousNote): Observable<any> {
         return this.auth.put(`${timesheet}/notes/miscellaneous`, note)
@@ -1249,5 +1252,9 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/attendance/staff/${id}`)
     }
 
+    updateSkills(data:any):Observable<any>{
+        return this.auth.put(`${timesheet}/competency/skill`, data)
+    }
 
 }
+

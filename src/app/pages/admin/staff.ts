@@ -89,8 +89,10 @@ export class StaffAdmin implements OnInit, OnDestroy {
     terminateGroup: FormGroup;
 
     userview: UserView;
-
+    currentDate = new Date();
+    longMonth = this.currentDate.toLocaleString('en-us', { month: 'long' });
     userByPass: ApplicationUser;
+    navigationExtras: { state: { StaffCode: string; ViewType: string; IsMaster: boolean; }; };
 
     listChange(event: any) {
 
@@ -248,20 +250,34 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
 
         if(!this.terminateGroup.valid)  return;
+
         this.isConfirmLoading = true;
         
         const { code, id } = this.user;
 
         this.timeS.posttermination({
-            TerminationDate: this.terminateGroup.value.terminateGroup,
+            TerminationDate: this.terminateGroup.value.terminateDate,
             AccountNo: code,
             PersonID: id
         }).subscribe(data => {
             this.globalS.sToast('Success','Staff has been terminated!');
+            this.terminateModal   = false;
             this.isConfirmLoading = false;
+            this.cd.detectChanges();
         });
     }
 
+    currentMonthRoster(){
+        console.log(this.user.code + "current");
+        this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Staff',IsMaster:false }};
+            this.router.navigate(["/admin/rosters"],this.navigationExtras )
+    }
+    rosterMaster(){
+        console.log(this.user.code + "master");
+        this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Staff',IsMaster:true }};
+            this.router.navigate(["/admin/rosters"],this.navigationExtras )
+    }
+    
     reloadVal: boolean = false;
     reload(reload: boolean){
         this.reloadVal = !this.reloadVal;

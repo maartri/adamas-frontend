@@ -147,11 +147,11 @@
                                                 <i nz-icon nzType="user"></i>
                                                 <strong>AGENCY LISTINGS</strong>
                                                 <div>                                        
-                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()"  disabled >
+                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()"     disabled >
                                                         <i nz-icon nzType="plus"></i>
                                                     USER REPORTS
                                                 </button> 
-                                                </div>    <!--
+                                                </div> <!--   
                                                 <div>                                        
                                                     <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled  >
                                                     <i nz-icon nzType="printer"></i>
@@ -1231,6 +1231,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_Volunteer" ><label class="checks" nz-checkbox formControlName="includevolunteer"   >Include Volunteer</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_approvedPrograms" ><label class="checks" nz-checkbox formControlName="incl_approved_programs"   >Include Approved Programs</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_pagebreak" ><label class="checks" nz-checkbox formControlName="pgbreak"   >Page break on New Employee</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_recppagebreak" ><label class="checks" nz-checkbox formControlName="recppgbreak"   >Page break on New Recipient</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_inactive" ><label class="checks" nz-checkbox formControlName="incl_inactive"   >Include InActive</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_outstanding" ><label class="checks" nz-checkbox formControlName="incl_outstanding"   >Include Only Outstanding Items</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_achived" ><label class="checks" nz-checkbox formControlName="incl_archived"   >Include Archived</label></div>

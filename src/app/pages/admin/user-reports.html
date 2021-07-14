@@ -69,7 +69,7 @@
                     <div nz-col nzSpan="22"  class="criteria" >                       
                             <table>                            
                                     <tr>
-                                        <td>
+                                        <td class="item-left">
                                             <span>Entity </span>
                                         </td>
                                         <td>
@@ -78,19 +78,31 @@
                                         <td>
                                             <span> Value </span>
                                         </td>
-                                        <td>
+                                        <td class="item-right">
                                             <span> Action </span>
                                         </td>
                                     </tr>                                                            
-                                    <tr>
+                                <!--
+                                        <tr >
+                                        <td *ngFor="let item of datarow;let indexofelement= index;">                            
+                                            {{item}}                                                                                                          
+                                        </td>
+                                        <td class="item-right">
+                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete ?"
+                                            nzPopconfirmPlacement="bottom" >Delete</a>
+                                        </td> 
+                                       
+                                    </tr> 
+                                    
+                                        <tr  >
                                         <td *ngFor="let item of entity;let indexofelement= index;">                            
-                                            {{item}}
+                                            {{item1}}
                                         </td>
                                         <td *ngFor="let item of condition;let indexofelement= index;">                            
-                                            {{item}}
+                                            {{item2}}
                                         </td>
                                         <td *ngFor="let item of value;let indexofelement= index;">                            
-                                            {{item}}
+                                            {{item3}}
                                         </td>
                                         <td>
                                             <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete ?"
@@ -98,6 +110,8 @@
                                         </td> 
                                         <br>
                                     </tr> 
+
+                                    -->
                                     <tr >                                              
                                         <td   *ngFor="let item of datarow;let indexofelement= index;">   
                                             

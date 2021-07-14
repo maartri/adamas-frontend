@@ -164,6 +164,7 @@ const inputFormDefault = {
     incl_archived: [false],
     incl_inactive: [false],
     pgbreak: [false],
+    recppgbreak : [false],
     incl_approved_programs: [false],
     includevolunteer: [false],
     includebroker: [false],
@@ -238,7 +239,8 @@ const inputFormDefault = {
         '[style.overflow]': 'hidden'
     },
     styles: [`
-        
+    
+    
         button {
             width: 220pt !important;
             text-align: left !important;
@@ -304,6 +306,7 @@ const inputFormDefault = {
         .span{
             font-weight: 300 !important;
         }
+       
         
     `],
     templateUrl: './reports.html'
@@ -383,6 +386,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     chkbx_incl_Volunteer: boolean;
     chkbx_incl_approvedPrograms: boolean;
     chkbx_pagebreak: boolean;
+    chkbx_recppagebreak : boolean;
     chkbx_incl_inactive: boolean;
     chkbx_incl_outstanding: boolean;
     chkbx_incl_achived: boolean;    
@@ -439,6 +443,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     incl_archived : [false];
     incl_inactive: [false];
     pgbreak: [false];
+    recppgbreak : [false];
     incl_approved_programs: [false];
     includevolunteer: [false];
     includebroker: [false];
@@ -1039,6 +1044,7 @@ stafftypeArr: Array<any> = constants.types;
         this.chkbx_incl_Volunteer = false;
         this.chkbx_incl_approvedPrograms = false;
         this.chkbx_pagebreak = false;
+        this.chkbx_recppagebreak = false;
         this.chkbx_incl_inactive = false;
         this.chkbx_incl_outstanding = false;
         this.chkbx_incl_achived = false;
@@ -1170,7 +1176,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffType = true;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
-                this.chkbx_pagebreak = true;
+                this.chkbx_recppagebreak = true;
                 this.chkbx_include_AdditionalInfo = true;
                 this.frm_RosterFormat = true;
                 this.frm_RosterInclusion = true;
@@ -1248,7 +1254,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Managers = true;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
-                this.chkbx_pagebreak = true;
+                this.chkbx_recppagebreak = true;
                 this.chkbx_include_AdditionalInfo = true;
                 this.frm_RosterFormat = true;
                 this.frm_RosterInclusion = true;
@@ -2682,12 +2688,80 @@ stafftypeArr: Array<any> = constants.types;
         if (this.inputForm.value.printaslabel == true){
             
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by RecipientName "
+            this.pdfTitle = "Referral list.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+
+ 
+            //fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by RecipientName "
            
         }
         else {
             this.reportid   = "zrBLd931LZblcnNH" 
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName "
+
+            var Title = "RECIPIENT REFERRAL LISTING"
+            //    console.log(this.tocken.user)
+                const data = {
+        
+                    "template": { "_id": this.reportid },
+                                
+                    "options": {
+                        "reports": { "save": false },
+                        //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
+                        "sql": fQuery,
+                        "Criteria": lblcriteria,
+                        "userid": this.tocken.user,
+                        "txtTitle": Title,
+                        "count":sQl_Count,
+                        
+                    }
+                }
+                this.loading = true;
+        
+                const headerDict = {
+        
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json', 
+                    'Content-Disposition': 'inline;filename=XYZ.pdf'
+                    //'Content-Disposition': 'ContentDisposition(hello)',
+                    //'filename':'fname.pdf',            
+                 //   (),
+                    
+                    
+                }
+        
+                const requestOptions = {
+                    headers: new HttpHeaders(headerDict),
+                    
+                    credentials: true,
+                   
+                    
+                };
+        
+                //this.rpthttp
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+                    .subscribe((blob: any) => {
+                        console.log(blob);
+        
+                        let _blob: Blob = blob;
+        
+                        let fileURL = URL.createObjectURL(_blob)//+'#toolbar=1';
+                        this.pdfTitle = "Referral list.pdf"
+        
+                        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                        
+                        this.loading = false;
+        
+                    }, err => {
+                        console.log(err);
+                        this.ModalS.error({
+                            nzTitle: 'TRACCS',
+        nzContent: 'The report has encountered the error and needs to close (' + err + ')',
+                            nzOnOk: () => {
+                                     this.drawerVisible = false;
+                                     },
+                          });
+                    }); this.drawerVisible = true;
         }
 
 
@@ -2698,59 +2772,7 @@ stafftypeArr: Array<any> = constants.types;
         //  console.log(this.inputForm.value.printaslabel)
         
         
-        var Title = "RECIPIENT REFERRAL LISTING"
-    //    console.log(this.tocken.user)
-        const data = {
-
-            "template": { "_id": this.reportid },
-            "options": {
-                "reports": { "save": false },
-                //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
-                "sql": fQuery,
-                "Criteria": lblcriteria,
-                "userid": this.tocken.user,
-                "txtTitle": Title,
-                "count":sQl_Count,
-                
-            }
-        }
-        this.loading = true;
-
-        const headerDict = {
-
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),
-            credentials: true
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob', })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Referral list .pdf"
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
-            }); this.drawerVisible = true;
+    
         }
     Waiting_list(branch, manager, region, program) {
 
@@ -2813,15 +2835,19 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //  console.log(this.inputForm.value.printaslabel)
         
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
+            
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "Referral list.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+        
+            //    this.reportid = "6dfbj72obyLi9qxJ"
+        //    fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "zrBLd931LZblcnNH" 
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
-        }
 
-        var Title = "RECIPIENT WAITING LIST";
+            var Title = "RECIPIENT WAITING LIST";
 
         const data = {
 
@@ -2860,7 +2886,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 let _blob: Blob = blob;
 
                 let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Waiting list .pdf"
+                this.pdfTitle = "Waiting list.pdf"
 
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
@@ -2875,6 +2901,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                                 },
                     });
             }); this.drawerVisible = true;
+
+        }
+
+        
         }
 
     ActivePackage_list(branch, manager, region, program, startdate, enddate) {
@@ -2989,7 +3019,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     RecipientRoster(branch, stfgroup, recipient, stafftype, startdate, enddate, tempsdate, tempedate,format) {
 
         var lblcriteria; 
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting],   "
+        var fQuery = "SELECT DATENAME(weekday,convert(datetime,[Roster].[Date])) as [Day], FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting],   "
         var tempkey = (this.inputForm.value.Roster_staffinclusion).toString();
         console.log(tempkey)
         switch (tempkey) { 
@@ -3009,7 +3039,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         }
 
      
-        fQuery = fQuery + " [Roster].[Start Time], case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  end AS ENDTIME, [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')"
+        fQuery = fQuery + " format (convert(datetime,[Roster].[Start Time],108),'hh:mm tt') as [Start Time], case when Convert(varchar(5), (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108 )  = '00:00' then '24:00' else FORMAT(Convert(datetime, (DateAdd(MINUTE, (([Duration]/12)*60) , [Start Time])),108),'hh:mm tt')  end AS ENDTIME, [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON [CLient Code] = [Accountno]  INNER JOIN STAFF ON STAFF.ACCOUNTNO = [CARER CODE]  WHERE ([Client Code] <> '!INTERNAL' AND [Client Code] <> '!MULTIPLE')"
         //Condtion to be added on dynamic input   
         //HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END) <= '2020-07-01'  AND MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) >'2020-07-31' 
        
@@ -4139,16 +4169,17 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)*/
     //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by RecipientName"
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "Active Recipient List.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+        //    this.reportid = "6dfbj72obyLi9qxJ"
+        //    fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "4ohDCZRbiaKS4ocK" 
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
-        }
-       
-    
-        console.log(fQuery)
+
+            //    console.log(fQuery)
         this.drawerVisible = true;
 
         const data = {
@@ -4195,6 +4226,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                              },
                   });
             });
+        }
+       
+    
+    
     }
 
     InActiveRecipientList(branch, manager, region, program) {
@@ -4259,15 +4294,19 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)*/
         //console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
+
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "InActive Recipient List.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+            
             this.reportid = "6dfbj72obyLi9qxJ"
             fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "EqrRIePxJeNTXk0b" 
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
-        }
 
-        this.drawerVisible = true;
+            this.drawerVisible = true;
 
         const data = {
             "template": { "_id": this.reportid },
@@ -4312,6 +4351,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                              },
                   });
             });
+        }
+
+        
     }
 
     CareerList(branch, manager, region, program) {
@@ -4376,13 +4418,15 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)*/
         // //////console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "Carer list.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+        }
         else {
             this.reportid   = "pFy5Ej2Zdy6OhMKs" 
             fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
-        }
 
-        this.drawerVisible = true;
+            this.drawerVisible = true;
 
         const data = {
             "template": { "_id": this.reportid },
@@ -4427,6 +4471,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                              },
                   });
             });
+
+        }
+
+        
     }
 
     BillingCliens(branch, manager, region, program) {
@@ -4489,15 +4537,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         // //////console.log(fQuery)
 
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "Billing Clients.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+           
+            // this.reportid = "6dfbj72obyLi9qxJ"
+           // fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "0BnEO8OTruJxvLwX" 
             fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
-        }
 
-        this.drawerVisible = true;
+            this.drawerVisible = true;
 
         const data = {
             "template": { "_id": this.reportid },
@@ -4541,6 +4592,9 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                              },
                   });
             });
+        }
+
+        
     }
     AdmissiionDuringPeriod(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
 
@@ -4935,57 +4989,64 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         // console.log(lblcriteria)
 
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
+
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "Associate Listing.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+
+            //this.reportid = "6dfbj72obyLi9qxJ"
+            //fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
         }
         else {
             this.reportid   = "69u2ZyBtQbSyxVxf" 
             fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
-        }
-
-        const data = {
-            "template": { "_id": this.reportid },
-            "options": {
-                "reports": { "save": false },
-                //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
-                "sql": fQuery,
-                "Criteria": lblcriteria,
-                "userid": this.tocken.user,
-                "count":sQl_Count,
+            const data = {
+                "template": { "_id": this.reportid },
+                "options": {
+                    "reports": { "save": false },
+                    //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
+                    "sql": fQuery,
+                    "Criteria": lblcriteria,
+                    "userid": this.tocken.user,
+                    "count":sQl_Count,
+                }
             }
+            this.loading = true;
+    
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+    
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+    
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+    
+                    let _blob: Blob = blob;
+    
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = "Associate Listing.pdf"
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+    
+                }, err => {
+                    console.log(err);
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                                 this.drawerVisible = false;
+                                 },
+                      });
+                }); this.drawerVisible = true;
+        
         }
-        this.loading = true;
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Associate Listing.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
-            }); this.drawerVisible = true;
+        
     }
 
     UnServicedRecipient(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
@@ -5104,7 +5165,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
     ActiveStaffListing(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Upper (Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s  "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup,FirstName, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Upper (Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s  "
 
     //    if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " NA.Address1,  NA.Suburb, NA.Postcode, "}        
     //    fQuery = fQuery + "  "
@@ -5120,9 +5181,11 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
         }
         if (stfgroup != "") {
-            this.s_StfGroupSQL = "[StaffGroup] in ('" + stfgroup.join("','") + "')";
+            this.s_StfGroupSQL = "[StaffGroup] in ('" + stfgroup.join("','") + "') ";
             if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
         }
+        
+      
 
 
         if (branch != "") {
@@ -5149,15 +5212,20 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //  console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
-    //        console.log(fQuery)
+            this.pdfTitle = "Active Staff List.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,inclusion,lblcriteria)
+
+           
+           
+             //    console.log(fQuery)
         }
         else {
             this.reportid   = "LQO71slAArEu36fo" 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
-        }
 
-        this.drawerVisible = true;        
+            this.drawerVisible = true;        
+            
+            this.loading = true;
         const data = {
             "template": { "_id":  this.reportid },
             "options": {
@@ -5169,8 +5237,6 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "userid": this.tocken.user,
             }
         }
-        this.loading = true;
-
         const headerDict = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -5195,12 +5261,17 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
                   });
             });
+
+        }
+
+         
+        
     }
     InActiveStaffListing(manager, branch, stfgroup, inclusion) {
 
@@ -5244,14 +5315,18 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         //    console.log(fQuery)
 
         if (this.inputForm.value.printaslabel == true){ 
+             
             this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "InActive Staff.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,inclusion,lblcriteria)
+
          //   fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName"
         }
         else {
             this.reportid   = "6NauxB95CSDc096v" 
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
         fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
-        }
+
         this.drawerVisible = true;
 
         const data = {
@@ -5292,13 +5367,15 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
 
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
 
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
                   });
             });
+        }
+        
     }
     ActiveBrokerage_Contractor(manager, branch, stfgroup, inclusion) {
 
@@ -5340,15 +5417,20 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         
         
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
+
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "Active Contractor List.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+
+            //this.reportid = "6dfbj72obyLi9qxJ"
+            //fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
         }
         else {
             this.reportid   = "3zUoVBKOkYhdU8Z5" 
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
-        }
-        this.drawerVisible = true;
+            fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+
+            this.drawerVisible = true;
         
 
         const data = {
@@ -5388,12 +5470,15 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
                   });
             });
+
+        }
+        
     }
 
     InActiveBrokerage_Contractor(manager, branch, stfgroup, inclusion) {
@@ -5436,17 +5521,21 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         
         //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
+
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "InActive Contractor List.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+
+            //this.reportid = "6dfbj72obyLi9qxJ"
+            //fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
     //        console.log(fQuery) 
             }
         else {
             this.reportid   = "htp5rccUteYVbXt6" 
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
-        }
-        
-        this.drawerVisible = true;
+            fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+
+            this.drawerVisible = true;
 
         const data = {
             "template": { "_id": this.reportid },
@@ -5485,12 +5574,16 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 console.log(err);
                 this.ModalS.error({
                     nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
                     nzOnOk: () => {
                              this.drawerVisible = false;
                              },
                   });
             });
+
+        }
+        
+        
     }
     ActiveVolunters(manager, branch, stfgroup, inclusion) {
 
@@ -5531,14 +5624,19 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
        
         //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"}
+
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "Active Volunteers.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+        //    this.reportid = "6dfbj72obyLi9qxJ"
+    }
         else {
             this.reportid   = "JlsnP7fNb9LOGeVw" 
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
-        }
-        this.drawerVisible = true;
+
+            this.drawerVisible = true;
 
         const data = {
             "template": { "_id": this.reportid },
@@ -5583,6 +5681,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                              },
                   });
             });
+
+
+        }
+        
     }
 
     InActiveVolunteers(manager, branch, stfgroup, inclusion) {
@@ -5624,17 +5726,22 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         
         // console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
-            this.reportid = "6dfbj72obyLi9qxJ"
-            fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
+
+            this.reportid = "6dfbj72obyLi9qxJ"
+            this.pdfTitle = "InActive Volunteers.pdf"
+            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+
+            //this.reportid = "6dfbj72obyLi9qxJ"
+            //fQuery = "Select Distinct Title,StaffName as AccountNo,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by StaffName"
      
             }
         else {
             this.reportid   = "lcl6jxcRDYzgs7kJ" 
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
 
-        fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
-        }
-        this.drawerVisible = true;
+            fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
+
+            this.drawerVisible = true;
 
         const data = {
             "template": { "_id": this.reportid },
@@ -5672,6 +5779,8 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }, err => {
                 //     console.log(err);
             });
+        }
+        
     }
 
     StaffPermissions(branch, manager, region, program) {
@@ -6752,7 +6861,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
 
-    //mufeed console.log(fQuery) 
+    //  console.log(fQuery) 
 
         this.drawerVisible = true;
 
@@ -19757,7 +19866,124 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             });
     }
 
+labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
+    this.ModalS.confirm({
+        nzTitle: 'TRACCS',
+        nzContent: 'Do you want to EXCLUDE labels without Address?',
+        nzOkText:'Yes',
+        nzCancelText:'No',
 
+        
+        nzOnOk: () => {
+            fQuery = fQuery + " AND  Address1 <> '' AND Address2 <> '' "
+           if(this.btnid.substr(0,10) != 'btn-staff-' && this.btnid != 'btn-FORPT-'){
+            fQuery =    " Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by RecipientName "
+           }else{
+            fQuery = "Select Distinct Title,FirstName + ' ' + LastName  as AccountNo,LastName,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by LastName"      
+           }
+            this.drawerVisible = true;   
+            
+            this.loading = true;
+            const data = {
+                "template": { "_id":  rptid },
+                "options": {
+                    "reports": { "save": false },
+    
+                    "sql": fQuery,
+                    "include": inclusion, 
+                    "Criteria": lblcriteria,
+                    "userid": this.tocken.user,
+                }
+            }
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+    
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+    
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+    
+                    let _blob: Blob = blob;
+    
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = RptTitle
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+    
+                }, err => {
+                    console.log(err);
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                                 this.drawerVisible = false;
+                                 },
+                      });
+                });
+             
+                 },
+        nzOnCancel: () => {
+             
+            if(this.btnid.substr(0,10) != 'btn-staff-' && this.btnid != 'btn-FORPT-'){
+                fQuery =    " Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by RecipientName "
+               }else{
+                fQuery = "Select Distinct Title,FirstName + ' ' + LastName  as AccountNo,LastName,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by LastName"      
+               }
+
+            this.drawerVisible = true;   
+            this.loading = true;
+            const data = {
+                "template": { "_id":  rptid },
+                "options": {
+                    "reports": { "save": false },
+    
+                    "sql": fQuery,
+                    "include": inclusion, 
+                    "Criteria": lblcriteria,
+                    "userid": this.tocken.user,
+                }
+            }
+            const headerDict = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+    
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+    
+            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                .subscribe((blob: any) => {
+                    console.log(blob);
+    
+                    let _blob: Blob = blob;
+    
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.pdfTitle = RptTitle 
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+    
+                }, err => {
+                    console.log(err);
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                                 this.drawerVisible = false;
+                                 },
+                      });
+                });     
+             
+        },
+        
+
+      });
+}
 
 
 

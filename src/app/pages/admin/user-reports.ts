@@ -9,7 +9,8 @@ import { parseJSON } from "date-fns";
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService } from '@services/index';
-import { concat } from "lodash";
+import { concat, flatMapDeep } from "lodash";
+import eachDayOfInterval from "date-fns/esm/eachDayOfInterval/index";
 
 const inputFormDefault = {
   frm_nodelist: [true],
@@ -42,6 +43,22 @@ const inputFormDefault = {
 
   },
   styles: [`
+  .item-right{
+    text-align: right;
+    align-content: right;
+    float:right;
+    }
+    .item-left{
+    text-align: left;
+    align-content: left;
+    float:left;
+    }
+    .item-center{
+        align-content: center;
+        text-align: center;
+         vertical-align: center;
+            
+    }
     nz-layout{
       height: fit-content;
     }
@@ -1288,23 +1305,23 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     var temp,temp1,temp2 :Array<any>
     
 
-    this.entity = [entity];
-    this.value = [condition];
-    this.condition = [value];
+  //  this.entity = [entity];
+  //  this.value = [condition];
+  //  this.condition = [value];
 
 if (this.datarow == null){
   this.entity = concat(entity);
   this.value = concat(value);
   this.condition = concat(condition);
-  
-  this.datarow = concat(this.entity,this.condition,this.value);
+  this.datarow  =concat([entity],[condition],[value])
+//  this.datarow  =concat(this.entity,this.condition,this.value);
 }else
 {
   this.entity = this.entity.concat(entity);
   this.value = this.value.concat(value);
   this.condition = this.condition.concat(condition);
 
-  this.datarow = this.datarow.concat(this.entity,this.condition,this.value);
+  this.datarow = concat(this.entity,this.condition,this.value);
 }  
   console.log(this.datarow)
 
@@ -1328,17 +1345,17 @@ if (this.datarow == null){
     //["EQUALS", "BETWEEN", "LESS THAN", "GREATER THAN", "NOT EQUAL TO", "IS NOTHING", "IS ANYTHING", "IS TRUE", "IS FALSE"]
     switch (keys) {
       case 'EQUALS':
-        sqlcondition =  this.inputForm.value.exportitemsArr +" like ('"  + this.inputForm.value.Arr + "')"
-        
+        sqlcondition =  this.Condition(this.entity) +" like ('"  + this.value + "')"
+        //this.inputForm.value.exportitemsArr
         break;
     
       default:
         break;
     }
-  
-    sqlselect = "Select " + this.list.join(" as Field"+ this.feildname() +", ")
+  console.log(this.list)
+    sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Field"+ this.feildname() +", ")
 
-    sql = sqlselect + " from Recipients  " + sqlcondition  ;    
+    sql = sqlselect + " from Recipients  where " + sqlcondition  ;    
     
 //  sql = "Select Title as Field1, AccountNo as Field2, Type as Field3 from Recipients where  Title like ('mrs')" 
     console.log(sql)
@@ -1422,11 +1439,50 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
       }
       feildname(){
         var temp
-        this.rptfieldname +=  1;
+        this.rptfieldname =  1;
         temp = this.rptfieldname;
               return temp
             }
+ColumnNameAdjuster(fld){
+   
+  var columnNames:Array<any> = [''];
+//  var temp = fld.join(',')
+//  console.log(temp)
+  for (var key of fld){
+    switch (key) {
+      case 'First Name':
+       columnNames = columnNames.concat(['FirstName'])
+        break;
+      case 'Title':
+        columnNames = columnNames.concat(['title'])
+          break;
+      default:
+        break;
+    }
+  }
+  
 
+  return columnNames;
+}
+Condition(fld){
+  var columnNames:Array<any>;
+  var temp = fld.join(',')
+  console.log(temp)
+  for (var key of fld){
+    console.log(key)
+  }
+  columnNames = ['FirstName']
+ /*switch (fld) {
+   case 'First Name':
+    columnNames = ['FirstName']
+     break;
+ 
+   default:
+     break;
+ } */
+
+  return columnNames;
+}
 
 
 }

@@ -354,6 +354,7 @@ doneBooking(){
     this.ShowCentral_Location=false
     this.current = 0;
     this.booking_case=0;
+    
     //const { Servicetype } = this.bookingForm.value;
     if (this.viewType=="Staff" &&  this.IsGroupShift && this.showGroupShiftRecipient==false){
         this.addBookingModel=false;
@@ -3314,8 +3315,7 @@ reload(reload: boolean){
         else if (this.IsGroupShift){
             if (this.GroupShiftCategory=="TRANSPORT" )
                 return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'VEHICLES' AND Description Is NOT Null  AND (EndDate Is Null OR EndDate >= (select top 1 PayPeriodEndDate from systable)) ORDER BY DESCRIPTION`);
-            else
-            
+            else            
                 return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'ACTIVITYGROUPS' AND Description Is NOT Null  AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY DESCRIPTION`);
         }else
             return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'ACTIVITYGROUPS' AND Description Is NOT Null AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY DESCRIPTION`);
@@ -3335,6 +3335,7 @@ reload(reload: boolean){
         // `SELECT TOP 1 RosterGroup, Title FROM  ItemTypes WHERE Title = '${type}'`
         let sql;
         if (!type) return EMPTY;
+        this.Select_Pay_Type="Select Pay Type"
         if (type === 'ALLOWANCE CHARGEABLE' || type === 'ALLOWANCE NON-CHARGEABLE') {
             sql = `SELECT Recnum, Title, ''as HACCCode FROM ItemTypes WHERE RosterGroup = 'ALLOWANCE ' 
                 AND Status = 'NONATTRIBUTABLE' AND ProcessClassification = 'INPUT' AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`

@@ -52,6 +52,7 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
     payGroup: FormGroup;
 
     dateFormat: string = dateFormat;
+    employeeArr: any;
 
     constructor(
         private listS: ListService,
@@ -204,7 +205,13 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
         }).subscribe(data => {
             this.staffsArr = data;
             this.refreshDetector();
+        });
+        this.listS.getemployeebrokage().subscribe(data => {
+            this.employeeArr = data;
+            this.refreshDetector();
         }); 
+
+        
     }
 
     updateWorkHours(){

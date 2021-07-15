@@ -130,7 +130,7 @@
                                 <div class="form-group">
                                     <label for="">Employee Of</label>
                                     <nz-select formControlName="employeeOf">
-                                        <nz-option *ngFor="let staff of staffsArr" [nzValue]="staff.accountNo" [nzLabel]="staff.accountNo"></nz-option>
+                                        <nz-option *ngFor="let employee of employeeArr" [nzValue]="employee" [nzLabel]="employee"></nz-option>
                                     </nz-select>
                                 </div>
                             </div>

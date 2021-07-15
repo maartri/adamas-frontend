@@ -524,7 +524,7 @@
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default"  (click)="addGroupShiftRecipients()">OK</button>
-        <button nz-button nzType="default"  (click)="showGroupShiftRecipient=false">Cancel</button>
+        <button nz-button nzType="default"  (click)="cancel_GroupShift()">Cancel</button>
     </div>
 </nz-modal>
 <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="showGroupShiftModal" nzTitle="Group Shift" (nzOnCancel)="showGroupShiftModal = false" >

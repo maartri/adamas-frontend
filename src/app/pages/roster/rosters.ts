@@ -341,6 +341,11 @@ normalRoutePass(): void{
  roundToTwo(num) {    
     return Math.round((num + Number.EPSILON) * 100) / 100;
 }
+cancel_GroupShift(){
+    this.showGroupShiftModal=false; 
+    this.showGroupShiftRecipient=false
+    this.IsGroupShift=false;
+}
 doneBooking(){
 
     this.addBookingModel=false;
@@ -441,7 +446,7 @@ doneBooking(){
                 this.globalS.sToast('Success', 'Roster has been added');
                 this.addTimesheetVisible = false;
                // this.picked(this.selected);
-
+                this.IsGroupShift=false;
                console.log(data)
 
                this.searchRoster(tsheet.date)
@@ -3310,7 +3315,8 @@ reload(reload: boolean){
             if (this.GroupShiftCategory=="TRANSPORT" )
                 return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'VEHICLES' AND Description Is NOT Null  AND (EndDate Is Null OR EndDate >= (select top 1 PayPeriodEndDate from systable)) ORDER BY DESCRIPTION`);
             else
-                return this.listS.getlist(`SELECT DISTINCT [Name] as Description FROM CSTDAOutlets WHERE [Name] Is NOT Null  AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY [Name]`);
+            
+                return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'ACTIVITYGROUPS' AND Description Is NOT Null  AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY DESCRIPTION`);
         }else
             return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'ACTIVITYGROUPS' AND Description Is NOT Null AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY DESCRIPTION`);
     }
@@ -4317,7 +4323,6 @@ this.bookingForm.get('program').valueChanges.pipe(
 
            // console.log(sql);
         return this.listS.getlist(sql);
-}
-      
+}      
      
 }

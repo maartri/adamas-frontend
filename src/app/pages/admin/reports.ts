@@ -2631,7 +2631,7 @@ stafftypeArr: Array<any> = constants.types;
     Refeeral_list(branch, manager, region, program) {
 
         var lblcriteria;
-        var fQuery = "SELECT DISTINCT R.Title, R.UniqueID, R.AccountNo,Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE (SELECT DISTINCT MinorGroup FROM ItemTypes WHERE Title = Roster.[Service Type]) = 'REFERRAL-IN' AND [Client Code] = R.AccountNo ORDER BY Date DESC)),'dd/MM/yyyy') as RefferalDate ,CAST(ONIMainIssues.Description AS NVARCHAR(MAX)) as Reason , R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, "
+        var fQuery = "SELECT DISTINCT R.Title, R.UniqueID, R.AccountNo,Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE (SELECT DISTINCT MinorGroup FROM ItemTypes WHERE Title = Roster.[Service Type]) = 'REFERRAL-IN' AND [Client Code] = R.AccountNo ORDER BY Date DESC)),'dd/MM/yyyy') as RefferalDate ,CAST(ONIMainIssues.Description AS NVARCHAR(MAX)) as Reason , R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName,  R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,  NA.Suburb, NA.Postcode, "}
         fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID left join ONIMainIssues on  R.UniqueID = ONIMainIssues.PersonID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID   "} 
@@ -5205,7 +5205,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         else { lblcriteria = lblcriteria +" All Staff Groups, " }
 
 
-        fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
+        
 
         
 
@@ -5217,9 +5217,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
            
            
-             //    console.log(fQuery)
+              
         }
         else {
+            fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
             this.reportid   = "LQO71slAArEu36fo" 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
@@ -19875,12 +19876,15 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
 
         
         nzOnOk: () => {
-            fQuery = fQuery + " AND  Address1 <> '' AND Address2 <> '' "
+            
            if(this.btnid.substr(0,10) != 'btn-staff-' && this.btnid != 'btn-FORPT-'){
-            fQuery =    " Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by RecipientName "
+            fQuery = fQuery + " AND  (R.Address1 <> '' OR R.Address2 <> '') "
+            fQuery =    " Select Distinct Title,FirstName + ' ' + [Surname/Organisation] as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName "
            }else{
+            fQuery = fQuery + " AND  (s.Address1 <> '' OR s.Address2 <> '') "
             fQuery = "Select Distinct Title,FirstName + ' ' + LastName  as AccountNo,LastName,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by LastName"      
            }
+        //   console.log(fQuery)
             this.drawerVisible = true;   
             
             this.loading = true;
@@ -19930,11 +19934,11 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
         nzOnCancel: () => {
              
             if(this.btnid.substr(0,10) != 'btn-staff-' && this.btnid != 'btn-FORPT-'){
-                fQuery =    " Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by RecipientName "
+                fQuery =    " Select Distinct Title,FirstName + ' ' + [Surname/Organisation] as AccountNo,Address1,Address2,Suburb,Postcode,[Surname/Organisation],FirstName from  (" + fQuery + " )cr Order by [Surname/Organisation],FirstName "
                }else{
                 fQuery = "Select Distinct Title,FirstName + ' ' + LastName  as AccountNo,LastName,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by LastName"      
                }
-
+            //   console.log(fQuery)
             this.drawerVisible = true;   
             this.loading = true;
             const data = {

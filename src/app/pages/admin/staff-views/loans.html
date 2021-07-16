@@ -1,0 +1,97 @@
+<div nz-row nzGutter="16">
+    <div nz-col nzSpan="12">
+        <button class="botton success" (click)="showAddModal(1)">Add Group</button>
+        <button nz-button nzType="primary" (click)="handleOkTop(1)" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined1">
+            <thead>
+                <tr>
+                    <th>Group</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td>{{data.group}}</td>
+                    <td>{{data.notes}}</td>
+                    <td>
+                        <a (click)="showEditModal(1,i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a
+                            nz-popconfirm
+                            nzPopconfirmTitle="Are you sure delete this group?"
+                            nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+
+    <div nz-col nzSpan="12">
+        <button class="botton success" (click)="showAddModal(2)">Add Preferences</button>
+        <nz-table #tb2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined2">
+            <thead>
+                <tr>
+                    <th>Preference</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of tb2.data;let i=index;trackBy: trackByFn">
+                    <td>{{data.preference}}</td>
+                    <td>{{data.notes}}</td>
+                    <td>
+                        <a (click)="showEditModal(2,i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a
+                            nz-popconfirm
+                            nzPopconfirmTitle="Are you sure delete this preference?"
+                            nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+    
+</div>
+
+
+<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()" >
+    <div nz-row [formGroup]="inputForm">
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label>{{ whatView == 1 ? 'Group' :  'Preference'}}</nz-form-label>
+                <nz-form-control nzErrorTip="Required Field">
+                    <nz-select formControlName="list" nzAllowClear nzPlaceHolder="" 
+                    nzMode="multiple"
+                    [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let list of listArray" [nzValue]="list" [nzLabel]="list"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-row>
+            <nz-form-item>
+                <nz-form-label>Notes</nz-form-label>
+                <nz-form-control nzErrorTip="Required Field">
+                    <textarea rows="4" nz-input formControlName="notes"></textarea>                    
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="processBtn()" [nzLoading]="isLoading">Save</button>
+    </div>
+</nz-modal>
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loading">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    </div>
+</nz-drawer>

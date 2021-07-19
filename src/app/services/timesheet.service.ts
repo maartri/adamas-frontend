@@ -133,6 +133,10 @@ export class TimeSheetService {
     getAllocateDefaults(uname: string): Observable<any> {
         return this.auth.get(`${timesheet}/unallocate-defaults/${uname}`);
     }
+    getstaffunallocatedefault(uname: string): Observable<any> {
+        return this.auth.get(`${timesheet}/staff-unallocate-defaults/${uname}`);
+    }
+    
 
     getcomputetimesheet(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/compute-timesheet`, data);

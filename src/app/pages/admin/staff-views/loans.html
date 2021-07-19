@@ -1,61 +1,39 @@
 <div nz-row nzGutter="16">
-    <div nz-col nzSpan="12">
-        <button class="botton success" (click)="showAddModal(1)">Add Group</button>
-        <button nz-button nzType="primary" (click)="handleOkTop(1)" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined1">
-            <thead>
-                <tr>
-                    <th>Group</th>
-                    <th>Notes</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                    <td>{{data.group}}</td>
-                    <td>{{data.notes}}</td>
-                    <td>
-                        <a (click)="showEditModal(1,i)">Update</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a
-                            nz-popconfirm
-                            nzPopconfirmTitle="Are you sure delete this group?"
-                            nzPopconfirmPlacement="bottom"
-                            (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
-    </div>
-
-    <div nz-col nzSpan="12">
-        <button class="botton success" (click)="showAddModal(2)">Add Preferences</button>
-        <nz-table #tb2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="userdefined2">
-            <thead>
-                <tr>
-                    <th>Preference</th>
-                    <th>Notes</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of tb2.data;let i=index;trackBy: trackByFn">
-                    <td>{{data.preference}}</td>
-                    <td>{{data.notes}}</td>
-                    <td>
-                        <a (click)="showEditModal(2,i)">Update</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a
-                            nz-popconfirm
-                            nzPopconfirmTitle="Are you sure delete this preference?"
-                            nzPopconfirmPlacement="bottom"
-                            (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
-    </div>
-    
+    <nz-card [nzBodyStyle]="{'padding':'10px'}" nzTitle="NON SECURE NOTES AND ITEMS ON LOAN">
+        <nz-card [nzBodyStyle]="{'padding':'10px'}" nzType="inner" nzTitle="MISCELLANEOUS NOTES (NON SECURE) ">
+            <button class="botton success" (click)="showAddModal(2)" style="margin-bottom:10px">Save Changes</button>
+            <textarea rows="6" nz-input></textarea>
+        </nz-card>
+        <nz-card [nzBodyStyle]="{'padding':'10px'}" nzType="inner" style="margin-top:16px;" nzTitle="ITEMS ON LOAN TO STAFF">
+            <button class="botton success" (click)="showAddModal(2)">ADD NEW LOAN</button>
+            <nz-table #tb2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="notesloans">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date Loaned</th>
+                        <th>Collected</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of tb2.data;let i=index;trackBy: trackByFn">
+                        <td>{{data.name}}</td>
+                        <td>{{data.dateLoaned}}</td>
+                        <td>{{data.collected}}</td>
+                        <td>
+                            <a (click)="showEditModal(2,i)">Update</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a
+                                nz-popconfirm
+                                nzPopconfirmTitle="Are you sure delete this preference?"
+                                nzPopconfirmPlacement="bottom"
+                                (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </nz-card>
+    </nz-card>
 </div>
 
 

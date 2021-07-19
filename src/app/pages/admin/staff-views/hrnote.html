@@ -26,15 +26,11 @@
                         <a *ngIf="!data.is_deleted" nz-popconfirm 
                         nzPopconfirmTitle="DELETE HR NOTE? (NB - This will not physically delete the note. This will flag the note as deleted so it doesent appear on the this screen or report unless you ask to show archived notes. ??"
                         nzPopconfirmPlacement="bottom"
-                         (nzOnConfirm)="delete(i)">Delete</a>
+                        (nzOnConfirm)="delete(i)">Delete</a>
                     </td>
                 </tr>
             </tbody>
         </nz-table>
-        
-        <!-- <ng-template #messagealert>
-            <p></p>
-        </ng-template> -->
     </div>
 </div>
 
@@ -78,10 +74,10 @@
             </nz-checkbox-wrapper>
         </div>
         <div nz-row>
-           <div class="form-group">
+        <div class="form-group">
                 <label for="">Notes</label>
                 <textarea rows="4" nz-input formControlName="notes"></textarea>
-           </div>
+        </div>
         </div>
     </div>
     <div *nzModalFooter>

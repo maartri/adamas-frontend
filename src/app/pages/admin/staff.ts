@@ -154,6 +154,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
         this.listS.getstaffrecordview(user).subscribe(data => {
             this.userview = data;
+            console.log(this.userview);
             this.cd.detectChanges();
         })
 
@@ -233,6 +234,9 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
         if (index == 13) {
             this.router.navigate(['/admin/staff/groupings-preferences'])
+        }
+        if(index == 14){
+            this.router.navigate(['/admin/staff/loans'])
         }
     }
 

@@ -58,8 +58,8 @@
                 <label for="">Recurring</label>
                 <label style="margin: 10px;" nz-checkbox formControlName="recurring"></label>
             </div>
-            <div nz-col nzOffset="3" nzSpan="8" class="form-group">
-                <nz-form-item>
+            <div nz-col nzOffset="3" nzSpan="8">
+                <nz-form-item style="margin: 0 0 1px">
                     <nz-form-label [nzNoColon]="true">Recurring Every</nz-form-label>
                     <nz-form-control nzErrorTip="Preferences is required!">
                         <nz-select formControlName="recurrInt" nzAllowClear nzPlaceHolder=""
@@ -69,8 +69,8 @@
                     </nz-form-control>
                 </nz-form-item>
             </div>
-            <div nz-col nzSpan="8" class="form-group">
-                <nz-form-item>
+            <div nz-col nzSpan="8">
+                <nz-form-item style="margin: 0 0 1px">
                     <nz-form-label [nzNoColon]="true"></nz-form-label>
                     <nz-form-control nzErrorTip="Preferences is required!">
                         <nz-select formControlName="recurrStr" nzAllowClear nzPlaceHolder=""
@@ -79,6 +79,12 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
+            </div>
+            <div nz-col nzOffset="8" nzSpan="16">
+                <label nz-checkbox formControlName="sameDay">On Same Day of Month</label>
+            </div>
+            <div nz-col nzOffset="8" nzSpan="16">
+                <label nz-checkbox formControlName="sameMonth">On Same Date of Month</label>
             </div>
         </div>
         <div nz-row [nzGutter]="12">

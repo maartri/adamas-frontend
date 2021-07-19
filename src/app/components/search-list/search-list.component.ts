@@ -47,14 +47,15 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   phoneModal: boolean = false;
   isOpen: boolean = false;
   phoneSearch: string;
-
   searchModel: any;
+  staffType = 'A';
   listsAll: Array<any> = [];
   lists: Array<any> = [];
   loading: boolean = false;
 
   pageCounter: number = 1;
   take: number = 50;
+  activeInactive: boolean;
 
   // nzFilterOption  = () => true;
   constructor(
@@ -125,7 +126,13 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
 
     this.onChangeCallback(user);
   }
-
+  changeStatus(event){
+    if(event == 'A')
+    this.activeInactive = false;
+    else
+    this.activeInactive = true;
+    this.search();
+  }
   search(search: string = null) {
     this.loading = true;
     if (this.view == 0) {
@@ -146,7 +153,8 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
 
     this.timeS.getstaff({
       User: this.globalS.decode().nameid,
-      SearchString: ''
+      SearchString: '',
+      IncludeInactive:this.activeInactive,
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.listsAll = data;
       this.lists = data;

@@ -16,16 +16,33 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
     styles: [`
-      nz-table{
-            margin-top:20px;
-        }
-        nz-select{
-            width:100%;
-        }
-        label.chk{
-            position: absolute;
-            top: 1.5rem;
-        }
+    nz-table{
+        margin-top:20px;
+    }
+     nz-select{
+        width:100%;
+    }
+    label.chk{
+        position: absolute;
+        top: 1.5rem;
+    }
+    .overflow-list{
+        overflow: auto;
+        height: 8rem;
+        border: 1px solid #e3e3e3;
+    }
+    ul{
+        list-style:none;
+    }
+    li{
+        margin:5px 0;
+    }
+    .chkboxes{
+        padding:4px;
+    }
+    button{
+        margin-right:1rem;
+    }
     `],
     templateUrl: './opnote.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -60,6 +77,8 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     tryDoctype: any;
     drawerVisible: boolean =  false;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+    mlist: any;
+    recipientStrArr: any;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -111,11 +130,53 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
             isPrivate: false,
             alarmDate: null,
             whocode: '',
+            restrictions: '',
+            restrictionsStr:'public',
             recordNumber: null,
             category: [null, [Validators.required]]
         });
-    }
 
+        this.inputForm.get('restrictionsStr').valueChanges.subscribe(data => {
+            if (data == 'restrict') {
+                this.getSelect();
+            } 
+        });
+    }
+    getSelect() {
+        this.timeS.getmanagerop().subscribe(data => {
+            this.mlist = data;
+            this.cd.markForCheck();
+        });
+
+    //     this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //         data.push('*VARIOUS');
+    //         this.blist = data;
+    //     });
+    //     this.timeS.getcaredomainop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //         data.push('*VARIOUS');
+    //         this.clist = data;
+    //     });
+    //     this.timeS.getprogramop(this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //         data.push('*VARIOUS');
+    //         this.alist = data;
+    //     });
+
+    //     this.timeS.getcategoryop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //         this.dlist = data;
+    //     })
+    }
+    log(event: any) {
+        this.recipientStrArr = event;
+    }
+    listStringify(): string {
+        let tempStr = '';
+        this.recipientStrArr.forEach((data, index, array) => {
+            array.length - 1 != index ?
+                tempStr += data.trim() + '|' :
+                tempStr += data.trim();
+        });
+        return tempStr;
+    }
     search(user: any = this.user) {
         this.cd.reattach();
         this.isLoading = true;
@@ -146,6 +207,16 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         
         this.inputForm.controls["alarmDate"].setValue(cleanDate);
 
+        const { alarmDate, restrictionsStr, whocode, restrictions } = this.inputForm.value;
+
+        let privateFlag = restrictionsStr == 'workgroup' ? true : false;
+
+        let restricts = restrictionsStr != 'restrict';
+
+        this.inputForm.controls["restrictionsStr"].setValue(privateFlag);
+
+        this.inputForm.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
+
         this.isLoading = true;
         if (this.addOREdit == 1) {
             this.inputForm.controls["whocode"].setValue(this.user.code);
@@ -175,19 +246,31 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
 
     showEditModal(index: any) {
         this.addOREdit = 0;
-        const { alarmDate, detail, isPrivate, category, creator, recordNumber } = this.tableData[index];
+        const { alarmDate, detail, isPrivate, category, creator,restrictions,privateFlag, recordNumber } = this.tableData[index];
 
         this.inputForm.patchValue({
             notes: detail,
             isPrivate: isPrivate,
             alarmDate: alarmDate,
+            restrictions: '',
+            restrictionsStr: this.determineRadioButtonValue(privateFlag, restrictions),
             whocode: creator,
             recordNumber: recordNumber,
             category: category
-        });
+        });   
         this.modalOpen = true;
     }
+    determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
+        if (!privateFlag && this.globalS.isEmpty(restrictions)) {
+            return 'public';
+        }
 
+        if (!privateFlag && !this.globalS.isEmpty(restrictions)) {
+            return 'restrict'
+        }
+
+        return 'workgroup';
+    }
     delete(index: number) {        
         const { recordNumber } = this.tableData[index];
         this.timeS.deleteopnote(recordNumber).pipe(

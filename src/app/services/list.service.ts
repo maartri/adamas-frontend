@@ -645,7 +645,9 @@ export class ListService {
     getliststaffteam(): Observable<any>{
         return this.auth.get(`${list}/staffteam`)
     }
-
+    getemployeebrokage(): Observable<any>{
+        return this.auth.get(`${list}/employeeOf`)
+    }
     getlistcasemanagers(): Observable<any>{
         return this.auth.get(`${list}/casemanagers`)
     }

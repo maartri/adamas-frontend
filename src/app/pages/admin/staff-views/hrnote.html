@@ -61,6 +61,23 @@
             </div>
         </div>
         <div nz-row>
+            <div class="form-group">
+                <nz-radio-group formControlName="restrictionsStr">
+                    <label nz-radio nzValue="public">Public</label>
+                    <label nz-radio nzValue="workgroup">Workgroup Only</label>
+                    <label nz-radio nzValue="restrict">Restrict To</label>
+                </nz-radio-group>
+            </div>
+        </div>
+        <div nz-row class="overflow-list" *ngIf="inputForm.get('restrictionsStr').value == 'restrict'">
+            <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+                <div nz-row *ngFor="let list of mlist; let i = index">
+                    <div class="chkboxes" nz-col nzOffset="2" nzSpan="22"><label nz-checkbox
+                            [nzValue]="list">{{ list }}</label></div>
+                </div>
+            </nz-checkbox-wrapper>
+        </div>
+        <div nz-row>
            <div class="form-group">
                 <label for="">Notes</label>
                 <textarea rows="4" nz-input formControlName="notes"></textarea>

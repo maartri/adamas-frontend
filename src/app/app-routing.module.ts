@@ -47,8 +47,9 @@ import {
   StaffIncidentAdmin as StaffIncidentAdminRedirect,
   StaffDocumentAdmin as StaffDocumentAdminRedirect,
   StaffAttendanceAdmin as StaffAttendanceAdminRedirect,
-  StaffPositionAdmin as StaffPositionAdminRedirect,
-  StaffGroupingsAdmin as StaffGroupingsAdminRedirect
+  StaffPositionAdmin  as StaffPositionAdminRedirect,
+  StaffGroupingsAdmin as StaffGroupingsAdminRedirect,
+  StaffLoansAdmin     as StaffLoansAdminRedirect,
 } from './pages/staff-direct/staff-views/index'
 
 
@@ -98,6 +99,7 @@ import {
   StaffContactAdmin,
   StaffDocumentAdmin,
   StaffGroupingsAdmin,
+  StaffLoansAdmin,
   StaffHRAdmin,
   StaffIncidentAdmin,
   StaffLeaveAdmin,
@@ -425,6 +427,10 @@ const routes: Routes = [
           {
             path: 'pay',
             component: StaffPayAdminRedirect
+          },
+          {
+            path: 'Loans',
+            component: StaffLoansAdminRedirect
           },
           {
             path: 'leave',
@@ -900,6 +906,10 @@ const routes: Routes = [
             component: StaffPayAdmin
           },
           {
+            path: 'loans',
+            component: StaffLoansAdmin
+          },
+          {
             path: 'leave',
             component: StaffLeaveAdmin
           },
@@ -1207,6 +1217,7 @@ export const PAGE_COMPONENTS = [
   StaffContactAdmin,
   StaffDocumentAdmin,
   StaffGroupingsAdmin,
+  StaffLoansAdmin,
   StaffHRAdmin,
   StaffIncidentAdmin,
   StaffLeaveAdmin,
@@ -1273,5 +1284,6 @@ export const PAGE_COMPONENTS = [
   StaffDocumentAdminRedirect,
   StaffAttendanceAdminRedirect,
   StaffPositionAdminRedirect,
-  StaffGroupingsAdminRedirect
+  StaffGroupingsAdminRedirect,
+  StaffLoansAdminRedirect,
 ]

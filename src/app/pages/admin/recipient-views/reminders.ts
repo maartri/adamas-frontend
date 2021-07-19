@@ -115,6 +115,8 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
             listOrder: '',
             followUpEmail: ['', [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
             recurring: false,
+            sameMonth:false,
+            sameDay:false,
             recurrInt: null,
             recurrStr: null,
             notes: '',
@@ -125,6 +127,9 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
 
         this.inputForm.controls['recurrStr'].disable();
         this.inputForm.controls['recurrInt'].disable();
+        
+        this.inputForm.controls['sameDay'].disable();
+        this.inputForm.controls['sameMonth'].disable();
 
         this.inputForm.get('recurring').valueChanges.subscribe(data => {
             if (!data) {
@@ -135,6 +140,17 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
             } else {
                 this.inputForm.controls['recurrStr'].enable()
                 this.inputForm.controls['recurrInt'].enable()
+            }
+        });
+        this.inputForm.get('recurrStr').valueChanges.subscribe(data => {
+            if (data == 'Month/s') {
+                this.inputForm.controls['sameDay'].enable();
+                this.inputForm.controls['sameMonth'].enable();
+            } else {
+                this.inputForm.controls['sameDay'].setValue(false);
+                this.inputForm.controls['sameMonth'].setValue(false);
+                this.inputForm.controls['sameDay'].disable();
+                this.inputForm.controls['sameMonth'].disable();
             }
         });
     }

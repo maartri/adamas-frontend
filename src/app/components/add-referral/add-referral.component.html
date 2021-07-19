@@ -147,7 +147,7 @@
                                         <div class="form-group">
                                             <label for="">Contact Group</label>
                                             <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="contactGroup" nzShowSearch nzAllowClear
-                                                nzPlaceHolder="Select a competency">
+                                                nzPlaceHolder="Select a Contact Group">
                                                 <nz-option *ngFor="let d of contactGroups" [nzLabel]="d" [nzValue]="d"></nz-option>
                                             </nz-select>
 
@@ -261,7 +261,7 @@
                                         <div class="form-group">
                                             <label for="">Contact Group</label>
                                                 <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="contactGroup" (ngModelChange)="contactGroupChange(referralGroup.get('otherContacts')['controls'])" nzShowSearch nzAllowClear
-                                                nzPlaceHolder="Select a competency">
+                                                nzPlaceHolder="Select a Contact Group">
                                                 <nz-option *ngFor="let d of contactGroups" [nzLabel]="d" [nzValue]="d"></nz-option>
                                             </nz-select>
                                         </div>
@@ -273,12 +273,12 @@
                                         <div class="form-group">
                                             <label for="">Type</label>
 
-                                            <!-- <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="type" nzShowSearch nzAllowClear
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="type" nzShowSearch nzAllowClear
                                                 nzPlaceHolder="Select a competency">
                                                 <nz-option *ngFor="let d of referralGroup.get('otherContacts')[i].list" [nzLabel]="d" [nzValue]="d"></nz-option>
                                             </nz-select>
- -->
-                                            <!-- <input nz-input formControlName="type" atocomplete="nofill" oninput="this.value = this.value.toUpperCase()" /> -->
+
+                                            <input nz-input formControlName="type" atocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
                                         </div>
                                     </div>
         

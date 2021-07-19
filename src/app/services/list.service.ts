@@ -345,7 +345,12 @@ export class ListService {
     getactivities():Observable<any>{
         return this.auth.get(`${list}/activities`);
     }
-
+    getleavepaytypes():Observable<any>{
+        return this.auth.get(`${list}/leave-pay-types`);
+    }
+    getleaveactivities():Observable<any>{
+        return this.auth.get(`${list}/leave-activities`);
+    }
     getleaveactivitycodes(data: any): Observable<any>{
         return this.auth.get(`${list}/leave-activity-codes`, data)
     }

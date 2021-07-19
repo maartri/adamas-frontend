@@ -23,6 +23,10 @@ import { NzModalService } from 'ng-zorro-antd';
         a:hover{
             text-decoration:underline;
         }
+        .ant-card-body {
+            padding: 12px !important;
+            zoom: 1;
+        }
     `],
     templateUrl: './loans.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -53,6 +57,7 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
     tryDoctype: any;
     drawerVisible: boolean =  false;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+    notesloans: any;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -121,7 +126,8 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
             this.timeS.getuserdefined1(user.id),
             this.timeS.getuserdefined2(user.id),
             this.listS.getlistuserdefined1(),
-            this.listS.getlistuserdefined2()
+            this.listS.getlistuserdefined2(),
+            this.timeS.getnotesloans(user.id),
         ]).subscribe(data => {
             this.loading = false;
 
@@ -130,6 +136,7 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
 
             this.userdefined1List = data[2];
             this.userdefined2List = data[3];
+            this.notesloans = data[4];
             this.cd.detectChanges();
         });
     }

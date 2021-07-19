@@ -931,17 +931,26 @@ export class AddQuoteComponent implements OnInit {
       });
     }
 
+    calculateAllQuotes(){
+        this.total_admin = this.generate_total_admin();
+        this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+        this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
+    }
+
     deleteQuoteList(data: any, index: number){
         if(this.option == 'update'){
             this.listS.deletequoteline(data.recordNumber).subscribe(data => {
                 this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+
+                this.calculateAllQuotes();
                 this.detectChanges();
             });
         }
 
         if(this.option == 'add'){
-            console.log('add');
             this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+
+            this.calculateAllQuotes();
         }
     }
   
@@ -1450,6 +1459,8 @@ export class AddQuoteComponent implements OnInit {
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
             this.loadingSaveQuote = false;
+
+            this.detectChanges();
         }); 
   }
 

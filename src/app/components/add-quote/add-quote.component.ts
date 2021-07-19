@@ -1663,6 +1663,16 @@ export class AddQuoteComponent implements OnInit {
                 no: data.docNo
             });
 
+            if(!this.IS_CDC){
+                this.quoteForm.patchValue({
+                    initialBudget: data.budget
+                });
+            } else {
+                this.quoteForm.patchValue({
+                    govtContrib: data.budget
+                });
+            }
+
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
                     this.fquotehdr = x;
                     this.dochdr = x.docHdrId
@@ -1678,7 +1688,8 @@ export class AddQuoteComponent implements OnInit {
                         recordNumber:   x.recordNumber,
                         tax:            x.tax , 
                         lengthInWeeks:  x.lengthInWeeks,
-                        quoteQty:       x.quoteQty
+                        quoteQty:       x.quoteQty,
+                        mainGroup:      x.mainGroup
                     }
               }) : [];
               

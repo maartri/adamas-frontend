@@ -11,16 +11,16 @@
                                                 <i nz-icon nzType="user" ></i>
                                                 <strong>STANDARD LISTINGS</strong> 
                                                 <div>                                        
-                                                    <button nz-button nzType="default"  nzJustify="start"  id="btn-refferallist" (click)="showModal(this.id)"  >
-                                                        <i nz-icon nzType="printer"  ></i>
-                                                        Referral List
-                                                    </button> 
+                                                    <button nz-button nzType="default" id="btn-absentclient" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Absent Client Status Report
+                                                </button> 
                                                 </div>
                                                 <div>                                        
-                                                    <button nz-button nzType="default"  nzJustify="start"  id="btn-waitinglist" (click)="showModal(this.id)"  >
-                                                        <i nz-icon nzType="printer"  ></i>
-                                                        Waiting List
-                                                    </button> 
+                                                    <button nz-button nzType="default" id="btn-activepackagelist" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Active Package Report
+                                                </button> 
                                                 </div>
                                                 <div>                                        
                                                     <button nz-button nzType="default" id="btn-activerecipient" (click)="showModal(this.id)" >
@@ -29,113 +29,115 @@
                                                 </button> 
                                                 </div>
                                                 <div>                                        
-                                                    <button nz-button nzType="default" id="btn-inactiverecipient" (click)="showModal(this.id)" >
+                                                    <button nz-button nzType="default" id="btn-adminduringperiod" (click)="showModal(this.id)" >
                                                     <i nz-icon nzType="printer"></i>
-                                                    InActive Recipient List
+                                                    Admissions During Period
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-associatelist" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Associate/Other List
                                                 </button> 
                                                 </div>
                                                 <div>                                        
                                                     <button nz-button nzType="default" id="btn-careerlist" (click)="showModal(this.id)" >
                                                     <i nz-icon nzType="printer"></i>
                                                     Carer List
+                                                    </button> 
+                                                </div>   
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-dischargeduringperiod" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Discharges During Period
                                                 </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-onlybillingclients" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Only Billing Clients List
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-associatelist" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Associate/Other List
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-refferalduringperiod" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
+                                                </div>   
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-inactiverecipient" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    InActive Recipient List
+                                                </button> 
+                                                </div> 
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-onlybillingclients" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Only Billing Clients List
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-packageusage" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Package Usage Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-recipientMasterroster" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Recipient Master Roster
+                                                </button> 
+                                                </div>  
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-recipientroster" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Recipient Roster
+                                                </button> 
+                                                </div> 
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-timelength" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Recipient Time Length Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-refferalduringperiod" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
                                                         Referral During Period
                                                     </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-adminduringperiod" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Admissions During Period
+                                                </div>                                      
+                                                <div>                                        
+                                                    <button nz-button nzType="default"  nzJustify="start"  id="btn-refferallist" (click)="showModal(this.id)"  >
+                                                        <i nz-icon nzType="printer"  ></i>
+                                                        Referral List
                                                     </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-dischargeduringperiod" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Discharges During Period
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-suspendedrecipient" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Suspended Recipient Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-transportsummary" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Transport Summary Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-unallocatedbookings" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Unfilled Bookings
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-unserviced" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Unserviced Recipient Report
+                                                </button> 
+                                                </div>
+                                                <div>                                        
+                                                    <button nz-button nzType="default" id="btn-vouchersummary" (click)="showModal(this.id)" >
+                                                    <i nz-icon nzType="printer"></i>
+                                                    Voucher Summary Report
+                                                </button> 
+                                                </div>
+                                                
+                                                <div>                                        
+                                                    <button nz-button nzType="default"  nzJustify="start"  id="btn-waitinglist" (click)="showModal(this.id)"  >
+                                                        <i nz-icon nzType="printer"  ></i>
+                                                        Waiting List
                                                     </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-unallocatedbookings" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Unfilled Bookings
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-recipientroster" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Recipient Roster
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-recipientMasterroster" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Recipient Master Roster
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-absentclient" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Absent Client Status Report
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-suspendedrecipient" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Suspended Recipient Report
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-vouchersummary" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Voucher Summary Report
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-transportsummary" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Transport Summary Report
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-packageusage" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Package Usage Report
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-unserviced" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Unserviced Recipient Report
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-timelength" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Recipient Time Length Report
-                                                    </button> 
-                                                    </div>
-                                                    <div>                                        
-                                                        <button nz-button nzType="default" id="btn-activepackagelist" (click)="showModal(this.id)" >
-                                                        <i nz-icon nzType="printer"></i>
-                                                        Active Package Report
-                                                    </button> 
-                                                    </div>                                                                                                                                                                        
+                                                </div>
+                                                                                                                                                                                                                           
                                             </li>                  
                                         </ul>
                                     </div>
@@ -145,11 +147,11 @@
                                                 <i nz-icon nzType="user"></i>
                                                 <strong>AGENCY LISTINGS</strong>
                                                 <div>                                        
-                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()"  disabled >
+                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()"     disabled >
                                                         <i nz-icon nzType="plus"></i>
                                                     USER REPORTS
                                                 </button> 
-                                                </div>    <!--
+                                                </div> <!--   
                                                 <div>                                        
                                                     <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled  >
                                                     <i nz-icon nzType="printer"></i>
@@ -212,6 +214,24 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>RECIPIENT REGISTER</strong>
                                         <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-cdcleavereport" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            CDC Leave Report
+                                            </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-cdcpackagebalance" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            CDC Package Balance Register
+                                            </button> 
+                                        </div> 
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-hasreport" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            HAS Report
+                                            </button> 
+                                        </div>
+                                        <div>                                        
                                             <button nz-button nzType="default" id="btn-Regis-incidentregister" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
                                             Incident Register
@@ -230,11 +250,36 @@
                                         </button> 
                                         </div> 
                                         <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-masterrosteredhoursreport" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Master Rostered hours Register
+                                            </button> 
+                                        </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-mealregisterreport" (click)="showModal(this.id)" >
+                                            <i nz-icon nzType="printer"></i>
+                                            Meal Order Report
+                                            </button> 
+                                        </div> 
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-careplanstatus" (click)="showModal(this.id)"  >
+                                            <i nz-icon nzType="printer"></i>
+                                            Recipient Care Plans Status
+                                        </button> 
+                                        </div>
+                                        <div>                                        
                                             <button nz-button nzType="default" id="btn-Regis-progcasenotes" (click)="showModal(this.id)"  >
                                             <i nz-icon nzType="printer"></i>
                                             Recipient Case Notes Register
                                         </button> 
                                         </div>
+                                        <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-opnotesregister" (click)="showModal(this.id)"  >
+                                            <i nz-icon nzType="printer"></i>
+                                            Recipient OP Notes Register
+                                        </button> 
+                                        </div>
+
                                         <div>                                        
                                             <button nz-button nzType="default" id="btn-Regis-servicenotesreg" (click)="showModal(this.id)"  >
                                             <i nz-icon nzType="printer"></i>
@@ -246,49 +291,7 @@
                                             <i nz-icon nzType="printer"></i>
                                             Service Plans Register
                                         </button> 
-                                        </div> -->
-                                        <div>                                        
-                                            <button nz-button nzType="default" id="btn-Regis-careplanstatus" (click)="showModal(this.id)"  >
-                                            <i nz-icon nzType="printer"></i>
-                                            Recipient Care Plans Status
-                                        </button> 
-                                        </div>
-                                        <div>                                        
-                                            <button nz-button nzType="default" id="btn-Regis-opnotesregister" (click)="showModal(this.id)"  >
-                                            <i nz-icon nzType="printer"></i>
-                                            Recipient OP Notes Register
-                                        </button> 
-                                        </div>
-                                        <div>                                        
-                                            <button nz-button nzType="default" id="btn-Regis-cdcpackagebalance" (click)="showModal(this.id)" >
-                                            <i nz-icon nzType="printer"></i>
-                                            CDC Package Balance Register
-                                            </button> 
-                                        </div> 
-                                        <div>                                        
-                                            <button nz-button nzType="default" id="btn-Regis-cdcleavereport" (click)="showModal(this.id)" >
-                                            <i nz-icon nzType="printer"></i>
-                                            CDC Leave Report
-                                            </button> 
-                                        </div>
-                                        <div>                                        
-                                            <button nz-button nzType="default" id="btn-Regis-hasreport" (click)="showModal(this.id)" >
-                                            <i nz-icon nzType="printer"></i>
-                                            HAS Report
-                                            </button> 
-                                        </div>
-                                        <div>                                        
-                                            <button nz-button nzType="default" id="btn-Regis-mealregisterreport" (click)="showModal(this.id)" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Meal Order Report
-                                            </button> 
-                                        </div> 
-                                        <div>                                        
-                                            <button nz-button nzType="default" id="btn-Regis-masterrosteredhoursreport" (click)="showModal(this.id)" >
-                                            <i nz-icon nzType="printer"></i>
-                                            Master Rostered hours Register
-                                            </button> 
-                                        </div>                                                                                                                                  
+                                        </div> -->                                                                                                                                 
                                     </li>                  
                                 </ul>
                             </div>
@@ -302,6 +305,12 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>STANDARD LISTINGS</strong> 
                                         <div>
+                                            <button nz-button nzType="default" id="btn-staff-ActiveBrokerage" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                Active Brokerage/Contractor List
+                                            </button>
+                                        </div>
+                                        <div>
                                             <button nz-button nzType="default" id="btn-staff-Activestaff" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Active Staff List
@@ -314,9 +323,15 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-staff-ActiveBrokerage" (click)="showModal(this.id)">
+                                            <button nz-button nzType="default" id="btn-competenciesrenewal" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Active Brokerage/Contractor List
+                                                Competency Renewal Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-staff-InactiveBrokerage" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                InActive Brokerage/Contractor 
                                                 </button>
                                         </div>
                                         <div>
@@ -332,29 +347,9 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-staff-InactiveBrokerage" (click)="showModal(this.id)">
+                                            <button nz-button nzType="default" id="btn-staff-leaveregister" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                InActive Brokerage/Contractor 
-                                                </button>
-                                        </div>
-                                        
-                                        
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-staff-unavailability" (click)="showModal(this.id)"  >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Unavailability
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-staff-Roster" (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Roster
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-staff-MasterRoster" (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Master Roster
+                                                Staff Leaves Register
                                                 </button>
                                         </div>
                                         <div>
@@ -364,29 +359,42 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-competenciesrenewal" (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id="btn-staff-MasterRoster" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Competency Renewal Report
+                                                Staff Master Roster
                                                 </button>
-                                        </div>
+                                        </div>                                         
                                         <div>
                                             <button nz-button nzType="default" id="btn-staff-staffnotworked" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Not Worked Register
                                                 </button>
-                                        </div>
+                                        </div> 
                                         <div>
-                                            <button nz-button nzType="default" id="btn-staff-leaveregister" (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id="btn-staff-Roster" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Staff Leaves Register
+                                                Staff Roster
                                                 </button>
-                                        </div>  
+                                        </div> 
                                         <div>
                                             <button nz-button nzType="default" id="btn-staff-svcnotesregister" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Service Notes Register
                                                 </button>
-                                        </div>                                                                       
+                                        </div>  
+                                        <!-- <div>                                        
+                                            <button nz-button nzType="default" id="btn-staff-staffservicenotesreg" (click)="showModal(this.id)"  >
+                                            <i nz-icon nzType="printer"></i>
+                                            Staff Service Notes Register
+                                        </button> 
+                                        </div>      -->                                                                                    
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-staff-unavailability" (click)="showModal(this.id)"  >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Unavailability
+                                            </button>
+                                        </div>
+                                                          
                                     </li>                  
                                 </ul>
                             </div>
@@ -448,6 +456,24 @@
                                     <li nz-menu-item >
                                         <i nz-icon nzType="user"></i>
                                         <strong>HUMAN RESOURCE REPORTS </strong> 
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-staff-hrnotesregister" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                HR Notes Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-staff-opnotes" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Operational Notes Register
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-staff-availability" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Availability Register
+                                                </button>
+                                        </div>
                                          <div>
                                             <button nz-button nzType="default" id="btn-staff-competencyRegister" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
@@ -461,45 +487,27 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-staff-training" (click)="showModal(this.id)"  >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Training Register
-                                                </button>
-                                        </div>
-                                        <div>
                                             <button nz-button nzType="default" id="btn-staff-incidentregister" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Incident Register
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-staff-opnotes" (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id="btn-staff-training" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
-                                                Operational Notes Register
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-staff-hrnotesregister" (click)="showModal(this.id)">
-                                                <i nz-icon nzType="printer"></i>
-                                                HR Notes Register
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-staff-timeattandencecomp" (click)="showModal(this.id)">
-                                                <i nz-icon nzType="printer"></i>
-                                                Time & Attendance Comparison
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-staff-availability" (click)="showModal(this.id)">
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Availability Register
+                                                Staff Training Register
                                                 </button>
                                         </div>
                                         <div>
                                             <button nz-button nzType="default" id="btn-staff-Userpermissions" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff User Permissions 
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-staff-timeattandencecomp" (click)="showModal(this.id)">
+                                                <i nz-icon nzType="printer"></i>
+                                                Time & Attendance Comparison
                                                 </button>
                                         </div>
                                                                                                                 
@@ -522,29 +530,11 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramStaffUtilized" (click)="showModal(this.id)"  >
-                                                <i nz-icon nzType="printer"></i>
-                                                Program Staff Utilised
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ProgramRecipientServiced" (click)="showModal(this.id)"  >
-                                                <i nz-icon nzType="printer"></i>
-                                                Program Recipient Serviced
-                                                </button>
-                                        </div>
-                                        <div>
                                             <button nz-button nzType="default" id="btn-FORPT-ProgramBillingReport" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Program Billing Report
                                                 </button>
                                         </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-BUDGE-Recpientbudgetaudit" (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Program Recipient Budget(IND PKG)
-                                                </button>
-                                        </div> 
                                         <div>
                                             <button nz-button nzType="default" id="btn-BudgetAuditReport" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
@@ -552,18 +542,42 @@
                                                 </button>
                                         </div>
                                         <div>
+                                            <button nz-button nzType="default" id="btn-BUDGE-Recpientbudgetaudit" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Recipient Budget(IND PKG)
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-FORPT-ActivityRecipientRpt" (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Activity Recipient Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-FORPT-ProgramRecipientServiced" (click)="showModal(this.id)"  >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Recipient Serviced
+                                                </button>
+                                        </div> 
+                                        <div>
                                             <button nz-button nzType="default" id="btn-ProgramSummaryRpt" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Program Summary Report
                                                 </button>
                                         </div>
                                         <div>
+                                            <button nz-button nzType="default" id="btn-FORPT-ProgramStaffUtilized" (click)="showModal(this.id)"  >
+                                                <i nz-icon nzType="printer"></i>
+                                                Program Staff Utilised
+                                                </button>
+                                        </div>                                        
+                                        <div>
                                             <hr style="border-top: 3px solid #bbb;"> 
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ActivityRecipientRpt" (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id="btn-FORPT-ActivityGroupRpt" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
-                                                Activity Recipient Report
+                                                Activity Group Report
                                                 </button>
                                         </div>
                                         <div>
@@ -579,27 +593,9 @@
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id="btn-FORPT-ActivityGroupRpt" (click)="showModal(this.id)"  >
-                                                <i nz-icon nzType="printer"></i>
-                                                Activity Group Report
-                                                </button>
-                                        </div>                                        
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-report-UnbilledItems" (click)="showModal(this.id)"  >
-                                                <i nz-icon nzType="printer"></i>
-                                                Unbilled Items Report
-                                                </button>
-                                        </div>
-                                        <div>
                                             <button nz-button nzType="default" id="btn-report-BilledItems" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Billed Items Report
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-report-fundingAuditReport" (click)="showModal(this.id)"  >
-                                                <i nz-icon nzType="printer"></i>
-                                                Funding Audit Report
                                                 </button>
                                         </div>
                                         <div>
@@ -619,7 +615,21 @@
                                                 <i nz-icon nzType="printer"></i>
                                                 Dataset RecipientUnit Cost Report
                                                 </button>
-                                        </div>                                                                        
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-report-fundingAuditReport" (click)="showModal(this.id)"  >
+                                                <i nz-icon nzType="printer"></i>
+                                                Funding Audit Report
+                                                </button>
+                                        </div>
+   
+                                        <div>
+                                            <button nz-button nzType="default" id="btn-report-UnbilledItems" (click)="showModal(this.id)"  >
+                                                <i nz-icon nzType="printer"></i>
+                                                Unbilled Items Report
+                                                </button>
+                                        </div>
+                                                                                                             
                                     </li>                  
                                 </ul>
                             </div>
@@ -628,10 +638,11 @@
                                     <li nz-menu-item >
                                         <i nz-icon nzType="user"></i>
                                         <strong>STAFF REPORTS </strong>
+
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffPaysRpt"  (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id = "btn-FORPT-FunderPayrollRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Staff Pays
+                                                Funder Payroll Type
                                                 </button>
                                         </div>
                                     <!--    <div>
@@ -641,39 +652,15 @@
                                                 </button>
                                         </div> -->
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffunderPayrollRpt"  (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id = "btn-FORPT-PayTypeProgram"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Staff Funder Payroll Type
+                                                Pay Type Program Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-FunderPayrollRpt"  (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Funder Payroll Type
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffDateProgramRpt"  (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Date Program
-                                                </button>
-                                        </div> 
-                                        <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffAllowanceRpt"  (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Allowances
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffProgramUtilisation"  (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Program Utilisation
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffClientServiced"  (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Clients Serviced
+                                                Staff Activity Report
                                                 </button>
                                         </div>
                                         <div>
@@ -683,9 +670,15 @@
                                                 </button>
                                         </div> 
                                         <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffActivityRpt"  (click)="showModal(this.id)" >
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffAllowanceRpt"  (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
-                                                Staff Activity Report
+                                                Staff Allowances
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffClientServiced"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Clients Serviced
                                                 </button>
                                         </div>
                                         <div>
@@ -693,25 +686,45 @@
                                                 <i nz-icon nzType="printer"></i>
                                                 Staff Daily Hours Report
                                                 </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffDateProgramRpt"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Date Program
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffunderPayrollRpt"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Funder Payroll Type
+                                                </button>
                                         </div> 
-                                    <!--    <div>
-                                            <button nz-button nzType="default" disabled >
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffPaysRpt"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Pays
+                                                </button>
+                                        </div>                                        
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffProgramUtilisation"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Staff Program Utilisation
+                                                </button>
+                                        </div>
+ 
+                                       <!--<div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-AwardStaffPayRpt" (click)="showModal(this.id)" >
                                                 <i nz-icon nzType="printer"></i>
                                                 Award Staff Pay Report
                                                 </button>
                                         </div>
                                         <div>
-                                            <button nz-button nzType="default" disabled >
+                                            <button nz-button nzType="default" id = "btn-FORPT-AwardStaffProgramPayRpt"  (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
                                                 Award Staff Program Pay Report
                                                 </button>
                                         </div> -->
-                                        <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-PayTypeProgram"  (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Pay Type Program Report
-                                                </button>
-                                        </div>                                                                                                  
+                                                                                                  
                                     </li>                  
                                 </ul>
                             </div>
@@ -720,18 +733,6 @@
                                     <li nz-menu-item >
                                         <i nz-icon nzType="user"></i>
                                         <strong>RECIPIENT REPORTS </strong>
-                                        <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-RecipientserviceReport"  (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Recipient Service Report
-                                                </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id = "btn-FORPT-StaffusageReport"  (click)="showModal(this.id)" >
-                                                <i nz-icon nzType="printer"></i>
-                                                Recipient Staff Usage Report
-                                                </button>
-                                        </div>
                                         <div>
                                             <button nz-button nzType="default" id = "btn-FORPT-PaytypeReport"  (click)="showModal(this.id)">
                                                 <i nz-icon nzType="printer"></i>
@@ -742,6 +743,18 @@
                                             <button nz-button nzType="default" id="btn-FORPT-ProgramUtilisation" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 Recipient Program Utilisation 
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-RecipientserviceReport"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Recipient Service Report
+                                                </button>
+                                        </div>
+                                        <div>
+                                            <button nz-button nzType="default" id = "btn-FORPT-StaffusageReport"  (click)="showModal(this.id)" >
+                                                <i nz-icon nzType="printer"></i>
+                                                Recipient Staff Usage Report
                                                 </button>
                                         </div>
                                         <div>
@@ -770,6 +783,12 @@
                                                 </button>
                                         </div>
                                         <div>
+                                            <button nz-button nzType="default" id="btn-Systm-MTAVerification" (click)="showModal(this.id)"  >
+                                                <i nz-icon nzType="printer"></i>
+                                                MTA Attendance  Verification
+                                                </button>
+                                        </div>
+                                        <div>
                                             <button nz-button nzType="default" id="btn-Systm-MTARegister" (click)="showModal(this.id)"  >
                                                 <i nz-icon nzType="printer"></i>
                                                 MTA Register
@@ -786,14 +805,7 @@
                                                 <i nz-icon nzType="printer"></i>
                                                 Roster Overlap Register
                                                 </button>
-                                        </div>
-                                        <div>
-                                            <button nz-button nzType="default" id="btn-Systm-MTAVerification" (click)="showModal(this.id)"  >
-                                                <i nz-icon nzType="printer"></i>
-                                                MTA Attendance  Verification
-                                                </button>
-                                        </div>
-                                                                                                                
+                                        </div>                                                                                                                
                                     </li>                  
                                 </ul>
                             </div>
@@ -1219,6 +1231,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_Volunteer" ><label class="checks" nz-checkbox formControlName="includevolunteer"   >Include Volunteer</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_approvedPrograms" ><label class="checks" nz-checkbox formControlName="incl_approved_programs"   >Include Approved Programs</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_pagebreak" ><label class="checks" nz-checkbox formControlName="pgbreak"   >Page break on New Employee</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_recppagebreak" ><label class="checks" nz-checkbox formControlName="recppgbreak"   >Page break on New Recipient</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_inactive" ><label class="checks" nz-checkbox formControlName="incl_inactive"   >Include InActive</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_outstanding" ><label class="checks" nz-checkbox formControlName="incl_outstanding"   >Include Only Outstanding Items</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_incl_achived" ><label class="checks" nz-checkbox formControlName="incl_archived"   >Include Archived</label></div>
@@ -1237,6 +1250,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_AdditionalInfo" ><label class="checks" nz-checkbox formControlName="include_AdditionalInfo"   >Include Additional Information</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_unavailability" ><label class="checks" nz-checkbox formControlName="include_unavailability"   >Include Unavailability</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_activeStaffonly" ><label class="checks" nz-checkbox formControlName="activeStaffonly"   >Active Staff Only</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_activeClientsonly"><label class="checks" nz-checkbox formControlName="activeclientsonly"   >Active Clients Only</label></div>
                                         
                                        
                                     </div>

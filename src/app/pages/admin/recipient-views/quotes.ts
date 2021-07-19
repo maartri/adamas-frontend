@@ -687,7 +687,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     showAcceptModal(item: any) {
-        console.log(item.programStatus)
+        if(this.globalS.isEmpty(item.programStatus)){
+            this.globalS.eToast('Error','Program Status is EMPTY');
+            return;
+        }
+        this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
+        this.recipientOptionOpen = {};
+        return
         if(['REFERRAL','INACTIVE'].includes(item.programStatus)){
             console.log('referral')
             this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;

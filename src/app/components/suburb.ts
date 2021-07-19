@@ -149,7 +149,7 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     }
 
     format(value: any): string {
-        return `${value.postcode} ${value.suburb}, ${value.state}`
+        return `${value.suburb}, ${value.postcode} ${value.state}`
     }
 
     // ControlValueAccessor methods and others

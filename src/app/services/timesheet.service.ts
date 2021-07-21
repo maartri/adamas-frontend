@@ -1225,6 +1225,17 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/notes/loans/${id}`)
     }
 
+    postnotesloans(data:any) : Observable<any>{
+        return this.auth.post(`${timesheet}/notes/loans`, data);
+    }
+
+    updatenotesloans(data:any) : Observable<any>{
+        return this.auth.put(`${timesheet}/notes/loans`, data);
+    }
+
+    deletnotesloans(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/notes/loan/${recordNo}`)
+    }
     /**
      * End Note Tab
      */

@@ -540,7 +540,10 @@ export interface Reminders {
     date2: Date,
     state: string,
     notes: string,
-    recurring: boolean
+    recurring: boolean,
+    sameDate?:boolean,
+    sameDay?:boolean
+
 }
 
 export interface Consents {

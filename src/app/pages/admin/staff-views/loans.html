@@ -18,14 +18,14 @@
                 <tbody>
                     <tr *ngFor="let data of tb2.data;let i=index;trackBy: trackByFn">
                         <td>{{data.name}}</td>
-                        <td>{{data.dateLoaned}}</td>
-                        <td>{{data.collected}}</td>
+                        <td>{{data.date1 | date: 'dd/MM/y' }}</td>
+                        <td>{{data.date2  | date: 'dd/MM/y' }}</td>
                         <td>
                             <a (click)="showEditModal(2,i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
                             <a
                                 nz-popconfirm
-                                nzPopconfirmTitle="Are you sure delete this preference?"
+                                nzPopconfirmTitle="Are you sure to delete this Item?"
                                 nzPopconfirmPlacement="bottom"
                                 (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
                         </td>
@@ -39,25 +39,115 @@
 
 <nz-modal [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()" >
     <div nz-row [formGroup]="inputForm">
-        <div nz-row>
-            <nz-form-item>
-                <nz-form-label>{{ whatView == 1 ? 'Group' :  'Preference'}}</nz-form-label>
-                <nz-form-control nzErrorTip="Required Field">
-                    <nz-select formControlName="list" nzAllowClear nzPlaceHolder="" 
-                    nzMode="multiple"
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Type">Type : </label>
+            </div>
+            <div nz-col nzSpan="18">
+                <nz-select formControlName="name" nzAllowClear nzShowSearch
                     [nzDropdownMatchSelectWidth]="false">
-                        <nz-option *ngFor="let list of listArray" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        <nz-option *ngFor="let list of typesarr" [nzValue]="list" [nzLabel]="list"></nz-option>
                     </nz-select>
-                </nz-form-control>
-            </nz-form-item>
+            </div>
         </div>
-        <div nz-row>
-            <nz-form-item>
-                <nz-form-label>Notes</nz-form-label>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Item ID">Item ID : </label>
+            </div>
+            <div nz-col nzSpan="18">
+                    <nz-select formControlName="type" nzAllowClear nzShowSearch
+                    [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let loantype of loantypesarr" [nzValue]="loantype" [nzLabel]="loantype"></nz-option>
+                    </nz-select>
+            </div>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Loaned">Loaned : </label>
+            </div>
+            <div nz-col nzSpan="18">
+                <nz-date-picker  formControlName="date1" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Collected">Collected : </label>
+            </div>
+            <div nz-col nzSpan="6">
+                <nz-date-picker  formControlName="date2" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+            <div nz-col nzSpan="6" class="text-right pad-r-5">
+                <label nzFor="Date Installed">Date Installed : </label>
+            </div>
+            <div nz-col nzSpan="6">
+                <nz-date-picker  formControlName="dateInstalled" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="program">Program : </label>
+            </div>
+            <div nz-col nzSpan="15" style="margin-right: 2px;">
+                <nz-select formControlName="address1" nzAllowClear
+                    [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let prog of progarr" [nzValue]="prog" [nzLabel]="prog"></nz-option>
+                    </nz-select>
+            </div>
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <input nz-input  formControlName="address2" />
+            </div>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Type">Equip Code : </label>
+            </div>
+            <div nz-col nzSpan="6">
+                <input nz-input  formControlName="equipmentCode" />
+            </div>
+            <div nz-col nzSpan="6" class="text-right pad-r-5">
+                <label nzFor="Type">Serial No : </label>
+            </div>
+            <div nz-col nzSpan="6">
+                <input nz-input  formControlName="serialNumber" />
+            </div>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Type">Purchase Date : </label>
+            </div>
+            <div nz-col nzSpan="6">
+                <nz-date-picker  formControlName="purchaseDate" [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+            <div nz-col nzSpan="6" class="text-right pad-r-5">
+                <label nzFor="Type">Purchase $ : </label>
+            </div>
+            <div nz-col nzSpan="6">
+                <input nz-input  formControlName="purchaseAmount" />
+            </div>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Type">Lockbox Loctn : </label>
+            </div>
+            <div nz-col nzSpan="6">
+                <input nz-input  formControlName="lockBoxLocation" />
+            </div>
+            <div nz-col nzSpan="6" class="text-right pad-r-5">
+                <label nzFor="Type">Lockbox Code : </label>
+            </div>
+            <div nz-col nzSpan="6">
+                <input nz-input  formControlName="lockBoxCode" />
+            </div>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Type">Notes : </label>
+            </div>
+            <div nz-col nzSpan="18">
                 <nz-form-control nzErrorTip="Required Field">
                     <textarea rows="4" nz-input formControlName="notes"></textarea>                    
                 </nz-form-control>
-            </nz-form-item>
+            </div>
         </div>
     </div>
     <div *nzModalFooter>

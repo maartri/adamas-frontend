@@ -831,6 +831,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/notes/${name}`)
     }
 
+    getloannotes(id:string):Observable<any> {
+        return this.auth.get(`${timesheet}/loannotes/${id}`)
+    }
+
     getloans(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/loan/${name}`)
     }

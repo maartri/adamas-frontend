@@ -1,11 +1,11 @@
 <div nz-row nzGutter="16">
-    <nz-card [nzBodyStyle]="{'padding':'10px'}" nzTitle="NON SECURE NOTES AND ITEMS ON LOAN">
-        <nz-card [nzBodyStyle]="{'padding':'10px'}" nzType="inner" nzTitle="MISCELLANEOUS NOTES (NON SECURE) ">
+    <nz-card [nzBodyStyle]="{'padding':'10px'}" nzTitle="ITEMS ON LOAN">
+        <!-- <nz-card [nzBodyStyle]="{'padding':'10px'}" nzType="inner" nzTitle="MISCELLANEOUS NOTES (NON SECURE) ">
             <button class="botton success" (click)="showAddModal(2)" style="margin-bottom:10px">Save Changes</button>
             <textarea rows="6" nz-input></textarea>
-        </nz-card>
+        </nz-card> -->
         <nz-card [nzBodyStyle]="{'padding':'10px'}" nzType="inner" style="margin-top:16px;" nzTitle="ITEMS ON LOAN TO STAFF">
-            <button class="botton success" (click)="showAddModal(2)">ADD NEW LOAN</button>
+            <button class="botton success" (click)="showAddModal(2)">ADD LOAN ITEM</button>
             <nz-table #tb2 [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="notesloans">
                 <thead>
                     <tr>

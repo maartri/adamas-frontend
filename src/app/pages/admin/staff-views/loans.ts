@@ -61,6 +61,7 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
     progarr: any;
     loantypesarr: any;
     typesarr: string[];
+    staflones: any;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -150,21 +151,21 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
             this.loantypesarr = data[2];
             this.cd.detectChanges();
         });
+
+        // this.timeS.getloannotes(user.id).subscribe(data => {
+        //     this.notesloans = data;
+        // });
+    
     }
 
     showAddModal(view: number) {
-
-        if (view == 2) this.listArray = this.userdefined2List;
-
         this.whatView = view;
         this.editOrAdd = 1;
         this.modalOpen = true;
     }
 
     showEditModal(view: number, index: number) {
-        if (view == 2) {
-            this.inputForm.patchValue(this.notesloans[index]); 
-        }
+        this.inputForm.patchValue(this.notesloans[index]); 
         this.whatView = view;
         this.editOrAdd = 2;
         this.modalOpen = true;
@@ -189,7 +190,6 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
         if (this.editOrAdd == 1) {
             this.save();
         }
-
         if (this.editOrAdd == 2) {
             this.edit();
         }

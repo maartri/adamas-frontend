@@ -107,8 +107,9 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       email: [''],
       address1: [''],
       address2: [''],
-      suburbcode: [''],
+      suburbcode: [null],
       suburb: [''],
+      state: [],
       postcode: [''],
       phone1: [''],
       phone2: [''],
@@ -126,7 +127,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       switchMap(x => {
           if(!x)
               return EMPTY;
-        console.log(x);
           return this.listS.gettypeother(x)
       })
   ).subscribe(data => {
@@ -202,7 +202,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           suburbcode: (data.postcode || '').trim() + ' ' + (data.suburb || '').trim(),
           suburb: data.suburb,
           postcode: data.postcode,
-          listOrder: data.state,
+          listOrder: '',
           oni1: (data.equipmentCode || '').toUpperCase() == 'PERSON1',
           oni2: (data.equipmentCode || '').toUpperCase() == 'PERSON2',
           recordNumber: data.recordNumber
@@ -317,18 +317,19 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   add() {
-    
-    console.log("contact");
-    console.log(this.user);
 
     if (this.inputForm.controls['suburbcode'].dirty) {
       var rs = this.inputForm.get('suburbcode').value;
+      
+
       let pcode = /(\d+)/g.test(rs) ? rs.match(/(\d+)/g)[0].trim() : "";
       let suburb = /(\D+)/g.test(rs) ? rs.match(/(\D+)/g)[0].trim() : "";
+      let state = /(\D+)/g.test(rs) ? rs.match(/(\D+)/g)[1].replace(/,/g, '').trim() : "";
 
       if (pcode !== "") {
         this.inputForm.controls["postcode"].setValue(pcode);
         this.inputForm.controls["suburb"].setValue(suburb);
+        this.inputForm.controls["state"].setValue(state);
       }
     }
 
@@ -344,14 +345,14 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.globalS.sToast('Success', 'Contact Inserted');
       this.searchKin(this.user);
+      this.handleCancel();
     });
   }
 
   delete() {
     this.timeS.deletecontactskin(this.kindetailsGroup.value.recordNumber).subscribe(data => {      
-      if (data)
         this.globalS.sToast('Success', 'Contact Deleted');      
-      this.searchKin(this.innerValue);
+        this.searchKin(this.user);
     });
   }
 

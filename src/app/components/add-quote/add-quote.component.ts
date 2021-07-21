@@ -1422,7 +1422,7 @@ export class AddQuoteComponent implements OnInit {
        
         qteLineArr.push(da);
     });
-        
+        console.log(this.quoteForm.value)
     qteHeader = {
         recordNumber: this.tempIds.quoteHeaderId,
         programId: quoteForm.programId,
@@ -1455,6 +1455,7 @@ export class AddQuoteComponent implements OnInit {
         goals: goals
     }
     this.loadingSaveQuote = true;
+    return;
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');

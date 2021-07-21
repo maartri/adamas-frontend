@@ -188,6 +188,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       accountNo: new FormControl(''),
       organisation: new FormControl(''),
       type: new FormControl(null),
+      ndisNumber: new FormControl(''),
 
       addresses: new FormArray([this.createAddress()]),
       contacts: new FormArray([this.createContact()]),
@@ -496,12 +497,12 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   add() {
 
     this.referralGroup.controls["dob"].setValue(this.referralGroup.value.dob ? moment(this.referralGroup.value.dob).format() : '')
-    this.current = 1;
+
     // var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
     // this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
 
-    this.filterContacts(<FormArray>this.referralGroup.controls.contacts);
-    this.filterAddress(<FormArray>this.referralGroup.controls.addresses);
+    // this.filterContacts(<FormArray>this.referralGroup.controls.contacts);
+    // this.filterAddress(<FormArray>this.referralGroup.controls.addresses);
     
     // this.openRefer.emit({
     //   address: "",
@@ -513,6 +514,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     // });
 
     // return;
+    console.log(this.referralGroup.value)
+    // return;
 
     this.clientS.postprofile(this.referralGroup.value)
       .subscribe(data => {
@@ -521,7 +524,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
         this.openRefer.emit(data);
         
         this.globalS.sToast('Success', 'Recipient Added')        
-      
+        this.current = 1;
       });
      
      
@@ -628,6 +631,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   createOtherContact(): FormGroup {
     return this.formBuilder.group({
       contactGroup: new FormControl(''),
+      contactList: [[]],
       type: new FormControl(''),
       name: new FormControl(''),
       address1: new FormControl(''),
@@ -753,18 +757,18 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     contact.controls[index].get('contact').reset();
   }
 
-  contactGroupChange(index: any){
-    console.log(index);
-    return;
-    var others = this.referralGroup.get('otherContacts') as FormArray;
+  contactGroupChange(group: FormGroup, index: number){
+    var contactGroup = (group[index] as FormGroup).get('contactGroup').value;
+    var specificGroup = (group[index] as FormGroup);
+    specificGroup.patchValue({
+      type: null
+    });
 
-    var contactGroup = others.controls[index].get('contactGroup').value;
-
-    if(contactGroup == "1-NEXT OF KIN" || contactGroup == "NEXTOFKIN" || contactGroup == "2-CARER" || contactGroup == "CARER"){
-      this.listS.gettypekin().subscribe(data => console.log(data))
-    } else {
-      this.listS.gettypeother(contactGroup).subscribe(data => console.log(data))
-    }    
+    this.listS.gettypeother(contactGroup).subscribe(data => {
+      specificGroup.patchValue({
+        contactList: data
+      });
+    });    
   }
 
 

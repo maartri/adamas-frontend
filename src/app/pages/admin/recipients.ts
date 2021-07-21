@@ -1322,6 +1322,18 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         if (index == 10) {
             this.router.navigate(['/admin/recipient/quotes'])
         }
+        if (index == 11) {
+          this.router.navigate(['/admin/recipient/forms'])
+        }
+        if (index == 12) {
+            this.router.navigate(['/admin/recipient/attendance'])
+        }
+        if (index == 13) {
+            this.router.navigate(['/admin/recipient/others'])
+        }
+        if (index == 14) {
+            this.router.navigate(['/admin/recipient/accounting'])        
+        }
     }
 
     handleCancel() {

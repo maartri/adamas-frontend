@@ -122,7 +122,11 @@ import {
   RecipientPermrosterAdmin,
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
-  RecipientRemindersAdmin
+  RecipientRemindersAdmin,
+  RecipientFormsAdmin,
+  RecipientAttendanceAdmin,
+  RecipientOthersAdmin,
+  RecipientAccountingAdmin
 } from './pages/admin/recipient-views/index'
 
 import {
@@ -1020,6 +1024,22 @@ const routes: Routes = [
             component: RecipientRemindersAdmin
           },
           {
+            path: 'forms',
+            component: RecipientFormsAdmin
+          },
+          {
+            path: 'attendance',
+            component: RecipientAttendanceAdmin
+          },
+          {
+            path: 'accounting',
+            component: RecipientAccountingAdmin
+          },
+          {
+            path: 'others',
+            component: RecipientOthersAdmin
+          },
+          {
             path: 'opnote',
             component: RecipientOpnoteAdmin
           },
@@ -1240,6 +1260,10 @@ export const PAGE_COMPONENTS = [
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
   RecipientRemindersAdmin,
+  RecipientFormsAdmin,
+  RecipientAttendanceAdmin,
+  RecipientOthersAdmin,
+  RecipientAccountingAdmin,
   
   // Intake Views
   IntakeAlerts,

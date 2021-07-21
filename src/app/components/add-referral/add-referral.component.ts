@@ -515,7 +515,6 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
     // return;
     console.log(this.referralGroup.value)
-    // return;
 
     this.clientS.postprofile(this.referralGroup.value)
       .subscribe(data => {

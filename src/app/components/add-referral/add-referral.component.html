@@ -96,8 +96,7 @@
                                 <div nz-col nzSpan="12">
                                     <label for="">Detail</label>
                                     <app-phonefax *ngIf="isPhoneNumber(item)" [isMobile]="item.value.contacttype == 'MOBILE'" formControlName="contact"></app-phonefax>
-                                    <input nz-input *ngIf="!isPhoneNumber(item)" (keypress)="onKeyPress($event)" formControlName="contact" autocomplete="nofill"
-                                        oninput="this.value = this.value.toUpperCase()" />
+                                    <input nz-input *ngIf="!isPhoneNumber(item)" formControlName="contact" autocomplete="nofill"  />
 
                                 </div>
                             </div>

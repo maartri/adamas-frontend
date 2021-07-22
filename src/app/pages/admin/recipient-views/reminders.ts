@@ -194,9 +194,6 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
         }
         const reminderDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.reminderDate);
         const dueDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.dueDate);
-        
-        console.log(remGroup.sameDay + "-------");
-        console.log(remGroup.sameDate +"*******");
         const reminder: Reminders = {
             recordNumber: remGroup.recordNumber,
             personID: this.user.id,

@@ -1,0 +1,301 @@
+<div nz-layout>
+    <!--
+        <div [formGroup]="inputForm">
+            <label><i nz-icon nzType="solution" nzTheme="outline"></i> Print Format </label>        
+            <nz-select formControlName="Printtype" nzMode="default"   >
+                <nz-option *ngFor="let option of Printtype" [nzLabel]="option" [nzValue]="option"></nz-option> 
+            </nz-select>
+        </div> 
+    -->
+    <div>     
+        <nz-modal
+            [nzClosable]="true"
+            [nzWidth]="width" 
+            [(nzVisible)]="ShowModal" 
+            [nzTitle]="title" 
+            (nzOnCancel)="handleCancel()"             
+            >
+            <div>
+            
+            
+                <div *ngIf="Addresslbl">
+                    <span>Please Clcik on Print Button to Print Labels</span>
+                </div>
+                <div *ngIf="IDlbl">
+                    <span>Please Clcik on Print Button to Print Labels</span>
+                </div>
+                <div *ngIf="sheet" >  
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col [nzSpan]="12" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="NameContactDetail">Name and Contact Details</label>                   
+                                <label class="checks" nz-checkbox formControlName="FNameHeader">Use First Name in Header</label>
+                            </div>
+                            <div nz-col [nzSpan]="12" [formGroup]="inputForm">
+                                 
+                                    
+                                    <span> Hide : </span> <label class="checks" nz-checkbox formControlName="HidePhoto">Photo</label>
+                                    <label class="checks" nz-checkbox formControlName="HidePhones">Phones</label>
+                                    <label class="checks" nz-checkbox formControlName="HideAddress">Address</label>
+                                    <label class="checks" nz-checkbox formControlName="HideGenderDOB">Gender & DOB </label>
+                                     
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>             
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col [nzSpan]="8" [formGroup]="inputForm">                      
+                                <label class="checks" nz-checkbox formControlName="ContactIssues">Contact issues</label>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="OtherContacts">Next of kin/Other Contacts</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col [nzSpan]="8" [formGroup]="inputForm">                      
+                                <label class="checks" nz-checkbox formControlName="TimesheetAlert">Timesheet Alerts</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col [nzSpan]="8" [formGroup]="inputForm">                      
+                                <label class="checks" nz-checkbox formControlName="RosterAlert">Roster Alerts</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="Occupational_Saftey">Occupational Health and Safety</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="Reminder_Reviews">Reminder and Reviews</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="Consents">Consents</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="ApprovedFundingSummary">Approved Funding Summary</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="AccInfo">Account Information</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="ApprovedServiceSummary">Approved Service Summary</label>
+                            </div>
+                        </div>
+                    </div>
+                            <div nz-col [nzSpan]="16" [formGroup]="inputForm">                    
+                                <label class="checks" nz-checkbox formControlName="GoalsofCare">Goals of Care</label>                   
+                                <label class="checks" nz-checkbox formControlName="showstrategies">Show Strategies</label> 
+                            </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="CarePlan">Care Plan</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="ServiceOverview">Service Overview</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="ServiceContent">Service Content</label>
+                            </div>
+                        </div>
+                    </div>
+                            <div nz-col [nzSpan]="16" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="Roster">Roster</label> 
+                                <label class="checks" nz-checkbox formControlName="AddlInfo">Show Additional Info when Printing Roster/Service Overview</label>
+                            </div>
+            
+                    
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                    
+                                <label class="checks" nz-checkbox formControlName="CaseSummary">Case Summary</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="DemographicSummary">Demographic Summary</label>
+                            </div>
+                        </div>
+                    </div>
+                            <div nz-col [nzSpan]="24" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="ClinicalSummary">Clinical Summary</label>  
+                                <label class="checks" nz-checkbox formControlName="NursingDiag">Nursing Diagnoses</label>                   
+                                <label class="checks" nz-checkbox formControlName="MedicalDiag">Medical Diagnoses</label>                   
+                                <label class="checks" nz-checkbox formControlName="MedicalProcedures">Medical Procedures</label>                   
+                                <label class="checks" nz-checkbox formControlName="Medications">Medications</label>                   
+                                <label class="checks" nz-checkbox formControlName="ClinicalNotes">Clinical Notes</label>                                    
+                            </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="LoanItems">Item on Loan</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="Will_Legal">Will and Other Legal Summary</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="Insurance_Pension">Insurance and Pension Summary</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                     
+                                <label class="checks" nz-checkbox formControlName="MiscNotes">Miscellaneous Notes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">
+                                <label class="checks" nz-checkbox formControlName="OPNotes">Operational Notes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">
+                                        <label class="checks" nz-checkbox formControlName="CaseProgressNotes">Case/Progress Notes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <div nz-col  [nzSpan]="8" [formGroup]="inputForm">                   
+                                <label class="checks" nz-checkbox formControlName="CaseAgencyStaff">Case/Agency Staff</label>
+                            </div>
+                        </div>
+                    </div>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <div>
+                        <div nz row>
+                            <div nz-col [nzSpan]="24">
+                                <div nz-col  [nzSpan]="8" [formGroup]="inputForm">
+                                    <label class="checks" nz-checkbox formControlName="CarePlans">Care Plains</label>
+                                    
+                                 
+                                </div>
+                            </div>
+                        </div>
+                        <div nz row>
+                            <div nz-col [nzSpan]="24">
+                                <div nz-col  [nzSpan]="8" [formGroup]="inputForm">
+                                    <label class="checks" nz-checkbox formControlName="CaseNotesDate">Case Notes Dates</label>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div nz row>
+                            <div nz-col [nzSpan]="24">
+                                <div nz-col  [nzSpan]="8" [formGroup]="inputForm">
+                                    <label class="checks" nz-checkbox formControlName="chkbxRoster">Roster</label>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div nz row>
+                            <div nz-col [nzSpan]="24">
+                                <div nz-col  [nzSpan]="8" [formGroup]="inputForm">
+                                    <label class="checks" nz-checkbox formControlName="Serviceoverview">Service Overview</label>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div nz row>
+                            <div nz-col [nzSpan]="24">
+                                <div nz-col  [nzSpan]="8" [formGroup]="inputForm">
+                                    <label class="checks" nz-checkbox formControlName="AddlNotes">Additional Notes</label>                                     
+                                    <textarea nz-input rows="2" style="width:100%" formControlName="txtAddlNotes" ></textarea>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div nz row>
+                            <div nz-col [nzSpan]="24">
+                                <div nz-col  [nzSpan]="8" [formGroup]="inputForm">
+                                    <label class="checks" nz-checkbox formControlName="fontsize">Font Size </label>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!--sub container-->
+                    
+                </div>
+            </div>
+            
+            
+                
+                <div *nzModalFooter>
+                        <ng-container>
+                            
+                            <button nz-button nzType="primary" class="btn" (click)="handleOk()">Print</button>
+                            
+                        </ng-container>
+                </div>
+                
+        </nz-modal>
+        <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+            <div class="col-md-12 spinner" *ngIf="loading">
+                <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+            </div>
+            <div nz-row>
+                <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+            </div>
+        </nz-drawer>  
+    </div>
+</div>

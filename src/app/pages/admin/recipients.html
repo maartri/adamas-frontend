@@ -6,6 +6,7 @@
             <button class="botton sea" (click)="newOtherModal = true"><i nz-icon nzType="check-circle" nzTheme="outline"></i> New Other</button>
             <button class="botton warn" (click)="newQuoteModal = !newQuoteModal" [disabled]="user == null"><i nz-icon nzType="form" nzTheme="outline"></i> Quote</button>
             <button class="botton other" (click)="saveModal = true" [disabled]="user == null"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Save</button>
+            <button class="botton extra" (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><i nz-icon nzType="printer" nzTheme="outline"></i> Print</button>
 
             <!-- <button class="botton other" (click)="openReferModal(null)"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Sample</button> -->
 
@@ -41,6 +42,7 @@
                 <li><button (click)="clicky(9)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-procedures"></i></div>Decease</button></li>
                 <li><button (click)="clicky(10)" [disabled]="status == null"><div><i class="fas fa-address-book"></i></div>Admin</button></li>
                 <li><button (click)="clicky(11)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-th-list"></i></div>Item</button></li>
+                <!-- <li><button (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-print"></i></div>Print</button></li> -->
             </ul>
         </div>
 
@@ -64,7 +66,7 @@
                 <nz-tab nzTitle="Permanent Roster" (nzClick)="view(7)"> </nz-tab>
                 <nz-tab nzTitle="History" (nzClick)="view(8)"> </nz-tab>
                 <nz-tab nzTitle="Insurance & Pension" (nzClick)="view(9)"> </nz-tab>
-                <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
+                <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>                
             </nz-tabset>
         </div>
     

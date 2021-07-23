@@ -79,9 +79,9 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
             this.lists = data;
 
             if (this.lists.length > 0 && this.innerValue) {
-                this.innerValue = `${this.lists[0].postcode} ${this.lists[0].suburb}, ${this.lists[0].state}`;                
+                this.innerValue = `${this.lists[0].suburb} ${this.lists[0].postcode}, ${this.lists[0].state}`;                
             }
-
+            console.log(this.innerValue)
             this.select(this.innerValue);
 
             this.isLoading = false;
@@ -114,14 +114,13 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     writeValue(value: any) {
 
         let _value = value ? value.trim() : '';
-
+        console.log(_value)
         if (this.globalS.isEmpty(_value)) {
             this.lists = [];
             this.innerValue = '';
             this.select('');            
         } else {
             this.lists.push(this.innerValue);
-
             this.innerValue = value;
             this.loadComponent = true;          
             this.searchStream.next(value);
@@ -149,7 +148,7 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     }
 
     format(value: any): string {
-        return `${value.postcode} ${value.suburb}, ${value.state}`
+        return `${value.suburb} ${value.postcode}, ${value.state}`
     }
 
     // ControlValueAccessor methods and others

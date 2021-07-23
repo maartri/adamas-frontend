@@ -53,6 +53,10 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     loadingPDF: boolean;
     ModalS: any;
+    leaveactivities: any;
+    leavepaytypes: any;
+    defaultLeave:any;
+    defaultLeaveForm: FormGroup;
     
     constructor(
         private timeS: TimeSheetService,
@@ -90,6 +94,8 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
         if(this.user){
             this.search(this.user);
             this.buildForm();
+            this.populate();
+            // this.patchdefaultValues();
             return;
         }
         this.router.navigate(['/admin/staff/personal'])
@@ -104,7 +110,6 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
         this.leaveGroup = this.formBuilder.group({
             user: '',
             staffcode: '',
-
             dates: [[], [Validators.required]],
             reminderDate:new Date(),
             approved:false,
@@ -112,16 +117,23 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             unallocAdmin: false,
             unallocUnapproved: true,
             unallocMaster: false,
-
             explanation: '',
             activityCode: '',
             payCode: '',
             program: '',
-
             programShow: false
         })
+        this.defaultLeaveForm = this.formBuilder.group({
+            defaultUnallocateLeaveActivity:'',
+            defaultUnallocateLeavePayType:'',
+        });
     }
-
+    patchdefaultValues(){
+        this.defaultLeaveForm.patchValue({
+            defaultUnallocateLeaveActivity:this.defaultLeave.defaultLeaveActivity,
+            defaultUnallocateLeavePayType:this.defaultLeave.defaultLeavePayType,
+        });
+    }
     search(user: any = this.user) {
         this.cd.reattach();
         this.loading = true;
@@ -131,7 +143,22 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             this.cd.detectChanges();
         });
     }
-
+    populate(){
+        forkJoin([
+            this.listS.getleaveactivities(),
+            this.listS.getleavepaytypes(),
+        ]).subscribe(data => {
+            this.leaveactivities = data[0];
+            this.leavepaytypes   = data[1];
+        });
+        this.timeS.getstaffunallocatedefault(this.user.id).subscribe(data => {
+            this.defaultLeave = data[0];
+            this.defaultLeaveForm.patchValue({
+                defaultUnallocateLeaveActivity:this.defaultLeave.defaultLeaveActivity,
+                defaultUnallocateLeavePayType:this.defaultLeave.defaultLeavePayType,
+            });
+        });
+    }
     trackByFn(index, item) {
         return item.id;
     }

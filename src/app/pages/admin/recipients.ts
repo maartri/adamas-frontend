@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
-import { Injectable } from '@angular/core';
+
 import { GlobalService, StaffService, ShareService, leaveTypes, ListService } from '@services/index';
 import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
 import { RECIPIENT_OPTION } from '../../modules/modules';
@@ -107,7 +107,7 @@ import { UploadChangeParam } from 'ng-zorro-antd/upload';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
- 
+
 export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     option: string = 'add';
@@ -117,8 +117,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     isFirstLoad: boolean = false;
     programModalOpen: boolean = false;
     findModalOpen: boolean = false;
-    Unique_ID: string;
-    Account_No: string;
+
     sample: any;
 
     newReferralModal: boolean = false;
@@ -1239,9 +1238,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             if(this.globalS.doc != null){
               this.addRefdoc();
             }
-            this.globalS.var1 = data.uniqueID;            
-            this.globalS.var2 = data.accountNo;
-             
+
             if(data.admissionDate != null && data.dischargeDate == null){
                 this.recipientStatus = 'active';
             } else {
@@ -1324,7 +1321,19 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         }
         if (index == 10) {
             this.router.navigate(['/admin/recipient/quotes'])
-        }        
+        }
+        if (index == 11) {
+          this.router.navigate(['/admin/recipient/forms'])
+        }
+        if (index == 12) {
+            this.router.navigate(['/admin/recipient/attendance'])
+        }
+        if (index == 13) {
+            this.router.navigate(['/admin/recipient/others'])
+        }
+        if (index == 14) {
+            this.router.navigate(['/admin/recipient/accounting'])        
+        }
     }
 
     handleCancel() {
@@ -1441,10 +1450,6 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             this.recipientOption =  this.RECIPIENT_OPTION.ITEM;
             this.recipientOptionOpen = {};
         }
-        if(index == 12){
-                   
-          this.router.navigate(['/admin/Print'])          
-      }
     }
 
     openFindModal(){

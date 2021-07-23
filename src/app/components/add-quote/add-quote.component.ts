@@ -261,8 +261,24 @@ export class AddQuoteComponent implements OnInit {
       this.detectChanges();       
   }
 
+  get remaining_fund_quote_line(){
+    if(this.remaining_fund) {
+        return this.remaining_fund;
+    } else {
+        var contribution = 0;
+        if(!this.IS_CDC){
+            contribution = this.quoteForm.value.initialBudget
+        } else {
+            contribution = this.quoteForm.value.govtContrib;
+        }
+        return contribution;
+    }
+  }
+
   get remaining_fund(){
+      
     var contribution = 0;
+
     if(!this.IS_CDC){
         contribution = this.quoteForm.value.initialBudget
     } else {
@@ -598,7 +614,7 @@ export class AddQuoteComponent implements OnInit {
   showConfirm(): void {
         this.confirmModal = this.modal.confirm({
         nzTitle: 'Do you want to select this template?',
-        nzContent: 'When clicked the OK button, this would save this program and template',
+        nzContent: 'Clicking OK will record the quote against the selected program and service agreement template',
         nzOnOk: () =>{
                 // new Promise((resolve, reject) => {
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);                
@@ -915,17 +931,26 @@ export class AddQuoteComponent implements OnInit {
       });
     }
 
+    calculateAllQuotes(){
+        this.total_admin = this.generate_total_admin();
+        this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+        this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
+    }
+
     deleteQuoteList(data: any, index: number){
         if(this.option == 'update'){
             this.listS.deletequoteline(data.recordNumber).subscribe(data => {
                 this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+
+                this.calculateAllQuotes();
                 this.detectChanges();
             });
         }
 
         if(this.option == 'add'){
-            console.log('add');
             this.quoteLines = this.quoteLines.filter((x, i) => i !== index);
+
+            this.calculateAllQuotes();
         }
     }
   
@@ -1136,7 +1161,7 @@ export class AddQuoteComponent implements OnInit {
                 this.quoteLines = [...this.quoteLines, _quote, _quote2];
                 this.detectChanges();
                 
-                this.total_admin = 0;
+                this.total_admin = this.generate_total_admin();
                 this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
                 this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
 
@@ -1397,7 +1422,7 @@ export class AddQuoteComponent implements OnInit {
        
         qteLineArr.push(da);
     });
-        
+        console.log(this.quoteForm.value)
     qteHeader = {
         recordNumber: this.tempIds.quoteHeaderId,
         programId: quoteForm.programId,
@@ -1430,10 +1455,13 @@ export class AddQuoteComponent implements OnInit {
         goals: goals
     }
     this.loadingSaveQuote = true;
+    return;
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
             this.loadingSaveQuote = false;
+
+            this.detectChanges();
         }); 
   }
 
@@ -1636,6 +1664,16 @@ export class AddQuoteComponent implements OnInit {
                 no: data.docNo
             });
 
+            if(!this.IS_CDC){
+                this.quoteForm.patchValue({
+                    initialBudget: data.budget
+                });
+            } else {
+                this.quoteForm.patchValue({
+                    govtContrib: data.budget
+                });
+            }
+
               this.quoteLines = data.quoteLines.length > 0 ? data.quoteLines.map(x => {
                     this.fquotehdr = x;
                     this.dochdr = x.docHdrId
@@ -1651,7 +1689,8 @@ export class AddQuoteComponent implements OnInit {
                         recordNumber:   x.recordNumber,
                         tax:            x.tax , 
                         lengthInWeeks:  x.lengthInWeeks,
-                        quoteQty:       x.quoteQty
+                        quoteQty:       x.quoteQty,
+                        mainGroup:      x.mainGroup
                     }
               }) : [];
               

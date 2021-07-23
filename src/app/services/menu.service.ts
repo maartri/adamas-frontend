@@ -98,7 +98,7 @@ export class MenuService {
         }
         
         updatestaffAdminActivities(data: any): Observable<any> {
-                return this.auth.post(`${menu}/staffAdminActivities/`, data)
+            return this.auth.post(`${menu}/staffAdminActivities/`, data)
         }
         /** */
         

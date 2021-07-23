@@ -90,8 +90,7 @@ import {
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
-  HCPComponent ,
-  PrintComponent, 
+  HCPComponent  
 } from '@admin/index'
 
 import {
@@ -124,8 +123,10 @@ import {
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
   RecipientRemindersAdmin,
-  
-   
+  RecipientFormsAdmin,
+  RecipientAttendanceAdmin,
+  RecipientOthersAdmin,
+  RecipientAccountingAdmin
 } from './pages/admin/recipient-views/index'
 
 import {
@@ -246,7 +247,7 @@ import { StaffAdminActivitiesComponent } from '@admin/configuration/services/sta
 import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
 import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
 import { DocumentTemplateComponent } from '@admin/configuration/documents/document-template.component';
- 
+
 const routes: Routes = [
   {
     path: '',
@@ -518,11 +519,6 @@ const routes: Routes = [
         path: 'user-reports',
         component: UserReports
       },
-      {
-        path: 'Print',
-        component:  PrintComponent
-      },
-     
       {
         path: 'configuration',
         component: ConfigurationAdmin
@@ -1028,6 +1024,22 @@ const routes: Routes = [
             component: RecipientRemindersAdmin
           },
           {
+            path: 'forms',
+            component: RecipientFormsAdmin
+          },
+          {
+            path: 'attendance',
+            component: RecipientAttendanceAdmin
+          },
+          {
+            path: 'accounting',
+            component: RecipientAccountingAdmin
+          },
+          {
+            path: 'others',
+            component: RecipientOthersAdmin
+          },
+          {
             path: 'opnote',
             component: RecipientOpnoteAdmin
           },
@@ -1054,9 +1066,7 @@ const routes: Routes = [
           {
             path: 'quotes',
             component: RecipientQuotesAdmin
-          },
-         
-           
+          }
         ]
       }
     ]
@@ -1072,8 +1082,7 @@ const routes: Routes = [
   {
     path: 'docusign',
     component: DocusignComponent
-  },
-  
+  }
   // {
   //   path: '**',
   //   redirectTo: ''
@@ -1125,7 +1134,6 @@ export const PAGE_COMPONENTS = [
   TimesheetAdmin,
   ConfigurationAdmin,
   HCPComponent,
-  PrintComponent,
   
   // Components
   ProfilePage,
@@ -1252,7 +1260,10 @@ export const PAGE_COMPONENTS = [
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
   RecipientRemindersAdmin,
-  PrintComponent,
+  RecipientFormsAdmin,
+  RecipientAttendanceAdmin,
+  RecipientOthersAdmin,
+  RecipientAccountingAdmin,
   
   // Intake Views
   IntakeAlerts,

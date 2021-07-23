@@ -293,7 +293,7 @@
                 </div>
                 <div nz-col nzSpan="8" >
                     <div class="right">
-                        <nz-range-picker nzSize="small" formControlName="period"></nz-range-picker>
+                        <nz-range-picker nzSize="small" formControlName="period" [nzFormat]="dateFormat"></nz-range-picker>
 
                         <nz-select class="select" formControlName="basePeriod" nzSize="small" nzAllowClear nzPlaceHolder="Base Period">
                             <nz-option *ngFor="let l of basePeriodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
@@ -662,8 +662,8 @@
     </div>
 
     <div *nzModalFooter>
-        <button nz-button nzType="default"><strong>Current Quote Value ${{ current_quote_value | number:'2.0' }} </strong> </button>
-        <button nz-button nzType="default" ><strong> Remaining Funds ${{remainingfund()}} </strong> </button>
+        <button nz-button nzType="default"><strong>Current Quote Value ${{ current_quote_value | number:'1.2-2' }} </strong> </button>
+        <button nz-button nzType="default" ><strong> Remaining Funds ${{remaining_fund_quote_line - current_quote_value | number: '1.2-2'}} </strong> </button>
         <button nz-button nzType="default" (click)="handleCancelLine()">Cancel</button>
         <button nz-button nzType="primary" (click)="GENERATE_QUOTE_LINE()">Save</button>
         

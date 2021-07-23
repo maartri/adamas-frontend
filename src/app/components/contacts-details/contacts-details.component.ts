@@ -50,6 +50,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   selected: any;
   current: number = 0;
   loading: boolean;
+  tocken: any;
 
   constructor(
     private globalS: GlobalService,
@@ -71,7 +72,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
 
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
-      console.log(this.user)
         this.searchKin(this.user);      
     }
   }
@@ -107,8 +107,9 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       email: [''],
       address1: [''],
       address2: [''],
-      suburbcode: [''],
+      suburbcode: [null],
       suburb: [''],
+      state: [],
       postcode: [''],
       phone1: [''],
       phone2: [''],
@@ -127,8 +128,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           if(!x)
               return EMPTY;
         console.log(x);
-          return this.listS.gettypeother(x)
-      })
+          return this.listS.gettypeother(x)      })
   ).subscribe(data => {
     this.contactTypes = data;
   });
@@ -169,7 +169,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       this.timeS.getcontactskinstaff(token.name)
         .subscribe(data => {
           this.kinsArray = data;
-
           if (this.kinsArray.length > 0) {
             this.selected = this.kinsArray[0];
             this.showDetails(this.kinsArray[0]);
@@ -180,14 +179,13 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           this.cd.detectChanges();
         });
     }
-
   }
 
   showDetails(kin: any) {
 
     this.timeS.getcontactskinstaffdetails(kin.recordNumber)
       .subscribe(data => {
-       
+    
         this.kindetailsGroup.patchValue({
           address1: data.address1,
           address2: data.address2,
@@ -202,7 +200,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           suburbcode: (data.postcode || '').trim() + ' ' + (data.suburb || '').trim(),
           suburb: data.suburb,
           postcode: data.postcode,
-          listOrder: data.state,
+          listOrder: '',
           oni1: (data.equipmentCode || '').toUpperCase() == 'PERSON1',
           oni2: (data.equipmentCode || '').toUpperCase() == 'PERSON2',
           recordNumber: data.recordNumber
@@ -239,7 +237,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         this.kindetailsGroup.controls["postcode"].setValue(address.pcode);
         this.kindetailsGroup.controls["suburb"].setValue(address.suburb);
       }
-     
 
       if (this.kindetailsGroup.get('oni1').value) {
         this.kindetailsGroup.controls['ecode'].setValue('PERSON1')
@@ -252,11 +249,10 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       this.timeS.updatecontactskinstaffdetails(
         details,
         details.recordNumber
-      ).subscribe(data => {    
+      ).subscribe(data => {
           this.searchKin(this.user);
           this.globalS.sToast('Success', 'Contact Updated');       
       });
-
     }
 
     if (this.user.view === view.recipient)
@@ -269,7 +265,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         this.kindetailsGroup.controls["postcode"].setValue(address.pcode);
         this.kindetailsGroup.controls["suburb"].setValue(address.suburb);
       }
-     
 
       if (this.kindetailsGroup.get('oni1').value) {
         this.kindetailsGroup.controls['ecode'].setValue('PERSON1')
@@ -278,14 +273,12 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       }
 
       const details = this.kindetailsGroup.value;
-      console.log(details);
-
       this.timeS.updatecontactskinrecipientdetails(details,details.recordNumber)
           .subscribe(data => {
             this.searchKin(this.user);
+            this.handleCancel();
             this.globalS.sToast('Success', 'Contact Updated');       
           });
-
     }
 
   }
@@ -317,18 +310,19 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   add() {
-    
-    console.log("contact");
-    console.log(this.user);
 
     if (this.inputForm.controls['suburbcode'].dirty) {
       var rs = this.inputForm.get('suburbcode').value;
+      
+
       let pcode = /(\d+)/g.test(rs) ? rs.match(/(\d+)/g)[0].trim() : "";
       let suburb = /(\D+)/g.test(rs) ? rs.match(/(\D+)/g)[0].trim() : "";
+      let state = /(\D+)/g.test(rs) ? rs.match(/(\D+)/g)[1].replace(/,/g, '').trim() : "";
 
       if (pcode !== "") {
         this.inputForm.controls["postcode"].setValue(pcode);
         this.inputForm.controls["suburb"].setValue(suburb);
+        this.inputForm.controls["state"].setValue(state);
       }
     }
 
@@ -343,15 +337,17 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       this.user.id
     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.globalS.sToast('Success', 'Contact Inserted');
+      console.log(this.user + "-------");
+      this.handleCancel();
       this.searchKin(this.user);
+      this.handleCancel();
     });
   }
 
   delete() {
     this.timeS.deletecontactskin(this.kindetailsGroup.value.recordNumber).subscribe(data => {      
-      if (data)
         this.globalS.sToast('Success', 'Contact Deleted');      
-      this.searchKin(this.innerValue);
+        this.searchKin(this.user);
     });
   }
 

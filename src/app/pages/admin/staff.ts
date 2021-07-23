@@ -93,6 +93,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     longMonth = this.currentDate.toLocaleString('en-us', { month: 'long' });
     userByPass: ApplicationUser;
     navigationExtras: { state: { StaffCode: string; ViewType: string; IsMaster: boolean; }; };
+    printSummaryModal: boolean =  false;
+    printSummaryGroup: FormGroup;
 
     listChange(event: any) {
 
@@ -182,8 +184,31 @@ export class StaffAdmin implements OnInit, OnDestroy {
             unallocMaster: false,
             deletePending: false
         });
-
-        // this.listChange({});
+        this.printSummaryGroup = this.fb.group({
+            fileLabels:false,
+            nameandContacts:true,
+            contactIssue:false,
+            otherContact:false,
+            otherInfo:false,
+            payrollInfo:false,
+            workhourInfo:false,
+            copmpetencies:false,
+            otherSkills:false,
+            training:false,
+            roster:false,
+            permanentRoster:false,
+            miscellaneousNotes:false,
+            operationalNotes:false,
+            hrNotes:false,
+            includeAdressress:false,
+            ItemsOnLoan:false,
+            trainingchk:false,
+            trainingFrom:[new Date()],
+            trainingTo:[new Date()],
+            hrchk:false,
+            opchk:false,
+            recepientSearc:'Show RECIPIENT CODE',
+        });
     }
 
     ngOnDestroy(): void {
@@ -245,7 +270,9 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.listS.getleavebalances(this.user.id)
             .subscribe(data => this.leaveBalanceList = data)
     }
-
+    printSummaryModalOpen(): void{
+        this.printSummaryModal = true;
+    }
     terminate(){
         
         for (const i in this.terminateGroup.controls) {

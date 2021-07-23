@@ -90,7 +90,8 @@ import {
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
-  HCPComponent  
+  HCPComponent,
+  PrintComponent  
 } from '@admin/index'
 
 import {
@@ -518,6 +519,10 @@ const routes: Routes = [
       {
         path: 'user-reports',
         component: UserReports
+      },
+      {
+        path: 'Print',
+        component: PrintComponent
       },
       {
         path: 'configuration',
@@ -1134,7 +1139,7 @@ export const PAGE_COMPONENTS = [
   TimesheetAdmin,
   ConfigurationAdmin,
   HCPComponent,
-  
+  PrintComponent,
   // Components
   ProfilePage,
   //Roster Module

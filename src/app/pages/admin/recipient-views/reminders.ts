@@ -115,7 +115,7 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
             listOrder: '',
             followUpEmail: ['', [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
             recurring: false,
-            sameMonth:false,
+            sameDate:false,
             sameDay:false,
             recurrInt: null,
             recurrStr: null,
@@ -129,7 +129,7 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
         this.inputForm.controls['recurrInt'].disable();
         
         this.inputForm.controls['sameDay'].disable();
-        this.inputForm.controls['sameMonth'].disable();
+        this.inputForm.controls['sameDate'].disable();
 
         this.inputForm.get('recurring').valueChanges.subscribe(data => {
             if (!data) {
@@ -145,12 +145,12 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
         this.inputForm.get('recurrStr').valueChanges.subscribe(data => {
             if (data == 'Month/s') {
                 this.inputForm.controls['sameDay'].enable();
-                this.inputForm.controls['sameMonth'].enable();
+                this.inputForm.controls['sameDate'].enable();
             } else {
                 this.inputForm.controls['sameDay'].setValue(false);
-                this.inputForm.controls['sameMonth'].setValue(false);
+                this.inputForm.controls['sameDate'].setValue(false);
                 this.inputForm.controls['sameDay'].disable();
-                this.inputForm.controls['sameMonth'].disable();
+                this.inputForm.controls['sameDate'].disable();
             }
         });
     }
@@ -160,7 +160,7 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
     }
 
     showEditModal(index: number) {
-        const { recordNumber, personID, name, address1, address2, email, date1, date2, state, notes, recurring } = this.tableData[index];
+        const { recordNumber, personID, name, address1, address2, email, date1, date2, state, notes, recurring,sameDate,sameDay } = this.tableData[index];
         
         this.inputForm.patchValue({
             recordNumber,
@@ -168,6 +168,8 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
             listOrder: state,
             followUpEmail: email,
             recurring,
+            sameDate,
+            sameDay,
             recurrInt: address1 == '' ? null : address1,
             recurrStr: address2 == '' ? null : address2,
             notes,
@@ -176,7 +178,7 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
             staffAlert: name
         });
 
-        this.addOREdit = 0;
+        this.addOREdit = 2;
         this.modalOpen = true;
     }
 
@@ -192,7 +194,6 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
         }
         const reminderDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.reminderDate);
         const dueDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.dueDate);
-
         const reminder: Reminders = {
             recordNumber: remGroup.recordNumber,
             personID: this.user.id,
@@ -204,10 +205,10 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
             date2: dueDate,
             state: remGroup.listOrder,
             notes: remGroup.notes,
-            recurring: remGroup.recurring
-        }
-        
-   
+            recurring: remGroup.recurring,
+            sameDay: remGroup.sameDay,
+            sameDate: remGroup.sameDate
+        }   
 
         if(this.addOREdit == 1){
             this.timeS.postremindersrecipient(reminder)
@@ -217,7 +218,7 @@ export class RecipientRemindersAdmin implements OnInit, OnDestroy {
                     this.handleCancel();
                 });
         }
-
+        console.log(this.addOREdit + "addOREdit")
         if (this.addOREdit == 2) {
             this.timeS.updateremindersrecipient(reminder)
                 .subscribe(data => {

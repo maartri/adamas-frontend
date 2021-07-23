@@ -36,7 +36,7 @@ import { NzModalService } from 'ng-zorro-antd';
 export class StaffLoansAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
-
+    dateFormat: string ='dd/MM/yyyy';
     loading: boolean = false;
     userdefined1: Array<any>;
     userdefined1List: Array<string>;
@@ -58,6 +58,10 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
     drawerVisible: boolean =  false;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     notesloans: any;
+    progarr: any;
+    loantypesarr: any;
+    typesarr: string[];
+    staflones: any;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -105,77 +109,63 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
 
     buildForm() {
         this.inputForm = this.formBuilder.group({
-            list: [[], Validators.required],
-            notes: ['', Validators.required],
-            id: ['']
+            personID: [this.user.id],
+            recordNumber:[''],
+            group:['LOANITEMS'],
+            type: [''],
+            name: ['', Validators.required],
+            dateInstalled:[''],
+            date1:[''],
+            date2:[''],
+            address1:[''],
+            address2:[''],
+            equipmentCode:[''],
+            serialNumber:[''],
+            purchaseAmount:[''],
+            purchaseDate:[''],
+            lockBoxLocation:[''],
+            lockBoxCode:[''],
+            notes:[''],
+            
         });
     }
 
     get title() {
-        const str = this.whatView == 1 ? 'Group' : 'Preference';
+        const str = this.whatView == 1 ? 'Group' : 'Loan Items';
         const pro = this.editOrAdd == 1 ? 'Add' : 'Edit';
         return `${pro} ${str}`;
     }
 
     search(user: any) {
         this.cd.reattach();
-        //if (!this.user) return;
         this.loading = true;
-
+        this.typesarr = ['TEST','TESTING','UPDATE WITHOUT ERROR']
         forkJoin([
-            this.timeS.getuserdefined1(user.id),
-            this.timeS.getuserdefined2(user.id),
-            this.listS.getlistuserdefined1(),
-            this.listS.getlistuserdefined2(),
             this.timeS.getnotesloans(user.id),
+            this.listS.GetAllPrograms(),
+            this.listS.getloantypes(),
         ]).subscribe(data => {
             this.loading = false;
-
-            this.userdefined1 = data[0];
-            this.userdefined2 = data[1];
-
-            this.userdefined1List = data[2];
-            this.userdefined2List = data[3];
-            this.notesloans = data[4];
+            this.notesloans = data[0];
+            this.progarr = data[1];
+            this.loantypesarr = data[2];
             this.cd.detectChanges();
         });
+
+        // this.timeS.getloannotes(user.id).subscribe(data => {
+        //     this.notesloans = data;
+        // });
+    
     }
 
     showAddModal(view: number) {
-        if (view == 1) this.listArray = this.userdefined1List;
-        if (view == 2) this.listArray = this.userdefined2List;
-
         this.whatView = view;
         this.editOrAdd = 1;
         this.modalOpen = true;
     }
 
     showEditModal(view: number, index: number) {
-
-        if (view == 1) {
-            const { group, notes, recordNumber } = this.userdefined1[index];
-
-            this.inputForm.patchValue({
-                list: group,
-                notes: notes,
-                id: recordNumber
-            });
-
-            this.listArray = this.userdefined1List;
-        }
-
-        if (view == 2) {
-            const { preference, notes, recordNumber } = this.userdefined2[index];
-
-            this.inputForm.patchValue({
-                list: preference,
-                notes: notes,
-                id: recordNumber
-            });
-
-            this.listArray = this.userdefined2List;
-        }
-        
+        this.inputForm.patchValue(this.notesloans[index]); 
         this.whatView = view;
         this.editOrAdd = 2;
         this.modalOpen = true;
@@ -200,7 +190,6 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
         if (this.editOrAdd == 1) {
             this.save();
         }
-
         if (this.editOrAdd == 2) {
             this.edit();
         }
@@ -215,41 +204,16 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
         if (!this.inputForm.valid)
             return;
         
-        const { list, notes } = this.inputForm.value;
-        const index = this.whatView;
         this.isLoading = true;
-
-        if (index == 1) {            
-            this.timeS.postuserdefined1({
-                notes: notes,
-                // group: list,
-                personID: this.user.id,
-                groupList: list
-            }).pipe(takeUntil(this.unsubscribe))
+            this.timeS.postnotesloans(this.inputForm.value).pipe(takeUntil(this.unsubscribe))
                 .subscribe(data => {
                     if (data) {
                         this.handleCancel();
                         this.success();
+                        this.search(this.user);
                         this.globalS.sToast('Success', 'Data Added');
                     }
-                })
-        }
-
-        if (index == 2) {
-            this.timeS.postuserdefined2({
-                notes: notes,
-                // group: list,
-                personID: this.user.id,
-                groupList: list
-            }).pipe(takeUntil(this.unsubscribe))
-                .subscribe(data => {
-                    if (data) {
-                        this.handleCancel();
-                        this.success();
-                        this.globalS.sToast('Success', 'Data Added');
-                    }
-                });
-        }
+            });
     }
 
     edit() {
@@ -258,20 +222,12 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
             this.inputForm.controls[i].markAsDirty();
             this.inputForm.controls[i].updateValueAndValidity();
         }
-
         if (!this.inputForm.valid)
             return;
-
-        const { list, notes, id } = this.inputForm.value;
-        const index = this.whatView;
+        
         this.isLoading = true;
-
-        if (index == 1) {
-            this.timeS.updateshareduserdefined({
-                group: list,
-                notes,
-                recordNumber: id
-            }).pipe(
+            
+        this.timeS.updatenotesloans(this.inputForm.value).pipe(
                 takeUntil(this.unsubscribe))
                 .subscribe(data => {
                     if (data) {
@@ -280,31 +236,15 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
                         this.globalS.sToast('Success', 'Data Updated');
                     }
                 })
-        }
-
-        if (index == 2) {
-            this.timeS.updateshareduserdefined({
-                group: list,
-                notes,
-                recordNumber: id
-            }).pipe(
-                takeUntil(this.unsubscribe))
-                .subscribe(data => {
-                    if (data) {
-                        this.handleCancel();
-                        this.success();
-                        this.globalS.sToast('Success', 'Data Updated');
-                    }
-                })
-        }
     }
 
     delete(recordNo: any) {
-        this.timeS.deleteshareduserdefined(recordNo)
+        this.timeS.deletnotesloans(recordNo)
             .subscribe(data => {
                 if (data) {
                     this.handleCancel();
                     this.success();
+                    this.search(this.user.id);
                     this.globalS.sToast('Success', 'Data Deleted');
                 }
             });

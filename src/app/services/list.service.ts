@@ -289,7 +289,10 @@ export class ListService {
 
     GetVehicles(): Observable<any>{
         return this.auth.get(`${list}/vehicles`);
-    } 
+    }
+    getloantypes() : Observable<any>{
+        return this.auth.get(`${list}/loantypes`);
+    }
     GetAllPrograms(): Observable<any>{
         return this.auth.get(`${list}/CriterialistPrograms`);
     }

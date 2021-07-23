@@ -287,7 +287,6 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
                     this.getNotes(this.user);
                 });
         }
-       
         if (this.addOrEdit == 2) {
             this.clientS.updateopnotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
                 .subscribe(data => {

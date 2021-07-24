@@ -60,7 +60,8 @@ const inputFormDefault = {
     
    CaseNotesDate  : [false],
     
-    
+  SvcOvrPrintSeppg : [false],
+  SvcOvrDisplay  : [false],
    fontsize: [false],
    Sepratepg: [false],
    SheetSig : [false],
@@ -509,6 +510,9 @@ export class PrintComponent implements OnInit , OnDestroy {
                    "pagefooter" : this.inputForm.value.pgSignature,
                    "Sheetfooter" : this.inputForm.value.SheetSig,
                    "CoLogo" : this.inputForm.value.logo,
+
+                   "SvcPrintSepPg" : this.inputForm.value.SvcOvrPrintSeppg  ,
+                   "SvcDisplayContribution" : this.inputForm.value.SvcOvrDisplay   ,
                    
                
 

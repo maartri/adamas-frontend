@@ -229,7 +229,7 @@
                             <div nz-col nzSpan="24">                                
                                 <div nz-col nzSpan="8" [formGroup]="inputForm">
                                     <label class="label" >Care Plans</label>  
-                                    &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="Sepratepg">Print on Seprate Page</label>                                 
+                                    <label class="checks" nz-checkbox formControlName="Sepratepg">Print on Seprate Page</label>                                 
                                 </div>                               
                             </div>
                         </div>
@@ -238,12 +238,12 @@
                                 <div nz-col nzSpan="12" *ngIf="inputForm.value.OPNotes" >
                                     <label class="label" >Case OP Notes Dates</label>                                     
                                     <div><span> Start Date:</span> <nz-date-picker [(ngModel)]="OPstartdate" nzPlaceHolder = "Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
-                                    <div><span> End Date:</span><nz-date-picker [(ngModel)]="OPenddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
+                                    <div><span> End Date :</span>     <nz-date-picker [(ngModel)]="OPenddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
                                 </div>                              
                                 <div nz-col nzSpan="12" *ngIf="inputForm.value.CaseProgressNotes">
                                     <label class="label" >Case Progress Notes Dates</label>                                     
                                     <div> <span> Start Date:</span><nz-date-picker [(ngModel)]="Pstartdate" nzPlaceHolder = "Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
-                                    <div><span> End Date:</span><nz-date-picker [(ngModel)]="Penddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
+                                    <div><span> End Date :</span>    <nz-date-picker [(ngModel)]="Penddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
                                 </div>
                             </div>
                         </div>
@@ -267,14 +267,14 @@
                                 </div>
                                 <div nz-col nzSpan="8">
                                 <div><span> Start Date:</span>    <nz-date-picker [(ngModel)]="Rstartdate" nzPlaceHolder = "Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
-                                <div><span> End Date:</span>    <nz-date-picker [(ngModel)]="Renddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
+                                <div><span> End Date :</span>    <nz-date-picker [(ngModel)]="Renddate" nzPlaceHolder= "End Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
                                     
                                 </div>
                             </div>
                         </div>
                         <div nz-row class="divborder" *ngIf= "inputForm.value.ServiceOverview">
                             <div nz-col nzSpan="24">
-                                <div nz-col nzSpan="16" [formGroup]="inputForm">
+                                <div nz-col nzSpan="20" [formGroup]="inputForm">
                                     <label class="label" >Service Overview</label>
                                     <nz-select formControlName="Roster_inclusion" nzMode="default" >
                                         <nz-option *ngFor="let option of Roster_inclusion" [nzLabel]="option" [nzValue]="option"></nz-option> 
@@ -285,8 +285,8 @@
                                         <nz-option *ngFor="let option of Roster_staffinclusion" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                     </nz-select> 
 
-                                    <label class="checks" nz-checkbox formControlName="hideRosterActivity">Hide Activity</label>
-                                    <label class="checks" nz-checkbox formControlName="hideRosterDuration">Hide Duration</label>
+                                    <label class="checks" nz-checkbox formControlName="SvcOvrDisplay">Display Contribution Text</label>
+                                    <label class="checks" nz-checkbox formControlName="SvcOvrPrintSeppg">Print on Seprate Page</label>
                                 
                                     <nz-select formControlName="Cycles" nzMode="default" >
                                         <nz-option *ngFor="let option of Cycles" [nzLabel]="option" [nzValue]="option"></nz-option> 
@@ -307,7 +307,7 @@
                         <div nz-row>
                             <div nz-col nzSpan="24">
                                 <div nz-col nzSpan="8" [formGroup]="inputForm">
-                                    <label class="checks" nz-checkbox formControlName="fontsize">Font Size </label>
+                                <!--    <label class="checks" nz-checkbox formControlName="fontsize" disabled >Font Size </label>  -->
                                     
                                     
                                 </div>

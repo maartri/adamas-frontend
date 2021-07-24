@@ -2255,48 +2255,47 @@ stafftypeArr: Array<any> = constants.types;
                 this.RefferalsduringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate, tempsdate, tempedate);
                 break;
             case 'btn-recipientMasterroster':
-
+                         
                 switch (s_Cycle) {
-                    case 'Cycle 1':
-                        strdate = "01/01/1900";
-                        endate = "28/01/1900";
+                    case 'CYCLE 1':
+                        strdate = "1900/01/01";
+                        endate = "1900/01/28";
                         break;
-                    case "Cycle 2":
-                        strdate = "01/10/1900";
-                        endate = "28/10/1900";
+                    case "CYCLE 2":
+                        strdate = "1900/10/01";
+                        endate = "1900/10/12";
                         break;
-                    case 'Cycle 3':
-                        strdate = "01/04/1901";
-                        endate = "28/04/1901";
+                    case 'CYCLE 3':
+                        strdate = "1901/04/01";
+                        endate = "1901/04/28";
                         break;
-                    case 'Cycle 4':
-                        strdate = "01/07/1901";
-                        endate = "28/07/1901";
+                    case 'CYCLE 4':
+                        strdate = "1901/07/01";
+                        endate = "1901/07/28";
                         break;
-                    case 'Cycle 5':
-                        strdate = "01/09/1902";
-                        endate = "28/09/1902";
+                    case 'CYCLE 5':
+                        strdate = "1902/09/01";
+                        endate = "1902/09/28";
+                        break;                        
+                    case 'CYCLE 6':
+                        strdate = "1902/12/01";
+                        endate = "1902/12/28";
                         break;
-
-                    case 'Cycle 6':
-                        strdate = "01/12/1902";
-                        endate = "28/12/1902";
+                    case 'CYCLE 7':
+                        strdate = "1903/06/01";
+                        endate = "1903/06/28";
                         break;
-                    case 'Cycle 7':
-                        strdate = "01/06/1903";
-                        endate = "28/06/1903";
+                    case 'CYCLE 8':
+                        strdate = "1904/02/01";
+                        endate = "1904/02/28";
                         break;
-                    case 'Cycle 8':
-                        strdate = "01/02/1904";
-                        endate = "28/02/1904";
+                    case 'CYCLE 9':
+                        strdate = "1904/08/01";
+                        endate = "1904/08/28";
                         break;
-                    case 'Cycle 9':
-                        strdate = "01/08/1904";
-                        endate = "28/08/1904";
-                        break;
-                    case 'Cycle 10':
-                        strdate = "01/05/1905";
-                        endate = "28/05/1905";
+                    case 'CYCLE 10':
+                        strdate = "1905/05/01";
+                        endate = "1905/05/28";
                         break;
                     default:
                         strdate = "1900/01/01";
@@ -2401,46 +2400,45 @@ stafftypeArr: Array<any> = constants.types;
             case 'btn-staff-MasterRoster':
 
                 switch (s_Cycle) {
-                    case 'Cycle 1':
-                        strdate = "01/01/1900";
-                        endate = "28/01/1900";
+                    case 'CYCLE 1':
+                        strdate = "1900/01/01";
+                        endate = "1900/01/28";
                         break;
-                    case "Cycle 2":
-                        strdate = "01/10/1900";
-                        endate = "28/10/1900";
+                    case "CYCLE 2":
+                        strdate = "1900/10/01";
+                        endate = "1900/10/12";
                         break;
-                    case 'Cycle 3':
-                        strdate = "01/04/1901";
-                        endate = "28/04/1901";
+                    case 'CYCLE 3':
+                        strdate = "1901/04/01";
+                        endate = "1901/04/28";
                         break;
-                    case 'Cycle 4':
-                        strdate = "01/07/1901";
-                        endate = "28/07/1901";
+                    case 'CYCLE 4':
+                        strdate = "1901/07/01";
+                        endate = "1901/07/28";
                         break;
-                    case 'Cycle 5':
-                        strdate = "01/09/1902";
-                        endate = "28/09/1902";
+                    case 'CYCLE 5':
+                        strdate = "1902/09/01";
+                        endate = "1902/09/28";
+                        break;                        
+                    case 'CYCLE 6':
+                        strdate = "1902/12/01";
+                        endate = "1902/12/28";
                         break;
-
-                    case 'Cycle 6':
-                        strdate = "01/12/1902";
-                        endate = "28/12/1902";
+                    case 'CYCLE 7':
+                        strdate = "1903/06/01";
+                        endate = "1903/06/28";
                         break;
-                    case 'Cycle 7':
-                        strdate = "01/06/1903";
-                        endate = "28/06/1903";
+                    case 'CYCLE 8':
+                        strdate = "1904/02/01";
+                        endate = "1904/02/28";
                         break;
-                    case 'Cycle 8':
-                        strdate = "01/02/1904";
-                        endate = "28/02/1904";
+                    case 'CYCLE 9':
+                        strdate = "1904/08/01";
+                        endate = "1904/08/28";
                         break;
-                    case 'Cycle 9':
-                        strdate = "01/08/1904";
-                        endate = "28/08/1904";
-                        break;
-                    case 'Cycle 10':
-                        strdate = "01/05/1905";
-                        endate = "28/05/1905";
+                    case 'CYCLE 10':
+                        strdate = "1905/05/01";
+                        endate = "1905/05/28";
                         break;
                     default:
                         strdate = "1900/01/01";
@@ -2491,7 +2489,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.StaffCompetencyRenewal(s_Branches, s_Staff, s_Competencies, s_Managers, s_StaffTeam,s_StfGroup, s_CompetencyGroups, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-Systm-AuditRegister':
-                console.log(s_Description)
+                 
                 this.AuditRegister(s_who, s_Description, s_TraccsUser, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-Systm-ActivityStatusAudit':
@@ -3914,7 +3912,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-     //   console.log(fQuery)
+       // console.log(fQuery)
 
      switch (format) {
         case 'Presentation - with Activity':

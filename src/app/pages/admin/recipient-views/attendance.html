@@ -1,3 +1,181 @@
-<div>
-    attendance
+<div nz-row class="compartment">
+    
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Early Start Threshold: </span>
+            <input type="text" nz-input nzSize="small">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox [(ngModel)]="checked">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
+
+              </nz-select>
+        </div>
+    </div>
+
+
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Late Start Threshold: </span>
+            <input type="text" nz-input nzSize="small">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox [(ngModel)]="checked">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Early Finish Threshold: </span>
+            <input type="text" nz-input nzSize="small">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox [(ngModel)]="checked">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Late Finish Threshold: </span>
+            <input type="text" nz-input nzSize="small">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox [(ngModel)]="checked">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Over Stay Threshold: </span>
+            <input type="text" nz-input nzSize="small">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox [(ngModel)]="checked">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+        </div>
+    </div>
+
+
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Under Stay Threshold: </span>
+            <input type="text" nz-input nzSize="small">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox [(ngModel)]="checked">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="6" class="layer">
+            <span>No Work Threshold: </span>
+            <input type="text" nz-input nzSize="small">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox [(ngModel)]="checked">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+        </div>
+    </div>
 </div>
+
+
+<div nz-row style="margin-top:2rem">
+    <h3>Time & Attendance And Portal Settings</h3>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>MTA Pin Code: </span>
+            <input type="text" nz-input nzSize="small">
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Allow Recipient Signature MTA: </span>
+            <input type="text" nz-input nzSize="small">
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Timezone Relative To Alerts Server: </span>
+            <input type="text" nz-input nzSize="small">
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Portal Manager: </span>
+            <input type="text" nz-input nzSize="small">
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>SMS Reminder Service: </span>
+            <input type="text" nz-input nzSize="small">
+        </div>
+    </div>
+</div>
+
+
+<div nz-row style="margin-top:2rem">
+    <h4>DAELIBS</h4>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Daelibs Logger ID: </span>
+            <input type="text" nz-input nzSize="small">
+        </div>
+    </div>
+</div>
+

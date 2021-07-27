@@ -15,7 +15,37 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
         div.divider-subs div{
             margin-top:2rem;
         }
-        
+        .layer > span:first-child{
+            width:8rem;
+        }
+        .layer > *{
+            display:inline-block;
+            margin-right:5px;
+            font-size:11px;
+        }
+        .layer > input{
+            width: 4rem;
+        }
+        .compartment > div{
+            margin-bottom:5px;
+        }
+        .layer2 > span{
+            width:13rem;
+        }
+        .layer2 > input{
+            width:4rem;
+        }
+        .layer2 {
+            margin-bottom:5px;
+        }
+        .layer2 > *{
+            display:inline-block;
+            margin-right:5px;
+            font-size:11px;
+        }
+        nz-select{
+            width:100%;
+        }
     `],
     templateUrl: './attendance.html',
     changeDetection: ChangeDetectionStrategy.OnPush

@@ -15,6 +15,22 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
         div.divider-subs div{
             margin-top:2rem;
         }
+
+        .layer2 > span{
+            width:13rem;
+            text-align:right;
+        }
+        .layer2 > input{
+            width:4rem;
+        }
+        .layer2 {
+            margin-bottom:5px;
+        }
+        .layer2 > *{
+            display:inline-block;
+            margin-right:5px;
+            font-size:11px;
+        }
         
     `],
     templateUrl: './others.html',

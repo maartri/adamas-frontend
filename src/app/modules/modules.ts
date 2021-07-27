@@ -828,7 +828,8 @@ export interface ModalVariables {
 }
 
 export interface ProfileInterface {
-    name: string,
+    name?: string,
+    code?: string,
     view: string,
     id?: string,
     sysmgr?: string        

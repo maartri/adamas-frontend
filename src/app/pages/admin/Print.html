@@ -251,19 +251,20 @@
                             <div nz-col nzSpan="24">
                                 <div nz-col nzSpan="16" [formGroup]="inputForm">
                                     <label class="label" >Roster</label>
-                                    
+                                     
                                     <nz-select formControlName="Roster_inclusion" nzMode="default" >
                                         <nz-option *ngFor="let option of Roster_inclusion" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                     </nz-select>
+                                     
 
                                     
                                     <nz-select formControlName="Roster_staffinclusion" nzMode="default" >
                                         <nz-option *ngFor="let option of Roster_staffinclusion" [nzLabel]="option" [nzValue]="option"></nz-option> 
                                     </nz-select> 
-
-                                    <label class="checks" nz-checkbox formControlName="hideRosterActivity">Hide Activity</label>
-                                    <label class="checks" nz-checkbox formControlName="hideRosterDuration">Hide Duration</label>
-                                    
+                                    <div>
+                                        <label class="checks" nz-checkbox formControlName="hideRosterActivity">Hide Activity</label>
+                                        <label class="checks" nz-checkbox formControlName="hideRosterDuration">Hide Duration</label>
+                                    </div>
                                 </div>
                                 <div nz-col nzSpan="8">
                                 <div><span> Start Date:</span>    <nz-date-picker [(ngModel)]="Rstartdate" nzPlaceHolder = "Date" [nzFormat]="dateFormat" ></nz-date-picker></div>
@@ -323,10 +324,12 @@
                 <div *nzModalFooter>
                         <ng-container>
                             <div nz-row>
-                                <div nz-col nzSpan="16" class="footerleft"  [formGroup]="inputForm">
+                                <div nz-col nzSpan="16" class="footerleft"  [formGroup]="inputForm" >
+                                    <div *ngIf = "SummarySfooter">                                    
                                     <div> <label class="checks" nz-checkbox formControlName="SheetSig">Client & Agency Signature at the end of Sheet </label></div>
                                     <div><label class="checks" nz-checkbox formControlName="pgSignature">Client & Agency Signature at each sheet </label></div>
                                     <div><label class="checks" nz-checkbox formControlName="logo">Display Company logo</label></div>                             
+                                </div>
                                 </div>
                             
                                 <div nz-col nzSpan="8"   >

@@ -262,13 +262,19 @@
     <button nz-button nzType="primary" (click)="handleOk()"  [nzLoading]="isConfirmLoading">Print</button>
   </div>
 </nz-modal>
-<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
-  <div class="col-md-12 spinner" *ngIf="loading">
+
+
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="SummarydrawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+   <div class="col-md-12 spinner" *ngIf="spinloading">
       <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
-  </div>
+  </div>  
   <div nz-row>
       <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
   </div>
 </nz-drawer>
+
+
+
 <app-leave-application *ngIf="user" [open]="putonLeaveModal" [user]="user"></app-leave-application>
 <app-add-staff [open]="newStaffModal" (reload)="reload($event)"></app-add-staff>
+

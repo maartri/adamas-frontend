@@ -114,8 +114,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
     pdfTitle: string;
     tryDoctype: any;
-    drawerVisible: boolean; 
-    loading: boolean = false;
+    SummarydrawerVisible: boolean; 
+    spinloading: boolean = false ;
     dateFormat: string ='dd/MM/yyyy';
     Cycles: Array<any> = ['Cycle 1', 'Cycle 2', 'Cycle 3', 'Cycle 4', 'Cycle 5', 'Cycle 6', 'Cycle 7', 'Cycle 8', 'Cycle 9', 'Cycle 10'];
     DayNames: Array<any> = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
@@ -272,8 +272,10 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     }
     handleOk(){
+        this.tryDoctype = "";
+        this.pdfTitle = "" 
         this.ReportRender();
-        this.printSummaryModal = false;
+    //    this.printSummaryModal = false;
     }
     view(index: number) {
         this.nzSelectedIndex = index;
@@ -374,7 +376,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.reloadVal = !this.reloadVal;
     }
     handleCancelTop(){
-        this.drawerVisible = false;
+        this.SummarydrawerVisible = false;
     }
 ReportRender(){
       
@@ -385,13 +387,20 @@ ReportRender(){
      
     //id = "PDg8Im0vdY"
     //rptfile = "Summary Sheet.pdf"
+    if(this.printSummaryGroup.value.fileLabels == true){
+        id = "PDg8Im0vdY"
+        var Title = "Address Labels"
+    }else{
+        id = "RYeIj0QuEc"
+        var Title = "Summary Sheet"
+    }
   
    
    
-    var Title = "Summary Sheet"
+    
         //    console.log(this.tocken.user)
 
-        
+        if(id == "RYeIj0QuEc"){
           var date = new Date();
    
             if (this.trainingFrom != null) { Trainstrdate = format(this.trainingFrom, 'yyyy/MM/dd') } 
@@ -506,7 +515,7 @@ ReportRender(){
 
           const data = {
     
-            "template": { "shortid":"RYeIj0QuEc" },
+            "template": { "shortid": id },
                         
             "options": {
                 "reports": { "save": false },
@@ -534,7 +543,7 @@ ReportRender(){
                  "InclLoanItems": this.printSummaryGroup.value.ItemsOnLoan,
                  "InclHRNotes": this.printSummaryGroup.value.hrNotes,
 
-                 "InclFieldLabels": this.printSummaryGroup.value.fileLabels,
+                 //"InclFieldLabels": this.printSummaryGroup.value.fileLabels,
                  "RosterSDate": Rstrdate,
                  "RosterEDate": Rendate,
 
@@ -561,7 +570,8 @@ ReportRender(){
                 
             }
         }
-        this.loading = true;
+        this.SummarydrawerVisible = true;
+        this.spinloading = true;
         
         const headerDict = {
 
@@ -588,12 +598,12 @@ ReportRender(){
 
                 let _blob: Blob = blob;
 
-                let fileURL = URL.createObjectURL(_blob)//+'#toolbar=1';
+                let fileURL = URL.createObjectURL(_blob) ;
                 this.pdfTitle = rptfile;
 
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 
-                this.loading = false;
+                this.spinloading = false;
 
             }, err => {
                 console.log(err);
@@ -601,11 +611,86 @@ ReportRender(){
                     nzTitle: 'TRACCS',
                     nzContent: 'The report has encountered the error and needs to close (' + err + ')',
                     nzOnOk: () => {
-                             this.drawerVisible = false;
+                             this.SummarydrawerVisible = false;
+                              
                              },
                   });
             }); 
-            this.drawerVisible = true;
+        }
+        else{
+
+            var date = new Date();
+                                        
+          const data = {
+    
+            "template": { "shortid": id },
+                        
+            "options": {
+                "reports": { "save": false },
+                //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
+                 
+                 
+                "userid": this.tocken.user,
+                "txtTitle": Title,
+                 "txtid":this.globalS.var1.toString(),
+                
+                 
+                 
+             
+
+                
+            }
+        }
+        this.SummarydrawerVisible = true;
+        this.spinloading = true;
+        
+        const headerDict = {
+
+            'Content-Type': 'application/json',
+            'Accept': 'application/json', 
+            'Content-Disposition': 'inline;filename=XYZ.pdf'
+           
+            
+            
+        }
+
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict),
+            
+            credentials: true,
+           
+            
+        };
+
+        //this.rpthttp
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+            .subscribe((blob: any) => {
+                console.log(blob);
+
+                let _blob: Blob = blob;
+
+                let fileURL = URL.createObjectURL(_blob) ;
+                this.pdfTitle = rptfile;
+
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                
+                this.spinloading = false;
+
+            }, err => {
+                console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
+                    nzOnOk: () => {
+                             this.SummarydrawerVisible = false;
+                              
+                             },
+                  });
+            });
+
+        }
+            
+            
 
           
     

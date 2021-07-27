@@ -69,10 +69,11 @@ const inputFormDefault = {
    logo  : [false],
    hideRosterActivity  : [false],
    hideRosterDuration: [false],
+   SummarySfooter : [false],
 
   
 
-  Roster_inclusion : ['Detail'],
+  Roster_inclusion : ['Presentation - with Activity'],
   Roster_staffinclusion : ['Show Staff Code'],
   Cycles : ['Cycle 1'],
   DayNames : ['Monday'],
@@ -144,7 +145,8 @@ export class PrintComponent implements OnInit , OnDestroy {
     tocken: any;
     pdfTitle: string;
     tryDoctype: any;
-    drawerVisible: boolean =  false;   
+    drawerVisible: boolean =  false;  
+    SummarySfooter  : boolean;
     dateFormat: string ='dd/MM/yyyy';
     Renddate: Date;
     Rstartdate: Date;
@@ -262,7 +264,9 @@ export class PrintComponent implements OnInit , OnDestroy {
           this.sheet = true;
           this.title = 'Print Summary Sheet'
           this.width = "900px";
-          this.ShowModal = true;   
+          this.SummarySfooter = true;
+          this.ShowModal = true;  
+           
              
         },
         
@@ -468,6 +472,7 @@ export class PrintComponent implements OnInit , OnDestroy {
                    "InclServiceContentS": this.inputForm.value.ServiceContent,
                    
                    "InclRosterSheet": this.inputForm.value.Roster,
+                   "RosterSheetFormat": this.inputForm.value.Roster_inclusion.toString(),
                    "InclAddlRosterInfo": this.inputForm.value.AddlInfo,
 
                    "InclCaseSSheet": this.inputForm.value.CaseSummary,
@@ -548,9 +553,9 @@ export class PrintComponent implements OnInit , OnDestroy {
   
                   let fileURL = URL.createObjectURL(_blob)//+'#toolbar=1';
                   this.pdfTitle = rptfile;
-  
+
                   this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                  
+                  console.log(this.tryDoctype);
                   this.loading = false;
   
               }, err => {
@@ -609,11 +614,11 @@ export class PrintComponent implements OnInit , OnDestroy {
   
                   let _blob: Blob = blob;
   
-                  let fileURL = URL.createObjectURL(_blob)//+'#toolbar=1';
+                  let fileURL = URL.createObjectURL(_blob);
                   this.pdfTitle = rptfile;
   
                   this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                  
+                  console.log(this.tryDoctype);
                   this.loading = false;
   
               }, err => {

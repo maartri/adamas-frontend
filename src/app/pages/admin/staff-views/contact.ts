@@ -62,6 +62,7 @@ export class StaffContactAdmin implements OnInit, OnDestroy {
 
         this.transformedUser = {
             code: user.code,
+            name: user.code,
             view: user.view,
             id: user.id,
             sysmgr: user.sysmgr

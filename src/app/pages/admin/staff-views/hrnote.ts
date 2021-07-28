@@ -6,11 +6,10 @@ import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil, delay } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
-
 import format from 'date-fns/format';
 import { DomSanitizer } from '@angular/platform-browser';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { HttpClient, HttpHeaders} from '@angular/common/http';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
     styles: [`
     nz-table{
@@ -76,7 +75,14 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
     deletedRecord: string;
     recipientStrArr: any;
     mlist: any;
-    
+    public editorConfig:AngularEditorConfig = {
+        editable: true,
+        spellcheck: true,
+        height: '15rem',
+        minHeight: '5rem',
+        translate: 'no',
+        customClasses: []
+    };
     
     constructor(
         private timeS: TimeSheetService,
@@ -232,7 +238,6 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
             save() {
                 if (!this.globalS.IsFormValid(this.inputForm))
                 return;        
-                
                 const cleanDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(
                     this.inputForm.get('alarmDate').value);
                     

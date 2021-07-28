@@ -13,6 +13,7 @@ import getDate from 'date-fns/getDate';
 import getMonth from 'date-fns/getMonth';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 @Component({
     styles: [`
@@ -78,6 +79,14 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     drawerVisible: boolean =  false;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     mlist: any;
+    public editorConfig:AngularEditorConfig = {
+        editable: true,
+        spellcheck: true,
+        height: '15rem',
+        minHeight: '5rem',
+        translate: 'no',
+        customClasses: []
+    };
     recipientStrArr: any;
     constructor(
         private timeS: TimeSheetService,

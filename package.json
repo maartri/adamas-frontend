@@ -30,6 +30,7 @@
     "@fullcalendar/timegrid": "^5.1.0",
     "@grapecity/spread-sheets": "^14.0.9",
     "@grapecity/spread-sheets-angular": "^14.0.9",
+    "@kolkov/angular-editor": "^1.2.0",
     "@ng-select/ng-select": "^6.1.0",
     "ag-grid-angular": "^23.0.3",
     "ag-grid-community": "^23.0.2",

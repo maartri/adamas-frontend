@@ -147,7 +147,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
 
   searchKin(token: ProfileInterface){
     this.loading = true;
-
+    console.log(token)
     if (token.view == view.recipient) {
         this.timeS.getcontactskinrecipient(token.id)
         .subscribe(data => {
@@ -166,7 +166,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
 
     if (token.view == view.staff) {
     
-      this.timeS.getcontactskinstaff(token.name)
+      this.timeS.getcontactskinstaff(token.code)
         .subscribe(data => {
           this.kinsArray = data;
           if (this.kinsArray.length > 0) {
@@ -212,6 +212,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   //From ControlValueAccessor interface
   writeValue(value: any) {
     if (value != null) {
+      console.log(value)
+
       this.innerValue = value;
       this.searchKin(this.innerValue);
     }
@@ -228,6 +230,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   save() {
+    
     if (this.user.view === view.staff)
     {
       var sub = this.kindetailsGroup.get('suburbcode').value;
@@ -250,6 +253,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         details,
         details.recordNumber
       ).subscribe(data => {
+
           this.searchKin(this.user);
           this.globalS.sToast('Success', 'Contact Updated');       
       });
@@ -310,7 +314,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   add() {
-
     if (this.inputForm.controls['suburbcode'].dirty) {
       var rs = this.inputForm.get('suburbcode').value;
       
@@ -337,7 +340,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       this.user.id
     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.globalS.sToast('Success', 'Contact Inserted');
-      console.log(this.user + "-------");
+      console.log(this.user);
       this.handleCancel();
       this.searchKin(this.user);
       this.handleCancel();

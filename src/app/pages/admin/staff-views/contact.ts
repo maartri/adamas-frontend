@@ -61,6 +61,7 @@ export class StaffContactAdmin implements OnInit, OnDestroy {
         if (!user) return;
 
         this.transformedUser = {
+            code: user.code,
             name: user.code,
             view: user.view,
             id: user.id,

@@ -529,11 +529,7 @@ export class PrintComponent implements OnInit , OnDestroy {
           const headerDict = {
   
               'Content-Type': 'application/json',
-              'Accept': 'application/json', 
-              'Content-Disposition': 'inline;filename=XYZ.pdf'
-             
-              
-              
+              'Accept': 'application/json',                                                        
           }
   
           const requestOptions = {
@@ -545,7 +541,7 @@ export class PrintComponent implements OnInit , OnDestroy {
           };
   
           //this.rpthttp
-          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
               .subscribe((blob: any) => {
                   console.log(blob);
   
@@ -608,7 +604,7 @@ export class PrintComponent implements OnInit , OnDestroy {
           };
   
           //this.rpthttp
-          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
               .subscribe((blob: any) => {
                   console.log(blob);
   

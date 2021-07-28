@@ -114,6 +114,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
     pdfTitle: string;
     tryDoctype: any;
+    ifrmtryDoctype : boolean;
     SummarydrawerVisible: boolean; 
     spinloading: boolean = false ;
     dateFormat: string ='dd/MM/yyyy';
@@ -271,11 +272,12 @@ export class StaffAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
 
     }
-    handleOk(){
-        this.tryDoctype = "";
-        this.pdfTitle = "" 
+    handleOk(){                         
         this.ReportRender();
+        this.tryDoctype = ""
+        this.pdfTitle = ""        
     //    this.printSummaryModal = false;
+     
     }
     view(index: number) {
         this.nzSelectedIndex = index;
@@ -411,22 +413,22 @@ ReportRender(){
                 Trainendate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0), 'yyyy/MM/dd');}
       
         
-            if (this.opnotesFrom != null) { OPstrdate = format(this.opnotesFrom, 'yyyy/MM/dd') } 
+            if (this.opnotesFrom != null) { OPstrdate = format(this.opnotesFrom, 'MM-dd-yyyy') } 
             else {                     
-             OPstrdate = format(new Date(date.getFullYear(), date.getMonth(), 1), 'yyyy/MM/dd')}
-            if (this.opnotesTo != null) { OPendate = format(this.opnotesTo, 'yyyy/MM/dd') } 
+             OPstrdate = format(new Date(date.getFullYear(), date.getMonth(), 1), 'MM-dd-yyyy')}
+            if (this.opnotesTo != null) { OPendate = format(this.opnotesTo, 'MM-dd-yyyy') } 
             else {       
-                 OPendate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0), 'yyyy/MM/dd');}
+                 OPendate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0), 'MM-dd-yyyy');}
          
         
 
          
-            if (this.hrnotesFrom != null) { hrstrdate = format(this.hrnotesFrom, 'yyyy/MM/dd') } 
+            if (this.hrnotesFrom != null) { hrstrdate = format(this.hrnotesFrom, 'MM-dd-yyyy') } 
             else {                     
-              hrstrdate = format(new Date(date.getFullYear(), date.getMonth(), 1), 'yyyy/MM/dd')}
-            if (this.hrnotesTo != null) { hrendate  = format(this.hrnotesTo, 'yyyy/MM/dd') } 
+              hrstrdate = format(new Date(date.getFullYear(), date.getMonth(), 1), 'MM-dd-yyyy')}
+            if (this.hrnotesTo != null) { hrendate  = format(this.hrnotesTo, 'MM-dd-yyyy') } 
             else {       
-              hrendate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0), 'yyyy/MM/dd');}
+              hrendate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0), 'MM-dd-yyyy');}
        
 
               if (this.rosterFrom != null) { Rstrdate = format(this.rosterFrom, 'yyyy/MM/dd') } 
@@ -504,8 +506,8 @@ ReportRender(){
 
         
                 
-
-          //  console.log(Pstrdate, Pendate, OPstrdate, OPendate, Rstrdate, Rendate)
+                   
+           // console.log(OPstrdate, OPendate, f, hrendate )
           //  console.log(cyclestrdate, cycleendate)
 
 
@@ -576,33 +578,25 @@ ReportRender(){
         const headerDict = {
 
             'Content-Type': 'application/json',
-            'Accept': 'application/json', 
-            'Content-Disposition': 'inline;filename=XYZ.pdf'
-           
-            
-            
+            'Accept': 'application/json',                                                
         }
 
         const requestOptions = {
             headers: new HttpHeaders(headerDict),
-            
-            credentials: true,
-           
-            
+            credentials: true
         };
 
         //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
             .subscribe((blob: any) => {
                 console.log(blob);
 
                 let _blob: Blob = blob;
 
-                let fileURL = URL.createObjectURL(_blob) ;
+                let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = rptfile;
 
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                
                 this.spinloading = false;
 
             }, err => {
@@ -647,23 +641,16 @@ ReportRender(){
         const headerDict = {
 
             'Content-Type': 'application/json',
-            'Accept': 'application/json', 
-            'Content-Disposition': 'inline;filename=XYZ.pdf'
-           
-            
-            
+            'Accept': 'application/json',                                                
         }
 
         const requestOptions = {
-            headers: new HttpHeaders(headerDict),
-            
-            credentials: true,
-           
-            
+            headers: new HttpHeaders(headerDict),            
+            credentials: true,                       
         };
 
         //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
             .subscribe((blob: any) => {
                 console.log(blob);
 
@@ -673,7 +660,7 @@ ReportRender(){
                 this.pdfTitle = rptfile;
 
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                
+                this.ifrmtryDoctype = true;
                 this.spinloading = false;
 
             }, err => {

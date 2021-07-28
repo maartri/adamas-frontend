@@ -2737,7 +2737,7 @@ stafftypeArr: Array<any> = constants.types;
                 };
         
                 //this.rpthttp
-                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
                     .subscribe((blob: any) => {
                         console.log(blob);
         
@@ -2877,7 +2877,7 @@ stafftypeArr: Array<any> = constants.types;
         };
 
         //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob', })
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
             .subscribe((blob: any) => {
                 console.log(blob);
 

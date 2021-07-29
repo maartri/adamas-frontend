@@ -950,7 +950,9 @@ export class TimeSheetService {
     getrecipientsbyphone(phoneno: string): Observable<any> {
         return this.auth.get(`${timesheet}/phone-search-recipient/${phoneno}`);
     }
-
+    getstaffbyphone(phoneno: string): Observable<any> {
+        return this.auth.get(`${timesheet}/phone-search-staff/${phoneno}`);
+    }
     getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
     }

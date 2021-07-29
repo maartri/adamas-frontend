@@ -247,12 +247,12 @@ export class StaffAdmin implements OnInit, OnDestroy {
             DayNames : ['Monday'],
             fDays: ['7'],
 
-            trainingFrom:monthStart,
-            trainingTo:monthend,
+            trainingFrom  :monthStart,
+            trainingTo :monthend,
             rosterTo :monthend,
-            rosterFrom:monthStart,
+            rosterFrom :monthStart,
             hrnotesFrom :monthStart,
-            hrnotesTo:monthend,
+            hrnotesTo :monthend,
             opnotesTo :monthend,
             opnotesFrom:monthStart,
         });
@@ -384,11 +384,7 @@ ReportRender(){
       
     var id,rptfile , tempsdate, tempedate,temp1,temp2;
     var  Trainstrdate, Trainendate, hrstrdate, hrendate , OPstrdate, OPendate, Rstrdate, Rendate = '';
- //   var cyclestrdate , cycleendate ;
-  
-     
-    //id = "PDg8Im0vdY"
-    //rptfile = "Summary Sheet.pdf"
+
     if(this.printSummaryGroup.value.fileLabels == true){
         id = "PDg8Im0vdY"
         var Title = "Address Labels"
@@ -400,7 +396,7 @@ ReportRender(){
    
    
     
-        //    console.log(this.tocken.user)
+
 
         if(id == "RYeIj0QuEc"){
           var date = new Date();
@@ -504,46 +500,33 @@ ReportRender(){
               } 
                   let cycleendate =  new Date(temp2) 
 
-        
-                
-                   
-           // console.log(OPstrdate, OPendate, f, hrendate )
-          //  console.log(cyclestrdate, cycleendate)
-
-
-
-
-
 
           const data = {
     
             "template": { "shortid": id },
                         
             "options": {
-                "reports": { "save": false },
-                //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
-                 
-                 
+                "reports": { "save": false },                                  
                 "userid": this.tocken.user,
                 "txtTitle": Title,
-                 "txtid":this.globalS.var1.toString(),
-                 "txtacc":this.globalS.var2.toString(),
+                "txtid":this.globalS.var1.toString(),
+                "txtacc":this.globalS.var2.toString(),
 
-                 "inclNameContact": this.printSummaryGroup.value.nameandContacts,
-                 "inclContactIssues": this.printSummaryGroup.value.contactIssue,
-                 "InclOtherContacts": this.printSummaryGroup.value.otherContact,
-                 "InclOtherInfo": this.printSummaryGroup.value.otherInfo,
-                 "InclPayRollInfo": this.printSummaryGroup.value.payrollInfo,
-                 "InclWorkhrInfo": this.printSummaryGroup.value.workhourInfo,
-                 "InclCompetencies": this.printSummaryGroup.value.copmpetencies,
-                 "InclOtherSkills": this.printSummaryGroup.value.otherSkills,
-                 "InclTraining": this.printSummaryGroup.value.training,
-                 "InclPermanentRosters": this.printSummaryGroup.value.permanentRoster,
-                 "InclRosterSheet": this.printSummaryGroup.value.roster,
-                 "InclNotesSheet": this.printSummaryGroup.value.miscellaneousNotes,                 
-                 "InclOPNotesS": this.printSummaryGroup.value.operationalNotes,
-                 "InclLoanItems": this.printSummaryGroup.value.ItemsOnLoan,
-                 "InclHRNotes": this.printSummaryGroup.value.hrNotes,
+                "inclNameContact": this.printSummaryGroup.value.nameandContacts,
+                "inclContactIssues": this.printSummaryGroup.value.contactIssue,
+                "InclOtherContacts": this.printSummaryGroup.value.otherContact,
+                "InclOtherInfo": this.printSummaryGroup.value.otherInfo,
+                "InclPayRollInfo": this.printSummaryGroup.value.payrollInfo,
+                "InclWorkhrInfo": this.printSummaryGroup.value.workhourInfo,
+                "InclCompetencies": this.printSummaryGroup.value.copmpetencies,
+                "InclOtherSkills": this.printSummaryGroup.value.otherSkills,
+                "InclTraining": this.printSummaryGroup.value.training,
+                "InclPermanentRosters": this.printSummaryGroup.value.permanentRoster,
+                "InclRosterSheet": this.printSummaryGroup.value.roster,
+                "InclNotesSheet": this.printSummaryGroup.value.miscellaneousNotes,                 
+                "InclOPNotesS": this.printSummaryGroup.value.operationalNotes,
+                "InclLoanItems": this.printSummaryGroup.value.ItemsOnLoan,
+                "InclHRNotes": this.printSummaryGroup.value.hrNotes,
 
                  //"InclFieldLabels": this.printSummaryGroup.value.fileLabels,
                  "RosterSDate": Rstrdate,

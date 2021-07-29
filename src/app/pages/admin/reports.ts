@@ -1632,7 +1632,16 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Disciplines = true;
                 this.frm_CareDomain = true;
                 this.frm_Programs = true;
-                break;
+                break;            
+            case 'btn-regis-serviceplan':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
+                this.ModalName = "SERVICE PLAN REGISTER "
+                this.frm_Branches = true;
+                this.frm_Programs = true;                
+                this.frm_Recipients = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;                
+                break;   
             case 'btn-Regis-opnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "OPERATIONAL NOTES REGISTER "
@@ -2463,6 +2472,9 @@ stafftypeArr: Array<any> = constants.types;
                 break;
             case 'btn-Regis-opnotesregister':
                 this.OPNotesRegister(s_Branches, s_Programs, s_CaseNotes, s_Recipient, s_Descipiline, s_CareDomain, strdate, endate, tempsdate, tempedate)
+                break;
+            case 'btn-regis-serviceplan':
+                this.ServicePlanRegister(s_Branches, s_Programs,  s_Recipient,s_Managers,s_ServiceRegions)
                 break;
             case 'btn-Regis-careplanstatus':
                 this.Careplanstatus(s_Recipient, s_PlanType, strdate, endate, tempsdate, tempedate)
@@ -7716,6 +7728,119 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = "OP Notes Register.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                this.loading = false;
+
+            }, err => {
+                console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
+                  });
+            });
+    }
+    
+    ServicePlanRegister(branch, program, recipient,manager,region) {
+
+
+        var fQuery = "SELECT AccountNo,PlanName,PlanNumber,PlanCreator,format(PlanEndDate,'dd/MM/yyyy') as PlanEndDate,format(PlanStartDate,'dd/MM/yyyy') as PlanStartDate,PlanCoPayAmount,dbo.rtf2text(PlanDetail) as PlanDetail   FROM CarePlanItem CP INNER JOIN Recipients R ON PersonID = UniqueID "
+        if(program != ""){ fQuery = fQuery + " INNER JOIN History ON R.UniqueID = History.PersonID "}
+        fQuery = fQuery +" WHERE CP.DeletedRecord <> 1 AND ISNULL(Accountno, '') <> '' "
+
+        //And R.BRANCH in ('GRAFTON') 
+        //And AccountNo in ('ABBOTS MORGANICA')
+        //And RECIPIENT_CoOrdinator in ('ALLA KASPARSKI')
+        //And History.Program in ('')
+        
+       
+        
+        var lblcriteria;
+
+         
+        if (branch != "") {
+            this.s_BranchSQL = "R.[BRANCH]  in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }        
+        if (program != "") {
+            this.s_ProgramSQL = " (History.[Program] in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }                
+        if (recipient != "") {
+            this.s_RecipientSQL = "[AccountNo] in ('" + recipient.join("','") + "')";
+            if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL };
+        }
+        if (manager != "") {
+            this.s_CoordinatorSQL = "([RECIPIENT_CoOrdinator] in ('" + manager.join("','") + "'))";
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+        }
+        if (region != "") {
+            this.s_CategorySQL = "[CareDomain] in ('" + region.join("','") + "')";
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+        }
+
+
+
+
+        if (region != "") {
+            lblcriteria = " Categories: " + region.join(",") + "; "
+        }
+        else { lblcriteria = "All Categories," }
+        if (manager != "") {
+            lblcriteria = "Coordinator: " + manager.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Managers," }
+        if (recipient != "") {
+            lblcriteria = " Recipients: " + recipient.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Recipients," }
+        
+        if (program != "") {
+            lblcriteria = lblcriteria + " Programs " + program.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Programs." }
+        if (branch != "") {
+            lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + " All Branches " }
+        
+
+        fQuery = fQuery + " ORDER by PlanStartDate DESC   "
+
+        //console.log(fQuery)
+
+        this.drawerVisible = true;
+
+        const data = {
+            "template": { "shortid":"2RJgekOWt" },
+            "options": {
+                "reports": { "save": false },
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+            }
+        }
+
+        this.loading = true;
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+
+                let _blob: Blob = blob;
+
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Service Plan Register.pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
 

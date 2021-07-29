@@ -79,7 +79,7 @@ export const fundingDropDowns = {
     levels: ['LEVEL 1', 'LEVEL 2', 'LEVEL 3','LEVEL 4'],
     cycle: ['CYCLE 1', 'CYCLE 2', 'CYCLE 3', 'CYCLE 4', 'CYCLE 5', 'CYCLE 6', 'CYCLE 7', 'CYCLE 8', 'CYCLE 9', 'CYCLE 10']
 }
-
+export const attendance = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL']
 export const dateFormat = "dd/MM/yyyy";
 export const dayStrings = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 export const qoutePlantype = ['SUPPORT PLAN'];

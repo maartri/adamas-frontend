@@ -21,6 +21,10 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getportalmanagers():Observable<any>{
+        return this.http.get(`${list}/portal-manager`);
+    }
+
     createQuoteLine(data: any):Observable<any>{
         return this.http.post(`${list}/create-quote-line`, data);
     }

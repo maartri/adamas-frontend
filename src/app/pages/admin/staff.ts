@@ -297,7 +297,17 @@ export class StaffAdmin implements OnInit, OnDestroy {
             this.cd.detectChanges();
         });
     }
-
+    delete(){
+        const { code, id } = this.user;
+        this.timeS.postDeleteStaff({
+            AccountNo: code,
+            PersonID: id
+        }).subscribe(data => {
+            this.globalS.sToast('Success','Staff has been deleted!');
+            this.cd.detectChanges();
+            this.reload(true);
+        });
+    }
     currentMonthRoster(){
         console.log(this.user.code + "current");
         this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Staff',IsMaster:false }};

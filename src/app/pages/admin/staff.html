@@ -10,13 +10,16 @@
         <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
       </div>
       
-      <div nz-col nzSpan="6" *ngIf="user">
+      <div nz-col nzSpan="8" *ngIf="user">
         <ul>
+          <li class="terminate" (click)="terminateModalOpen()"><div><i nz-icon nzType="edit" nzTheme="outline"></i></div>Change Staff Code</li>
+          <li class="terminate" nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Staff ?"
+          nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete()"><div><i nz-icon nzType="delete" nzTheme="outline"></i></div>Delete Staff</li>
           <li class="terminate" (click)="terminateModalOpen()"><div><i nz-icon nzType="close" nzTheme="outline"></i></div>Terminate</li>
           <li class="leave" (click)="putonLeaveModal = !putonLeaveModal"><div><i nz-icon nzType="eye-invisible" nzTheme="outline"></i></div>Put On Leave</li>
         </ul>
       </div>
-      <div nz-col nzSpan="12" *ngIf="user">
+      <div nz-col nzSpan="10" *ngIf="user">
         <ul>
           <li class="terminate" (click)="printSummaryModalOpen()"><div><i nz-icon nzType="printer" nzTheme="outline"></i></div>Print</li>
           <li class="terminate" (click)="currentMonthRoster()"><div><i nz-icon nzType="calendar" nzTheme="outline"></i></div>{{longMonth}} Roster</li>

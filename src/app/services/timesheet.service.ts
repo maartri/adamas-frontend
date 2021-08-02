@@ -183,6 +183,9 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/terminate`, data);
     }
 
+    postDeleteStaff(data:any): Observable<any>{
+        return this.auth.post(`${timesheet}/deleteStaff`, data);
+    }
     getservicetype(type: string): Observable<any> {
         return this.auth.get(`${timesheet}/servicetype/${type}`)
     }

@@ -18,6 +18,14 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    updateattendance(data: any,personid: string): Observable<any>{
+        return this.auth.put(`${timesheet}/time-and-attendance/${personid}`, data);
+    }    
+
+    getattendance(personid: string): Observable<any>{
+        return this.auth.get(`${timesheet}/time-and-attendance/${personid}`);
+    }        
+
     getbrandinglogo(type: string = 'big'): Observable<any>{
         return this.auth.get(`${timesheet}/branding-logo/${type}`);
     }

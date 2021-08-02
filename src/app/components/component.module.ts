@@ -7,7 +7,7 @@ import { UploadFileComponent } from './upload-file/upload-file.component'
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 
-import { RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, DayManagerPopulate } from '@pipes/pipes';
+import { RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter,GetTextFromHtml, SplitArrayPipe, DayManagerPopulate } from '@pipes/pipes';
 import { ProfileComponent } from './profile/profile.component'
 
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -62,7 +62,7 @@ import { AddQuoteComponent } from './add-quote/add-quote.component';
     //Directives,
     ClickOutsideDirective, NumberDirective,
 
-    RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, DayManagerPopulate,
+    RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter,GetTextFromHtml,SplitArrayPipe, DayManagerPopulate,
     ProfileComponent,
     SuburbComponent,
     CalendarComponent,
@@ -111,6 +111,7 @@ import { AddQuoteComponent } from './add-quote/add-quote.component';
   exports: [
     UploadFileComponent,
     MonthPeriodFilter,
+    GetTextFromHtml,
     SuburbComponent,
     ProfileComponent,
     HeaderNavComponent,

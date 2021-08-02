@@ -1034,7 +1034,8 @@ const routes: Routes = [
           },
           {
             path: 'attendance',
-            component: RecipientAttendanceAdmin
+            component: RecipientAttendanceAdmin,
+            canDeactivate: [CanDeactivateGuard]
           },
           {
             path: 'accounting',

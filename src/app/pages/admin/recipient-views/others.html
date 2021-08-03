@@ -1,14 +1,12 @@
-<div nz-row style="margin-top:2rem">   
+<div nz-row style="margin-top:2rem" [formGroup]="othersForm">   
     <h4>General Activation Information</h4>
 
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Type: </span>
-            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-              </nz-select>
+            <nz-select formControlName="type" nzSize="small" >
+                <nz-option *ngFor="let type of types" [nzValue]="type" [nzLabel]="type"></nz-option>
+            </nz-select>
         </div>
     </div>
 
@@ -16,50 +14,42 @@
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Last Activation Date: </span>
-            <input type="text" nz-input nzSize="small">
+            <nz-date-picker formControlName="admissionDate" [nzFormat]="dateFormat"></nz-date-picker>
         </div>
     </div>
 
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Activated By: </span>
-            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-              </nz-select>
+            <nz-select formControlName="admissionDate" nzSize="small" nzDisabled>
+                <nz-option *ngFor="let type of types" [nzValue]="type" [nzLabel]="type"></nz-option>
+            </nz-select>
         </div>
     </div>
 
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Admitting Branch: </span>
-            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-              </nz-select>
+            <nz-select formControlName="branch" nzSize="small">
+                <nz-option *ngFor="let branch of branches" [nzValue]="branch" [nzLabel]="branch"></nz-option>
+            </nz-select>
         </div>
     </div>
 
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Coordinator: </span>
-            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-              </nz-select>
+            <nz-select formControlName="recipient_Coordinator" nzSize="small" >
+                <nz-option *ngFor="let case of casemanagers" [nzValue]="case" [nzLabel]="case"></nz-option>
+            </nz-select>
         </div>
     </div>
 
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Main Support Worker: </span>
-            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+            <nz-select formControlName="mainSupportWorker" >
+                <nz-option *ngFor="let staff of staffs" [nzValue]="staff" [nzLabel]="staff"></nz-option>
               </nz-select>
         </div>
     </div>
@@ -84,10 +74,8 @@
         <div nz-col nzSpan="12" class="layer2">
             <span>Occupation: </span>
             <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-              </nz-select>
+              
+            </nz-select>
         </div>
     </div>
 
@@ -95,24 +83,22 @@
         <div nz-col nzSpan="12" class="layer2">
             <span>Financial Classification: </span>
             <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-              </nz-select>
+               
+            </nz-select>
         </div>
     </div>
 
-    <div nz-row>
+    <div nz-row [formGroup]="othersForm">
         <div nz-col nzSpan="12" class="layer2">
             <span>Roster Alerts: </span>
-            <input type="text" nz-input nzSize="small">
+            <label nz-checkbox formControlName="acceptsReferrals"></label>
         </div>
     </div>
 
-    <div nz-row>
+    <div nz-row [formGroup]="othersForm">
         <div nz-col nzSpan="12" class="layer2">
             <span>Generates Referrals: </span>
-            <input type="text" nz-input nzSize="small">
+            <label nz-checkbox formControlName="generatesReferrals"></label>
         </div>
     </div>
 

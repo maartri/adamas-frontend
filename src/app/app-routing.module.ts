@@ -1038,7 +1038,8 @@ const routes: Routes = [
           },
           {
             path: 'others',
-            component: RecipientOthersAdmin
+            component: RecipientOthersAdmin,
+            canDeactivate: [CanDeactivateGuard]
           },
           {
             path: 'opnote',

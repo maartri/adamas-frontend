@@ -26,6 +26,9 @@ import id from 'date-fns/locale/id';
 export class AddReferralComponent implements OnInit, OnDestroy {
 
   private verifyAccount = new Subject<any>();
+  private verifyAccountCustom = new Subject<any>();
+
+  loadingGenerateAccount: boolean = false;
 
   contactGroups: Array<string> = contactGroups;
 
@@ -36,6 +39,9 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   @Input() followupremind: string = '';
 
   @Output() openRefer = new EventEmitter();
+
+  showEdit: boolean = null;
+  
 
   referralGroup: FormGroup;
 
@@ -103,7 +109,37 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
   }
   ngOnInit() {
-    this.resetGroup();    
+    this.resetGroup();
+    
+    this.verifyAccountCustom.pipe(
+      debounceTime(500),
+      concatMap(e => {
+        if (this.referralGroup && this.referralGroup.valid) {
+          this.generatedAccount = this.referralGroup.get('accountNo').value;
+          this.cd.markForCheck();
+          return this.clientS.isAccountNoUnique(this.generatedAccount);
+        } return EMPTY;
+      })
+    ).subscribe(next => {
+      this.loadingGenerateAccount = false;
+      if (next == 1) {
+        this.accountTaken = false;
+
+        this.referralGroup.patchValue({
+          accountNo: this.generatedAccount
+        });
+        this.cd.markForCheck();
+      }
+      if (next == 0) {
+        this.accountTaken = true;
+        this.referralGroup.patchValue({
+          accountNo: this.generatedAccount
+        });
+        this.cd.markForCheck();
+      }
+    });
+  
+
     this.verifyAccount.pipe(
       debounceTime(300),
       concatMap(e => {
@@ -175,6 +211,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     });
 
     this.firstOpenChange = false;
+    this.showEdit = null;
     
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
@@ -242,6 +279,16 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     // this.referralGroup.get('otherContacts').valueChanges.subscribe(data => console.log(data))
 
     this.referralGroup.get('branch').valueChanges.subscribe(data => console.log(data))
+
+    this.referralGroup.get('accountNo')
+        .valueChanges
+        .pipe(
+          debounceTime(100),
+          distinctUntilChanged()
+        ).subscribe(data => {
+          this.loadingGenerateAccount = true;
+          this.verifyAccountCustom.next();
+        })
 
     this.referralGroup.get('organisation').valueChanges
       .pipe(distinctUntilChanged(), debounceTime(200), mergeMap(x => {

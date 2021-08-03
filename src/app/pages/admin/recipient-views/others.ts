@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, othersType, dateFormat } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
+
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     styles: [`
@@ -31,6 +33,9 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
             margin-right:5px;
             font-size:11px;
         }
+        nz-select{
+            width:12rem;
+        }
         
     `],
     templateUrl: './others.html',
@@ -48,6 +53,15 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
 
     loading: boolean = false;
 
+    types: Array<string> = othersType;
+    branches: Array<string> = [];
+    casemanagers: Array<string> = [];
+
+    othersForm: FormGroup;
+    staffs: Array<string> = []
+
+    dateFormat: string = dateFormat;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -55,7 +69,9 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
         private listS: ListService,
         private router: Router,
         private globalS: GlobalService,
-        private cd: ChangeDetectorRef
+        private formBuilder: FormBuilder,
+        private cd: ChangeDetectorRef,
+        private modalService:NzModalService
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
@@ -67,19 +83,92 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'history')) {
-                // this.search(data);
+                this.search(data);
             }
         });
     }
 
     ngOnInit(): void {        
         this.user = this.sharedS.getPicked();
-        // this.search(this.user);
+        this.buildForm();        
+        this.populate();
+        this.search(this.user);
     }
 
     ngOnDestroy(): void {
         this.unsubscribe.next();
         this.unsubscribe.complete();
+    }
+
+    search(data: any){
+        this.timeS.getothers(data.id)
+            .subscribe(data => {
+                console.log(data);
+                this.othersForm.patchValue(data)
+                this.detectChanges();
+            });
+    }
+
+    buildForm(){
+        this.othersForm = this.formBuilder.group({
+            type: null,
+            admissionDate: null,
+            branch: null,
+            recipient_Coordinator: null,
+            mainSupportWorker: null,
+            occupation: null,
+            generatesReferrals: false,
+            acceptsReferrals: false
+        });
+    }
+
+    canDeactivate() {
+        if (this.othersForm && this.othersForm.dirty) {
+            this.modalService.confirm({
+                nzTitle: 'Save changes before exiting?',
+                nzContent: '',
+                nzOkText: 'Yes',
+                nzOnOk: () => {
+                    this.save();
+                },
+                nzCancelText: 'No',
+                nzOnCancel: () => {
+                    
+                }
+            });
+        }
+
+        return true;
+    }
+
+    populate(){
+        forkJoin([
+            this.listS.getlistbranches(),
+            this.listS.getlistcasemanagers(),
+        ]).subscribe(data => {
+            this.branches = data[0];
+            this.casemanagers = data[1];
+
+            this.detectChanges();
+        })
+
+        this.timeS.getstaff({
+            User: this.globalS.decode().nameid,
+            SearchString: '',
+            IncludeInactive: false,
+          }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            this.staffs = data.map(x => x.accountNo);
+            this.detectChanges();
+          });
+    }
+
+    save(){
+
+    }
+
+    detectChanges(){
+        this.cd.markForCheck();
+        this.cd.detectChanges();
     }
 
 

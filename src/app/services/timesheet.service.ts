@@ -195,6 +195,9 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/terminate`, data);
     }
 
+    postDeleteStaff(data:any): Observable<any>{
+        return this.auth.post(`${timesheet}/deleteStaff`, data);
+    }
     getservicetype(type: string): Observable<any> {
         return this.auth.get(`${timesheet}/servicetype/${type}`)
     }
@@ -962,7 +965,9 @@ export class TimeSheetService {
     getrecipientsbyphone(phoneno: string): Observable<any> {
         return this.auth.get(`${timesheet}/phone-search-recipient/${phoneno}`);
     }
-
+    getstaffbyphone(phoneno: string): Observable<any> {
+        return this.auth.get(`${timesheet}/phone-search-staff/${phoneno}`);
+    }
     getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
     }
@@ -1041,6 +1046,9 @@ export class TimeSheetService {
 
     getleaveapplication(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/leaveapplication/${name}`)
+    }
+    getleaveapplicationByid(name: string, id: number): Observable<any> {
+        return this.auth.get(`${timesheet}/leaveapplication/${name}/${id}`)
     }
 
     updateleaveapplication(name:string,data: any): Observable<any> {

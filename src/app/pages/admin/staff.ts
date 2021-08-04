@@ -82,6 +82,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     sample: any;
 
     terminateModal: boolean = false;
+    changeCodeModal: boolean = false;
     putonLeaveModal: boolean = false;
     newStaffModal: boolean = false;
     
@@ -270,8 +271,14 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.listS.getleavebalances(this.user.id)
             .subscribe(data => this.leaveBalanceList = data)
     }
+    changeStaffModalOpen(): void{
+        this.changeCodeModal = true;
+    }
     printSummaryModalOpen(): void{
         this.printSummaryModal = true;
+    }
+    updateStaffCode(){
+        
     }
     terminate(){
         
@@ -297,7 +304,17 @@ export class StaffAdmin implements OnInit, OnDestroy {
             this.cd.detectChanges();
         });
     }
-
+    delete(){
+        const { code, id } = this.user;
+        this.timeS.postDeleteStaff({
+            AccountNo: code,
+            PersonID: id
+        }).subscribe(data => {
+            this.globalS.sToast('Success','Staff has been deleted!');
+            this.cd.detectChanges();
+            this.reload(true);
+        });
+    }
     currentMonthRoster(){
         console.log(this.user.code + "current");
         this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Staff',IsMaster:false }};

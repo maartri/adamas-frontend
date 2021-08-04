@@ -82,6 +82,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     sample: any;
 
     terminateModal: boolean = false;
+    changeCodeModal: boolean = false;
     putonLeaveModal: boolean = false;
     newStaffModal: boolean = false;
     
@@ -270,8 +271,14 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.listS.getleavebalances(this.user.id)
             .subscribe(data => this.leaveBalanceList = data)
     }
+    changeStaffModalOpen(): void{
+        this.changeCodeModal = true;
+    }
     printSummaryModalOpen(): void{
         this.printSummaryModal = true;
+    }
+    updateStaffCode(){
+        
     }
     terminate(){
         

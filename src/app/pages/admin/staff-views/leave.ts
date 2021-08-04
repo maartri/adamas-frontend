@@ -57,7 +57,8 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     leavepaytypes: any;
     defaultLeave:any;
     defaultLeaveForm: FormGroup;
-    
+    operation: any;
+    userUpdated: any;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -164,6 +165,28 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     }
 
     showAddModal() {
+        this.operation = {
+            process: 'ADD'
+        }
+        console.log(JSON.stringify(this.user) + "user");
+        this.putonLeaveModal = !this.putonLeaveModal;
+    }
+    
+    showEditModal(data: any) {
+        const {code, id, sysmgr, view } = this.user;
+            
+            var newPass = {
+                code: code,
+                id: id,
+                sysmgr: sysmgr,
+                view: view,
+                operation: 'UPDATE',
+                recordNo: data.recordNumber
+        }
+        this.operation = {
+            process: 'UPDATE'
+        }
+        this.user = newPass;
         this.putonLeaveModal = !this.putonLeaveModal;
     }
 
@@ -177,9 +200,7 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
         
     }
 
-    showEditModal(data: any) {
-        this.putonLeaveModal = !this.putonLeaveModal;
-    }
+    
 
     delete(data: any) {
         this.timeS

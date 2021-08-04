@@ -1035,6 +1035,9 @@ export class TimeSheetService {
     getleaveapplication(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/leaveapplication/${name}`)
     }
+    getleaveapplicationByid(name: string, id: number): Observable<any> {
+        return this.auth.get(`${timesheet}/leaveapplication/${name}/${id}`)
+    }
 
     updateleaveapplication(name:string,data: any): Observable<any> {
         return this.auth.put(`${timesheet}/leaveapplication/${name}`, data)

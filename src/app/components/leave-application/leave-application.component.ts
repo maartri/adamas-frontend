@@ -8,17 +8,25 @@ import lastDayOfMonth from 'date-fns/lastDayOfMonth'
 import startOfMonth from 'date-fns/startOfMonth'
 import format from 'date-fns/format'
 
+interface Process {
+  process: Mode
+}
+enum Mode{
+  UPDATE = "UPDATE",
+  ADD = "ADD"
+}
 @Component({
   selector: 'app-leave-application',
   templateUrl: './leave-application.component.html',
   styleUrls: ['./leave-application.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class LeaveApplicationComponent implements OnInit, OnChanges {
 
   @Input() open: boolean = false;
   @Input() user: any;
-  
+  @Input() operation: Process;
   leaveGroup: FormGroup;
   isLoading: boolean = false;
 
@@ -48,8 +56,17 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.open = true;
-        this.resetGroup();
+        // this.resetGroup();
         this.populate();
+      }
+      if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
+        this.operation = changes[property].currentValue;
+        if(this.operation.process == 'UPDATE'){
+          this.patchForm();
+        }
+        if(this.operation.process == 'ADD'){
+          this.resetGroup();
+        }
       }
     }
   }
@@ -78,7 +95,27 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         programShow: false
     });
   }
-  // showAddModal();
+  patchForm(){
+    this.timeS.getleaveapplicationByid(this.user.code,this.user.recordNo).subscribe(data => {
+      
+      this.leaveGroup.patchValue({
+        user: '',
+        staffcode: '',
+        reminderDate:data.reminderDate,
+        approved:data.approved,
+        makeUnavailable: data.makeUnavailable,
+        unallocAdmin: false,
+        unallocUnapproved: data.unallocUnapproved,
+        unallocMaster: false,
+        explanation:data.leaveType,
+        activityCode: '',
+        payCode: '',
+        program: '',
+        programShow: false
+      });
+    });
+    this.cd.detectChanges();
+  }
   handleCancel(){
     this.open = false;
     this.detectChanges();

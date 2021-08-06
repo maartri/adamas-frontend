@@ -18,6 +18,14 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    getaccountingprofile(personid: string): Observable<any>{
+        return this.auth.get(`${timesheet}/accounting-profile/${personid}`);
+    }
+
+    updateothers(data: any,personid: string): Observable<any>{
+        return this.auth.put(`${timesheet}/others/${personid}`, data);
+    }
+
     getothers(personid: string): Observable<any>{
         return this.auth.get(`${timesheet}/others/${personid}`);
     }

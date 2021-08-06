@@ -411,8 +411,8 @@
                                 <nz-option *ngFor="let l of notifications" [nzLabel]="l" [nzValue]="l"></nz-option>
                             </nz-select> 
                             <nz-checkbox-group [(ngModel)]="notifCheckBoxGroup" (ngModelChange)="log(notifCheckBoxGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
-
                             -->
+                            
                             <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                         
                             <!--    <div class="staff-wrapper">

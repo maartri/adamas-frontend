@@ -175,7 +175,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     setTimeout(() => {
-      this._lastname.nativeElement.focus();
+      if(this._lastname)
+        this._lastname.nativeElement.focus();
     });
     for (let property in changes) {
       if (property == 'open' && 
@@ -265,6 +266,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     ).subscribe((data: any) => {
         // this.notifications = data;
         //this.notifCheckBoxGroup = data.map(x => {
+
+          console.log(data);
           
           this.notifCheckBoxes = data.map(x => {
           return {

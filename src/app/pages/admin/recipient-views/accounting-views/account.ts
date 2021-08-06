@@ -6,53 +6,37 @@ import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
-@Component({
-    styles: [`
-    ul{
-        list-style:none;
-    }
+import { NzModalService } from 'ng-zorro-antd/modal';
 
-    div.divider-subs div{
-        margin-top:2rem;
-    }
-    nz-divider{
-        margin: 0;
-    }
-    p{
-        margin: 0;
-        cursor:pointer;
-        padding:8px 5px;
-    }
-    .active-tab{
-        background: #717e94;
-        color: #fff;
-    }
-        
-    `],
-    templateUrl: './accounting.html',
+@Component({
+    selector: '',
+    templateUrl: './account.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class RecipientAccountingAdmin implements OnInit, OnDestroy {
+export class AccountingHistory implements OnInit, OnDestroy {
+
     private unsubscribe: Subject<void> = new Subject();
     user: any;
-    inputForm: FormGroup;
-    tableData: Array<any>;
-    
-    checked: boolean = false;
-    isDisabled: boolean = false;
-
     loading: boolean = false;
+    modalOpen: boolean = false;
+    addOREdit: number;
+    inputForm: FormGroup;
+    tableData: Array<any> = [];
+    alist: Array<any> = [];
 
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
-        private clientS: ClientService,
         private listS: ListService,
         private router: Router,
         private globalS: GlobalService,
+        private formBuilder: FormBuilder,
+        private modalService: NzModalService,
         private cd: ChangeDetectorRef
     ) {
+        cd.detach();
+
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -62,15 +46,17 @@ export class RecipientAccountingAdmin implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'history')) {
-                // this.search(data);
+            if (this.globalS.isCurrentRoute(this.router, 'plans')) {
+                this.user = data;
+                this.search(data);
             }
         });
     }
 
-    ngOnInit(): void {        
+    ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        // this.search(this.user);
+        this.search(this.user);
+        this.buildForm();
     }
 
     ngOnDestroy(): void {
@@ -78,5 +64,44 @@ export class RecipientAccountingAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
+    trackByFn(index, item) {
+        return item.id;
+    }
 
+
+    search(user: any = this.user) {
+        this.cd.reattach();
+
+        this.loading = true;
+        this.timeS.getplans(user.id).subscribe(plans => {
+            this.tableData = plans;
+            this.loading = false;
+            this.cd.markForCheck();
+        });
+    }
+
+    buildForm() {
+
+    }
+
+    save() {
+
+    }
+
+    showEditModal(index: number) {
+
+    }
+
+    delete(index: number) {
+
+    }
+
+    handleCancel() {
+
+    }
+
+    showAddModal() {
+        this.addOREdit = 1;
+        this.modalOpen = true;
+    }
 }

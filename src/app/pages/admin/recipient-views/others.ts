@@ -118,14 +118,22 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
             mainSupportWorker: null,
             occupation: null,
             generatesReferrals: false,
-            acceptsReferrals: false
+            acceptsReferrals: false,
+            companyFlag: false,
+            excludeFromRosterCopy: false,
+            financialClass: null,
+            admittedBy: null,
+            dischargeDate: null,
+            dischargedBy: null,
+            
+
         });
     }
 
     canDeactivate() {
         if (this.othersForm && this.othersForm.dirty) {
             this.modalService.confirm({
-                nzTitle: 'Save changes before exiting?',
+                nzTitle: 'Changes have been detected. Save Changes?',
                 nzContent: '',
                 nzOkText: 'Yes',
                 nzOnOk: () => {
@@ -163,7 +171,8 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
     }
 
     save(){
-
+        this.timeS.updateothers(this.othersForm.value, this.user.id)
+            .subscribe(data => this.globalS.sToast('Success','The form is saved successfully'));
     }
 
     detectChanges(){

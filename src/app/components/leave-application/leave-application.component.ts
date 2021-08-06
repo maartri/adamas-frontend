@@ -56,11 +56,11 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.open = true;
-        // this.resetGroup();
         this.populate();
       }
       if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.operation = changes[property].currentValue;
+        console.log(this.operation)
         if(this.operation.process == 'UPDATE'){
           this.patchForm();
         }
@@ -108,14 +108,17 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         unallocUnapproved: data.unallocUnapproved,
         unallocMaster: false,
         explanation:data.leaveType,
-        activityCode: '',
-        payCode: '',
+        activityCode: data.address2,
+        payCode: data.address1,
         program: '',
-        programShow: false
+        programShow: false,
+        dates: [new Date(data.startDate), new Date(data.endDate)]
       });
+
+      this.cd.detectChanges();
     });
-    this.cd.detectChanges();
   }
+
   handleCancel(){
     this.open = false;
     this.detectChanges();

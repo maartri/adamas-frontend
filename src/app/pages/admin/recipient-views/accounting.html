@@ -1,3 +1,16 @@
-<div>
-    accounting
+<div nz-row nzGutter="16">
+    <div nz-col nzSpan="3">
+        <p routerLink="profile" routerLinkActive="active-tab">
+            <i nz-icon nzType="shop" nzTheme="outline"></i>
+            Profile
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="accounting" routerLinkActive="active-tab">
+            <i nz-icon nzType="dollar" nzTheme="outline"></i>
+            Account History
+        </p>       
+    </div>
+    <div nz-col nzSpan="18" nzOffset="1">
+        <router-outlet></router-outlet>
+    </div>
 </div>

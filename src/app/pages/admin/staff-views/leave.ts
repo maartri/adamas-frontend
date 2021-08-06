@@ -96,7 +96,6 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             this.search(this.user);
             this.buildForm();
             this.populate();
-            // this.patchdefaultValues();
             return;
         }
         this.router.navigate(['/admin/staff/personal'])

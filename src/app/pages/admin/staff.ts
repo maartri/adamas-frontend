@@ -96,6 +96,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     navigationExtras: { state: { StaffCode: string; ViewType: string; IsMaster: boolean; }; };
     printSummaryModal: boolean =  false;
     printSummaryGroup: FormGroup;
+    updateStaff: FormGroup;
 
     listChange(event: any) {
 
@@ -209,6 +210,9 @@ export class StaffAdmin implements OnInit, OnDestroy {
             hrchk:false,
             opchk:false,
             recepientSearc:'Show RECIPIENT CODE',
+        });
+        this.updateStaff = this.fb.group({
+            staffcode : '',
         });
     }
 

@@ -113,12 +113,12 @@
   </div>
 </nz-modal>
 <nz-modal [nzWidth]="400" [nzStyle]="{ top: '20px' }" [(nzVisible)]="changeCodeModal" nzTitle="Agency Defined Code" (nzOnCancel)="changeCodeModal = false">
-  <div nz-row [formGroup]="terminateGroup">
-    <form nz-form [nzLayout]="'vertical'" [formGroup]="terminateGroup" >
+  <div nz-row [formGroup]="updateStaff">
+    <form nz-form [nzLayout]="'vertical'" [formGroup]="updateStaff" >
       <nz-form-item>
-        <nz-form-label [nzSpan]="24" nzFor="email">Code</nz-form-label>
+        <nz-form-label [nzSpan]="24" nzFor="Title">Code</nz-form-label>
         <nz-form-control [nzSpan]="24">
-          <input type="text" formControlName="primaryAddress" nz-input>
+          <input type="text" formControlName="staffcode" nz-input>
         </nz-form-control>
       </nz-form-item >
     </form>

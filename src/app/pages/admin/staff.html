@@ -112,13 +112,13 @@
     <button nz-button nzType="primary" (click)="terminate()"  [nzLoading]="isConfirmLoading">Terminate</button>
   </div>
 </nz-modal>
-<nz-modal [nzWidth]="400" [nzStyle]="{ top: '20px' }" [(nzVisible)]="changeCodeModal" nzTitle="Agency Defined Code" (nzOnCancel)="changeCodeModal = false">
+<nz-modal [nzWidth]="400" [(nzVisible)]="changeCodeModal" nzTitle="Agency Defined Code" (nzOnCancel)="changeCodeModal = false">
   <div nz-row [formGroup]="updateStaff">
     <form nz-form [nzLayout]="'vertical'" [formGroup]="updateStaff" >
       <nz-form-item>
         <nz-form-label [nzSpan]="24" nzFor="Title">Code</nz-form-label>
         <nz-form-control [nzSpan]="24">
-          <input type="text" formControlName="staffcode" nz-input>
+          <input type="text" formControlName="staffCode" nz-input>
         </nz-form-control>
       </nz-form-item >
     </form>

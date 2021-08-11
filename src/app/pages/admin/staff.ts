@@ -212,7 +212,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
             recepientSearc:'Show RECIPIENT CODE',
         });
         this.updateStaff = this.fb.group({
-            staffcode : '',
+            staffCode : '',
+            AccountNo : '',
         });
     }
 
@@ -270,20 +271,41 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
     }
 
-    terminateModalOpen(): void{
+    terminateModalOpen() : void{
         this.terminateModal = true;
         this.listS.getleavebalances(this.user.id)
             .subscribe(data => this.leaveBalanceList = data)
     }
-    changeStaffModalOpen(): void{
+    changeStaffModalOpen() : void{
         this.changeCodeModal = true;
+        this.updateStaff.patchValue({
+            staffCode : this.user.code,
+            accountNo : this.user.code,
+        });
     }
-    printSummaryModalOpen(): void{
+    printSummaryModalOpen() : void{
         this.printSummaryModal = true;
     }
+    
     updateStaffCode(){
         
+        this.timeS.postchangestaffcode({
+            AccountNo:this.user.code,
+            StaffCode:this.updateStaff.value.staffCode,
+        }).subscribe(data => {
+            if(data){
+                this.globalS.sToast('Success','Staff Code Changed Successfully!');
+                this.changeCodeModal = false;
+                this.isConfirmLoading = false;
+                this.router.navigate(["/admin/staff"]);
+                this.cd.detectChanges();
+        }
+        else{
+                this.globalS.sToast('failure','Some thing Went Wrong !');
+            }
+        })
     }
+
     terminate(){
         
         for (const i in this.terminateGroup.controls) {
@@ -315,6 +337,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
             PersonID: id
         }).subscribe(data => {
             this.globalS.sToast('Success','Staff has been deleted!');
+            this.router.navigate(["/admin/staff"]);
             this.cd.detectChanges();
             this.reload(true);
         });

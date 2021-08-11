@@ -128,6 +128,13 @@ export class RecipientPopupComponent implements OnInit, OnDestroy,ControlValueAc
     this.selectedUser = this.recipientSearchList[currentPage];
   }
 
+  selectedDblClick(index: number) {
+    this.index = index;
+    const currentPage = ((this.pageIndex * 20) - 20) + index;
+    this.selectedUser = this.recipientSearchList[currentPage];
+    this.handleOk();
+  }
+
   nzPageIndexChange(data: any) {
     this.pageIndex = data;
     this.index = -1;

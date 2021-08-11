@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation } from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
@@ -43,7 +43,7 @@ import { ElementSchemaRegistry } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router } from '@angular/router';
 
-
+ 
 interface AddTimesheetModalInterface {
     index: number,
     name: string
@@ -136,6 +136,12 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
             color: white; 
       
           }
+
+          .ant-drawer-content {
+            height: 100%;
+            overflow-y: scroll;
+            
+          }
         
     `],
     templateUrl: './rosters.html'
@@ -167,7 +173,17 @@ HighlightRow3!: number;
 HighlightRow4!: number;
 HighlightRow5!: number;
 HighlightRow6!: number;
+recurrentStartTime:string;
+recurrentEndTime:string;
 
+
+recurrentStartDate: Date | null = null;
+recurrentEndDate: Date | null = null;
+create_Recurrent_Rosters:boolean=false;
+
+weekDay:any;
+Frequency:string;
+Pattern:string;
 haccCode:string;
 defaultCode:string;
 masterCycle:string="CYCLE 1";
@@ -199,7 +215,10 @@ endRoster:any;
   select_StaffModal:boolean=false;
   select_RecipientModal:boolean=false;
   booking_case:number=0;
-  
+  showTransportModal:boolean=false;
+  showRecurentModal:boolean=false;
+  recurrenceView:boolean=false;
+  Transport_Form_Title:string=""
   include_fee:boolean=false;
   include_item:boolean=false;
   spreadsheet:any;
@@ -211,7 +230,11 @@ endRoster:any;
   IsGroupShift:boolean=false;
   GroupShiftCategory:string="";
   listOfSelection: Array <any> = [];
-
+  NRecordNo:string;
+  timeList:Array<any>=[];
+    addressList:Array<any>=[]
+    mobilityList:Array<any>=[]
+    
     isVisible: boolean = false;
     hahays = new Subject<any>();
     optionsModal:boolean=false;
@@ -232,6 +255,8 @@ endRoster:any;
     rosterGroup: string;
     rosterForm: FormGroup;
     bookingForm: FormGroup;
+    TransportForm:FormGroup
+    RecurrentServiceForm:FormGroup;
     
     viewType: any;
     start_date:string="";
@@ -273,11 +298,17 @@ endRoster:any;
     isTravelTimeChargeable: boolean = false;
     isSleepOver: boolean = false;
     payUnits: any;
+    addRecurrent:boolean=false
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
     formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
     formatterPercent = (value: number) => `${value > -1 || !value ? `% ${value}` : ''}`;
 
+    AddTime(interval:number=5){
+        for (let h=0; h<24; h++)
+            for (let t=0; t<60; t=t+interval)
+             this.timeList.push(this.numStr(h) + ":"+ this.numStr(t))
+    }
  DayOfWeek(n:number): String{
 
     let day:String="";
@@ -346,6 +377,77 @@ cancel_GroupShift(){
     this.showGroupShiftRecipient=false
     this.IsGroupShift=false;
 }
+get_group_Shift_Setting()
+{
+   
+    this.GET_GROUP_RECIPIENTS().subscribe(d=>{
+        this.RecipientList=d;//.map ( x => x.accountNo);
+        this.showGroupShiftRecipient=true;
+      
+    })
+    this.GET_ADDRESS().subscribe(d=>{
+        this.addressList=d.map ( x => x.address);             
+      
+    })
+
+    this.GET_MOBILITY().subscribe(d=>{
+        this.mobilityList=d.map ( x => x.description);             
+      
+    })
+
+    
+}
+Save_Transport(){
+    
+    const tdata =  this.TransportForm.value;
+    let inputs ={
+        P1:this.current_roster.recordNo,
+        P2:tdata.pickupFrom,
+        P3:tdata.zipCodeFrom,
+        P4:tdata.pickupTo,
+        P5:tdata.zipCodeTo,     
+        P6:tdata.mobility,
+        P7:tdata.returnVehicle,
+        P8:tdata.appmtTime,
+        P9:tdata.jobPriority,
+        P10:tdata.transportNote
+    };
+    this.timeS.addtransport(inputs).subscribe(data => {
+        
+            this.globalS.sToast('Success', 'Transport details have been recorded');
+
+            this.showTransportModal=false;
+    });
+}
+close(){
+    this.showRecurentModal=false;
+    //this.recurrenceView=false;
+    
+}
+cancelRecurrent(){
+    this.recurrenceView=false;
+    this.create_Recurrent_Rosters=false;
+}
+set_RecurentView(){
+    this.recurrenceView=true;
+    this.showRecurentModal=false;
+    const reuc = this.RecurrentServiceForm.value;
+    this.recurrentStartDate =reuc.startDate
+    this.recurrentEndDate =reuc.endDate
+    this.date = moment(reuc.startDate).format('YYYY/MM/DD');
+    
+}
+createRecurrent_rosters(){
+    this.create_Recurrent_Rosters=true;
+    this.doneBooking()
+}
+
+setPattern(d:string){
+    this.Pattern=d;
+}
+setFrequency(d:string){
+    this.Frequency=d;
+}
 doneBooking(){
 
     this.addBookingModel=false;
@@ -358,25 +460,21 @@ doneBooking(){
     //const { Servicetype } = this.bookingForm.value;
     if (this.viewType=="Staff" &&  this.IsGroupShift && this.showGroupShiftRecipient==false){
         this.addBookingModel=false;
-    this.GET_GROUP_RECIPIENTS().subscribe(d=>{
-        this.RecipientList=d;//.map ( x => x.accountNo);
-        this.showGroupShiftRecipient=true;
-
-      
-    })
-    return;
-        
-    }
-    
+        this.get_group_Shift_Setting()    
+        return;        
+    }    
     this.showGroupShiftRecipient=false;
 
     if (this.type_to_add<=0){
+        if (this.rosterGroup=="")
+            this.rosterGroup= this.defaultActivity.rosterGroup;
         this.serviceType=this.DETERMINE_SERVICE_TYPE_NUMBER(this.rosterGroup)
     }else
         this.serviceType=this.type_to_add;
     //const { recipientCode, Program, serviceActivity, isMultipleRecipient } = this.bookingForm.value;
 
     //this.fixStartTimeDefault();
+  
         let date=this.date;
         let time = {startTime:this.defaultStartTime, endTime:this.defaultEndTime, duration:0};
         const tsheet =  this.bookingForm.value;
@@ -404,6 +502,19 @@ doneBooking(){
         var durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));        
         this.date = parseISO(this.datepipe.transform(this.date, 'yyyy-MM-dd'));
         tsheet.date=this.date;
+        if (this.create_Recurrent_Rosters){
+            tsheet.date= this.recurrentStartDate;
+            let stime=  parseISO(new Date(this.recurrentStartTime).toISOString());
+            let etime=  parseISO(new Date(this.recurrentEndTime).toISOString());
+            let dd=this.recurrentStartDate.getFullYear() + '/' +  this.numStr( this.recurrentStartDate.getMonth()+1) +'/' + this.numStr(this.recurrentStartDate.getDate());
+            this.defaultStartTime = parseISO(new Date(dd + " " + format(stime,'HH:mm')).toISOString());
+            this.defaultEndTime = parseISO(new Date(dd+ " " + format(etime,'HH:mm') ).toISOString());
+                      
+            time = {startTime:stime, endTime:etime, duration:0};
+            durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));        
+           
+            //return;
+        }
 
         tsheet.recordNo=0;
         let inputs = {
@@ -440,21 +551,42 @@ doneBooking(){
             serviceTypePortal: tsheet.serviceType,
             recordNo: tsheet.recordNo,
             date_Timesheet: this.date_Timesheet,
-            dischargeReasonType:this.haccCode
+            dischargeReasonType:this.haccCode,
+            creator: this.token.user
             
         };
             this.timeS.posttimesheet(inputs).subscribe(data => {
-                this.globalS.sToast('Success', 'Roster has been added');
-                this.addTimesheetVisible = false;
+                this.NRecordNo=data;
+                if  (this.create_Recurrent_Rosters==false &&  this.add_multi_roster==false) {
+                    this.globalS.sToast('Success', 'Roster has been added successfully');
+                    this.searchRoster(tsheet.date)
+                 }
+                  this.addTimesheetVisible = false;
+                
                // this.picked(this.selected);
                 this.IsGroupShift=false;
                console.log(data)
 
-               this.searchRoster(tsheet.date)
+               if (this.add_multi_roster){
+
+                this.add_multi_roster=false;
+                this.AddMultiShiftRosters();
+                this.Transport_Form_Title=this.date + " " + this.defaultActivity
+                this.TransportForm.reset();
+                this.showTransportModal=true;
+                this.searchRoster(tsheet.date)
+            }
+
+            if (this.create_Recurrent_Rosters){
+                this.AddRecurrentRosters();
+            }
+
+           
 
                
             });
-        
+            this.addRecurrent=false;
+            
            // this.resetBookingFormModal()
     
 }
@@ -534,7 +666,8 @@ setUnavailablity(){
                 }
             });
         }        
-        this.addBooking(0);
+        if (!this.recurrenceView)
+            this.addBooking(0);
     
 }
 
@@ -640,32 +773,44 @@ addBooking(type:any){
    }
    
     this.Timesheet_label = "Add Timesheet " 
-    //this.whatProcess = PROCESS.ADD;
-   // this.addTimesheetVisible = true;
-   // this.resetAddTimesheetModal();
-   // this.AddViewRosterDetails.next(2);
+   
+    this.addRecurrent=true;
    
     let sheet = this.spreadsheet.getActiveSheet();
     var range=sheet.getSelections();
     // console.log(range)
-    let dt= new Date(this.date);
+   
     //let dt = moment.utc(this.date).local();
-    if (range==null || range.length==0){
+    if ((range==null || range.length==0) && !this.recurrenceView){
         this.globalS.eToast('Booking', 'Please select some time range to proceed');
         return;
     }
-    let date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(range[0].col+1);
-    let f_row= range[0].row;
-    let l_row=f_row+range[0].rowCount;
-     let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
-     let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
-    //let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
+    
+   // let  date = this.date;  // For recurrent cases
+  
 
-    this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
-    this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
+    if (!this.recurrenceView){
+        let col=range[0].col;
+        let date = sheet.getCell(0,col,GC.Spread.Sheets.SheetArea.colHeader).tag();
+       
+        this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
+        let dt= new Date(this.date);
+        date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(range[0].col+1);
+        let f_row= range[0].row;
+        let l_row=f_row+range[0].rowCount;
+        let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
+        let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+        //let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
+
+        this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
+        this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
+
+        this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
+    }
+
     this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
    
-    this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
+   
    // this.bookingForm.patchValue({date:date})
 
    if (this.booking_case==7){
@@ -679,7 +824,7 @@ addBooking(type:any){
     const { recipientCode, debtor, serviceType, isMultipleRecipient } = this.bookingForm.value;
     
     if (this.viewType=="Staff"){
-        this.FetchCode= recipientCode;
+        this.FetchCode = recipientCode;
         if (this.IsGroupShift)
             this.FetchCode="!MULTIPLE"
     }else
@@ -1712,6 +1857,7 @@ ClearMultishift(){
       sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).tag(date);
 
      var new_width = 100 / this.Days_View;
+     
      //sheet.setColumnWidth(i, new_width,GC.Spread.Sheets.SheetArea.viewport);
      
      sheet.setColumnWidth(i, new_width +"*",GC.Spread.Sheets.SheetArea.viewport);
@@ -2027,6 +2173,11 @@ ClearMultishift(){
       
       return val;
     }
+
+    selectedDays(value: string[]): void {
+        this.weekDay=value
+        console.log(value);
+      }
 
     updateCheckedSet(id: any, checked: boolean): void {
         if (checked) {
@@ -2369,6 +2520,7 @@ return rst;
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
         this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
         this.current = 0;
+        
         this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
         this.rosterForm.patchValue({date:date})
 
@@ -2386,7 +2538,8 @@ return rst;
     recipient: any;
     serviceType:any;
 
-    loading: boolean = false;
+    loading: boolean = true;
+    formloading: boolean = false;
     basic: boolean = false;
     Select_Pay_Type:string="Select Pay Type"
    // data: any;
@@ -2586,13 +2739,12 @@ return rst;
             });
         }, 100);
     }
-    ngOnDestroy(): void {  
 
-    }
     ngOnInit(): void {
         GC.Spread.Sheets.LicenseKey = license;
        
         this.date = moment();
+        this.AddTime();
         this.buildForm(); 
          this.token = this.globalS.decode();    
          this.tval=1;
@@ -2606,12 +2758,12 @@ return rst;
         }
 
        
-       
+      
 }
 
 ngAfterViewInit(){
 
-    
+    this.formloading=true;
 }
 
 refreshPage() {
@@ -2921,12 +3073,7 @@ reload(reload: boolean){
                 this.load_rosters();
                 this.loading = false;
 
-                if (this.add_multi_roster){
-
-                    this.add_multi_roster=false;
-                    this.AddMultiShiftRosters();
-                    
-                }
+               
                
                 this.globalS.sToast('Roster Notifs',`There are ${(this.options.events).length} rosters found!`)
                
@@ -3027,16 +3174,50 @@ reload(reload: boolean){
         let rdate = format(this.date, 'yyyy/MM/dd');
         let time= format(this.defaultStartTime,'HH:mm')
 
-        let lroster= this.find_last_roster(rdate ,time)
-        console.log(lroster)
+       // this.current_roster= this.find_last_roster(rdate ,time)
+        //console.log(lroster)
 
         this.clientCodes="-"
         this.setOfCheckedId.forEach(element => {
             this.clientCodes = this.clientCodes + "," + element;
         });  
         
-        this.ProcessRoster("GroupShift",lroster.recordNo)
+        this.setOfCheckedId.clear();
+
+        this.ProcessRoster("GroupShift",this.NRecordNo);
+
+            
     }
+
+    AddRecurrentRosters(){
+
+        let sdate=this.recurrentStartDate.getFullYear() + '/' +  this.numStr(this.recurrentStartDate.getMonth()+1) +'/' + this.numStr(this.recurrentStartDate.getDate());
+        let edate=this.recurrentEndDate.getFullYear() + '/' +  this.numStr(this.recurrentEndDate.getMonth()+1) +'/' + this.numStr(this.recurrentEndDate.getDate());
+
+        let stime=  parseISO(new Date(this.recurrentStartTime).toISOString());
+        let starttime =  format(stime,'HH:mm');
+
+        //this.current_roster= this.find_last_roster(sdate ,starttime)
+        let recordNo=this.NRecordNo
+        //this.ProcessRoster("RecurrentRoster",this.current_roster.recordNo)      
+       
+        if (this.Frequency!="Monthly" || this.Pattern==null)
+            this.Pattern="All";
+        let inputs={            
+            "recordNo": recordNo,
+            "startDate" : sdate,
+            "endDate":edate,
+            "days":this.weekDay,
+            "frequency":this.Frequency,
+            "pattern" : this.Pattern
+        }
+        this.timeS.addRecurrentRosters(inputs).subscribe(data => {
+        
+               this.globalS.sToast('Success', 'Recurrent Roater added successfully');
+               this.searchRoster(stime)
+      
+    });
+}
 
     GETPROGRAMS(type: string): Observable<any> {
         let sql;
@@ -3085,6 +3266,27 @@ reload(reload: boolean){
             return debtor;
         }
     }
+  
+
+    GET_ADDRESS(): Observable<any> {
+        let sql;            
+       
+            sql = `SELECT CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END + CASE WHEN Address2 <> '' THEN Address2 + ''  ELSE '' END + CASE WHEN Suburb <> '' THEN ', ' + Suburb ELSE '' END AS Address, GoogleAddress 
+            FROM NamesAndAddresses WHERE  Description = 'DESTINATION'`
+            
+        if (!sql) return EMPTY;
+        return this.listS.getlist(sql);
+    }
+    GET_MOBILITY(): Observable<any> {
+        let sql;            
+       
+            sql = `select Description from datadomains where Domain like 'Mobility' and [DeletedRecord]=0`
+            
+        if (!sql) return EMPTY;
+        return this.listS.getlist(sql);
+    }
+
+    
 
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
@@ -3155,7 +3357,7 @@ reload(reload: boolean){
         // const { recipientCode, debtor } = this.rosterForm.value;
         sql =` SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,     
               I.Amount AS BILLRATE,
-              I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,hrt.GST,
+              I.unit as UnitType,isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
               (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
               HACCType,'' as Anal,
               (select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
@@ -3180,7 +3382,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END)
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
-            I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,0 as GST,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
@@ -3205,7 +3407,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
-            I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,hrt.GST,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
@@ -3227,7 +3429,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
-            I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,0 as GST,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO 
@@ -3245,7 +3447,7 @@ reload(reload: boolean){
            
                 sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
                 I.AMOUNT AS BILLRATE,
-                I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate, 0 as GST,
+                isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate, 0 as GST,
                 'N/A' as Service_Description,
                 HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
                 FROM ServiceOverview SO         
@@ -3262,7 +3464,7 @@ reload(reload: boolean){
            
         sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
         I.AMOUNT AS BILLRATE,
-        I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,0 as GST,
+        isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
         'N/A' as Service_Description,
         HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
         FROM ServiceOverview SO         
@@ -3286,7 +3488,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
-            I.unit as UnitType,[Unit Pay Rate] as payrate,TaxRate,hrt.GST,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
@@ -3378,7 +3580,9 @@ reload(reload: boolean){
     defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
     defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
 
-    dateFormat: string = 'dd/MM/yyyy'
+
+
+   // dateFormat: string = 'dd/MM/yyyy'
     checked = false;    
     indeterminate = false;
     
@@ -3759,8 +3963,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             
         });
         
-       
-
+      
 this.bookingForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
@@ -3854,6 +4057,26 @@ this.bookingForm.get('program').valueChanges.pipe(
        }
     }); 
    
+    this.TransportForm=this.formBuilder.group({
+        
+        pickupFrom : [''],
+        pickupTo : [''],
+        zipCodeFrom: [''],
+        zipCodeTo: [''],
+        appmtTime: [''],
+        mobility: [''],
+        returnVehicle: [''],
+        jobPriority: [''],
+        transportNote: ['']
+    });
+
+    this.RecurrentServiceForm=this.formBuilder.group({
+        
+        startDate : [''],
+        endDate : ['']
+        
+    });
+
    
 }
     GET_ACTIVITY_VALUE(roster: string) {
@@ -4049,6 +4272,10 @@ this.bookingForm.get('program').valueChanges.pipe(
         }
     }
 
+    onItemChange(item){
+        this.weekDay=item;
+    }
+
     pre(): void {
         this.current -= 1;
     }
@@ -4160,7 +4387,7 @@ this.bookingForm.get('program').valueChanges.pipe(
 
     get showDone2(){
 
-       
+           
             if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
                 return false;
             else if ((this.current >=1 && this.viewType=="Staff") && (this.activity_value!=12 || !this.ShowCentral_Location ))
@@ -4327,3 +4554,5 @@ this.bookingForm.get('program').valueChanges.pipe(
 }      
      
 }
+
+

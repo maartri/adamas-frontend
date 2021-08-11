@@ -1128,5 +1128,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/attendance/staff/${id}`)
     }
 
-
+    addtransport(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/transport`, data);
+    }
+    addRecurrentRosters(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/addRecurrentRosters`, data);
+    }
 }

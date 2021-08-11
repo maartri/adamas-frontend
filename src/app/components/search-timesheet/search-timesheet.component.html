@@ -1,5 +1,5 @@
 <nz-select nzShowSearch nzAllowClear [nzLoading]="loading" [nzPlaceHolder]="viewResult()" [nzMaxTagCount]="1000"
-    [(ngModel)]="searchModel" (ngModelChange)="change($event)">
+    [(ngModel)]="searchModel" (ngModelChange)="change($event)"  >
     <nz-option *ngFor="let l of lists" [nzLabel]="l" [nzValue]="l"></nz-option>
 </nz-select>
 

@@ -1307,5 +1307,11 @@ export class TimeSheetService {
         return this.auth.put(`${timesheet}/competency/skill`, data)
     }
 
+    addtransport(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/transport`, data);
+    }
+    addRecurrentRosters(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/addRecurrentRosters`, data);
+    }
 }
 

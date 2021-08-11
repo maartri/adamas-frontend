@@ -30,6 +30,7 @@ export class SearchTimesheetComponent implements OnInit {
 
   // 0 == staff 1 == recipient
   @Input() view: number;
+  @Input() defautValue :string;
   @Output() selected = new EventEmitter<any>();
 
   searchModel: any;
@@ -48,6 +49,8 @@ export class SearchTimesheetComponent implements OnInit {
 
   ngOnInit(): void {
     this.search();
+    if (this.defautValue!=null)
+      this.searchModel=this.defautValue;
   }
 
   search() {

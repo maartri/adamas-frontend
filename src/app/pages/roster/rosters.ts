@@ -43,6 +43,7 @@ import { ElementSchemaRegistry } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router } from '@angular/router';
 
+
  
 interface AddTimesheetModalInterface {
     index: number,
@@ -187,6 +188,7 @@ Pattern:string;
 haccCode:string;
 defaultCode:string;
 masterCycle:string="CYCLE 1";
+masterCycleNo:number=1;
 Days_View:number=31;
 data:any=[];  
 ActiveCellText:any;
@@ -1021,10 +1023,12 @@ ClearMultishift(){
       this.master=$event;
       if (this.master){
         this.date="1900/01/01";
-       
+        //this.startRoster="1900/01/01";
+       // this.endRoster="1900/01/31";
       }else{        
         this.date = moment()      
-       
+        //this.startRoster=this.date;
+       // this.endRoster=this.date;
     }
     // if(this.Days_View==31 || this.Days_View==30){
     //     this.date = moment(this.date).add('month', 1);       
@@ -1881,6 +1885,10 @@ ClearMultishift(){
           
       //row_header.backColor("#D1A6BC");
      
+      }else{
+        sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
+        sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ',foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            
       }
       date.setDate(date.getDate()+1); 
     }
@@ -3083,8 +3091,17 @@ reload(reload: boolean){
     }
 
     next_date(){
-      
-        if(this.Days_View==31 || this.Days_View==30){
+        if (this.master){
+            if (this.masterCycleNo>10 )
+            this.masterCycleNo=1
+            else
+                    this.masterCycleNo=this.masterCycleNo+1;
+            this.masterCycle = "CYCLE " + this.masterCycleNo
+
+            this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
+            this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
+            
+        }else if(this.Days_View==31 || this.Days_View==30){
             this.date = moment(this.date).add('month', 1);       
             this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
             this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
@@ -3096,15 +3113,26 @@ reload(reload: boolean){
              this.endRoster = moment(this.date).format('YYYY/MM/DD');
              
            }
+
            this.prepare_Sheet();
+
+         
 
         this.upORdown.next(true);
     }
 
     prev_date(){
         
-      
-            if(this.Days_View==31 || this.Days_View==30){
+            if (this.master){
+               
+                if (this.masterCycleNo<=1 )
+                    this.masterCycleNo=1
+                else
+                    this.masterCycleNo=this.masterCycleNo-1;
+                this.masterCycle = "CYCLE " + this.masterCycleNo
+
+
+            } else if(this.Days_View==31 || this.Days_View==30){
                 this.date = moment(this.date).subtract('month', 1);       
                 this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
                 this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
@@ -3118,6 +3146,7 @@ reload(reload: boolean){
                }
                this.prepare_Sheet();
 
+         
        // var calendar = this.calendarComponent.getApi(); 
        // calendar.prev();
         this.upORdown.next(false);

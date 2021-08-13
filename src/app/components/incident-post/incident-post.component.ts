@@ -765,13 +765,7 @@ updateCheckBoxesInStep1(defaultString: string){
   isChecked(data: string): boolean{
     return '1' == data ? true : false;
   }
-
- 
-
-
   save(){
-    
-    console.log(this.incidentForm.value);
     var { incidentType, serviceType,program,
           step4, step51, step52, step53, step54,
           step61, step7, reportEnter, communityService, regionalComm, comments,
@@ -836,10 +830,6 @@ updateCheckBoxesInStep1(defaultString: string){
           FollowupContacted: this.buildCheckBoxesInStep6(),
           FollowupContactedOther: otherspecify,
           SubjectMood: step51,
-          
-          
-          
-
           Staff: this.selectedStaff.length > 0 ? this.selectedStaff.map(x => {
             return {
               IM_MasterId: x.iM_MasterId || 0,
@@ -858,10 +848,10 @@ updateCheckBoxesInStep1(defaultString: string){
     }
 
     if(this.operation.process === Mode.ADD){
-       this.timeS.postincident(im_master).subscribe(data => {
+    this.timeS.postincident(im_master).subscribe(data => {
         this.globalS.sToast('Success', 'Data saved');
         this.reload.emit(true);
-      });
+    });
     }   
   }
   }

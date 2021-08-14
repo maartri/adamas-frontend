@@ -235,6 +235,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
                     this.search(this.user);
                 }
             }
+        
             save() {
                 if (!this.globalS.IsFormValid(this.inputForm))
                 return;        

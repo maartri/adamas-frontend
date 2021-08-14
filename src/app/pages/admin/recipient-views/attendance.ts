@@ -167,8 +167,6 @@ export class RecipientAttendanceAdmin implements OnInit, OnDestroy {
     }
 
     canDeactivate() {
-        console.log('sss');
-
         if (this.attendanceForm && this.attendanceForm.dirty) {
             this.modalService.confirm({
                 nzTitle: 'Save changes before exiting?',

@@ -72,9 +72,17 @@
                         </div>                       
                     </div>
                     
-                    <div class="account-name" [class.error]="accountTaken">{{ referralGroup.get('accountNo').value }}</div>
-                    <div class="message" *ngIf="accountTaken" [class.error]="accountTaken">Account is taken</div>
-                    <div class="message" *ngIf="accountTaken == false" [class.error]="accountTaken">Account is available</div>
+                    <div class="account-name" *ngIf="referralGroup.get('accountNo').value != '' && showEdit == null" [class.error]="accountTaken">
+                        <span [class.available]="accountTaken == false" >{{ referralGroup.get('accountNo').value }}</span>    
+                        <span class="edit" (click)="showEdit = true" >Edit</span>                    
+                    </div>
+                    <div class="account-name" *ngIf="showEdit">
+                        <input type="text" [class.available]="accountTaken == false" [class.error]="accountTaken" nz-input formControlName="accountNo" class="accountStr" /> 
+                        <i nz-icon nzType="close" nzTheme="outline" class="cancel-edit" (click)="showEdit = null"></i>
+                        <nz-spin *ngIf="loadingGenerateAccount" nzSimple [nzSize]="'small'"></nz-spin>
+                    </div>
+                    <div class="message" *ngIf="accountTaken && !loadingGenerateAccount" [class.error]="accountTaken">Account is taken</div>
+                    <div class="message" *ngIf="accountTaken == false && !loadingGenerateAccount" [class.error]="accountTaken">Account is available</div>
                 </div>
 
                 <div nz-row *ngIf="current == 1">
@@ -403,8 +411,8 @@
                                 <nz-option *ngFor="let l of notifications" [nzLabel]="l" [nzValue]="l"></nz-option>
                             </nz-select> 
                             <nz-checkbox-group [(ngModel)]="notifCheckBoxGroup" (ngModelChange)="log(notifCheckBoxGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
-
                             -->
+                            
                             <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                         
                             <!--    <div class="staff-wrapper">

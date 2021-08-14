@@ -148,6 +148,11 @@ import {
   IntakeStaff
 } from '@intakes/index';
 
+import {
+  ProfileAccounting,
+  AccountingHistory
+} from '@accounting/index';
+
 
 import {  
   RostersAdmin
@@ -978,6 +983,25 @@ const routes: Routes = [
             component: RecipientContactsAdmin
           },
           {
+            path: 'accounting',
+            component: RecipientAccountingAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'profile',
+                pathMatch: 'full'
+              },
+              {
+                path: 'profile',
+                component: ProfileAccounting
+              },
+              {
+                path: 'accounting',
+                component: AccountingHistory
+              },
+            ]
+          },
+          {
             path: 'intake',
             component: RecipientIntakeAdmin,
             children: [
@@ -1043,7 +1067,8 @@ const routes: Routes = [
           },
           {
             path: 'others',
-            component: RecipientOthersAdmin
+            component: RecipientOthersAdmin,
+            canDeactivate: [CanDeactivateGuard]
           },
           {
             path: 'opnote',
@@ -1316,4 +1341,6 @@ export const PAGE_COMPONENTS = [
   StaffPositionAdminRedirect,
   StaffGroupingsAdminRedirect,
   StaffLoansAdminRedirect,
+
+  ProfileAccounting,
 ]

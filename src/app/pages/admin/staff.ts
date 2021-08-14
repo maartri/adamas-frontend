@@ -88,6 +88,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     sample: any;
 
     terminateModal: boolean = false;
+    changeCodeModal: boolean = false;
     putonLeaveModal: boolean = false;
     newStaffModal: boolean = false;
     
@@ -101,6 +102,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     navigationExtras: { state: { StaffCode: string; ViewType: string; IsMaster: boolean; }; };
     printSummaryModal: boolean =  false;
     printSummaryGroup: FormGroup;
+    updateStaff: FormGroup;
 
     tocken: any;
     trainingFrom:Date;
@@ -256,6 +258,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
             opnotesTo :monthend,
             opnotesFrom:monthStart,
         });
+ 
 
     /*    let monthend = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
@@ -267,6 +270,12 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.hrnotesTo = monthend;
         this.opnotesFrom = monthStart;
         this.opnotesTo  = monthend;    */ 
+ 
+        this.updateStaff = this.fb.group({
+            staffCode : '',
+            AccountNo : '',
+        });
+ 
     }
 
     ngOnDestroy(): void {
@@ -329,14 +338,41 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
     }
 
-    terminateModalOpen(): void{
+    terminateModalOpen() : void{
         this.terminateModal = true;
         this.listS.getleavebalances(this.user.id)
             .subscribe(data => this.leaveBalanceList = data)
     }
-    printSummaryModalOpen(): void{
+    changeStaffModalOpen() : void{
+        this.changeCodeModal = true;
+        this.updateStaff.patchValue({
+            staffCode : this.user.code,
+            accountNo : this.user.code,
+        });
+    }
+    printSummaryModalOpen() : void{
         this.printSummaryModal = true;
     }
+    
+    updateStaffCode(){
+        
+        this.timeS.postchangestaffcode({
+            AccountNo:this.user.code,
+            StaffCode:this.updateStaff.value.staffCode,
+        }).subscribe(data => {
+            if(data){
+                this.globalS.sToast('Success','Staff Code Changed Successfully!');
+                this.changeCodeModal = false;
+                this.isConfirmLoading = false;
+                this.router.navigate(["/admin/staff"]);
+                this.cd.detectChanges();
+        }
+        else{
+                this.globalS.sToast('failure','Some thing Went Wrong !');
+            }
+        })
+    }
+
     terminate(){
         
         for (const i in this.terminateGroup.controls) {
@@ -361,7 +397,18 @@ export class StaffAdmin implements OnInit, OnDestroy {
             this.cd.detectChanges();
         });
     }
-
+    delete(){
+        const { code, id } = this.user;
+        this.timeS.postDeleteStaff({
+            AccountNo: code,
+            PersonID: id
+        }).subscribe(data => {
+            this.globalS.sToast('Success','Staff has been deleted!');
+            this.router.navigate(["/admin/staff"]);
+            this.cd.detectChanges();
+            this.reload(true);
+        });
+    }
     currentMonthRoster(){
         console.log(this.user.code + "current");
         this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Staff',IsMaster:false }};

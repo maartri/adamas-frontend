@@ -153,7 +153,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       }
       if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.operation = changes[property].currentValue;
-        if(this.operation.process == 'UPDATE') this.current = 1;
+        if(this.operation.process == 'UPDATE') this.current = 0;
         if(this.operation.process == 'ADD') this.current = 0;
       }
     }
@@ -765,20 +765,14 @@ updateCheckBoxesInStep1(defaultString: string){
   isChecked(data: string): boolean{
     return '1' == data ? true : false;
   }
-
- 
-
-
   save(){
-    
-
-    var { incidentType, serviceType,
+    var { incidentType, serviceType,program,
           step4, step51, step52, step53, step54,
           step61, step7, reportEnter, communityService, regionalComm, comments,
           other, summary, description,
-          accountNo, dateOfIncident, reportedBy, recordNo,startTimeOfIncident , endTimeOfIncident, commentsStaff, incidentNotes,otherspecify, } = 
-    this.incidentForm.value;
-    
+          accountNo, dateOfIncident, reportedBy,recipient,recordNo,startTimeOfIncident , endTimeOfIncident, commentsStaff, incidentNotes,otherspecify, } = 
+      
+          this.incidentForm.value;
       if (this.current == 1 && endTimeOfIncident != null && format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm') ){
         this.modal.error({
           nzTitle: 'TRACCS',
@@ -798,15 +792,15 @@ updateCheckBoxesInStep1(defaultString: string){
     var im_master: IM_Master = {
           RecordNo: recordNo || 0,
           PersonId: this.innerValue.id,
-          Type: incidentType,
-          Service: serviceType,
+          Type    : incidentType,
+          Service : serviceType,
           Date: dateOfIncident ? format(dateOfIncident,'yyyy-MM-dd HH:mm:ss') : null,
           Time: startTimeOfIncident ? format(startTimeOfIncident,'yyyy-MM-dd HH:mm:ss') : null,
           EstimatedTimeOther: endTimeOfIncident ? format(endTimeOfIncident, 'HH:mm') : null,
 
           Location: step4,
           ReportedBy: reportedBy,
-          CurrentAssignee: '',
+          CurrentAssignee: recipient,
           ShortDesc: summary,
           FullDesc: description,
           Triggers: step53,
@@ -815,7 +809,7 @@ updateCheckBoxesInStep1(defaultString: string){
           OngoingNotes: commentsStaff,
           Notes: comments,
           Setting: '',
-          Status: '',
+          Status: 'OPEN',
           Region: communityService,
           Phone: primaryPhone,
           Verbal_Date: new Date(),
@@ -836,11 +830,6 @@ updateCheckBoxesInStep1(defaultString: string){
           FollowupContacted: this.buildCheckBoxesInStep6(),
           FollowupContactedOther: otherspecify,
           SubjectMood: step51,
-          
-          
-          
-         
-
           Staff: this.selectedStaff.length > 0 ? this.selectedStaff.map(x => {
             return {
               IM_MasterId: x.iM_MasterId || 0,
@@ -859,10 +848,10 @@ updateCheckBoxesInStep1(defaultString: string){
     }
 
     if(this.operation.process === Mode.ADD){
-       this.timeS.postincident(im_master).subscribe(data => {
+    this.timeS.postincident(im_master).subscribe(data => {
         this.globalS.sToast('Success', 'Data saved');
         this.reload.emit(true);
-      });
+    });
     }   
   }
   }
@@ -990,13 +979,13 @@ updateCheckBoxesInStep1(defaultString: string){
       recipient:data.currentAssignee,
       other:data.incidentTypeOther,
       otherspecify:  data.followupContactedOther,
-      
       step4: data.location,
       step51: data.subjectMood,
       step52: data.releventBackground,
       step53: data.triggers,
       step54: data.initialNotes,
-
+      serviceType:data.service,
+      incidentType:data.type,
       step61: data.summaryofAction,
       step7: data.summaryOfOtherAction,
 

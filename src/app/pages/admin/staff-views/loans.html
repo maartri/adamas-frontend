@@ -37,7 +37,7 @@
 </div>
 
 
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()" >
+<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()" >
     <div nz-row [formGroup]="inputForm">
         <div nz-row nzJustify class="mrg-btm">
             <div nz-col nzSpan="4" class="text-right pad-r-5">
@@ -99,29 +99,33 @@
         </div>
         <div nz-row nzJustify class="mrg-btm">
             <div nz-col nzSpan="4" class="text-right pad-r-5">
-                <label nzFor="Type">Equip Code : </label>
+                <label nzFor="Equip Code">Equip Code</label>
             </div>
-            <div nz-col nzSpan="6">
+            <div nz-col nzSpan="18">
                 <input nz-input  formControlName="equipmentCode" />
             </div>
-            <div nz-col nzSpan="6" class="text-right pad-r-5">
-                <label nzFor="Type">Serial No : </label>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+        <div nz-col nzSpan="4" class="text-right pad-r-5">
+            <label nzFor="Serial No">Serial No : </label>
+        </div>
+        <div nz-col nzSpan="18">
+            <input nz-input  formControlName="serialNumber" />
+        </div>
+        </div>
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
+                <label nzFor="Purchase Date">Purchase Date : </label>
             </div>
-            <div nz-col nzSpan="6">
-                <input nz-input  formControlName="serialNumber" />
+            <div nz-col nzSpan="18">
+                <nz-date-picker  formControlName="purchaseDate" [nzFormat]="dateFormat"></nz-date-picker>
             </div>
         </div>
         <div nz-row nzJustify class="mrg-btm">
             <div nz-col nzSpan="4" class="text-right pad-r-5">
-                <label nzFor="Type">Purchase Date : </label>
-            </div>
-            <div nz-col nzSpan="6">
-                <nz-date-picker  formControlName="purchaseDate" [nzFormat]="dateFormat"></nz-date-picker>
-            </div>
-            <div nz-col nzSpan="6" class="text-right pad-r-5">
                 <label nzFor="Type">Purchase $ : </label>
             </div>
-            <div nz-col nzSpan="6">
+            <div nz-col nzSpan="18">
                 <input nz-input  formControlName="purchaseAmount" />
             </div>
         </div>
@@ -129,13 +133,15 @@
             <div nz-col nzSpan="4" class="text-right pad-r-5">
                 <label nzFor="Type">Lockbox Loctn : </label>
             </div>
-            <div nz-col nzSpan="6">
+            <div nz-col nzSpan="18">
                 <input nz-input  formControlName="lockBoxLocation" />
             </div>
-            <div nz-col nzSpan="6" class="text-right pad-r-5">
+        </div>
+        <div nz-row nzJustify class="mrg-btm">          
+            <div nz-col nzSpan="4" class="text-right pad-r-5">
                 <label nzFor="Type">Lockbox Code : </label>
             </div>
-            <div nz-col nzSpan="6">
+            <div nz-col nzSpan="18">
                 <input nz-input  formControlName="lockBoxCode" />
             </div>
         </div>

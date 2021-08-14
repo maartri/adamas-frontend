@@ -206,6 +206,14 @@ button.other{
 button.other:not(:disabled):hover{
     background:#e15a5a;
 }
+button.extra{
+    background: #39B18A;
+    color: #fff;    
+}
+
+button.extra:not(:disabled):hover{
+    background:#39B18A;
+}
 button.find{
     background: #ff8787;
     color: #fff;

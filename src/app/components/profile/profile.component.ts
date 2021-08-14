@@ -306,7 +306,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         isRosterable: user.isRosterable,
         isCaseLoad: user.caseManager
       });
-
+      this.globalS.var1 = this.userForm.value.recordId;      
       this.cd.markForCheck();
       this.cd.detectChanges();
 

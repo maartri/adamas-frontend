@@ -112,16 +112,20 @@
                                     </tr> 
 
                                     -->
-                                    <tr >                                              
-                                        <td   *ngFor="let item of datarow;let indexofelement= index;">   
-                                            
-                                            {{item}}
-                                            
+                                    <tr >                                            
+                                        <td  *ngFor="let item of entity;let indexofelement= index;" >                                               
+                                            {{item}}                                            
+                                        </td>
+                                        <td  *ngFor="let item of condition;let indexofelement= index;" >                                               
+                                            {{item}}                                            
+                                        </td>
+                                        <td  *ngFor="let item of value;let indexofelement= index;" >                                               
+                                            {{item}}                                            
                                         </td>
                                         <td>
                                             <div  > <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
                                                 nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(datarow)">Delete</a>
-                                                </div>
+                                            </div>
                                         </td>
                                   </tr>                                                                
                             </table>                                               
@@ -133,7 +137,7 @@
                         </nz-radio-group>
                     </div>
                     <div>
-                        <button nzType="default"  nzJustify="start" (click)="QueryFormation()">Preview</button>                       
+                        <button nzType="default"  nzJustify="start" (click)="ShowReport()">Preview</button>                       
                     </div>
                 </div>        
         </div> 

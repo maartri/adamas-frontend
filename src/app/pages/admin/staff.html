@@ -186,16 +186,16 @@
           <label>From</label> 
         </div>
         <div nz-col nzSpan="4">
-          <nz-date-picker formControlName="trainingFrom"></nz-date-picker>
+          <nz-date-picker formControlName="opnotesFrom" [nzFormat]="dateFormat"></nz-date-picker>
         </div>
         <div nz-col nzSpan="2" class="text-center">
           <label>To</label>
         </div>
         <div nz-col nzSpan="4">
-          <nz-date-picker formControlName="trainingTo"></nz-date-picker>
+          <nz-date-picker formControlName="opnotesTo" [nzFormat]="dateFormat"></nz-date-picker>
         </div>
         </div>
-      </div>
+      </div>         
       <div nz-row nzJustify class="mrg-btm">
         <div nz-col nzSpan="6">
           <label nz-checkbox nzDisabled  formControlName="hrNotes">HR Notes</label> 
@@ -205,13 +205,13 @@
             <label>From</label> 
           </div>
           <div nz-col nzSpan="4">
-            <nz-date-picker formControlName="trainingFrom"></nz-date-picker>
+            <nz-date-picker formControlName="hrnotesFrom" [nzFormat]="dateFormat"></nz-date-picker>
           </div>
           <div nz-col nzSpan="2" class="text-center">
             <label>To</label>
           </div>
           <div nz-col nzSpan="4">
-            <nz-date-picker formControlName="trainingTo"></nz-date-picker>
+            <nz-date-picker formControlName="hrnotesTo" [nzFormat]="dateFormat"></nz-date-picker>
           </div>
         </div>
       </div>
@@ -224,13 +224,13 @@
             <label>From</label> 
           </div>
           <div nz-col nzSpan="4">
-            <nz-date-picker formControlName="trainingFrom"></nz-date-picker>
+            <nz-date-picker formControlName="rosterFrom" [nzFormat]="dateFormat"></nz-date-picker>
           </div>
           <div nz-col nzSpan="2" class="text-center">
             <label>To</label>
           </div>
           <div nz-col nzSpan="4">
-            <nz-date-picker formControlName="trainingTo"></nz-date-picker>
+            <nz-date-picker formControlName="rosterTo" [nzFormat]="dateFormat"></nz-date-picker>
           </div>
           <div nz-col nzSpan="6">
             <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="recepientSearc" nzShowSearch nzAllowClear style="width:100%;">
@@ -246,6 +246,19 @@
           <label nz-checkbox nzDisabled formControlName="permanentRoster">Permanent Roster</label> 
         </div>
         <div *ngIf="this.printSummaryGroup.get('permanentRoster').value">
+
+          <nz-select formControlName="Cycles" nzMode="default" >
+              <nz-option *ngFor="let option of Cycles" [nzLabel]="option" [nzValue]="option"></nz-option> 
+          </nz-select>
+          <span> Starting  </span>
+          <nz-select formControlName="DayNames" nzMode="default" >
+              <nz-option *ngFor="let option of DayNames" [nzLabel]="option" [nzValue]="option"></nz-option> 
+          </nz-select>
+          <span> for </span>
+          <nz-select formControlName="fDays" nzMode="default" >
+              <nz-option *ngFor="let option of fDays" [nzLabel]="option" [nzValue]="option"></nz-option> 
+          </nz-select>
+
           <!-- <div nz-col nzSpan="2">
             <label>From</label> 
           </div>
@@ -263,10 +276,25 @@
     </div>  
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="terminateModal = false">Cancel</button>
-    <button nz-button nzType="primary" (click)="terminate()"  [nzLoading]="isConfirmLoading">Terminate</button>
+    <button nz-button nzType="default" (click)="printSummaryModal = false">Cancel</button>
+    <button nz-button nzType="primary" (click)="handleOk()">Print</button>
   </div>
 </nz-modal>
+
+
+
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="SummarydrawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+  - <div class="col-md-12 spinner" *ngIf="spinloading">
+      <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+  </div>  
+  <div nz-row>
+      <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+  </div>
+</nz-drawer>
+
+
+
+
 <nz-modal [nzWidth]="800" [nzStyle]="{ top: '20px' }" [(nzVisible)]="terminateModal" nzTitle="Termination" (nzOnCancel)="terminateModal = false">
   <div nz-row [formGroup]="terminateGroup">
     <form nz-form [nzLayout]="'vertical'" [formGroup]="terminateGroup" >
@@ -312,5 +340,7 @@
     <button nz-button nzType="primary" (click)="terminate()"  [nzLoading]="isConfirmLoading">Terminate</button>
   </div>
 </nz-modal>
+
 <app-leave-application *ngIf="user" [open]="putonLeaveModal" [user]="user"></app-leave-application>
 <app-add-staff [open]="newStaffModal" (reload)="reload($event)"></app-add-staff>
+

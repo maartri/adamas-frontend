@@ -1632,7 +1632,16 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Disciplines = true;
                 this.frm_CareDomain = true;
                 this.frm_Programs = true;
-                break;
+                break;            
+            case 'btn-regis-serviceplan':
+                this.bodystyle = { height:'500px', overflow: 'auto'}
+                this.ModalName = "SERVICE PLAN REGISTER "
+                this.frm_Branches = true;
+                this.frm_Programs = true;                
+                this.frm_Recipients = true;
+                this.frm_Managers = true;
+                this.frm_Categories = true;                
+                break;   
             case 'btn-Regis-opnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "OPERATIONAL NOTES REGISTER "
@@ -2255,48 +2264,47 @@ stafftypeArr: Array<any> = constants.types;
                 this.RefferalsduringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate, tempsdate, tempedate);
                 break;
             case 'btn-recipientMasterroster':
-
+                         
                 switch (s_Cycle) {
-                    case 'Cycle 1':
-                        strdate = "01/01/1900";
-                        endate = "28/01/1900";
+                    case 'CYCLE 1':
+                        strdate = "1900/01/01";
+                        endate = "1900/01/28";
                         break;
-                    case "Cycle 2":
-                        strdate = "01/10/1900";
-                        endate = "28/10/1900";
+                    case "CYCLE 2":
+                        strdate = "1900/10/01";
+                        endate = "1900/10/12";
                         break;
-                    case 'Cycle 3':
-                        strdate = "01/04/1901";
-                        endate = "28/04/1901";
+                    case 'CYCLE 3':
+                        strdate = "1901/04/01";
+                        endate = "1901/04/28";
                         break;
-                    case 'Cycle 4':
-                        strdate = "01/07/1901";
-                        endate = "28/07/1901";
+                    case 'CYCLE 4':
+                        strdate = "1901/07/01";
+                        endate = "1901/07/28";
                         break;
-                    case 'Cycle 5':
-                        strdate = "01/09/1902";
-                        endate = "28/09/1902";
+                    case 'CYCLE 5':
+                        strdate = "1902/09/01";
+                        endate = "1902/09/28";
+                        break;                        
+                    case 'CYCLE 6':
+                        strdate = "1902/12/01";
+                        endate = "1902/12/28";
                         break;
-
-                    case 'Cycle 6':
-                        strdate = "01/12/1902";
-                        endate = "28/12/1902";
+                    case 'CYCLE 7':
+                        strdate = "1903/06/01";
+                        endate = "1903/06/28";
                         break;
-                    case 'Cycle 7':
-                        strdate = "01/06/1903";
-                        endate = "28/06/1903";
+                    case 'CYCLE 8':
+                        strdate = "1904/02/01";
+                        endate = "1904/02/28";
                         break;
-                    case 'Cycle 8':
-                        strdate = "01/02/1904";
-                        endate = "28/02/1904";
+                    case 'CYCLE 9':
+                        strdate = "1904/08/01";
+                        endate = "1904/08/28";
                         break;
-                    case 'Cycle 9':
-                        strdate = "01/08/1904";
-                        endate = "28/08/1904";
-                        break;
-                    case 'Cycle 10':
-                        strdate = "01/05/1905";
-                        endate = "28/05/1905";
+                    case 'CYCLE 10':
+                        strdate = "1905/05/01";
+                        endate = "1905/05/28";
                         break;
                     default:
                         strdate = "1900/01/01";
@@ -2401,46 +2409,45 @@ stafftypeArr: Array<any> = constants.types;
             case 'btn-staff-MasterRoster':
 
                 switch (s_Cycle) {
-                    case 'Cycle 1':
-                        strdate = "01/01/1900";
-                        endate = "28/01/1900";
+                    case 'CYCLE 1':
+                        strdate = "1900/01/01";
+                        endate = "1900/01/28";
                         break;
-                    case "Cycle 2":
-                        strdate = "01/10/1900";
-                        endate = "28/10/1900";
+                    case "CYCLE 2":
+                        strdate = "1900/10/01";
+                        endate = "1900/10/12";
                         break;
-                    case 'Cycle 3':
-                        strdate = "01/04/1901";
-                        endate = "28/04/1901";
+                    case 'CYCLE 3':
+                        strdate = "1901/04/01";
+                        endate = "1901/04/28";
                         break;
-                    case 'Cycle 4':
-                        strdate = "01/07/1901";
-                        endate = "28/07/1901";
+                    case 'CYCLE 4':
+                        strdate = "1901/07/01";
+                        endate = "1901/07/28";
                         break;
-                    case 'Cycle 5':
-                        strdate = "01/09/1902";
-                        endate = "28/09/1902";
+                    case 'CYCLE 5':
+                        strdate = "1902/09/01";
+                        endate = "1902/09/28";
+                        break;                        
+                    case 'CYCLE 6':
+                        strdate = "1902/12/01";
+                        endate = "1902/12/28";
                         break;
-
-                    case 'Cycle 6':
-                        strdate = "01/12/1902";
-                        endate = "28/12/1902";
+                    case 'CYCLE 7':
+                        strdate = "1903/06/01";
+                        endate = "1903/06/28";
                         break;
-                    case 'Cycle 7':
-                        strdate = "01/06/1903";
-                        endate = "28/06/1903";
+                    case 'CYCLE 8':
+                        strdate = "1904/02/01";
+                        endate = "1904/02/28";
                         break;
-                    case 'Cycle 8':
-                        strdate = "01/02/1904";
-                        endate = "28/02/1904";
+                    case 'CYCLE 9':
+                        strdate = "1904/08/01";
+                        endate = "1904/08/28";
                         break;
-                    case 'Cycle 9':
-                        strdate = "01/08/1904";
-                        endate = "28/08/1904";
-                        break;
-                    case 'Cycle 10':
-                        strdate = "01/05/1905";
-                        endate = "28/05/1905";
+                    case 'CYCLE 10':
+                        strdate = "1905/05/01";
+                        endate = "1905/05/28";
                         break;
                     default:
                         strdate = "1900/01/01";
@@ -2465,6 +2472,9 @@ stafftypeArr: Array<any> = constants.types;
                 break;
             case 'btn-Regis-opnotesregister':
                 this.OPNotesRegister(s_Branches, s_Programs, s_CaseNotes, s_Recipient, s_Descipiline, s_CareDomain, strdate, endate, tempsdate, tempedate)
+                break;
+            case 'btn-regis-serviceplan':
+                this.ServicePlanRegister(s_Branches, s_Programs,  s_Recipient,s_Managers,s_ServiceRegions)
                 break;
             case 'btn-Regis-careplanstatus':
                 this.Careplanstatus(s_Recipient, s_PlanType, strdate, endate, tempsdate, tempedate)
@@ -2491,7 +2501,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.StaffCompetencyRenewal(s_Branches, s_Staff, s_Competencies, s_Managers, s_StaffTeam,s_StfGroup, s_CompetencyGroups, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-Systm-AuditRegister':
-                console.log(s_Description)
+                 
                 this.AuditRegister(s_who, s_Description, s_TraccsUser, strdate, endate, tempsdate, tempedate)
                 break;
             case 'btn-Systm-ActivityStatusAudit':
@@ -2739,7 +2749,7 @@ stafftypeArr: Array<any> = constants.types;
                 };
         
                 //this.rpthttp
-                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob', })
+                this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
                     .subscribe((blob: any) => {
                         console.log(blob);
         
@@ -2879,7 +2889,7 @@ stafftypeArr: Array<any> = constants.types;
         };
 
         //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob', })
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
             .subscribe((blob: any) => {
                 console.log(blob);
 
@@ -3914,7 +3924,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-     //   console.log(fQuery)
+       // console.log(fQuery)
 
      switch (format) {
         case 'Presentation - with Activity':
@@ -7718,6 +7728,119 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
                 let fileURL = URL.createObjectURL(_blob);
                 this.pdfTitle = "OP Notes Register.pdf"
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                this.loading = false;
+
+            }, err => {
+                console.log(err);
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzOnOk: () => {
+                             this.drawerVisible = false;
+                             },
+                  });
+            });
+    }
+    
+    ServicePlanRegister(branch, program, recipient,manager,region) {
+
+
+        var fQuery = "SELECT AccountNo,PlanName,PlanNumber,PlanCreator,format(PlanEndDate,'dd/MM/yyyy') as PlanEndDate,format(PlanStartDate,'dd/MM/yyyy') as PlanStartDate,PlanCoPayAmount,dbo.rtf2text(PlanDetail) as PlanDetail   FROM CarePlanItem CP INNER JOIN Recipients R ON PersonID = UniqueID "
+        if(program != ""){ fQuery = fQuery + " INNER JOIN History ON R.UniqueID = History.PersonID "}
+        fQuery = fQuery +" WHERE CP.DeletedRecord <> 1 AND ISNULL(Accountno, '') <> '' "
+
+        //And R.BRANCH in ('GRAFTON') 
+        //And AccountNo in ('ABBOTS MORGANICA')
+        //And RECIPIENT_CoOrdinator in ('ALLA KASPARSKI')
+        //And History.Program in ('')
+        
+       
+        
+        var lblcriteria;
+
+         
+        if (branch != "") {
+            this.s_BranchSQL = "R.[BRANCH]  in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }        
+        if (program != "") {
+            this.s_ProgramSQL = " (History.[Program] in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }                
+        if (recipient != "") {
+            this.s_RecipientSQL = "[AccountNo] in ('" + recipient.join("','") + "')";
+            if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL };
+        }
+        if (manager != "") {
+            this.s_CoordinatorSQL = "([RECIPIENT_CoOrdinator] in ('" + manager.join("','") + "'))";
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+        }
+        if (region != "") {
+            this.s_CategorySQL = "[CareDomain] in ('" + region.join("','") + "')";
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+        }
+
+
+
+
+        if (region != "") {
+            lblcriteria = " Categories: " + region.join(",") + "; "
+        }
+        else { lblcriteria = "All Categories," }
+        if (manager != "") {
+            lblcriteria = "Coordinator: " + manager.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Managers," }
+        if (recipient != "") {
+            lblcriteria = " Recipients: " + recipient.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Recipients," }
+        
+        if (program != "") {
+            lblcriteria = lblcriteria + " Programs " + program.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Programs." }
+        if (branch != "") {
+            lblcriteria = lblcriteria + "Branches:" + branch.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + " All Branches " }
+        
+
+        fQuery = fQuery + " ORDER by PlanStartDate DESC   "
+
+        //console.log(fQuery)
+
+        this.drawerVisible = true;
+
+        const data = {
+            "template": { "shortid":"2RJgekOWt" },
+            "options": {
+                "reports": { "save": false },
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+            }
+        }
+
+        this.loading = true;
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+            .subscribe((blob: any) => {
+                console.log(blob);
+
+                let _blob: Blob = blob;
+
+                let fileURL = URL.createObjectURL(_blob);
+                this.pdfTitle = "Service Plan Register.pdf"
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
 

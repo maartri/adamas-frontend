@@ -136,6 +136,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     status: any = null;
     statusTab = new Subject<any>();
 
+    Unique_ID: string;
+    Account_No: string;
+
     recipientOptionOpen: any;
     recipientOption: string;
     from:string = 'admit';
@@ -1238,6 +1241,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             if(this.globalS.doc != null){
               this.addRefdoc();
             }
+            this.globalS.var1 = data.uniqueID;            
+            this.globalS.var2 = data.accountNo;
 
             if(data.admissionDate != null && data.dischargeDate == null){
                 this.recipientStatus = 'active';
@@ -1450,6 +1455,10 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             this.recipientOption =  this.RECIPIENT_OPTION.ITEM;
             this.recipientOptionOpen = {};
         }
+        if(index == 12){
+                   
+          this.router.navigate(['/admin/Print'])          
+      }
     }
 
     openFindModal(){

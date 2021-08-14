@@ -1332,50 +1332,50 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         switch ((this.inputForm.value.exportitemsArr).toString()) {
           //NAME AND ADDRESS
           case 'First Name':
-            this.ConditionEntity = 'FirstName'
+            this.ConditionEntity = 'R.FirstName'
             break;
           case 'Title':
-            this.ConditionEntity ='title'       
+            this.ConditionEntity ='R.title'       
               break;
           case 'Surname/Organisation':
-            this.ConditionEntity ='[Surname/Organisation]'        
+            this.ConditionEntity ='R.[Surname/Organisation]'        
               break;
           case 'Preferred Name':
-            this.ConditionEntity ='PreferredName'
+            this.ConditionEntity ='R.PreferredName'
               break;                  
           case 'Other':                  
               break;
           case 'Address-Line1':
-            this.ConditionEntity ='Address1'        
+            this.ConditionEntity ='R.Address1'        
               break;
           case 'Address-Line2':
-            this.ConditionEntity ='Address2'     
+            this.ConditionEntity ='R.Address2'     
               break;
           case 'Address-Suburb':
-            this.ConditionEntity ='Suburb'     
+            this.ConditionEntity ='R.Suburb'     
               break;
           case 'Address-Postcode':
-            this.ConditionEntity ='Postcode'        
+            this.ConditionEntity ='R.Postcode'        
               break;
           case 'Address-State':
-            this.ConditionEntity ='State'        
+            this.ConditionEntity ='R.State'        
               break;
 //General Demographics             
           case 'Full Name-Surname First':
-            this.ConditionEntity = '([Surname/Organisation]' + ' ' +'FirstName)'
+            this.ConditionEntity = '(R.[Surname/Organisation]' + ' ' +'FirstName)'
               break;
           case 'Full Name-Mailing':
-            this.ConditionEntity = '([Surname/Organisation]' + ' ' +'FirstName)'  
+            this.ConditionEntity = '(R.[Surname/Organisation]' + ' ' +'FirstName)'  
                   break;
                                  
           case 'Gender':
-            this.ConditionEntity = 'Gender'
+            this.ConditionEntity = 'R.Gender'
               break;
           case 'Date Of Birth':
-                this.ConditionEntity = 'DateOfBirth'
+                this.ConditionEntity = 'R.DateOfBirth'
               break;            
           case 'Age':
-                this.ConditionEntity = ' DateDiff(YEAR,Dateofbirth,GetDate())'
+                this.ConditionEntity = ' DateDiff(YEAR,R.Dateofbirth,GetDate())'
               break;
           case 'Ageband-Statistical':
               //  this.ConditionEntity = ''
@@ -1399,29 +1399,29 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
               //  this.ConditionEntity =''
               break;                     
           case 'Country Of Birth':
-                this.ConditionEntity = 'CountryOfBirth'
+                this.ConditionEntity = 'R.CountryOfBirth'
               break;
           case 'Language':
-                this.ConditionEntity = 'HomeLanguage'
+                this.ConditionEntity = 'R.HomeLanguage'
               break;              
           case 'Indigenous Status':
-                this.ConditionEntity = 'IndiginousStatus'
+                this.ConditionEntity = 'R.IndiginousStatus'
               break;
           case 'Primary Disability':
-                this.ConditionEntity = 'PermDisability'
+                this.ConditionEntity = 'R.PermDisability'
               break;
           case 'Financially Dependent':
               //  this.ConditionEntity =''
               break;
           case 'Financial Status':
-                this.ConditionEntity = 'FinancialStatus'
+                this.ConditionEntity = 'R.FinancialStatus'
               break;          
           case 'Occupation':
-                this.ConditionEntity = 'Occupation'
+                this.ConditionEntity = 'R.Occupation'
                 break;
                 //Admin Info
           case 'UniqueID':
-                this.ConditionEntity = 'UniqueID'
+                this.ConditionEntity = 'R.UniqueID'
               break;
           case 'Code':
               //  this.ConditionEntity =''
@@ -1433,10 +1433,10 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
               //  this.ConditionEntity =''
               break;
           case 'CoOrdinator':
-                this.ConditionEntity = 'RECIPIENT_CoOrdinator'
+                this.ConditionEntity = 'R.RECIPIENT_CoOrdinator'
               break;
           case 'Admitting Branch':
-                this.ConditionEntity = 'BRANCH'
+                this.ConditionEntity = 'R.BRANCH'
               break;
           case 'Secondary Branch':
               //  this.ConditionEntity =''
@@ -1448,13 +1448,13 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
               //  this.ConditionEntity =''
               break;                     
           case 'NDIA/MAC Number':
-                this.ConditionEntity = 'NDISNumber'
+                this.ConditionEntity = 'R.NDISNumber'
               break;     
           case 'Last Activated Date':
               //  this.ConditionEntity =''
                 break;
           case 'Created By':
-                this.ConditionEntity = 'CreatedBy'
+                this.ConditionEntity = 'R.CreatedBy'
               break;
           case 'Other':
               //  this.ConditionEntity =''
@@ -1467,17 +1467,17 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           //  this.ConditionEntity =  
                 break;
           case 'Notes':
-            this.ConditionEntity =  'Notes'
+            this.ConditionEntity =  'R.Notes'
                 break;
                 //Other Genral info
           case 'OH&S Profile':
-            this.ConditionEntity =  'OHSProfile'
+            this.ConditionEntity =  'R.OHSProfile'
                 break;
           case 'OLD WH&S Date':
           //  this.ConditionEntity =  
                 break;
           case 'Billing Profile':
-            this.ConditionEntity =  'BillProfile'
+            this.ConditionEntity =  'R.BillProfile'
                 break;                       
           case 'Sub Category':
           //  this.ConditionEntity =  
@@ -1489,13 +1489,13 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
            // this.ConditionEntity =  
                 break;                 
           case 'Contact Issues':
-            this.ConditionEntity =  'ContactIssues'
+            this.ConditionEntity =  'R.ContactIssues'
                 break;
           case 'Survey Consent Given':
-            this.ConditionEntity =  'SurveyConsent'
+            this.ConditionEntity =  'R.SurveyConsent'
                 break;
           case 'Copy Rosters':
-            this.ConditionEntity =  'Autocopy'
+            this.ConditionEntity =  'R.Autocopy'
                 break;
           case 'Enabled':
            // this.ConditionEntity =  
@@ -1507,10 +1507,10 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
            // this.ConditionEntity =  
                 break;
           case 'Mobility':
-            this.ConditionEntity =  'Mobility'
+            this.ConditionEntity =  'R.Mobility'
                 break;
           case 'Specific Competencies':
-            this.ConditionEntity =  'SpecialConsiderations'
+            this.ConditionEntity =  'R.SpecialConsiderations'
                 break;                
           case 'Carer Info':
           //  this.ConditionEntity =  
@@ -3851,92 +3851,92 @@ ColumnNameAdjuster(fld){
       //NAME AND ADDRESS
       case 'First Name':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['FirstName as Field'+fld.indexOf(key)])
-        }else{columnNames = (['FirstName as Field'+fld.indexOf(key)])}
+          columnNames = columnNames.concat(['R.FirstName as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.FirstName as Field'+fld.indexOf(key)])}
         break;
       case 'Title':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['title as Field'+fld.indexOf(key)])
-        }else{columnNames = (['title as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.title as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.title as Field'+fld.indexOf(key)])}        
           break;
       case 'Surname/Organisation':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['[Surname/Organisation] as Field'+fld.indexOf(key)])
-        }else{columnNames = (['[Surname/Organisation] as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.[Surname/Organisation] as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.[Surname/Organisation] as Field'+fld.indexOf(key)])}        
           break;
       case 'Preferred Name':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['PreferredName as Field'+fld.indexOf(key)])
-        }else{columnNames = (['PreferredName as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.PreferredName as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.PreferredName as Field'+fld.indexOf(key)])}        
           break;                  
       case 'Other':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['title as Field'+fld.indexOf(key)])
-        }else{columnNames = (['title as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.title as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.title as Field'+fld.indexOf(key)])}        
           break;
       case 'Address-Line1':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['Address1 as Field'+fld.indexOf(key)])
-        }else{columnNames = (['Address1 as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.Address1 as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.Address1 as Field'+fld.indexOf(key)])}        
           break;
       case 'Address-Line2':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['Address2 as Field'+fld.indexOf(key)])
-        }else{columnNames = (['Address2 as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.Address2 as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.Address2 as Field'+fld.indexOf(key)])}        
           break;
       case 'Address-Suburb':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['Suburb as Field'+fld.indexOf(key)])
-        }else{columnNames = (['Suburb as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.Suburb as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.Suburb as Field'+fld.indexOf(key)])}        
           break;
       case 'Address-Postcode':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['Postcode as Field'+fld.indexOf(key)])
-        }else{columnNames = (['Postcode as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.Postcode as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.Postcode as Field'+fld.indexOf(key)])}        
           break;
       case 'Address-State':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['State as Field'+fld.indexOf(key)])
-        }else{columnNames = (['State as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['R.State as Field'+fld.indexOf(key)])
+        }else{columnNames = (['R.State as Field'+fld.indexOf(key)])}        
           break;
 //General Demographics          
       case 'Full Name-Surname First':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['([Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])
-        }else{columnNames = (['([Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])
+        }else{columnNames = (['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])}        
           break;
       case 'Full Name-Mailing':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['([Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])
-            }else{columnNames = (['([Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])
+            }else{columnNames = (['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])}        
               break;
       case 'Gender':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['Gender as Field'+fld.indexOf(key)])
-            }else{columnNames = (['Gender as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.Gender as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.Gender as Field'+fld.indexOf(key)])}        
               break;
       case 'Date Of Birth':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['DateOfBirth as Field'+fld.indexOf(key)])
-            }else{columnNames = (['DateOfBirth as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.DateOfBirth as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.DateOfBirth as Field'+fld.indexOf(key)])}        
               break;
       case 'Age':
                   if(columnNames != []){
-              columnNames = columnNames.concat([' DateDiff(YEAR,Dateofbirth,GetDate()) as Field'+fld.indexOf(key)])
-            }else{columnNames = ([' DateDiff(YEAR,Dateofbirth,GetDate()) as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat([' DateDiff(YEAR,R.Dateofbirth,GetDate()) as Field'+fld.indexOf(key)])
+            }else{columnNames = ([' DateDiff(YEAR,R.Dateofbirth,GetDate()) as Field'+fld.indexOf(key)])}        
               break;
       case 'Ageband-Statistical':
         var AgebandStatic = " CASE " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 6 AND 13 THEN ' 6-13' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 14 AND 17 THEN '14-17' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 18 AND 45 THEN '18-45' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 46 AND 65 THEN '46-65' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 66 AND 70 THEN '66-70' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 71 AND 75 THEN '71-75' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 76 AND 80 THEN '76-80' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 81 AND 90 THEN '81-90' " +
-        "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) > 90 THEN 'OVER 90' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 6 AND 13 THEN ' 6-13' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 14 AND 17 THEN '14-17' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 18 AND 45 THEN '18-45' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 46 AND 65 THEN '46-65' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 66 AND 70 THEN '66-70' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 71 AND 75 THEN '71-75' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 76 AND 80 THEN '76-80' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 81 AND 90 THEN '81-90' " +
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) > 90 THEN 'OVER 90' " +
         "ELSE 'UNKNOWN' END "  
         
                   if(columnNames != []){
@@ -3945,26 +3945,26 @@ ColumnNameAdjuster(fld){
               break;
           case 'Ageband-5 Year':
             var Ageband5 =" CASE " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 6 AND 10 THEN ' 6-10' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 11 AND 15 THEN '11-15' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 16 AND 20 THEN '16-20' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 21 AND 25 THEN '21-25' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 26 AND 30 THEN '26-30' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 36 AND 40 THEN '36-40' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 41 AND 45 THEN '41-45' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 46 AND 50 THEN '46-50' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 51 AND 55 THEN '51-55' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 56 AND 60 THEN '56-60' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 61 AND 65 THEN '61-65' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 66 AND 70 THEN '66-70' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 71 AND 75 THEN '71-75' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(NGETDATE(),'yyyy-mm-dd') ) BETWEEN 76 AND 80 THEN '76-80' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 81 AND 85 THEN '81-85' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 86 AND 90 THEN '86-90' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 91 AND 95 THEN '91-95' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 96 AND 100 THEN '96-100' "+ 
-            "WHEN DATEDIFF(YEAR, DateOfBirth, Format(GETDATE(), 'yyyy-mm-dd')) > 100 THEN 'OVER 100' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 6 AND 10 THEN ' 6-10' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 11 AND 15 THEN '11-15' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 16 AND 20 THEN '16-20' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 21 AND 25 THEN '21-25' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 26 AND 30 THEN '26-30' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 36 AND 40 THEN '36-40' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 41 AND 45 THEN '41-45' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 46 AND 50 THEN '46-50' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 51 AND 55 THEN '51-55' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 56 AND 60 THEN '56-60' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 61 AND 65 THEN '61-65' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 66 AND 70 THEN '66-70' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 71 AND 75 THEN '71-75' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(NGETDATE(),'yyyy-mm-dd') ) BETWEEN 76 AND 80 THEN '76-80' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 81 AND 85 THEN '81-85' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 86 AND 90 THEN '86-90' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 91 AND 95 THEN '91-95' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 96 AND 100 THEN '96-100' "+ 
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth, Format(GETDATE(), 'yyyy-mm-dd')) > 100 THEN 'OVER 100' " +
             "ELSE 'UNKNOWN' END " 
             
                   if(columnNames != []){
@@ -3973,17 +3973,17 @@ ColumnNameAdjuster(fld){
               break;
           case 'Ageband-10 Year':
             var Ageban10 = "CASE "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 0 AND 10 THEN '0- 10' " +
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 11 AND 20 THEN '11-20' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 21 AND 30 THEN '21-30' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 31 AND 40 THEN '31-40' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 41 AND 50 THEN '41-50' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 51 AND 60 THEN '51-60' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 61 AND 70 THEN '61-70' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 71 AND 80 THEN '71-80' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 81 AND 90 THEN '81-90' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 91 AND 100 THEN '91-100' "+
-            "WHEN DATEDIFF(YEAR, DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) > 100 THEN 'OVER 100' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 0 AND 10 THEN '0- 10' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 11 AND 20 THEN '11-20' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 21 AND 30 THEN '21-30' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 31 AND 40 THEN '31-40' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 41 AND 50 THEN '41-50' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 51 AND 60 THEN '51-60' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 61 AND 70 THEN '61-70' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 71 AND 80 THEN '71-80' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 81 AND 90 THEN '81-90' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 91 AND 100 THEN '91-100' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) > 100 THEN 'OVER 100' "+
             "ELSE 'UNKNOWN' END  "
                   if(columnNames != []){
               columnNames = columnNames.concat([Ageban10+ ' as Field'+fld.indexOf(key)])
@@ -4013,51 +4013,51 @@ ColumnNameAdjuster(fld){
               break;             
               case 'Country Of Birth':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['CountryOfBirth as Field'+fld.indexOf(key)])
-            }else{columnNames = (['CountryOfBirth as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.CountryOfBirth as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.CountryOfBirth as Field'+fld.indexOf(key)])}        
               break;
               case 'Language':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['HomeLanguage as Field'+fld.indexOf(key)])
-            }else{columnNames = (['HomeLanguage as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.HomeLanguage as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.HomeLanguage as Field'+fld.indexOf(key)])}        
               break;
       case 'Indigenous Status':
         var IndStatus = "CASE "+
-        "WHEN [IndiginousStatus] = 'Aboriginal but not Torres Strait Islander origin' THEN 'ATSI' " +
-        "WHEN [IndiginousStatus] = 'Both Aboriginal and Torres Strait Islander origin' THEN 'ATSI'" +
-        "WHEN [IndiginousStatus] = 'Torres Strait Islander but not Aboriginal origin' THEN 'ATSI' " +
+        "WHEN R.[IndiginousStatus] = 'Aboriginal but not Torres Strait Islander origin' THEN 'ATSI' " +
+        "WHEN R.[IndiginousStatus] = 'Both Aboriginal and Torres Strait Islander origin' THEN 'ATSI'" +
+        "WHEN R.[IndiginousStatus] = 'Torres Strait Islander but not Aboriginal origin' THEN 'ATSI' " +
         "ELSE 'NON ATSI' " +
-        "END AS [Indigenous Status]"
+        "END  "
                   if(columnNames != []){
               columnNames = columnNames.concat([IndStatus+' as Field'+fld.indexOf(key)])
             }else{columnNames = ([IndStatus+' as Field'+fld.indexOf(key)])}        
               break;
               case 'Primary Disability':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['CSTDA_DisabilityGroup as Field'+fld.indexOf(key)])
-            }else{columnNames = (['CSTDA_DisabilityGroup as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.CSTDA_DisabilityGroup as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.CSTDA_DisabilityGroup as Field'+fld.indexOf(key)])}        
               break;
       case 'Financially Dependent':
-        var FinanceDepend = "CASE WHEN [FDP] = 1 THEN 'YES'   ELSE 'NO' END AS [Financially Dependent]"
+        var FinanceDepend = "CASE WHEN R.[FDP] = 1 THEN 'YES'   ELSE 'NO' END AS [Financially Dependent]"
                   if(columnNames != []){
               columnNames = columnNames.concat([FinanceDepend+'  as Field'+fld.indexOf(key)])
             }else{columnNames = ([FinanceDepend +'  as Field'+fld.indexOf(key)])}        
               break;
               case 'Financial Status':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['FinancialClass as Field'+fld.indexOf(key)])
-            }else{columnNames = (['FinancialClass as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.FinancialClass as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.FinancialClass as Field'+fld.indexOf(key)])}        
               break;          
               case 'Occupation':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['Occupation as Field'+fld.indexOf(key)])
-            }else{columnNames = (['Occupation as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.Occupation as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.Occupation as Field'+fld.indexOf(key)])}        
               break;
               //Admin Info
               case 'UniqueID':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['UniqueID as Field'+fld.indexOf(key)])
-            }else{columnNames = (['UniqueID as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.UniqueID as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.UniqueID as Field'+fld.indexOf(key)])}        
               break;
               case 'Code':
                   if(columnNames != []){
@@ -4076,13 +4076,13 @@ ColumnNameAdjuster(fld){
               break;
               case 'CoOrdinator':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['RECIPIENT_CoOrdinator as Field'+fld.indexOf(key)])
-            }else{columnNames = (['RECIPIENT_CoOrdinator as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.RECIPIENT_CoOrdinator as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.RECIPIENT_CoOrdinator as Field'+fld.indexOf(key)])}        
               break;
               case 'Admitting Branch':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['BRANCH as Field'+fld.indexOf(key)])
-            }else{columnNames = (['BRANCH as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.BRANCH as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.BRANCH as Field'+fld.indexOf(key)])}        
               break;                
               case 'Secondary Branch':
                   if(columnNames != []){
@@ -4101,8 +4101,8 @@ ColumnNameAdjuster(fld){
               break;
               case 'NDIA/MAC Number':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['NDISNumber as Field'+fld.indexOf(key)])
-            }else{columnNames = (['NDISNumber as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.NDISNumber as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.NDISNumber as Field'+fld.indexOf(key)])}        
               break;     
               case 'Last Activated Date':
                   if(columnNames != []){
@@ -4111,8 +4111,8 @@ ColumnNameAdjuster(fld){
               break;
               case 'Created By':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['CreatedBy as Field'+fld.indexOf(key)])
-            }else{columnNames = (['CreatedBy as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.CreatedBy as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.CreatedBy as Field'+fld.indexOf(key)])}        
               break;
               case 'Other':
                   if(columnNames != []){
@@ -4132,14 +4132,14 @@ ColumnNameAdjuster(fld){
                   break;
             case 'Notes':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['Notes as Field'+fld.indexOf(key)])
-              }else{columnNames = (['Notes as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.Notes as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.Notes as Field'+fld.indexOf(key)])}
                   break;
                   //Other Genral info
             case 'OH&S Profile':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['OHSProfile as Field'+fld.indexOf(key)])
-              }else{columnNames = (['OHSProfile as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.OHSProfile as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.OHSProfile as Field'+fld.indexOf(key)])}
                   break;
             case 'OLD WH&S Date':
                     if(columnNames != []){
@@ -4148,8 +4148,8 @@ ColumnNameAdjuster(fld){
                   break;   
               case 'Billing Profile':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['BillProfile as Field'+fld.indexOf(key)])
-                }else{columnNames = (['BillProfile as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.BillProfile as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.BillProfile as Field'+fld.indexOf(key)])}  
                 break;          
             case 'Sub Category':
                     if(columnNames != []){
@@ -4168,18 +4168,18 @@ ColumnNameAdjuster(fld){
                   break;                 
             case 'Contact Issues':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['ContactIssues as Field'+fld.indexOf(key)])
-              }else{columnNames = (['ContactIssues as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.ContactIssues as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.ContactIssues as Field'+fld.indexOf(key)])}
                   break;
             case 'Survey Consent Given':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['SurveyConsent as Field'+fld.indexOf(key)])
-              }else{columnNames = (['SurveyConsent as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.SurveyConsent as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.SurveyConsent as Field'+fld.indexOf(key)])}
                   break;
             case 'Copy Rosters':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['Autocopy as Field'+fld.indexOf(key)])
-              }else{columnNames = (['Autocopy as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.Autocopy as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.Autocopy as Field'+fld.indexOf(key)])}
                   break;
             case 'Enabled':
                     if(columnNames != []){
@@ -4198,13 +4198,13 @@ ColumnNameAdjuster(fld){
                   break;
             case 'Mobility':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['Mobility as Field'+fld.indexOf(key)])
-              }else{columnNames = (['Mobility as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.Mobility as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.Mobility as Field'+fld.indexOf(key)])}
                   break;
             case 'Specific Competencies':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['SpecialConsiderations as Field'+fld.indexOf(key)])
-              }else{columnNames = (['SpecialConsiderations as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.SpecialConsiderations as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.SpecialConsiderations as Field'+fld.indexOf(key)])}
                   break;
             case 'Carer Info':
                     if(columnNames != []){
@@ -4298,54 +4298,59 @@ ColumnNameAdjuster(fld){
                   break;
 //Carer Info                  
             case 'Carer First Name':
+              
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['C.FirstName  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['C.FirstName  as Field'+fld.indexOf(key)])} 
                     break;
               case 'Carer Last Name':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['C.[Surname/Organisation]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['C.[Surname/Organisation]  as Field'+fld.indexOf(key)])}
                     break;
                     case 'Carer Age':
+                      var CarerAge = " CASE WHEN DATEADD(YEAR,DATEDIFF(YEAR, C.DateOfBirth,Format(GETDATE(), 'yyyy-MM-dd') ),C.DateOfBirth) "+
+                      ">  Format(GETDATE(), 'yyyy-MM-dd') THEN DATEDIFF(YEAR, C.DateOfBirth,Format(GETDATE(), 'yyyy-MM-dd')  )-1  "+
+                      "ELSE DATEDIFF(YEAR, C.DateOfBirth,Format(GETDATE(), 'yyyy-MM-dd')  ) END "
                       if(columnNames != []){
-                        columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                      }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                        columnNames = columnNames.concat([CarerAge+' as Field'+fld.indexOf(key)])
+                      }else{columnNames = ([CarerAge+' as Field'+fld.indexOf(key)])}  
                     break;                 
               case 'Carer Gender':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['C.[Gender]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['C.[Gender]  as Field'+fld.indexOf(key)])}  
                     break;
               case 'Carer Indigenous Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['C.[IndiginousStatus]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['C.[IndiginousStatus]  as Field'+fld.indexOf(key)])} 
                     break;
               case 'Carer Address':
+                var CarerAddress= " ISNULL(N.Address1,'') + ' ' +  ISNULL(N.Suburb,'') + ' ' + ISNULL(N.Postcode,'') "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([CarerAddress+ ' as Field'+fld.indexOf(key)])
+                }else{columnNames = ([CarerAddress+' as Field'+fld.indexOf(key)])}  
                     break;
-              case 'Carer Email':
+              case 'Carer Email': //    
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['PE.Detail  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['PE.Detail  as Field'+fld.indexOf(key)])}  
                     break;
-              case 'Carer Phone <Home>':
+              case 'Carer Phone <Home>': 
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['PhHome.Detail  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['PhHome.Detail  as Field'+fld.indexOf(key)])}  
                     break;
               case 'Carer Phone <Work>':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['PhWork.Detail  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['PhWork.Detail  as Field'+fld.indexOf(key)])} 
                     break;
               case 'Carer Phone <Mobile>':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['PhMobile.Detail  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['PhMobile.Detail  as Field'+fld.indexOf(key)])} 
                     break;
 // Documents                    
               case 'DOC_ID':
@@ -7795,10 +7800,45 @@ Condition(fld){
 }
 TablesSetting(arr){
   var FromSql ;
-  FromSql = " From Recipients R"
-  if(arr.includes("Carer") ){
-  //  console.log(arr)
+  //console.log(arr)
+  FromSql = " From Recipients R" 
+  
+              
+              
+  if(arr.includes("Carer Last Name") || arr.includes("Carer Age") || arr.includes("Carer Gender") || arr.includes("Carer Indigenous Status") || arr.includes("Carer First Name") ){
+    FromSql = FromSql + " INNER JOIN RECIPIENTS C ON R.DatasetCarer = C.AccountNo  "
+  }         
+  if(arr.includes("Carer Phone <Home>") ){
+    FromSql = FromSql + " LEFT JOIN PhoneFaxOther PhHome ON C.UniqueID = PhHome.PersonID AND PhHome.[Type] = '<HOME>'  "
   }
+  if(arr.includes("Carer Phone <Work>") ){
+    FromSql = FromSql + " LEFT JOIN PhoneFaxOther PhWork ON C.UniqueID = PhWork.PersonID AND PhWork.[Type] = '<WORK>' "
+  }
+  if(arr.includes("Carer Phone <Mobile>") ){
+    FromSql = FromSql + " LEFT JOIN PhoneFaxOther PhMobile ON C.UniqueID = PhMobile.PersonID AND PhMobile.[Type] = '<MOBILE>'  "
+  }
+  if(arr.includes("Carer Email") ){
+    FromSql = FromSql + " LEFT JOIN PhoneFaxOther PE ON C.UniqueID = PE.PersonID AND PE.[Type] = '<EMAIL>' "
+  }
+  if(arr.includes("Carer Address") ){
+    FromSql = FromSql + " LEFT JOIN NamesAndAddresses N ON C.UNIQUEID = N.PERSONID AND N.[Description] = '<USUAL>' "
+  }
+  if( arr.includes("")){
+    FromSql = FromSql + ""
+  }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+
    
 
 

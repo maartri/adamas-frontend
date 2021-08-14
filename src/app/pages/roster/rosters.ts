@@ -153,7 +153,7 @@ export class RostersAdmin implements AfterViewInit  {
     sheetName = "Staff Rosters";  
     hostStyle = {  
       width: '100%',     
-      height: '1000px',
+      height: '600px',
       overflow: 'auto',
       float: 'left'
     };  
@@ -311,6 +311,12 @@ endRoster:any;
             for (let t=0; t<60; t=t+interval)
              this.timeList.push(this.numStr(h) + ":"+ this.numStr(t))
     }
+    changeHeight() {
+        this.hostStyle.height = this.hostStyle.height === "50%" ? "100%" : "50%";
+        setTimeout(() => {
+        this.spreadsheet.refresh();
+        });
+        }
  DayOfWeek(n:number): String{
 
     let day:String="";
@@ -575,7 +581,8 @@ doneBooking(){
                 this.AddMultiShiftRosters();
                 this.Transport_Form_Title=this.date + " " + this.defaultActivity
                 this.TransportForm.reset();
-                this.showTransportModal=true;
+                if (this.GroupShiftCategory=='TRANSPORT')
+                  this.showTransportModal=true;
                 this.searchRoster(tsheet.date)
             }
 
@@ -621,6 +628,8 @@ RecordStaffAdmin(){
 
 SetMultiRecipient(val:boolean){
     this.showtMultiRecipientModal=false;
+  
+
     if (val){
         this.IsGroupShift=true;
         this.showGroupShiftModal=true;
@@ -762,7 +771,7 @@ addBooking(type:any){
    
     this.select_StaffModal=false;
     this.select_RecipientModal=false;
-    this.ShowCentral_Location=false;
+    //this.ShowCentral_Location=false;
     this.current=0;
     
     this.type_to_add=type;
@@ -958,7 +967,9 @@ ClearMultishift(){
         sheet.name("Staff Rosters");
     else
         sheet.name("Recipient Rosters");
-     cell= sheet.getRange(0, 0, this.time_slot, 30, GC.Spread.Sheets.SheetArea.viewport)
+    
+        
+     cell= sheet.getRange(0, 0, this.time_slot, this.Days_View, GC.Spread.Sheets.SheetArea.viewport)
     
       
     cell.setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
@@ -1817,6 +1828,8 @@ ClearMultishift(){
   prepare_Sheet(){
 
    let sheet:any=this.spreadsheet.getActiveSheet(); 
+
+   this.changeHeight()
    this.spreadsheet.suspendPaint();
   
      // Set the default styles.
@@ -1842,6 +1855,12 @@ ClearMultishift(){
    //
     
     let days:number =this.getDaysInMonth(m,y);
+
+   if (this.Days_View>=30){
+    this.Days_View=days
+   }
+    sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
+
 
     if (this.Days_View==31) {this.Days_View==days}
     
@@ -3100,7 +3119,7 @@ reload(reload: boolean){
 
             this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
             this.endRoster =moment(this.date).endOf('month').format('YYYY/MM/DD')
-            
+
         }else if(this.Days_View==31 || this.Days_View==30){
             this.date = moment(this.date).add('month', 1);       
             this.startRoster =moment(this.date).startOf('month').format('YYYY/MM/DD')
@@ -3195,6 +3214,7 @@ reload(reload: boolean){
     handleCancel(){
             this.addTimesheetVisible=false;
             this.addBookingModel=false;
+            this.ShowCentral_Location=false;
     }
     handleOk(){
 
@@ -4383,7 +4403,9 @@ this.bookingForm.get('program').valueChanges.pipe(
         
         
         if (this.viewType=="Staff" && this.current == 3 ){
+     
             this.current += 1;
+          
         }
 
        
@@ -4429,7 +4451,7 @@ this.bookingForm.get('program').valueChanges.pipe(
                 return true;  
             else if  (this.current ==2 && (this.ShowCentral_Location && this.booking_case==8))
                 return true;                                    
-            else if ((this.current >=3 && this.viewType=="Recipient") )
+            else if ((this.current >=3 ) ) //&& this.viewType=="Recipient"
                 return true;
             else
                 return false;

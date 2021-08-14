@@ -8,7 +8,8 @@ import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
-
+import lastDayOfMonth from 'date-fns/lastDayOfMonth'
+import startOfMonth from 'date-fns/startOfMonth'
 import * as moment from 'moment';
 import { User, NewRelationShip, ProfileInterface, IM_Master } from '@modules/modules';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -126,6 +127,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   pdfTitle: string;
   drawerVisible: boolean;
   loadingPDF: boolean;
+  noteSearchForm: FormGroup;
+  reportModal: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -268,6 +271,12 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     });
 
     this.noteFormGroup = this.fb.group(this.default);
+
+    this.noteSearchForm = this.fb.group({
+      'start_date' : startOfMonth(new Date()),
+      'end_date'   : lastDayOfMonth(new Date()),
+      'personId'   : ''
+    });
   }
 
   searchStaff(): void {
@@ -517,6 +526,14 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     this.modalOpen = false;
     this.noteFormGroup.reset(this.default);
   }
+  handleReportCancel(){
+    this.reportModal = false;
+    this.noteSearchForm.reset({
+      'start_date' : startOfMonth(new Date()),
+      'end_date'   : lastDayOfMonth(new Date()),
+      'personId'   : ''
+    });
+  }
 
   updateStaffListing(staff: Array<any>){
     if(staff.length == 0 )return;
@@ -533,6 +550,13 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   showNoteModal(){
     this.modalOpen = true;
+  }
+  showPrintModal(){
+    this.reportModal = true;
+    this.noteSearchForm.patchValue({
+      'personId' : this.incidentForm.value.recordNo,
+    })
+    console.log(this.incidentForm.value.recordNo);
   }
 
   updateNewRelationShip(staff: Array<any>){
@@ -1133,24 +1157,29 @@ updateCheckBoxesInStep1(defaultString: string){
     this.generatePdf();
     this.tryDoctype = ""
     this.pdfTitle = ""
-}
-handleCancelTop(): void {
-    this.drawerVisible = false;
-    this.pdfTitle = ""
-}
+ }
+  handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+  }
   generatePdf(){
+        this.drawerVisible = true;
+        this.loadingPDF = true;
+        var startdate = this.noteSearchForm.value.start_date;
+        var enddate   = this.noteSearchForm.value.end_date;
+        
+        if (startdate != null) { startdate = format(startdate, 'yyyy-MM-dd') } else {
+          startdate   = format(new Date(), 'yyyy-MM-dd');
+        }
+        if (enddate != null) {  enddate = format( enddate, 'yyyy-MM-dd') } else {
+            enddate =  format(new Date(), 'yyyy-MM-dd');
+        }
+        var whereString = '';
 
-    var fData = this.incidentForm.get('incidentNotes') as FormArray;// needs to be print on report
-      // console.log(res);
-    this.drawerVisible = true;
-    this.loadingPDF = true;
+        whereString = " AND DetailDate Between '" + startdate + "' and '" + enddate + "'";
 
-    // var fQuery = "SELECT RECORDNUMBER, NAME AS Field1,CONVERT(varchar, [DATE1],105) as Field2,CONVERT(varchar, [DATE2],105) as Field3,NOTES as Field4,"+
-    //                 "CONVERT(varchar,[DATEINSTALLED],105) as Field5,COMPLETED AS Field6 FROM HUMANRESOURCES HR INNER JOIN Staff ST ON ST.[UniqueId] = HR.[PersonID]"+
-    //                 "WHERE ST.[AccountNo] ='"+this.user.code+"' AND HR.[DELETEDRECORD] = 0"+
-    //                 "AND HR.[GROUP] = 'LEAVEAPP'"+
-    //                 "ORDER BY  DATE1 DESC";
-    
+        var fQuery = "Select WhoCode as Field1,CONVERT(varchar, [DetailDate],105) as Field2,Detail as Field3,CONVERT(varchar, [AlarmDate],100) as Field4, Creator as Field5 FROM History WHERE PersonID = '"+this.incidentForm.value.recordNo+"' AND ExtraDetail1 = 'RECIMNOTE'  AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND DeletedRecord <> 1 "+whereString+" ORDER BY DetailDate DESC, RecordNumber DESC";
+        // console.log(fQuery);
     const headerDict = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -1166,22 +1195,19 @@ handleCancelTop(): void {
             "reports": { "save": false },
             "txtTitle": "Incident Ongoing Notes",
             "userid": this.tocken.user,
-            "dataar": fData,
-            "head1" : "Leave Type",
-            "head2" : "Start",
-            "head3" : "End",
-            "head4" : "Notes",
-            "head5" : "REMINDER DATE",
-            "head6" : "Approved",
+            "sql": fQuery,
+            "head1" : "WhoCode",
+            "head2" : "DetailDate",
+            "head3" : "Detail",
+            "head4" : "AlarmDate",
+            "head5" : "Creator",
         }
     }
     this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
     .subscribe((blob: any) => {
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
-       
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-       
         this.loadingPDF = false;
         console.log("compiled after data")
         this.cd.detectChanges();

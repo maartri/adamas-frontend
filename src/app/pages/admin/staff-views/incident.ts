@@ -169,7 +169,14 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
                 });
         }
         closed(index: number){
-
+            const { recordNumber } = this.tableData[index];
+            this.timeS.UpdateIncidentstatus(recordNumber).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                    if (data) {
+                        this.globalS.sToast('Success', 'Closed Successfully');
+                        this.search();
+                    }
+                });
         }
         save(){
                 

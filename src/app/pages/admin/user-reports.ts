@@ -1517,77 +1517,96 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 break;
 //  Contacts & Next of Kin
           case 'Contact Group':
-          //  this.ConditionEntity =  
+            this.ConditionEntity =  'HR.[Group]'
                 break;
           case 'Contact Type':
-          //  this.ConditionEntity =  
+            this.ConditionEntity =  'HR.[Type]'
                 break;
           case 'Contact Sub Type':
-          //  this.ConditionEntity =  
+            this.ConditionEntity = 'HR.[SubType]' 
                 break;
           case 'Contact User Flag':
-          //  this.ConditionEntity =  
+            this.ConditionEntity =  'HR.[User1]'
                 break;
           case 'Contact Person Type':
-          //  this.ConditionEntity =  
+            this.ConditionEntity =  'HR.[EquipmentCode]'
                 break;
           case 'Contact Name':
-           // this.ConditionEntity =  
+            this.ConditionEntity =   'HR.[Name]'
                 break;
           case 'Contact Address':
-          //  this.ConditionEntity =  
-                break;
+            this.ConditionEntity =  'HR.[Address1]'
+               break;
           case 'Contact Suburb':
-          //  this.ConditionEntity =  
+            this.ConditionEntity = 'HR.[Suburb]' 
                 break;
+/*
+PersonID,  
+                         HR.[Group] As [Contact Group], 
+                         HR.[Type] As [Contact Type], 
+                         HR.[SubType] As [Contact Sub Type], 
+                         HR.[User1] As [Contact User Flag], 
+                         HR.[EquipmentCode] As [Contact Person Type] , 
+                         HR.[Name] As [Contact Name], 
+                         HR.[Address1] As [Contact Address], 
+                         HR.[Suburb] As [Contact Suburb], 
+                         HR.[Postcode] As [Contact Postcode], 
+                         HR.[Phone1] As [Contact Phone 1], 
+                         HR.[Phone2] As [Contact Phone 2], 
+                         HR.[Mobile] As [Contact Mobile], 
+                         HR.[FAX] As [Contact FAX], 
+                         HR.[Email] As [Contact Email]
+*/                
           case 'Contact Postcode':
-          //  this.ConditionEntity =  
+            this.ConditionEntity = 'HR.[Postcode]' 
                 break;
           case 'Contact Phone 1':
-          //  this.ConditionEntity =  
+            this.ConditionEntity =   'HR.[Phone1]'
                 break;
           case 'Contact Phone 2':
-          //  this.ConditionEntity =  
+            this.ConditionEntity =  'HR.[Phone2]'
                 break;
           case 'Contact Mobile':
-           // this.ConditionEntity =  
+            this.ConditionEntity =  'HR.[Mobile]'
                 break;
           case 'Contact FAX':
-          //  this.ConditionEntity =  
+            this.ConditionEntity =  'HR.[FAX]'
                 break;
           case 'Contact Email':
-          //  this.ConditionEntity =  
+            this.ConditionEntity =  'HR.[Email]'
                 break;
 //Carer Info                
           case 'Carer First Name':
-          //  this.ConditionEntity =  
+             this.ConditionEntity = 'C.FirstName' 
                 break;
           case 'Carer Last Name':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'C.[Surname/Organisation]'
                 break;
                 case 'Carer Age':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'DateDiff(YEAR,C.Dateofbirth,GetDate())'
                 break;                 
           case 'Carer Gender':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'C.[Gender]'
                 break;
           case 'Carer Indigenous Status':
-           // this.ConditionEntity =  
+             this.ConditionEntity =  'C.[IndiginousStatus]'
                 break;
+//   
+//                    
           case 'Carer Address':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  "N.Address1 + ' ' +  N.Suburb + ' ' + N.Postcode"
                 break;
           case 'Carer Email':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'PE.Detail'
                 break;
           case 'Carer Phone <Home>':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'PhHome.Detail'
                 break;
           case 'Carer Phone <Work>':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'PhWork.Detail'
                 break;
           case 'Carer Phone <Mobile>':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'PhMobile.Detail'
                 break;
 // Documents                
           case 'DOC_ID':
@@ -3657,7 +3676,9 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           default:
             break;
         }
-
+//if(this.ContactGrp == true){
+//  this.ConditionEntity = " HR.[Group] IN ('NEXTOFKIN',  'CONTACT', 'CARER',  '1-NEXT OF KIN',  '2-CARER',  '3-MEDICAL',  '4-ALLIED HEALTH',  '5-HEALTH INSURANCE',  '6-POWER OF ATTORNEY',  '7-LEGAL OTHER',  '8-OTHER','ALLIED HEALTH',  'PHARMACIST',  'HOSPITAL',  'HEALTHINSURER',  'POWERATTORNEY',  'OTHERLEGAL',  'OTHERCONTACT',  'MANAGER',  'HUMAN RESOURCES',  'ACCOUNTS',  'PAYROLL',  'SALES',  'PURCHASING',  'OTHERCONTACT') OR  HR.[Group] IN  (SELECT DESCRIPTION FROM DataDomains WHERE DOMAIN IN ('CONTACTGROUP', 'CARER RELATIONSHIP')AND DATASET = 'USER') "
+//}
 
 
         this.QueryFormation();
@@ -4211,95 +4232,96 @@ ColumnNameAdjuster(fld){
                 columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
               }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
                   break;
-//  Contacts & Next of Kin                  
+//  Contacts & Next of Kin
+
             case 'Contact Group':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['HR.[Group]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Group]  as Field'+fld.indexOf(key)])}
                   break;
             case 'Contact Type':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['HR.[Type]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Type]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Contact Sub Type':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                columnNames = columnNames.concat(['HR.[SubType]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[SubType]  as Field'+fld.indexOf(key)])}  
                   break;
             case 'Contact User Flag':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                  break;
+                columnNames = columnNames.concat(['HR.[User1]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[User1]  as Field'+fld.indexOf(key)])}
+                  break;                 
             case 'Contact Person Type':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['HR.[EquipmentCode]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[EquipmentCode]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Contact Name':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['HR.[Name]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Name]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Contact Address':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['HR.[Address1]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Address1]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Contact Suburb':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['HR.[Suburb]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Suburb]  as Field'+fld.indexOf(key)])}
                   break;
             case 'Contact Postcode':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['HR.[Postcode]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Postcode]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Contact Phone 1':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['    as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['HR.[Phone1] as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Phone1] as Field'+fld.indexOf(key)])} 
                   break;
             case 'Contact Phone 2':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['HR.[Phone2]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Phone2]  as Field'+fld.indexOf(key)])} 
                   break;
-            case 'Contact Mobile':
+            case 'Contact Mobile': 
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['HR.[Mobile]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Mobile]  as Field'+fld.indexOf(key)])}
                   break;
             case 'Contact FAX':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['HR.[FAX]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[FAX]  as Field'+fld.indexOf(key)])}
                   break;
             case 'Contact Email':
               this.IncludeContacts = true
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['HR.[Email]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['HR.[Email]  as Field'+fld.indexOf(key)])}
                   break;
 //Carer Info                  
             case 'Carer First Name':
               
-                    if(columnNames != []){
+                    if(columnNames != []){ 
                 columnNames = columnNames.concat(['C.FirstName  as Field'+fld.indexOf(key)])
               }else{columnNames = (['C.FirstName  as Field'+fld.indexOf(key)])} 
                     break;
@@ -4326,6 +4348,7 @@ ColumnNameAdjuster(fld){
                   columnNames = columnNames.concat(['C.[IndiginousStatus]  as Field'+fld.indexOf(key)])
                 }else{columnNames = (['C.[IndiginousStatus]  as Field'+fld.indexOf(key)])} 
                     break;
+                  
               case 'Carer Address':
                 var CarerAddress= " ISNULL(N.Address1,'') + ' ' +  ISNULL(N.Suburb,'') + ' ' + ISNULL(N.Postcode,'') "
                   if(columnNames != []){
@@ -7771,6 +7794,7 @@ ColumnNameAdjuster(fld){
           default:
             break;
     }
+    
   }
   //console.log(columnNames)
 
@@ -7823,8 +7847,8 @@ TablesSetting(arr){
   if(arr.includes("Carer Address") ){
     FromSql = FromSql + " LEFT JOIN NamesAndAddresses N ON C.UNIQUEID = N.PERSONID AND N.[Description] = '<USUAL>' "
   }
-  if( arr.includes("")){
-    FromSql = FromSql + ""
+  if( arr.includes("Contact Group") || arr.includes("Contact Email") || arr.includes("Contact FAX") || arr.includes("Contact Mobile") || arr.includes("Contact Type") || arr.includes("Contact Phone 2") || arr.includes("Contact Phone 1") || arr.includes("Contact Postcode") || arr.includes("Contact Suburb") || arr.includes("Contact Name")   || arr.includes("Contact Address") || arr.includes("Contact Sub Type")  || arr.includes("Contact User Flag")  || arr.includes("Contact Person Type") ){
+    FromSql = FromSql + " left join HumanResources HR on Hr.PersonID = R.UniqueID "
   }
   if(arr.includes("") ){
     FromSql = FromSql + ""

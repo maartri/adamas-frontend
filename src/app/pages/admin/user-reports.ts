@@ -137,6 +137,11 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      FieldsNo: number;
      includeConatctWhere:string;
      includeGoalcareWhere:string;
+     includeReminderWhere:string;
+     includeUserGroupWhere:string;
+     includePrefrencesWhere:string;
+     includeIncludSWhere:string;  
+     includeExcludeSWhere:string;
 
     
 IncludeFundingSource: boolean;  IncludeProgram: boolean;  IncludeStaffAttributes: boolean;  IncludePensions: boolean;  IncludeExcluded: boolean; IncludeIncluded: boolean;  IncludePreferences : boolean;
@@ -1687,30 +1692,40 @@ PersonID,
                   break;
 //REMINDERS                  
           case 'Reminder Detail':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Remind.[Name]'
                   break;
           case 'Event Date':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'Remind.[Date2]'
+                  break;                                    
           case 'Reminder Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Remind.[Date1]'
                   break;
           case 'Reminder Notes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Remind.[Notes]'
                   break;
 // USER GROUPS                  
           case 'Group Name':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'UserGroup.[Name]'
                   break;
           case 'Group Note':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'UserGroup.[Notes]' 
+                  break;
+          case 'Group Start Date':
+                 this.ConditionEntity =  'UserGroup.[Date1]'
+                  break;                                 
+          case 'Group End Date':
+                 this.ConditionEntity = 'UserGroup.[Date2]'
+                  break;
+          case 'Group Email':
+                 this.ConditionEntity = 'UserGroup.[Email]'
                   break; 
-//Preferences                                  
+//Preferences 
+                                 
           case 'Preference Name':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'Prefr.[Name]' 
                   break;
           case 'Preference Note':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Prefr.[Notes]'
                   break;
 // FIXED REVIEW DATES                  
           case 'Review Date 1':
@@ -1724,56 +1739,56 @@ PersonID,
                   break;           
 //Staffing Inclusions/Exclusions                  
           case 'Excluded Staff':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ExcludeS.[Name]'
                   break;
           case 'Excluded_Staff Notes':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ExcludeS.[Notes]'
+                  break;                                    
           case 'Included Staff':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IncludS.[Name]'
                   break;
           case 'Included_Staff Notes':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'IncludS.[Notes]'
+                  break;                 
 // AGREED FUNDING INFORMATION                         
           case 'Funding Source':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'HumanResourceTypes.[Type]' 
                   break;
           case 'Funded Program':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[Program]'
                   break;
           case 'Funded Program Agency ID':
-            //  this.ConditionEntity =  
+           //    this.ConditionEntity =  
                   break;                  
           case 'Program Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[ProgramStatus]'
                   break;
           case 'Program Coordinator':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HumanResourceTypes.[Address2]'
                   break;
           case 'Funding Start Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[StartDate]'
                   break;
           case 'Funding End Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'RecipientPrograms.[ExpiryDate]' 
                   break;
           case 'AutoRenew':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'RecipientPrograms.[AutoRenew]'
+                  break;                  
           case 'Rollover Remainder':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[RolloverRemainder]'
                   break;
           case 'Funded Qty':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[Quantity]'
                   break;
           case 'Funded Type':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[ItemUnit]'
                   break;
           case 'Funding Cycle':
             //  this.ConditionEntity =  
                   break;
           case 'Funded Total Allocation':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[TotalAllocation]'
                   break;
           case 'Used':
             //  this.ConditionEntity =  
@@ -3790,7 +3805,15 @@ PersonID,
 
     if(this.includeConatctWhere != undefined && this.includeConatctWhere != ""){ sql = sql + " AND " + this.includeConatctWhere}
     if(this.includeGoalcareWhere != undefined && this.includeGoalcareWhere != ""){sql = sql + " AND " + this.includeGoalcareWhere}
-      var fQuery = sql 
+    if(this.includeReminderWhere != undefined && this.includeReminderWhere != ""){sql = sql + " AND " + this.includeReminderWhere}
+    if(this.includeUserGroupWhere != undefined && this.includeUserGroupWhere != ""){sql = sql + " AND " + this.includeUserGroupWhere}
+    if(this.includePrefrencesWhere != undefined && this.includePrefrencesWhere != ""){sql = sql + " AND " + this.includePrefrencesWhere}
+    if(this.includeIncludSWhere != undefined && this.includeIncludSWhere != ""){sql = sql + " AND " + this.includeIncludSWhere}
+    if(this.includeExcludeSWhere != undefined && this.includeExcludeSWhere != ""){sql = sql + " AND " + this.includeExcludeSWhere}
+    
+    
+      
+    var fQuery = sql 
       
       //    console.log(fQuery)
       //  console.log(this.inputForm.value.printaslabel)
@@ -4502,45 +4525,62 @@ ColumnNameAdjuster(fld){
 //REMINDERS                      
               case 'Reminder Detail':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['Remind.[Name]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Remind.[Name]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Event Date':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Remind.[Date2]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Remind.[Date2]  as Field'+fld.indexOf(key)])}  
                       break;
+                      
               case 'Reminder Date':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Remind.[Date1]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Remind.[Date1]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Reminder Notes':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Remind.[Notes]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Remind.[Notes]  as Field'+fld.indexOf(key)])}  
                       break;
 // USER GROUPS                      
               case 'Group Name':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['UserGroup.[Name]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['UserGroup.[Name]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Group Note':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['UserGroup.[Notes]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['UserGroup.[Notes]  as Field'+fld.indexOf(key)])} 
                       break; 
+              case 'Group Start Date':
+                  if(columnNames != []){
+                  columnNames = columnNames.concat(['UserGroup.[Date1]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['UserGroup.[Date1]  as Field'+fld.indexOf(key)])}  
+                      break;                      
+              case 'Group End Date':
+                  if(columnNames != []){
+                  columnNames = columnNames.concat(['UserGroup.[Date2]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['UserGroup.[Date2]  as Field'+fld.indexOf(key)])} 
+                      break;
+              case 'Group Email':
+                  if(columnNames != []){
+                  columnNames = columnNames.concat(['UserGroup.[Email]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['UserGroup.[Email]  as Field'+fld.indexOf(key)])} 
+                      break;
+                    
 //Preferences                                      
               case 'Preference Name':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['Prefr.[Name]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Prefr.[Name]  as Field'+fld.indexOf(key)])}  
+                      break;                      
               case 'Preference Note':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Prefr.[Notes]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Prefr.[Notes]  as Field'+fld.indexOf(key)])}  
                       break;
 // FIXED REVIEW DATES                      
               case 'Review Date 1':
@@ -4561,34 +4601,34 @@ ColumnNameAdjuster(fld){
 //Staffing Inclusions/Exclusions                                 
               case 'Excluded Staff':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['ExcludeS.[Name]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ExcludeS.[Name]  as Field'+fld.indexOf(key)])}  
+                      break;                
               case 'Excluded_Staff Notes':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['ExcludeS.[Notes]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ExcludeS.[Notes]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Included Staff':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['IncludS.[Name]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['IncludS.[Name]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Included_Staff Notes':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
-                      break; 
+                  columnNames = columnNames.concat(['IncludS.[Notes]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['IncludS.[Notes]  as Field'+fld.indexOf(key)])} 
+                      break;                      
 // AGREED FUNDING INFORMATION                            
               case 'Funding Source':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['HumanResourceTypes.[Type]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['HumanResourceTypes.[Type]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Funded Program':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['RecipientPrograms.[Program]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['RecipientPrograms.[Program]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Funded Program Agency ID':
                   if(columnNames != []){
@@ -4597,13 +4637,13 @@ ColumnNameAdjuster(fld){
                       break;
               case 'Program Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['RecipientPrograms.[ProgramStatus]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['RecipientPrograms.[ProgramStatus]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Program Coordinator':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['HumanResourceTypes.[Address2]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['HumanResourceTypes.[Address2]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Funding Start Date':
                   if(columnNames != []){
@@ -4612,38 +4652,45 @@ ColumnNameAdjuster(fld){
                       break;
               case 'Funding End Date':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['RecipientPrograms.[ExpiryDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['RecipientPrograms.[ExpiryDate]  as Field'+fld.indexOf(key)])} 
                       break;
+                     
               case 'AutoRenew':
+                var Autorenew = " CASE WHEN RecipientPrograms.[AutoRenew] = 1 THEN 'YES' ELSE 'NO' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([Autorenew +'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([Autorenew +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Rollover Remainder':
+                var RolloverReminder = " CASE WHEN RecipientPrograms.[RolloverRemainder] = 1 THEN 'YES' ELSE 'NO' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([RolloverReminder +' as Field'+fld.indexOf(key)])
+                }else{columnNames = ([RolloverReminder +' as Field'+fld.indexOf(key)])}  
                       break;
               case 'Funded Qty':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['RecipientPrograms.[Quantity]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['RecipientPrograms.[Quantity]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Funded Type':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['RecipientPrograms.[ItemUnit]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['RecipientPrograms.[ItemUnit]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Funding Cycle':
+                var FundingCycle = "CASE WHEN RecipientPrograms.[PerUnit] <> '' THEN RecipientPrograms.[PerUnit] + ' ' ELSE '' END + "  +
+                " CASE WHEN RecipientPrograms.[TimeUnit] <> '' THEN RecipientPrograms.[TimeUnit] + ' ' ELSE '' END + "  +
+                " CASE WHEN RecipientPrograms.[Period] <> '' THEN RecipientPrograms.[Period] ELSE '' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat([FundingCycle+'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([FundingCycle+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'Funded Total Allocation':
+                var Allocation = " CASE WHEN RecipientPrograms.[TotalAllocation] <> '' THEN RecipientPrograms.[TotalAllocation] ELSE 0 END  "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat([Allocation +'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([Allocation +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'Used':
                   if(columnNames != []){
@@ -7854,13 +7901,46 @@ TablesSetting(arr){
     FromSql = FromSql + " left join HumanResources Cons on Cons.PersonID = R.UniqueID  "
   } 
   if(arr.includes("Goal") || arr.includes("Goal Detail") || arr.includes("Goal Achieved") || arr.includes("Anticipated Achievement Date") || arr.includes("Date Achieved") || arr.includes("Last Reviewed") || arr.includes("Logged By") ){
-    FromSql = FromSql + " left join HumanResources Goalcare on Goalcare.PersonID = R.UniqueID "
-    
+    FromSql = FromSql + " left join HumanResources Goalcare on Goalcare.PersonID = R.UniqueID "    
      this.includeGoalcareWhere = " Goalcare.[Group] = 'RECIPIENTGOALS' "
+  }
+ 
+  if(arr.includes("Reminder Detail") || arr.includes("Event Date") || arr.includes("Reminder Date") || arr.includes("Reminder Notes") ){
+    FromSql = FromSql + " left join HumanResources Remind on Remind.PersonID = R.UniqueID "    
+    this.includeReminderWhere = " Remind.[Group] = 'RECIPIENTALERT' "
+  }
+  if(arr.includes("Group Email") || arr.includes("Group End Date") || arr.includes("Group Start Date") || arr.includes("Group Note") || arr.includes("Group Name") ){
+    FromSql = FromSql + " left join HumanResources UserGroup on UserGroup.PersonID = R.UniqueID "    
+    this.includeUserGroupWhere = " UserGroup.[Group] = 'RECIPTYPE' "
+  }
+  if(arr.includes("Preference Note") || arr.includes("Preference Name")){
+    FromSql = FromSql + " left join HumanResources Prefr on Prefr.PersonID = R.UniqueID "    
+    this.includePrefrencesWhere = " Prefr.[Group] = 'STAFFPREF' "
+  }  
+  if(arr.includes("Excluded Staff") || arr.includes("Excluded_Staff Notes") ){
+    FromSql = FromSql + " left join HumanResources ExcludeS on ExcludeS.PersonID = R.UniqueID "    
+    this.includeExcludeSWhere = " ExcludeS.[Type] = 'EXCLUDEDSTAFF'  "
+  } 
+  if(arr.includes("") || arr.includes("") ){
+    FromSql = FromSql + " left join HumanResources IncludS on IncludS.PersonID = R.UniqueID "    
+    this.includeIncludSWhere = " IncludS.[TYPE] = 'INCLUDEDSTAFF'  "
+  }
+  if(arr.includes("Funding Source") ){
+    FromSql = FromSql + " LEFT JOIN RecipientPrograms ON R.UniqueID = RecipientPrograms.PersonID LEFT JOIN HumanResourceTypes ON RecipientPrograms.Program = HumanResourceTypes.Name "
+  }
+  if(arr.includes("Funded Program") || arr.includes("Program Status") || arr.includes("Program Coordinator") || arr.includes("Funding Start Date") || arr.includes("Funding End Date") || arr.includes("AutoRenew") || arr.includes("Rollover Remainder") || arr.includes("Funded Qty") || arr.includes("Funded Type")|| arr.includes("Funding Cycle")  || arr.includes("Funded Total Allocation") ){
+    FromSql = FromSql + " LEFT JOIN RecipientPrograms ON R.UniqueID = RecipientPrograms.PersonID LEFT JOIN HumanResourceTypes ON RecipientPrograms.Program = HumanResourceTypes.Name "
   }
   if(arr.includes("") ){
     FromSql = FromSql + ""
   }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+
   
   
    

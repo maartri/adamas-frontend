@@ -22,7 +22,7 @@ export class ListService {
     // }
     
     getspecificbranch(personid: string):Observable<any>{
-        return this.auth.getstring(`${list}/specific-branch/${personid}`);
+        return this.auth.get(`${list}/specific-branch/${personid}`);
     }
 
     

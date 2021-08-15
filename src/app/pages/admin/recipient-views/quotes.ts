@@ -687,11 +687,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     showAcceptModal(item: any) {
+        console.log(this.user)
         if(this.globalS.isEmpty(item.programStatus)){
             this.globalS.eToast('Error','Program Status is EMPTY');
             return;
         }
         this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
+        
         this.recipientOptionOpen = {};
         return
         if(['REFERRAL','INACTIVE'].includes(item.programStatus)){
@@ -925,8 +927,6 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     search(user: any) {
-        console.log(user);
-
         this.loading = true;
         this.user = user;
         

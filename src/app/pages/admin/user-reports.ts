@@ -135,6 +135,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      sqlorder: string;
      ConditionEntity: string;
      FieldsNo: number;
+     includeConatctWhere:string;
+     includeGoalcareWhere:string;
 
     
 IncludeFundingSource: boolean;  IncludeProgram: boolean;  IncludeStaffAttributes: boolean;  IncludePensions: boolean;  IncludeExcluded: boolean; IncludeIncluded: boolean;  IncludePreferences : boolean;
@@ -1610,81 +1612,78 @@ PersonID,
                 break;
 // Documents                
           case 'DOC_ID':
-           // this.ConditionEntity =  
+             this.ConditionEntity =  'doc.DOC_ID'
                 break;
           case 'Doc_Title':
-           // this.ConditionEntity =  
+             this.ConditionEntity =  'doc.Title'
                 break;
           case 'Created':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'doc.Created'
                 break;                
           case 'Modified':
-           // this.ConditionEntity =  
+             this.ConditionEntity =  'doc.Modified'
                 break;
           case 'Status':
-          //  this.ConditionEntity =  
-                break;
+             this.ConditionEntity =  'doc.Status'
+                break;                                
           case 'Classification':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'doc.Classification'
                 break;
           case 'Category':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'doc.Category'
                 break;
           case 'Filename':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'doc.Filename'
                 break;
           case 'Doc#':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'doc.Doc#'
                   break;
           case 'DocStartDate':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'doc.DocStartDate'
                   break;
           case 'DocEndDate':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'doc.DocEndDate'
                   break;
           case 'AlarmDate':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =   'doc.AlarmDate'
                   break;                          
           case 'AlarmText':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'doc.AlarmText'
                   break;
  //Consents                  
           case 'Consent':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Cons.[Name]'
                   break;
           case 'Consent Start Date':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'Cons.[Date1]'
+                  break;                  
           case 'Consent Expiry':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Cons.[Date2]'
                   break;
           case 'Consent Notes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'Cons.[Notes]' 
                   break;
  //  GOALS OF CARE                  
           case 'Goal':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Goalcare.[User1]'
                   break;               
           case 'Goal Detail':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Goalcare.[Notes]'
                   break;
           case 'Goal Achieved':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Goalcare.[Completed]'
                   break;
           case 'Anticipated Achievement Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Goalcare.[Date1]'
                   break;
           case 'Date Achieved':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'Goalcare.[DateInstalled]'
+                  break;                  
           case 'Last Reviewed':
-            //  this.ConditionEntity =  
-                  break;
-          case 'Last Reviewed':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'Goalcare.[Date2]'
+                  break;          
           case 'Logged By':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'Goalcare.[Creator]'
                   break;
 //REMINDERS                  
           case 'Reminder Detail':
@@ -3789,8 +3788,9 @@ PersonID,
 
     
 
-      
-      var fQuery = sql
+    if(this.includeConatctWhere != undefined && this.includeConatctWhere != ""){ sql = sql + " AND " + this.includeConatctWhere}
+    if(this.includeGoalcareWhere != undefined && this.includeGoalcareWhere != ""){sql = sql + " AND " + this.includeGoalcareWhere}
+      var fQuery = sql 
       
       //    console.log(fQuery)
       //  console.log(this.inputForm.value.printaslabel)
@@ -4378,130 +4378,126 @@ ColumnNameAdjuster(fld){
 // Documents                    
               case 'DOC_ID':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['doc.DOC_ID  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.DOC_ID  as Field'+fld.indexOf(key)])} 
                     break;
               case 'Doc_Title':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['doc.Title  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.Title  as Field'+fld.indexOf(key)])}  
                     break;
+                  
               case 'Created':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['doc.Created  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.Created  as Field'+fld.indexOf(key)])}  
                     break;                
               case 'Modified':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
-                    break;
+                  columnNames = columnNames.concat(['doc.Modified  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.Modified  as Field'+fld.indexOf(key)])} 
+                    break;                    
               case 'Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['doc.Status  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.Status  as Field'+fld.indexOf(key)])}
                     break;
               case 'Classification':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['doc.Classification  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.Classification  as Field'+fld.indexOf(key)])}  
                     break;
               case 'Category':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['doc.Category  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.Category  as Field'+fld.indexOf(key)])}  
                     break;
               case 'Filename':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['doc.Filename  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.Filename  as Field'+fld.indexOf(key)])}  
                     break;
               case 'Doc#':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['doc.Doc#  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.Doc#  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DocStartDate':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['doc.DocStartDate  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.DocStartDate  as Field'+fld.indexOf(key)])}  
+                      break;                  
               case 'DocEndDate':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['doc.DocEndDate  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.DocEndDate  as Field'+fld.indexOf(key)])}  
                       break;
               case 'AlarmDate':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['doc.AlarmDate  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.AlarmDate  as Field'+fld.indexOf(key)])}
                       break;                          
               case 'AlarmText':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['doc.AlarmText  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['doc.AlarmText  as Field'+fld.indexOf(key)])}  
                       break;
  //Consents                      
               case 'Consent':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['Cons.[Name]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Cons.[Name]  as Field'+fld.indexOf(key)])}  
+                      break;                     
               case 'Consent Start Date':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Cons.[Date1]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Cons.[Date1]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Consent Expiry':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Cons.[Date2]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Cons.[Date2]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Consent Notes':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Cons.[Notes]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Cons.[Notes]  as Field'+fld.indexOf(key)])}  
                       break;
  //  GOALS OF CARE                      
               case 'Goal':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['Goalcare.[User1]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Goalcare.[User1]  as Field'+fld.indexOf(key)])}
                       break;               
               case 'Goal Detail':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Goalcare.[Notes]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Goalcare.[Notes]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Goal Achieved':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['Goalcare.[Completed]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Goalcare.[Completed]  as Field'+fld.indexOf(key)])}  
+                      break;                      
               case 'Anticipated Achievement Date':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['Goalcare.[Date1]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Goalcare.[Date1]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Date Achieved':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['Goalcare.[DateInstalled]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Goalcare.[DateInstalled]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Last Reviewed':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
-              case 'Last Reviewed':
-                  if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['Goalcare.[Date2]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Goalcare.[Date2]  as Field'+fld.indexOf(key)])}  
+                      break;              
               case 'Logged By':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['Goalcare.[Creator]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['Goalcare.[Creator]  as Field'+fld.indexOf(key)])}
                       break;
 //REMINDERS                      
               case 'Reminder Detail':
@@ -7847,22 +7843,26 @@ TablesSetting(arr){
   if(arr.includes("Carer Address") ){
     FromSql = FromSql + " LEFT JOIN NamesAndAddresses N ON C.UNIQUEID = N.PERSONID AND N.[Description] = '<USUAL>' "
   }
-  if( arr.includes("Contact Group") || arr.includes("Contact Email") || arr.includes("Contact FAX") || arr.includes("Contact Mobile") || arr.includes("Contact Type") || arr.includes("Contact Phone 2") || arr.includes("Contact Phone 1") || arr.includes("Contact Postcode") || arr.includes("Contact Suburb") || arr.includes("Contact Name")   || arr.includes("Contact Address") || arr.includes("Contact Sub Type")  || arr.includes("Contact User Flag")  || arr.includes("Contact Person Type") ){
+  if( arr.includes("Contact Group") || arr.includes("Contact Email") || arr.includes("Contact FAX") || arr.includes("Contact Mobile") || arr.includes("Contact Type") || arr.includes("Contact Phone 2") || arr.includes("Contact Phone 1") || arr.includes("Contact Postcode") || arr.includes("Contact Suburb") || arr.includes("Contact Name")   || arr.includes("Contact Address") || arr.includes("Contact Sub Type")  || arr.includes("Contact User Flag")  || arr.includes("Contact Person Type") ){ 
     FromSql = FromSql + " left join HumanResources HR on Hr.PersonID = R.UniqueID "
+    this.includeConatctWhere = " HR.[Group] IN ('NEXTOFKIN',  'CONTACT', 'CARER',  '1-NEXT OF KIN',  '2-CARER',  '3-MEDICAL',  '4-ALLIED HEALTH',  '5-HEALTH INSURANCE',  '6-POWER OF ATTORNEY',  '7-LEGAL OTHER',  '8-OTHER','ALLIED HEALTH',  'PHARMACIST',  'HOSPITAL',  'HEALTHINSURER',  'POWERATTORNEY',  'OTHERLEGAL',  'OTHERCONTACT',  'MANAGER',  'HUMAN RESOURCES',  'ACCOUNTS',  'PAYROLL',  'SALES',  'PURCHASING',  'OTHERCONTACT') OR  HR.[Group] IN  (SELECT DESCRIPTION FROM DataDomains WHERE DOMAIN IN ('CONTACTGROUP', 'CARER RELATIONSHIP')AND DATASET = 'USER') "
+  }  
+  if(arr.includes("DOC_ID") ||arr.includes("Doc_Title") ||arr.includes("Created") ||arr.includes("Modified") ||arr.includes("Status") ||arr.includes("Classification") ||arr.includes("Category") ||arr.includes("Filename") ||arr.includes("Doc#") ||arr.includes("DocStartDate") ||arr.includes("DocEndDate") ||arr.includes("AlarmDate") ||arr.includes("AlarmText") ){
+    FromSql = FromSql + " left join Documents doc on doc.PersonID = R.UniqueID  "
+  }
+  if(arr.includes("Consent") || arr.includes("Consent Start Date") || arr.includes("Consent Expiry") || arr.includes("Consent Notes") ){
+    FromSql = FromSql + " left join HumanResources Cons on Cons.PersonID = R.UniqueID  "
+  } 
+  if(arr.includes("Goal") || arr.includes("Goal Detail") || arr.includes("Goal Achieved") || arr.includes("Anticipated Achievement Date") || arr.includes("Date Achieved") || arr.includes("Last Reviewed") || arr.includes("Logged By") ){
+    FromSql = FromSql + " left join HumanResources Goalcare on Goalcare.PersonID = R.UniqueID "
+    
+     this.includeGoalcareWhere = " Goalcare.[Group] = 'RECIPIENTGOALS' "
   }
   if(arr.includes("") ){
     FromSql = FromSql + ""
   }
-  if(arr.includes("") ){
-    FromSql = FromSql + ""
-  }
-  if(arr.includes("") ){
-    FromSql = FromSql + ""
-  }
-  if(arr.includes("") ){
-    FromSql = FromSql + ""
-  }
-
+  
+  
    
 
 

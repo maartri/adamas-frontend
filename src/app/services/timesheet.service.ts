@@ -71,6 +71,9 @@ export class TimeSheetService {
     deleteincident(recordNo: number): Observable<any>{
         return this.auth.delete(`${timesheet}/incident/${recordNo}`);
     }
+    // closedincident(recordNo: number): Observable<any>{
+    //     return this.auth.delete(`${timesheet}/incident/closed/${recordNo}`);
+    // }
 
     postincident(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/incidents`, data);

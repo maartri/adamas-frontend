@@ -91,7 +91,8 @@ import {
   TimesheetAdmin,
   ConfigurationAdmin,
   HCPComponent,
-  PrintComponent  
+  PrintComponent,
+  BillingAdmin,   //AHSAN
 } from '@admin/index'
 
 import {
@@ -253,6 +254,7 @@ import { StaffAdminActivitiesComponent } from '@admin/configuration/services/sta
 import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
 import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
 import { DocumentTemplateComponent } from '@admin/configuration/documents/document-template.component';
+import { BillingComponent } from '@admin/billing/billing.component'; //AHSAN 
 
 const routes: Routes = [
   {
@@ -532,6 +534,14 @@ const routes: Routes = [
       {
         path: 'configuration',
         component: ConfigurationAdmin
+      },      
+      {
+        path: 'billing', //AHSAN
+        component: BillingAdmin
+      },
+      {
+        path: 'debtor-updates-exports', //AHSAN
+        component: BillingComponent
       },
       {
         path: 'hcp',
@@ -1166,6 +1176,8 @@ export const PAGE_COMPONENTS = [
   ConfigurationAdmin,
   HCPComponent,
   PrintComponent,
+  BillingAdmin, //AHSAN 
+  
   // Components
   ProfilePage,
   //Roster Module
@@ -1178,6 +1190,8 @@ export const PAGE_COMPONENTS = [
   ClaimratesComponent,
   TargetgroupsComponent,
   PurposestatementComponent,
+  HCPComponent,
+  BillingComponent, //AHSAN 
   BudgetgroupsComponent,
   BudgetsComponent,
   ContactgroupsComponent,

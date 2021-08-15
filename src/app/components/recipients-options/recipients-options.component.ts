@@ -387,7 +387,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         referralDate: null,
         admissionDate:new Date(),
         adminsssion:null,
-        admisointype:null,
+        admissionType:null,
         timePeriod: [],
         time: new Date(),
         timeSpent: new Date().setHours(0, 15),
@@ -397,9 +397,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.admitGroup.get('programChecked').valueChanges
         .pipe(
             switchMap(x => {
-              console.log(x);
+                console.log(x)
                 if(!x) return EMPTY;
-                  // console.log(x);
                 let obj = {
                   program: x.program,
                   option: 'ADMIT'
@@ -411,32 +410,24 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               this.admissionActiviType = data;
               if(data.length == 1){
                 this.admitGroup.patchValue({
-                  admisointype: this.admissionActiviType[0]
-                })
+                  admissionType: this.admissionActiviType[0]
+                });
               }
        });
 
-      //  console.log(this.admitGroup.get('programs').)
-
-
        this.assessGroup = this.fb.group({
-        programs: this.fb.array([]),
-        
-        date:null,
-        time: null,
-        timeSpent: null,
-        
-        radioGroup: 'case',
-        notes: null,
-        caseCategory: 'SCREEN/ASSESS',
-        publishToApp: false,
-        
-        
-        
-        reminderDate: null,
-        reminderTo: null,
-        emailNotif: null,
-        multipleStaff: null
+          programs: this.fb.array([]),          
+          date:null,
+          time: null,
+          timeSpent: null,          
+          radioGroup: 'case',
+          notes: null,
+          caseCategory: 'SCREEN/ASSESS',
+          publishToApp: false,          
+          reminderDate: null,
+          reminderTo: null,
+          emailNotif: null,
+          multipleStaff: null
       });
       
       this.notProceedGroup = this.fb.group({
@@ -671,18 +662,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           
           var finalRoster: Array<ProcedureRoster> = [];
           
-          
-          // console.log(this.itemGroup.getRawValue());
-          // console.log(this.token);
-          // console.log(this.checkedPrograms);
-          // console.log(this.gwapo)
-          
           var checkedPrograms = this.checkedPrograms;
           
           
           if(this.option == RECIPIENT_OPTION.REFER_IN){
-            
-            
+                        
             const { 
               referralSource,
               referralCode,
@@ -778,14 +762,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 personId: this.user.id,
                 program: 'VARIOUS',
                 detailDate: format(new Date,'yyyy/MM/dd'),
-                extraDetail1: 'ss',
+                extraDetail1: '',
                 extraDetail2: 'REFERRAL-IN',
                 whoCode: this.user.code,
                 publishToApp: publishToApp ? 1 : 0,
                 creator: this.token.user,
                 note: notes || "" ,
                 alarmDate: format(new Date,'yyyy/MM/dd'),
-                reminderTo: 'ss'
+                reminderTo: ''
               }
             }
             
@@ -795,16 +779,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               this.handleCancel();
               
               if (this.globalS.followups != null){
-                this.writereminder(); }
+                this.writereminder(); 
+              }
                 //  if(this.globalS.doc != null){
                 //    this.addRefdoc();
                 //  }
                 
                 if (this.globalS.emailaddress != null){
                   this.emailnotify(); }
-                });
-                
-                
+                });                
               }
               
               if(this.option == RECIPIENT_OPTION.REFER_ON){
@@ -819,8 +802,60 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 console.log(this.assessGroup.value)
               }
               
-              if(this.option == RECIPIENT_OPTION.ADMIT){
-                console.log(this.admitGroup.value)
+              if(this.option == RECIPIENT_OPTION.ADMIT){  
+
+                  const { 
+                    time,
+                    timeSpent,
+                    admissionDate,
+                    notes,
+                    programChecked,
+                    admissionType
+                  } = this.admitGroup.value; 
+
+                  const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+                  const timeInMinutes = this.globalS.getMinutes(timeSpent)
+                  const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
+                  console.log(programChecked)
+                  let data = {
+                      program: programChecked.program,
+                      admissionType: admissionType,
+                      clientCode: this.user.code,
+                      carerCode: this.token.code,
+                      serviceType: 'referralType',
+                      date: format(admissionDate,'yyyy/MM/dd'), 
+                      time: format(time,'HH:mm'),
+                      creator: this.token.code,
+                      editer: this.token.user,
+                      billUnit: 'HOUR',
+                      agencyDefinedGroup: this.user.agencyDefinedGroup,
+                      referralCode: '',
+                      timePercentage: timePercentage,
+                      notes: '',
+                      type: 7,
+                      duration: timeInMinutes / 5,
+                      blockNo: blockNoTime,
+                      reasonType: '',
+                      tabType: 'ADMISSION',
+                      noteDetails: {
+                          personId: this.user.id,
+                          program: programChecked.program,
+                          detailDate: admissionDate,
+                          extraDetail1: 'ADMISSION',
+                          extraDetail2: 'ADMISSION',
+                          whoCode: this.user.code,
+                          publishToApp: 0,                    
+                          creator: this.token.user,
+                          note: notes,
+                          alarmDate: '',
+                          reminderTo: ''
+                      }
+                  }
+                  console.log(data);
+
+                  this.listS.postadmission(data).subscribe(data => {
+                    this.globalS.sToast('Success', 'Data is saved'); 
+                  });
               }
               
               if(this.option == RECIPIENT_OPTION.WAIT_LIST){
@@ -1402,6 +1437,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.admitGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.admitGroup;
+
+                if((this.admitGroup.get('programs').value as Array<any>).length == 1){
+                  let programs = (<FormArray>this.admitGroup.controls['programs']).at(0);
+
+                  // set default when list is only one
+                  this.admitGroup.patchValue({
+                    programChecked: programs.value
+                  });
+                }
               }
               
               if(type == RECIPIENT_OPTION.ASSESS){
@@ -1567,6 +1611,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 
                 if(this.option == RECIPIENT_OPTION.REFER_IN)
                 {
+
+                  console.log(this.user)
+                  // this.listS.getnotifications({
+                  //   branch: this.BRANCH_NAME,
+                  //   coordinator: x1
+                  // }).subscribe(data => console.log(data));
 
                   this.listS.getfollowups({
                     branch: this.BRANCH_NAME,
@@ -1805,6 +1855,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   
                   this.globalS.followups = null;
                 }
+
                 addRefdoc(){
                   //console.log(this.globalS.doc.toString());
                   /*if (this.globalS.doc.toString() != null){ 

@@ -16,10 +16,15 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+    
 
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+
+    postadmissionacceptquote(data: any): Observable<any> {
+        return this.auth.post(`${list}/admission-accept-quote`, data);
+    }
     
     getspecificbranch(personid: string):Observable<any>{
         return this.auth.get(`${list}/specific-branch/${personid}`);

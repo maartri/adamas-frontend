@@ -687,7 +687,8 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     showAcceptModal(item: any) {
-        console.log(this.user)
+        this.user = {...this.user, docId: item.docID };
+
         if(this.globalS.isEmpty(item.programStatus)){
             this.globalS.eToast('Error','Program Status is EMPTY');
             return;

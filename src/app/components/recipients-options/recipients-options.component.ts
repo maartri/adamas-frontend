@@ -56,6 +56,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   FUNDING_TYPE: string;
   BRANCH_NAME: string;
+  DOCUMENTID: number;
   COORDINATOR: string;
   
   referralRadioValue: any;
@@ -217,7 +218,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     ngOnChanges(changes: SimpleChanges): void {
       for (let property in changes) {
         if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
-
+          console.log(this.user);
           // GETS Branch name or Gets it through database
           if('branch' in this.user){
             this.BRANCH_NAME = this.user.branch;
@@ -228,6 +229,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     this.COORDINATOR = data.coordinator;
                   });
           }
+
+          if('docId' in this.user){
+            this.DOCUMENTID = this.user.docId;
+          }
+
 
           this.buildForm();
           this.populate();
@@ -398,7 +404,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         admissionType:null,
         timePeriod: [],
         time: new Date(),
-        timeSpent: new Date().setHours(0, 15),
+        timeSpent: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 15, 0)
+
       });
       
       
@@ -814,6 +821,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               
               if(this.option == RECIPIENT_OPTION.ADMIT){  
 
+                console.log(this.admitGroup.value)
                   const { 
                     time,
                     timeSpent,
@@ -821,13 +829,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     notes,
                     programChecked,
                     admissionType
+                    
                   } = this.admitGroup.value; 
 
                   const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
                   const timeInMinutes = this.globalS.getMinutes(timeSpent)
                   const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
-                  console.log(programChecked)
+
                   let data = {
+                      docId: this.DOCUMENTID,
                       program: programChecked.program,
                       admissionType: admissionType,
                       clientCode: this.user.code,
@@ -847,6 +857,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       blockNo: blockNoTime,
                       reasonType: '',
                       tabType: 'ADMISSION',
+                      timeSpent: format(timeSpent,'HH:mm'),
                       noteDetails: {
                           personId: this.user.id,
                           program: programChecked.program,
@@ -861,10 +872,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                           reminderTo: ''
                       }
                   }
-                  console.log(data);
-
-                  this.listS.postadmission(data).subscribe(data => {
-                    this.globalS.sToast('Success', 'Data is saved'); 
+       
+                  this.listS.postadmissionacceptquote(data).subscribe(data => {
+                    this.globalS.sToast('Success', 'Data is saved');
+                    this.handleCancel();
                   });
               }
               

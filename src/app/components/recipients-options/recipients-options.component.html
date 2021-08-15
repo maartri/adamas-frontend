@@ -1549,7 +1549,12 @@
                 <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Date Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
+                
+                <nz-step class="mini" nzTitle="Notifications" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Followups" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Documents" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Other Required Info" nzDescription=""></nz-step>
+                <!-- <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step> -->
             </nz-steps>
             
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
@@ -1647,7 +1652,7 @@
                         </div>
                     </div>
                     
-                    <div nz-col nzSpan="12">
+                    <!-- <div nz-col nzSpan="12">
                         <div class="form-group" [formGroup]="referInGroup">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
                                 <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
@@ -1659,46 +1664,40 @@
                         <div class="form-group" [formGroup]="referInGroup">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 
                 <div nz-row *ngIf="current == 4" [formGroup]="referInGroup">
+                    <label for="">Notifications</label>
+                    <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                    <nz-alert nzType="warning" *ngIf="notifCheckBoxes?.length == 0" nzMessage="No Notifications"></nz-alert>
+                </div>            
+
+                <div nz-row *ngIf="current == 5" [formGroup]="referInGroup">
+                    <label for="">Followups</label>
+                    <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                    <nz-alert nzType="warning" *ngIf="notifFollowUpGroup?.length == 0" nzMessage="No Followups"></nz-alert>
+                </div>     
+
+                <div nz-row *ngIf="current == 6" [formGroup]="referInGroup">
                     
-                    <div nz-row [nzGutter]="8" class="space-btm">
-                        <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
-                        </div>                        
-                    </div>  
-                    
-                    <div nz-row [nzGutter]="16" class="space-btm">
-                        <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <nz-select formControlName="reminderTo" nzAllowClear nzPlaceHolder="TRACCS Reminder To" style="width:8rem">
-                                    <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
-                                </nz-select>
-                            </div>
-                        </div>
-                        <!--    <div nz-col nzSpan="8">
-                            <div class="form-group">
-                                <nz-select formControlName="emailNotif" nzAllowClear nzPlaceHolder="Email Notification To" style="width:8rem">
-                                    <nz-option *ngFor="let data of remindersRecipientArray"  [nzValue]="data" [nzLabel]="data"></nz-option>
-                                </nz-select>
-                            </div>                    
-                        </div>
-                    -->
-                </div>
-                <div nz-row [nzGutter]="8" >
-                    <div nz-col nzSpan="8">
-                        <nz-select formControlName="multipleStaff" nzAllowClear nzPlaceHolder="Multiple Staff" style="width:8rem">
-                            <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                        </nz-select>
-                    </div>                        
-                </div>
-                
-                
-            </div>
-            
-            
+                    <label for="">Documents</label>
+                    <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                    <nz-alert nzType="warning" *ngIf="notifDocumentsGroup?.length == 0" nzMessage="No Documents"></nz-alert>
+                </div>    
+
+                <div nz-row *ngIf="current == 7" [formGroup]="referInGroup">
+                    <label for="">Other Required Info</label>
+
+                    <div *ngFor="let l of datalist"> 
+                        <a [href]="l.link" target="_blank">{{l.form}}</a>
+                    </div>
+
+                    <nz-alert nzType="warning" *ngIf="datalist?.length == 0" nzMessage="No Other Infos"></nz-alert>
+                   
+                </div>    
+
+
         </div>
     </div>
     
@@ -1709,10 +1708,10 @@
         <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
             <span>Previous</span>
         </button>
-        <button nz-button nzType="default" (click)="next()" *ngIf="current < 4" [disabled]="!canGoNext">
+        <button nz-button nzType="default" (click)="next()" *ngIf="current < 9" [disabled]="!canGoNext">
             <span>Next</span>
         </button>
-        <button nz-button nzType="primary" *ngIf="current === 4" (click)="done()" [disabled]="!canBeDone">
+        <button nz-button nzType="primary" *ngIf="current === 9" (click)="done()" [disabled]="!canBeDone">
             <span>Done</span>
         </button>
     </ng-container>

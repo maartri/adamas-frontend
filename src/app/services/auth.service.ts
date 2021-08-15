@@ -8,7 +8,9 @@ import { GlobalService } from './global.service';
 const headers = new HttpHeaders()
                     .append('Content-Type','application/json')
                     .append('Accept','application/json');
-            
+
+const headers_string = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
+
 @Injectable({
     providedIn: 'root'
 })
@@ -50,6 +52,15 @@ export class AuthService implements ErrorHandler{
                             catchError(err => this.handleError(err))
                         )
     }
+
+    getstring(url: string, params: any = null): Observable<any>{
+        var _params = this.GlobalS.serialize(params);
+        return this.http.get(url, { params: _params, headers: headers_string, responseType: 'text' })
+                    .pipe(
+                        catchError(err => this.handleError(err))
+                    )
+    }
+
 
     get(url: string, params: any = null): Observable<any>{
         var _params = this.GlobalS.serialize(params);

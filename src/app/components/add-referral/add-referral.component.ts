@@ -515,32 +515,32 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.listS.getfollowups().pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.notifFollowUpGroup = data.map(x => {
-        return {
-          label: x,
-          value: x,
-          disabled: false,
-          checked: false
-        }
-      })
-    })
+    // this.listS.getfollowups({ }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+    //   this.notifFollowUpGroup = data.map(x => {
+    //     return {
+    //       label: x,
+    //       value: x,
+    //       disabled: false,
+    //       checked: false
+    //     }
+    //   })
+    // })
 
 
-    this.listS.getdocumentslist().pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.notifDocumentsGroup = data.map(x => {
-        return {
-          label: x,
-          value: x,
-          disabled: false,
-          checked: false
-        }
-      })
-    })
+    // this.listS.getdocumentslist().pipe(takeUntil(this.destroy$)).subscribe(data => {
+    //   this.notifDocumentsGroup = data.map(x => {
+    //     return {
+    //       label: x,
+    //       value: x,
+    //       disabled: false,
+    //       checked: false
+    //     }
+    //   })
+    // })
 
-    this.listS.getdatalist().pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-      this.datalist = data
-    });
+    // this.listS.getdatalist().pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+    //   this.datalist = data
+    // });
 
   }
 

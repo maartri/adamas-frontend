@@ -44,7 +44,6 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     skills: any;
     titleskillsForm: FormGroup;
     updateString: string;
-    sbFieldsSkill:any;
     addOREdit: number;
 
     constructor(
@@ -85,7 +84,6 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();
         if(this.user){
             this.search(this.user);
-            this.sbFieldsSkill = sbFieldsSkill;
             this.buildForm();
             this.populateDropDowns(); 
             return;
@@ -204,7 +202,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         }
     }
     getName(skill){
-        return this.sbFieldsSkill[skill.identifer];
+        return sbFieldsSkill[skill.identifer];
     }
     showEditModal(index: any) {
         this.isUpdate = true;

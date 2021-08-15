@@ -168,6 +168,9 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
                     }
                 });
         }
+        closed(index: number){
+
+        }
         save(){
                 
         }

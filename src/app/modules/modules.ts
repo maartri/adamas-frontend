@@ -873,6 +873,7 @@ export interface IM_Master {
     PersonId: string,
     Type: string,
     Service: string,
+    // program:string,
     Date: string,
     Time: string,
     EstimatedTimeOther: string,

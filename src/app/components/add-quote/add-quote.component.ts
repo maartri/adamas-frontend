@@ -1454,15 +1454,19 @@ export class AddQuoteComponent implements OnInit {
         documentId: this.tableDocumentId,
         goals: goals
     }
+
     this.loadingSaveQuote = true;
-    return;
+
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
             this.loadingSaveQuote = false;
 
             this.detectChanges();
-        }); 
+        }, (err: any) => {
+            this.loadingSaveQuote = false;
+            this.detectChanges();
+        });
   }
 
     refreshQuoteLines(recordNo: any){

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes,sbFieldsSkill} from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -44,7 +44,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     skills: any;
     titleskillsForm: FormGroup;
     updateString: string;
-
+    sbFieldsSkill:any;
     addOREdit: number;
 
     constructor(
@@ -85,6 +85,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();
         if(this.user){
             this.search(this.user);
+            this.sbFieldsSkill = sbFieldsSkill;
             this.buildForm();
             this.populateDropDowns(); 
             return;
@@ -110,6 +111,43 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.skillsForm = this.formBuilder.group({
             CompetencyException:false,
             EmailCompetencyReminders:false,
+            
+            SB1  : false,
+            SB2  : false,
+            SB3  : false,
+            SB4  : false,
+            SB5  : false,
+            SB6  : false,
+            SB7  : false,
+            SB8  : false,
+            SB9  : false,
+            SB10 : false,
+            SB11 : false,
+            SB12 : false,
+            SB13 : false,
+            SB14 : false,
+            SB15 : false,
+            SB16 : false,
+            SB17 : false,
+            SB18 : false,
+            SB19 : false,
+            SB20 : false,
+            SB21 : false,
+            SB22 : false,
+            SB23 : false,
+            SB24 : false,
+            SB25 : false,
+            SB26 : false,
+            SB27 : false,
+            SB28 : false,
+            SB29 : false,
+            SB30 : false,
+            SB31 : false,
+            SB32 : false,
+            SB33 : false,
+            SB34 : false,
+            SB35 : false,
+        
         });
         this.titleskillsForm = this.formBuilder.group({
             identifer:'',
@@ -157,6 +195,16 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             this.handleCancel();
             this.populateDropDowns();
         });
+    }
+    changeSbField(e,skill){
+        if(e.target.checked){
+            console.log(skill.identifier);
+        }else{
+            console.log(skill.identifier);
+        }
+    }
+    getName(skill){
+        return this.sbFieldsSkill[skill.identifer];
     }
     showEditModal(index: any) {
         this.isUpdate = true;

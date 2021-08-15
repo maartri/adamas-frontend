@@ -53,6 +53,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   @Input() from:any;
 
   dateFormat: string = dateFormat;
+
+  FUNDING_TYPE: string;
+  BRANCH_NAME: string;
   
   referralRadioValue: any;
   referralCheckOptions: Array<any> = [
@@ -212,22 +215,22 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     ngOnChanges(changes: SimpleChanges): void {
       for (let property in changes) {
         if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
-          // this.newReferralUser = changes[property].currentValue;
-          
-          // console.log(this.option)
-          // console.log(this.user);
-          // console.log(this.newReferralUser)
-          
-          // if(!_.isEmpty(this.newReferralUser)){
-          //   this.user = this.newReferralUser;
-          // }
-          
+
+          // GETS Branch name or Gets it through database
+          if('branch' in this.user){
+            this.BRANCH_NAME = this.user.branch;
+          } else {
+            this.listS.getspecificbranch(this.user.id)
+                  .subscribe(data => {
+                    this.BRANCH_NAME = data;
+                  });
+          }
+
           this.buildForm();
           this.populate();
           this.populateList();
           
-          this.VALUE_CHANGES();
-          
+          this.VALUE_CHANGES();          
           this.openModal();
         }
       }
@@ -235,7 +238,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     
     openModal(){
       this.current = 0;
-      console.log(this.option);    
       if(this.option == RECIPIENT_OPTION.REFER_IN)  this.referInOpen = true;
       if(this.option == RECIPIENT_OPTION.REFER_ON)  this.referOnOpen = true;
       if(this.option == RECIPIENT_OPTION.NOT_PROCEED) this.notProceedOpen = true;
@@ -517,22 +519,29 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     }
     
     selectedProgram: any;
+
     selectedProgramChange(name: any){
       this.selectedProgram = name;
-      console.log(name)
       const { type } = this.referInGroup.getRawValue();
-      
+
       if(type == 2){
         const level = name.trim().split(' ')[1];
         this.referInGroup.patchValue({
           packageName: `HCP-L${level}-${this.user.code}`
         });
       }
+
+      if(type == 4){
+          this.listS.gethumanresourcetypes(this.selectedProgram)
+              .subscribe(data => this.FUNDING_TYPE = data);
+      }
       
     }
     
+    
+
     referralInChange(index: any){
-      
+
       if(index == 1){
         this.listS.getndiaprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {        
           this.programs = this.mutateToCheckboxes(data);
@@ -544,6 +553,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         this.referInGroup.patchValue({
           packageName: this.originalPackageName
         });
+
+        this.FUNDING_TYPE = 'NDIA';
       }
       
       if(index == 2){
@@ -557,6 +568,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         this.referInGroup.patchValue({
           packageName: this.originalPackageName
         });
+
+        this.FUNDING_TYPE = 'DOHA';
       }
       
       if(index == 3){
@@ -564,6 +577,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           this.programs = this.mutateToCheckboxes(data);
           this.changeDetection();
         });
+        this.FUNDING_TYPE = 'DSS';
       }
       
       if(index == 4){
@@ -571,6 +585,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           this.programs = this.mutateToCheckboxes(data);
           this.changeDetection();
         });
+
+        this.FUNDING_TYPE = null;
       }
     }
     
@@ -1128,7 +1144,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 
                 this.timeSteps = timeSteps;
 
-                this.listS.getfollowups().pipe(takeUntil(this.destroy$)).subscribe(data => {
+                this.listS.getfollowups({
+                  branch: this.BRANCH_NAME,
+                  fundingType: this.FUNDING_TYPE
+                }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifFollowUpGroup = data.map(x => {
                     return {
                       label: x,
@@ -1140,7 +1159,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 })
                 
                 
-                this.listS.getdocumentslist().pipe(takeUntil(this.destroy$)).subscribe(data => {
+                this.listS.getdocumentslist({
+                  branch: this.BRANCH_NAME,
+                  fundingType: this.FUNDING_TYPE
+                }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifDocumentsGroup = data.map(x => {
                     return {
                       label: x,
@@ -1149,10 +1171,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       checked: false
                     }
                   })
-                })
-                this.listS.getdatalist().pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+                });
+
+                this.listS.getdatalist({
+                  branch: this.BRANCH_NAME,
+                  fundingType: this.FUNDING_TYPE
+                }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
                   this.datalist = data
                 }); 
+
                 break;
                 case RECIPIENT_OPTION.DISCHARGE:
                 this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program, HumanResourceTypes.[Type] AS Type FROM RecipientPrograms LEFT JOIN HumanResourceTypes ON RecipientPrograms.Program = HumanResourceTypes.Name WHERE PersonID = '${this.user.id}' AND ProgramStatus IN ('ACTIVE', 'WAITING LIST') AND isnull([Program], '') <> '' AND ISNULL([UserYesNo3], 0) <> 1 AND ISNULL([User2], '') <> 'Contingency' `)
@@ -1254,7 +1281,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   this.changeDetection();
                 })
                 
-                this.listS.getfollowups().pipe(takeUntil(this.destroy$)).subscribe(data => {
+                this.listS.getfollowups({
+                  branch: this.BRANCH_NAME,
+                  fundingType: this.FUNDING_TYPE
+                }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifFollowUpGroup = data.map(x => {
                     return {
                       label: x,
@@ -1266,7 +1296,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 })
                 
                 
-                this.listS.getdocumentslist().pipe(takeUntil(this.destroy$)).subscribe(data => {
+                this.listS.getdocumentslist(
+                  {
+                    branch: this.BRANCH_NAME,
+                    fundingType: this.FUNDING_TYPE
+                  }
+                ).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifDocumentsGroup = data.map(x => {
                     return {
                       label: x,
@@ -1277,7 +1312,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   })
                 })
                 
-                this.listS.getdatalist().pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+                this.listS.getdatalist({
+                  branch: this.BRANCH_NAME,
+                  fundingType: this.FUNDING_TYPE
+                }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
                   this.datalist = data
                 });          
                 break;
@@ -1485,7 +1523,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }
                 
                 if(this.referInOpen){
-                  if(this.current < 4){
+                  if(this.current < 9){
                     this.current += 1;
                   }
                 }
@@ -1529,6 +1567,43 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 
                 if(this.option == RECIPIENT_OPTION.REFER_IN)
                 {
+
+                  this.listS.getfollowups({
+                    branch: this.BRANCH_NAME,
+                    fundingType: this.FUNDING_TYPE
+                  }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                    this.notifFollowUpGroup = data.map(x => {
+                      return {
+                        label: x,
+                        value: x,
+                        disabled: false,
+                        checked: false
+                      }
+                    })
+                  })
+
+
+                  this.listS.getdocumentslist({
+                    branch: this.BRANCH_NAME,
+                    fundingType: this.FUNDING_TYPE
+                  }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                    this.notifDocumentsGroup = data.map(x => {
+                      return {
+                        label: x,
+                        value: x,
+                        disabled: false,
+                        checked: false
+                      }
+                    })
+                  });
+
+                  this.listS.getdatalist({
+                    branch: this.BRANCH_NAME,
+                    fundingType: this.FUNDING_TYPE
+                  }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+                    this.datalist = data
+                  }); 
+
                   this.referralCode$ = this.listS.getwizardreferralcode();
                   
                   if(this.referInGroup.get('type').value == 1){
@@ -1552,7 +1627,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     });
                   }
                   
-                  this.referralType$ = this.listS.getreferraltype_latest(this.selectedProgram)
+                  this.referralType$ = this.listS.getreferraltype_latest(this.FUNDING_TYPE)
                   .pipe(
                     switchMap(x => {
                       if(x.length == 1){
@@ -1564,7 +1639,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     })
                     );
                     return;
-                  }
+                }
                   
                   if(this.option == RECIPIENT_OPTION.REFER_ON)
                   {

@@ -1380,7 +1380,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     profileData: any;
     
     openReferModal(user: any) {
-      console.log(user.toString())
+        console.log(user.toString());
         this.sample = user;
         this.sharedS.emitOnSearchListNext(user.code);        
         this.profileData = user;

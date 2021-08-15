@@ -14,10 +14,11 @@
                 <!-- <nz-step class="mini" nzTitle="NDIA/MAC/DVA ID Number" nzDescription=""></nz-step> -->
 
                 <nz-step class="mini" nzTitle="Administration" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Notifications" nzDescription=""></nz-step>
+
+                <!-- <nz-step class="mini" nzTitle="Notifications" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Followups" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Documents" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Other Required Info" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Other Required Info" nzDescription=""></nz-step> -->
             </nz-steps>
         
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
@@ -483,10 +484,10 @@
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
                 <span>Previous</span>
             </button>
-            <button nz-button nzType="default" (click)="next()" *ngIf="current < 9" [disabled]="!canGoNext">
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 5" [disabled]="!canGoNext">
                 <span>Next</span>
             </button>
-            <button nz-button nzType="primary" (click)="add()" *ngIf="current === 9" [disabled]="!canBeDone">
+            <button nz-button nzType="primary" (click)="add()" *ngIf="current === 5" [disabled]="!canBeDone">
                 <span>Done</span>
             </button>
         </ng-container>

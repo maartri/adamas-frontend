@@ -46,7 +46,7 @@
     <nz-card  nzTitle="SKILLS" [nzSize]="'small'" [formGroup]="skillsForm">
         <div nz-row nzGutter="24" class="mrg-btm-2" >
             <div nz-col nzSpan="6" class="text-right" *ngFor="let skill of skills" style="cursor: pointer;">
-                <span (click)="showUpdateModal(skill)">{{skill.text}}</span> : <label formControlName="k" (change)="changeSbField($event,skill)" nz-checkbox> </label>
+                <span (click)="showUpdateModal(skill)">{{skill.text}}</span> : <label formControlName="{{sbFieldsSkill[skill.identifier]}}" (change)="changeSbField($event,skill)" nz-checkbox> </label>
             </div>
         </div>
     </nz-card>

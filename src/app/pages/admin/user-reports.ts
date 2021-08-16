@@ -142,6 +142,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      includePrefrencesWhere:string;
      includeIncludSWhere:string;  
      includeExcludeSWhere:string;
+     includeRecipientPensionWhere:string;
 
     
 IncludeFundingSource: boolean;  IncludeProgram: boolean;  IncludeStaffAttributes: boolean;  IncludePensions: boolean;  IncludeExcluded: boolean; IncludeIncluded: boolean;  IncludePreferences : boolean;
@@ -1798,122 +1799,128 @@ PersonID,
                   break;
 //LEGACY CARE PLAN                  
           case 'Name':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =   'CarePlanItem.[PlanName]'
                   break;                                    
           case 'Start Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'CarePlanItem.[PlanStartDate]'
                   break;
           case 'End Date':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'CarePlanItem.[PlanEndDate]'
+                  break;                  
           case 'Details':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'CarePlanItem.[PlanDetail]'
                   break;
           case 'Reminder Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'CarePlanItem.[PlanReminderDate]'
                   break;
           case 'Reminder Text':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'CarePlanItem.[PlanReminderText]'
                   break;   
 //Agreed Service Information                   
           case 'Agreed Service Code':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ServiceOverview.[Service Type]'
                   break;
           case 'Agreed Program':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ServiceOverview.[ServiceProgram]'
                   break;
           case 'Agreed Service Billing Rate':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ServiceOverview.[Unit Bill Rate]'
                   break;
           case 'Agreed Service Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ServiceOverview.[ServiceStatus]'
                   break;
           case 'Agreed Service Duration':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ServiceOverview.[Duration]'
+                  break;                 
           case 'Agreed Service Frequency':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ServiceOverview.[Frequency]'
                   break;
           case 'Agreed Service Cost Type':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ServiceOverview.[Cost Type]'
                   break;
           case 'Agreed Service Unit Cost':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ServiceOverview.[Unit Pay Rate]'
                   break;
           case 'Agreed Service Billing Unit':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'ServiceOverview.[UnitType]' 
                   break;
           case 'Agreed Service Debtor':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ServiceOverview.[ServiceBiller]'
+                  break;                  
+          case 'Agreed Service Agency ID':
+               this.ConditionEntity =  'HRAgreedServices.[Address1]'
                   break;
  //  CLINICAL INFORMATION                  
           case 'Nursing Diagnosis':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'NDiagnosis.[Description]'
                   break;
           case 'Medical Diagnosis':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MDiagnosis.[Description]'
                   break;
           case 'Medical Procedure':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MProcedures.[Description]'
                   break;
- //PANZTEL Timezone                  
+ //PANZTEL Timezone 
+          case 'PANZTEL Timezone':
+               this.ConditionEntity =  'R.[RECIPIENT_TIMEZONE]'
+                  break;               
           case 'PANZTEL PBX Site':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[RECIPIENT_PBX]'
                   break;
           case 'PANZTEL Parent Site':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'R.[RECIPIENT_PARENT_SITE]'
+                  break;                  
           case 'DAELIBS Logger ID':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[DAELIBSID]'
                   break;
 //INSURANCE AND PENSION                  
           case 'Medicare Number':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[MedicareNumber]'
                   break;
           case 'Medicare Recipient ID':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[MedicareRecipientID]'
                   break;
           case 'Pension Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[PensionStatus]'
                   break;
           case 'Unable to Determine Pension Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[PensionVoracity]'
                   break;
           case 'Concession Number':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[ConcessionNumber]'
                   break;
           case 'DVA Benefits Flag':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'R.[DVABenefits]'
+                  break;                  
           case 'DVA Number':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[DVANumber]'
                   break;
           case 'DVA Card Holder Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[RECIPT_DVA_Card_Holder_Status]'
                   break;
           case 'Ambulance Subscriber':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[Ambulance]'
                   break;
           case 'Ambulance Type':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[AmbulanceType]'
                   break;
           case 'Pension Name':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPensions.[Pension Name]'
                   break;
           case 'Pension Number':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPensions.[Pension Number]'
                   break;
           case 'Will Available':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[WillAvailable]'
                   break;         
           case 'Will Location':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[WhereWillHeld]'
                   break;
           case 'Funeral Arrangements':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[FuneralArrangements]'
                   break;
           case 'Date Of Death':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[DateOfDeath]'
                   break;
 //HACCS DATSET FIELDS                  
           case 'HACC-SLK':
@@ -3810,6 +3817,9 @@ PersonID,
     if(this.includePrefrencesWhere != undefined && this.includePrefrencesWhere != ""){sql = sql + " AND " + this.includePrefrencesWhere}
     if(this.includeIncludSWhere != undefined && this.includeIncludSWhere != ""){sql = sql + " AND " + this.includeIncludSWhere}
     if(this.includeExcludeSWhere != undefined && this.includeExcludeSWhere != ""){sql = sql + " AND " + this.includeExcludeSWhere}
+    if(this.includeRecipientPensionWhere != undefined && this.includeRecipientPensionWhere != ""){sql = sql + " AND " + this.includeRecipientPensionWhere}
+
+    
     
     
       
@@ -4705,197 +4715,203 @@ ColumnNameAdjuster(fld){
 //LEGACY CARE PLAN                      
               case 'Name':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['CarePlanItem.[PlanName]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['CarePlanItem.[PlanName]  as Field'+fld.indexOf(key)])}  
                       break;                                    
               case 'Start Date':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['CarePlanItem.[PlanStartDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['CarePlanItem.[PlanStartDate]  as Field'+fld.indexOf(key)])}
                       break;
               case 'End Date':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                  columnNames = columnNames.concat(['CarePlanItem.[PlanEndDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['CarePlanItem.[PlanEndDate]  as Field'+fld.indexOf(key)])}
+                      break;                      
               case 'Details':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['CarePlanItem.[PlanDetail]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['CarePlanItem.[PlanDetail]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Reminder Date':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['CarePlanItem.[PlanReminderDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['CarePlanItem.[PlanReminderDate]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Reminder Text':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['CarePlanItem.[PlanReminderText]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['CarePlanItem.[PlanReminderText]  as Field'+fld.indexOf(key)])}  
                       break;  
 //Agreed Service Information                                    
               case 'Agreed Service Code':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['ServiceOverview.[Service Type]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[Service Type]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Agreed Program':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['ServiceOverview.[ServiceProgram]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[ServiceProgram]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Agreed Service Billing Rate':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['ServiceOverview.[Unit Bill Rate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[Unit Bill Rate]  as Field'+fld.indexOf(key)])}  
+                      break;                       
               case 'Agreed Service Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['ServiceOverview.[ServiceStatus]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[ServiceStatus]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Agreed Service Duration':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['ServiceOverview.[Duration]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[Duration]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Agreed Service Frequency':
+                var Frequency = " CONVERT(VARCHAR, ServiceOverview.[Frequency]) + ' ' + ServiceOverview.[Period] "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat([Frequency+'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([Frequency+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Agreed Service Cost Type':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['ServiceOverview.[Cost Type]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[Cost Type]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Agreed Service Unit Cost':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['ServiceOverview.[Unit Pay Rate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[Unit Pay Rate]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Agreed Service Billing Unit':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['ServiceOverview.[UnitType]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[UnitType]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Agreed Service Debtor':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['ServiceOverview.[ServiceBiller]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ServiceOverview.[ServiceBiller]  as Field'+fld.indexOf(key)])}  
                       break;
- //  CLINICAL INFORMATION                      
+ //  CLINICAL INFORMATION                       
               case 'Nursing Diagnosis':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['NDiagnosis.[Description]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['NDiagnosis.[Description]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Medical Diagnosis':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['MDiagnosis.[Description]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['MDiagnosis.[Description]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Medical Procedure':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['MProcedures.[Description]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['MProcedures.[Description]  as Field'+fld.indexOf(key)])}  
                       break;
- //PANZTEL Timezone                      
+ //PANZTEL Timezone 
+              case 'PANZTEL Timezone':
+                  if(columnNames != []){
+                  columnNames = columnNames.concat(['R.[RECIPIENT_TIMEZONE]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[RECIPIENT_TIMEZONE]  as Field'+fld.indexOf(key)])}  
+                      break;                     
               case 'PANZTEL PBX Site':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[RECIPIENT_PBX]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[RECIPIENT_PBX]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'PANZTEL Parent Site':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['R.[RECIPIENT_PARENT_SITE]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[RECIPIENT_PARENT_SITE]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'DAELIBS Logger ID':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['R.[DAELIBSID]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[DAELIBSID]  as Field'+fld.indexOf(key)])} 
                       break;
 //INSURANCE AND PENSION                      
               case 'Medicare Number':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[MedicareNumber]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[MedicareNumber]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Medicare Recipient ID':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[MedicareRecipientID]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[MedicareRecipientID]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Pension Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[PensionStatus]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[PensionStatus]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Unable to Determine Pension Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['R.[PensionVoracity]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[PensionVoracity]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Concession Number':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[ConcessionNumber]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[ConcessionNumber]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DVA Benefits Flag':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[DVABenefits]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[DVABenefits]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DVA Number':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[DVANumber]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[DVANumber]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DVA Card Holder Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['R.[RECIPT_DVA_Card_Holder_Status]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[RECIPT_DVA_Card_Holder_Status]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Ambulance Subscriber':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['R.[Ambulance]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[Ambulance]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Ambulance Type':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[AmbulanceType]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[AmbulanceType]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Pension Name':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['RecipientPensions.[Pension Name]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['RecipientPensions.[Pension Name]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Pension Number':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['RecipientPensions.[Pension Number]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['RecipientPensions.[Pension Number]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Will Available':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['R.[WillAvailable]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[WillAvailable]  as Field'+fld.indexOf(key)])}
                       break;         
               case 'Will Location':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['R.[WhereWillHeld]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[WhereWillHeld]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Funeral Arrangements':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['R.[FuneralArrangements]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[FuneralArrangements]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Date Of Death':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['R.[DateOfDeath]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[DateOfDeath]  as Field'+fld.indexOf(key)])} 
                       break;
 //HACCS DATSET FIELDS                      
               case 'HACC-SLK':
@@ -7931,6 +7947,27 @@ TablesSetting(arr){
   if(arr.includes("Funded Program") || arr.includes("Program Status") || arr.includes("Program Coordinator") || arr.includes("Funding Start Date") || arr.includes("Funding End Date") || arr.includes("AutoRenew") || arr.includes("Rollover Remainder") || arr.includes("Funded Qty") || arr.includes("Funded Type")|| arr.includes("Funding Cycle")  || arr.includes("Funded Total Allocation") ){
     FromSql = FromSql + " LEFT JOIN RecipientPrograms ON R.UniqueID = RecipientPrograms.PersonID LEFT JOIN HumanResourceTypes ON RecipientPrograms.Program = HumanResourceTypes.Name "
   }
+  if(arr.includes("Name") || arr.includes("Start Date") || arr.includes("End Date") || arr.includes("Details") || arr.includes("Reminder Date") || arr.includes("Reminder Text")  ){
+    FromSql = FromSql + " left join CarePlanItem on CarePlanItem.PersonID = R.UniqueID "
+  }
+
+  if(arr.includes("Agreed Service Code") || arr.includes("Agreed Program") || arr.includes("Agreed Service Billing Rate") || arr.includes("Agreed Service Status") || arr.includes("Agreed Service Duration") || arr.includes("Agreed Service Frequency") || arr.includes("Agreed Service Unit Cost") || arr.includes("Agreed Service Debtor")   || arr.includes("Agreed Service Unit Cost") || arr.includes("Agreed Service Cost Type")    ){
+    FromSql = FromSql + " LEFT JOIN ServiceOverview ON R.UniqueID = ServiceOverview.PersonID LEFT JOIN HumanResourceTypes HRAgreedServices ON HRAgreedServices.Name = ServiceOverview.ServiceProgram "
+  }
+  if(arr.includes("Nursing Diagnosis") ){
+    FromSql = FromSql + " LEFT JOIN NDiagnosis ON R.UniqueID = NDiagnosis.PersonID "
+  }
+  if(arr.includes("Medical Diagnosis ") ){
+    FromSql = FromSql + " LEFT JOIN MDiagnosis ON R.UniqueID = MDiagnosis.PersonID "
+  }
+  if(arr.includes("Medical Procedure") ){
+    FromSql = FromSql + " LEFT JOIN MProcedures ON R.UniqueID = MProcedures.PersonID "
+  }  
+  if(arr.includes("Pension Number") || arr.includes("Pension Name")){
+    FromSql = FromSql + " left join HumanResources RecipientPensions on RecipientPensions.PersonID = R.UniqueID "
+    this.includeRecipientPensionWhere = "RecipientPensions.[Group] = 'PENSION'  "
+  }
+  /*
   if(arr.includes("") ){
     FromSql = FromSql + ""
   }
@@ -7940,6 +7977,18 @@ TablesSetting(arr){
   if(arr.includes("") ){
     FromSql = FromSql + ""
   }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  }
+  if(arr.includes("") ){
+    FromSql = FromSql + ""
+  } */
 
   
   

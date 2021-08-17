@@ -903,7 +903,7 @@
 
 
 <!-- ADMIT -->
-<nz-modal [(nzVisible)]="admitOpen" [nzWidth]="800" [nzTitle]="whatOptionVar?.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" (nzAfterClose)="handleClose()">
+<nz-modal [nzStyle]="{ top: '20px' }" [(nzVisible)]="admitOpen" [nzWidth]="800" [nzTitle]="whatOptionVar?.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" (nzAfterClose)="handleClose()">
     <div nz-row *ngIf="admitOpen">
         <div class="flexy">
             <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
@@ -1073,7 +1073,7 @@
                         </div>
                     </div>
                 </div>
-                <div nz-row *ngif="current == 5">
+                <div nz-row *ngIf="current == 5">
                     <div [formGroup]="admitGroup">
                             <div nz-row class="form-group">
                                 <label for="">Time Period</label>

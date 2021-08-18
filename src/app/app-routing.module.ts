@@ -126,6 +126,7 @@ import {
   RecipientQuotesAdmin,
   RecipientRemindersAdmin,
   RecipientFormsAdmin,
+  RecipientDocumentsAdmin,
   RecipientAttendanceAdmin,
   RecipientOthersAdmin,
   RecipientAccountingAdmin
@@ -1063,8 +1064,8 @@ const routes: Routes = [
             component: RecipientRemindersAdmin
           },
           {
-            path: 'forms',
-            component: RecipientFormsAdmin
+            path: 'documents',
+            component: RecipientDocumentsAdmin
           },
           {
             path: 'attendance',
@@ -1306,6 +1307,7 @@ export const PAGE_COMPONENTS = [
   RecipientQuotesAdmin,
   RecipientRemindersAdmin,
   RecipientFormsAdmin,
+  RecipientDocumentsAdmin,
   RecipientAttendanceAdmin,
   RecipientOthersAdmin,
   RecipientAccountingAdmin,

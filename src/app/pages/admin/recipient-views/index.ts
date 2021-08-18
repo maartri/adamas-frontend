@@ -13,3 +13,4 @@ export * from './forms';
 export * from './attendance';
 export * from './others';
 export * from './accounting';
+export * from './documents';

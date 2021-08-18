@@ -47,12 +47,12 @@ interface NewDocument{
             background:#e6f1ff;
         }
     `],
-    templateUrl: './document.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './documents.html',
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
-export class StaffDocumentAdmin implements OnInit, OnDestroy, AfterViewInit {
+export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     private unsubscribe: Subject<void> = new Subject();
     public templates$: Observable<any>;
@@ -83,18 +83,18 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy, AfterViewInit {
         private message: NzMessageService,
         private uploadS: UploadService
     ) {
-        cd.reattach();
+        // cd.reattach();
 
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
-                    this.router.navigate(['/admin/staff/personal'])
+                    this.router.navigate(['/admin/recipient/personal'])
                 }
             }
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'document')) {
+            if (this.globalS.isCurrentRoute(this.router, 'documents')) {
                 this.search(data);
             }
         });
@@ -106,12 +106,12 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
+        console.log(this.user)
         if(this.user){
             this.search(this.user);
             this.buildForm();
             return;
         }
-        this.router.navigate(['/admin/staff/personal'])
     }
 
     ngOnDestroy(): void {
@@ -129,7 +129,8 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.cd.reattach();
 
         this.loading = true;
-        this.timeS.getdocuments(user.code).subscribe(data => {
+        this.timeS.getdocumentsrecipients(user.id).subscribe(data => {
+            console.log(data)
             this.tableData = data;
             this.loading = false;
             this.cd.detectChanges();
@@ -176,7 +177,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.uploadS.download({
             PersonID: this.user.id,
             Extension: doc.type,
-            FileName:`${doc.filename}${doc.type}`,
+            FileName: doc.filename,
             DocPath: doc.originalLocation
         }).pipe(takeUntil(this.unsubscribe)).subscribe(blob => {
 
@@ -210,7 +211,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.uploadS.getdocumentblob({
             PersonID: this.user.id,
             Extension: doc.type,
-            FileName: `${doc.filename}${doc.type}`,
+            FileName: doc.filename,
             DocPath: doc.originalLocation
         }).subscribe(data => {
           this.openDocumentTab(data);

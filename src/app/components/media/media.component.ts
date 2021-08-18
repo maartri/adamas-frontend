@@ -44,7 +44,7 @@ export class MediaComponent implements OnInit {
   ngOnInit(): void {
     this.getMedia();
 
-    this.timeS.getgrouplist(this.personID)
+    this.timeS.getgrouplist('atay')
         .subscribe(x => {
           this.groupList = x;
         })

@@ -56,7 +56,7 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         
         
     ) {
-        cd.detach();
+
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -77,7 +77,6 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
         if(this.user){
-            console.log(this.user);
             this.search(this.user);
             this.buildForm();
             return;
@@ -92,12 +91,12 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     }
 
     search(user: any = this.user) {
-        this.cd.reattach();
+
         this.loading = true;
         this.clientS.getincidents(user.id).subscribe(data => {
             this.tableData = data.list;
             this.loading = false;
-            this.cd.detectChanges();
+            this.detectChanges();
         });
 
 
@@ -126,6 +125,11 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
             shiftChange: data.shiftChange,
             smsMessage: data.smsMessage
         });
+    }
+
+    detectChanges(){
+        this.cd.markForCheck();
+        this.cd.detectChanges();        
     }
 
 

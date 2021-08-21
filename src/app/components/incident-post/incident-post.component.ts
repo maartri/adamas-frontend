@@ -868,6 +868,7 @@ updateCheckBoxesInStep1(defaultString: string){
       this.timeS.updateincident(im_master).subscribe(data =>{
         this.globalS.sToast('Success', 'Data saved');
         this.reload.emit(true);
+        this.open = false;
       })
     }
 
@@ -875,6 +876,7 @@ updateCheckBoxesInStep1(defaultString: string){
     this.timeS.postincident(im_master).subscribe(data => {
         this.globalS.sToast('Success', 'Data saved');
         this.reload.emit(true);
+        this.open = false;
     });
     }   
   }

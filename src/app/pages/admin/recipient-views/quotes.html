@@ -44,7 +44,7 @@
 </div>
 
 
-<app-add-quote [open]="newQuoteModal" [user]="user" [option]="option" [record]="record"></app-add-quote>
+<app-add-quote [open]="newQuoteModal" [user]="user" [option]="option" [record]="record" (refresh)="refreshQuote($event)"></app-add-quote>
 
 <context-menu>
     <ng-template contextMenuItem (execute)="showAcceptModal($event.item)">

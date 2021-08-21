@@ -238,7 +238,10 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
 
     delete(data: any) {
         this.timeS.deleteincident(data.recordNumber)
-            .subscribe(data => this.search());
+            .subscribe(data => {
+                this.search();
+                this.globalS.sToast('Success','Incident has been deleted')
+            });
     }
  
     closeincidentstatus(data: any) {

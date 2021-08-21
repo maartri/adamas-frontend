@@ -230,6 +230,7 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
 
     handleCancel(){
         this.addDocumentModal = false;
+        this.postLoading = false;
     }
     
     delete(data: any) {
@@ -254,12 +255,13 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
             NewFileName: this.fileObject.newFile,
             Path:  this.fileObject.path
         };
+        this.postLoading = true;
         this.uploadS.postdocumentstafftemplate(inp).subscribe(data => {
             this.globalS.sToast('Success','Document has been added');
             this.handleCancel();
             this.search();
         }, (err) =>{
-            console.log(err);
+            this.postLoading = false;
             this.globalS.eToast('Error', err.error.message);
         });
     }

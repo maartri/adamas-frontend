@@ -250,10 +250,6 @@ export class ShiftClientManager implements OnInit, OnDestroy {
             RecipientPersonId: this.userObject.uniqueID
         }
 
-        // console.log(booking);
-        // // this.tabStream.next(this.tabActive);
-        // return;
-
         this.clientS.postcancelbooking(booking)
             .subscribe(data => {
                 if (data) {
@@ -262,6 +258,7 @@ export class ShiftClientManager implements OnInit, OnDestroy {
                 }
                 this.cancelBookingModal = false;
             }, (err: HttpErrorResponse) => {
+                this.isConfirmLoading = false;
                 this.globalS.eToast('Error', 'An error occurred')
             }, () => {
                 this.isConfirmLoading = false;

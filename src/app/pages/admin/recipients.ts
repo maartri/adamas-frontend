@@ -1328,7 +1328,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             this.router.navigate(['/admin/recipient/quotes'])
         }
         if (index == 11) {
-          this.router.navigate(['/admin/recipient/forms'])
+          this.router.navigate(['/admin/recipient/documents'])
         }
         if (index == 12) {
             this.router.navigate(['/admin/recipient/attendance'])
@@ -1380,7 +1380,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     profileData: any;
     
     openReferModal(user: any) {
-      console.log(user.toString())
+        console.log(user.toString());
         this.sample = user;
         this.sharedS.emitOnSearchListNext(user.code);        
         this.profileData = user;

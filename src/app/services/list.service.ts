@@ -16,10 +16,25 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+    
 
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+
+    postadmissionacceptquote(data: any): Observable<any> {
+        return this.auth.post(`${list}/admission-accept-quote`, data);
+    }
+    
+    getspecificbranch(personid: string):Observable<any>{
+        return this.auth.get(`${list}/specific-branch/${personid}`);
+    }
+
+    
+    gethumanresourcetypes(program: string):Observable<any>{
+        return this.auth.getstring(`${list}/humanresourcetypes/type/${program}`);
+    }
+
 
     getportalmanagers():Observable<any>{
         return this.http.get(`${list}/portal-manager`);
@@ -114,16 +129,16 @@ export class ListService {
         return this.auth.get(`${list}/notifications`, data);
     }
 
-    getfollowups(): Observable<any> {
-        return this.auth.get(`${list}/followups`);
+    getfollowups(data: any): Observable<any> {
+        return this.auth.get(`${list}/followups`, data);
     }
 
-    getdocumentslist(): Observable<any> {
-        return this.auth.get(`${list}/documents-list`);
+    getdocumentslist(data: any): Observable<any> {
+        return this.auth.get(`${list}/documents-list`, data);
     }
 
-    getdatalist(): Observable<any> {
-        return this.auth.get(`${list}/data-list`);
+    getdatalist(data: any): Observable<any> {
+        return this.auth.get(`${list}/data-list`, data);
     }
 
     getreferraltype_latest(packageName: string): Observable<any> {

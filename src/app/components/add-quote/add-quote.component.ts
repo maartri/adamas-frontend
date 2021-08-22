@@ -52,6 +52,8 @@ export class AddQuoteComponent implements OnInit {
     @Input() option: any;
     @Input() record: any;
 
+    @Output() refresh = new EventEmitter<any>();
+
     confirmModal?: NzModalRef; 
 
 
@@ -627,6 +629,7 @@ export class AddQuoteComponent implements OnInit {
 
                 this.listS.createtempdoc(qteHeader).subscribe(data => {
                     this.tempIds = data;
+                    
 
                     this.tableDocumentId = data.docId;
                     this.listCarePlanAndGolas(data);
@@ -1422,9 +1425,10 @@ export class AddQuoteComponent implements OnInit {
        
         qteLineArr.push(da);
     });
-        console.log(this.quoteForm.value)
+    console.log(this.tempIds)
+    console.log(this.record)
     qteHeader = {
-        recordNumber: this.tempIds.quoteHeaderId,
+        recordNumber: this.tempIds ? this.tempIds.quoteHeaderId : this.record,
         programId: quoteForm.programId,
         program: quoteForm.program,
         clientId: this.clientId,
@@ -1456,16 +1460,20 @@ export class AddQuoteComponent implements OnInit {
     }
 
     this.loadingSaveQuote = true;
-
+    console.log(qteHeader)
+    return;
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
             this.loadingSaveQuote = false;
-
+            this.refresh.emit(true);
             this.detectChanges();
+
+            this.quotesOpen = false;
         }, (err: any) => {
             this.loadingSaveQuote = false;
             this.detectChanges();
+            this.quotesOpen = false;
         });
   }
 

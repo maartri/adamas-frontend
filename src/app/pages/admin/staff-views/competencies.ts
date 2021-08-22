@@ -196,7 +196,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             this.populateDropDowns();
         });
     }
-    changeSbField(e,skill){
+    changeSbField(e,skill,sb){
         if(e.target.checked){
             console.log(skill.identifier);
         }else{

@@ -2027,88 +2027,82 @@ PersonID,
                   break;
 //"DEX"                  
           case 'DEX-Exclude From MDS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.ExcludeFromStats'
                   break;
           case 'DEX-Referral Purpose':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.ReferralPurpose'
                   break;
           case 'DEX-Referral Source':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.[DEXREFERRALSOURCE]'
                   break;
           case 'DEX-Referral Type':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.ReferralType'
                   break;
           case 'DEX-Reason For Assistance':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.AssistanceReason'
                   break;
           case 'DEX-Consent To Provide Information':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.[DEX-Consent To Provide Information]'
                   break;
           case 'DEX-Consent For Future Contact':
-            //  this.ConditionEntity =  
-                  break;
-          case 'DEX-Consent For Future Contact':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'DSS.[DEX-Consent For Future Contact]'
+                  break;          
           case 'DEX-Sex':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.Gender'
                   break;
           case 'DEX-Date Of Birth':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'R.DateOfBirth'
+                  break;                 
           case 'DEX-Estimated Birth Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.CSTDA_BDEstimate'
                   break;
           case 'DEX-Indigenous Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.DexIndiginousStatus'
                   break;
           case 'DEX-DVA Card Holder Status':
-            //  this.ConditionEntity =  
-                  break;
-                  case '':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ONI.HACCDVACardHolderStatus'
+                  break;            
           case 'DEX-Has Disabilities':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'DSS.HasDisabilities'
+                  break;        
           case 'DEX-Has A Carer':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.HasCarer'
                   break;
           case 'DEX-Country of Birth':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.CountryOfBirth'
                   break;
           case 'DEX-First Arrival Year':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.FirstArrivalYear'
                   break;               
           case 'DEX-First Arrival Month':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.FirstArrivalMonth'
                   break;
           case 'DEX-Visa Code':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.VisaCategory'
                   break;
           case 'DEX-Ancestry':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.Ancestry'
                   break;
           case 'DEX-Main Language At Home':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.HomeLanguage'
                   break;
           case 'DEX-Accomodation Setting':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.DEXACCOMODATION'
                   break;
           case 'DEX-Is Homeless':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.IsHomeless'
                   break;
           case 'DEX-Household Composition':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.HouseholdComposition'
                   break;
           case 'DEX-Main Source Of Income':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.MainIncomSource'
                   break;
           case 'DEX-Income Frequency':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'DSS.IncomFrequency'
+                  break;                
           case 'DEX-Income Amount':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'DSS.IncomeAmount'
                   break; 
 // CSTDA Dataset Fields                  
           case 'CSTDA-Date Of Birth':
@@ -2585,239 +2579,242 @@ PersonID,
                   break;
 //  ONI-Functional Profile                  
           case 'ONI-FPQ1-Housework':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FP1_Housework]'
                   break;
           case 'ONI-FPQ2-GetToPlaces':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FP2_WalkingDistance]'
                   break;
           case 'ONI-FPQ3-Shopping':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FP3_Shopping]'
                   break;
-          case 'ONI-FPQ4-Medicine':
-            //  this.ConditionEntity =  
+          case 'ONI-FPQ4-Medicine': 
+               this.ConditionEntity =  'ONI.[FP4_Medicine]'
                   break;
           case 'ONI-FPQ5-Money':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FP5_Money]'
                   break;
           case 'ONI-FPQ6-Walk':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FP6_Walking]'
                   break;                 
           case 'ONI-FPQ7-Bath':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ONI.[FP7_Bathing]'
+                  break;                  
           case 'ONI-FPQ8-Memory':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FP8_Memory]'
                   break;
           case 'ONI-FPQ9-Behaviour':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FP9_Behaviour]'
                   break;
           case 'ONI-FP-Recommend Domestic':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FA_Domestic]'
                   break;
           case 'ONI-FP-Recommend Self Care':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FA_SelfCare]'
                   break;
           case 'ONI-FP-Recommend Cognition':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FA_Cognition]'
                   break;
           case 'ONI-FP-Recommend Behaviour':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FA_Behaviour]'
                   break;
           case 'ONI-FP-Has Self Care Aids':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[Aids_SelfCare]'
                   break;
           case 'ONI-FP-Has Support/Mobility Aids':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[Aids_SupportAndMobility]'
                   break;
           case 'ONI-FP-Has Communication Aids':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[Aids_CommunicationAids]'
                   break;
           case 'ONI-FP-Has Car Mods':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[Aids_CarModifications]'
                   break;
           case 'ONI-FP-Has Other Aids':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[Aids_Other]'
                   break;
           case 'ONI-FP-Other Goods List':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[AidsOtherList]'
+                  break;
+          case 'ONI-FP-Has Medical Care Aids':
+               this.ConditionEntity =  'ONI.[Aids_MedicalCare]'
+                  break;                  
+          case 'ONI-FP-Has Reading Aids':
+               this.ConditionEntity =  'ONI.[Aids_Reading]'
                   break;
           case 'ONI-FP-Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[FP_Comments]'
                   break;
 //  ONI-Living Arrangements Profile                                   
           case 'ONI-LA-Living Arrangements':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[LivingArrangements]'
                   break;
           case 'ONI-LA-Living Arrangements Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[LAP_LivingComments]'
                   break;
           case 'ONI-LA-Accomodation':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[DwellingAccomodation]'
                   break;
           case 'ONI-LA-Accomodation Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[LAP_AccomodationComments]'
                   break;
           case 'ONI-LA-Employment Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[LAP_Employment]'
                   break;
           case 'ONI-LA-Employment Status Comments':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ONI.[LAP_EmploymentComments]'
+                  break;                  
           case 'ONI-LA-Mental Health Act Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[LAP_MentalHealth]'
                   break;
           case 'ONI-LA-Decision Making Responsibility':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[LAP_Decision]'
                   break;
           case 'ONI-LA-Capable Own Decisions':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[LAP_DecisionCapable]'
                   break;
           case 'ONI-LA-Financial Decisions':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[LAP_FinancialDecision]'
                   break;
           case 'ONI-LA-Cost Of Living Trade Off':
-            //  this.ConditionEntity =  
-                  break;
-          case 'ONI-LA-Cost Of Living Trade Off':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ONI.[LAP_LivingCostDecision]'
+                  break;          
           case 'ONI-LA-Financial & Legal Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[LAP_LivingCostDecisionComments]'
                   break;
 // ONI-Health Conditions Profile   
           case 'ONI-HC-Overall Health Description':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Overall_General]'
                   break;               
           case 'ONI-HC-Overall Health Pain':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Overall_Pain]'
                   break;
           case 'ONI-HC-Overall Health Interference':
-            //  this.ConditionEntity =
+               this.ConditionEntity = 'ONI.[HC_Overall_Interfere]'
           case 'ONI-HC-Vision Reading':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vision_Reading]'
                   break;
           case 'ONI-HC-Vision Distance':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vision_Long]'
                   break;
           case 'ONI-HC-Hearing':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Hearing]'
                   break;
           case 'ONI-HC-Oral Problems':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Oral]'
                   break;
           case 'ONI-HC-Oral Comments':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ONI.[HC_OralComments]'
+                  break;                  
           case 'ONI-HC-Speech/Swallow Problems':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Speech]'
                   break;
           case 'ONI-HC-Speech/Swallow Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_SpeechComments]'
                   break;
           case 'ONI-HC-Falls Problems':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Falls]'
                   break;
           case 'ONI-HC-Falls Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_FallsComments]'
                   break;
           case 'ONI-HC-Feet Problems':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Feet]'
                   break;
           case 'ONI-HC-Feet Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_FeetComments]'
                   break;
           case 'ONI-HC-Vacc. Influenza':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vac_Influenza]'
                   break;
           case 'ONI-HC-Vacc. Influenza Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vac_Influenza_Date]'
                   break;
           case 'ONI-HC-Vacc. Pneumococcus':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vac_Pneumo]'
                   break;
           case 'ONI-HC-Vacc. Pneumococcus  Date':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ONI.[HC_Vac_Pneumo_Date]'
+                  break;     
           case 'ONI-HC-Vacc. Tetanus':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vac_Tetanus]'
                   break;
           case 'ONI-HC-Vacc. Tetanus Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vac_Tetanus_Date]'
                   break;
           case 'ONI-HC-Vacc. Other':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vac_Other]'
                   break;
           case 'ONI-HC-Vacc. Other Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Vac_Other_Date]'
                   break;
           case 'ONI-HC-Driving MV':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Driving]'
                   break;
           case 'ONI-HC-Driving Fit':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_FitToDrive]'
                   break;
           case 'ONI-HC-Driving Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_DrivingComments]'
                   break;
           case 'ONI-HC-Continence Urinary':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Continence_Urine]'
                   break;
           case 'ONI-HC-Urinary Related To Coughing':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Continence_Urine_Sneeze]'
                   break;
           case 'ONI-HC-Continence Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_ContinenceComments]'
                   break;
           case 'ONI-HC-Weight':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Weight]'
                   break;
           case 'ONI-HC-Height':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Height]'
                   break;
           case 'ONI-HC-BMI':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_BMI]'
                   break;
           case 'ONI-HC-BP Systolic':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity = 'ONI.[HC_BP_Systolic]' 
+                  break;                 
           case 'ONI-HC-BP Diastolic':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_BP_Diastolic]'
                   break;
           case 'ONI-HC-Pulse Rate':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_PulseRate]'
                   break;          
           case 'ONI-HC-Pulse Regularity':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Pulse]'
                   break;
           case 'ONI-HC-Check Postural Hypotension':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_PHCheck]'
                   break;
           case 'ONI-HC-Conditions':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONIHealthConditions.[Description]'
                   break;
           case 'ONI-HC-Diagnosis':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MDiagnosis.[Description]'
                   break;
           case 'ONI-HC-Medicines':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONIMedications.[Description]'
                   break;
           case 'ONI-HC-Take Own Medication':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'ONI.[HC_Med_TakeOwn]'
+                  break;                
           case 'ONI-HC-Willing When Presribed':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Med_Willing]'
                   break;
           case 'ONI-HC-Co-op With Health Services':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Med_Coop]'
                   break;
           case 'ONI-HC-Webster Pack':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Med_Webster]'
                   break;
           case 'ONI-HC-Medication Review':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_Med_Review]'
                   break;
           case 'ONI-HC-Medical Comments':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'ONI.[HC_MedComments]'
                   break;
 //ONI-Psychosocial Profile                  
           case 'ONI-PS-K10-1':
@@ -5126,144 +5123,140 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
                       break;
 //"DEX"                      
               case 'DEX-Exclude From MDS':
+                var dexexcludemds = " CASE WHEN ISNULL(R.ExcludeFromStats, 0) = 0 THEN 'NO' ELSE 'YES' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([dexexcludemds+ '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([dexexcludemds+'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Referral Purpose':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['DSS.ReferralPurpose  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.ReferralPurpose  as Field'+fld.indexOf(key)])}
                       break;
               case 'DEX-Referral Source':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['DSS.[DEXREFERRALSOURCE]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.[DEXREFERRALSOURCE]  as Field'+fld.indexOf(key)])} 
                       break;
               case 'DEX-Referral Type':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['DSS.ReferralType  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.ReferralType  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Reason For Assistance':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['DSS.AssistanceReason  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.AssistanceReason  as Field'+fld.indexOf(key)])} 
                       break;
               case 'DEX-Consent To Provide Information':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['DSS.[DEX-Consent To Provide Information]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.[DEX-Consent To Provide Information]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Consent For Future Contact':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
-              case 'DEX-Consent For Future Contact':
-                  if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['DSS.[DEX-Consent For Future Contact]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.[DEX-Consent For Future Contact]  as Field'+fld.indexOf(key)])}  
+                      break;             
               case 'DEX-Sex':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
-                      break;
+                  columnNames = columnNames.concat(['R.Gender  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.Gender  as Field'+fld.indexOf(key)])} 
+                      break;                      
               case 'DEX-Date Of Birth':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.DateOfBirth  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.DateOfBirth  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Estimated Birth Date':
+                var BDEstimate = " CASE WHEN ISNULL(R.CSTDA_BDEstimate, '') = 0 THEN 'NO' ELSE 'YES' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([BDEstimate+'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([BDEstimate+'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Indigenous Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['DSS.DexIndiginousStatus  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.DexIndiginousStatus  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-DVA Card Holder Status':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
-              case '':
-                  if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
-                      break;
+                  columnNames = columnNames.concat(['ONI.HACCDVACardHolderStatus  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ONI.HACCDVACardHolderStatus  as Field'+fld.indexOf(key)])}
+                      break;        
               case 'DEX-Has Disabilities':
+                var Dexhasdisability = " CASE WHEN ISNULL(DSS.HasDisabilities, 0) = 0 THEN 'NO' ELSE 'YES' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([Dexhasdisability+'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([Dexhasdisability+ '  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Has A Carer':
+                var DEXcarer = " CASE WHEN ISNULL(DSS.HasCarer, 0) = 0 THEN 'NO' ELSE 'YES' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['DEXcarer  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DEXcarer  as Field'+fld.indexOf(key)])}
                       break;
               case 'DEX-Country of Birth':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['R.CountryOfBirth  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.CountryOfBirth  as Field'+fld.indexOf(key)])} 
                       break;
               case 'DEX-First Arrival Year':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['DSS.FirstArrivalYear  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.FirstArrivalYear  as Field'+fld.indexOf(key)])}
                       break;               
               case 'DEX-First Arrival Month':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['DSS.FirstArrivalMonth  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.FirstArrivalMonth  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Visa Code':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['DSS.VisaCategory  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.VisaCategory  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Ancestry':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['DSS.Ancestry  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.Ancestry  as Field'+fld.indexOf(key)])}  
                       break;
+
               case 'DEX-Main Language At Home':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.HomeLanguage  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.HomeLanguage  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Accomodation Setting':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['DSS.DEXACCOMODATION  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.DEXACCOMODATION  as Field'+fld.indexOf(key)])} 
                       break;
               case 'DEX-Is Homeless':
+                var dexhomeless = " CASE WHEN ISNULL(DSS.IsHomeless, 0) = 0 THEN 'NO' ELSE 'YES' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([dexhomeless+'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([dexhomeless+'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Household Composition':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['DSS.HouseholdComposition  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.HouseholdComposition  as Field'+fld.indexOf(key)])}  
                       break;
               case 'DEX-Main Source Of Income':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['DSS.MainIncomSource  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.MainIncomSource  as Field'+fld.indexOf(key)])} 
                       break;
               case 'DEX-Income Frequency':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['DSS.IncomFrequency  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.IncomFrequency  as Field'+fld.indexOf(key)])}  
                       break;
-              case 'DEX-Income Amount':
+              case 'DEX-Income Amount': 
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['DSS.IncomeAmount  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['DSS.IncomeAmount  as Field'+fld.indexOf(key)])} 
                       break; 
 // CSTDA Dataset Fields                      
               case 'CSTDA-Date Of Birth':
@@ -6166,392 +6159,408 @@ CAST(ONI.[CSTDA_PrimaryDisabilityDescription] AS VARCHAR(4000)) as [CSTDA-Primar
 //  ONI-Functional Profile                      
               case 'ONI-FPQ1-Housework':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP1_Housework  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP1_Housework  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FPQ2-GetToPlaces':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP2_WalkingDistance]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP2_WalkingDistance]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FPQ3-Shopping':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP3_Shopping]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP3_Shopping]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FPQ4-Medicine':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP4_Medicine]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP4_Medicine]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FPQ5-Money':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP5_Money]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP5_Money]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FPQ6-Walk':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP6_Walking]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP6_Walking]  as Field'+fld.indexOf(key)])}
                       break;                 
               case 'ONI-FPQ7-Bath':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP7_Bathing]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP7_Bathing]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FPQ8-Memory':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat(['ONI.[FP8_Memory]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP8_Memory]  as Field'+fld.indexOf(key)])}
+                      break;                      
               case 'ONI-FPQ9-Behaviour':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP9_Behaviour]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP9_Behaviour]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Recommend Domestic':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FA_Domestic]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FA_Domestic]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Recommend Self Care':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FA_SelfCare]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FA_SelfCare]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Recommend Cognition':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FA_Cognition]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FA_Cognition]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Recommend Behaviour':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FA_Behaviour]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FA_Behaviour]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Has Self Care Aids':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[Aids_SelfCare]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[Aids_SelfCare]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Has Support/Mobility Aids':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[Aids_SupportAndMobility]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[Aids_SupportAndMobility]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Has Communication Aids':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[Aids_CommunicationAids]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[Aids_CommunicationAids]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Has Car Mods':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[Aids_CarModifications]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[Aids_CarModifications]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Has Other Aids':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[Aids_Other]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[Aids_Other]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-FP-Other Goods List':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[AidsOtherList]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[AidsOtherList]  as Field'+fld.indexOf(key)])}
                       break;
+              case 'ONI-FP-Has Medical Care Aids':
+                        if(columnNames != []){
+                          columnNames = columnNames.concat(['ONI.[Aids_MedicalCare]  as Field'+fld.indexOf(key)])
+                        }else{columnNames = (['ONI.[Aids_MedicalCare]  as Field'+fld.indexOf(key)])}
+                                
+                           break;
+              case 'ONI-FP-Has Reading Aids':
+                            if(columnNames != []){
+                              columnNames = columnNames.concat(['ONI.[Aids_Reading]  as Field'+fld.indexOf(key)])
+                            }else{columnNames = (['ONI.[Aids_Reading]  as Field'+fld.indexOf(key)])}                                    
+                           break;                      
               case 'ONI-FP-Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[FP_Comments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[FP_Comments]  as Field'+fld.indexOf(key)])}
                       break; 
 //  ONI-Living Arrangements Profile                                      
               case 'ONI-LA-Living Arrangements':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.[LivingArrangements]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[LivingArrangements]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Living Arrangements Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_LivingComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_LivingComments]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Accomodation':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['R.[DwellingAccomodation]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[DwellingAccomodation]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Accomodation Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_AccomodationComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_AccomodationComments]  as Field'+fld.indexOf(key)])}
                       break;
+                     
               case 'ONI-LA-Employment Status':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_Employment]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_Employment]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Employment Status Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_EmploymentComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_EmploymentComments]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Mental Health Act Status':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_MentalHealth]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_MentalHealth]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Decision Making Responsibility':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_Decision]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_Decision]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Capable Own Decisions':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_DecisionCapable]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_DecisionCapable]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Financial Decisions':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat(['ONI.[LAP_FinancialDecision]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_FinancialDecision]  as Field'+fld.indexOf(key)])}
+                      break;              
               case 'ONI-LA-Cost Of Living Trade Off':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
-              case 'ONI-LA-Cost Of Living Trade Off':
-                  if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_LivingCostDecision]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_LivingCostDecision]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-LA-Financial & Legal Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[LAP_LivingCostDecisionComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[LAP_LivingCostDecisionComments]  as Field'+fld.indexOf(key)])}
                       break;
 // ONI-Health Conditions Profile 
               case 'ONI-HC-Overall Health Description':
                 if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+              columnNames = columnNames.concat(['ONI.[HC_Overall_General]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Overall_General]  as Field'+fld.indexOf(key)])}
                     break                      
               case 'ONI-HC-Overall Health Pain':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Overall_Pain]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Overall_Pain]  as Field'+fld.indexOf(key)])}
                       break;
-              case 'ONI-HC-Overall Health Interference':
-                //  this.ConditionEntity =
+              case 'ONI-HC-Overall Health Interference':                
+                if(columnNames != []){
+                  columnNames = columnNames.concat(['ONI.[HC_Overall_Interfere]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ONI.[HC_Overall_Interfere]  as Field'+fld.indexOf(key)])}
+                        break;
               case 'ONI-HC-Vision Reading':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Vision_Reading]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vision_Reading]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Vision Distance':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat(['ONI.[HC_Vision_Long]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vision_Long]  as Field'+fld.indexOf(key)])}
+                      break;                   
               case 'ONI-HC-Hearing':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Hearing]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Hearing]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Oral Problems':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Oral]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Oral]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Oral Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_OralComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_OralComments]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Speech/Swallow Problems':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Speech]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Speech]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Speech/Swallow Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_SpeechComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_SpeechComments]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Falls Problems':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Falls]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Falls]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Falls Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_FallsComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_FallsComments]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Feet Problems':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Feet]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Feet]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Feet Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_FeetComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_FeetComments]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Vacc. Influenza':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Vac_Influenza]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vac_Influenza]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Vacc. Influenza Date':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Vac_Influenza_Date]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vac_Influenza_Date]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Vacc. Pneumococcus':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Vac_Pneumo]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vac_Pneumo]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Vacc. Pneumococcus  Date':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat(['ONI.[HC_Vac_Pneumo_Date]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vac_Pneumo_Date]  as Field'+fld.indexOf(key)])}
+                      break;                     
               case 'ONI-HC-Vacc. Tetanus':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Vac_Tetanus]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vac_Tetanus]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Vacc. Tetanus Date':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Vac_Tetanus_Date]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vac_Tetanus_Date]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Vacc. Other':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Vac_Other]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vac_Other]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Vacc. Other Date':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Vac_Other_Date]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Vac_Other_Date]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Driving MV':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Driving]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Driving]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Driving Fit':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_FitToDrive]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_FitToDrive]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Driving Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_DrivingComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_DrivingComments]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Continence Urinary':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Continence_Urine]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Continence_Urine]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Urinary Related To Coughing':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Continence_Urine_Sneeze]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Continence_Urine_Sneeze]  as Field'+fld.indexOf(key)])}
                       break;
+                      
+              case 'ONI-HC-Faecal Continence':
+                    if(columnNames != []){
+                  columnNames = columnNames.concat(['ONI.[HC_Continence_Faecal]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['ONI.[HC_Continence_Faecal]  as Field'+fld.indexOf(key)])}
+                        break;          
               case 'ONI-HC-Continence Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_ContinenceComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_ContinenceComments]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Weight':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Weight]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Weight]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Height':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Height]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Height]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-BMI':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_BMI]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_BMI]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-BP Systolic':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_BP_Systolic]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_BP_Systolic]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-BP Diastolic':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_BP_Diastolic]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_BP_Diastolic]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Pulse Rate':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_PulseRate]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_PulseRate]  as Field'+fld.indexOf(key)])}
                       break;          
               case 'ONI-HC-Pulse Regularity':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Pulse]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Pulse]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Check Postural Hypotension':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat(['ONI.[HC_PHCheck]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_PHCheck]  as Field'+fld.indexOf(key)])}
+                      break;                                                                  
               case 'ONI-HC-Conditions':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONIHealthConditions.[Description]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONIHealthConditions.[Description]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Diagnosis':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MDiagnosis.[Description]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MDiagnosis.[Description]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Medicines':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONIMedications.[Description]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONIMedications.[Description]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Take Own Medication':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Med_TakeOwn]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Med_TakeOwn]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Willing When Presribed':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat(['ONI.[HC_Med_Willing]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Med_Willing]  as Field'+fld.indexOf(key)])}
+                      break;              
               case 'ONI-HC-Co-op With Health Services':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Med_Coop]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Med_Coop]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Webster Pack':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Med_Webster]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Med_Webster]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Medication Review':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_Med_Review]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_Med_Review]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-HC-Medical Comments':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['ONI.[HC_MedComments]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['ONI.[HC_MedComments]  as Field'+fld.indexOf(key)])}
                       break;
 //ONI-Psychosocial Profile                      
               case 'ONI-PS-K10-1':
@@ -8074,8 +8083,7 @@ TablesSetting(arr){
   if(arr.includes("Goal") || arr.includes("Goal Detail") || arr.includes("Goal Achieved") || arr.includes("Anticipated Achievement Date") || arr.includes("Date Achieved") || arr.includes("Last Reviewed") || arr.includes("Logged By") ){
     FromSql = FromSql + " left join HumanResources Goalcare on Goalcare.PersonID = R.UniqueID "    
      this.includeGoalcareWhere = " Goalcare.[Group] = 'RECIPIENTGOALS' "
-  }
- 
+  } 
   if(arr.includes("Reminder Detail") || arr.includes("Event Date") || arr.includes("Reminder Date") || arr.includes("Reminder Notes") ){
     FromSql = FromSql + " left join HumanResources Remind on Remind.PersonID = R.UniqueID "    
     this.includeReminderWhere = " Remind.[Group] = 'RECIPIENTALERT' "
@@ -8109,10 +8117,10 @@ TablesSetting(arr){
   if(arr.includes("Agreed Service Code") || arr.includes("Agreed Program") || arr.includes("Agreed Service Billing Rate") || arr.includes("Agreed Service Status") || arr.includes("Agreed Service Duration") || arr.includes("Agreed Service Frequency") || arr.includes("Agreed Service Unit Cost") || arr.includes("Agreed Service Debtor")   || arr.includes("Agreed Service Unit Cost") || arr.includes("Agreed Service Cost Type")    ){
     FromSql = FromSql + " LEFT JOIN ServiceOverview ON R.UniqueID = ServiceOverview.PersonID LEFT JOIN HumanResourceTypes HRAgreedServices ON HRAgreedServices.Name = ServiceOverview.ServiceProgram "
   }
-  if(arr.includes("Nursing Diagnosis") ){
+  if(arr.includes("Nursing Diagnosis")  ){
     FromSql = FromSql + " LEFT JOIN NDiagnosis ON R.UniqueID = NDiagnosis.PersonID "
   }
-  if(arr.includes("Medical Diagnosis ") ){
+  if(arr.includes("Medical Diagnosis ") || arr.includes("ONI-HC-Diagnosis")  ){
     FromSql = FromSql + " LEFT JOIN MDiagnosis ON R.UniqueID = MDiagnosis.PersonID "
   }
   if(arr.includes("Medical Procedure") ){
@@ -8122,7 +8130,17 @@ TablesSetting(arr){
     FromSql = FromSql + " left join HumanResources RecipientPensions on RecipientPensions.PersonID = R.UniqueID "
     this.includeRecipientPensionWhere = "RecipientPensions.[Group] = 'PENSION'  "
   }    
-  if(arr.includes("HACC-GetUp") || arr.includes("HACC-Toileting") || arr.includes("HACC-Eating") || arr.includes("HACC-Communication")  || arr.includes("CSTDA-Primary Disability Description")   || arr.includes("ONI-DVA Cardholder Status") ){
+  if(arr.includes("HACC-GetUp") || arr.includes("HACC-Toileting") || arr.includes("HACC-Eating") || arr.includes("HACC-Communication")  || arr.includes("CSTDA-Primary Disability Description")   || arr.includes("ONI-DVA Cardholder Status") ||
+  arr.includes("ONI-FP-Comments") || arr.includes("ONI-FP-Has Reading Aids") || arr.includes("ONI-FP-Has Medical Care Aids") || arr.includes("ONI-FPQ7-Bath") || arr.includes("ONI-FP-Has Self Care Aids") || arr.includes("ONI-FP-Has Other Aids") || arr.includes("ONI-FP-Has Support/Mobility Aids") || arr.includes("ONI-FP-Other Goods List") || arr.includes("ONI-FP-Has Car Mods") || arr.includes("ONI-FP-Has Communication Aids")  || arr.includes("ONI-FPQ5-Money") || arr.includes("ONI-FPQ6-Walk") || arr.includes("ONI-FPQ8-Memory") || arr.includes("ONI-FPQ9-Behaviour") || arr.includes("ONI-FP-Recommend Domestic") || arr.includes("ONI-FP-Recommend Self Care") || arr.includes("ONI-FP-Recommend Cognition") || arr.includes("ONI-FP-Recommend Behaviour")  
+  || arr.includes("ONI-FPQ4-Medicine") || arr.includes("ONI-FPQ3-Shopping") || arr.includes("ONI-FPQ2-GetToPlaces") || arr.includes("ONI-FPQ1-Housework")  
+  || arr.includes("ONI-LA-Financial & Legal Comments") || arr.includes("ONI-LA-Cost Of Living Trade Off") || arr.includes("ONI-LA-Capable Own Decisions") || arr.includes("ONI-LA-Employment Status Comments") || arr.includes("ONI-LA-Accomodation Comments") || arr.includes("ONI-LA-Living Arrangements Comments")  || arr.includes("ONI-LA-Employment Status") || arr.includes("ONI-LA-Financial Decisions") || arr.includes("ONI-LA-Decision Making Responsibility") || arr.includes("ONI-LA-Mental Health Act Status")
+  || arr.includes("ONI-HC-Overall Health Description") || arr.includes("ONI-HC-Oral Comments") || arr.includes("ONI-HC-Speech/Swallow Problems") || arr.includes("ONI-HC-Pulse Regularity") || arr.includes("ONI-HC-Vacc. Influenza Date") || arr.includes("ONI-HC-Driving MV") || arr.includes("ONI-HC-Driving Fit") || arr.includes("ONI-HC-Urinary Related To Coughing") 
+  || arr.includes("ONI-HC-Overall Health Pain") || arr.includes("ONI-HC-Oral Problems") || arr.includes("ONI-HC-Falls Problems") || arr.includes("ONI-HC-Vacc. Other Date") || arr.includes("ONI-HC-Feet Problems") || arr.includes("ONI-HC-Feet Comments") || arr.includes("ONI-HC-Driving Comments") || arr.includes("ONI-HC-Continence Urinary") || arr.includes("ONI-HC-Check Postural Hypotension")  
+  || arr.includes("ONI-HC-Overall Health Interference") || arr.includes("ONI-HC-Hearing") || arr.includes("ONI-HC-Speech/Swallow Comments") || arr.includes("ONI-HC-Faecal Continence") || arr.includes("ONI-HC-Vacc. Influenza") || arr.includes("ONI-HC-Vacc. Tetanus") || arr.includes("ONI-HC-Vacc. Other") || arr.includes("ONI-HC-Continence Comments")  || arr.includes("ONI-HC-BMI") || arr.includes("ONI-HC-BP Systolic") 
+  || arr.includes("ONI-HC-Vision Reading") || arr.includes("ONI-HC-Vision Distance") || arr.includes("ONI-HC-Falls Comments") || arr.includes("ONI-HC-Vacc. Pneumococcus") || arr.includes("ONI-HC-Pulse Rate") || arr.includes("ONI-HC-Vacc. Pneumococcus  Date") || arr.includes("ONI-HC-Vacc. Tetanus Date") || arr.includes("ONI-HC-BP Diastolic") || arr.includes("ONI-HC-Weight") || arr.includes("ONI-HC-Height") 
+
+
+  ){
     FromSql = FromSql + " LEFT JOIN ONI ON R.UniqueID = ONI.PersonID  "
   }  
   if(arr.includes("'HACC-SLK'") ){
@@ -8143,7 +8161,29 @@ TablesSetting(arr){
   if(arr.includes("ONI-AP-Agency") || arr.includes("ONI-AP-For") || arr.includes("ONI-AP-Consent") || arr.includes("ONI-AP-Referral") || arr.includes("ONI-AP-Transport") || arr.includes("ONI-AP-Feedback") || arr.includes("ONI-AP-Date") || arr.includes("ONI-AP-Review") ){
     FromSql = FromSql + " LEFT JOIN ONIActionPlan ON R.UniqueID = ONIActionPlan.PersonID "
   } 
-       
+
+  if(arr.includes("HACC-Main Reasons For Cessation") ){
+    FromSql = FromSql + " INNER JOIN ITEMTYPES  ON (Roster.[SERVICE TYPE] = ITEMTYPES.TITLE AND ITEMTYPES.MINORGROUP = 'DISCHARGE') INNER JOIN DATADOMAINS  ON (Roster.[DischargeReasonType] = DATADOMAINS.HACCCODE AND DOMAIN = 'REASONCESSSERVICE' and datadomains.[dataset]='HACC')  "
+  }
+  if(arr.includes("ONI-HC-Conditions")    ){
+  FromSql = FromSql + " LEFT JOIN ONIHealthCOnditions ON R.UniqueID = ONIHealthCOnditions.PersonID "
+  }
+  if(arr.includes("ONI-HC-Medicines")    ){
+    FromSql = FromSql + " LEFT JOIN ONIMedications ON R.UniqueID = ONIMedications.PersonID  "
+    }
+
+
+if(
+  arr.includes("DEX-Income Amount") || arr.includes("DEX-Income Frequency") || arr.includes("DEX-Main Source Of Income") || arr.includes("DEX-Household Composition") || arr.includes("DEX-Is Homeless") || arr.includes("DEX-Accomodation Setting") || arr.includes("DEX-Main Language At Home")
+  || arr.includes("DEX-Ancestry") || arr.includes("DEX-Visa Code") || arr.includes("DEX-First Arrival Month") || arr.includes("DEX-First Arrival Year")|| arr.includes("DEX-Country of Birth") || arr.includes("DEX-Has A Carer") || arr.includes("DEX-Has Disabilities")                      
+  || arr.includes("DEX-DVA Card Holder Status") || arr.includes("DEX-Indigenous Status") || arr.includes("DEX-Estimated Birth Date") || arr.includes("DEX-Date Of Birth") || arr.includes("DEX-Sex") || arr.includes("DEX-Consent For Future Contact") || arr.includes("DEX-Consent To Provide Information")
+  || arr.includes("DEX-Reason For Assistance") || arr.includes("DEX-Referral Type") || arr.includes("DEX-Referral Source") || arr.includes("DEX-Referral Purpose") || arr.includes("DEX-Exclude From MDS")
+){
+  FromSql = FromSql + " LEFT JOIN DSSXtra DSS ON R.UniqueID = DSS.PersonID LEFT JOIN ONI ON R.UNIQUEID = ONI.PersonID  "
+  }
+
+
+
   return FromSql
 }
 

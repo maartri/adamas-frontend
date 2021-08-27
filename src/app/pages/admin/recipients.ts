@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { GlobalService, StaffService, ShareService, leaveTypes, ListService } from '@services/index';
+import { GlobalService, StaffService, ShareService, leaveTypes, ListService,TimeSheetService } from '@services/index';
 import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
 import { RECIPIENT_OPTION } from '../../modules/modules';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
@@ -102,6 +102,11 @@ import { UploadChangeParam } from 'ng-zorro-antd/upload';
           display:block;
           margin:0;
         }
+        .ant-card-small>.ant-card-head>.ant-card-head-wrapper>.ant-card-extra {
+          margin-left:unset !important;
+          float:none !important;
+          color:green !important;
+        }
     `],
     templateUrl: './recipients.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -159,7 +164,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     tabs = [1, 2, 3];
 
     checked: any;
-    sampleList: Array<any> = ["1","2","3"]
+    sampleList: Array<any> = ["EQUALS","BETWEEN","LESS THEN","GREATER THAN","NOT EQUAL TO","IS NOTHING","IS ANYTHING","IS TRUE","IS FALSE"]
     sampleModel: any;
 
     columns: Array<any> = [
@@ -1174,9 +1179,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 },
 
     ];
+  casemanagers: any;
+  categories: any;
+  programsList: any;
+  branchesList: any;
 
     nzEvent(event: NzFormatEmitEvent): void {
       console.log(event);
+    }
+    log(event: any) {
+
     }
 
     listChange(event: any) {
@@ -1224,6 +1236,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         private sharedS: ShareService,
         private cd: ChangeDetectorRef,
         private listS: ListService,
+        private timeS: TimeSheetService,
         private globalS:GlobalService,
         private http: HttpClient,
         private msg: NzMessageService,
@@ -1255,9 +1268,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit(): void {
-     
       
-
         // this.listChange({
         //     "agencyDefinedGroup":"ARUNDEL",
         //     "accountNo":"3CDC STEPH",
@@ -1281,6 +1292,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         //         "sysmgr":true,
         //         "view":"recipient"
         //     })
+        this.getUserData();
     }
 
     ngOnDestroy(): void {
@@ -1290,7 +1302,19 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
       
     }
-
+    getUserData() {
+      return forkJoin([
+        this.listS.getlistbranches(),
+        this.listS.getleaveprograms(),
+        this.listS.getlistcasemanagers(),
+        this.timeS.getlistcategories(),
+      ]).subscribe(x => {
+        this.branchesList = x[0];
+        this.programsList = x[1];
+        this.casemanagers = x[2];
+        this.categories   = x[3];
+      });
+    }
     view(index: number) {
         this.nzSelectedIndex = index;
 
@@ -1342,11 +1366,6 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleCancel() {
-    
-
-        this.newReferralModal = !this.newReferralModal;
-        this.saveModal = false;
-        this.newOtherModal = false;
         this.findModalOpen = false;
         this.referdocument = false;
         
@@ -1548,15 +1567,13 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
           
         }
       }
-      handleClose(){        
-  
+      handleClose(){
         this.newReferralModal = false;
         this.saveModal = false;
         this.quoteModal = false;
         this.newOtherModal = false;
         this.findModalOpen = false;
         this.referdocument = false;
-
     }
    
    

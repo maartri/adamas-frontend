@@ -342,7 +342,7 @@
                         <td>${{data.price}}</td>
                         <td>$ {{amount(data.price,data.quoteQty)}}  </td>                        
                         <td>{{data.tax}}</td>
-                        <td>${{totalamount(data.price,data.quoteQty,data.tax,data.quantity)}}</td>
+                        <td>${{totalamount(data.price,data.quoteQty,data.tax,data.quantity) | number : '1.2-2' }}</td>
                         <td>
                             <a (click)="showEditQuoteModal(data, i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>

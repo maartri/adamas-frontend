@@ -220,6 +220,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
           console.log(this.user);
           // GETS Branch name or Gets it through database
+          
           if('branch' in this.user){
             this.BRANCH_NAME = this.user.branch;
           } else {
@@ -1643,7 +1644,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                         label: x.staffToNotify,
                         value: x.staffToNotify,
                         disabled: x.mandatory ? true : false,
-                        check: x.mandatory ? true : false
+                        checked: x.mandatory ? true : false
                       }
                     });
                     this.changeDetection();
@@ -1781,7 +1782,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                           label: x.staffToNotify,
                           value: x.staffToNotify,
                           disabled: x.mandatory ? true : false,
-                          check: x.mandatory ? true : false
+                          checked: x.mandatory ? true : false
                         }
                       });
 

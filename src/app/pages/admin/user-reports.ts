@@ -145,6 +145,9 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      includeRecipientPensionWhere:string;
      includeLoanitemWhere :string;
      includeSvnDetailNotesWhere :string;
+     includeSvcSpecCompetencyWhere :string;
+     includeOPHistoryWhere :string;
+     includeClinicHistoryWhere :string;
 
     
 IncludeFundingSource: boolean;  IncludeProgram: boolean;  IncludeStaffAttributes: boolean;  IncludePensions: boolean;  IncludeExcluded: boolean; IncludeIncluded: boolean;  IncludePreferences : boolean;
@@ -3128,204 +3131,202 @@ PersonID,
             case 'Service Notes':
                this.ConditionEntity =  'CAST(History.Detail AS varchar(4000))'
                   break;
-//Service Specific Competencies                  
+//Service Specific Competencies                
             case 'Activity':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'SvcSpecCompetency.[Group]'
                   break;
           case 'Competency':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'SvcSpecCompetency.[Name]'
                   break;
           case 'SS Status':
             //  this.ConditionEntity =  
                   break;
 //  RECIPIENT OP NOTES                  
           case 'OP Notes Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'OPHistory.[DetailDate]'
                   break;
           case 'OP Notes Detail':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'OPHistory.[Detail]'
+                  break;                   
             case 'OP Notes Creator':
-            //  this.ConditionEntity =  
-                  break;        
-            case 'OP Notes Creator':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'OPHistory.[Creator]'
                   break;
           case 'OP Notes Alarm':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'OPHistory.[AlarmDate]'
                   break;
           case 'OP Notes Program':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'OPHistory.[Program]'
                   break;
           case 'OP Notes Category':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'OPHistory.ExtraDetail2'
                   break;
 // RECIPIENT CLINICAL NOTES                  
           case 'Clinical Notes Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'CliniHistory.[DetailDate]'
                   break;
           case 'Clinical Notes Detail':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'dbo.RTF2TEXT(CliniHistory.[Detail])'
                   break;
           case 'Clinical Notes Creator':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =   'CliniHistory.[Creator]'
                   break;
+
           case 'Clinical Notes Alarm':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'CliniHistory.[AlarmDate]'
                   break;
           case 'Clinical Notes Category':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'CliniHistory.[ExtraDetail2]'
                   break;
 // RECIPIENT INCIDENTS                  
           case 'INCD_Status':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Status'
                   break;
           case 'INCD_Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Date'
                   break;
           case 'INCD_Type':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.[Type]'
                   break;
           case 'INCD_Description':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.ShortDesc'
                   break;
           case 'INCD_SubCategory':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.PerpSpecify'
                   break;
           case 'INCD_Assigned_To':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.CurrentAssignee'
                   break;         
           case 'INCD_Service':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Service'
                   break;
           case 'INCD_Severity':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Severity'
                   break;
             case 'INCD_Time':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Time'
                   break;
             case 'INCD_Duration':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Duration'
                   break;
           case 'INCD_Location':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Location'
                   break;
           case 'INCD_LocationNotes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.LocationNotes'
                   break;
           case 'INCD_ReportedBy':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.ReportedBy'
                   break;
           case 'INCD_DateReported':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.DateReported'
                   break;
             case 'INCD_Reported':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Reported'
                   break;
             case 'INCD_FullDesc':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.FullDesc'
                   break;
           case 'INCD_Program':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Program'
                   break;
           case 'INCD_DSCServiceType':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.DSCServiceType'
                   break;
           case 'INCD_TriggerShort':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.TriggerShort'
                   break;
           case 'INCD_incident_level':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.incident_level'
                   break;
             case 'INCD_Area':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.area'
                   break;
             case 'INCD_Region':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Region'
                   break;
           case 'INCD_position':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.position'
                   break;
           case 'INCD_phone':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.phone'
                   break;
           case 'INCD_verbal_date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.verbal_date'
                   break;
           case 'INCD_verbal_time':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.verbal_time'
                   break;
             case 'INCD_By_Whome':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.By_Whome'
                   break;
             case 'INCD_To_Whome':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.To_Whome'
                   break;
           case 'INCD_BriefSummary':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.BriefSummary'
                   break;
           case 'INCD_ReleventBackground':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.ReleventBackground'
                   break;
           case 'INCD_SummaryofAction':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.SummaryofAction'
                   break;
           case 'INCD_SummaryOfOtherAction':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.SummaryOfOtherAction'
                   break;
             case 'INCD_Triggers':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Triggers'
                   break;
             case 'INCD_InitialAction':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.InitialAction'
                   break;
           case 'INCD_InitialNotes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.InitialNotes'
                   break;
           case 'INCD_InitialFupBy':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.InitialFupBy'
                   break;
           case 'INCD_Completed':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Completed'
                   break;
           case 'INCD_OngoingAction':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.OngoingAction'
                   break;
             case 'INCD_OngoingNotes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.OngoingNotes'
                   break;
             case 'INCD_Background':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Background'
                   break;
           case 'INCD_Abuse':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Abuse'
                   break;
           case 'INCD_DOPWithDisability':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.DOPWithDisability'
                   break;
           case 'INCD_SeriousRisks':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.SeriousRisks'
                   break;
           case 'INCD_Complaints':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Complaints'
                   break;                                   
             case 'INCD_Perpetrator':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Perpetrator'
                   break;
             case 'INCD_Notify':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Notify'
                   break;
           case 'INCD_NoNotifyReason':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'IMM.NoNotifyReason'
+                  break; 
           case 'INCD_Notes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Notes'
                   break;
           case 'INCD_Setting':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMM.Setting'
                   break;
           case 'INCD_Involved_Staff':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'IMI.Staff#'
                   break;
 //  Recipient Competencies                  
             case 'Recipient Competency':
@@ -3828,10 +3829,16 @@ PersonID,
     if(this.includeRecipientPensionWhere != undefined && this.includeRecipientPensionWhere != ""){sql = sql + " AND " + this.includeRecipientPensionWhere}
     if(this.includeLoanitemWhere != undefined && this.includeLoanitemWhere != ""){sql = sql + " AND " + this.includeLoanitemWhere}
     if(this.includeSvnDetailNotesWhere != undefined && this.includeSvnDetailNotesWhere != ""){sql = sql + " AND " + this.includeSvnDetailNotesWhere}
+    if(this.includeSvcSpecCompetencyWhere != undefined && this.includeSvcSpecCompetencyWhere != ""){sql = sql + " AND " + this.includeSvcSpecCompetencyWhere}
+    if(this.includeOPHistoryWhere != undefined && this.includeOPHistoryWhere != ""){sql = sql + " AND " + this.includeOPHistoryWhere}
+    if(this.includeClinicHistoryWhere != undefined && this.includeClinicHistoryWhere != ""){sql = sql + " AND " + this.includeClinicHistoryWhere}
+
 
     
+
     
 
+          
     
     
     
@@ -7013,16 +7020,16 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
                 columnNames = columnNames.concat(['CAST(History.Detail AS varchar(4000))  as Field'+fld.indexOf(key)])
               }else{columnNames = (['CAST(History.Detail AS varchar(4000))  as Field'+fld.indexOf(key)])}
                       break;
-//Service Specific Competencies                      
+//Service Specific Competencies           
                 case 'Activity':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['SvcSpecCompetency.[Group]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['SvcSpecCompetency.[Group]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Competency':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['SvcSpecCompetency.[Name]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['SvcSpecCompetency.[Name]  as Field'+fld.indexOf(key)])}
                       break;
               case 'SS Status':
                   if(columnNames != []){
@@ -7031,316 +7038,315 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
                       break;
 //  RECIPIENT OP NOTES                      
               case 'OP Notes Date':
+                var notesdate = " format(CONVERT(datetime,[DetailDate],102),'dd/MM/yyyy') "
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat([notesdate +' as Field'+fld.indexOf(key)])
+              }else{columnNames = ([notesdate +' as Field'+fld.indexOf(key)])}
                       break;
               case 'OP Notes Detail':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['dbo.RTF2TEXT(OPHistory.[Detail])  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['dbo.RTF2TEXT(OPHistory.[Detail])  as Field'+fld.indexOf(key)])}
                       break;
                 case 'OP Notes Creator':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;        
-                case 'OP Notes Creator':
-                  if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat(['OPHistory.[Creator]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['OPHistory.[Creator]  as Field'+fld.indexOf(key)])}
+                      break;                                              
               case 'OP Notes Alarm':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['OPHistory.[AlarmDate]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['OPHistory.[AlarmDate]  as Field'+fld.indexOf(key)])}
                       break;
               case 'OP Notes Program':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['OPHistory.[Program]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['OPHistory.[Program]  as Field'+fld.indexOf(key)])}
                       break;
               case 'OP Notes Category':
+                var NotesCategory = " CASE WHEN IsNull(OPHistory.ExtraDetail2,'') < 'A' THEN 'UNKNOWN' ELSE OPHistory.ExtraDetail2 END "                
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat([NotesCategory + '  as Field'+fld.indexOf(key)])
+              }else{columnNames = ([NotesCategory +'  as Field'+fld.indexOf(key)])}
                       break;
 // RECIPIENT CLINICAL NOTES                      
               case 'Clinical Notes Date':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CliniHistory.[DetailDate]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CliniHistory.[DetailDate]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Clinical Notes Detail':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CliniHistory.[Detail])  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CliniHistory.[Detail])  as Field'+fld.indexOf(key)])}
                       break;
               case 'Clinical Notes Creator':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CliniHistory.[Creator]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CliniHistory.[Creator]  as Field'+fld.indexOf(key)])}
                       break;
+                      
               case 'Clinical Notes Alarm':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CliniHistory.[AlarmDate]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CliniHistory.[AlarmDate]  as Field'+fld.indexOf(key)])}
                       break;
               case 'Clinical Notes Category':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CliniHistory.[ExtraDetail2]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CliniHistory.[ExtraDetail2]  as Field'+fld.indexOf(key)])}
                       break;
 // RECIPIENT INCIDENTS                      
               case 'INCD_Status':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Status  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Status  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Date':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                    var incdDate = " format(CONVERT(datetime,IMM.Date,102),'dd/MM/yyyy') "
+                columnNames = columnNames.concat([incdDate + '  as Field'+fld.indexOf(key)])
+              }else{columnNames = ([incdDate +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Type':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.[Type]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.[Type]  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Description':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.ShortDesc  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.ShortDesc  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_SubCategory':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.PerpSpecify  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.PerpSpecify  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Assigned_To':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.CurrentAssignee  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.CurrentAssignee  as Field'+fld.indexOf(key)])}
                       break;         
               case 'INCD_Service':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Service  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Service  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Severity':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Severity  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Severity  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_Time':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Time  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Time  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_Duration':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Duration  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Duration  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Location':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Location  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Location  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_LocationNotes':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.LocationNotes)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.LocationNotes)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_ReportedBy':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.ReportedBy  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.ReportedBy  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_DateReported':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['Convert(varchar,IMM.DateReported,111)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['Convert(varchar,IMM.DateReported,111)  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_Reported':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Reported  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Reported  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_FullDesc':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.FullDesc)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.FullDesc)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Program':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Program  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Program  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_DSCServiceType':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.DSCServiceType  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.DSCServiceType  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_TriggerShort':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.TriggerShort  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.TriggerShort  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_incident_level':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.incident_level  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.incident_level  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_Area':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.area  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.area  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_Region':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Region  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Region  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_position':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.position  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.position  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_phone':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.phone  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.phone  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_verbal_date':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['Convert(varchar,IMM.verbal_date,111)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['Convert(varchar,IMM.verbal_date,111)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_verbal_time':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.verbal_time  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.verbal_time  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_By_Whome':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.By_Whome  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.By_Whome  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_To_Whome':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.To_Whome  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.To_Whome  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_BriefSummary':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.BriefSummary  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.BriefSummary  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_ReleventBackground':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.ReleventBackground)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.ReleventBackground)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_SummaryofAction':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.SummaryofAction)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.SummaryofAction)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_SummaryOfOtherAction':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.SummaryOfOtherAction)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.SummaryOfOtherAction)  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_Triggers':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.Triggers)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.Triggers)  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_InitialAction':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.InitialAction  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.InitialAction  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_InitialNotes':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.InitialNotes)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.InitialNotes)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_InitialFupBy':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.InitialFupBy  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.InitialFupBy  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Completed':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Completed  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Completed  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_OngoingAction':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.OngoingAction  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.OngoingAction  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_OngoingNotes':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.OngoingNotes)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.OngoingNotes)  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_Background':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.Background)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.Background)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Abuse':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Abuse  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Abuse  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_DOPWithDisability':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.DOPWithDisability  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.DOPWithDisability  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_SeriousRisks':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.SeriousRisks  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.SeriousRisks  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Complaints':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Complaints  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Complaints  as Field'+fld.indexOf(key)])}
                       break;                                   
                 case 'INCD_Perpetrator':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Perpetrator  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Perpetrator  as Field'+fld.indexOf(key)])}
                       break;
                 case 'INCD_Notify':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Notify  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Notify  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_NoNotifyReason':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.NoNotifyReason)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.NoNotifyReason)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Notes':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['CONVERT(varchar(1000),IMM.Notes)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['CONVERT(varchar(1000),IMM.Notes)  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Setting':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMM.Setting  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMM.Setting  as Field'+fld.indexOf(key)])}
                       break;
               case 'INCD_Involved_Staff':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IMI.Staff#  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IMI.Staff#  as Field'+fld.indexOf(key)])}
                       break;
 //  Recipient Competencies                      
                 case 'Recipient Competency':
@@ -8156,11 +8162,41 @@ TablesSetting(arr){
       FromSql = FromSql + " LEFT JOIN History ON CONVERT(varchar,SvcDetail.RecordNo,100) = History.PersonID  "
       this.includeSvnDetailNotesWhere = "   History.ExtraDetail1 = 'SVCNOTE'  "
       }
-
-
+      if(arr.includes("Activity")  || arr.includes("Competency")    ){
+        FromSql = FromSql + " LEFT JOIN HumanResources SvcSpecCompetency  ON R.UniqueID = SvcSpecCompetency.PersonID "
+        this.includeSvcSpecCompetencyWhere = " SvcSpecCompetency.[Type] = 'STAFFATTRIBUTE  "
+        }         
+      if(arr.includes("SS Status")    ){
+        FromSql = FromSql + " LEFT JOIN  ServiceOverview ServiceCompetencyStatus ON ServiceCompetencyStatus.[PersonID]  = R.[UniqueID]  "        
+        if(arr.includes("Activity")  || arr.includes("Competency")    ){
+          FromSql = FromSql +  " AND ServiceCompetencyStatus.[SERVICE TYPE] = SvcSpecCompetency.[Service] "
+        } else { FromSql = FromSql +  " LEFT JOIN  HumanResources SvcSpecCompetency on ServiceCompetencyStatus.[SERVICE TYPE] = SvcSpecCompetency.[Service] " }
+        }
+        if(arr.includes("OP Notes Date")   || arr.includes("OP Notes Detail") ||  arr.includes("OP Notes Creator") || arr.includes("OP Notes Alarm") || arr.includes("OP Notes Program") || arr.includes("OP Notes Category")  ){
+          FromSql = FromSql + " LEFT JOIN History OPHistory ON R.UniqueID = OPHistory.PersonID   "        
+          this.includeOPHistoryWhere = " OPHistory.ExtraDetail1 = 'OPNOTE'  "
+        } 
+        if(arr.includes("Clinical Notes Date")   || arr.includes("Clinical Notes Detail") ||  arr.includes("Clinical Notes Creator") || arr.includes("Clinical Notes Category") || arr.includes("Clinical Notes Alarm")   ){
+          FromSql = FromSql + "  LEFT JOIN History CliniHistory ON R.UniqueID = CliniHistory.PersonID    "        
+          this.includeClinicHistoryWhere = " CliniHistory.ExtraDetail1 = 'CLINNOTE'  "
+        }        
+      if(
+        arr.includes("INCD_Status") || arr.includes("INCD_Date") || arr.includes("INCD_Type") || arr.includes("INCD_Description") || arr.includes("INCD_SubCategory") || arr.includes("INCD_Assigned_To") || arr.includes("INCD_Service")
+        || arr.includes("INCD_Severity") || arr.includes("INCD_Time") || arr.includes("INCD_Duration") || arr.includes("INCD_Location") || arr.includes("INCD_LocationNotes") || arr.includes("INCD_ReportedBy") || arr.includes("INCD_DateReported")
+        || arr.includes("INCD_Reported") || arr.includes("INCD_FullDesc") || arr.includes("INCD_Program") || arr.includes("INCD_DSCServiceType") || arr.includes("INCD_TriggerShort") || arr.includes("INCD_incident_level") || arr.includes("INCD_Area")
+        || arr.includes("INCD_Region") || arr.includes("INCD_position") || arr.includes("INCD_phone") || arr.includes("INCD_verbal_date") || arr.includes("INCD_verbal_time") || arr.includes("INCD_By_Whome") || arr.includes("INCD_To_Whome") || arr.includes("INCD_BriefSummary")
+        || arr.includes("INCD_ReleventBackground") || arr.includes("INCD_SummaryofAction") || arr.includes("INCD_SummaryOfOtherAction") || arr.includes("INCD_Triggers")|| arr.includes("INCD_InitialAction") || arr.includes("INCD_InitialNotes")
+        || arr.includes("INCD_InitialFupBy") || arr.includes("INCD_Completed") || arr.includes("INCD_OngoingAction") || arr.includes("INCD_OngoingNotes") || arr.includes("INCD_Background") || arr.includes("INCD_Abuse") || arr.includes("INCD_DOPWithDisability") || arr.includes("INCD_SeriousRisks")
+        || arr.includes("INCD_Complaints") || arr.includes("INCD_Perpetrator") || arr.includes("INCD_Notify") || arr.includes("INCD_NoNotifyReason") || arr.includes("INCD_Notes") || arr.includes("INCD_Setting") || arr.includes("INCD_Involved_Staff")
+        ){
+          FromSql = FromSql + " Right Join IM_Master IMM on  IMM.PersonID = R.UniqueID " +
+          " left Join ItemTypes IT ON  IT.Title    = [IMM].[Service] " +
+          " left Join HumanResourceTypes HRT ON  [IMM].Program   = [HRT].[Name] " +
+          " left Join  IM_INVOLVEDSTAFF IMI ON   IMM.RecordNo  = IMI.IM_Master# " 
+        }
+        
 
   
-
 
 
 

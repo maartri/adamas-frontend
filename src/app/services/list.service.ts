@@ -528,7 +528,9 @@ export class ListService {
     getcoordinators(): Observable<any>{
         return this.auth.get(`${list}/coordinators`)
     }
-
+    getcoordinatorslist(): Observable<any>{
+        return this.auth.get(`${list}/coordinatorslist`)
+    }
     getactiveprograms(): Observable<any>{
         return this.auth.get(`${list}/active-programs`)
     }

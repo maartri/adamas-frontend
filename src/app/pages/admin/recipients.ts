@@ -10,6 +10,7 @@ import { filter } from 'rxjs/operators';
 import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { FormBuilder, Validators } from '@angular/forms';
 @Component({
     styles: [`
         nz-tabset{
@@ -1183,6 +1184,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   categories: any;
   programsList: any;
   branchesList: any;
+  filters: any;
 
     nzEvent(event: NzFormatEmitEvent): void {
       console.log(event);
@@ -1235,6 +1237,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         private activeRoute: ActivatedRoute,
         private sharedS: ShareService,
         private cd: ChangeDetectorRef,
+        private fb: FormBuilder,
         private listS: ListService,
         private timeS: TimeSheetService,
         private globalS:GlobalService,
@@ -1293,6 +1296,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         //         "view":"recipient"
         //     })
         this.getUserData();
+        this.buildForm();
     }
 
     ngOnDestroy(): void {
@@ -1302,11 +1306,19 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
       
     }
+    buildForm(){
+      this.filters = this.fb.group({
+        allBranches: false,
+        allPrograms: false,
+        allCordinatore: false,
+        allCategories: false,
+      });
+    }
     getUserData() {
       return forkJoin([
         this.listS.getlistbranches(),
         this.listS.getleaveprograms(),
-        this.listS.getlistcasemanagers(),
+        this.listS.getcoordinatorslist(),
         this.timeS.getlistcategories(),
       ]).subscribe(x => {
         this.branchesList = x[0];

@@ -204,7 +204,7 @@
                                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let branch of branchesList">
-                                                <label nz-checkbox [nzValue]="branch" [(ngModel)]="branch.checked" [ngModelOptions]="{standalone: true}">{{ branch }}</label>
+                                                <label nz-checkbox nzDisabled [nzValue]="branch" [(ngModel)]="branch.checked" [ngModelOptions]="{standalone: true}">{{ branch }}</label>
                                             </div>
                                         </div>
                                     </nz-checkbox-wrapper>
@@ -220,7 +220,7 @@
                                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let prog of programsList">
-                                                <label nz-checkbox [nzValue]="prog" [(ngModel)]="prog.checked" [ngModelOptions]="{standalone: true}">{{ prog }}</label>
+                                                <label nz-checkbox nzDisabled [nzValue]="prog" [(ngModel)]="prog.checked" [ngModelOptions]="{standalone: true}">{{ prog }}</label>
                                             </div>
                                         </div>
                                     </nz-checkbox-wrapper>
@@ -236,7 +236,7 @@
                                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let manager of casemanagers">
-                                                <label nz-checkbox [nzValue]="manager" [(ngModel)]="manager.checked" [ngModelOptions]="{standalone: true}">{{ manager }}</label>
+                                                <label nz-checkbox nzDisabled [nzValue]="manager.accountNo" [(ngModel)]="manager.checked" [ngModelOptions]="{standalone: true}">{{ manager.accountNo }}</label>
                                             </div>
                                         </div>
                                     </nz-checkbox-wrapper>
@@ -252,7 +252,7 @@
                                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let categori of categories">
-                                                <label nz-checkbox [nzValue]="categori.description" [(ngModel)]="categori.checked" [ngModelOptions]="{standalone: true}">{{ categori.description }}</label>
+                                                <label nz-checkbox nzDisabled [nzValue]="categori.description" [ngModel]="categori.checked" [ngModelOptions]="{standalone: true}">{{ categori.description }}</label>
                                             </div>
                                         </div>
                                     </nz-checkbox-wrapper>
@@ -279,19 +279,23 @@
                         </div>
                     </div>
                     <div nz-row>
-                        <ng-select 
-                        [items]="sampleList" 
-                        [virtualScroll]="true"
-                        [dropdownPosition]="'bottom'"
-                        [clearable]="false"
-                        
-                        [closeOnSelect]="true"
-                        [(ngModel)]="sampleModel">
-                    </ng-select>
+                        <div class="form-group">
+                            <ng-select 
+                            [items]="sampleList" 
+                            [virtualScroll]="true"
+                            [dropdownPosition]="'bottom'"
+                            [clearable]="false"
+                            [closeOnSelect]="true"
+                            [(ngModel)]="sampleModel">
+                        </ng-select>
+                    </div>
                 </div>
                 <div nz-row>
-                    <div class="form-group">
-                        <input nz-input placeholder="" [(ngModel)]="value" />
+                    <div nz-col nzSpan="10" class="form-group">
+                        <input nz-input [(ngModel)]="value" />
+                    </div>
+                    <div nz-col nzSpan="10" class="form-group">
+                        <input nz-input [(ngModel)]="value" />
                     </div>
                 </div>
                 <div nz-row>

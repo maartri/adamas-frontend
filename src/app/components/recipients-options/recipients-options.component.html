@@ -232,7 +232,7 @@
                                 </div>
                                 <div nz-col nzSpan="8">
                                     <label>Time Spent</label>
-                                    <nz-time-picker formControlName="timeSpent"  nzFormat="HH:mm"></nz-time-picker>
+                                    <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15"  nzFormat="HH:mm"></nz-time-picker>
                                 </div>
                             </div>
                         </nz-card>
@@ -381,7 +381,7 @@
                 <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Date Details" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
-                <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step>
+                <!-- <nz-step class="mini" nzTitle="Reminders" nzDescription=""></nz-step> -->
             </nz-steps>
             
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
@@ -435,7 +435,7 @@
                             <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                         <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                            <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15"  [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                     </div>
                 </div>
@@ -453,7 +453,7 @@
                         </div>
                     </div>
                     
-                    <div nz-col nzSpan="12">
+                    <!-- <div nz-col nzSpan="12">
                         <div class="form-group">
                             <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
                                 <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
@@ -465,10 +465,10 @@
                         <div class="form-group">
                             <label nz-checkbox formControlName="publishToApp">Publish To Mobile App</label>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 
-                <div nz-row *ngIf="current == 4" [formGroup]="deceaseGroup">
+                <!-- <div nz-row *ngIf="current == 4" [formGroup]="deceaseGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
                             <nz-date-picker [nzFormat]="dateFormat" formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
@@ -498,7 +498,8 @@
                             </nz-select>
                         </div>                        
                     </div>
-                </div>
+                </div> -->
+
             </div>
         </div>
         
@@ -790,7 +791,7 @@
                             <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                         <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                            <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                     </div>
                 </div>
@@ -922,13 +923,23 @@
                             <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                         <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                            <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                     </div>
                 </div>
                 
                 <div nz-row *ngIf="current == 3">
-                    
+                    <div nz-col nzSpan="24">
+                        <div class="form-group" [formGroup]="waitListGroup">
+                            <nz-radio-group formControlName="radioGroup">
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
+                            </nz-radio-group>
+                            
+                            <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
+                        </div>
+                    </div>    
                 </div>
 
                 <div nz-row *ngIf="current == 4" >
@@ -1102,7 +1113,7 @@
                             <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                         <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                            <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                     </div>
                 </div>
@@ -1231,7 +1242,7 @@
                     <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                 </div>
                 
-                <div nz-row *ngIf="current == 1">
+                <div nz-row *ngIf="current == 1" [formGroup]="assessGroup">
                     <p>Screening Type</p>
                     <div>
                         <!-- <ng-container *ngFor="let program of checkedPrograms">
@@ -1239,7 +1250,7 @@
                         </ng-container> -->
 
                         <ng-container>
-                            <app-select-list-recipient [program]="assessGroup.get('programChecked').value" [option]="option"></app-select-list-recipient>
+                            <app-select-list-recipient formControlName="serviceType" [program]="assessGroup.get('programChecked').value" [option]="option"></app-select-list-recipient>
                         </ng-container>
                     </div>
                 </div>
@@ -1255,7 +1266,7 @@
                             <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                         <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                            <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                     </div>
                 </div>
@@ -1375,12 +1386,12 @@
                             <nz-select style="width:100%" nzAllowClear nzPlaceHolder="Reason Code"></nz-select>
                         </div> -->
                         <p>Referral Type</p>
-                        <div>
+                        <div [formGroup]="notProceedGroup">
                             <!-- <ng-container *ngFor="let program of checkedPrograms">
                                 <app-select-list-recipient [program]="program.program" [option]="option"></app-select-list-recipient>
                             </ng-container> -->
                             
-                            <app-select-list-recipient [program]="notProceedGroup.get('programChecked').value" [option]="option"></app-select-list-recipient>
+                            <app-select-list-recipient formControlName="referralType" [program]="notProceedGroup.get('programChecked').value" [option]="option"></app-select-list-recipient>
 
                         </div>
                     </div>
@@ -1397,7 +1408,7 @@
                             <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                         <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                            <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                     </div>
                 </div>
@@ -1528,8 +1539,8 @@
                 <div nz-row *ngIf="current == 1" [formGroup]="referOnGroup">
                     <div nz-row class="space-btm">
                         <div nz-col nzSpan="12">
-                            <nz-select style="width:100%" nzAllowClear formControlName="referralTo" nzPlaceHolder="Referral To">
-                                <nz-option *ngFor="let data of referralSource$ | async"  [nzValue]="data" [nzLabel]="data.description"></nz-option>
+                            <nz-select style="width:100%" nzAllowClear formControlName="referralSource" nzPlaceHolder="Referral To">
+                                <nz-option *ngFor="let data of referralSource$ | async"  [nzValue]="data.recordNumber" [nzLabel]="data.description"></nz-option>
                             </nz-select>
                         </div>                        
                     </div>
@@ -1542,11 +1553,11 @@
                     </div>
                     <div nz-row class="space-btm">
                         <p>Referral Type</p>
-                        <div>
+                        <div [formGroup]="referOnGroup">
                             <!-- <ng-container *ngFor="let program of checkedPrograms">
                                 <app-select-list-recipient [program]="program.program" [option]="option"></app-select-list-recipient>
                             </ng-container> -->
-                            <app-select-list-recipient [program]="referOnGroup.get('programChecked').value" [option]="option"></app-select-list-recipient>
+                            <app-select-list-recipient formControlName="referralType" [program]="referOnGroup.get('programChecked').value" [option]="option"></app-select-list-recipient>
                         </div>          
                     </div>
                 </div>
@@ -1562,7 +1573,7 @@
                             <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                         <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                            <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                     </div>
                 </div>
@@ -1753,7 +1764,7 @@
                             <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                         <div nz-col nzSpan="8">
-                            <nz-time-picker formControlName="timeSpent" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                            <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
                         </div>
                     </div>
                 </div>

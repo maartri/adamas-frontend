@@ -40,6 +40,10 @@ const NOTE_TYPE: { } = {
   'clinical': 'CLINICALNOTE'
 }
 
+const defaultTimeSpent = new Date().setHours(0,0);
+const defaultDate = new Date().setHours(0,0);
+const defaultDateTime = new Date();
+
 @Component({
   selector: 'app-recipients-options',
   templateUrl: './recipients-options.component.html',
@@ -274,7 +278,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         referralType: null,
         suppliedDate: null,
         
-        date: null,
+        date: new Date(defaultDate),
         refNo: null,
         quantity: null,
         unit: null,
@@ -298,7 +302,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
         referralDate: null,
         time: null,
-        timeSpent: null,
+        timeSpent: new Date(defaultTimeSpent),
         radioGroup: 'CASENOTE',
         notes: '',
         caseCategory: 'OTHER',
@@ -318,9 +322,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         reason: null,
         dischargeType: null,
         
-        dischargeDate: null,
-        time: null,
-        timeSpent: null,
+        dischargeDate: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
         radioGroup: 'CASENOTE',
         notes: null,
@@ -359,9 +363,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         reason: null,
         dischargeType: null,
         
-        dischargeDate: null,
-        time: null,
-        timeSpent: null,
+        dischargeDate: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
         radioGroup: 'CASENOTE',
         notes: null,
@@ -382,9 +386,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         suppliedDate: null,
         suppliedRef: null,
         
-        actionDate: null,
-        time: null,
-        timeSpent: null,
+        actionDate: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
         radioGroup: 'CASENOTE',
         notes: null,
@@ -400,13 +404,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.admitGroup = this.fb.group({
         programs: this.fb.array([]),
         radioGroup: 'CASENOTE',
-        notes: `
-        ADMISSION : Morganica Abbots
-        Phone : 0403734758
-        Address : 151 Dobie St GRAFTON
-        
-        NOTES:
-        `,
+        notes: null,
         programChecked:null,
         caseCategory: 'ADMISSION',
         publishToApp: false,
@@ -415,13 +413,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         emailNotif: null,
         multipleStaff: null,
         referralDate: null,
-        admissionDate:new Date(),
+
+        admissionDate:new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
+
         adminsssion:null,
         admissionType:null,
         timePeriod: [],
-        time: new Date(),
-        timeSpent: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 15, 0)
-
+      
       });
       
       
@@ -451,9 +451,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
        this.assessGroup = this.fb.group({
           programs: this.fb.array([]),
           programChecked: null,
-          date:null,
-          time: null,
-          timeSpent: null,          
+          serviceType: null,
+          date: new Date(defaultDate),
+          time: new Date(defaultDateTime),
+          timeSpent: new Date(defaultTimeSpent),          
           radioGroup: 'CASENOTE',
           notes: null,
           caseCategory: 'SCREEN/ASSESS',
@@ -468,10 +469,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         programs: this.fb.array([]),
         programChecked: null,
         reasonCode: null,
+        referralType: null,
         
-        date:null,
-        time: null,
-        timeSpent: null,
+        date: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
         radioGroup: 'CASENOTE',
         notes: null,
@@ -487,13 +489,13 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.referOnGroup = this.fb.group({
         programs: this.fb.array([]),
         programChecked: null,
-        referralTo: null,
+        referralSource: null,
         referralCode: null,
         
         referralType: null,
-        date: null,
-        time: null,
-        timeSpent: null,
+        date: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
         radioGroup: 'CASENOTE',
         notes: null,
@@ -518,7 +520,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         
         date: new Date(),
         time: new Date(),
-        timeSpent: new Date().setHours(0, 15),
+        timeSpent: new Date(defaultTimeSpent),
         
         radioGroup: 'CASENOTE',
         notes: null,
@@ -951,9 +953,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 
                 let program: ProcedureRoster = {
                     clientCode: this.user.code,
-                    carerCode: this.token.code,
+                    carerCode: this.token.code,                   
                     
-                    serviceType: referralType,
+                    serviceType: programChecked,
                     date: format(date,'yyyy/MM/dd'),
                     time: format(time,'HH:mm'),
                     
@@ -969,7 +971,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     type: defaultValues.type,
                     duration: timeInMinutes / 5,
                     blockNo: blockNoTime,
-                    reasonType: '',
+                    reasonType: referralSource,
                     
                     tabType: 'REFERRAL-OUT',
                     program: programChecked,
@@ -995,6 +997,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
+                  console.log(data);
+                  return;
+                  
                   this.listS.postreferralout(data).subscribe(data => {
                     this.globalS.sToast('Success', 'Package is saved');
                   });
@@ -1080,6 +1085,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   referralSource,
                   referralCode,
                   referralType,
+                  serviceType,
                   packageName,
                   radioGroup,
                   notes,
@@ -1099,7 +1105,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     clientCode: this.user.code,
                     carerCode: this.token.code,
                     
-                    serviceType: referralType,
+                    serviceType: serviceType,
                     date: format(date,'yyyy/MM/dd'),
                     time: format(time,'HH:mm'),
                     
@@ -1141,6 +1147,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
+                  console.log(data);
+                  return;
+                  
                   this.listS.postassessment(data).subscribe(data =>{
                     this.globalS.sToast('Success', 'Package is saved');
                   });
@@ -1215,6 +1224,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   referralCode,
                   referralType,
                   packageName,
+                  activityCode,
                   radioGroup,
                   notes,
                   date,
@@ -1233,7 +1243,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     clientCode: this.user.code,
                     carerCode: this.token.code,
                     
-                    serviceType: referralType,
+                    serviceType: activityCode,
                     date: format(date,'yyyy/MM/dd'),
                     time: format(time,'HH:mm'),
                     
@@ -2458,6 +2468,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }
                 
                 get canGoNext(): boolean {
+
                   if(this.option == RECIPIENT_OPTION.REFER_IN){
                     if(this.FUNDING_TYPE == 'NDIA' && this.selectedProgram && !this.isPackageNameAvailable){
                       return true;
@@ -2478,6 +2489,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                   if(this.option == RECIPIENT_OPTION.ADMIT && this.admitGroup.get('programChecked').value){
                     return true;
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.DECEASE){
+                    return true;
                 }
 
                   if(this.option == RECIPIENT_OPTION.WAIT_LIST && this.waitListGroup.get('programChecked').value){
@@ -2485,14 +2500,23 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
 
                   if(this.option == RECIPIENT_OPTION.REFER_ON && this.referOnGroup.get('programChecked').value){
+                    if(this.current == 1 && this.globalS.isEmpty(this.referOnGroup.get('referralType').value)){
+                      return false;
+                    }
                     return true;
                   }
 
                   if(this.option == RECIPIENT_OPTION.NOT_PROCEED && this.notProceedGroup.get('programChecked').value){
+                    if(this.current == 1 && this.globalS.isEmpty(this.notProceedGroup.get('referralType').value)){
+                      return false;
+                    }
                     return true;
                   }
 
                   if(this.option == RECIPIENT_OPTION.ASSESS && this.assessGroup.get('programChecked').value){
+                    if(this.current == 1 && this.globalS.isEmpty(this.assessGroup.get('serviceType').value)){
+                      return false;
+                    }
                     return true;
                   }
 

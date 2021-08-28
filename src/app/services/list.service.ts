@@ -34,6 +34,11 @@ export class ListService {
         return this.auth.post(`${list}/admission-accept-quote`, data);
     }
 
+    getspecificemailmanager(accountno: string):Observable<any>{
+        return this.auth.getstring(`${list}/specific-email-manager/${accountno}`);
+    }
+
+
     getspecifictype(program: string):Observable<any>{
         return this.auth.getstring(`${list}/specific-type/${program}`);
     }

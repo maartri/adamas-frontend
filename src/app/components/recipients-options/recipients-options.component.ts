@@ -40,7 +40,7 @@ const NOTE_TYPE: { } = {
   'clinical': 'CLINICALNOTE'
 }
 
-const defaultTimeSpent = new Date().setHours(0,0);
+const defaultTimeSpent = new Date().setHours(0, 15);
 const defaultDate = new Date().setHours(0,0);
 const defaultDateTime = new Date();
 
@@ -66,6 +66,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   BRANCH_NAME: string;
   DOCUMENTID: number;
   COORDINATOR: string;
+  EMAIL_OF_COORDINATOR: string;
     
   referralRadioValue: any;
   referralCheckOptions: Array<any> = [
@@ -914,18 +915,20 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
                 
                 // console.log(data);
+                // this.emailnotify();
                 // return;
 
                 this.listS.postreferralin(data).subscribe(x => {
-                    this.globalS.sToast('Success', 'Package is saved'); 
-                    this.handleCancel();
-                  
-                    if (this.globalS.followups != null){
-                      this.writereminder(); 
-                    }
+                      this.globalS.sToast('Success', 'Package is saved'); 
+                      this.handleCancel();
                     
-                    if (this.globalS.emailaddress != null){
-                      this.emailnotify(); }
+                      if (this.globalS.followups != null){
+                        this.writereminder(); 
+                      }
+                      
+                      if (this.globalS.emailaddress != null){
+                        this.emailnotify(); 
+                      }
                     }
                   );
               }
@@ -1630,7 +1633,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               
               var emailSubject = "ADAMAS NOTIFICATION";
               var emailBody = notes;  
-              location.href = "mailto:" + emailTo + "?" +     
+              location.href = "mailto:" + this.EMAIL_OF_COORDINATOR + "?" +     
               (emailSubject ? "subject=" + emailSubject : "") + 
               (emailBody ? "&body=" + emailBody : "");
               
@@ -2290,7 +2293,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   if(this.option == RECIPIENT_OPTION.REFER_IN)
                   { 
 
-                    // this.populateNotificationDetails();
+                    this.listS.getspecificemailmanager(this.COORDINATOR)
+                        .subscribe(data => {
+                          this.EMAIL_OF_COORDINATOR = data;
+                        });
+
                     this.populateNotificationDetails();
                     this.referralCode$ = this.listS.getwizardreferralcode();
                     

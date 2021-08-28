@@ -1,0 +1,109 @@
+.line{
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f3f3f3;
+}
+.controls div{
+    display: inline-block;
+    border-radius: 50%;
+    background: #f1f1f1;
+    border: 1px solid #cecece;
+    width: 24px;
+    text-align: center;
+    margin-right:10px;
+}
+.controls div i{
+    cursor:pointer;
+}
+.controls div:hover{
+    background:#d6d6d6;
+}
+.right{
+    float:right;
+}
+.right >  * {        
+    margin-right:5px;
+}
+nz-range-picker{
+    width:15rem;
+}
+.div-table{
+    display: table;
+    line-height: 25px;
+}
+.div-table > div{
+    display: table-row;
+}
+.div-table > div > div{
+    display: table-cell;
+    padding: 2px 5px;
+}
+.div-table > div > div:nth-child(2){
+    width: 10rem;
+}
+.form-group nz-select{
+    width:100%
+}
+nz-select.select{
+    min-width:10rem;
+}
+.inline{
+    display:flex;
+}
+.inline > .title{
+    font-size:12px;
+    margin-right:5px;
+}
+.mini{
+    width:7rem;
+}
+.spacing > *{
+    margin-right:5px;
+}
+.calc-wrapper > div{
+    margin-top:8px;
+}
+.three-wid{
+    width:3rem;
+}
+.three-five{
+    width:5rem;
+}
+.flex{
+    display:flex;
+}
+.flex > *{
+    margin-right:5px;
+}
+
+nz-tabset >>> div > div.ant-tabs-nav-container{
+    height: 25px !important;
+    font-size: 13px !important;
+}
+
+nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+    line-height: 24px;
+    height: 25px;
+}
+nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+    background: #717e94;
+    color: #fff;
+}
+.accept-admin{
+    padding: 5px;
+    margin: 5px;
+    border-radius: 3px;
+    height: 2rem;
+    font-weight: bolder;
+}
+
+.accept-admin.negative{
+    color: red;
+    background: #ffdede;
+}
+.accept-admin.positive{
+    color: red;
+    background: #ffdede;
+}
+
+

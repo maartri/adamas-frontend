@@ -20,7 +20,7 @@ import en from '@angular/common/locales/en';
 import { LoginComponent } from './pages/login/login.component';
 
 import { ToastrModule } from 'ngx-toastr';
-
+import { AngularEditorModule } from '@kolkov/angular-editor';
 import { JwtModule } from '@auth0/angular-jwt';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
@@ -105,6 +105,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     CommonModule,
     ReactiveFormsModule,
     HttpClientModule,
+    AngularEditorModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     ComponentModule,

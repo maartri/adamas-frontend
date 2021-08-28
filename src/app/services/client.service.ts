@@ -16,6 +16,10 @@ export class ClientService {
         private auth: AuthService
     ) { }
 
+    gethideportalbalance(uname: string):Observable<any>{
+        return this.auth.get(`${client}/hideportalbalance/${uname}`);
+    }
+
     getnotepermissions(id: string): Observable<any>{
         return this.auth.get(`${client}/note-permissions/${id}`);
     }
@@ -31,7 +35,10 @@ export class ClientService {
     postprofile(data: any): Observable<any> {
         return this.auth.post(`${client}/profile`, data);
     }
-
+     
+    addRefreminder(sqlString: string): Observable<any>{
+        return this.auth.post(`${client}/addrefreminder`, { Sql: sqlString})
+    }
     isAccountNoUnique(name: string): Observable<any> {
         return this.auth.get(`${client}/is-accountno-unique/${name}`);
     }
@@ -174,12 +181,20 @@ export class ClientService {
         return this.auth.get(`${client}/opnotes/${id}`)
     }
 
+    getopnoteswithfilters(id: string, data: any): Observable<any> {
+        return this.auth.post(`${client}/opnotes-with-filters/${id}`, data);
+    }
+
     getopnoteswithdate(data: any): Observable<any> {
         return this.auth.get(`${client}/opnotes-dates`, data);
     }
 
     getcasenotes(id: string): Observable<any> {
         return this.auth.get(`${client}/casenotes/${id}`);
+    }
+
+    getcasenoteswithfilters(id: string, data: any): Observable<any> {
+        return this.auth.post(`${client}/casenotes-with-filters/${id}`, data);
     }
 
     getcasenoteswithdate(data: any): Observable<any> {

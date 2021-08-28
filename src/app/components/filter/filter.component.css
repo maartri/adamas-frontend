@@ -1,6 +1,7 @@
 .inline{
     display:inline-block;
     margin-right: 1rem;
+    margin-bottom:8px;
 }
 span{
     font-size:11px;
@@ -10,6 +11,21 @@ i{
     font-size: 1.5rem;
     cursor:pointer;
 }
-i:hover{
+i:not(.selected):hover{
     color:#c74848;
+}
+.filter-icons{
+    margin-top: 10px;
+}
+nz-select{
+    width:100%;
+}
+button{
+    margin-right:5px;
+}   
+.selected{
+    color:#00da25;
+}
+.container{
+    min-width: 50rem;
 }

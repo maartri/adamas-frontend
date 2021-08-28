@@ -19,7 +19,7 @@
                 outstanding amounts.
             </p>
         </div>
-        <div nz-row class="mrg-btm">
+        <div nz-row class="mrg-btm" *ngIf="!hideportalbalance">
             <nz-descriptions nzBordered [nzSize]="'small'" [nzColon]="false"
                 [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }">
                 <nz-descriptions-item nzTitle="Opening Balance">{{ openB | currency: 'USD' || '--' }}

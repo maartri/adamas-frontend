@@ -110,26 +110,31 @@ export class StaffCompetenciesComponent implements OnInit {
     next(): void {
       this.current += 1;
     }
+    trueString(data: any): string{
+      return data ? '1': '0';
+    }
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
           this.postLoading = false;
           return false;   
         }
-        let domain       = 'STAFFATTRIBUTE';
-        let groupz       = group.get('group').value;
-        let mandatory    = (group.get('mandatory').value) ? 1 : 0 ;
-        let undated      = (group.get('undated').value) ? 1 : 0 ;
+            name       =  this.globalS.isValueNull(group.get('name').value).trim().toUpperCase();
+        let domain       = "'STAFFATTRIBUTE'";
+        let groupz       =  this.globalS.isValueNull(group.get('group').value);
+        let mandatory    = this.trueString(group.get('mandatory').value);
+        let undated      = this.trueString(group.get('undated').value);
         let enddate      = !(this.globalS.isVarNull(group.get('enddate').value)) ?  "'"+this.globalS.convertDbDate(group.get('enddate').value)+"'" : null;
-        let values = domain+"','"+name+"','"+groupz+"','"+mandatory+"',"+undated+",'"+enddate;
-        let sql = "insert into DataDomains([Domain],[Description],[User1],[Embedded],[Undated],[EndDate]) Values ('"+values+"')"; 
+        let values = domain+","+name+","+groupz+","+mandatory+","+undated+","+enddate;
+        let sql = "insert into DataDomains([Domain],[Description],[User1],[Embedded],[Undated],[EndDate]) Values ("+values+")"; 
+        
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
           if (data) 
@@ -144,7 +149,7 @@ export class StaffCompetenciesComponent implements OnInit {
       }else{
         this.postLoading  = true;   
         const group       = this.inputForm;
-        let domain       = 'STAFFATTRIBUTE';
+        let domain       = "'STAFFATTRIBUTE'";
         let name         = group.get('name').value;
         let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
         if(this.temp_title != name){
@@ -154,13 +159,14 @@ export class StaffCompetenciesComponent implements OnInit {
           return false;   
          }
         }
-        let groupz       = group.get('group').value;
-        let mandatory    = group.get('mandatory').value;
-        let undated      = group.get('undated').value;
+        name       =  this.globalS.isValueNull(group.get('name').value).trim().toUpperCase();
+        let groupz       =  this.globalS.isValueNull(group.get('group').value);
+        let mandatory    = this.trueString(group.get('mandatory').value);
+        let undated      = this.trueString(group.get('undated').value);
         let enddate      = !(this.globalS.isVarNull(group.get('enddate').value)) ?  "'"+this.globalS.convertDbDate(group.get('enddate').value)+"'" : null;
         let recordNumber  = group.get('recordNumber').value;
         
-        let sql  = "Update DataDomains SET [Description]='"+ name + "',[User1] = '"+ groupz + "',[Embedded] = '"+ mandatory + "',[Undated] = '"+ undated + "',[EndDate] = "+ enddate + " WHERE [RecordNumber] ='"+recordNumber+"'";
+        let sql  = "Update DataDomains SET [Description]="+ name +",[User1] ="+ groupz +",[Embedded] ="+ mandatory +",[Undated] ="+ undated +",[EndDate] ="+ enddate + " WHERE [RecordNumber] ='"+recordNumber+"'";
         
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 

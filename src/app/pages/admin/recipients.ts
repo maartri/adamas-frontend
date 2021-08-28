@@ -5,8 +5,11 @@ import { GlobalService, StaffService, ShareService, leaveTypes, ListService } fr
 import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
 import { RECIPIENT_OPTION } from '../../modules/modules';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
-
-
+import format from 'date-fns/format';
+import { filter } from 'rxjs/operators';
+import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { UploadChangeParam } from 'ng-zorro-antd/upload';
 @Component({
     styles: [`
         nz-tabset{
@@ -106,6 +109,9 @@ import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 
 
 export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
+
+    option: string = 'add';
+    
     user: any = null;
     nzSelectedIndex: number = 0;
     isFirstLoad: boolean = false;
@@ -115,8 +121,10 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     sample: any;
 
     newReferralModal: boolean = false;
-    saveModal: boolean = false;
+    newQuoteModal: boolean = false;
     quoteModal: boolean = false;
+    saveModal: boolean = false;
+    
     newOtherModal: boolean = false;
 
     isLoading: boolean = false;
@@ -128,8 +136,17 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     status: any = null;
     statusTab = new Subject<any>();
 
+    Unique_ID: string;
+    Account_No: string;
+
     recipientOptionOpen: any;
     recipientOption: string;
+    from:string = 'admit';
+    fileList2: Array<any> = [];
+    urlPath: string = `api/v2/file/upload-document-remote`;
+    acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";
+    file: File;
+    referdocument: boolean = false;
     
     RECIPIENT_OPTION = RECIPIENT_OPTION;
 
@@ -1173,11 +1190,15 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
         if (!this.isFirstLoad) {
             this.view(0);
-            // this.view(1);
+            // this.view(10);
+            
             this.isFirstLoad = true;
         }
 
-        console.log(JSON.stringify(event));
+        // console.log(JSON.stringify(event));
+        // console.log(event); 
+        // console.log(JSON.stringify(event));
+        this.globalS.id = event.uniqueID;
 
         this.user = {
             code: event.accountNo,
@@ -1202,16 +1223,26 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         private activeRoute: ActivatedRoute,
         private sharedS: ShareService,
         private cd: ChangeDetectorRef,
-        private listS: ListService
+        private listS: ListService,
+        private globalS:GlobalService,
+        private http: HttpClient,
+        private msg: NzMessageService,
     ) {
+      
         this.sharedS.emitProfileStatus$.subscribe(data => {
-            console.log(data);
+            // console.log(data);
             this.selectedRecipient = data;
             this.recipientType = data.type == null || data.type.trim() == "" ? null : data.type;
             // if(data.admissionDate == null && data.dischargeDate == null){
             //     this.recipientStatus = null;
             //     return;
             // }
+            
+            if(this.globalS.doc != null){
+              this.addRefdoc();
+            }
+            this.globalS.var1 = data.uniqueID;            
+            this.globalS.var2 = data.accountNo;
 
             if(data.admissionDate != null && data.dischargeDate == null){
                 this.recipientStatus = 'active';
@@ -1220,9 +1251,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             }
             
         })
+        
     }
 
     ngOnInit(): void {
+     
+      
 
         // this.listChange({
         //     "agencyDefinedGroup":"ARUNDEL",
@@ -1254,7 +1288,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        
+      
     }
 
     view(index: number) {
@@ -1293,18 +1327,33 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         if (index == 10) {
             this.router.navigate(['/admin/recipient/quotes'])
         }
+        if (index == 11) {
+          this.router.navigate(['/admin/recipient/documents'])
+        }
+        if (index == 12) {
+            this.router.navigate(['/admin/recipient/attendance'])
+        }
+        if (index == 13) {
+            this.router.navigate(['/admin/recipient/others'])
+        }
+        if (index == 14) {
+            this.router.navigate(['/admin/recipient/accounting'])        
+        }
     }
 
     handleCancel() {
-        this.newReferralModal = false;
+    
+
+        this.newReferralModal = !this.newReferralModal;
         this.saveModal = false;
-        this.quoteModal = false;
         this.newOtherModal = false;
         this.findModalOpen = false;
+        this.referdocument = false;
+        
     }
 
     handleOk() {
-        
+    //  this.referdocument = false;
     }
 
     detectChanges(){
@@ -1331,6 +1380,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     profileData: any;
     
     openReferModal(user: any) {
+        console.log(user.toString());
         this.sample = user;
         this.sharedS.emitOnSearchListNext(user.code);        
         this.profileData = user;
@@ -1405,6 +1455,10 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             this.recipientOption =  this.RECIPIENT_OPTION.ITEM;
             this.recipientOptionOpen = {};
         }
+        if(index == 12){
+                   
+          this.router.navigate(['/admin/Print'])          
+      }
     }
 
     openFindModal(){
@@ -1420,4 +1474,90 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     filterChange(index: number){
       
     }
-}
+    
+    addRefdoc(){
+      //console.log(this.globalS.doc.toString());
+      /*if (this.globalS.doc.toString() != null){ 
+        console.log(this.globalS.doc.toString());                 
+        this.referdocument = true;
+      } */
+
+      
+      this.referdocument = true;
+      this.globalS.doc = null;
+      
+      
+      
+      } 
+      customReq = () => {
+        //console.log(this.globalS.doc.label)
+    
+        console.log(this.file);
+        this.referdocument = false;
+        const formData = new FormData();
+    
+        //const { program, discipline, careDomain, classification, category, reminderDate, publishToApp, reminderText, notes  } = this.incidentForm.value;
+        
+        formData.append('file', this.file as any);
+        /*formData.append('data', JSON.stringify({
+          PersonID: this.innerValue.id,
+          DocPath: this.token.recipientDocFolder,
+          
+          Program: program,
+          Discipline: discipline,
+          CareDomain: careDomain,
+          Classification: classification,
+          Category: category,
+          ReminderDate: reminderDate,
+          PublishToApp: publishToApp,
+          ReminderText: reminderText,
+          Notes: notes,
+          SubId: this.innerValue.incidentId
+        })) */
+    
+        const req = new HttpRequest('POST', this.urlPath, formData, {
+          reportProgress: true,
+          withCredentials: true
+        });
+    
+        var id = this.globalS.loadingMessage(`Uploading file ${this.file.name}`)
+        this.http.request(req).pipe(filter(e => e instanceof HttpResponse)).subscribe(
+          (event: HttpEvent<any>) => {
+            this.msg.remove(id);
+            this.globalS.sToast('Success','Document uploaded');
+          },
+          err => {
+            console.log(err);
+            this.msg.error(`${this.file.name} file upload failed.`);
+            this.msg.remove(id);
+          }
+        );
+        
+      }; 
+      handleChange({ file, fileList }: UploadChangeParam): void {
+        const status = file.status;
+        if (status !== 'uploading') {
+          // console.log(file, fileList);
+        }
+        if (status === 'done') {
+          this.globalS.sToast('Success', `${file.name} file uploaded successfully.`);
+          
+          
+        } else if (status === 'error') {
+          this.globalS.sToast('Error', `${file.name} file upload failed.`);
+          
+        }
+      }
+      handleClose(){        
+  
+        this.newReferralModal = false;
+        this.saveModal = false;
+        this.quoteModal = false;
+        this.newOtherModal = false;
+        this.findModalOpen = false;
+        this.referdocument = false;
+
+    }
+   
+   
+}//

@@ -16,10 +16,130 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+    
 
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+
+    postadmissionacceptquote(data: any): Observable<any> {
+        return this.auth.post(`${list}/admission-accept-quote`, data);
+    }
+    
+    getspecificbranch(personid: string):Observable<any>{
+        return this.auth.get(`${list}/specific-branch/${personid}`);
+    }
+
+    
+    gethumanresourcetypes(program: string):Observable<any>{
+        return this.auth.getstring(`${list}/humanresourcetypes/type/${program}`);
+    }
+
+
+    getportalmanagers():Observable<any>{
+        return this.http.get(`${list}/portal-manager`);
+    }
+
+    createQuoteLine(data: any):Observable<any>{
+        return this.http.post(`${list}/create-quote-line`, data);
+    }
+
+    printquote(data: any):Observable<any>{
+        // return this.http.post(`${fileV2}/download-document-remote`, data, { responseType: 'blob', reportProgress: true });
+        return this.http.post(`${list}/quotes-print`, data,  { responseType: 'blob', reportProgress: true })
+    }
+
+    deletetempdoc(docId: any):Observable<any>{
+        return this.auth.delete(`${list}/delete-temp-doc/${docId}`);
+    }
+
+    geteventlifecycle(): Observable<any>{
+        return this.auth.get(`${list}/event-life-cycle`);
+    }
+
+    createtempdoc(data: any): Observable<any>{
+        return this.auth.post(`${list}/create-temp-doc`, data);
+    }
+    
+    getquotetype(): Observable<any>{
+        return this.auth.get(`${list}/goalplan/list`);
+    }
+
+    getquotedetails(recordNo: number): Observable<any>{
+        return this.auth.get(`${list}/quotes-details/${recordNo}`);
+    }
+
+    getquoteline(data: any): Observable<any>{
+        return this.auth.get(`${list}/quote-line/list/${data}`);
+    }
+
+    updatequoteline(data: any, recordNo: any): Observable<any>{
+        return this.auth.put(`${list}/quotes-line-details/${recordNo}`, data);
+    }
+
+    getstrategyList(docId: any): Observable<any>{
+        return this.auth.get(`${list}/strategy-list/${docId}`);
+    }
+
+    getquotelinedetails(recordNo: number): Observable<any>{
+        return this.auth.get(`${list}/quotes-line-details/${recordNo}`);
+    }
+
+    deletequoteline(recordNo: number):Observable<any>{
+        return this.auth.delete(`${list}/quote-lines/${recordNo}`);
+    }
+
+    getrecipientsqlid(id: string): Observable<any> {
+        return this.auth.get(`${list}/recipient-sqlid/${id}`);
+    }
+
+    postprintline(data: any):Observable<any>{
+        return this.http.post(`${list}/print-quote-line`, data,  { responseType: 'blob', reportProgress: true });
+    }
+
+    getpostquote(data: any): Observable<any> {
+        return this.auth.post(`${list}/post-quote`, data);
+    }
+
+    getprogramproperties(program: string): Observable<any> {
+        return this.auth.get(`${list}/program-properties/${program}`);
+    }
+    getcontactTypesByGroup(group: string): Observable<any> {
+        return this.auth.get(`${list}/contact-types/${group}`);
+    }
+    getpensionandfee(): Observable<any> {
+        return this.auth.get(`${list}/pension-and-percent-fee`);
+    }
+
+    getprogramlevel(program: string): Observable<any> {
+        return this.auth.get(`${list}/program-level/${program}`);
+    }
+    getlevelRate(level: string): Observable<any> {
+        return this.auth.get(`${list}/level-rate/${level}`);
+    }
+    gettypeother(caseName: string): Observable<any> {
+        return this.auth.get(`${list}/type-other/${caseName}`);
+    }
+
+    gettypekin(): Observable<any> {
+        return this.auth.get(`${list}/type-kin`);
+    }
+
+    getnotifications(data: any): Observable<any> {
+        return this.auth.get(`${list}/notifications`, data);
+    }
+
+    getfollowups(data: any): Observable<any> {
+        return this.auth.get(`${list}/followups`, data);
+    }
+
+    getdocumentslist(data: any): Observable<any> {
+        return this.auth.get(`${list}/documents-list`, data);
+    }
+
+    getdatalist(data: any): Observable<any> {
+        return this.auth.get(`${list}/data-list`, data);
+    }
 
     getreferraltype_latest(packageName: string): Observable<any> {
         return this.auth.get(`${list}/referral-type/${packageName}`);
@@ -36,7 +156,9 @@ export class ListService {
     getotherprograms(personID: string): Observable<any> {
         return this.auth.get(`${list}/other-programs/${personID}`);
     }    
-
+    getcompetenciesheader(personID: string): Observable<any> {
+        return this.auth.get(`${list}/competenciesheader/${personID}`);
+    }    
     gethcpprograms(): Observable<any> {
         return this.auth.get(`${list}/hcp-programs`);
     }
@@ -44,7 +166,12 @@ export class ListService {
     getndiaprograms(): Observable<any> {
         return this.auth.get(`${list}/ndia-programs`);
     }
-
+    getndiaitems(): Observable<any>{
+        return this.auth.get(`${list}/ndia-items`);
+    }
+    getskills(): Observable<any>{
+        return this.auth.get(`${list}/skills`);
+    }
     getclientportalmethod(): Observable<any>{
         return this.auth.get(`${list}/clientportalmethod`);
     }
@@ -91,6 +218,29 @@ export class ListService {
     getchargetype(data: any): Observable<any>{
         return this.auth.get(`${list}/quote/chargeType`, data);
     }
+    GetQuotetype(id: string): Observable<any>{
+        return this.auth.get(`${list}/getquotetype/${id}`);
+    }
+    /*GetCharges(id: string): Observable<any>{
+        return this.auth.get(`${list}/getcharges/${id}`);
+    } */
+    GetCMPERC(id: string): Observable<any>{
+        return this.auth.get(`${list}/getcmperc/${id}`);
+    }
+    GetTOpUP(id: string): Observable<any>{
+        return this.auth.get(`${list}/gettopup/${id}`);
+    }
+    GetBasicCare(id: string): Observable<any>{
+        return this.auth.get(`${list}/getbasiccare/${id}`);
+    }
+    
+    GetAdmPerc(id: string): Observable<any>{
+        return this.auth.get(`${list}/getadmperc/${id}`);
+    }    
+    
+    GetDailyliving(id: string): Observable<any>{
+        return this.auth.get(`${list}/getdailyliving/${id}`);
+    }
 
     getglobaltemplate(): Observable<any>{
         return this.auth.get(`${list}/template/list`);
@@ -99,6 +249,22 @@ export class ListService {
     getprogramcontingency(personID: string): Observable<any>{
         return this.auth.get(`${list}/program/contingency/list/${personID}`);
     }
+
+    getishcpcdcprograms(personID: string): Observable<any>{
+        return this.auth.get(`${list}/is-hcp-cdc-programs/${personID}`);
+    }
+
+    getCareplangoals(personID: any): Observable<any>{
+        return this.auth.get(`${list}/quote/careplangoal/list/${personID}`)
+    }
+    getStrategies(personID: string): Observable<any>{
+        return this.auth.get(`${list}/quote/careplangoal/strtegies/${personID}`)
+    }
+    
+    getgoalofcare(): Observable<any> {
+        return this.auth.get(`${list}/quote/goalofcare`);
+    }
+    
 
     getfundingpackagepurposelist(): Observable<any>{
         return this.auth.get(`${list}/funding/package-purpose/list`);
@@ -142,7 +308,10 @@ export class ListService {
 
     GetVehicles(): Observable<any>{
         return this.auth.get(`${list}/vehicles`);
-    } 
+    }
+    getloantypes() : Observable<any>{
+        return this.auth.get(`${list}/loantypes`);
+    }
     GetAllPrograms(): Observable<any>{
         return this.auth.get(`${list}/CriterialistPrograms`);
     }
@@ -184,7 +353,9 @@ export class ListService {
     getimlocation(): Observable<any>{
         return this.auth.get(`${list}/imlocation`);
     }
-
+    getplangoalachivement():Observable<any>{
+        return this.auth.get(`${list}/plangoalachivement`);
+    }
     getpaycode(data: any): Observable<any>{
         return this.auth.get(`${list}/paycode`, data);
     }
@@ -196,7 +367,12 @@ export class ListService {
     getactivities():Observable<any>{
         return this.auth.get(`${list}/activities`);
     }
-
+    getleavepaytypes():Observable<any>{
+        return this.auth.get(`${list}/leave-pay-types`);
+    }
+    getleaveactivities():Observable<any>{
+        return this.auth.get(`${list}/leave-activities`);
+    }
     getleaveactivitycodes(data: any): Observable<any>{
         return this.auth.get(`${list}/leave-activity-codes`, data)
     }
@@ -442,7 +618,9 @@ export class ListService {
     getintakestaff(personID: string): Observable<any>{
         return this.auth.get(`${list}/intake/staff/${personID}`)
     }
-
+    getcenterlocationstaff(): Observable<any>{
+        return this.auth.get(`${list}/centerLocation/staff/`)
+    }    
     GetTraccsStaffCodes(): Observable<any>{
         return this.auth.get(`${list}/Users/TraccsStaffCodes`)
     }
@@ -494,7 +672,9 @@ export class ListService {
     getliststaffteam(): Observable<any>{
         return this.auth.get(`${list}/staffteam`)
     }
-
+    getemployeebrokage(): Observable<any>{
+        return this.auth.get(`${list}/employeeOf`)
+    }
     getlistcasemanagers(): Observable<any>{
         return this.auth.get(`${list}/casemanagers`)
     }
@@ -514,6 +694,11 @@ export class ListService {
     getlistindigstatus(): Observable<any>{
         return this.auth.get(`${list}/indigenous`)
     }
+
+    getnotifyaddresses(Detail:any): Observable<any>{
+        return this.auth.get(`${list}/notifymail/${Detail}`)
+    }
+   
 
     getlistdisabilities(): Observable<any>{
         return this.auth.get(`${list}/disabilities`)

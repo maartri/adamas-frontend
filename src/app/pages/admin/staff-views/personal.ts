@@ -51,12 +51,6 @@ export class StaffPersonalAdmin implements OnInit, OnDestroy {
             return;
         }
         this.router.navigate(['/admin/staff/personal'])
-
-       
-        // this.user = {
-        //     name: 'ABBAS A',
-        //     view: 'staff'
-        // }
     }
 
     transform(user: any) {

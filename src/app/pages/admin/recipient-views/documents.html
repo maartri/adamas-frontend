@@ -1,0 +1,150 @@
+<div nz-row>
+    <div nz-col>
+
+        <button class="botton success" (click)="showAddModal()">Add Document</button>
+
+        <app-upload-shared *ngIf="showUpload" [(ngModel)]="user" (reload)="reload($event)"></app-upload-shared>
+
+
+        <!-- <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Classification</th>
+                    <th>Category</th>
+                    <th>Created</th>
+                    <th>Author</th>
+                    <th>Modified</th>
+                    <th>Filename</th>
+                    <th>Type</th>
+                    <th>Original Location</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td nzBreakWord>{{ data.title  }}</td>
+                    <td nzBreakWord>{{ data.status }}</td>
+                    <td nzBreakWord>{{ data.classification }}</td>
+                    <td nzBreakWord>{{ data.category }}</td>
+                    <td nzBreakWord>{{ data.created   }}</td>
+                    <td nzBreakWord>{{ data.author }}</td>
+                    <td nzBreakWord>{{ data.modified  }}</td>
+                    <td nzBreakWord>{{ data.filename }}</td>
+                    <td nzBreakWord>{{ data.type }}</td>
+                    <td nzBreakWord>                        
+                            {{ data.originalLocation }}                     
+                    </td>
+                    <td >
+                        <a (click)="downloadFile(i)">Download</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a (click)="viewFile(i)">View</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table> -->
+
+        <nz-table #columnTable *ngIf="tableData?.length > 0" [nzData]="tableData" [nzScroll]="{ x: '1500px' }" [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false">
+            <thead>
+              <tr>
+                <th nzWidth="170px" nzLeft="0px">Title</th>
+                <th>Status</th>
+                <th>Classification</th>
+                <th>Category</th>
+                <th>Created</th>
+                <th>Author</th>
+                <th>Modified</th>
+                <th>Filename</th>
+                <th>Type</th>
+                <th>Original Location</th>
+                <th nzWidth="180px" nzRight="0px">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of columnTable.data;let i = index;trackBy: trackByFn">
+
+                <td nzLeft="0px" nzBreakWord>{{ data.title  }}</td>
+                <td nzBreakWord>{{ data.status }}</td>
+                <td nzBreakWord>{{ data.classification }}</td>
+                <td nzBreakWord>{{ data.category }}</td>
+                <td nzBreakWord>{{ data.created   }}</td>
+                <td nzBreakWord>{{ data.author }}</td>
+                <td nzBreakWord>{{ data.modified  }}</td>
+                <td nzBreakWord>{{ data.filename }}</td>
+                <td nzBreakWord>{{ data.type }}</td>
+                <td nzBreakWord>                        
+                        {{ data.originalLocation }}                     
+                </td>
+                <td nzRight="0px">
+                    <a (click)="downloadFile(i)">Download</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a (click)="viewFile(i)">View</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                </td>
+
+              </tr>
+            </tbody>
+          </nz-table>
+
+
+          <nz-empty *ngIf="!(tableData?.length > 0)"></nz-empty>
+
+    </div>
+</div>
+
+
+<nz-modal [(nzVisible)]="addDocumentModal" [nzWidth]="800" nzTitle="Add Document" (nzOnCancel)="handleCancel()">
+
+    <div class="flexy">
+
+        <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
+            <nz-step class="mini" nzTitle="Templates" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Pick Filename" nzDescription=""></nz-step>
+        </nz-steps>
+
+        <nz-divider class="full-height" nzType="vertical"></nz-divider>
+
+        <div class="steps-content" *ngIf="inputForm">
+            <div *ngIf="current == 0">
+                <ul>
+                    <li [class.active]="i == selectedIndex" *ngFor="let template of templates$ | async;let i = index" (click)="selectDocument(template, i)">
+                        <div [class.exist]="template?.exists" [class.not-exist]="!template?.exists">
+                            <i nz-icon nzType="info-circle" *ngIf="!template?.exists"  nzTheme="outline"></i>
+                            <i nz-icon nzType="check-circle" *ngIf="template?.exists" nzTheme="outline"></i>                     
+                            {{ template.name }}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div nz-row *ngIf="current == 1">
+                <div nz-col nzSpan="24">
+                    <label for="">Enter New Filename</label>
+                    <input nz-input [ngModel]="fileObject?.newFile" (ngModelChange)="fileObject?.newFile ? fileObject.newFile = $event : null"  />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div *nzModalFooter>
+        <ng-container>
+            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                <span>Previous</span>
+            </button>
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 1" >
+                <span>Next</span>
+            </button>
+            <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()" *ngIf="current === 1">
+                <span>Done</span>
+            </button>
+        </ng-container>
+    </div>
+
+</nz-modal>

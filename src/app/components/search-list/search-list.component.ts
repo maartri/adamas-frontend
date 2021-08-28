@@ -47,14 +47,15 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   phoneModal: boolean = false;
   isOpen: boolean = false;
   phoneSearch: string;
-
   searchModel: any;
+  staffType = 'A';
   listsAll: Array<any> = [];
   lists: Array<any> = [];
   loading: boolean = false;
 
   pageCounter: number = 1;
   take: number = 50;
+  activeInactive: boolean;
 
   // nzFilterOption  = () => true;
   constructor(
@@ -121,10 +122,18 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
         view: this.view == 0 ? 'recipient' : 'staff'
       }
     }
+    console.log(user);
     this.searchModel = user.accountNo;
+
     this.onChangeCallback(user);
   }
-
+  changeStatus(event){
+    if(event == 'A')
+    this.activeInactive = false;
+    else
+    this.activeInactive = true;
+    this.search();
+  }
   search(search: string = null) {
     this.loading = true;
     if (this.view == 0) {
@@ -145,7 +154,8 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
 
     this.timeS.getstaff({
       User: this.globalS.decode().nameid,
-      SearchString: ''
+      SearchString: '',
+      IncludeInactive:this.activeInactive,
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.listsAll = data;
       this.lists = data;
@@ -232,13 +242,21 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
 
   listPhoneRecipientsList: Array<any>;
   searchPhone(){
-    this.timeS.getrecipientsbyphone(this.phoneSearch)
+    if(this.view == 0){
+      this.timeS.getrecipientsbyphone(this.phoneSearch)
         .subscribe(data => {
           // this.lists = data;
           this.listPhoneRecipientsList = data;
           this.cd.markForCheck();
         });
-
+    }else{
+      this.timeS.getstaffbyphone(this.phoneSearch)
+        .subscribe(data => {
+          // this.lists = data;
+          this.listPhoneRecipientsList = data;
+          this.cd.markForCheck();
+        });
+    }
   }
 
   selectedIndex: number = null;
@@ -247,9 +265,15 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   }
 
   gotoRecipient(){
+    // console.log(this.selectedIndex + "selected index");
     let selected = this.listPhoneRecipientsList[this.selectedIndex];
+    if(selected == null){
+      this.globalS.iToast('Info', 'please Select any name from the search list');
+      return
+    }
+    // console.log(selected + "selected");
     this.searchModel = this.lists[this.lists.map(x => x.uniqueID).indexOf(selected.uniqueID)];
-
+    // console.log(this.searchModel + "----");
     this.change(this.searchModel);
   }
 }

@@ -1,0 +1,172 @@
+<div nz-row class="compartment">
+    
+    <div nz-row nzGutter="16" [formGroup]="attendanceForm">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Early Start Threshold: </span>
+            <input type="text" nz-input nzSize="small" formControlName="panearlystartth">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox formControlName="paN_TAEarlyStartTHEmail">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select nzSize="small" nzShowSearch nzAllowClear formControlName="paN_TAEarlyStartTHWho">
+                <nz-option *ngFor="let list of lists" [nzValue]="list" [nzLabel]="list"></nz-option>
+            </nz-select>
+        </div>
+    </div>
+
+
+    <div nz-row nzGutter="16" [formGroup]="attendanceForm">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Late Start Threshold: </span>
+            <input type="text" nz-input nzSize="small" formControlName="panLateStartTH">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox formControlName="paN_TALateStartTHEmail">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select nzSize="small" nzShowSearch nzAllowClear formControlName="paN_TALateStartTHWho">
+                <nz-option *ngFor="let list of lists" [nzValue]="list" [nzLabel]="list"></nz-option>
+              </nz-select>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16" [formGroup]="attendanceForm">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Early Finish Threshold: </span>
+            <input type="text" nz-input nzSize="small" formControlName="panEarlyFinishTH">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox formControlName="paN_TAEarlyFinishTHEmail">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select nzSize="small" nzShowSearch nzAllowClear formControlName="paN_TAEarlyFinishTHWho">
+                <nz-option *ngFor="let list of lists" [nzValue]="list" [nzLabel]="list"></nz-option>
+              </nz-select>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16" [formGroup]="attendanceForm">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Late Finish Threshold: </span>
+            <input type="text" nz-input nzSize="small" formControlName="panlatefinishth">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox  formControlName="paN_TALateFinishTHEmail">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select nzSize="small" nzShowSearch nzAllowClear formControlName="paN_TALateFinishTHWho">
+                <nz-option *ngFor="let list of lists" [nzValue]="list" [nzLabel]="list"></nz-option>
+            </nz-select>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16" [formGroup]="attendanceForm">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Over Stay Threshold: </span>
+            <input type="text" nz-input nzSize="small" formControlName="panOverStayTH">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox formControlName="paN_TAOverstayTHEmail">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select nzSize="small" nzShowSearch nzAllowClear formControlName="paN_TAOverstayTHWho">
+                <nz-option *ngFor="let list of lists" [nzValue]="list" [nzLabel]="list"></nz-option>
+            </nz-select>
+        </div>
+    </div>
+
+
+    <div nz-row nzGutter="16" [formGroup]="attendanceForm">
+        <div nz-col nzSpan="6" class="layer">
+            <span>Under Stay Threshold: </span>
+            <input type="text" nz-input nzSize="small" formControlName="panUnderStayTH">
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox formControlName="paN_TAUnderstayTHEmail">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select nzSize="small" nzShowSearch nzAllowClear formControlName="paN_TAUnderstayTHWho">
+                <nz-option *ngFor="let list of lists" [nzValue]="list" [nzLabel]="list"></nz-option>
+            </nz-select>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16" [formGroup]="attendanceForm">
+        <div nz-col nzSpan="6" class="layer">
+            <span>No Work Threshold: </span>
+            <input type="text" nz-input nzSize="small" formControlName="panNoWorkTH"/>
+            <span>in Min</span>
+        </div>
+        <div nz-col nzSpan="6" class="layer">
+            <label nz-checkbox formControlName="paN_TANoWorkTHEmail">Email Alert</label>
+        </div>
+        <div nz-col nzSpan="8">
+            <nz-select nzSize="small" nzShowSearch nzAllowClear formControlName="paN_TANoWorkTHWho">
+                <nz-option *ngFor="let list of lists" [nzValue]="list" [nzLabel]="list"></nz-option>
+            </nz-select>
+        </div>
+    </div>
+</div>
+
+
+<div nz-row style="margin-top:2rem" [formGroup]="attendanceForm">
+    <h3>Time & Attendance And Portal Settings</h3>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>MTA Pin Code: </span>
+            <input type="text" nz-input nzSize="small" formControlName="pinCode">
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Allow Recipient Signature MTA: </span>
+            <label nz-checkbox formControlName="allowRegisterSignature"></label>
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Timezone Relative To Alerts Server: </span>
+            <input type="text" nz-input nzSize="small" formControlName="timeZoneOffset">
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Portal Manager: </span>
+            <nz-select nzSize="small" nzShowSearch nzAllowClear formControlName="recipienT_PARENT_SITE">
+                <nz-option *ngFor="let list of managers" [nzValue]="list" [nzLabel]="list"></nz-option>
+            </nz-select>
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>SMS Reminder Service: </span>
+            <label nz-checkbox formControlName="allowRegisterSignature"></label>
+            <!-- <input type="text" nz-input nzSize="small" formControlName="paN_TANoWorkTHWho"> -->
+        </div>
+    </div>
+</div>
+
+
+<div nz-row style="margin-top:2rem">
+    <h4>DAELIBS</h4>
+
+    <div nz-row [formGroup]="attendanceForm">
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Daelibs Logger ID: </span>
+            <input type="text" nz-input nzSize="small" formControlName="daelibsid">
+        </div>
+    </div>
+</div>
+

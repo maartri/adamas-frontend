@@ -1,7 +1,27 @@
 .account-name{
     font-size: 13px;
     font-weight: 500;
-    color: #2fc22c;
+}
+.edit{
+    color:#565656 !important;
+    font-size: 12px; 
+    font-weight: 500;
+    margin-left:1rem;
+    cursor:pointer;
+}
+.cancel-edit{
+    cursor:pointer;
+    margin-left:1rem;
+}
+.accountStr{
+    width: 50%;
+    font-weight: 500;
+}
+.available{
+    color:#2fc22c !important;
+}
+.edit:hover{
+    text-decoration: underline;    
 }
 .error{
     color:#ff5959 !important;
@@ -41,4 +61,8 @@ nz-select{
 }
 .close i:hover{
     color:#151515;
+}
+
+nz-checkbox-group >>> label{
+    display:block;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges,OnChanges, Input } from '@angular/core';
+import { Component, OnInit, SimpleChanges,OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import {forkJoin,  Observable ,  merge ,  Subject, Subscriber, Subscription } from 'rxjs';
 
@@ -8,16 +8,25 @@ import lastDayOfMonth from 'date-fns/lastDayOfMonth'
 import startOfMonth from 'date-fns/startOfMonth'
 import format from 'date-fns/format'
 
+interface Process {
+  process: Mode
+}
+enum Mode{
+  UPDATE = "UPDATE",
+  ADD = "ADD"
+}
 @Component({
   selector: 'app-leave-application',
   templateUrl: './leave-application.component.html',
-  styleUrls: ['./leave-application.component.css']
+  styleUrls: ['./leave-application.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class LeaveApplicationComponent implements OnInit, OnChanges {
 
   @Input() open: boolean = false;
   @Input() user: any;
-
+  @Input() operation: Process;
   leaveGroup: FormGroup;
   isLoading: boolean = false;
 
@@ -35,7 +44,8 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
     private fb: FormBuilder,
     private listS: ListService,
     private globalS: GlobalService,
-    private timeS: TimeSheetService
+    private timeS: TimeSheetService,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -46,36 +56,72 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.open = true;
-        this.resetGroup();
         this.populate();
       }
+      if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
+        this.operation = changes[property].currentValue;
+        console.log(this.operation)
+        if(this.operation.process == 'UPDATE'){
+          this.patchForm();
+        }
+        if(this.operation.process == 'ADD'){
+          this.resetGroup();
+        }
+      }
     }
+  }
+
+  detectChanges(){
+    this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 
   resetGroup() {
     this.leaveGroup = this.fb.group({
         user: '',
         staffcode: '',
-
         dates: [
           [startOfMonth(new Date()), lastDayOfMonth(new Date())], [Validators.required]],
-
+        reminderDate:new Date(),
+        approved:false,
         makeUnavailable: true,
         unallocAdmin: false,
         unallocUnapproved: true,
         unallocMaster: false,
-
-        explanation: null,
-        activityCode: null,
-        payCode: null,
-        program: null,
-
+        explanation: '',
+        activityCode: '',
+        payCode: '',
+        program: '',
         programShow: false
+    });
+  }
+  patchForm(){
+    this.timeS.getleaveapplicationByid(this.user.code,this.user.recordNo).subscribe(data => {
+      
+      this.leaveGroup.patchValue({
+        user: '',
+        staffcode: '',
+        reminderDate:data.reminderDate,
+        approved:data.approved,
+        makeUnavailable: data.makeUnavailable,
+        unallocAdmin: false,
+        unallocUnapproved: data.unallocUnapproved,
+        unallocMaster: false,
+        explanation:data.leaveType,
+        activityCode: data.address2,
+        payCode: data.address1,
+        program: '',
+        programShow: false,
+        dates: [new Date(data.startDate), new Date(data.endDate)]
+      });
+
+      this.cd.detectChanges();
     });
   }
 
   handleCancel(){
     this.open = false;
+    this.detectChanges();
   }
 
   populate(){
@@ -101,6 +147,10 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
   }
 
   save(){
+
+    // this.handleCancel();
+    // return;
+
     const { dates, program, programShow, explanation, payCode, activityCode, unallocAdmin, unallocMaster,makeUnavailable, unallocUnapproved } = this.leaveGroup.value;
     const { tokenUser, user } = this.globalS.decode();
 
@@ -120,7 +170,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         unallocUnapproved: unallocUnapproved
     };
 
-    console.log(this.globalS.decode());
+    // console.log(this.globalS.decode());
 
     this.timeS.postleaveentry(inputs)
         .subscribe(data => {
@@ -128,6 +178,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
             this.handleCancel();
         }, error =>{
             this.globalS.eToast('Error',`${error.error.message}`)
+            this.handleCancel();
         });
   }
 

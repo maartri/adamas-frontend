@@ -140,7 +140,7 @@ export class IncidentnotecategoryComponent implements OnInit {
     const group = this.inputForm;
     if(!this.isUpdate){
       
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -171,7 +171,7 @@ export class IncidentnotecategoryComponent implements OnInit {
       }else{
         this.postLoading = true;     
         const group = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
@@ -240,7 +240,7 @@ export class IncidentnotecategoryComponent implements OnInit {
     
     this.loading = true;
     
-    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='RECIMNTECAT'";
+    var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='RECIMNTECAT'";
     
     const headerDict = {
       'Content-Type': 'application/json',

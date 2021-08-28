@@ -7,7 +7,7 @@ import { UploadFileComponent } from './upload-file/upload-file.component'
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 
-import { RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, DayManagerPopulate } from '@pipes/pipes';
+import { RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter,GetTextFromHtml, SplitArrayPipe, DayManagerPopulate } from '@pipes/pipes';
 import { ProfileComponent } from './profile/profile.component'
 
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -50,6 +50,9 @@ import { IncidentDocumentsComponent } from './incident-documents/incident-docume
 import { RecipientsOptionsComponent } from './recipients-options/recipients-options.component';
 import { SelectListRecipientComponent } from './select-list-recipient/select-list-recipient.component';
 import { FilterComponent } from './filter/filter.component';
+import { IntervalQuoteComponent } from './interval-quote/interval-quote.component';
+import { PrintPdfComponent } from './print-pdf/print-pdf.component';
+import { AddQuoteComponent } from './add-quote/add-quote.component';
 
 
 @NgModule({
@@ -59,7 +62,7 @@ import { FilterComponent } from './filter/filter.component';
     //Directives,
     ClickOutsideDirective, NumberDirective,
 
-    RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter, SplitArrayPipe, DayManagerPopulate,
+    RemoveFirstLast, FilterPipe, KeyFilter, MomentTimePackage, KeyValueFilter, FileNameFilter, FileSizeFilter, MonthPeriodFilter,GetTextFromHtml,SplitArrayPipe, DayManagerPopulate,
     ProfileComponent,
     SuburbComponent,
     CalendarComponent,
@@ -87,7 +90,10 @@ import { FilterComponent } from './filter/filter.component';
     IncidentDocumentsComponent,
     RecipientsOptionsComponent,
     SelectListRecipientComponent,
-    FilterComponent
+    FilterComponent,
+    IntervalQuoteComponent,
+    PrintPdfComponent,
+    AddQuoteComponent
   ],
   imports: [
     CommonModule,
@@ -105,6 +111,7 @@ import { FilterComponent } from './filter/filter.component';
   exports: [
     UploadFileComponent,
     MonthPeriodFilter,
+    GetTextFromHtml,
     SuburbComponent,
     ProfileComponent,
     HeaderNavComponent,
@@ -131,7 +138,9 @@ import { FilterComponent } from './filter/filter.component';
     IncidentDocumentsComponent,
     RecipientsOptionsComponent,
     NgSelectModule,
-    FilterComponent
+    FilterComponent,
+    IntervalQuoteComponent,
+    AddQuoteComponent
   ],
   providers: [
     

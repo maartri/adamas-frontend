@@ -97,7 +97,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
 
     consentProcess(){
         const group = this.consentGroup.value;
-        console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
 
         let _consentGroup: Consents = {
             recordNumber: group.recordNumber,
@@ -132,7 +132,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
     }
 
     showAddModal() {
-        this.addOREdit = 0;
+        this.addOREdit = 1;
         this.buildForm();
         this.consentOpen = true;
 
@@ -149,7 +149,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
     updateconsentmodal(data: any){
 
         this.consentOpen = true;
-        this.addOREdit = 1;
+        this.addOREdit = 0;
         
         this.lists = [data.consent];
 
@@ -161,7 +161,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
             expiryDate: data.expiryDate
         });
 
-        this.consentGroup.controls['consent'].disable();
+        // this.consentGroup.controls['consent'].disable();
     }
 
     deleteconsent(data: any){

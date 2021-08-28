@@ -6,26 +6,32 @@
             <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         </div>
     </div>
-<div nz-row>
-    <div nz-col>
-        <nz-table #basicTable nzBordered [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
-            <thead>
-                <tr>
-                    <th nzLeft nzBreakWord>Name</th>
-                    <th nzLeft nzBreakWord>Service</th>
-                    <th nzLeft nzBreakWord>Address</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;">
-                    <td nzLeft nzBreakWord>{{ data.name  }} </td>
-                    <td nzLeft nzBreakWord>{{ data.serviceOutletID  }} </td>
-                    <td nzLeft nzBreakWord>{{ data.address  }} </td>
-                    <td nzLeft nzBreakWord><a (click)="showEditModal(data.row_num)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Center/Facility/Location List?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></td>
+    <div nz-row>
+        <div nz-col>
+            <nz-table #basicTable nzBordered [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
+                <thead>
+                    <tr>
+                        <th nzLeft nzBreakWord>Name</th>
+                        <th nzLeft nzBreakWord>Service</th>
+                        <th nzLeft nzBreakWord>Address</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of basicTable.data;let i = index;">
+                        <td nzLeft nzBreakWord>{{ data.name  }} </td>
+                        <td nzLeft nzBreakWord>{{ data.serviceOutletID  }} </td>
+                        <td nzLeft nzBreakWord>{{ data.address  }} </td>
+                        <td nzLeft nzBreakWord *ngIf="!data.is_deleted">
+                            <a (click)="showEditModal(data.row_num)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from the Center/Facility/Location List?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)"><i nz-icon nzType="delete" nzTheme="outline"></i></a>
+                        </td>
+                        <td nzLeft nzBreakWord *ngIf="data.is_deleted">
+                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to Include this in List?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="active(data)">Activate</a>
+                        </td>
                     </tr>
                 </tbody>
             </nz-table>
@@ -93,8 +99,8 @@
                                         <label nzFor="Category">Category:</label>
                                     </div>
                                     <div nz-col nzSpan="17">
-                                        <nz-select  [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let l of branches" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
+                                        <nz-select  [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="category" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let cat of categoryList" [nzLabel]="cat.description" [nzValue]="cat.description"></nz-option>
                                         </nz-select>
                                     </div>
                                 </div>
@@ -188,7 +194,7 @@
                                         </nz-select>
                                         
                                     </div>
-                                     <div nz-col nzSpan="5" class="text-right">
+                                    <div nz-col nzSpan="5" class="text-right">
                                         No Pattern : <label nz-checkbox formControlName="hourPatern"></label>
                                     </div>
                                     <div nz-col nzSpan="6" class="text-right pad-r-5">
@@ -207,7 +213,7 @@
                                             <nz-option *ngFor="let days_per_w of numbers" [nzLabel]="days_per_w" [nzValue]="days_per_w"></nz-option>
                                         </nz-select>
                                     </div>
-                                     <div nz-col nzSpan="5" class="text-right">
+                                    <div nz-col nzSpan="5" class="text-right">
                                         No Pattern : <label nz-checkbox formControlName="dayPatern"></label>
                                     </div>
                                     <div nz-col nzSpan="6" class="text-right pad-r-5">
@@ -226,7 +232,7 @@
                                             <nz-option *ngFor="let numb of numbers" [nzLabel]="numb" [nzValue]="numb"></nz-option>
                                         </nz-select>
                                     </div>
-                                     <div nz-col nzSpan="5" class="text-right">
+                                    <div nz-col nzSpan="5" class="text-right">
                                         No Pattern : <label nz-checkbox formControlName="weekPatern"></label>
                                     </div>
                                 </div>
@@ -335,8 +341,8 @@
                 <div *ngIf="current == 2">
                     <div nz-row nzGutter=24>
                         <div nz-col nzSpan="12">
-                            <button class="botton success" (click)="showstaffApprovedModal()">Approved Staff</button>
-                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedListApproved">
+                            <button class="botton success" (click)="showstaffModal(1)">Approved Staff</button>
+                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="includedStaff">
                                 <thead>
                                     <tr>
                                         <th class="left">Name</th>
@@ -345,160 +351,190 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let approvedlist of checkedListApproved;let k = index;">
-                                        <td>{{approvedlist}}</td>
-                                        <td></td>
-                                        <td class="left"><a (click)="showEditModal(k)">Update</a>
+                                    <tr *ngFor="let include of includedStaff;let l = index;">
+                                        <td nzWidth="5%">{{  l+1  }}</td>
+                                        <td nzWidth="20%">{{ include.name}}</td>
+                                        <td nzWidth="55%">{{ include.notes }}</td>
+                                        <td nzWidth="10%">
+                                            <a (click)="staffEditModal(1,include)">Update</a>
                                             <nz-divider nzType="vertical"></nz-divider>
-                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(approvedlist)">Delete</a>
+                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this entry ?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="staffDetlete(1,include)">Delete</a>
                                         </td>
                                     </tr>
-                                    </tbody>
-                                </nz-table>
-                            </div>
-                            <div nz-col nzSpan="12">
-                                <button class="botton success" (click)="showstaffUnApprovedModal()">Excluded Staff</button>
-                                <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedListExcluded">
-                                    <thead>
-                                        <tr>
-                                            <th class="left">Name</th>
-                                            <th class="left">Notes</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let excludedlist of checkedListExcluded;let l = index;">
-                                            <td>{{excludedlist}}</td>
-                                            <td></td>
-                                            <td class="left"><a (click)="showEditModal(l)">Update</a>
-                                                <nz-divider nzType="vertical"></nz-divider>
-                                                <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(excludedlist)">Delete</a>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </nz-table>
-                                </div>
-                            </div>
+                                </tbody>
+                            </nz-table>
                         </div>
-                        <div *ngIf="current == 3">
-                            <div nz-row nzGutter=24>
-                                <div nz-col nzSpan="24">
-                                    <button class="botton success" (click)="showCompetencyModal()">Required Competencies</button>
-                                    <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedList">
-                                        <thead>
-                                            <tr>
-                                                <th class="left">Competency</th>
-                                                <th class="left">Mandatory</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let list of checkedList;let j = index;">
-                                                <td>{{list}}</td>
-                                                <td></td>
-                                                <td class="left"><a (click)="showEditModal(j)">Update</a>
-                                                    <nz-divider nzType="vertical"></nz-divider>
-                                                    <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(list)">Delete</a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </nz-table>
-                                </div>
-                            </div>
-                        </div>
-                        <div *nzModalFooter>
-                            <ng-container>
-                                <!-- <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
-                                    <span>Previous</span>
-                                </button>
-                                <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" >
-                                    <span>Next</span>
-                                </button> -->
-                                <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
-                                    <span>Save</span>
-                                </button>
-                            </ng-container>
+                        <div nz-col nzSpan="12">
+                            <button class="botton success" (click)="showstaffModal(2)">Excluded Staff</button>
+                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="excludedStaff">
+                                <thead>
+                                    <tr>
+                                        <th class="left">Name</th>
+                                        <th class="left">Notes</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let excluded of excludedStaff;let l = index;">
+                                        <td nzWidth="5%">{{ l+1  }}</td>
+                                        <td nzWidth="20%">{{ excluded.name}}</td>
+                                        <td nzWidth="55%">{{ excluded.notes }}</td>
+                                        <td nzWidth="10%">
+                                            <a (click)="staffEditModal(2,excluded)">Update</a>
+                                            <nz-divider nzType="vertical"></nz-divider>
+                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this entry ?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="staffDetlete(2,excluded)">Delete</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
                         </div>
                     </div>
                 </div>
-            </nz-modal>
-            <nz-modal [nzWidth]="400"  [(nzVisible)]="staffApproved" nzTitle="APPROVED STAFF" (nzOnCancel)="handleAprfCancel()">
-                
-                <form [formGroup]="inputForm" >
-                    <div nz-row nzGutter="24">    
-                        <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
-                                <div nz-row>
-                                    <div nz-col nzSpan="24" *ngFor="let staff of staffList">
-                                        <label nz-checkbox [nzValue]="staff.accountNo" (change)="onCheckboxapprovedChange(staff,$event)" >{{ staff.accountNo }}</label>
-                                    </div>
-                                </div>
-                            </nz-checkbox-wrapper>
+                <div *ngIf="current == 3">
+                    <div nz-row nzGutter=24>
+                        <div nz-col nzSpan="24">
+                            <button class="botton success" (click)="showCompetencyModal()">Required Competencies</button>
+                            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="competencies">
+                                <thead>
+                                    <tr>
+                                        <th class="left">Competency</th>
+                                        <th class="left">Mandatory</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let competency of competencies;let j = index;">
+                                        <td>{{competency.competency}}</td>
+                                        <td><label nz-checkbox nzDisabled [ngModel]="competency.mandatory" nzDisabled ></label></td>
+                                        <td class="left"><a (click)="editCompetencyModal(competency)">Update</a>
+                                            <nz-divider nzType="vertical"></nz-divider>
+                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this entry ?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteCompetency()">Delete</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
                         </div>
                     </div>
-                </form>
+                </div>
                 <div *nzModalFooter>
-                    <ng-container>
-                        <button nz-button nzType="primary" [nzLoading]="postLoading">
-                            <span>ADD</span>
+                    <ng-container *ngIf=" current == 0 || current == 1 ">
+                        <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
+                            <span>Save</span>
                         </button>
                     </ng-container>
                 </div>
-            </nz-modal>
-            <nz-modal [nzWidth]="400"  [(nzVisible)]="staffUnApproved" nzTitle="EXCLUDED STAFF" (nzOnCancel)="handleUnAprfCancel()">
-                <form  [formGroup]="inputForm">
-                    <div nz-row nzGutter="24">    
-                        <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                            
-                            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
-                                <div nz-row>
-                                    <div nz-col nzSpan="24" *ngFor="let staff of staffList">
-                                        <label nz-checkbox [nzValue]="staff.accountNo" (change)="onCheckboxUnapprovedChange(staff,$event)" >{{ staff.accountNo }}</label>
-                                    </div>
-                                </div>
-                            </nz-checkbox-wrapper>
+            </div>
+        </div>
+    </nz-modal>
+    <nz-modal [nzWidth]="400"  [(nzVisible)]="staffApproved" nzTitle="APPROVED STAFF" (nzOnCancel)="handleAprfCancel()">
+        <form [formGroup]="staffForm" >
+            <div nz-row>    
+                <div *ngIf="addOrEdit == 0" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                        <div nz-row>
+                            <div nz-col nzSpan="24" *ngFor="let staf of listStaff">
+                                <label nz-checkbox [nzValue]="staf" (change)="onCheckboxapprovedChange(staf,$event)" >{{ staf }}</label>
+                            </div>
                         </div>
-                    </div>
-                </form>
-                <div *nzModalFooter>
-                    <ng-container>
-                        <button nz-button nzType="primary" [nzLoading]="postLoading">
-                            <span>ADD</span>
-                        </button>
-                    </ng-container>
+                    </nz-checkbox-wrapper>
                 </div>
-            </nz-modal>
-            <nz-modal [nzWidth]="400"  [(nzVisible)]="competencymodal" nzTitle="COMPETENCIES" (nzOnCancel)="handleCompCancel()">
-                <form [formGroup]="inputForm" >
-                    <div nz-row nzGutter="24">
-                        <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
-                                <div nz-row>
-                                    <div nz-col nzSpan="24" *ngFor="let comptency of competencyList">
-                                        <label nz-checkbox [nzValue]="comptency.description" (change)="onCheckboxChange(comptency,$event)" >{{ comptency.description }}</label>
-                                    </div>
-                                </div>
-                            </nz-checkbox-wrapper>
+                <div class="form-group" *ngIf="addOrEdit == 1">
+                    <nz-form-label>Staff</nz-form-label>
+                    <input nz-input formControlName="staffTitle" disabled />
+                </div>
+            </div>
+            <div nz-row *ngIf="addOrEdit == 1">
+                <nz-form-item>
+                    <nz-form-label>Notes</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <textarea rows="4" nz-input formControlName="notes"></textarea>                    
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </form>
+        <div *nzModalFooter>
+            <ng-container>
+                <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="saveStaff(1)">
+                    <span>{{(addOrEdit == 0) ? 'ADD' : 'Update'}}</span>
+                </button>
+            </ng-container>
+        </div>
+    </nz-modal>
+    <nz-modal [nzWidth]="400"  [(nzVisible)]="staffUnApproved" nzTitle="EXCLUDED STAFF" (nzOnCancel)="handleUnAprfCancel()">
+        <form  [formGroup]="staffForm">
+            <div nz-row>    
+                <div *ngIf="addOrEdit == 0" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                        <div nz-row>
+                            <div nz-col nzSpan="24" *ngFor="let staf of listStaff">
+                                <label nz-checkbox [nzValue]="staf" (change)="onCheckboxUnapprovedChange(staf,$event)" >{{ staf }}</label>
+                            </div>
                         </div>
-                    </div>
-                </form>
-                <div *nzModalFooter>
-                    <ng-container>
-                        <!-- <button nz-button nzType="primary" [nzLoading]="postLoading" (nzOnCancel)="handleCompCancel()"> -->
-                            <span></span>
-                        <!-- </button> -->
-                    </ng-container>
+                    </nz-checkbox-wrapper>
                 </div>
-            </nz-modal>
-            <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
-                <div class="col-md-12 spinner" *ngIf="loading">
-                    <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+                <div class="form-group" *ngIf="addOrEdit == 1">
+                    <nz-form-label>Staff</nz-form-label>
+                    <input nz-input formControlName="staffTitle" disabled />
                 </div>
-                <div nz-row>
-                    <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+            </div>
+            <div nz-row *ngIf="addOrEdit == 1">
+                <nz-form-item>
+                    <nz-form-label>Notes</nz-form-label>
+                    <nz-form-control nzErrorTip="Required Field">
+                        <textarea rows="4" nz-input formControlName="notes"></textarea>                    
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </form>
+        <div *nzModalFooter>
+            <ng-container>
+                <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="saveStaff(2)">
+                    <span>{{(addOrEdit == 0) ? 'ADD' : 'Update'}}</span>
+                </button>
+            </ng-container>
+        </div>
+    </nz-modal>
+    <nz-modal [nzWidth]="500"  [(nzVisible)]="competencymodal" nzTitle="COMPETENCIES" (nzOnCancel)="handleCompCancel()">
+        <form [formGroup]="competencyGroup" >
+            <div nz-row>
+                <div *ngIf="addOrEdit == 0" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                        <div nz-row>
+                            <div nz-col nzSpan="24" *ngFor="let comptency of competencyList">
+                                <label nz-checkbox [nzValue]="comptency.description" (change)="onCheckboxChange(comptency,$event)" >{{ comptency.description }}</label>
+                            </div>
+                        </div>
+                    </nz-checkbox-wrapper>
                 </div>
-            </nz-drawer>
+                <div class="form-group" *ngIf="addOrEdit == 1">
+                    <nz-form-label>Title</nz-form-label>
+                    <input nz-input formControlName="competencyValue" disabled />
+                </div>
+            </div>
+            <div nz-row *ngIf="addOrEdit == 1">
+                <nz-form-item>
+                    <nz-form-label>Mandatory</nz-form-label>
+                    <label nz-checkbox formControlName="mandatory"></label>                 
+                </nz-form-item>
+            </div>
+        </form>
+        <div *nzModalFooter>
+            <ng-container>
+                <button nz-button nzType="primary" (click)="saveCompetency()">
+                    <span>{{(addOrEdit == 0) ? 'ADD' : 'Update'}}</span>
+                </button>
+            </ng-container>
+        </div>
+    </nz-modal>
+    <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+        <div class="col-md-12 spinner" *ngIf="loading">
+            <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
+        <div nz-row>
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        </div>
+    </nz-drawer>
 </div>            

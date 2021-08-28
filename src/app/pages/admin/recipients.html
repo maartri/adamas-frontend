@@ -1,16 +1,16 @@
 <div style="padding:8px">
     <div nz-row>
         <div nz-col nzSpan="24" class="recipient-controls">
+            <!--<button class="botton success" (click)="newReferralModal = !newReferralModal"><i nz-icon nzType="plus" nzTheme="outline"></i> New Referral</button> -->
             <button class="botton success" (click)="newReferralModal = !newReferralModal"><i nz-icon nzType="plus" nzTheme="outline"></i> New Referral</button>
             <button class="botton sea" (click)="newOtherModal = true"><i nz-icon nzType="check-circle" nzTheme="outline"></i> New Other</button>
-            <button class="botton warn" (click)="quoteModal = true"><i nz-icon nzType="form" nzTheme="outline"></i> Quote</button>
-            <button class="botton other" (click)="saveModal = true"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Save</button>
+            <button class="botton warn" (click)="newQuoteModal = !newQuoteModal" [disabled]="user == null"><i nz-icon nzType="form" nzTheme="outline"></i> Quote</button>
+            <button class="botton other" (click)="saveModal = true" [disabled]="user == null"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Save</button>
+            <button class="botton extra" (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><i nz-icon nzType="printer" nzTheme="outline"></i> Print</button>
 
             <!-- <button class="botton other" (click)="openReferModal(null)"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Sample</button> -->
 
             <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
-
-            
         </div>
     </div>
     <div nz-row>
@@ -42,6 +42,7 @@
                 <li><button (click)="clicky(9)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-procedures"></i></div>Decease</button></li>
                 <li><button (click)="clicky(10)" [disabled]="status == null"><div><i class="fas fa-address-book"></i></div>Admin</button></li>
                 <li><button (click)="clicky(11)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-th-list"></i></div>Item</button></li>
+                <!-- <li><button (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-print"></i></div>Print</button></li> -->
             </ul>
         </div>
 
@@ -66,6 +67,11 @@
                 <nz-tab nzTitle="History" (nzClick)="view(8)"> </nz-tab>
                 <nz-tab nzTitle="Insurance & Pension" (nzClick)="view(9)"> </nz-tab>
                 <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
+
+                <nz-tab nzTitle="Documents" (nzClick)="view(11)"> </nz-tab>
+                <nz-tab nzTitle="Time & Attendance" (nzClick)="view(12)"> </nz-tab>
+                <nz-tab nzTitle="Other" (nzClick)="view(13)"> </nz-tab>
+                <nz-tab nzTitle="Accounting" (nzClick)="view(14)"> </nz-tab>
             </nz-tabset>
         </div>
     
@@ -83,12 +89,13 @@
     
 </div>
 
+<app-add-quote [open]="newQuoteModal" [user]="user" [option]="option"></app-add-quote>
 
-<app-add-referral [open]="newReferralModal" [type]="'referral'" (openRefer)="openReferModal($event)"></app-add-referral>
+<app-add-referral [open]="newReferralModal" [type]="'referral'" (openRefer)="openReferModal($event)" ></app-add-referral>
 
 <app-refer-in [open]="openReferInModal"></app-refer-in>
 
-<app-recipients-options [open]="recipientOptionOpen" [option]="recipientOption" [user]="user"></app-recipients-options>
+<app-recipients-options [open]="recipientOptionOpen" [option]="recipientOption" [user]="user" [from]="from"></app-recipients-options>
 
 
 <nz-modal [(nzVisible)]="programModalOpen" nzWidth="920" nzTitle="Alert Status and Usage Analysis" (nzOnCancel)="closeProgram()" (nzOnOk)="closeProgram()">
@@ -252,40 +259,27 @@
     </div>
 </nz-modal>
 
-<!-- 
+<nz-modal [(nzVisible)]="referdocument" [nzStyle]="{top: '20px'}" nzWidth="600"   nzTitle="Add Referral Document" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"  >
+<div nz-row *ngIf="referdocument">
+    <div nz-col nzSpan="16">
+        <nz-upload nzType="drag" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes" 
+             [nzAction]="urlPath" (nzChange)="handleChange($event)" nzListType="picture"
+            [(nzFileList)]="fileList2">
 
-<nz-modal [(nzVisible)]="newOtherModal" nzTitle="Add new referral" (nzOnCancel)="handleCancel()"
-    (nzOnOk)="handleOk()">
-    <div nz-row>
-        asda
+            <p class="ant-upload-drag-icon">
+                <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+            <p class="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+            </p>
+        </nz-upload>
     </div>
-
-    <div *nzModalFooter>
+</div>
+<div *nzModalFooter>
+    <ng-container>
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" [nzLoading]="isLoading">Save</button>
-    </div>
+        <button nz-button nzType="primary" (click)="customReq()">Save</button>
+    </ng-container> 
+</div>
 </nz-modal>
-
-<nz-modal [(nzVisible)]="quoteModal" nzTitle="Add new referral" (nzOnCancel)="handleCancel()"
-    (nzOnOk)="handleOk()">
-    <div nz-row>
-        asda
-    </div>
-
-    <div *nzModalFooter>
-        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" [nzLoading]="isLoading">Save</button>
-    </div>
-</nz-modal>
-
-<nz-modal [(nzVisible)]="saveModal" nzTitle="Add new referral" (nzOnCancel)="handleCancel()"
-    (nzOnOk)="handleOk()">
-    <div nz-row>
-        asda
-    </div>
-
-    <div *nzModalFooter>
-        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" [nzLoading]="isLoading">Save</button>
-    </div>
-</nz-modal>  -->

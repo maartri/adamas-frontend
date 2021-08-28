@@ -9,7 +9,7 @@ declare var Dto: any;
     styles: [`
   .side-button{
         position: fixed;
-        right: 15px;
+        right: 5px;
         background: #ff3737;
         color: #fff;
         width: 35px;

@@ -145,7 +145,7 @@ export class FundingRegionsComponent implements OnInit {
             title: 'Funding Regions'
           }, 
           this.inputVariables = {
-            display : group.get('description').value,
+            display : group.get('description').value.trim().toUpperCase(),
             end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
             domain: 'FUNDREGION',
           }
@@ -162,7 +162,7 @@ export class FundingRegionsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          let name        = group.get('name').value.trim().uppercase();
+          let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){

@@ -31,7 +31,7 @@
                         <td nzLeft nzBreakWord>{{data.title}}</td>
                         <td nzLeft nzBreakWord>{{data.rosterGroup}}</td>
                         <td nzLeft nzBreakWord>{{data.subGroup}}</td>
-                        <td nzLeft nzBreakWord>{{data.dataset}}</td>
+                        <td nzLeft nzBreakWord>{{data.dataSet}}</td>
                         <td nzLeft nzBreakWord>{{data.datasetCode}}</td>
                         <td nzLeft nzBreakWord>{{data.outletID}}</td>
                         <td nzLeft nzBreakWord>{{data.datasetGroup}}</td>
@@ -86,7 +86,7 @@
                                             Billing Text:
                                         </div>
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
-                                            <textarea rows="2" nz-input formControlName="billingText"></textarea>
+                                            <textarea rows="2" nz-input formControlName="billText"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -97,7 +97,7 @@
                                             <nz-form-label  nzRequired nzFor="Main Group">Main Group</nz-form-label>
                                         </div>
                                         <div nz-col nzSpan="12" class="text-right pad-r-5"> 
-                                            <nz-select nzDisabled [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="mainGroup"  nzShowSearch  style="width:100%;">
+                                            <nz-select nzDisabled [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="rosterGroup"  nzShowSearch  style="width:100%;">
                                                 <nz-option *ngFor="let main of mainGroupList" [nzLabel]="main"  [nzValue]="main"></nz-option>
                                             </nz-select>
                                         </div>
@@ -107,7 +107,7 @@
                                             Sub Group:
                                         </div>
                                         <div nz-col nzSpan="12" class="text-right pad-r-5"> 
-                                            <nz-select nzDisabled [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="subgroup" nzShowSearch  style="width:100%;">
+                                            <nz-select nzDisabled [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="minorGroup" nzShowSearch  style="width:100%;">
                                                 <nz-option *ngFor="let subGroup of subGroupList" [nzLabel]="subGroup" [nzValue]="subGroup"></nz-option>
                                             </nz-select>
                                         </div>
@@ -128,7 +128,7 @@
                                                 <nz-form-label  nzRequired nzFor="Charge Rate 1:">Charge Rate 1</nz-form-label>
                                             </div>
                                             <div nz-col nzSpan="12" class="text-right pad-r-5"> 
-                                                <input nz-input  [nzSize]="'small'" formControlName="chargeRate1" />
+                                                <input nz-input  [nzSize]="'small'" formControlName="amount" />
                                             </div>
                                         </div>
                                         <div class="mrg-btm" nz-col nzSpan="12">
@@ -136,7 +136,7 @@
                                                 Minimum Charge Rate:
                                             </div>
                                             <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                                <input nz-input [nzSize]="'small'" formControlName="minimumChargeRate" />
+                                                <input nz-input [nzSize]="'small'" formControlName="minChargeRate" />
                                             </div>
                                         </div>
                                     </div>
@@ -155,7 +155,7 @@
                                             Life Cycle Event:
                                         </div>
                                         <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="lifeCycleEvent"  nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="lifecycle"  nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let clycle of lifeCycleList" [nzLabel]="clycle.description" [nzValue]="clycle.description"></nz-option>
                                             </nz-select>
                                         </div>
@@ -177,7 +177,7 @@
                                             Dicipline:
                                         </div>
                                         <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="dicipline" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="dataSet" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let dicipline of diciplineList" [nzLabel]="dicipline.description" [nzValue]="dicipline.description"></nz-option>
                                             </nz-select>
                                         </div>
@@ -198,7 +198,7 @@
                                             Auto Approve:
                                         </div>
                                         <div nz-col nzSpan="4" class=""> 
-                                            <label nz-checkbox  formControlName="AutoApprove"></label>
+                                            <label nz-checkbox  formControlName="autoApprove"></label>
                                         </div>
                                     </div>
                                     <div nz-row nzJustify class="mrg-btm">
@@ -206,7 +206,7 @@
                                             EXCLUDE FROM Auto Approve:
                                         </div>
                                         <div nz-col nzSpan="4" class=""> 
-                                            <label nz-checkbox  formControlName="excludeFromAuto"></label>
+                                            <label nz-checkbox  formControlName="excludeFromAutoLeave"></label>
                                         </div>
                                     </div>
                                     <div nz-row nzJustify class="mrg-btm">
@@ -214,7 +214,7 @@
                                             Informational Only:
                                         </div>
                                         <div nz-col nzSpan="4" class=""> 
-                                            <label nz-checkbox  formControlName="Informational"></label>
+                                            <label nz-checkbox  formControlName="infoOnly"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -233,21 +233,22 @@
                                 <div nz-col nzSpan="24" class="mrg-btm">
                                     <div nz-row nzJustify class="mrg-btm">
                                         <div nz-col nzSpan="4" class="text-right pad-r-5">
-                                            DataSet:
+                                            <nz-form-label  nzRequired nzFor="DataSet">DataSet</nz-form-label>
                                         </div>
                                         <div nz-col nzSpan="8" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="dataset" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="iT_Dataset" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let dataset of datasetList" [nzLabel]="dataset" [nzValue]="dataset"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>
                                     <div nz-row nzJustify class="mrg-btm">
                                         <div nz-col nzSpan="4" class="text-right pad-r-5">
-                                            Group:
+                                            <nz-form-label  nzRequired nzFor="Group">Group</nz-form-label>
                                         </div>
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="budgetGroup"  nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let budget of budgetGroupList" [nzLabel]="budget.description" [nzValue]="budget.description"></nz-option>
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="datasetGroup"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <!-- <nz-option *ngFor="let budget of budgetGroupList" [nzLabel]="budget.description" [nzValue]="budget.description"></nz-option> -->
+                                                <nz-option nzValue="STF-LEAVE-LONG SERVICE" nzLabel="STF-LEAVE-LONG SERVICE"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>
@@ -256,9 +257,65 @@
                                             Type:
                                         </div>
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="budgetGroup"  nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let budget of budgetGroupList" [nzLabel]="budget.description" [nzValue]="budget.description"></nz-option>
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="haccType"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <!-- <nz-option *ngFor="let budget of budgetGroupList" [nzLabel]="budget.description" [nzValue]="budget.description"></nz-option> -->
+                                                <nz-option nzValue="STF-LEAVE-LONG SERVICE" nzLabel="STF-LEAVE-LONG SERVICE"></nz-option>
                                             </nz-select>
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                            price Type :
+                                        </div>
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiaPriceType"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let khali of emptyList" [nzLabel]="khali" [nzValue]="khali"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                        <div nz-col nzSpan="8" class="text-right pad-r-5">
+                                            NDIA Reason Code if Applicable :
+                                        </div>
+                                        <div nz-col nzSpan="6" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiaClaimType"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let khali of emptyList" [nzLabel]="khali" [nzValue]="khali"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                        </div>
+                                        <div nz-col nzSpan="20" class="pad-r-5"> 
+                                            <label nz-checkbox  class="mrg-btm" formControlName="ndiaTravel"></label> NDIA Travel Before Applicable 
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                            Level 2 :
+                                        </div>
+                                        <div nz-col nzSpan="12" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiA_LEVEL2"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let ndia of ndiaItems" [nzLabel]="ndia" [nzValue]="ndia"></nz-option>
+                                            </nz-select> 
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                            Level 3 :
+                                        </div>
+                                        <div nz-col nzSpan="12" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiA_LEVEL3"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let ndia of ndiaItems" [nzLabel]="ndia" [nzValue]="ndia"></nz-option>
+                                            </nz-select> 
+                                        </div>
+                                    </div>
+                                    <div nz-row nzJustify class="mrg-btm">
+                                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                                            Level 4 :
+                                        </div>
+                                        <div nz-col nzSpan="12" class="text-right pad-r-5"> 
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiA_LEVEL4"  nzShowSearch nzAllowClear style="width:100%;">
+                                                <nz-option *ngFor="let ndia of ndiaItems" [nzLabel]="ndia" [nzValue]="ndia"></nz-option>
+                                            </nz-select> 
                                         </div>
                                     </div>
                                 </div>    
@@ -277,7 +334,7 @@
                                 <label for="">Accounting Code : </label>
                             </div>
                             <div nz-col nzSpan="16">
-                                <input nz-col nzSpan="16" nz-input [nzSize]="'small'" placeholder=""  formControlName="accountingCode" />
+                                <input nz-col nzSpan="16" nz-input [nzSize]="'small'" placeholder=""  formControlName="accountingIdentifier" />
                             </div>
                         </div>
                         <div nz-row nzGutter=22 class="mrg-btm">
@@ -307,7 +364,7 @@
                                 <label for="">Budget U.O.M : </label>
                             </div>
                             <div nz-col nzSpan="16">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="buom"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="unitCostUOM"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let uom of budgetUomList" [nzLabel]="uom" [nzValue]="uom"></nz-option>
                                 </nz-select>
                             </div>
@@ -325,7 +382,7 @@
                                 <label for="">CDC/NDIA Group: </label>
                             </div>
                             <div nz-col nzSpan="16">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="nida"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="ndiA_ID"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let nida of ndiaList" [nzLabel]="nida" [nzValue]="nida"></nz-option>
                                 </nz-select>
                             </div>
@@ -352,7 +409,7 @@
                                 <label for="">Commercial : </label>
                             </div>
                             <div nz-col nzSpan="16">
-                                <input nz-col nzSpan="16" nz-input  [nzSize]="'small'" placeholder=""  formControlName="commercial" />
+                                <input nz-col nzSpan="16" nz-input  [nzSize]="'small'" placeholder=""  formControlName="amount" />
                             </div>
                         </div>
                         <div nz-row nzGutter=22 class="mrg-btm">
@@ -402,7 +459,7 @@
                                 <h2 style="color:#1890FF;">Roster Actions</h2>
                             </div>
                             <div nz-col nzSpan="" class="">
-                                <label nz-checkbox formControlName="conflict">Can Conflict</label>
+                                <label nz-checkbox formControlName="excludeFromConflicts">Can Conflict</label>
                             </div>
                         </div>
                         <nz-divider nzText="Roster Restrictions" nzOrientation="left"></nz-divider>
@@ -410,14 +467,14 @@
                             <div nz-col nzSpan="20" class="mrg-btm">
                                 <div class="mrg-btm" nz-col nzSpan="24">
                                     <label for="Can Only Be Roasted" class="mrg-btm">Can Only Be Roasted:</label> 
-                                    Mon <label nz-checkbox  formControlName="day1"></label>
-                                    Tue <label nz-checkbox  formControlName="day2"></label>
-                                    Wed <label nz-checkbox  formControlName="day3"></label>
-                                    Thu <label nz-checkbox  formControlName="day4"></label>
-                                    Fri <label nz-checkbox  formControlName="day5"></label>
-                                    Sat <label nz-checkbox  formControlName="day6"></label>
-                                    Sun <label nz-checkbox  formControlName="day7"></label>
-                                    Pub Hol <label nz-checkbox  formControlName="day0"></label>
+                                    Mon <label nz-checkbox  formControlName="noMonday"></label>
+                                    Tue <label nz-checkbox  formControlName="noTuesday"></label>
+                                    Wed <label nz-checkbox  formControlName="noWednesday"></label>
+                                    Thu <label nz-checkbox  formControlName="noThursday"></label>
+                                    Fri <label nz-checkbox  formControlName="noFriday"></label>
+                                    Sat <label nz-checkbox  formControlName="noSaturday"></label>
+                                    Sun <label nz-checkbox  formControlName="noSunday"></label>
+                                    Pub Hol <label nz-checkbox  formControlName="noPubHol"></label>
                                 </div>
                                 <div nz-row nzSpan="24">
                                     <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
@@ -443,19 +500,19 @@
                                             <label>Min Duration</label>
                                         </div>
                                         <div nz-col nzSpan="4">
-                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="min" />
+                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="minDurtn" />
                                         </div>
                                         <div nz-col nzSpan="4">
                                             <label style="margin-left:20px;">Max Duration</label>
                                         </div>
                                         <div nz-col nzSpan="4">
-                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="max" />
+                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="maxDurtn" />
                                         </div>
                                         <div nz-col nzSpan="4">
                                             <label style="margin-left:20px;">Roasted Time</label>
                                         </div>
                                         <div nz-col nzSpan="4"> 
-                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="forceRostedTime" />
+                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="fixedTime" />
                                         </div>
                                     </div>
                                     <div nz-col nzSpan="24" class="mrg-btm" style="padding-left: 13px !important;">
@@ -464,10 +521,10 @@
                                         </div>
                                         <div nz-col nzSpan="16">
                                             <div>
-                                                <label nz-checkbox formControlName="rostedDay">Rosted Day</label>
+                                                <label nz-checkbox formControlName="noChangeDate">Rosted Day</label>
                                             </div>
                                             <div>
-                                                <label nz-checkbox formControlName="rostedTime">Rosted Time</label>
+                                                <label nz-checkbox formControlName="noChangeTime">Rosted Time</label>
                                             </div>
                                         </div>
                                     </div>
@@ -476,7 +533,7 @@
                                             <span>Time Must Be withIn:</span>
                                         </div>
                                         <div nz-col nzSpan="8">
-                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="orignalminute" />
+                                            <input nz-input [nzSize]="'small'" nz-value="0" formControlName="timeChangeLimit" />
                                         </div>
                                         <div nz-col nzSpan="8" style="text-align: center;">
                                             <span>Minutes of Orignal Start</span>
@@ -494,7 +551,7 @@
                                             <label for="">Address To Include: </label>
                                         </div>
                                         <div nz-col nzSpan="6">
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="address" [nzSize]="'small'" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultAddress" [nzSize]="'small'" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let address of addressTypes" [nzLabel]="address.description" [nzValue]="address.description"></nz-option>
                                             </nz-select>
                                         </div>
@@ -502,7 +559,7 @@
                                             <label for=""> Phone To Include: </label>
                                         </div>
                                         <div nz-col nzSpan="6">
-                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="contact" [nzSize]="'small'" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="defaultPhone" [nzSize]="'small'" nzShowSearch nzAllowClear style="width:100%;">
                                                 <nz-option *ngFor="let contact of contactTypes" [nzLabel]="contact.description" [nzValue]="contact.description"></nz-option>
                                             </nz-select>
                                         </div>
@@ -546,31 +603,31 @@
                                     Exclude From Higher Rate Calculation :
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="4" style="text-align:center;">
-                                    <label nz-checkbox formControlName="award1"></label>
+                                    <label nz-checkbox formControlName="excludeFromHigherPayCalculation"></label>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="20" style="text-align:right;">
                                     No Overtime Accoumnodation :
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="4" style="text-align:center;">
-                                    <label nz-checkbox formControlName="award2"></label>
+                                    <label nz-checkbox formControlName="noOvertimeAccumulation"></label>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="20" style="text-align:right;">
                                     Pay As Rostered :
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="4" style="text-align:center;">
-                                    <label nz-checkbox formControlName="award3"></label>
+                                    <label nz-checkbox formControlName="payAsRostered"></label>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="20" style="text-align:right;">
                                     Exclude From Timeband Interpretation :
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="4" style="text-align:center;">
-                                    <label nz-checkbox formControlName="award4"></label>
+                                    <label nz-checkbox formControlName="excludeFromTimebands"></label>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="20" style="text-align:right;">
                                     Exclude From All Interpretation :
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="4" style="text-align:center;">
-                                    <label nz-checkbox formControlName="award5"></label>
+                                    <label nz-checkbox formControlName="excludeFromInterpretation"></label>
                                 </div>
                             </div>
                             <div nz-col nzSpan="12">
@@ -578,7 +635,7 @@
                                     <label for="Special Shift Type" class="mrg-btm">Special Shift Type:</label>
                                 </div>
                                 <div class="mrg-btm" nz-col nzSpan="15">
-                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="specialShift" [nzSize]="'small'" nzShowSearch nzAllowClear style="width:100%;">
+                                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="jobType" [nzSize]="'small'" nzShowSearch nzAllowClear style="width:100%;">
                                         <nz-option *ngFor="let shift of shiftTypes" [nzLabel]="shift" [nzValue]="shift"></nz-option>
                                     </nz-select>
                                 </div>
@@ -593,7 +650,7 @@
                             </div>
                             <div nz-col nzSpan="1" class="mrg-btm"></div>
                             <div nz-col nzSpan="6" class="mrg-btm">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="specialShift" [nzSize]="'small'" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="tA_LOGINMODE" [nzSize]="'small'" nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let mode of mobileLogModes | keyvalue ;let i = index" [nzLabel]="mode.value" [nzValue]="mode.key"></nz-option>
                                 </nz-select>
                             </div>
@@ -646,8 +703,8 @@
                                 <nz-divider nzText="Program Approved Against " nzOrientation="left" style="margin: 0px;color:#1890FF;"></nz-divider>
                             </div>
                             <div nz-col nzSpan="10">
-                                <div nz-col nzSpan="10" ><button style="background-color:#87d068" (click)="clearStaff()" nzSize="small" class="btn-staff" nz-button nzType="success">Select All </button></div>
-                                <div nz-col nzSpan="10"><button (click)="clearStaff()" nzSize="small" class="btn-staff" nz-button nzType="danger">Unselect All </button></div>
+                                <!-- <div nz-col nzSpan="10" ><button style="background-color:#87d068" (click)="clearStaff()" nzSize="small" class="btn-staff" nz-button nzType="success">Select All </button></div> -->
+                                <div nz-col nzSpan="10"><button (click)="clearPrograms()" nzSize="small" class="btn-staff" nz-button nzType="danger">Unselect All </button></div>
                             </div>
                             <div nz-col nzSpan="14">
                                 <div class="staff-wrapper" style="height: 20rem;
@@ -781,11 +838,11 @@
                                     <tbody>
                                         <tr *ngFor="let list of checkedList;let j = index;">
                                             <td>{{list}}</td>
-                                            <td></td>
-                                            <td class="left"><a (click)="showEditModal(j)">Update</a>
+                                            <td><label nz-checkbox nzDisabled [ngModel]="list.mandatory" nzDisabled [ngModelOptions]="{standalone: true}"></label></td>
+                                            <td class="left"><a (click)="editCompetencyModal(j)">Update</a>
                                                 <nz-divider nzType="vertical"></nz-divider>
                                                 <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
-                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(list)">Delete</a>
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteCompetency(list)">Delete</a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -802,7 +859,7 @@
                             End Date:
                         </div>
                         <div nz-col nzSpan="3" class="text-right pad-r-5"> 
-                            <nz-date-picker  [nzSize]="'small'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
+                            <nz-date-picker  [nzSize]="'small'" formControlName="endDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                         <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
                             <span>SAVE</span>
@@ -818,10 +875,10 @@
         <div nz-row nzGutter="24">    
             <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                 <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Competencies Required For Work in This Program</h4>
-                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="logs($event)">
                     <div nz-row>
                         <div nz-col nzSpan="24" *ngFor="let comp of competencyList">
-                            <label nz-checkbox [nzValue]="comp.name" [(ngModel)]="comp.checked" (change)="onCheckboxChange(comp,$event)" [ngModelOptions]="{standalone: true}">{{ comp.name }}</label>
+                            <label nz-checkbox [nzValue]="comp.name" [(ngModel)]="comp.checked" [ngModelOptions]="{standalone: true}">{{ comp.name }}</label>
                         </div>
                     </div>
                 </nz-checkbox-wrapper>
@@ -830,8 +887,8 @@
     </form>
     <div *nzModalFooter>
         <ng-container>
-            <button nz-button nzType="primary" [nzLoading]="postLoading"  *ngIf="current === 0">
-                <span>Save</span>
+            <button nz-button nzType="primary" (click)="saveCompetency()">
+                <span>ADD</span>
             </button>
         </ng-container>
     </div>

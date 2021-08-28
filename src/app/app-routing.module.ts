@@ -47,8 +47,9 @@ import {
   StaffIncidentAdmin as StaffIncidentAdminRedirect,
   StaffDocumentAdmin as StaffDocumentAdminRedirect,
   StaffAttendanceAdmin as StaffAttendanceAdminRedirect,
-  StaffPositionAdmin as StaffPositionAdminRedirect,
-  StaffGroupingsAdmin as StaffGroupingsAdminRedirect
+  StaffPositionAdmin  as StaffPositionAdminRedirect,
+  StaffGroupingsAdmin as StaffGroupingsAdminRedirect,
+  StaffLoansAdmin     as StaffLoansAdminRedirect,
 } from './pages/staff-direct/staff-views/index'
 
 
@@ -89,7 +90,9 @@ import {
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
-  
+  HCPComponent,
+  PrintComponent,
+  BillingAdmin,   //AHSAN
 } from '@admin/index'
 
 import {
@@ -98,6 +101,7 @@ import {
   StaffContactAdmin,
   StaffDocumentAdmin,
   StaffGroupingsAdmin,
+  StaffLoansAdmin,
   StaffHRAdmin,
   StaffIncidentAdmin,
   StaffLeaveAdmin,
@@ -120,7 +124,12 @@ import {
   RecipientPermrosterAdmin,
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
-  RecipientRemindersAdmin
+  RecipientRemindersAdmin,
+  RecipientFormsAdmin,
+  RecipientDocumentsAdmin,
+  RecipientAttendanceAdmin,
+  RecipientOthersAdmin,
+  RecipientAccountingAdmin
 } from './pages/admin/recipient-views/index'
 
 import {
@@ -140,6 +149,11 @@ import {
   IntakeServices,
   IntakeStaff
 } from '@intakes/index';
+
+import {
+  ProfileAccounting,
+  AccountingHistory
+} from '@accounting/index';
 
 
 import {  
@@ -241,6 +255,7 @@ import { StaffAdminActivitiesComponent } from '@admin/configuration/services/sta
 import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
 import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
 import { DocumentTemplateComponent } from '@admin/configuration/documents/document-template.component';
+import { BillingComponent } from '@admin/billing/billing.component'; //AHSAN 
 
 const routes: Routes = [
   {
@@ -427,6 +442,10 @@ const routes: Routes = [
             component: StaffPayAdminRedirect
           },
           {
+            path: 'Loans',
+            component: StaffLoansAdminRedirect
+          },
+          {
             path: 'leave',
             component: StaffLeaveAdminRedirect
           },
@@ -510,8 +529,24 @@ const routes: Routes = [
         component: UserReports
       },
       {
+        path: 'Print',
+        component: PrintComponent
+      },
+      {
         path: 'configuration',
         component: ConfigurationAdmin
+      },      
+      {
+        path: 'billing', //AHSAN
+        component: BillingAdmin
+      },
+      {
+        path: 'debtor-updates-exports', //AHSAN
+        component: BillingComponent
+      },
+      {
+        path: 'hcp',
+        component: HCPComponent
       },
       {
         path: 'companies',
@@ -896,6 +931,10 @@ const routes: Routes = [
             component: StaffPayAdmin
           },
           {
+            path: 'loans',
+            component: StaffLoansAdmin
+          },
+          {
             path: 'leave',
             component: StaffLeaveAdmin
           },
@@ -955,6 +994,25 @@ const routes: Routes = [
             component: RecipientContactsAdmin
           },
           {
+            path: 'accounting',
+            component: RecipientAccountingAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'profile',
+                pathMatch: 'full'
+              },
+              {
+                path: 'profile',
+                component: ProfileAccounting
+              },
+              {
+                path: 'accounting',
+                component: AccountingHistory
+              },
+            ]
+          },
+          {
             path: 'intake',
             component: RecipientIntakeAdmin,
             children: [
@@ -1004,6 +1062,24 @@ const routes: Routes = [
           {
             path: 'reminders',
             component: RecipientRemindersAdmin
+          },
+          {
+            path: 'documents',
+            component: RecipientDocumentsAdmin
+          },
+          {
+            path: 'attendance',
+            component: RecipientAttendanceAdmin,
+            canDeactivate: [CanDeactivateGuard]
+          },
+          {
+            path: 'accounting',
+            component: RecipientAccountingAdmin
+          },
+          {
+            path: 'others',
+            component: RecipientOthersAdmin,
+            canDeactivate: [CanDeactivateGuard]
           },
           {
             path: 'opnote',
@@ -1099,6 +1175,9 @@ export const PAGE_COMPONENTS = [
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
+  HCPComponent,
+  PrintComponent,
+  BillingAdmin, //AHSAN 
   
   // Components
   ProfilePage,
@@ -1112,6 +1191,8 @@ export const PAGE_COMPONENTS = [
   ClaimratesComponent,
   TargetgroupsComponent,
   PurposestatementComponent,
+  HCPComponent,
+  BillingComponent, //AHSAN 
   BudgetgroupsComponent,
   BudgetsComponent,
   ContactgroupsComponent,
@@ -1202,6 +1283,7 @@ export const PAGE_COMPONENTS = [
   StaffContactAdmin,
   StaffDocumentAdmin,
   StaffGroupingsAdmin,
+  StaffLoansAdmin,
   StaffHRAdmin,
   StaffIncidentAdmin,
   StaffLeaveAdmin,
@@ -1224,6 +1306,11 @@ export const PAGE_COMPONENTS = [
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
   RecipientRemindersAdmin,
+  RecipientFormsAdmin,
+  RecipientDocumentsAdmin,
+  RecipientAttendanceAdmin,
+  RecipientOthersAdmin,
+  RecipientAccountingAdmin,
   
   // Intake Views
   IntakeAlerts,
@@ -1268,5 +1355,8 @@ export const PAGE_COMPONENTS = [
   StaffDocumentAdminRedirect,
   StaffAttendanceAdminRedirect,
   StaffPositionAdminRedirect,
-  StaffGroupingsAdminRedirect
+  StaffGroupingsAdminRedirect,
+  StaffLoansAdminRedirect,
+
+  ProfileAccounting,
 ]

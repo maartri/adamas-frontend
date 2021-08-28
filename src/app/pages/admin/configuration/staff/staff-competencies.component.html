@@ -17,7 +17,7 @@
                 <tbody>
                     <tr *ngFor="let data of basicTable.data;let i = index;">
                         <td class="left">{{ data.description  }} </td>
-                        <td class="left">{{ data.code  }} </td>
+                        <td class="left">{{ data.cGroup  }} </td>
                         <td class="left">{{ data.end_date | date: 'dd/MM/y' }}</td>
                         <td *ngIf="!data.is_deleted">
                             <a (click)="showEditModal(i)">Update</a>

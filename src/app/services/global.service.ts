@@ -62,9 +62,46 @@ export const ROSTER_TYPE = {
     13: "UNAVAILABILITY",
     14: "ITEM"
 }
+export const sbFieldsSkill = {
+    "fstaffContainer9-Competencies0022": "SB1",
+    "fstaffContainer9-Competencies0023": "SB2",
+    "fstaffContainer9-Competencies0024": "SB3",
+    "fstaffContainer9-Competencies0025": "SB4",
+    "fstaffContainer9-Competencies0026": "SB5",
+    "fstaffContainer9-Competencies0027": "SB6",
+    "fstaffContainer9-Competencies0028": "SB7",
+    "fstaffContainer9-Competencies0029": "SB8",
+    "fstaffContainer9-Competencies0030": "SB9",
+    "fstaffContainer9-Competencies0031": "SB10",
+    "fstaffContainer9-Competencies0032": "SB11",
+    "fstaffContainer9-Competencies0033": "SB12",
+    "fstaffContainer9-Competencies0034": "SB13",
+    "fstaffContainer9-Competencies0036": "SB14",
+    "fstaffContainer9-Competencies0040": "SB15",
+    "fstaffContainer9-Competencies0041": "SB16",
+    "fstaffContainer9-Competencies0042": "SB17",
+    "fstaffContainer9-Competencies0043": "SB18",
+    "fstaffContainer9-Competencies0044": "SB19",
+    "fstaffContainer9-Competencies0045": "SB20",
+    "fstaffContainer9-Competencies0046": "SB21",
+    "fstaffContainer9-Competencies0047": "SB22",
+    "fstaffContainer9-Competencies0048": "SB23",
+    "fstaffContainer9-Competencies0049": "SB24",
+    "fstaffContainer9-Competencies0050": "SB25",
+    "fstaffContainer9-Competencies0051": "SB26",
+    "fstaffContainer9-Competencies0052": "SB27",
+    "fstaffContainer9-Competencies0053": "SB28",
+    "fstaffContainer9-Competencies0054": "SB29",
+    "fstaffContainer9-Competencies0070": "SB30",
+    "fstaffContainer9-Competencies0069": "SB31",
+    "fstaffContainer9-Competencies0068": "SB32",
+    "fstaffContainer9-Competencies0067": "SB33",
+    "fstaffContainer9-Competencies0066": "SB34",
+    "fstaffContainer9-Competencies0065": "SB35",
+}
+
 export const quantity = [1,2,3,4,5,6,7,8,9,10,11];
 export const unit = ['EACH','PACK','CTN','PKT','ROLL/S']
-
 export const fundingDropDowns = {
     type: ['CACP', 'EACH', 'EACHD', 'DS', 'OTHER'],
     status: ['REFERRAL', 'WAITING LIST', 'ACTIVE', 'ON HOLD', 'INACTIVE'],
@@ -76,20 +113,25 @@ export const fundingDropDowns = {
     period: ['DAY', 'WEEK', 'FORTNIGHT', '4 WEEKS', 'MONTH', '6 WEEKS', 'QUARTER', '6 MONTHS', 'YEAR'],
     length: ['WEEK', 'FORTNIGHT', '4 WEEKS', 'MONTH', '6 WEEKS', 'QUARTER', '6 MONTHS', 'YEAR', 'ONGOING', 'OTHER'],
     alerts: ['HOURS', 'DOLLARS', 'SERVICES'],
+    levels: ['LEVEL 1', 'LEVEL 2', 'LEVEL 3','LEVEL 4'],
     cycle: ['CYCLE 1', 'CYCLE 2', 'CYCLE 3', 'CYCLE 4', 'CYCLE 5', 'CYCLE 6', 'CYCLE 7', 'CYCLE 8', 'CYCLE 9', 'CYCLE 10']
 }
-
+export const othersType = ['REFERRAL','WAITING LIST','CARER','RECIPIENT','CARER/RECIPIENT','BILLING CLIENT ONLY','ASSOCIATE']
+export const attendance = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL']
 export const dateFormat = "dd/MM/yyyy";
 export const dayStrings = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
+export const qoutePlantype = ['SUPPORT PLAN'];
 export const states = ['AUSTRALIAN CAPITAL TERRITORY', 'NEW SOUTH WALES', 'NORTHERN TERRITORY', 'QUEENSLAND', 'SOUTH AUSTRALIA', 'TASMANIA', 'VICTORIA', 'WESTERN AUSTRALIA']
 export const cycles = ['1st Monday - CYCLE 1', '1st Tuesday - CYCLE 1', '1st Wednesday - CYCLE 1', '1st Thursday - CYCLE 1', '1st Friday - CYCLE 1']
 export const billunit = ['HOUR', 'SERVICE']
+export const basePeriod = ['ANNUALLY', 'FIXED PERIOD']
 export const period = ['DAY', 'WEEKLY', 'FNIGHTLY', 'MONTH', 'QUARTER', 'HALF YEAR', 'YEAR']
+export const periodQuote = ['ONCE OFF', 'WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'QUARTERLY', 'HALF YEARLY', 'YEARLY']
 export const status = ['WAIT LIST', 'ON HOLD', 'ACTIVE', 'INACTIVE']
 export const achievementIndex = ['(1) NOT ACHIEVED', '(2) PARTIALLY ACHIEVED', '(3) MOSTLY ACHIEVED', '(4) FULLY ACHIEVED', '(5) ONGOING', '(6) FUNDING NOT APPROVED']
+export const expectedOutcome = ['(1) Daily Living', '(2) Home', '(3) Health and Well-being', '(4) Lifelong Learning', '(5) Work', '(6) Social and Community Participation','(7) Relationships','(8) Choice and Control']
 export const caldStatuses = ['CALD BACKGROUND', 'NOT CALD BACKGROUND']
-export const titles = ["Mr", "Ms", "Mrs", "Dr"]
+export const titles = ["Br","Dame","Dr","EO","Fr","Lady","Master","Miss","Mr","Mrs","Ms","Prof","Sir","SR"]
 export const types = ['BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
 export const gender = ['MALE', 'FEMALE', 'NOT STATED']
 export const months = moment.months()
@@ -99,12 +141,25 @@ export const days = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
 export const timeSteps = ["00:15","00:30","00:45","01:00","01:15","01:30","01:45","02:00","02:15","02:30","02:45","03:00","03:15","03:30","03:45","04:00","04:15","04:30","04:45","05:00","05:15","05:30","05:45","06:00","06:15","06:30","06:45","07:00","07:00","07:15","07:30","07:45","08:00","08:15","08:30","08:45","09:00","09:15","09:30","09:45","10:00","10:15","10:30","10:45","11:00","11:15","11:30","11:45","12:00","13:15","13:30","13:45","14:00","14:15","14:30","14:45","15:00","15:15","15:30","15:45","16:00","16:15","16:30","16:45","17:00","17:15","17:30","17:45","18:00","18:15","18:30","18:45","18:00","18:15","18:30","18:45","19:00","19:15","19:30","19:45","20:00","20:15","20:30","20:45","21:00","21:15","21:30","21:45","22:00","23:15","23:30","23:45","24:00"];
 export const incidentTypes: Array<string> = ["BEHAVIOURAL", "CONDUCT", "HEALTHINSURER", "MEDICAL", "PUNCTUALITY / ATTENDANCE", "SERIOUS INCIDENT", "OTHER"]
 export const leaveTypes: string[] = ["OTHER LEAVE", "REC LEAVE", "SICK LEAVE"];
+export const budgetTypes: string[] = ["BILL Qty", "DOLLARS", "HOURS","INSTANCES"]; 
+export const enforcement: string[] = ["HARD LIMIT", "SOFT LIMIT"]; 
 export const incidentSeverity: string[] = ["LOW", "MEDIUM", "HIGH"];
 export const statuses: Array<string> = ['', 'CASUAL', 'CONTRACT', 'FULL TIME CONTRACT', 'FULL TIME PERMANENT', 'PART TIME CONTRACT', 'PART TIME PERMANENT'];
 export const contactGroups: Array<string> = ['1-NEXT OF KIN', '2-CARER', '3-MEDICAL', '4-ALLIED HEALTH', '5-HEALTH INSURANCE', '6-POWER OF ATTORNEY', '7-LEGAL OTHER', '8-OTHER'];
 
+
+
 @Injectable()
 export class GlobalService {
+var1 = '';
+var2 = '';
+emailaddress:Array<string> = []  ;
+followups:any ;
+doc:any; 
+stafftonotiify:any = "ABFLAT GISELBERT";
+id: any;
+baseamount :number = 0;
+admincharges :number = 0;
 
     constructor(
         private router: Router,
@@ -291,11 +346,14 @@ export class GlobalService {
         }); 
     }
     
-    isCompetencyExists(tableData,username){
-        return tableData.some(function(el) {
-            username = username.replace(/'/g, '');
-            return el.competency.trim().toUpperCase() === username.trim().toUpperCase();
-          })
+    isCompetencyExists(tableData,username){        
+            if(tableData.length > 0 ){
+                return tableData.some(function(el) {
+                    username = username.replace(/'/g, '');
+                    return el.competency.trim().toUpperCase() === username.trim().toUpperCase();
+                  })
+            }
+            return false;
     }
     isTitleExists(tableData,username) {
         return tableData.some(function(el) {
@@ -498,6 +556,9 @@ export class GlobalService {
         const newDate = format(Date.parse(date),'dd/MM/yyyy');
         return newDate;
     }
+    getCurrentDate(){
+        return moment().format('yyyy-MM-DD')
+    }
     convertDbDate(date:string){
         const newDate = format(Date.parse(date),'yyyy/MM/dd');
         return newDate;
@@ -646,6 +707,9 @@ export class GlobalService {
     curreentDate(){
         return moment(new Date()).format('MM-DD-YYYY');
     } 
+    getAgedCareDate(){
+        return moment().startOf('year').subtract(65, 'years').format('MM/DD/YYYY');
+    }
     filterDate(date: any): string {
         return moment(date).format('DD/MM/YYYY')
     }

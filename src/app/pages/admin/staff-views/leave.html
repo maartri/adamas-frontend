@@ -1,118 +1,79 @@
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="putonLeaveModal = !putonLeaveModal">Add Leave</button>
+        <div nz-row>
+            <div nz-col nzSpan="12">
+                <button class="botton success" (click)="showAddModal()">Add Leave</button>
+                <button nz-button nzType="primary" (click)="handleOkTop()" style="margin-left:10px;"> <i nz-icon nzType="file-pdf"></i> Print </button>
+            </div>
+            <div nz-col nzSpan="12" [formGroup]="defaultLeaveForm">
+                <div nz-row>
+                    <div class="form-group">
+                        <div nz-col nzSpan="12" class="text-right">
+                            <label for="">Default Leave Activity &nbsp;</label>
+                        </div>
+                        <div nz-col nzSpan="12">
+                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" formControlName="defaultUnallocateLeaveActivity">
+                                <nz-option *ngFor="let paytype of leavepaytypes" [nzValue]="paytype" [nzLabel]="paytype"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div nz-row>
+                    <div class="form-group">
+                        <div nz-col nzSpan="12" class="text-right">
+                            <label for="">Default Leave Type &nbsp;</label>
+                        </div>
+                        <div nz-col nzSpan="12">
+                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" formControlName="defaultUnallocateLeavePayType">
+                                <nz-option *ngFor="let activity of leaveactivities;" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
-            [nzData]="tableData">
-            <thead>
-                <tr>
-                    <th class="left">Leave Type</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Notes</th>
-                    <th>Reminder Date</th>
-                    <th>Approved</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ data.leaveType  }}</td>
-                    <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
-                    <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
-                    <td>{{ data.notes  }}</td>
-                    <td>{{ data.reminderDate }}</td>
-                    <td>
-                        <!-- <input type="checkbox" [ngModel]="op.approved" disabled> -->
-                        <!-- <div style="display:inline-block;">
-                            <clr-checkbox-wrapper>
-                                <input type="checkbox" clrCheckbox value="option1" name="options" [(ngModel)]="op.approved"
-                                    (click)="checkBoxChange($event,i)" />
-                            </clr-checkbox-wrapper>
-                        </div> -->
-                    </td>
-                    <td>
-                        <a (click)="showEditModal(i)">Update</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
-    </div>
+        [nzData]="tableData">
+        <thead>
+            <tr>
+                <th class="left">Leave Type</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Notes</th>
+                <th>Reminder Date</th>
+                <th>Approved</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                <td class="left">{{ data.leaveType  }}</td>
+                <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
+                <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
+                <td>{{ data.notes  }}</td>
+                <td>{{ data.reminderDate }}</td>
+                <td>
+                    <label nz-checkbox nzDisabled [ngModel]="data.approved" nzDisabled [ngModelOptions]="{standalone: true}"></label>
+                </td>
+                <td>
+                    <a (click)="showEditModal(data)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Leave from the List?"
+                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+</div>
 </div>
 
-<app-leave-application *ngIf="user" [open]="putonLeaveModal" [user]="user"></app-leave-application>
 
-<!-- <nz-modal [(nzVisible)]="modalOpen" [nzTitle]="'Leave Application'" (nzOnCancel)="handleCancel()" [nzStyle]="{ top: '20px' }">
-    <div nz-row [formGroup]="leaveGroup">
-        <div nz-row>
-            <nz-form-item >
-                <nz-form-label [nzNoColon]="true">Date Range</nz-form-label>
-                <nz-form-control nzErrorTip="Required Field">
-                    <nz-range-picker [nzFormat]="dateFormat" formControlName="dates">
-                    </nz-range-picker>
-                </nz-form-control>
-            </nz-form-item>
-        </div>
-        <div nz-row>
-            <ul>
-                <li>
-                    <label nz-checkbox formControlName="makeUnavailable">Make Unavailable for balance of day</label>
-                </li>
-                <li>
-                    <label nz-checkbox formControlName="unallocAdmin">Unallocate Admin Activities</label>
-                </li>
-                <li>
-                    <label nz-checkbox formControlName="unallocUnapproved">Unallocate any unapproved entries</label>
-                </li>
-                <li>
-                    <label nz-checkbox formControlName="unallocMaster">Unallocate Master Roster</label>
-                </li>
-            </ul>
-        </div>
-        <div nz-row>
-            <nz-form-item>
-                <nz-form-label [nzNoColon]="true">Short Leave Explanation</nz-form-label>
-                <nz-form-control nzErrorTip="Required Field">
-                    <textarea rows="4" nz-input formControlName="explanation"></textarea>
-                </nz-form-control>
-            </nz-form-item>
-        </div>
-        <div nz-row nzGutter=16>
-            <div nz-col nzSpan="12">
-                <div class="form-group">
-                    <label for="">Reason For Unavailability</label>
-                    <nz-select formControlName="activityCode" nzAllowClear>
-                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                    </nz-select>
-                </div>
-            </div>
-            <div nz-col nzSpan="12">
-                <div class="form-group">
-                    <label for="">Pay Code</label>
-                    <nz-select formControlName="payCode" nzAllowClear >
-                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                    </nz-select>
-                </div>
-            </div>
-        </div>
-        <div nz-row>
-           <div class="form-group">
-                <label nz-checkbox formControlName="programShow">Accept Program of Original Service As Program For Leave</label>
-           </div>
-        </div>
-        <div nz-row *ngIf="leaveGroup.get('programShow').value">
-            <div class="form-group">
-                <label for="">Change Program For Leave To the Following Program</label>
-                <nz-select formControlName="program" nzAllowClear>
-                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                </nz-select>
-            </div>
-        </div>
+<app-leave-application *ngIf="user" [open]="putonLeaveModal" [operation]="operation" [user]="user"></app-leave-application>
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loadingPDF">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
     </div>
-    <div *nzModalFooter>
-        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary"  [nzLoading]="isLoading">Save</button>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
     </div>
-</nz-modal> -->
+</nz-drawer>

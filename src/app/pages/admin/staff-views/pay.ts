@@ -52,6 +52,7 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
     payGroup: FormGroup;
 
     dateFormat: string = dateFormat;
+    employeeArr: any;
 
     constructor(
         private listS: ListService,
@@ -149,7 +150,10 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
             emailTimesheet: false,
             employeeOf: "",
             excludeClientAdminFromPay: false,
+            excludeFromTravelInterpretation:false,
             excludeFromPayExport: false,
+            superPercent:"",
+            superFund:"",
             filePhoto: "",
             firstName: "",
             gender: "",
@@ -181,8 +185,6 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
             stf_Code: "",
             stf_Department: "",
             subCategory: "",
-            superFund: "",
-            superPercent: "",
             terminationDate: null,
             title: "",
             ubdMap: "",
@@ -203,7 +205,13 @@ export class StaffPayAdmin implements OnInit, OnDestroy {
         }).subscribe(data => {
             this.staffsArr = data;
             this.refreshDetector();
+        });
+        this.listS.getemployeebrokage().subscribe(data => {
+            this.employeeArr = data;
+            this.refreshDetector();
         }); 
+
+        
     }
 
     updateWorkHours(){

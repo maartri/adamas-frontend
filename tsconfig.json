@@ -46,6 +46,9 @@
       "@intakes/*": [
         "./src/app/pages/admin/recipient-views/intake-views/*"
       ],
+      "@accounting/*": [
+        "./src/app/pages/admin/recipient-views/accounting-views/*"
+      ],
       "@modules/*": [
         "./src/app/modules/*"
       ]

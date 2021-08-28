@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService,dateFormat } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -22,7 +22,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
     loading: boolean = false;
     modalOpen: boolean = false;
 
-    definedOpen: boolean = false;
+    definedOpen: boolean = false;   
     preferenceOpen: boolean = false;
 
     addOREdit: number;
@@ -32,7 +32,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
 
     userGroupForm: FormGroup;
     preferenceForm: FormGroup;
-
+    dateFormat: string = dateFormat;
     dropDowns: {
         userGroups: Array<string>,
         preferences: Array<string>
@@ -70,6 +70,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();
         this.search(this.user);
         this.buildForm();
+        this.listDropDowns();
     }
 
     ngOnDestroy(): void {
@@ -83,7 +84,6 @@ export class IntakeGroups implements OnInit, OnDestroy {
 
     search(user: any = this.user) {
         this.cd.reattach();
-
         this.loading = true;
         forkJoin([
             this.timeS.getgrouptypes(user.id),
@@ -103,8 +103,11 @@ export class IntakeGroups implements OnInit, OnDestroy {
             personID: new FormControl(''),
             recordNumber: new FormControl(0),
             alert: new FormControl(false),
+            date1: new FormControl(null),
+            date2: new FormControl(null),
+            email: new FormControl(''),
          })
-
+         
          this.preferenceForm = this.formBuilder.group({
             preference: new FormControl('', [Validators.required]),
             notes: new FormControl(''),
@@ -117,17 +120,21 @@ export class IntakeGroups implements OnInit, OnDestroy {
 
     }
 
-    showEditModal(index: number) {
-
-    }
 
     delete(index: number) {
 
     }
 
-    handleCancel() {
-        this.preferenceOpen = false;
-        this.definedOpen = false;
+    handleCancel(view: number) {
+        
+        this.addOREdit = 1;
+        if (view == 1){
+            this.definedOpen = false;
+            // this.userGroupForm.reset();
+        }else{
+            this.preferenceOpen = false;
+            // this.preferenceForm.reset();
+        }
     }
 
     reloadAll(){
@@ -137,8 +144,8 @@ export class IntakeGroups implements OnInit, OnDestroy {
 
     listDropDowns(){
         forkJoin([
-            this.listS.getusergroup(this.user.uniqueID),
-            this.listS.getrecipientpreference(this.user.uniqueID)
+            this.listS.getusergroup(this.user.id),
+            this.listS.getrecipientpreference(this.user.id)
         ]).subscribe(data => {
             this.loading = false;
             this.dropDowns = {
@@ -148,21 +155,28 @@ export class IntakeGroups implements OnInit, OnDestroy {
         });
     }
 
-    showAddModal() {
+    showAddModal(view: number) {
         this.addOREdit = 1;
-        this.modalOpen = true;
+        if (view == 1){
+            this.definedOpen = true;
+        }else{
+            this.preferenceOpen = true;
+        }
     }
 
     updateUserGroup(data: any){
-        this.modalOpen = true;
+        this.addOREdit = 2;
+        this.definedOpen = true;
         this.userGroupForm.patchValue({
             group: data.group,
-            notes: data.notes,            
+            notes: data.notes,
+            alert: data.mobileAlert,            
+            date1: data.date1,
+            date2: data.date2,
+            email: data.email,
             recordNumber: data.recordNumber,
-            alert: data.mobileAlert,
         })
     }
-
     deleteUserGroup(data: any){
         this.timeS.deleteusergroup(data.recordNumber).subscribe(data =>{
             if(data){
@@ -171,34 +185,62 @@ export class IntakeGroups implements OnInit, OnDestroy {
             }
         })
     }
+    userGroupProcess(){
+        this.userGroupForm.controls['personID'].setValue(this.user.id)
+        const userGroup = this.userGroupForm.value;
+        if(this.addOREdit == 1){
+            this.timeS.postusergroup(userGroup)
+                        .subscribe(data => {
+                            if(data){
+                                this.reloadAll()
+                                this.globalS.sToast('Success','Data Inserted')
+                                this.handleCancel(1);
+                            }
+                        })
+        }
+
+        if(this.addOREdit == 2){
+            this.timeS.updateusergroup(userGroup)
+                .subscribe(data => {
+                    if(data){
+                        this.reloadAll()
+                        this.globalS.sToast('Success','Data Updated')
+                        this.handleCancel(1);
+                    }
+                })
+        }
+    }
 
     preferenceProcess(){
-        this.preferenceForm.controls['personID'].setValue(this.user.uniqueID)
+        this.preferenceForm.controls['personID'].setValue(this.user.id)
 
         const preferences = this.preferenceForm.value;
 
-        if(this.addOREdit == 0){
+        if(this.addOREdit == 1){
             this.timeS.postrecipientpreference(preferences)
                         .subscribe(data => {
                             if(data){
                                 this.reloadAll()
                                 this.globalS.sToast('Success','Data Inserted')
+                                this.handleCancel(2);
                             }
                         })
         }
 
-        if(this.addOREdit == 1){
+        if(this.addOREdit == 2){
             this.timeS.updateusrecipientpreference(preferences)
                 .subscribe(data => {
                     if(data){
                         this.reloadAll()
                         this.globalS.sToast('Success','Data Updated')
+                        this.handleCancel(2);
                     }
                 })
         }
     }
 
     updatePreference(data: any){
+        this.addOREdit = 2;
         this.preferenceOpen = true;
 
         this.preferenceForm.patchValue({

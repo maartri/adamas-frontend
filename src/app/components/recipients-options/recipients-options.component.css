@@ -3,6 +3,10 @@ ul{
     height: 20rem;
     overflow: auto;
 }
+.scroll-overflow{
+    max-height: 20rem;
+    overflow: auto;
+}
 li{
     margin-bottom: 5px;
 }
@@ -44,5 +48,12 @@ h5.unavailable{
     margin: 5px;
 }
 textarea{
-    height:12rem;
+    height:20rem;
+}
+
+
+
+.scroll-overflow > nz-radio-group label{
+    margin-bottom:5px;
+    display:block;
 }

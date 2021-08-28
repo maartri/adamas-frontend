@@ -48,6 +48,7 @@ import { UploadChangeParam } from 'ng-zorro-antd/upload';
         nz-select{
             width:100%;
         }
+
         .options button:disabled{
             color:#a3a3a3;
             cursor: no-drop;

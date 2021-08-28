@@ -22,10 +22,22 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getprimaryphoneaddress(program: any):Observable<any>{
+        return this.auth.getstring(`${list}/primary-phone-address`, program);
+    }
+
+    getwaitlist(): Observable<any> {
+        return this.auth.get(`${list}/waitlist`);
+    }    
+
     postadmissionacceptquote(data: any): Observable<any> {
         return this.auth.post(`${list}/admission-accept-quote`, data);
     }
-    
+
+    getspecifictype(program: string):Observable<any>{
+        return this.auth.getstring(`${list}/specific-type/${program}`);
+    }
+
     getspecificbranch(personid: string):Observable<any>{
         return this.auth.get(`${list}/specific-branch/${personid}`);
     }

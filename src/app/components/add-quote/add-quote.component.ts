@@ -551,7 +551,8 @@ export class AddQuoteComponent implements OnInit {
               }
 
                 this.quoteForm.patchValue({
-                    govtContrib: x.quantity ? (x.quantity * 365).toFixed(2) : 0,
+                    govtContrib: x.quantity 
+                    ? (x.quantity * 365).toFixed(2) : 0,
                     programId: x.recordNumber
                 });
 

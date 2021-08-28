@@ -58,7 +58,7 @@
                             <div nz-row>
                                 <div nz-col nzSpan="8">
                                     <div class="form-group">
-                                        <nz-date-picker formControlName="suppliedDate" (ngModelChange)="onChange($event)" nzPlaceHolder="Supplied Date"></nz-date-picker>
+                                        <nz-date-picker  [nzFormat]="dateFormat" formControlName="suppliedDate" (ngModelChange)="onChange($event)" nzPlaceHolder="Supplied Date"></nz-date-picker>
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="8">
@@ -76,7 +76,7 @@
                     <div nz-row>
                         <div nz-col nzSpan="8" [formGroup]="itemGroup">
                             <div class="form-group">
-                                <nz-date-picker formControlName="date"  nzPlaceHolder="Date"></nz-date-picker>
+                                <nz-date-picker [nzFormat]="dateFormat" formControlName="date"  nzPlaceHolder="Date"></nz-date-picker>
                             </div>
                         </div>
                     </div>
@@ -116,9 +116,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group">
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px "></textarea>
@@ -224,7 +224,7 @@
                             <div nz-col nzSpan="24">
                                 <div nz-col nzSpan="8">
                                     <label>Referral Date</label>
-                                    <nz-date-picker formControlName="referralDate"></nz-date-picker>
+                                    <nz-date-picker [nzFormat]="dateFormat" formControlName="referralDate"></nz-date-picker>
                                 </div>
                                 <div nz-col nzSpan="8" style="padding-right: 5px;">
                                     <label>Time</label>
@@ -243,9 +243,9 @@
                                 <div nz-col nzSpan="6">
                                     <label class="space-top-3">Note Type</label>
                                     <nz-radio-group formControlName="radioGroup" class="space-top">
-                                        <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                        <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                        <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                        <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                        <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                        <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                                     </nz-radio-group>
                                 </div>
                                 <div nz-col nzSpan="18">
@@ -388,7 +388,7 @@
             
             <div class="steps-content" [formGroup]="deceaseGroup">
                 <div nz-row *ngIf="current == 0" >
-                    <nz-date-picker formControlName="deathDate" [nzPlaceHolder]="'Date Of Death'"></nz-date-picker>
+                    <nz-date-picker [nzFormat]="dateFormat" formControlName="deathDate" [nzPlaceHolder]="'Date Of Death'"></nz-date-picker>
                     
                     <div class="space-top">
                         <ul class="no-padding">
@@ -427,7 +427,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="deceaseGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="dischargeDate" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="dischargeDate" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -444,9 +444,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group" >
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
@@ -471,7 +471,7 @@
                 <div nz-row *ngIf="current == 4" [formGroup]="deceaseGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="reminderDate" [nzPlaceHolder]="'Reminder Date'"></nz-date-picker>
                         </div>                        
                     </div>  
                     
@@ -656,9 +656,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group">
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
@@ -782,7 +782,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="dischargeGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="dischargeDate" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="dischargeDate" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -799,9 +799,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="dischargeGroup">
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
@@ -914,7 +914,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="waitListGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="actionDate" [nzPlaceHolder]="'Activity Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="actionDate" [nzPlaceHolder]="'Activity Date'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -1094,7 +1094,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="admitGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="admissionDate" [nzPlaceHolder]="'Activity Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="admissionDate" [nzPlaceHolder]="'Activity Date'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -1111,9 +1111,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="admitGroup">
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
@@ -1247,7 +1247,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="assessGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="date" [nzPlaceHolder]="'Activity Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="date" [nzPlaceHolder]="'Activity Date'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -1264,9 +1264,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="assessGroup">
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
@@ -1389,7 +1389,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="notProceedGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="date" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="date" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -1407,9 +1407,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="notProceedGroup">
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
@@ -1554,7 +1554,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="referOnGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="date" [nzPlaceHolder]="'Date of Referral'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="date" [nzPlaceHolder]="'Date of Referral'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -1571,9 +1571,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="referOnGroup">
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
@@ -1745,7 +1745,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="referInGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker formControlName="date" [nzFormat]="dateFormat" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="date" [nzFormat]="dateFormat" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -1762,9 +1762,9 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group" [formGroup]="referInGroup">
                             <nz-radio-group formControlName="radioGroup">
-                                <label nz-radio [nzValue]="'case'">CASE NOTE</label>
-                                <label nz-radio [nzValue]="'op'">OP NOTE</label>
-                                <label nz-radio [nzValue]="'clinical'">CLINICAL NOTE</label>
+                                <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                                <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                                <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                             </nz-radio-group>
                             
                             <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>

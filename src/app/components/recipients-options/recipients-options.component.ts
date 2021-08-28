@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
-import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, CallProcedure } from '../../modules/modules';
+import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, CallProcedure, CallReferralOutProcedure } from '../../modules/modules';
 import { ListService, GlobalService, quantity, unit, dateFormat, ClientService,timeSteps } from '@services/index';
 import { SqlWizardService } from '@services/sqlwizard.service';
+
+
 import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import {mergeMap,takeUntil,debounceTime, distinctUntilChanged, map, switchMap, skip, startWith } from 'rxjs/operators';
@@ -38,6 +40,10 @@ const NOTE_TYPE: { } = {
   'clinical': 'CLINICALNOTE'
 }
 
+const defaultTimeSpent = new Date().setHours(0, 15);
+const defaultDate = new Date().setHours(0,0);
+const defaultDateTime = new Date();
+
 @Component({
   selector: 'app-recipients-options',
   templateUrl: './recipients-options.component.html',
@@ -54,11 +60,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
   dateFormat: string = dateFormat;
 
+  topBelow = { top: '20px' }
+
   FUNDING_TYPE: string;
   BRANCH_NAME: string;
   DOCUMENTID: number;
   COORDINATOR: string;
-  
+  EMAIL_OF_COORDINATOR: string;
+    
   referralRadioValue: any;
   referralCheckOptions: Array<any> = [
     {
@@ -265,17 +274,19 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.itemGroup = this.fb.group({
         programs: this.fb.array([]),
+        programChecked: null,
+
         referralType: null,
         suppliedDate: null,
         
-        date: null,
+        date: new Date(defaultDate),
         refNo: null,
         quantity: null,
         unit: null,
         charge: null,
         gst: false,
         
-        radioGroup: 'case',
+        radioGroup: 'CASENOTE',
         notes: null,
         caseCategory: 'ITEM',
         publishToApp: false,
@@ -288,10 +299,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.adminGroup = this.fb.group({
         programs: this.fb.array([]),
+        programChecked: null,
+
         referralDate: null,
         time: null,
-        timeSpent: null,
-        radioGroup: 'case',
+        timeSpent: new Date(defaultTimeSpent),
+        radioGroup: 'CASENOTE',
         notes: '',
         caseCategory: 'OTHER',
         publishToApp: false,
@@ -304,15 +317,17 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.deceaseGroup = this.fb.group({
         programs: this.fb.array([]),
+        programChecked: null,
+
         deathDate: null,
         reason: null,
         dischargeType: null,
         
-        dischargeDate: null,
-        time: null,
-        timeSpent: null,
+        dischargeDate: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
-        radioGroup: 'case',
+        radioGroup: 'CASENOTE',
         notes: null,
         caseCategory: null,
         publishToApp: false,
@@ -325,13 +340,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.suspendGroup = this.fb.group({
         programs: this.fb.array([]),
+        programChecked: null,
+
         cancellationCode: null,
         recordFormal: true,
         recordHours: true,
         suspendDateTo: null,
         suspendDateFrom: null,
         
-        radioGroup: 'case',
+        radioGroup: 'CASENOTE',
         notes: null,  
         caseCategory: null,
         publishToApp: false,
@@ -342,14 +359,16 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.dischargeGroup = this.fb.group({
         programs: this.fb.array([]),
+        programChecked: null,
+
         reason: null,
         dischargeType: null,
         
-        dischargeDate: null,
-        time: null,
-        timeSpent: null,
+        dischargeDate: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
-        radioGroup: 'case',
+        radioGroup: 'CASENOTE',
         notes: null,
         caseCategory: 'DISCHARGE',
         publishToApp: false,
@@ -362,16 +381,17 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.waitListGroup = this.fb.group({
         programs: this.fb.array([]),
+        programChecked: null,
         
         activityCode: null,
         suppliedDate: null,
         suppliedRef: null,
         
-        actionDate: null,
-        time: null,
-        timeSpent: null,
+        actionDate: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
-        radioGroup: 'case',
+        radioGroup: 'CASENOTE',
         notes: null,
         caseCategory: null,
         publishToApp: false,
@@ -384,14 +404,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.admitGroup = this.fb.group({
         programs: this.fb.array([]),
-        radioGroup: 'case',
-        notes: `
-        ADMISSION : Morganica Abbots
-        Phone : 0403734758
-        Address : 151 Dobie St GRAFTON
-        
-        NOTES:
-        `,
+        radioGroup: 'CASENOTE',
+        notes: null,
         programChecked:null,
         caseCategory: 'ADMISSION',
         publishToApp: false,
@@ -400,13 +414,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         emailNotif: null,
         multipleStaff: null,
         referralDate: null,
-        admissionDate:new Date(),
+
+        admissionDate:new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
+
         adminsssion:null,
         admissionType:null,
         timePeriod: [],
-        time: new Date(),
-        timeSpent: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 15, 0)
-
+      
       });
       
       
@@ -434,11 +450,13 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
           });
 
        this.assessGroup = this.fb.group({
-          programs: this.fb.array([]),          
-          date:null,
-          time: null,
-          timeSpent: null,          
-          radioGroup: 'case',
+          programs: this.fb.array([]),
+          programChecked: null,
+          serviceType: null,
+          date: new Date(defaultDate),
+          time: new Date(defaultDateTime),
+          timeSpent: new Date(defaultTimeSpent),          
+          radioGroup: 'CASENOTE',
           notes: null,
           caseCategory: 'SCREEN/ASSESS',
           publishToApp: false,          
@@ -450,13 +468,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.notProceedGroup = this.fb.group({
         programs: this.fb.array([]),
+        programChecked: null,
         reasonCode: null,
+        referralType: null,
         
-        date:null,
-        time: null,
-        timeSpent: null,
+        date: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
-        radioGroup: 'case',
+        radioGroup: 'CASENOTE',
         notes: null,
         caseCategory: null,
         publishToApp: false,
@@ -469,15 +489,16 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.referOnGroup = this.fb.group({
         programs: this.fb.array([]),
-        referralTo: null,
+        programChecked: null,
+        referralSource: null,
         referralCode: null,
         
         referralType: null,
-        date: null,
-        time: null,
-        timeSpent: null,
+        date: new Date(defaultDate),
+        time: new Date(defaultDateTime),
+        timeSpent: new Date(defaultTimeSpent),
         
-        radioGroup: 'case',
+        radioGroup: 'CASENOTE',
         notes: null,
         caseCategory: 'REFERRAL-OUT',
         publishToApp: false,
@@ -490,6 +511,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       
       this.referInGroup = this.fb.group({
         type: null,
+        programChecked: null,
         packageName: null,
         programs: this.fb.array([]),
         
@@ -499,15 +521,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         
         date: new Date(),
         time: new Date(),
-        timeSpent: new Date().setHours(0, 15),
+        timeSpent: new Date(defaultTimeSpent),
         
-        radioGroup: 'case',
-        notes: `NDIA REFERRAL/INQUIRY FROM : Morganica Abbots
-        Phone : 0403734758
-        Address : 151 Dobie St GRAFTON
-        
-        NOTES:
-        `,
+        radioGroup: 'CASENOTE',
+        notes: null,
         caseCategory: 'REFERRAL-IN',
         publishToApp: false,
         
@@ -549,9 +566,13 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     
     
 
-    referralInChange(index: any){
+    referralInChange(index: any)
+    {
+      this.selectedProgram = null;
+      this.programs = [];
 
       if(index == 1){
+        this.isPackageNameAvailable = null;
         this.listS.getndiaprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {        
           this.programs = this.mutateToCheckboxes(data);
           this.changeDetection();
@@ -567,6 +588,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       }
       
       if(index == 2){
+        this.isPackageNameAvailable = null;
         this.listS.gethcpprograms().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
           this.programs = data;
           this.changeDetection();
@@ -597,9 +619,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
         this.FUNDING_TYPE = null;
       }
+
     }
     
     isPackageNameAvailable: boolean = null;
+
     VALUE_CHANGES(){
       
       if(this.option == RECIPIENT_OPTION.DISCHARGE){
@@ -633,12 +657,18 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         this.referInGroup.get('packageName')
         .valueChanges
         .pipe(
-          distinctUntilChanged(),
+          switchMap(x => {
+            this.isPackageNameAvailable = null;
+            return of(x);
+          }),
           debounceTime(200),
-          switchMap(x => this.listS.checkIfPackageNameExists(x))
+          switchMap(x => {            
+            return this.listS.checkIfPackageNameExists(x)
+          })
           )
           .subscribe(data => {
             this.isPackageNameAvailable = data;
+            this.changeDetection();
           });
           return;
         }
@@ -675,154 +705,461 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         IsNDIAorHCP(): boolean {
           return this.referInGroup.get('type').value == 1 || this.referInGroup.get('type').value == 2;
         }
+
+        PATCH_NOTES(data: string){
+          if(this.option == RECIPIENT_OPTION.REFER_IN)
+          {
+            this.referInGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.REFER_ON)
+          {
+            this.referOnGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.NOT_PROCEED){
+            this.notProceedGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.ASSESS){
+            this.assessGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.ADMIT){
+            this.admitGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.WAIT_LIST){
+            this.waitListGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.DISCHARGE){
+            this.dischargeGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.SUSPEND){
+            this.suspendGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.DECEASE){
+            this.deceaseGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.ADMIN){
+            this.adminGroup.get('notes').patchValue(data);
+          }
+
+          if(this.option == RECIPIENT_OPTION.ITEM){
+            this.itemGroup.get('notes').patchValue(data);
+          }
+        }
+
+        GET_FUNDING_TITLE(): string{
+          if(this.option == RECIPIENT_OPTION.REFER_IN){
+            return `${this.FUNDING_TYPE} REFERRAL`;
+          }
+
+          if(this.option == RECIPIENT_OPTION.REFER_ON){
+            return 'REFERRAL ON';
+          }
+
+          if(this.option == RECIPIENT_OPTION.NOT_PROCEED){
+            return 'NOT PROCEED';
+          }
+
+          if(this.option == RECIPIENT_OPTION.ASSESS){
+            return 'ASSESSMENT'
+          }
+
+          if(this.option == RECIPIENT_OPTION.ADMIT){
+            return 'ADMISSION'
+          }
+
+          if(this.option == RECIPIENT_OPTION.WAIT_LIST){
+            return 'WAIT LIST'
+          }
+
+          if(this.option == RECIPIENT_OPTION.DISCHARGE){
+            return 'DISCHARGE'
+          }
+
+          if(this.option == RECIPIENT_OPTION.SUSPEND){
+            return 'SUSPENSION'
+          }
+
+          if(this.option == RECIPIENT_OPTION.DECEASE){
+            return 'DECEASE'
+          }
+
+          if(this.option == RECIPIENT_OPTION.ADMIN){
+            return 'ADMIN REGISTRATION'
+          }
+
+          if(this.option == RECIPIENT_OPTION.ITEM){
+            return 'ITEM'
+          }
+        }
         
         done(){
-          
-          var finalRoster: Array<ProcedureRoster> = [];
-          
-          var checkedPrograms = this.checkedPrograms;
-          
-          
-          if(this.option == RECIPIENT_OPTION.REFER_IN){
-                        
-            const { 
-              referralSource,
-              referralCode,
-              referralType,
-              packageName,
-              radioGroup,
-              notes,
-              date,
-              time,
-              timeSpent,
-              caseCategory,
-              publishToApp,
-            } = this.referInGroup.getRawValue();
-            
-            const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
-            const timeInMinutes = this.globalS.getMinutes(timeSpent)
-            const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
-            
-            const defaultValues = {
-              // '' is the default
-              billDesc: '',
-              
-              // 7 for everything except 14 for item
-              type: 7,
-              
-              // 2 is the default,
-              rStatus: '2',
-              
-              // HOUR is the default     
-              billUnit: 'HOUR',
-              
-              // 0 is the default  
-              billType: '0',
-              
-              // '' is the default
-              payType: '',
-              
-              // '' is the default
-              payRate: '',
-              
-              // '' is the default
-              payUnit: '',
-              
-              // '' is the default
-              apInvoiceDate: '',
-              
-              // '' is the default
-              apInvoiceNumber: '',
-              
-              // 0 is default
-              groupActivity: '0',
-              
-              // '' is the default
-              serviceSetting: ''
-            }
-            
-            
-            let program: ProcedureRoster = {
-              clientCode: this.user.code,
-              carerCode: this.token.code,
-              
-              serviceType: referralType,
-              date: format(date,'yyyy/MM/dd'),
-              time: format(time,'HH:mm'),
-              
-              creator: this.token.code,
-              editer: this.token.user,
-              
-              billUnit: defaultValues.billUnit,
-              billDesc: defaultValues.billDesc,
-              agencyDefinedGroup: this.user.agencyDefinedGroup,
-              referralCode: referralCode,
-              timePercent: timePercentage,
-              notes: notes || "",
-              type: defaultValues.type,
-              duration: timeInMinutes / 5,
-              blockNo: blockNoTime,
-              reasonType: '',
-              
-              tabType: 'REFERRAL-IN',
-              program: packageName,
-              packageStatus: 'REFERRAL'
-            }
-            
-            finalRoster.push(program);
-            
-            const data: CallProcedure = {
-              isNDIAHCP: this.IsNDIAorHCP(),
-              oldPackage: this.selectedProgram,
-              newPackage: packageName,
-              roster: finalRoster,
-              staffNote: {
-                personId: this.user.id,
-                program: 'VARIOUS',
-                detailDate: format(new Date,'yyyy/MM/dd'),
-                extraDetail1: '',
-                extraDetail2: 'REFERRAL-IN',
-                whoCode: this.user.code,
-                publishToApp: publishToApp ? 1 : 0,
-                creator: this.token.user,
-                note: notes || "" ,
-                alarmDate: format(new Date,'yyyy/MM/dd'),
-                reminderTo: ''
-              }
-            }
-            
-            
-            this.listS.postreferralin(data).subscribe(x => {
-              this.globalS.sToast('Success', 'Package is saved'); 
-              this.handleCancel();
-              
-              if (this.globalS.followups != null){
-                this.writereminder(); 
-              }
-                //  if(this.globalS.doc != null){
-                //    this.addRefdoc();
-                //  }
+
+              var finalRoster: Array<ProcedureRoster> = [];              
+              var checkedPrograms = this.checkedPrograms;
+
+              const defaultValues = {
+                // '' is the default
+                billDesc: '',
                 
-                if (this.globalS.emailaddress != null){
-                  this.emailnotify(); }
-                });                
+                // 7 for everything except 14 for item
+                type: 7,
+                
+                // 2 is the default,
+                rStatus: '2',
+                
+                // HOUR is the default     
+                billUnit: 'HOUR',
+                
+                // 0 is the default  
+                billType: '0',
+                
+                // '' is the default
+                payType: '',
+                
+                // '' is the default
+                payRate: '',
+                
+                // '' is the default
+                payUnit: '',
+                
+                // '' is the default
+                apInvoiceDate: '',
+                
+                // '' is the default
+                apInvoiceNumber: '',
+                
+                // 0 is default
+                groupActivity: '0',
+                
+                // '' is the default
+                serviceSetting: ''
+              }
+
+              if(this.option == RECIPIENT_OPTION.REFER_IN)
+              {
+                        
+                    const 
+                    { 
+                      referralSource,
+                      referralCode,
+                      referralType,
+                      packageName,
+                      radioGroup,
+                      notes,
+                      date,
+                      time,
+                      timeSpent,
+                      caseCategory,
+                      publishToApp,
+                    } = this.referInGroup.getRawValue();
+                    
+                    const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+                    const timeInMinutes = this.globalS.getMinutes(timeSpent)
+                    const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
+                    
+                    let program: ProcedureRoster = {
+                      clientCode: this.user.code,
+                      carerCode: this.token.code,
+                      
+                      serviceType: referralType,
+                      date: format(date,'yyyy/MM/dd'),
+                      time: format(time,'HH:mm'),
+                      
+                      creator: this.token.code,
+                      editer: this.token.user,
+                      
+                      billUnit: defaultValues.billUnit,
+                      billDesc: defaultValues.billDesc,
+                      agencyDefinedGroup: this.user.agencyDefinedGroup,
+                      referralCode: referralCode,
+                      timePercent: timePercentage,
+                      notes: notes || "",
+                      type: defaultValues.type,
+                      duration: timeInMinutes / 5,
+                      blockNo: blockNoTime,
+                      reasonType: '',
+                      
+                      tabType: 'REFERRAL-IN',
+                      program: packageName,
+                      packageStatus: 'REFERRAL'
+                    }
+                    
+                    finalRoster.push(program);
+                    
+                  const data: CallProcedure = {
+                    isNDIAHCP: this.IsNDIAorHCP(),
+                    oldPackage: this.selectedProgram,
+                    newPackage: packageName,
+                    roster: finalRoster,
+                    staffNote: {
+                      personId: this.user.id,
+                      program: 'VARIOUS',
+                      detailDate: format(new Date,'yyyy/MM/dd'),
+                      extraDetail1: radioGroup,
+                      extraDetail2: 'REFERRAL-IN',
+                      whoCode: this.user.code,
+                      publishToApp: publishToApp ? 1 : 0,
+                      creator: this.token.user,
+                      note: notes || "" ,
+                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      reminderTo: ''
+                    }
+                  }
+                
+                // console.log(data);
+                // this.emailnotify();
+                // return;
+
+                this.listS.postreferralin(data).subscribe(x => {
+                      this.globalS.sToast('Success', 'Package is saved'); 
+                      this.handleCancel();
+                    
+                      if (this.globalS.followups != null){
+                        this.writereminder(); 
+                      }
+                      
+                      if (this.globalS.emailaddress != null){
+                        this.emailnotify(); 
+                      }
+                    }
+                  );
               }
               
               if(this.option == RECIPIENT_OPTION.REFER_ON){
-                console.log(this.referOnGroup.value)
+
+                const 
+                { 
+                  referralSource,
+                  referralCode,
+                  referralType,
+                  programChecked,
+                  radioGroup,
+                  notes,
+                  date,
+                  time,
+                  timeSpent,
+                  caseCategory,
+                  publishToApp,
+                } = this.referOnGroup.getRawValue();
+                
+                const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+                const timeInMinutes = this.globalS.getMinutes(timeSpent)
+                const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
+                
+                let program: ProcedureRoster = {
+                    clientCode: this.user.code,
+                    carerCode: this.token.code,                   
+                    
+                    serviceType: programChecked,
+                    date: format(date,'yyyy/MM/dd'),
+                    time: format(time,'HH:mm'),
+                    
+                    creator: this.token.code,
+                    editer: this.token.user,
+                    
+                    billUnit: defaultValues.billUnit,
+                    billDesc: defaultValues.billDesc,
+                    agencyDefinedGroup: this.user.agencyDefinedGroup,
+                    referralCode: referralCode,
+                    timePercent: timePercentage,
+                    notes: notes || "",
+                    type: defaultValues.type,
+                    duration: timeInMinutes / 5,
+                    blockNo: blockNoTime,
+                    reasonType: referralSource,
+                    
+                    tabType: 'REFERRAL-OUT',
+                    program: programChecked,
+                    packageStatus: 'REFERRAL'
+                  }
+
+                  finalRoster.push(program);
+                    
+                  const data: CallReferralOutProcedure = {                  
+                    roster: finalRoster,
+                    note: {
+                      personId: this.user.id,
+                      program: programChecked,
+                      detailDate: format(new Date,'yyyy/MM/dd'),
+                      extraDetail1: radioGroup,
+                      extraDetail2: 'REFERRAL-OUT',
+                      whoCode: this.user.code,
+                      publishToApp: publishToApp ? 1 : 0,
+                      creator: this.token.user,
+                      note: notes || "" ,
+                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      reminderTo: ''
+                    }
+                  }
+
+                  console.log(data);
+                  return;
+                  
+                  this.listS.postreferralout(data).subscribe(data => {
+                    this.globalS.sToast('Success', 'Package is saved');
+                  });
               }
               
               if(this.option == RECIPIENT_OPTION.NOT_PROCEED){
-                console.log(this.notProceedGroup.value)
+
+                const 
+                { 
+                  referralSource,
+                  referralCode,
+                  referralType,
+                  packageName,
+                  radioGroup,
+                  notes,
+                  date,
+                  time,
+                  timeSpent,
+                  programChecked,
+                  caseCategory,
+                  publishToApp,
+                } = this.notProceedGroup.getRawValue();
+                
+                const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+                const timeInMinutes = this.globalS.getMinutes(timeSpent)
+                const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
+                
+                let program: ProcedureRoster = {
+                    clientCode: this.user.code,
+                    carerCode: this.token.code,
+                    
+                    serviceType: referralType,
+                    date: format(date,'yyyy/MM/dd'),
+                    time: format(time,'HH:mm'),
+                    
+                    creator: this.token.code,
+                    editer: this.token.user,
+                    
+                    billUnit: defaultValues.billUnit,
+                    billDesc: defaultValues.billDesc,
+                    agencyDefinedGroup: this.user.agencyDefinedGroup,
+                    referralCode: referralCode,
+                    timePercent: timePercentage,
+                    notes: notes || "",
+                    type: defaultValues.type,
+                    duration: timeInMinutes / 5,
+                    blockNo: blockNoTime,
+                    reasonType: '',
+                    
+                    tabType: 'NOT-PROCEED',
+                    program: programChecked,
+                    packageStatus: 'REFERRAL'
+                  }
+
+                  finalRoster.push(program);
+                    
+                  const data: CallReferralOutProcedure = {                  
+                    roster: finalRoster,
+                    note: {
+                      personId: this.user.id,
+                      program: programChecked,
+                      detailDate: format(new Date,'yyyy/MM/dd'),
+                      extraDetail1: radioGroup,
+                      extraDetail2: 'REFERRAL-OUT',
+                      whoCode: this.user.code,
+                      publishToApp: publishToApp ? 1 : 0,
+                      creator: this.token.user,
+                      note: notes || "" ,
+                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      reminderTo: ''
+                    }
+                  }
+
+                  this.listS.postnotproceed(data).subscribe(data => {
+                    this.globalS.sToast('Success', 'Package is saved');
+                  });
               }
               
               if(this.option == RECIPIENT_OPTION.ASSESS){
-                console.log(this.assessGroup.value)
+                
+                const 
+                { 
+                  referralSource,
+                  referralCode,
+                  referralType,
+                  serviceType,
+                  packageName,
+                  radioGroup,
+                  notes,
+                  date,
+                  time,
+                  timeSpent,
+                  caseCategory,
+                  programChecked,
+                  publishToApp,
+                } = this.assessGroup.getRawValue();
+                
+                const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+                const timeInMinutes = this.globalS.getMinutes(timeSpent)
+                const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
+                
+                let program: ProcedureRoster = {
+                    clientCode: this.user.code,
+                    carerCode: this.token.code,
+                    
+                    serviceType: serviceType,
+                    date: format(date,'yyyy/MM/dd'),
+                    time: format(time,'HH:mm'),
+                    
+                    creator: this.token.code,
+                    editer: this.token.user,
+                    
+                    billUnit: defaultValues.billUnit,
+                    billDesc: defaultValues.billDesc,
+                    agencyDefinedGroup: this.user.agencyDefinedGroup,
+                    referralCode: referralCode,
+                    timePercent: timePercentage,
+                    notes: notes || "",
+                    type: defaultValues.type,
+                    duration: timeInMinutes / 5,
+                    blockNo: blockNoTime,
+                    reasonType: '',
+                    
+                    tabType: 'ASSESSMENT',
+                    program: programChecked,
+                    packageStatus: ''
+                  }
+
+                  finalRoster.push(program);
+                    
+                  const data: CallReferralOutProcedure = {                  
+                    roster: finalRoster,
+                    note: {
+                      personId: this.user.id,
+                      program: programChecked,
+                      detailDate: format(new Date,'yyyy/MM/dd'),
+                      extraDetail1: radioGroup,
+                      extraDetail2: 'SCREEN/ASSESS',
+                      whoCode: this.user.code,
+                      publishToApp: publishToApp ? 1 : 0,
+                      creator: this.token.user,
+                      note: notes || "" ,
+                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      reminderTo: ''
+                    }
+                  }
+
+                  console.log(data);
+                  return;
+                  
+                  this.listS.postassessment(data).subscribe(data =>{
+                    this.globalS.sToast('Success', 'Package is saved');
+                  });
               }
               
               if(this.option == RECIPIENT_OPTION.ADMIT){  
 
-                console.log(this.admitGroup.value)
                   const { 
                     time,
                     timeSpent,
@@ -881,11 +1218,154 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               }
               
               if(this.option == RECIPIENT_OPTION.WAIT_LIST){
-                console.log(this.waitListGroup.value)
+
+                // console.log(this.waitListGroup.value)
+
+                const 
+                { 
+                  referralSource,
+                  referralCode,
+                  referralType,
+                  packageName,
+                  activityCode,
+                  radioGroup,
+                  notes,
+                  date,
+                  time,
+                  timeSpent,
+                  programChecked,
+                  caseCategory,
+                  publishToApp,
+                } = this.waitListGroup.getRawValue();
+                
+                const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+                const timeInMinutes = this.globalS.getMinutes(timeSpent)
+                const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
+                
+                let program: ProcedureRoster = {
+                    clientCode: this.user.code,
+                    carerCode: this.token.code,
+                    
+                    serviceType: activityCode,
+                    date: format(date,'yyyy/MM/dd'),
+                    time: format(time,'HH:mm'),
+                    
+                    creator: this.token.code,
+                    editer: this.token.user,
+                    
+                    billUnit: defaultValues.billUnit,
+                    billDesc: defaultValues.billDesc,
+                    agencyDefinedGroup: this.user.agencyDefinedGroup,
+                    referralCode: referralCode,
+                    timePercent: timePercentage,
+                    notes: notes || "",
+                    type: defaultValues.type,
+                    duration: timeInMinutes / 5,
+                    blockNo: blockNoTime,
+                    reasonType: '',
+                    
+                    tabType: 'WAITLIST',
+                    program: programChecked,
+                    packageStatus: ''
+                  }
+
+                  finalRoster.push(program);
+                    
+                  const data: CallReferralOutProcedure = {                  
+                    roster: finalRoster,
+                    note: {
+                      personId: this.user.id,
+                      program: programChecked,
+                      detailDate: format(new Date,'yyyy/MM/dd'),
+                      extraDetail1: radioGroup,
+                      extraDetail2: 'WAITLIST',
+                      whoCode: this.user.code,
+                      publishToApp: publishToApp ? 1 : 0,
+                      creator: this.token.user,
+                      note: notes || "" ,
+                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      reminderTo: ''
+                    }
+                  }
+
+                  this.listS.postwaitlist(data).subscribe(data =>{
+                    this.globalS.sToast('Success', 'Package is saved');
+                  });
               }
               
               if(this.option == RECIPIENT_OPTION.DISCHARGE){
+
                 console.log(this.dischargeGroup.value)
+
+                const 
+                { 
+                  referralSource,
+                  referralCode,
+                  referralType,
+                  packageName,
+                  programChecked,
+                  radioGroup,
+                  notes,
+                  date,
+                  time,
+                  timeSpent,
+                  caseCategory,
+                  publishToApp,
+                } = this.dischargeGroup.getRawValue();
+                
+                const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+                const timeInMinutes = this.globalS.getMinutes(timeSpent)
+                const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
+                
+                let program: ProcedureRoster = {
+                    clientCode: this.user.code,
+                    carerCode: this.token.code,
+                    
+                    serviceType: referralType,
+                    date: format(date,'yyyy/MM/dd'),
+                    time: format(time,'HH:mm'),
+                    
+                    creator: this.token.code,
+                    editer: this.token.user,
+                    
+                    billUnit: defaultValues.billUnit,
+                    billDesc: defaultValues.billDesc,
+                    agencyDefinedGroup: this.user.agencyDefinedGroup,
+                    referralCode: referralCode,
+                    timePercent: timePercentage,
+                    notes: notes || "",
+                    type: defaultValues.type,
+                    duration: timeInMinutes / 5,
+                    blockNo: blockNoTime,
+                    reasonType: '',
+                    
+                    tabType: 'DISCHARGE',
+                    program: programChecked,
+                    packageStatus: ''
+                  }
+
+                  finalRoster.push(program);
+                    
+                  const data: CallReferralOutProcedure = {                  
+                    roster: finalRoster,
+                    note: {
+                      personId: this.user.id,
+                      program: programChecked,
+                      detailDate: format(new Date,'yyyy/MM/dd'),
+                      extraDetail1: radioGroup,
+                      extraDetail2: 'WAITLIST',
+                      whoCode: this.user.code,
+                      publishToApp: publishToApp ? 1 : 0,
+                      creator: this.token.user,
+                      note: notes || "" ,
+                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      reminderTo: ''
+                    }
+                  }
+
+                  this.listS.postdischarge(data).subscribe(data =>{
+                    this.globalS.sToast('Success', 'Package is saved');
+                  });
               }
               
               if(this.option == RECIPIENT_OPTION.SUSPEND){
@@ -894,14 +1374,93 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               
               if(this.option == RECIPIENT_OPTION.REINSTATE){
                 console.log(this.reinstateGroup.value)
+
+
+                const { 
+                  referralType,
+                  quantity,
+                  unit,
+                  radioGroup,
+                  notes,
+                  charge,
+                  suppliedDate,
+                  date,
+                  programChecked,
+                  referralDate,
+                  refNo,
+                  time,
+                  timeSpent,
+                  reminderDate,
+                  caseCategory,
+                  publishToApp,
+                  reminderTo
+                } = this.reinstateGroup.getRawValue()
+                
+                const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
+                const timeInMinutes = this.globalS.getMinutes(timeSpent)
+                const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString()
+                
+                
+                for(var checkProgram of checkedPrograms){
+                  
+                  let data: ProcedureRoster = {
+                    clientCode: this.user.code,
+                    carerCode: this.token.code,
+                    serviceType: checkProgram.selected,
+                    date: referralDate,
+                    time: time,
+                    
+                    creator: this.token.user,
+                    editer: this.token.user,
+                    
+                    billUnit: 'HOUR',
+                    agencyDefinedGroup: this.user.agencyDefinedGroup,
+                    referralCode: '',
+                    timePercent: timePercentage,
+                    notes: notes,
+                    type: 7,
+                    duration: timeInMinutes / 5,
+                    blockNo: blockNoTime,
+                    reasonType: '',
+                    program: programChecked,
+                    tabType: caseCategory       
+                  }
+                  finalRoster.push(data);
+                }
+                
+                let data: CallAssessmentProcedure = {
+                  roster: finalRoster,
+                  note: {
+                    personId: this.user.id,
+                    program: programChecked,
+                    detailDate: reminderDate ? reminderDate : '',
+                    extraDetail1: NOTE_TYPE[radioGroup],
+                    extraDetail2: caseCategory,
+                    whoCode: this.user.code,
+                    publishToApp: publishToApp ? 1 : 0,                    
+                    creator: this.token.user,
+                    note: notes,
+                    alarmDate: reminderDate ? reminderDate : '',
+                    reminderTo: reminderTo
+                  }
+                }
+                
+                console.log(data);
+
+                this.listS.postreinstate(data)
+                    .subscribe(data => {
+                      this.globalS.sToast('Success', 'Package is saved');
+                    });
+
               }
               
               if(this.option == RECIPIENT_OPTION.DECEASE){
                 console.log(this.deceaseGroup.value)
+
+                
               }
               
               if(this.option == RECIPIENT_OPTION.ADMIN){
-                console.log(this.adminGroup.value)
                 
                 const { 
                   referralType,
@@ -972,6 +1531,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }
                 
                 console.log(data);
+
+                this.listS.postadministration(data)
+                    .subscribe(data => {
+                      this.globalS.sToast('Success', 'Package is saved');
+                    });
               }
               
               if(this.option == RECIPIENT_OPTION.ITEM){
@@ -989,6 +1553,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   reminderDate,
                   caseCategory,
                   publishToApp,
+                  programChecked,
                   reminderTo
                 } = this.itemGroup.getRawValue()
                 
@@ -1030,7 +1595,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     apiInvoiceNumber: refNo,
                     
                     reasonType: '',
-                    program: checkProgram.program,
+                    program: programChecked,
                     tabType: 'ITEM'
                   }
                   finalRoster.push(data);
@@ -1040,7 +1605,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   roster: finalRoster,
                   note: {
                     personId: this.user.id,
-                    program: this.globalS.isVarious(this.checkedPrograms),
+                    program: programChecked,
                     detailDate: reminderDate ? reminderDate : '',
                     extraDetail1: NOTE_TYPE[radioGroup],
                     extraDetail2: caseCategory,
@@ -1057,28 +1622,22 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   this.globalS.sToast('Success','Item Added');
                 });
                 
-              }
-              
-              
-              
+              }           
             }
-            emailnotify(){
-              
+
+            emailnotify(){              
               
               const {notes} = this.referInGroup.value;
-              
               
               var emailTo = this.globalS.emailaddress; 
               
               var emailSubject = "ADAMAS NOTIFICATION";
               var emailBody = notes;  
-              location.href = "mailto:" + emailTo + "?" +     
+              location.href = "mailto:" + this.EMAIL_OF_COORDINATOR + "?" +     
               (emailSubject ? "subject=" + emailSubject : "") + 
               (emailBody ? "&body=" + emailBody : "");
               
-              this.globalS.emailaddress = null;
-              
-              
+              this.globalS.emailaddress = null;              
             }
             
             
@@ -1103,7 +1662,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 //     })
                 //   }
                 
-                //   this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.REFER_IN);
+                    // this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.REFER_IN);
                 //   this.changeDetection();
                 // })
                 break;
@@ -1399,11 +1958,30 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 break;
               }
             }
+
+            aaa(data){
+              console.log(data)
+            }
             
             GETREFERRAL_LIST(){
               if(this.option == RECIPIENT_OPTION.ITEM){
                 console.log('item');
               }
+            }
+
+            GET_FUNDINGTYPE(){
+              
+              this.globalFormGroup.get('programChecked')
+                  .valueChanges
+                  .pipe(
+                    distinctUntilChanged(),
+                    switchMap(x => {
+                      return this.listS.getspecifictype(x)
+                    })
+                  )
+                  .subscribe(d => {
+                    this.FUNDING_TYPE = d;
+                  })
             }
             
             formProgramArray(data: any, type: RECIPIENT_OPTION){
@@ -1416,6 +1994,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.globalFormGroup = this.itemGroup;
                 
                 this.noteArray = ['ITEM'];
+                this.GET_FUNDINGTYPE()
                 return;
               }
               
@@ -1423,22 +2002,26 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.adminGroup.get('programs') as FormArray;      
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.adminGroup;
+                this.GET_FUNDINGTYPE()
               }
               if(type == RECIPIENT_OPTION.ADMIT){
                 var prog = this.adminGroup.get('programs') as FormArray;      
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.adminGroup;
+                this.GET_FUNDINGTYPE()
               }
               if(type == RECIPIENT_OPTION.DECEASE){
                 var prog = this.deceaseGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.deceaseGroup;
+                this.GET_FUNDINGTYPE()
               }
               
               if(type == RECIPIENT_OPTION.SUSPEND){
                 var prog = this.suspendGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.suspendGroup;
+                this.GET_FUNDINGTYPE()
               }
               
               if(type == RECIPIENT_OPTION.DISCHARGE){
@@ -1447,13 +2030,16 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.globalFormGroup = this.dischargeGroup;
                 
                 this.noteArray = ['DISCHARGE'];
+                this.GET_FUNDINGTYPE()
                 return;
               }
               
               if(type == RECIPIENT_OPTION.WAIT_LIST){
                 var prog = this.waitListGroup.get('programs') as FormArray;
+                console.log(prog);
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.waitListGroup;
+                this.GET_FUNDINGTYPE()
               }
               
               if(type == RECIPIENT_OPTION.ADMIT){
@@ -1469,6 +2055,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     programChecked: programs.value
                   });
                 }
+                this.GET_FUNDINGTYPE()
               }
               
               if(type == RECIPIENT_OPTION.ASSESS){
@@ -1477,6 +2064,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.globalFormGroup = this.assessGroup;
                 
                 this.noteArray = ['SCREEN/ASSESS'];
+                this.GET_FUNDINGTYPE()
                 return;
               }
               
@@ -1484,6 +2072,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.notProceedGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.notProceedGroup;
+                this.GET_FUNDINGTYPE()
               }
               
               if(type == RECIPIENT_OPTION.REFER_ON){
@@ -1492,6 +2081,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.globalFormGroup = this.referOnGroup;
                 
                 this.noteArray = ['REFERRAL-OUT'];
+                this.GET_FUNDINGTYPE()
                 return;
               }
               
@@ -1560,31 +2150,31 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }
                 
                 if(this.dischargeOpen){
-                  if(this.current < 4){
+                  if(this.current < 7){
                     this.current += 1;
                   }
                 }
                 
                 if(this.waitListOpen){
-                  if(this.current < 4){
+                  if(this.current < 7){
                     this.current += 1;
                   }
                 }
                 
                 if(this.admitOpen){
-                  if(this.current < 5){
+                  if(this.current < 7){
                     this.current += 1;
                   }
                 }
                 
                 if(this.assessOpen){
-                  if(this.current < 4){
+                  if(this.current < 7){
                     this.current += 1;
                   }
                 }
                 
                 if(this.notProceedOpen){
-                  if(this.current < 4){
+                  if(this.current < 7){
                     this.current += 1;
                   }
                 }
@@ -1596,15 +2186,13 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }
                 
                 if(this.referOnOpen){
-                  if(this.current < 4){
+                  if(this.current < 7){
                     this.current += 1;
                   }
-                }
-                
-                
+                }                
                 
                 if(this.suspendOpen){
-                  if(this.current < 4){
+                  if(this.current < 7){
                     this.current += 1;
                   }
                 }
@@ -1620,8 +2208,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     this.current += 1;
                   }
                 }
-                
-                
+
                 // Other Details Tab Populate 
                 if(this.current == 1){
                   this.populateOtherDetails();      
@@ -1629,108 +2216,129 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 
                 // this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
               }
-              
-              populateOtherDetails(){
-                
-                if(this.option == RECIPIENT_OPTION.REFER_IN)
-                {
 
-                  this.listS.getnotifications({
-                    branch: this.BRANCH_NAME,
-                    coordinator: this.COORDINATOR
-                  }).subscribe(data => {
-                    this.notifCheckBoxes = data.map(x => {
-                      return {
-                        label: x.staffToNotify,
-                        value: x.staffToNotify,
-                        disabled: x.mandatory ? true : false,
-                        checked: x.mandatory ? true : false
-                      }
-                    });
-                    this.changeDetection();
+              populateNotificationDetails(){
+                this.listS.getnotifications({
+                  branch: this.BRANCH_NAME,
+                  coordinator: this.COORDINATOR
+                }).subscribe(data => {
+                  this.notifCheckBoxes = data.map(x => {
+                    return {
+                      label: x.staffToNotify,
+                      value: x.staffToNotify,
+                      disabled: x.mandatory ? true : false,
+                      checked: x.mandatory ? true : false
+                    }
                   });
+                  this.changeDetection();
+                });
 
-                  this.listS.getfollowups({
-                    branch: this.BRANCH_NAME,
-                    fundingType: this.FUNDING_TYPE,
-                    type: 'REF_DEFAULT_REMINDERS'
-                  }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                    this.notifFollowUpGroup = data.map(x => {
-                      return {
-                        label: x,
-                        value: x,
-                        disabled: false,
-                        checked: false
-                      }
-                    });
-                    this.changeDetection();
+                this.listS.getfollowups({
+                  branch: this.BRANCH_NAME,
+                  fundingType: this.FUNDING_TYPE,
+                  type: 'REF_DEFAULT_REMINDERS'
+                }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                  this.notifFollowUpGroup = data.map(x => {
+                    return {
+                      label: x,
+                      value: x,
+                      disabled: false,
+                      checked: false
+                    }
+                  });
+                  this.changeDetection();
+                })
+
+
+                this.listS.getdocumentslist({
+                  branch: this.BRANCH_NAME,
+                  fundingType: this.FUNDING_TYPE,
+                  type: 'REF_DEFAULT_DOCS',
+                }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                  this.notifDocumentsGroup = data.map(x => {
+                    return {
+                      label: x,
+                      value: x,
+                      disabled: false,
+                      checked: false
+                    }
                   })
+                  this.changeDetection();
+                });
 
+                this.listS.getdatalist({
+                  branch: this.BRANCH_NAME,
+                  fundingType: this.FUNDING_TYPE,
+                  type: 'REF_DEFAULT_XTRADATA'
+                }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+                  this.datalist = data;
+                  this.changeDetection();
+                }); 
 
-                  this.listS.getdocumentslist({
-                    branch: this.BRANCH_NAME,
-                    fundingType: this.FUNDING_TYPE,
-                    type: 'REF_DEFAULT_DOCS',
-                  }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                    this.notifDocumentsGroup = data.map(x => {
-                      return {
-                        label: x,
-                        value: x,
-                        disabled: false,
-                        checked: false
-                      }
-                    })
-                    this.changeDetection();
-                  });
+              }
+              
+              GET_PRIMARY_ADDRESS(){
+                this.listS.getprimaryphoneaddress({
+                  PersonId: this.user.id,
+                  Type: this.GET_FUNDING_TITLE()
+                }).subscribe(data =>{                  
+                    this.PATCH_NOTES(data);
+                });
+              }
 
-                  this.listS.getdatalist({
-                    branch: this.BRANCH_NAME,
-                    fundingType: this.FUNDING_TYPE,
-                    type: 'REF_DEFAULT_XTRADATA'
-                  }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                    this.datalist = data;
-                    this.changeDetection();
-                  }); 
+              populateOtherDetails(){
 
-                  this.referralCode$ = this.listS.getwizardreferralcode();
-                  
-                  if(this.referInGroup.get('type').value == 1){
-                    this.referralSource$ = of(['NDIA']);
-                    this.referInGroup.patchValue({
-                      referralSource: 'NDIA'
-                    });       
-                  }
-                  
-                  if(this.referInGroup.get('type').value == 2 || this.referInGroup.get('type').value == 3){
-                    this.referralSource$ = of(['My Aged Care Gateway']);
-                    this.referInGroup.patchValue({
-                      referralSource: 'My Aged Care Gateway'
-                    });
-                  }   
-                  
-                  if(this.referInGroup.get('type').value == 4){
-                    this.referralSource$ = of(['OTHER']);
-                    this.referInGroup.patchValue({
-                      referralSource: 'OTHER'
-                    });
-                  }
-                  
-                  this.referralType$ = this.listS.getreferraltype_latest(this.FUNDING_TYPE)
-                  .pipe(
-                    switchMap(x => {
-                      if(x.length == 1){
-                        this.referInGroup.patchValue({
-                          referralType: x[0]
+                  this.GET_PRIMARY_ADDRESS();
+
+                  if(this.option == RECIPIENT_OPTION.REFER_IN)
+                  { 
+
+                    this.listS.getspecificemailmanager(this.COORDINATOR)
+                        .subscribe(data => {
+                          this.EMAIL_OF_COORDINATOR = data;
                         });
-                      }
-                      return of(x);
-                    })
-                    );
-                    return;
-                }
+
+                    this.populateNotificationDetails();
+                    this.referralCode$ = this.listS.getwizardreferralcode();
+                    
+                    if(this.referInGroup.get('type').value == 1){
+                      this.referralSource$ = of(['NDIA']);
+                      this.referInGroup.patchValue({
+                        referralSource: 'NDIA'
+                      });       
+                    }
+                    
+                    if(this.referInGroup.get('type').value == 2 || this.referInGroup.get('type').value == 3){
+                      this.referralSource$ = of(['My Aged Care Gateway']);
+                      this.referInGroup.patchValue({
+                        referralSource: 'My Aged Care Gateway'
+                      });
+                    }   
+                    
+                    if(this.referInGroup.get('type').value == 4){
+                      this.referralSource$ = of(['OTHER']);
+                      this.referInGroup.patchValue({
+                        referralSource: 'OTHER'
+                      });
+                    }
+                    
+                    this.referralType$ = this.listS.getreferraltype_latest(this.FUNDING_TYPE)
+                    .pipe(
+                      switchMap(x => {
+                        if(x.length == 1){
+                          this.referInGroup.patchValue({
+                            referralType: x[0]
+                          });
+                        }
+                        return of(x);
+                      })
+                      );
+                      return;
+                  }
                   
                   if(this.option == RECIPIENT_OPTION.REFER_ON)
                   {
+                    this.populateNotificationDetails();
                     this.referralSource$ = this.listS.getwizardreferralsource('default');
                     
                     this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
@@ -1745,24 +2353,41 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     
                     this.referralCode$ = this.listS.getwizardreferralcode();
                   }
+
+                  if(this.option == RECIPIENT_OPTION.ASSESS){
+                    this.populateNotificationDetails();
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.ADMIN){
+                    this.populateNotificationDetails();
+                  }    
+
+                  if(this.option == RECIPIENT_OPTION.WAIT_LIST)
+                  {
+                    this.reasons$ = this.listS.getwaitlist();
+                  }
                   
                   if(this.option == RECIPIENT_OPTION.DECEASE)
                   {
+                    this.populateNotificationDetails();
                     this.reasons$ = this.listS.getreasons();
                   }
                   
                   if(this.option == RECIPIENT_OPTION.SUSPEND)
                   {
+                    this.populateNotificationDetails();
                     this.cancellationCode$ = this.listS.getlist(`SELECT title FROM itemtypes WHERE ( enddate IS NULL OR enddate >= '${ this.CURRENT_DATE.toISOString() }' ) AND rostergroup = 'RECPTABSENCE' AND status = 'ATTRIBUTABLE' AND processclassification = 'EVENT' ORDER BY title`)
                   }
                   
                   if(this.option == RECIPIENT_OPTION.DISCHARGE)
                   {
+                    this.populateNotificationDetails();
                     this.dischargeReason$ = this.listS.getlist(`SELECT DISTINCT Description, HACCCode, RecordNumber FROM DataDomains WHERE Domain = 'REASONCESSSERVICE'`);
                   }
                   
                   if(this.option == RECIPIENT_OPTION.ITEM)
                   {
+                    this.populateNotificationDetails();
                     let _input = {
                       program: '',
                       option: this.option
@@ -1772,6 +2397,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                   if(this.option == RECIPIENT_OPTION.ADMIT){
 
+                    this.populateNotificationDetails();
                     this.listS.getnotifications({
                       branch: this.BRANCH_NAME,
                       coordinator: this.COORDINATOR
@@ -1831,6 +2457,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       this.changeDetection();
                     }); 
                   }
+
+                  if(this.option == RECIPIENT_OPTION.NOT_PROCEED){
+                    this.populateNotificationDetails();
+                  }
                   
                   this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
                 }
@@ -1845,12 +2475,72 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }
                 
                 get canGoNext(): boolean {
+
                   if(this.option == RECIPIENT_OPTION.REFER_IN){
-                    if(this.isPackageNameAvailable){
-                      return false;
+                    if(this.FUNDING_TYPE == 'NDIA' && this.selectedProgram && !this.isPackageNameAvailable){
+                      return true;
+                    }
+
+                    if(this.FUNDING_TYPE == 'DOHA' && this.selectedProgram && !this.isPackageNameAvailable){
+                      return true;
+                    }
+
+                    if(this.FUNDING_TYPE == 'DSS' && this.selectedProgram){
+                        return true;
+                    }
+
+                    if(this.FUNDING_TYPE == null && this.selectedProgram){
+                        return true;
                     }
                   }
-                  return true;
+
+                  if(this.option == RECIPIENT_OPTION.ADMIT && this.admitGroup.get('programChecked').value){
+                    return true;
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.DECEASE){
+                    return true;
+                }
+
+                  if(this.option == RECIPIENT_OPTION.WAIT_LIST && this.waitListGroup.get('programChecked').value){
+                      return true;
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.REFER_ON && this.referOnGroup.get('programChecked').value){
+                    if(this.current == 1 && this.globalS.isEmpty(this.referOnGroup.get('referralType').value)){
+                      return false;
+                    }
+                    return true;
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.NOT_PROCEED && this.notProceedGroup.get('programChecked').value){
+                    if(this.current == 1 && this.globalS.isEmpty(this.notProceedGroup.get('referralType').value)){
+                      return false;
+                    }
+                    return true;
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.ASSESS && this.assessGroup.get('programChecked').value){
+                    if(this.current == 1 && this.globalS.isEmpty(this.assessGroup.get('serviceType').value)){
+                      return false;
+                    }
+                    return true;
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.DISCHARGE && this.dischargeGroup.get('programChecked').value){
+                    return true;
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.SUSPEND && this.suspendGroup.get('programChecked').value){
+                    return true;
+                  }
+
+                  if(this.option == RECIPIENT_OPTION.ITEM && this.itemGroup.get('programChecked').value){
+                    return true;
+                  }
+
+
+                  return false;
                 }
                 
                 get canBeDone(): boolean {

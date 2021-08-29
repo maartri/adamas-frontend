@@ -18,6 +18,11 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    getdocumentsrecipients(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/documents-recipients/${id}`)
+    }
+
+
     getaccountingprofile(personid: string): Observable<any>{
         return this.auth.get(`${timesheet}/accounting-profile/${personid}`);
     }

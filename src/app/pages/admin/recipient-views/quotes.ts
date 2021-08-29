@@ -927,7 +927,7 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             });
     }
 
-    search(user: any) {
+    search(user: any = this.user) {
         this.loading = true;
         this.user = user;
         
@@ -1253,10 +1253,16 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     record: any;
     updateQuoteModal(data: any){
-        console.log(  data);
         this.option = 'update';
         this.record = data.recordNumber;
         this.newQuoteModal = !this.newQuoteModal
+    }
+
+    refreshQuote(data: any){
+        if(data){
+            console.log('refresh')
+            this.search();
+        }
     }
 
 }

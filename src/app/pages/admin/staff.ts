@@ -240,15 +240,16 @@ export class StaffAdmin implements OnInit, OnDestroy {
             includeAdressress:false,
             ItemsOnLoan:false,
             trainingchk:false,
-            
             hrchk:false,
             opchk:false,
+            rosterchk:false,
+            prosterchk:false,
+            printOnSamePage:false,
             recepientSearc:'Show RECIPIENT CODE',
-
+            recepientSearc1:'Show RECIPIENT CODE',
             Cycles : ['Cycle 1'],
             DayNames : ['Monday'],
             fDays: ['7'],
-
             trainingFrom  :monthStart,
             trainingTo :monthend,
             rosterTo :monthend,
@@ -258,7 +259,62 @@ export class StaffAdmin implements OnInit, OnDestroy {
             opnotesTo :monthend,
             opnotesFrom:monthStart,
         });
- 
+        
+         this.printSummaryGroup.get('training').valueChanges.subscribe(data => {
+            if(!data){
+                this.printSummaryGroup.patchValue({
+                    trainingchk:false,
+                });
+            } else {
+                this.printSummaryGroup.patchValue({
+                    trainingchk:true,
+                });
+            }
+        })
+        this.printSummaryGroup.get('roster').valueChanges.subscribe(data => {
+            if(!data){
+                this.printSummaryGroup.patchValue({
+                    rosterchk:false,
+                });
+            } else {
+                this.printSummaryGroup.patchValue({
+                    rosterchk:true,
+                });
+            }
+        })
+        this.printSummaryGroup.get('permanentRoster').valueChanges.subscribe(data => {
+            if(!data){
+                this.printSummaryGroup.patchValue({
+                    prosterchk:false,
+                });
+            } else {
+                this.printSummaryGroup.patchValue({
+                    prosterchk:true,
+                });
+            }
+        })
+        this.printSummaryGroup.get('hrNotes').valueChanges.subscribe(data => {
+            if(!data){
+                this.printSummaryGroup.patchValue({
+                    hrchk:false,
+                });
+            } else {
+                this.printSummaryGroup.patchValue({
+                    hrchk:true,
+                });
+            }
+        })
+        this.printSummaryGroup.get('operationalNotes').valueChanges.subscribe(data => {
+            if(!data){
+                this.printSummaryGroup.patchValue({
+                    opchk:false,
+                });
+            } else {
+                this.printSummaryGroup.patchValue({
+                    opchk:true,
+                });
+            }
+        })
 
     /*    let monthend = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 

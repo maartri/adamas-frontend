@@ -7,8 +7,8 @@ nz-select >>> div.ant-select-selection{
     /* border-radius: 15px; */
 }
 
-nz-select >>> input[type="text"]{
-    text-transform: "uppercase";
+ng-select >>> div div div input{
+    text-transform: uppercase !important;
 }
 
 div{

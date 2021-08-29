@@ -1188,6 +1188,7 @@ export class AddQuoteComponent implements OnInit {
                     qty: quote.quantity,
                     frequency: quote.period,
                     quoteQty: quote.weekNo, 
+                    roster: quote.rosterString,
                     unitBillRate: quote.price,
                     tax: quote.gst,
                     itemId: quote.itemId,
@@ -1300,6 +1301,7 @@ export class AddQuoteComponent implements OnInit {
                     frequency: quote.period,
                     quoteQty: quote.weekNo, 
                     unitBillRate: quote.price,
+                    roster: quote.rosterString,
                     tax: quote.gst,
                     itemId: quote.itemId,
                     mainGroup: quote.mainGroup
@@ -1396,6 +1398,7 @@ export class AddQuoteComponent implements OnInit {
   }
 
   loadingSaveQuote: boolean = false;
+
   saveQuote(){
       
     let qteLineArr: Array<QuoteLineDTO> = [];
@@ -1461,8 +1464,8 @@ export class AddQuoteComponent implements OnInit {
     }
 
     this.loadingSaveQuote = true;
-    console.log(qteHeader)
-    return;
+    // console.log(qteHeader)
+    // return;
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');

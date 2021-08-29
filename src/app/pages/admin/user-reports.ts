@@ -14,6 +14,7 @@ import eachDayOfInterval from "date-fns/esm/eachDayOfInterval/index";
 
 const inputFormDefault = {
   frm_nodelist: [true],
+  frm_delete : [false],
   
   btnid: '',
   content:  '',
@@ -33,7 +34,7 @@ const inputFormDefault = {
   data: [[]],
   activeonly:[false],
   incl_internalCostclient: [false],
-  radiofiletr:[],
+  radiofiletr:["meet"],
   datarow: [[]],
 
 }
@@ -58,6 +59,12 @@ const inputFormDefault = {
         text-align: center;
          vertical-align: center;
             
+    }
+    .colwidth{
+      width: 200px;
+    }
+    .colwidthentity{
+      width: 300px;
     }
     nz-layout{
       height: fit-content;
@@ -95,6 +102,7 @@ const inputFormDefault = {
 
 export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   frm_nodelist: boolean = true;
+  frm_delete : boolean = false;
   inputForm: FormGroup;
   btnid: string;
   content: string;
@@ -1293,7 +1301,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         
       }
       
-    this.test(this.one);
+    this.FinalizeArray(this.one);
     
 
     }
@@ -1312,15 +1320,22 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       );
     });
   }
-  test(node) { 
+  FinalizeArray(node) { 
     this.frm_nodelist = true;  
-  this.list = node;
-  this.exportitemsArr = [...this.list,"Service Date", "Service Start Time", "Service Hours", "Service Code", "Service Location/Activity Group", "Service Program", "Service Group", "Service HACCType", "Service Category", "Service Pay Rate", "Service Bill Rate", "Service Bill Qty", "Service Status", "Service Pay Type", "Service Pay Qty", "Service Bill Unit", "Service Funding Source"]
-  
+    this.list = node;
+    this.exportitemsArr = [...this.list,"Service Date", "Service Start Time", "Service Hours", "Service Code", "Service Location/Activity Group", "Service Program", "Service Group", "Service HACCType", "Service Category", "Service Pay Rate", "Service Bill Rate", "Service Bill Qty", "Service Status", "Service Pay Type", "Service Pay Qty", "Service Bill Unit", "Service Funding Source"]
 
-  } 
+
+  }
+  SetValueFrame() {
+    console.log("onchange value")
+    if(this.inputForm.value.functionsArr == "BETWEEN")  {
+      console.log("between")
+    }
+  }
   
   apply(){
+    this.frm_delete = true;
     this.entity  = this.inputForm.value.exportitemsArr;
     this.condition  = this.inputForm.value.functionsArr;
     this.value  = this.inputForm.value.Arr;
@@ -1328,19 +1343,21 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     
     var temp,temp1,temp2 :Array<any>
 
-      if (this.datarow == null){
-        this.entity = concat([ this.entity]);
-        this.value = concat([ this.value]);
-        this.condition = concat([ this.condition]);
+    //  if (this.entity == null){
+        this.entity = concat([this.entity]);
+        this.value = concat([this.value]);
+        this.condition = concat([this.condition]);
+      //  console.log("datarow null " + this.entity)
         //this.datarow  = [entity,condition,value];
-        //this.datarow  =concat(this.entity,this.condition,this.value);
-      }else
+        this.datarow  =concat([this.entity,this.condition,this.value]);
+   /*   }else
       {
         this.entity = this.entity.concat([ this.entity]);
         this.value = this.value.concat([ this.value]);
         this.condition = this.condition.concat([ this.condition]);
+        console.log("datarow else" + this.entity)
         //this.datarow = [this.entity,this.condition,this.value];
-      }  
+      }  */
         //console.log(this.entity,this.value,this.condition)    
         
         switch ((this.inputForm.value.exportitemsArr).toString()) {
@@ -3658,53 +3675,53 @@ PersonID,
                   break;
 //Recipient Placements                  
           case 'Placement Type':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Type]'
                   break;
             case 'Placement Carer Name':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Name]'
                   break;
             case 'Placement Start':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Date1]'
                   break;
           case 'Placement End':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Date2]'
                   break;
           case 'Placement Referral':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'HRPlacements.[Recurring]' 
                   break;        
           case 'Placement ATC':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Completed]'
                   break;
             case 'Placement Notes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Notes]'
                   break;
 //Quote Goals and stratagies                  
             case 'Quote Goal':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'GOALS.User1'
                   break;
           case 'Goal Expected Completion Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'GOALS.Date1'
                   break;
           case 'Goal Last Review Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'GOALS.Date2'
                   break;
           case 'Goal Completed Date':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'GOALS.DateInstalled'
+                  break;                  
             case 'Goal  Achieved':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'GOALS.[State]'
                   break;
             case 'Quote Strategy':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'STRATEGIES.Notes'
                   break;
           case 'Strategy Expected Outcome':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'STRATEGIES.Address1'
                   break;
           case 'Strategy Contracted ID':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'STRATEGIES.[State]'
                   break;
           case 'Strategy DS Services':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'STRATEGIES.User1'
                   break;
           
           default:
@@ -3725,11 +3742,17 @@ PersonID,
     if (index != -1) {
       this.value.splice(index, 1);
       this.entity.splice(index, 1);
-      this.condition.splice(index, 1);             
+      this.condition.splice(index, 1); 
+      this.frm_delete = false;            
     }
   }
   //  console.log(index)
   }
+  deletelistitem(index){        
+        this.list.splice(index, 1); 
+        this.exportitemsArr.splice(index, 1);            
+     
+    }
   QueryFormation(){
     
     var keys = this.inputForm.value.functionsArr
@@ -7903,84 +7926,89 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
 //Recipient Placements                      
               case 'Placement Type':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['HRPlacements.[Type]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['HRPlacements.[Type]  as Field'+fld.indexOf(key)])} 
                       break;
                 case 'Placement Carer Name':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                    columnNames = columnNames.concat(['HRPlacements.[Name]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['HRPlacements.[Name]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'Placement Start':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                    columnNames = columnNames.concat(['HRPlacements.[Date1]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['HRPlacements.[Date1]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Placement End':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['HRPlacements.[Date2]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['HRPlacements.[Date2]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Placement Referral':
+                var placementrefferal = " CASE HRPlacements.[Recurring]  WHEN 1 THEN 'True' else 'False' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([placementrefferal + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([placementrefferal + '  as Field'+fld.indexOf(key)])}  
                       break;        
               case 'Placement ATC':
+                var placementATC = " CASE HRPlacements.[Completed]  WHEN 1 THEN 'True' else 'False' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat([placementATC +'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([placementATC + '  as Field'+fld.indexOf(key)])} 
                       break;
                 case 'Placement Notes':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                    columnNames = columnNames.concat(['HRPlacements.[Notes]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['HRPlacements.[Notes]  as Field'+fld.indexOf(key)])} 
                       break;
 //Quote Goals and stratagies                      
                 case 'Quote Goal':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                    columnNames = columnNames.concat(['GOALS.User1  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['GOALS.User1  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Goal Expected Completion Date':
+                var GExpecCompletion = " Convert(varchar,GOALS.Date1,103) "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([GExpecCompletion + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([GExpecCompletion + '  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Goal Last Review Date':
+                var GlastReviewDate = " Convert(varchar,GOALS.Date2,103) "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat([GlastReviewDate + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([GlastReviewDate + '  as Field'+fld.indexOf(key)])}
                       break;
               case 'Goal Completed Date':
+                var GCompleteDate = " Convert(varchar,GOALS.DateInstalled,103) "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat([GCompleteDate + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([GCompleteDate + '  as Field'+fld.indexOf(key)])} 
                       break;
                 case 'Goal  Achieved':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                    columnNames = columnNames.concat(['GOALS.[State]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['GOALS.[State]  as Field'+fld.indexOf(key)])}  
                       break;
                 case 'Quote Strategy':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                    columnNames = columnNames.concat(['STRATEGIES.Notes  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['STRATEGIES.Notes  as Field'+fld.indexOf(key)])}
                       break;
               case 'Strategy Expected Outcome':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['STRATEGIES.Address1  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['STRATEGIES.Address1  as Field'+fld.indexOf(key)])}
                       break;
               case 'Strategy Contracted ID':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['STRATEGIES.[State]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['STRATEGIES.[State]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Strategy DS Services':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['STRATEGIES.User1  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['STRATEGIES.User1  as Field'+fld.indexOf(key)])}  
                       break;
 
 
@@ -8240,11 +8268,35 @@ TablesSetting(arr){
       || arr.includes("MH-KP_Exit_6")|| arr.includes("MH-KP_Exit_7") || arr.includes("MH-KP_Intake_DATE") || arr.includes("MH-KP_3Months_DATE") || arr.includes("MH-KP_6Months_DATE") || arr.includes("MH-KP_9Months_DATE") || arr.includes("MH-KP_Exit_DATE") 
     ){
       FromSql = FromSql + "  LEFT JOIN MENTALHEALTHDATASET ON R.UniqueID = MENTALHEALTHDATASET.PersonID "    
-  }   
+      }         
+    if(arr.includes("Placement Type") || arr.includes("Placement Carer Name") || arr.includes("Placement Start") || arr.includes("Placement End") || arr.includes("Placement Referral") || arr.includes("Placement ATC") || arr.includes("Placement Notes")
+      ){
+      FromSql = FromSql + "  LEFT JOIN HumanResources HRPlacements ON R.UniqueID = HRPlacements.PersonID AND [GROUP] = 'PLACEMENT' "    
+    }
 
+    if( arr.includes("Quote Strategy") || arr.includes("Strategy Expected Outcome") || arr.includes("Strategy Contracted ID") || arr.includes("Strategy DS Services")
+        || arr.includes("Goal  Achieved") || arr.includes("Goal Completed Date") || arr.includes("Goal Last Review Date") || arr.includes("Goal Expected Completion Date") || arr.includes("Quote Goal")
+    ){
 
-
-
+        if( arr.includes("Goal  Achieved") || arr.includes("Goal Completed Date") || arr.includes("Goal Last Review Date") || arr.includes("Goal Expected Completion Date") || arr.includes("Quote Goal")
+        ){
+            FromSql = FromSql + "  Right JOIN Documents D   on R.UniqueID = D.PersonID LEFT JOIN HumanResources GOALS on GOALS.PersonID = CONVERT(varchar, D.Doc_ID) "    
+          }
+          
+        if( arr.includes("Quote Strategy") || arr.includes("Strategy Expected Outcome") || arr.includes("Strategy Contracted ID") || arr.includes("Strategy DS Services") 
+        ){
+            if( arr.includes("Goal  Achieved") || arr.includes("Goal Completed Date") || arr.includes("Goal Last Review Date") || arr.includes("Goal Expected Completion Date") || arr.includes("Quote Goal")
+            ){
+              FromSql = FromSql + "  LEFT JOIN HumanResources STRATEGIES on STRATEGIES.PersonID = GOALS.RecordNumber "    
+            }else{
+              FromSql = FromSql + "  Right JOIN Documents D   on R.UniqueID = D.PersonID LEFT JOIN HumanResources GOALS on GOALS.PersonID = CONVERT(varchar, D.Doc_ID) "    
+              FromSql = FromSql + "  LEFT JOIN HumanResources STRATEGIES on STRATEGIES.PersonID = GOALS.RecordNumber "      
+            }
+          
+        }
+      
+        
+  }
 
 
 

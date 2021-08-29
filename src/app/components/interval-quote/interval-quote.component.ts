@@ -266,30 +266,30 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     
     clonedObjArray.forEach((x, index) => {
       
-      
-      var monQuant = ('0'+ (x['monday']['quantity'])).slice(-2).concat(':00');
+      // parseFloat((x['monday']['quantity']).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})).toFixed(2)
+      var monQuant = parseFloat((x['monday']['quantity']).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})).toFixed(2);
       if(index > 0){
         parseString = parseString.concat('||',format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
       } else {
         parseString = parseString.concat(format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
       }
       
-      var tueQuant = ('0'+ (x['tuesday']['quantity'])).slice(-2).concat(':00');
+      var tueQuant = parseFloat((x['tuesday']['quantity']).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})).toFixed(2);
       parseString = parseString.concat('||',format(new Date(x['tuesday']['time']),'HH:mm'), '|', tueQuant);
 
-      var wedQuant = ('0'+ (x['wednesday']['quantity'])).slice(-2).concat(':00');
+      var wedQuant = parseFloat((x['wednesday']['quantity']).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})).toFixed(2);
       parseString = parseString.concat('||',format(new Date(x['wednesday']['time']),'HH:mm'), '|', wedQuant);
 
-      var thuQuant = ('0'+ (x['thursday']['quantity'])).slice(-2).concat(':00');
+      var thuQuant = parseFloat((x['thursday']['quantity']).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})).toFixed(2);
       parseString = parseString.concat('||',format(new Date(x['thursday']['time']),'HH:mm'), '|', thuQuant);
 
-      var friQuant = ('0'+ (x['friday']['quantity'])).slice(-2).concat(':00');
+      var friQuant = parseFloat((x['friday']['quantity']).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})).toFixed(2);
       parseString = parseString.concat('||',format(new Date(x['friday']['time']),'HH:mm'), '|', friQuant);
 
-      var satQuant = ('0'+ (x['saturday']['quantity'])).slice(-2).concat(':00');
+      var satQuant = parseFloat((x['saturday']['quantity']).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})).toFixed(2);
       parseString = parseString.concat('||',format(new Date(x['saturday']['time']),'HH:mm'), '|', satQuant);
 
-      var sunQuant = ('0'+ (x['sunday']['quantity'])).slice(-2).concat(':00');
+      var sunQuant = parseFloat((x['sunday']['quantity']).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})).toFixed(2);
       parseString = parseString.concat('||',format(new Date(x['sunday']['time']),'HH:mm'), '|', sunQuant);
       
     });

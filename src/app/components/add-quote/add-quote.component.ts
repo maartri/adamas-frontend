@@ -1196,8 +1196,6 @@ export class AddQuoteComponent implements OnInit {
                     recordNumber: quote.recordNumber
                 }
 
-                console.log(_quote);
-                return;
                 this.listS.createQuoteLine(_quote).subscribe(data => {
 
                 this.quoteLines = [...this.quoteLines, {

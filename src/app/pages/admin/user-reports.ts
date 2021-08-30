@@ -1409,28 +1409,28 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 this.ConditionEntity = ' DateDiff(YEAR,R.Dateofbirth,GetDate())'
               break;
           case 'Ageband-Statistical':
-              //  this.ConditionEntity = ''
+                 this.ConditionEntity = "DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() )"
               break;
           case 'Ageband-5 Year':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity = "DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() )"
               break;
           case 'Ageband-10 Year':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity = "DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() )"
               break;
               case 'Age-ATSI Status':
               //  this.ConditionEntity =''
               break;
           case 'Month Of Birth':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity =   'DateName(Month, DateOfBirth)'
               break;
           case 'Day Of Birth No.':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity =   'DateName(Weekday, DateOfBirth)'
               break;
           case 'CALD Score':
-              //  this.ConditionEntity =''
+                this.ConditionEntity =    'DataDomains.CALDStatus'
               break;                     
           case 'Country Of Birth':
-                this.ConditionEntity = 'R.CountryOfBirth'
+                this.ConditionEntity =  'R.CountryOfBirth'
               break;
           case 'Language':
                 this.ConditionEntity = 'R.HomeLanguage'
@@ -1442,7 +1442,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 this.ConditionEntity = 'R.PermDisability'
               break;
           case 'Financially Dependent':
-              //  this.ConditionEntity =''
+                this.ConditionEntity = 'R.[FDP]'
               break;
           case 'Financial Status':
                 this.ConditionEntity = 'R.FinancialStatus'
@@ -1455,13 +1455,13 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 this.ConditionEntity = 'R.UniqueID'
               break;
           case 'Code':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity = 'R.[AccountNo]'
                 break;
           case 'Type':
-              //  this.ConditionEntity =''
+                this.ConditionEntity ='R.[Type]'
                 break;             
           case 'Category':
-              //  this.ConditionEntity =''
+                 //this.ConditionEntity =''
               break;
           case 'CoOrdinator':
                 this.ConditionEntity = 'R.RECIPIENT_CoOrdinator'
@@ -1505,19 +1505,19 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
             this.ConditionEntity =  'R.OHSProfile'
                 break;
           case 'OLD WH&S Date':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'R.[WH&S]'
                 break;
           case 'Billing Profile':
             this.ConditionEntity =  'R.BillProfile'
                 break;                       
           case 'Sub Category':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'R.[UBDMap]'
                 break;
           case 'Roster Alerts':
-           // this.ConditionEntity =  
+             this.ConditionEntity =  'R.[Notes]'
                 break;
           case 'Timesheet Alerts':
-           // this.ConditionEntity =  
+             this.ConditionEntity =  'R.[SpecialConsiderations]'
                 break;                 
           case 'Contact Issues':
             this.ConditionEntity =  'R.ContactIssues'
@@ -1525,12 +1525,9 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           case 'Survey Consent Given':
             this.ConditionEntity =  'R.SurveyConsent'
                 break;
-          case 'Copy Rosters':
+          case 'Copy Rosters Enabled':
             this.ConditionEntity =  'R.Autocopy'
-                break;
-          case 'Enabled':
-           // this.ConditionEntity =  
-                break;
+                break;           
           case 'Activation Date':
            // this.ConditionEntity =  
                 break;
@@ -1542,10 +1539,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 break;
           case 'Specific Competencies':
             this.ConditionEntity =  'R.SpecialConsiderations'
-                break;                
-          case 'Carer Info':
-          //  this.ConditionEntity =  
-                break;
+                break;                           
 //  Contacts & Next of Kin
           case 'Contact Group':
             this.ConditionEntity =  'HR.[Group]'
@@ -1570,24 +1564,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                break;
           case 'Contact Suburb':
             this.ConditionEntity = 'HR.[Suburb]' 
-                break;
-/*
-PersonID,  
-                         HR.[Group] As [Contact Group], 
-                         HR.[Type] As [Contact Type], 
-                         HR.[SubType] As [Contact Sub Type], 
-                         HR.[User1] As [Contact User Flag], 
-                         HR.[EquipmentCode] As [Contact Person Type] , 
-                         HR.[Name] As [Contact Name], 
-                         HR.[Address1] As [Contact Address], 
-                         HR.[Suburb] As [Contact Suburb], 
-                         HR.[Postcode] As [Contact Postcode], 
-                         HR.[Phone1] As [Contact Phone 1], 
-                         HR.[Phone2] As [Contact Phone 2], 
-                         HR.[Mobile] As [Contact Mobile], 
-                         HR.[FAX] As [Contact FAX], 
-                         HR.[Email] As [Contact Email]
-*/                
+                break;                
           case 'Contact Postcode':
             this.ConditionEntity = 'HR.[Postcode]' 
                 break;
@@ -1621,9 +1598,7 @@ PersonID,
                 break;
           case 'Carer Indigenous Status':
              this.ConditionEntity =  'C.[IndiginousStatus]'
-                break;
-//   
-//                    
+                break;                       
           case 'Carer Address':
              this.ConditionEntity =  "N.Address1 + ' ' +  N.Suburb + ' ' + N.Postcode"
                 break;
@@ -1751,15 +1726,15 @@ PersonID,
           case 'Preference Note':
                this.ConditionEntity =  'Prefr.[Notes]'
                   break;
-// FIXED REVIEW DATES                  
+// FIXED REVIEW DATES                   
           case 'Review Date 1':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[OpReASsessmentDate]'
                   break;
           case 'Review Date 2':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[ClinicalReASsessmentDate]'
                   break;
           case 'Review Date 3':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[FileReviewDate]'
                   break;           
 //Staffing Inclusions/Exclusions                  
           case 'Excluded Staff':
@@ -1815,10 +1790,10 @@ PersonID,
                this.ConditionEntity =  'RecipientPrograms.[TotalAllocation]'
                   break;
           case 'Used':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[Used]'
                   break;
           case 'Remaining':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  '(RecipientPrograms.[TotalAllocation] - RecipientPrograms.[Used])'
                   break;
 //LEGACY CARE PLAN                  
           case 'Name':
@@ -1959,7 +1934,7 @@ PersonID,
                this.ConditionEntity =  'R.[ReferralSource]'
                   break;
           case 'HACC-Date Of Birth':
-               this.ConditionEntity =  'Recipients.[DateOfBirth]'
+               this.ConditionEntity =  'R.[DateOfBirth]'
                   break;
           case 'HACC-Date Of Birth Estimated':
                this.ConditionEntity =  'R.[CSTDA_BDEstimate]'
@@ -4034,17 +4009,17 @@ ColumnNameAdjuster(fld){
               break;
       case 'Ageband-Statistical':
         var AgebandStatic = " CASE " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 6 AND 13 THEN ' 6-13' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 14 AND 17 THEN '14-17' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 18 AND 45 THEN '18-45' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 46 AND 65 THEN '46-65' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 66 AND 70 THEN '66-70' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 71 AND 75 THEN '71-75' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 76 AND 80 THEN '76-80' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 81 AND 90 THEN '81-90' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) > 90 THEN 'OVER 90' " +
-        "ELSE 'UNKNOWN' END "  
+        "case WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN 0 AND 5 THEN ' 0- 5' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN 6 AND 13 THEN ' 6-13' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 14 AND 17 THEN '14-17' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 18 AND 45 THEN '18-45' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 46 AND 65 THEN '46-65' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 66 AND 70 THEN '66-70' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 71 AND 75 THEN '71-75' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 76 AND 80 THEN '76-80' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN 81 AND 90 THEN '81-90' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) > 90 THEN 'OVER 90' "+
+        "ELSE 'UNKNOWN' END  "
         
                   if(columnNames != []){
               columnNames = columnNames.concat([AgebandStatic+' as Field'+fld.indexOf(key)])
@@ -4052,26 +4027,26 @@ ColumnNameAdjuster(fld){
               break;
           case 'Ageband-5 Year':
             var Ageband5 =" CASE " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 6 AND 10 THEN ' 6-10' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 11 AND 15 THEN '11-15' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 16 AND 20 THEN '16-20' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 21 AND 25 THEN '21-25' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 26 AND 30 THEN '26-30' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 36 AND 40 THEN '36-40' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 41 AND 45 THEN '41-45' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 46 AND 50 THEN '46-50' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 51 AND 55 THEN '51-55' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 56 AND 60 THEN '56-60' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 61 AND 65 THEN '61-65' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 66 AND 70 THEN '66-70' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 71 AND 75 THEN '71-75' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(NGETDATE(),'yyyy-mm-dd') ) BETWEEN 76 AND 80 THEN '76-80' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 81 AND 85 THEN '81-85' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 86 AND 90 THEN '86-90' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 91 AND 95 THEN '91-95' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 96 AND 100 THEN '96-100' "+ 
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth, Format(GETDATE(), 'yyyy-mm-dd')) > 100 THEN 'OVER 100' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  6 AND 10 THEN ' 6-10' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  11 AND 15 THEN '11-15' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  16 AND 20 THEN '16-20' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  21 AND 25 THEN '21-25' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  26 AND 30 THEN '26-30' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  36 AND 40 THEN '36-40' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  41 AND 45 THEN '41-45' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  46 AND 50 THEN '46-50' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  51 AND 55 THEN '51-55' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  56 AND 60 THEN '56-60' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  61 AND 65 THEN '61-65' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  66 AND 70 THEN '66-70' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  71 AND 75 THEN '71-75' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() ) BETWEEN 76 AND 80 THEN '76-80' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  81 AND 85 THEN '81-85' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  86 AND 90 THEN '86-90' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  91 AND 95 THEN '91-95' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  96 AND 100 THEN '96-100' "+ 
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth, GETDATE()) > 100 THEN 'OVER 100' " +
             "ELSE 'UNKNOWN' END " 
             
                   if(columnNames != []){
@@ -4080,26 +4055,27 @@ ColumnNameAdjuster(fld){
               break;
           case 'Ageband-10 Year':
             var Ageban10 = "CASE "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 0 AND 10 THEN '0- 10' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 11 AND 20 THEN '11-20' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 21 AND 30 THEN '21-30' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 31 AND 40 THEN '31-40' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 41 AND 50 THEN '41-50' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 51 AND 60 THEN '51-60' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 61 AND 70 THEN '61-70' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 71 AND 80 THEN '71-80' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 81 AND 90 THEN '81-90' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 91 AND 100 THEN '91-100' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) > 100 THEN 'OVER 100' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  0 AND 10 THEN '0- 10' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  11 AND 20 THEN '11-20' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  21 AND 30 THEN '21-30' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() ) BETWEEN 31 AND 40 THEN '31-40' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() ) BETWEEN 41 AND 50 THEN '41-50' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth, GETDATE() ) BETWEEN 51 AND 60 THEN '51-60' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) BETWEEN 61 AND 70 THEN '61-70' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) BETWEEN 71 AND 80 THEN '71-80' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) BETWEEN 81 AND 90 THEN '81-90' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) BETWEEN 91 AND 100 THEN '91-100' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) > 100 THEN 'OVER 100' "+
             "ELSE 'UNKNOWN' END  "
                   if(columnNames != []){
               columnNames = columnNames.concat([Ageban10+ ' as Field'+fld.indexOf(key)])
             }else{columnNames = ([Ageban10+ ' as Field'+fld.indexOf(key)])}        
               break;
               case 'Age-ATSI Status':
+                var AgeATSI = " case WHEN DATEADD(YEAR,65, CONVERT(DATETIME,DateOfBirth)) <= GETDATE() OR (DATEADD(YEAR,50, CONVERT(DATETIME,DateOfBirth)) <= GETDATE() AND LEFT( CSTDA_INDIGINOUS, 3) IN ('ABO', 'TOR', 'BOT')) THEN 'OVER 64 OR ATSI OVER 49' ELSE 'UNDER 65 OR ATSI UNDER 50' END "
                   if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-            }else{columnNames = (['  as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat([AgeATSI +'  as Field'+fld.indexOf(key)])
+            }else{columnNames = ([AgeATSI + '  as Field'+fld.indexOf(key)])}        
               break;
         case 'Month Of Birth':
             var Month = "DateName(Month, DateOfBirth)  "
@@ -4113,10 +4089,11 @@ ColumnNameAdjuster(fld){
               columnNames = columnNames.concat([day +' as Field'+fld.indexOf(key)])
             }else{columnNames = ([day +' as Field'+fld.indexOf(key)])}        
               break;
-              case 'CALD Score':
+              case 'CALD Score': 
+                var caldscore = " (SELECT distinct DD.CALDStatus FROM DataDomains DD WHERE DOMAIN = 'Countries' and DD.DESCRIPTION = R.CountryOfBirth) "
                   if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-            }else{columnNames = (['  as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat([caldscore +'  as Field'+fld.indexOf(key)])
+            }else{columnNames = ([caldscore +'  as Field'+fld.indexOf(key)])}        
               break;             
               case 'Country Of Birth':
                   if(columnNames != []){
@@ -4145,7 +4122,7 @@ ColumnNameAdjuster(fld){
             }else{columnNames = (['R.CSTDA_DisabilityGroup as Field'+fld.indexOf(key)])}        
               break;
       case 'Financially Dependent':
-        var FinanceDepend = "CASE WHEN R.[FDP] = 1 THEN 'YES'   ELSE 'NO' END AS [Financially Dependent]"
+        var FinanceDepend = "CASE WHEN R.[FDP] = 1 THEN 'YES'   ELSE 'NO' END "
                   if(columnNames != []){
               columnNames = columnNames.concat([FinanceDepend+'  as Field'+fld.indexOf(key)])
             }else{columnNames = ([FinanceDepend +'  as Field'+fld.indexOf(key)])}        
@@ -4168,13 +4145,13 @@ ColumnNameAdjuster(fld){
               break;
               case 'Code':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-            }else{columnNames = (['  as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.[AccountNo]  as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.[AccountNo]  as Field'+fld.indexOf(key)])}        
               break;             
               case 'Type':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-            }else{columnNames = (['  as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.[Type]  as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.[Type]  as Field'+fld.indexOf(key)])}        
               break;             
               case 'Category':
                   if(columnNames != []){
@@ -4250,8 +4227,8 @@ ColumnNameAdjuster(fld){
                   break;
             case 'OLD WH&S Date':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                columnNames = columnNames.concat(['R.[WH&S]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[WH&S]  as Field'+fld.indexOf(key)])}  
                   break;   
               case 'Billing Profile':
                   if(columnNames != []){
@@ -4260,18 +4237,18 @@ ColumnNameAdjuster(fld){
                 break;          
             case 'Sub Category':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['R.[UBDMap]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[UBDMap]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Roster Alerts':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['R.[Notes]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[Notes]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Timesheet Alerts':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['R.[SpecialConsiderations]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[SpecialConsiderations]  as Field'+fld.indexOf(key)])} 
                   break;                 
             case 'Contact Issues':
                     if(columnNames != []){
@@ -4645,21 +4622,21 @@ ColumnNameAdjuster(fld){
                   columnNames = columnNames.concat(['Prefr.[Notes]  as Field'+fld.indexOf(key)])
                 }else{columnNames = (['Prefr.[Notes]  as Field'+fld.indexOf(key)])}  
                       break;
-// FIXED REVIEW DATES                      
+// FIXED REVIEW DATES                    
               case 'Review Date 1':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[OpReASsessmentDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[OpReASsessmentDate]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Review Date 2':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[ClinicalReASsessmentDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[ClinicalReASsessmentDate]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Review Date 3':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['R.[FileReviewDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[FileReviewDate]  as Field'+fld.indexOf(key)])} 
                       break;   
 //Staffing Inclusions/Exclusions                                 
               case 'Excluded Staff':
@@ -4756,14 +4733,16 @@ ColumnNameAdjuster(fld){
                 }else{columnNames = ([Allocation +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'Used':
+                var used = " CASE WHEN RecipientPrograms.[Used] <> '' THEN RecipientPrograms.[Used] ELSE 0 END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat([used +'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([used +'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Remaining':
+                var remaining = " CASE WHEN RecipientPrograms.[TotalAllocation] <> '' AND RecipientPrograms.[Used] <> '' THEN (RecipientPrograms.[TotalAllocation] - RecipientPrograms.[Used]) ELSE 0 END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([remaining + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([remaining +'  as Field'+fld.indexOf(key)])}  
                       break;
 //LEGACY CARE PLAN                      
               case 'Name':
@@ -5721,181 +5700,181 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
                 }else{columnNames = (['R.[DateOfBirth]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Usual Address-Street':
-                var AddressStreet = " (SELECT TOP 1 Address1 from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<USUAL>') "
+                var AddressStreet = " (SELECT TOP 1 Address1 from namesandaddresses WHERE personid = R.UniqueID AND Description = '<USUAL>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressStreet +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressStreet +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Usual Address-Suburb':
-                var AddressSburb = " (SELECT TOP 1 Suburb from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<USUAL>') "
+                var AddressSburb = " (SELECT TOP 1 Suburb from namesandaddresses WHERE personid = R.UniqueID AND Description = '<USUAL>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressSburb +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressSburb +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Usual Address-Postcode':
-                var AddressPostCode = " (SELECT TOP 1 Postcode from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<USUAL>') "
+                var AddressPostCode = " (SELECT TOP 1 Postcode from namesandaddresses WHERE personid = R.UniqueID AND Description = '<USUAL>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressPostCode+ '  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressPostCode +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Contact Address-Street':
-                var AddressCotactStreet = " (SELECT TOP 1 Address1 from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<CONTACT>') "
+                var AddressCotactStreet = " (SELECT TOP 1 Address1 from namesandaddresses WHERE personid = R.UniqueID AND Description = '<CONTACT>') "
                         if(columnNames != []){
                           columnNames = columnNames.concat([AddressCotactStreet +'  as Field'+fld.indexOf(key)])
                         }else{columnNames = ([AddressCotactStreet +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Contact Address-Suburb':
-                var AddressCotactSuburb = " (SELECT TOP 1 Suburb from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<CONTACT>') "
+                var AddressCotactSuburb = " (SELECT TOP 1 Suburb from namesandaddresses WHERE personid = R.UniqueID AND Description = '<CONTACT>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressCotactSuburb +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressCotactSuburb +'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Contact Address-Postcode':
-                var AddressCotactPostCode = " (SELECT TOP 1 Postcode from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<CONTACT>') "
+                var AddressCotactPostCode = " (SELECT TOP 1 Postcode from namesandaddresses WHERE personid = R.UniqueID AND Description = '<CONTACT>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressCotactPostCode +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressCotactPostCode +'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Phone-Home':
-                var PhoneHome = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<HOME>') "
+                var PhoneHome = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<HOME>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([PhoneHome + '  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([PhoneHome +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Phone-Work':
-                var PhoneWork = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<WORK>') "
+                var PhoneWork = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<WORK>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([PhoneWork +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([PhoneWork +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Phone-Mobile':
-                var PhoneMobile = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<MOBILE>') "
+                var PhoneMobile = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<MOBILE>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([PhoneMobile +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([PhoneMobile + '  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Phone-FAX':
-                var PhoneFax = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<FAX>') "
+                var PhoneFax = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<FAX>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([PhoneFax +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([PhoneFax +'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-EMAIL':
-                var Email = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<EMAIL>') "
+                var Email = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<EMAIL>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Email +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Email +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Person 1 Name':
-                var Person1name = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1name = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1name +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1name +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Person 1 Street':
-                var Person1Street = " (SELECT TOP 1 [Address1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1Street = " (SELECT TOP 1 [Address1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1Street +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1Street +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Person 1 Suburb':
-                var Person1Suburb = " (SELECT TOP 1 [Suburb] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1Suburb = " (SELECT TOP 1 [Suburb] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1Suburb +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1Suburb +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Person 1 Postcode':
-                var Person1PostCode = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1PostCode = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1PostCode+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1PostCode+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 1 Phone':
-                var Person1Phone = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1Phone = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1Phone+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1Phone+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 1 Relationship':
-                var Person1Relationship = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1Relationship = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1Relationship+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1Relationship+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 2 Name':
-                var Person2name = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2name = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2name+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2name+'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Person 2 Street':
-                var Person2Street = " (SELECT TOP 1 [Address1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2Street = " (SELECT TOP 1 [Address1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2Street+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2Street+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Person 2 Suburb':
-                var Person2Suburb = " (SELECT TOP 1 [Suburb] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2Suburb = " (SELECT TOP 1 [Suburb] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2Suburb+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2Suburb+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 2 Postcode':
-                var Person2PostCode = " (SELECT TOP 1 [Postcode] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2PostCode = " (SELECT TOP 1 [Postcode] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2PostCode+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2PostCode+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 2 Phone':
-                var Person2Phone = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2Phone = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2Phone+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2Phone+ ' as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Person 2 Relationship':
-                var Person2Relationship = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2Relationship = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2Relationship+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2Relationship+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Doctor Name':
-                var Doctorname = " (SELECT Top 1 [Name] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var Doctorname = " (SELECT Top 1 [Name] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Doctorname+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Doctorname+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Doctor Street':
-                var DoctorStreet = " (SELECT Top 1 [Address1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorStreet = " (SELECT Top 1 [Address1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                   columnNames = columnNames.concat([DoctorStreet+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([DoctorStreet+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Doctor Suburb':
-                var DoctorSuburb = " (SELECT Top 1 [Suburb] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorSuburb = " (SELECT Top 1 [Suburb] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                   columnNames = columnNames.concat([DoctorSuburb+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([DoctorSuburb+'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Doctor Postcode':
-                var DoctorPostCode = " (SELECT Top 1 [Postcode] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorPostCode = " (SELECT Top 1 [Postcode] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                 columnNames = columnNames.concat([DoctorPostCode+'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([DoctorPostCode+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Doctor Phone':
-                var DoctorPhone = " (SELECT Top 1 [Phone1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorPhone = " (SELECT Top 1 [Phone1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                 columnNames = columnNames.concat([DoctorPhone+'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([DoctorPhone+'  as Field'+fld.indexOf(key)])}
                       break;                           
               case 'ONI-Doctor FAX':
-                var DoctorFax = " (SELECT Top 1 [FAX] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorFax = " (SELECT Top 1 [FAX] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                 columnNames = columnNames.concat([DoctorFax+'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([DoctorFax+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Doctor EMAIL':
-                var DoctorEmail = " (SELECT Top 1 [Email] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber)  "
+                var DoctorEmail = " (SELECT Top 1 [Email] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber)  "
                   if(columnNames != []){
                 columnNames = columnNames.concat([DoctorEmail+'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([DoctorEmail+'  as Field'+fld.indexOf(key)])}
@@ -5972,13 +5951,13 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
               }else{columnNames = (['R.[InsuranceStatus]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Health Insurer':
-                var healthinsurer = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = Recipients.UniqueID AND [GROUP]= 'HEALTHINSURER') "
+                var healthinsurer = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = R.UniqueID AND [GROUP]= 'HEALTHINSURER') "
                   if(columnNames != []){
                 columnNames = columnNames.concat([healthinsurer +'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([healthinsurer +'  as Field'+fld.indexOf(key)])}
                       break;        
               case 'ONI-Health Insurance Card#':
-              var healthinsurercardNum = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = Recipients.UniqueID AND [GROUP]= 'HEALTHINSURER') "
+              var healthinsurercardNum = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = R.UniqueID AND [GROUP]= 'HEALTHINSURER') "
                   if(columnNames != []){
                 columnNames = columnNames.concat([healthinsurercardNum +'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([healthinsurercardNum +'  as Field'+fld.indexOf(key)])}
@@ -8053,7 +8032,7 @@ TablesSetting(arr){
   if(arr.includes("Carer Last Name") || arr.includes("Carer Age") || arr.includes("Carer Gender") || arr.includes("Carer Indigenous Status") || arr.includes("Carer First Name") ){
     FromSql = FromSql + " INNER JOIN RECIPIENTS C ON R.DatasetCarer = C.AccountNo  "
   }         
-  if(arr.includes("Carer Phone <Home>") ){
+  if(arr.includes("Carer Phone <Home>") ){ 
     FromSql = FromSql + " LEFT JOIN PhoneFaxOther PhHome ON C.UniqueID = PhHome.PersonID AND PhHome.[Type] = '<HOME>'  "
   }
   if(arr.includes("Carer Phone <Work>") ){

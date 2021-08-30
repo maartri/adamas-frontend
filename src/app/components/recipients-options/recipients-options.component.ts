@@ -228,6 +228,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       for (let property in changes) {
         if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
           console.log(this.user);
+          console.log(this.from)
           // GETS Branch name or Gets it through database
           
           if('branch' in this.user){
@@ -1177,7 +1178,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   let data = {
                       docId: this.DOCUMENTID,
                       program: programChecked.program,
-                      admissionType: admissionType,
+                      admissionType: programChecked,
                       clientCode: this.user.code,
                       carerCode: this.token.code,
                       serviceType: 'referralType',
@@ -2008,6 +2009,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.adminGroup.get('programs') as FormArray;      
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.adminGroup;
+
+                // if((this.adminGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.adminGroup.controls['programs']).at(0);
+
+                //   this.adminGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.GET_FUNDINGTYPE()
               }
               if(type == RECIPIENT_OPTION.DECEASE){
@@ -2021,6 +2031,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.suspendGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.suspendGroup;
+
+                // if((this.suspendGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.suspendGroup.controls['programs']).at(0);
+                //   this.suspendGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.GET_FUNDINGTYPE()
               }
               
@@ -2028,6 +2046,13 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.dischargeGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.dischargeGroup;
+
+                // if((this.dischargeGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.dischargeGroup.controls['programs']).at(0);
+                //   this.dischargeGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
                 
                 this.noteArray = ['DISCHARGE'];
                 this.GET_FUNDINGTYPE()
@@ -2036,7 +2061,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               
               if(type == RECIPIENT_OPTION.WAIT_LIST){
                 var prog = this.waitListGroup.get('programs') as FormArray;
-                console.log(prog);
+
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.waitListGroup;
                 this.GET_FUNDINGTYPE()
@@ -2047,14 +2072,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.admitGroup;
 
-                if((this.admitGroup.get('programs').value as Array<any>).length == 1){
-                  let programs = (<FormArray>this.admitGroup.controls['programs']).at(0);
-
-                  // set default when list is only one
-                  this.admitGroup.patchValue({
-                    programChecked: programs.value
-                  });
-                }
+                // if((this.admitGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.admitGroup.controls['programs']).at(0);
+                //   this.admitGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
                 this.GET_FUNDINGTYPE()
               }
               
@@ -2062,7 +2085,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.assessGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.assessGroup;
-                
+
+                // if((this.assessGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.assessGroup.controls['programs']).at(0);
+                //   this.assessGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.noteArray = ['SCREEN/ASSESS'];
                 this.GET_FUNDINGTYPE()
                 return;
@@ -2072,6 +2102,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.notProceedGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.notProceedGroup;
+
+                // if((this.notProceedGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.notProceedGroup.controls['programs']).at(0);
+                //   this.notProceedGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.GET_FUNDINGTYPE()
               }
               
@@ -2080,6 +2118,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.referOnGroup;
                 
+
+                // if((this.referOnGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.referOnGroup.controls['programs']).at(0);
+                //   this.referOnGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.noteArray = ['REFERRAL-OUT'];
                 this.GET_FUNDINGTYPE()
                 return;

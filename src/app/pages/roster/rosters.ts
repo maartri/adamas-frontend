@@ -64,7 +64,9 @@ IconCellType.prototype = new GC.Spread.Sheets.CellTypes.Base();
 // EllipsisTextCellType.prototype
 IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
     if (!ctx) {
+        console.log('No icon loaded')
         return;
+        
     }
     ctx.save();
 
@@ -94,6 +96,7 @@ IconCellType2.prototype = new GC.Spread.Sheets.CellTypes.Base();
 // EllipsisTextCellType.prototype
 IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
     if (!ctx) {
+        console.log('No icon found')
         return;
     }
     ctx.save();
@@ -106,7 +109,7 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x, y, w, h, style, context]);
     ctx.beginPath();
     // let img = document.getElementById('icon-lock');
-   // ctx.drawImage(this.img, x, y , 20, 20);
+    // ctx.drawImage(this.img, x, y , 20, 20);
    
     ctx.fill();
     ctx.stroke();
@@ -118,11 +121,9 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 @Component({
     selector: 'roster-component',
     styles: [`
-        
-        
+                
         nz-switch.master-class >>> button.ant-switch-checked{ background-color:red; }; 
        
-
         nz-table tbody tr.active  {  
             background-color:#48da24 !important;  
             color: white;  
@@ -231,8 +232,8 @@ endRoster:any;
   listOfSelection: Array <any> = [];
   NRecordNo:string;
   timeList:Array<any>=[];
-    addressList:Array<any>=[]
-    mobilityList:Array<any>=[]
+  addressList:Array<any>=[]
+  mobilityList:Array<any>=[]
     
     isVisible: boolean = false;
     hahays = new Subject<any>();

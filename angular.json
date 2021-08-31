@@ -21,12 +21,13 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets",
+              "src/assets",              
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
                 "output": "/assets/"
               }
+             ,{"glob": "**/*", "input": "./dist/assets/images", "output": "/assets/"}
             ],
             "styles": [
               "node_modules/angular-calendar/css/angular-calendar.css",

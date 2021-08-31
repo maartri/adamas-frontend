@@ -17,7 +17,14 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         div.divider-subs div{
             margin-top:2rem;
         }
-        
+        .media-container{
+            display: inline-block;
+            padding: 10px;
+        }
+        .media-container button {
+            position: absolute;
+            right: 0;
+        }
     `],
     templateUrl: './personal.html'
 })
@@ -32,6 +39,7 @@ export class RecipientPersonalAdmin implements OnInit, OnDestroy {
     isDisabled: boolean = false;
 
     transformedUser: any;
+    view: number = 1;
 
     constructor(
         private timeS: TimeSheetService,
@@ -68,6 +76,10 @@ export class RecipientPersonalAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe.next();
         this.unsubscribe.complete();
+    }
+
+    addMedia(){
+        this.view = 2;
     }
 
     transform(user: any) {

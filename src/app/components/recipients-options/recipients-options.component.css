@@ -7,6 +7,10 @@ li{
     margin-bottom: 5px;
 }
 
+nz-checkbox-group >>> label{
+    display: block;
+}
+
 nz-time-picker, nz-select, nz-date-picker{
     width:100% !important;
 }

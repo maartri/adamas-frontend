@@ -51,10 +51,10 @@ import { Component } from '@angular/core';
     }
 
     ul.main-list{
-        background:#004165 !important;
+        background:#002060 !important;
     }
     nz-sider{
-        background:#004165;
+        background:#002060;
     }
     .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected, .ant-menu.ant-menu-dark .ant-menu-item-selected{
         background-color: #85B9D5;

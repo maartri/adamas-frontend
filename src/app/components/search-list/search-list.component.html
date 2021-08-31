@@ -9,7 +9,6 @@
         bindLabel="accountNo" 
         [dropdownPosition]="'bottom'"
         [clearable]="false"
-
         [closeOnSelect]="true"
         (focus)="isOpen=true"
         (ngModelChange)="change($event)"
@@ -19,6 +18,13 @@
     <i nz-icon nzType="phone" nzTheme="outline" (click)="phoneModal=true" nz-tooltip nzTooltipTitle="Phone Search"></i>
     <!-- <i nz-icon nzType="close-circle" nzTheme="outline" nz-tooltip nzTooltipTitle="Clear Phone Filter"></i> -->
 </div>
+<div class="search-container" *ngIf="view == 1">
+    <nz-radio-group [(ngModel)]="staffType" (ngModelChange)="changeStatus($event)">
+        <label nz-radio nzValue="A"> View Active Staff </label>
+        <label nz-radio nzValue="B" class="viewAll"> View All Staff </label>
+    </nz-radio-group>
+</div>
+
 
 
 

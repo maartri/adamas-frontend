@@ -18,15 +18,49 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
+    getdocumentsrecipients(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/documents-recipients/${id}`)
+    }
 
+
+    getaccountingprofile(personid: string): Observable<any>{
+        return this.auth.get(`${timesheet}/accounting-profile/${personid}`);
+    }
+
+    updateothers(data: any,personid: string): Observable<any>{
+        return this.auth.put(`${timesheet}/others/${personid}`, data);
+    }
+
+    getothers(personid: string): Observable<any>{
+        return this.auth.get(`${timesheet}/others/${personid}`);
+    }
+
+    updateattendance(data: any,personid: string): Observable<any>{
+        return this.auth.put(`${timesheet}/time-and-attendance/${personid}`, data);
+    }    
+
+    getattendance(personid: string): Observable<any>{
+        return this.auth.get(`${timesheet}/time-and-attendance/${personid}`);
+    }        
+
+    getbrandinglogo(type: string = 'big'): Observable<any>{
+        return this.auth.get(`${timesheet}/branding-logo/${type}`);
+    }
+        
     getincidentdocuments(data: any): Observable<any>{
         return this.auth.get(`${timesheet}/incident-documents`, data);
     }
 
-    getincidentnotifications(): Observable<any>{
+    GetIncidentNotifications(): Observable<any>{
         return this.auth.get(`${timesheet}/incident-notifications`);
     }
-
+    //incident-mandatory-notifications Getincidentmandatorynotifications
+    Getincidentmandatorynotifications(): Observable<any>{
+        return this.auth.get(`${timesheet}/incident-mandatory-notifications`);
+    }
+    Getincidentnonmandatorynotifications(): Observable<any>{
+        return this.auth.get(`${timesheet}/incident-nonmandatory-notifications`);
+    }
     getincidentnotes(recordNo: number): Observable<any>{
         return this.auth.get(`${timesheet}/incident-note/${recordNo}`);
     }
@@ -42,6 +76,9 @@ export class TimeSheetService {
     deleteincident(recordNo: number): Observable<any>{
         return this.auth.delete(`${timesheet}/incident/${recordNo}`);
     }
+    // closedincident(recordNo: number): Observable<any>{
+    //     return this.auth.delete(`${timesheet}/incident/closed/${recordNo}`);
+    // }
 
     postincident(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/incidents`, data);
@@ -50,7 +87,11 @@ export class TimeSheetService {
     updateincident(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/incidents`, data);
     }
-
+    
+    UpdateIncidentstatus(recordNo: any): Observable<any> {
+        return this.auth.put(`${timesheet}/incidentstatus/${recordNo}`)
+    }
+    
     getclosedate(name: any): Observable<any>{
         return this.auth.get(`${timesheet}/closedate`, name);
     }
@@ -86,6 +127,7 @@ export class TimeSheetService {
     getquotedetails(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/quote/details/${id}`);
     }
+    
 
     updatepackagesupplement(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/packagesupplement`, data);
@@ -119,6 +161,10 @@ export class TimeSheetService {
     getAllocateDefaults(uname: string): Observable<any> {
         return this.auth.get(`${timesheet}/unallocate-defaults/${uname}`);
     }
+    getstaffunallocatedefault(uname: string): Observable<any> {
+        return this.auth.get(`${timesheet}/staff-unallocate-defaults/${uname}`);
+    }
+    
 
     getcomputetimesheet(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/compute-timesheet`, data);
@@ -163,6 +209,13 @@ export class TimeSheetService {
 
     posttermination(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/terminate`, data);
+    }
+
+    postDeleteStaff(data:any): Observable<any>{
+        return this.auth.post(`${timesheet}/deleteStaff`, data);
+    }
+    postchangestaffcode(data:any): Observable<any>{
+        return this.auth.post(`${timesheet}/changeStaffCode`, data);
     }
 
     getservicetype(type: string): Observable<any> {
@@ -432,6 +485,10 @@ export class TimeSheetService {
     deleteintakeservicecompetency(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/intake/services/competency/${recordNo}`)
     }
+    deleteintakerservice(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/rservices/${recordNo}`)
+    }
+    
 
     /** */
 
@@ -451,7 +508,51 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/intake/staff/${recordNo}`)
     }
 
+    /**
+     * center facility location staff
+     */
+
+    getcenterlocationexcludedstaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/excludedstaff/${id}`)
+    }
+
+    getcenterLocationincludedstaff(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/includedstaff/${id}`)
+    }
+
+    postcenterlocationstaff(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/centerLocation/staff`, data)
+    }
+
+    updatecenterlocationstaff(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/centerLocation/staff`, data)
+    }
+
+    deletecenterlocationstaff(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/centerLocation/staff/${recordNo}`)
+    }
+    
     /** */
+
+    /**
+     *  Center Location competency
+     */
+    getcenterlocationcompetency(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/centerLocation/competency/${id}`)
+    }
+
+    postcenterlocationcompetency(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/centerlocation/competency`, data)
+    }
+   
+    updatecenterlocationcompetency(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/centerlocation/competency`, data)
+    }
+
+    deletecenterlocationcompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/centerlocation/competency/${recordNo}`)
+    }
+    /** */    
 
     /**
      *  Competency
@@ -460,7 +561,7 @@ export class TimeSheetService {
     postintakecompetency(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/competency`, data)
     }
-
+   
     updateintakecompetency(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/competency`, data)
     }
@@ -468,8 +569,24 @@ export class TimeSheetService {
     deleteintakecompetency(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/intake/competency/${recordNo}`)
     }
+    /** */
 
-    de
+    /**
+     *  Service Competency
+     */
+
+     postintakeServicecompetency(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/Servicecompetency`, data)
+    }
+   
+    updateintakeServicecompetency(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/Servicecompetency`, data)
+    }
+
+    deleteintakeServicecompetency(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/intake/Servicecompetency/${recordNo}`)
+    }
+
     /** */
 
     /**
@@ -488,6 +605,24 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/intake/goals/${recordNo}`)
     }
 
+    deleteCarePlangoals(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/quote/careplangoal/${recordNo}`)
+    }
+    deleteCarePlanStrategy(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/quote/careplanstrategy/${recordNo}`)
+    }
+    postGoalsAndStratergies(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/quote/GoalsAndStratergies`, data)
+    }
+    updateGoalsAndStratergies(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/quote/GoalsAndStratergies`, data)
+    }
+    postplanStrategy(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/quote/planStrategy`, data)
+    }
+    updateplanStrategy(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/quote/planStrategy`, data)
+    }
     /** */
 
     /**
@@ -531,6 +666,7 @@ export class TimeSheetService {
     postusergroup(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/user-group`, data)
     }
+
 
     updateusergroup(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/user-group`, data)
@@ -587,7 +723,10 @@ export class TimeSheetService {
     postremindersrecipient(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/recipient/reminders`, data)
     }
-
+    
+    PostRecipientFollowReminders(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/recipient/followup`, data)
+    }
     updateremindersrecipient(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/recipient/reminders`, data)
     }
@@ -702,7 +841,9 @@ export class TimeSheetService {
     getprogramop(personID: string): Observable<any> {
         return this.auth.get(`${timesheet}/program-opnote/${personID}`)
     }
-
+    getprogrampackages(personID: string): Observable<any> {
+        return this.auth.get(`${timesheet}/program-packages/${personID}`)
+    }
     getdisciplineop(): Observable<any> {
         return this.auth.get(`${timesheet}/discipline-opnote`)
     }
@@ -723,6 +864,10 @@ export class TimeSheetService {
 
     getnotes(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/notes/${name}`)
+    }
+
+    getloannotes(id:string):Observable<any> {
+        return this.auth.get(`${timesheet}/loannotes/${id}`)
     }
 
     getloans(name: string): Observable<any> {
@@ -750,10 +895,13 @@ export class TimeSheetService {
         return this.auth.delete(`${timesheet}/staff/opnotes/${id}`)
     }
 
+
     gethrnotes(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/hrnotes/${name}`)
     }
-
+    getarchivedhrnotes(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/achivedhrnotes/${name}`)
+    }
     deletehrnotes(id: number): Observable<any> {
         return this.auth.delete(`${timesheet}/staff/hrnotes/${id}`)
     }
@@ -837,7 +985,9 @@ export class TimeSheetService {
     getrecipientsbyphone(phoneno: string): Observable<any> {
         return this.auth.get(`${timesheet}/phone-search-recipient/${phoneno}`);
     }
-
+    getstaffbyphone(phoneno: string): Observable<any> {
+        return this.auth.get(`${timesheet}/phone-search-staff/${phoneno}`);
+    }
     getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
     }
@@ -885,6 +1035,10 @@ export class TimeSheetService {
     postcompetencies(data: any, id: string): Observable<any> {
         return this.auth.post(`${timesheet}/competencies/${id}`, data)
     }
+    
+    updateStaffCompetenciesHeader(type: string,id:string):Observable<any>{
+        return this.auth.get(`${timesheet}/competenciesheader/${type}/${id}`)
+    }
 
     deletecompetency(id: number): Observable<any> {
         return this.auth.delete(`${timesheet}/staff/competency/${id}`)
@@ -913,8 +1067,11 @@ export class TimeSheetService {
     getleaveapplication(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/leaveapplication/${name}`)
     }
+    getleaveapplicationByid(name: string, id: number): Observable<any> {
+        return this.auth.get(`${timesheet}/leaveapplication/${name}/${id}`)
+    }
 
-    updateleaveapplication(data: any): Observable<any> {
+    updateleaveapplication(name:string,data: any): Observable<any> {
         return this.auth.put(`${timesheet}/leaveapplication/${name}`, data)
     }
 
@@ -1033,15 +1190,21 @@ export class TimeSheetService {
     getintakeservices(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/services/${id}`)
     }
+    
 
     postintakeservices(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/services`, data)
+    }
+    postintakeRservices(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/intake/rservices`, data)
     }
 
     updateintakeservices(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/intake/services`, data)
     }
-
+    updateintakeRservices(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/intake/rservices`, data)
+    }
     getplacements(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/placements/${id}`)
     }
@@ -1078,6 +1241,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/intake/specific/competencies/${id}`)
     }
 
+    getgrouplist(id: string): Observable<any> {
+        return this.auth.get(`${timesheet}/intake/group-list/${id}`)
+    }
+
     getgrouptypes(id: string): Observable<any> {
         return this.auth.get(`${timesheet}/intake/group/types/${id}`)
     }
@@ -1102,6 +1269,17 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/notes/loans/${id}`)
     }
 
+    postnotesloans(data:any) : Observable<any>{
+        return this.auth.post(`${timesheet}/notes/loans`, data);
+    }
+
+    updatenotesloans(data:any) : Observable<any>{
+        return this.auth.put(`${timesheet}/notes/loans`, data);
+    }
+
+    deletnotesloans(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/notes/loan/${recordNo}`)
+    }
     /**
      * End Note Tab
      */
@@ -1116,8 +1294,13 @@ export class TimeSheetService {
     /**      
      * End - Pay Tab
      */
+    
     updatemiscellaneous(note: MiscellaneousNote): Observable<any> {
         return this.auth.put(`${timesheet}/notes/miscellaneous`, note)
+    }
+
+    getCarePlanID(){
+        return this.auth.get(`${timesheet}/carePlanId`)
     }
 
     updatetimeandattendance(attendance: AttendanceStaff): Observable<any> {
@@ -1128,6 +1311,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/attendance/staff/${id}`)
     }
 
+    updateSkills(data:any):Observable<any>{
+        return this.auth.put(`${timesheet}/competency/skill`, data)
+    }
+
     addtransport(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/transport`, data);
     }
@@ -1135,3 +1322,4 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/addRecurrentRosters`, data);
     }
 }
+

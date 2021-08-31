@@ -1,6 +1,8 @@
 <div nz-row>
     <div nz-col>
         <button class="botton success" (click)="showAddModal()">Add HR Note</button>
+        <label nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Show Archived Notes </label>
+        <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoadingDelay]="100" [nzLoading]="loading"
             [nzData]="tableData">
             <thead>
@@ -14,12 +16,17 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ data.detail  }}</td>
+                    <td class="left">{{ data.detail  | getTextFromHtml }}</td>
                     <td>{{ data.category }}</td>
                     <td>{{ data.detailDate | date: 'dd/MM/y'  }}</td>
                     <td>{{ data.creator || '-' }}</td>
                     <td>
                         <a (click)="showEditModal(i)">View</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a *ngIf="!data.is_deleted" nz-popconfirm 
+                        nzPopconfirmTitle="DELETE HR NOTE? (NB - This will not physically delete the note. This will flag the note as deleted so it doesent appear on the this screen or report unless you ask to show archived notes. ??"
+                        nzPopconfirmPlacement="bottom"
+                        (nzOnConfirm)="delete(i)">Delete</a>
                     </td>
                 </tr>
             </tbody>
@@ -31,7 +38,7 @@
     <div [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>
-                <nz-form-label  [nzNoColon]="true">Description</nz-form-label>
+                <nz-form-label  [nzNoColon]="true">Category</nz-form-label>
                 <nz-form-control nzErrorTip="Category is required!">
                     <nz-select formControlName="category" nzAllowClear [nzDropdownMatchSelectWidth]="false">
                         <nz-option *ngFor="let d of categories" [nzValue]="d" [nzLabel]="d">
@@ -50,10 +57,27 @@
             </div>
         </div>
         <div nz-row>
-           <div class="form-group">
+            <div class="form-group">
+                <nz-radio-group formControlName="restrictionsStr">
+                    <label nz-radio nzValue="public">Public</label>
+                    <label nz-radio nzValue="workgroup">Workgroup Only</label>
+                    <label nz-radio nzValue="restrict">Restrict To</label>
+                </nz-radio-group>
+            </div>
+        </div>
+        <div nz-row class="overflow-list" *ngIf="inputForm.get('restrictionsStr').value == 'restrict'">
+            <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+                <div nz-row *ngFor="let list of mlist; let i = index">
+                    <div class="chkboxes" nz-col nzOffset="2" nzSpan="22"><label nz-checkbox
+                            [nzValue]="list">{{ list }}</label></div>
+                </div>
+            </nz-checkbox-wrapper>
+        </div>
+        <div nz-row>
+        <div class="form-group">
                 <label for="">Notes</label>
-                <textarea rows="4" nz-input formControlName="notes"></textarea>
-           </div>
+                <angular-editor  formControlName="notes" [config]="editorConfig"></angular-editor>
+        </div>
         </div>
     </div>
     <div *nzModalFooter>
@@ -61,3 +85,11 @@
         <button nz-button nzType="primary" *ngIf="addORView == 1" (click)="save()" [nzLoading]="isLoading">Save</button>
     </div>
 </nz-modal>
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loadingPDF">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    </div>
+</nz-drawer>

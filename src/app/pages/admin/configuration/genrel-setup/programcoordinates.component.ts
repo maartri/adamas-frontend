@@ -143,7 +143,7 @@ export class ProgramcoordinatesComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group  = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -152,7 +152,7 @@ export class ProgramcoordinatesComponent implements OnInit {
         }
         let domain = "'CASE MANAGERS'";
         let code   = this.globalS.isValueNull(group.get('code').value);
-            name   = this.globalS.isValueNull(group.get('name').value);
+            name   = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let end_date      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         
         let values = domain+","+code+","+end_date+","+name;
@@ -171,7 +171,7 @@ export class ProgramcoordinatesComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
@@ -181,7 +181,7 @@ export class ProgramcoordinatesComponent implements OnInit {
             }
           }
         let code   = this.globalS.isValueNull(group.get('code').value);
-        name   = this.globalS.isValueNull(group.get('name').value);
+        name   = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let recordNumber = group.get('recordNumber').value;
         let sql  = "Update DataDomains SET [HACCCode] ="+ code+",[EndDate] ="+ end_date+",[Description]="+ name+" WHERE [RecordNumber]='"+recordNumber+"'";

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GlobalService, LoginService, roles, ShareService, ListService } from '@services/index';
+import { GlobalService, LoginService, roles, ShareService, ListService, TimeSheetService } from '@services/index';
 import { Router } from '@angular/router'
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-header-nav',
@@ -21,11 +22,15 @@ export class HeaderNavComponent implements OnInit {
   settingsDrawerVisible: boolean = false;
   clientPortalMethod: boolean = false;
 
+  logoPath: any;
+
   constructor(
     private globalS: GlobalService,
     private loginS: LoginService,
     private sharedS: ShareService,
     private listS: ListService,
+    private timeS: TimeSheetService,
+    private sanitizer: DomSanitizer,
     private router: Router,
   ) { 
     // this.sharedS.emitMemberPicked$.subscribe(data => {
@@ -50,6 +55,11 @@ export class HeaderNavComponent implements OnInit {
     }
     else if (this.tempRole == roles.provider) {
     }
+
+    // this.timeS.getbrandinglogo().subscribe(blob => {
+    //   let objectURL = 'data:image/jpeg;base64,' + blob;
+    //   this.logoPath = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    // })
   }
 
   logout() {

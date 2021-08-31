@@ -83,7 +83,7 @@ export class PostcodesComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Suburb) AS row_num, Recnum, [Suburb] as subrub, [State] as state, [Postcode] as postcode,DeletedRecord as is_deleted FROM Pcodes "+this.whereString+" Order By Suburb desc ";
+      let sql ="SELECT ROW_NUMBER() OVER(ORDER BY Suburb) AS row_num, Recnum, [Suburb] as subrub, [State] as state, [Postcode] as postcode,DeletedRecord as is_deleted FROM Pcodes "+this.whereString+"";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -104,7 +104,6 @@ export class PostcodesComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      // debugger;
       this.title = "Edit Postcodes"
       this.isUpdate = true;
       this.current = 0;
@@ -153,7 +152,7 @@ export class PostcodesComponent implements OnInit {
         let postcode = this.globalS.isValueNull(group.get('postcode').value);
         let Recnum   = group.get('Recnum').value;
         let sql  = "Update Pcodes SET [Suburb] = "+ suburb+ ",[Postcode] = "+ postcode+ ",[State] = "+ state + " WHERE [Recnum] ='"+Recnum+"'";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
@@ -215,7 +214,7 @@ export class PostcodesComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Suburb) AS Field1,[Suburb] as Field2, [State] as Field3, [Postcode] as Field4 FROM Pcodes "+this.whereString+" Order By Suburb desc";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Suburb) AS Field1,[Suburb] as Field2, [State] as Field3, [Postcode] as Field4 FROM Pcodes "+this.whereString+"";
       
       const headerDict = {
         'Content-Type': 'application/json',

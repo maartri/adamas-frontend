@@ -11,19 +11,39 @@ import format from 'date-fns/format';
 import getYear from 'date-fns/getYear';
 import getDate from 'date-fns/getDate';
 import getMonth from 'date-fns/getMonth';
+import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 @Component({
     styles: [`
-      nz-table{
-            margin-top:20px;
-        }
-        nz-select{
-            width:100%;
-        }
-        label.chk{
-            position: absolute;
-            top: 1.5rem;
-        }
+    nz-table{
+        margin-top:20px;
+    }
+     nz-select{
+        width:100%;
+    }
+    label.chk{
+        position: absolute;
+        top: 1.5rem;
+    }
+    .overflow-list{
+        overflow: auto;
+        height: 8rem;
+        border: 1px solid #e3e3e3;
+    }
+    ul{
+        list-style:none;
+    }
+    li{
+        margin:5px 0;
+    }
+    .chkboxes{
+        padding:4px;
+    }
+    button{
+        margin-right:1rem;
+    }
     `],
     templateUrl: './opnote.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -38,6 +58,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
 
     modalOpen: boolean = false;
     isLoading: boolean = false;
+    
 
     default = {
         notes: '',
@@ -51,7 +72,22 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     dateFormat: string = 'dd/MM/yyyy';
     addOREdit: number;
     categories: Array<any>;
-
+    loading:boolean = false;
+    tocken: any;
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+    mlist: any;
+    public editorConfig:AngularEditorConfig = {
+        editable: true,
+        spellcheck: true,
+        height: '15rem',
+        minHeight: '5rem',
+        translate: 'no',
+        customClasses: []
+    };
+    recipientStrArr: any;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -59,8 +95,10 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private http: HttpClient,
+        private sanitizer: DomSanitizer,
+        private ModalS: NzModalService
     ) {
         cd.detach();
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -80,6 +118,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.user = this.sharedS.getPicked();
         if(this.user){
             this.search(this.user);
@@ -100,11 +139,53 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
             isPrivate: false,
             alarmDate: null,
             whocode: '',
+            restrictions: '',
+            restrictionsStr:'public',
             recordNumber: null,
             category: [null, [Validators.required]]
         });
-    }
 
+        this.inputForm.get('restrictionsStr').valueChanges.subscribe(data => {
+            if (data == 'restrict') {
+                this.getSelect();
+            } 
+        });
+    }
+    getSelect() {
+        this.timeS.getmanagerop().subscribe(data => {
+            this.mlist = data;
+            this.cd.markForCheck();
+        });
+
+    //     this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //         data.push('*VARIOUS');
+    //         this.blist = data;
+    //     });
+    //     this.timeS.getcaredomainop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //         data.push('*VARIOUS');
+    //         this.clist = data;
+    //     });
+    //     this.timeS.getprogramop(this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //         data.push('*VARIOUS');
+    //         this.alist = data;
+    //     });
+
+    //     this.timeS.getcategoryop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+    //         this.dlist = data;
+    //     })
+    }
+    log(event: any) {
+        this.recipientStrArr = event;
+    }
+    listStringify(): string {
+        let tempStr = '';
+        this.recipientStrArr.forEach((data, index, array) => {
+            array.length - 1 != index ?
+                tempStr += data.trim() + '|' :
+                tempStr += data.trim();
+        });
+        return tempStr;
+    }
     search(user: any = this.user) {
         this.cd.reattach();
         this.isLoading = true;
@@ -135,6 +216,16 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         
         this.inputForm.controls["alarmDate"].setValue(cleanDate);
 
+        const { alarmDate, restrictionsStr, whocode, restrictions } = this.inputForm.value;
+
+        let privateFlag = restrictionsStr == 'workgroup' ? true : false;
+
+        let restricts = restrictionsStr != 'restrict';
+
+        this.inputForm.controls["restrictionsStr"].setValue(privateFlag);
+
+        this.inputForm.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
+
         this.isLoading = true;
         if (this.addOREdit == 1) {
             this.inputForm.controls["whocode"].setValue(this.user.code);
@@ -163,20 +254,32 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     }
 
     showEditModal(index: any) {
-        this.addOREdit = 2;
-        const { alarmDate, detail, isPrivate, category, creator, recordNumber } = this.tableData[index];
+        this.addOREdit = 0;
+        const { alarmDate, detail, isPrivate, category, creator,restrictions,privateFlag, recordNumber } = this.tableData[index];
 
         this.inputForm.patchValue({
             notes: detail,
             isPrivate: isPrivate,
             alarmDate: alarmDate,
+            restrictions: '',
+            restrictionsStr: this.determineRadioButtonValue(privateFlag, restrictions),
             whocode: creator,
             recordNumber: recordNumber,
             category: category
-        });
+        });   
         this.modalOpen = true;
     }
+    determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
+        if (!privateFlag && this.globalS.isEmpty(restrictions)) {
+            return 'public';
+        }
 
+        if (!privateFlag && !this.globalS.isEmpty(restrictions)) {
+            return 'restrict'
+        }
+
+        return 'workgroup';
+    }
     delete(index: number) {        
         const { recordNumber } = this.tableData[index];
         this.timeS.deleteopnote(recordNumber).pipe(
@@ -193,5 +296,65 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         this.modalOpen = false;
         this.inputForm.reset();
         this.isLoading = false;
+    }
+    handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+    }
+    generatePdf(){
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'OPNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+        
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+        
+        const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+                "reports": { "save": false },
+                "txtTitle": "Staff OP NOTES List",
+                "sql": fQuery,
+                "userid":this.tocken.user,
+                "head1" : "Date",
+                "head2" : "Detail",
+                "head3" : "Created By",
+                "head4" : "Remember Date",
+            }
+        }
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+        .subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
+        this.cd.detectChanges();
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
     }
 }

@@ -89,8 +89,8 @@
                             nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)" (nzOnCancel)="cancel(1)"></i>
                     </div>
-                    <div>{{ data.postCode }} {{ data.address1 }}, {{ data.suburb}}</div>
-                    <b>{{ data.description }}</b>
+                    <div> {{ data.address1 }}, {{ data.suburb}} {{ data.postCode }}</div>
+                    <b>{{ data.description }} </b>
                 </li>
             </ul>
             <!-- <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
@@ -219,19 +219,26 @@
                     <div nz-row *ngIf="staffrecordview && staffrecordview[16] == '1'">
                         <div class="form-group">
                             <div>
-                                <label class="highlight"><i class="material-icons"> location_on </i>Address </label>
+                                <label class="highlight"><i class="material-icons "> location_on </i>Address </label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
                                     class="good add"></i>
                             </div>                           
                             <ul>
                                 <li *ngFor="let data of user?.addresses">
                                     <div class="options">
-                                        <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral" (click)="editAddressOpen(data)"></i>
+                                        <i class="material-icons neutral" (click)="toMap(data)" style="font-size:17px;"> location_on </i>
+                                        <!-- <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral" (click)="editAddressOpen(data)"></i>
                                         <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top" nzTheme="outline"  nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
-                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
-                                    (nzOnCancel)="cancel(1)"></i>                                        
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
+                                            (nzOnCancel)="cancel(1)"></i>  -->
+
+                                        <i nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral" style="font-style: normal" (click)="editAddressOpen(data)">Update</i>                                            
+                                            <nz-divider nzType="vertical"></nz-divider>
+                                        <i nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top" style="font-style: normal" nzTheme="outline"  nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
+                                            (nzOnCancel)="cancel(1)">Delete</i>                                        
                                     </div>
-                                    <div>{{ data.postCode }} {{ data.address1 }}, {{ data.suburb}}</div>
+                                    <div> {{ data.address1 }} {{ data.suburb}} {{ data.postCode }} </div>
                                     <b>{{ data.description }}</b>
                                 </li>
                                 <li *ngIf="user?.addresses?.length == 0">
@@ -250,12 +257,19 @@
                             </div>
                             <ul>
                                 <li *ngFor="let data of user?.contacts">
-                                    <div class="options">
-                                        <i nz-icon nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral"></i>
+                                    <div class="options">                                        
+                                        <!-- <i nz-icon nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral"></i>
                                         <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
                                             nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
-                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
-                                    (nzOnCancel)="cancel(2)"></i>
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
+                                            (nzOnCancel)="cancel(2)"></i> -->
+
+                                        <i nzType="edit" nzTooltipTitle="Update" style="font-style: normal" (click)="editContactOpen(data)" nz-tooltip nzTooltipPlacement="top" nzTheme="outline" class="neutral">Update</i>                                            
+                                            <nz-divider nzType="vertical"></nz-divider>
+                                        <i nzType="delete" class="neutral" style="font-style: normal" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                                            nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
+                                            (nzOnCancel)="cancel(2)">Delete</i>
                                     </div>
                                     <div>{{ data.detail }}</div>
                                     <b>{{ data.type }}</b>
@@ -288,6 +302,12 @@
                             <nz-rate [ngModel]="user?.rating" [nzCount]="7" nzDisabled></nz-rate>
                         </nz-descriptions-item>
                         <nz-descriptions-item nzTitle="N Registration #">{{ user?.nRegistration || '-' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Has Caseload"><label nz-checkbox nzDisabled [ngModel]="user?.caseManager" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Is Rosterable"><label nz-checkbox nzDisabled [ngModel]="user?.isRosterable" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Email Timesheet"><label nz-checkbox nzDisabled [ngModel]="user?.emailTimesheet" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Exclude From Roaster Conflict Checking"><label nz-checkbox nzDisabled [ngModel]="user?.excludeFromConflictChecking" nzDisabled ></label></nz-descriptions-item>
+                        
+
                     </nz-descriptions>
                 </div>
 
@@ -364,11 +384,18 @@
                             <ul>
                                 <li *ngFor="let data of user?.addresses">
                                     <div class="options">
-                                        <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
-                                            class="neutral" (click)="editAddressOpen(data)"></i>
-                                        <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                                        <!-- <i nz-icon nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
+                                            class="neutral" (click)="editAddressOpen(data)"></i> -->
+                                        <!-- <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
                                             nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
-                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)" (nzOnCancel)="cancel(1)"></i>
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)" (nzOnCancel)="cancel(1)"></i> -->
+
+                                        <i nzType="edit" nzTooltipTitle="Update" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
+                                            class="neutral" (click)="editAddressOpen(data)" style="font-style: normal">Update</i>                                            
+                                            <nz-divider nzType="vertical"></nz-divider>
+                                        <i nzType="delete" class="neutral" style="font-style: normal" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                                            nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)" (nzOnCancel)="cancel(1)">Delete</i>
                                     </div>
                                     <div>{{ data.postCode }} {{ data.address1 }}, {{ data.suburb}}</div>
                                     <b>{{ data.description }}</b>
@@ -390,11 +417,18 @@
                             <ul>
                                 <li *ngFor="let data of user?.contacts">
                                     <div class="options">
-                                        <i nz-icon nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip nzTooltipPlacement="top"
+                                        <!-- <i nz-icon nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip nzTooltipPlacement="top"
                                             nzTheme="outline" class="neutral"></i>
                                         <i nz-icon nzType="delete" class="neutral" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
                                             nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
-                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)" (nzOnCancel)="cancel(2)"></i>
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)" (nzOnCancel)="cancel(2)"></i> -->
+
+                                        <i nzType="edit" nzTooltipTitle="Update" (click)="editContactOpen(data)" nz-tooltip nzTooltipPlacement="top"
+                                            nzTheme="outline" class="neutral" style="font-style: normal">Update</i>                                          
+                                            <nz-divider nzType="vertical"></nz-divider>
+                                        <i nzType="delete" class="neutral" style="font-style: normal" nz-tooltip nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                                            nzTheme="outline" nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
+                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)" (nzOnCancel)="cancel(2)">Delete</i>
                                     </div>
                                     <div>{{ data.detail }}</div>
                                     <b>{{ data.type }}</b>
@@ -519,24 +553,20 @@
         </div>
     </div>
 </ng-container>
-
-
-
-
-
-
-
-
-
-
  <nz-modal [(nzVisible)]="profileStaffModal" [nzStyle]="{ top: '20px' }" nzTitle="Update Profile" (nzOnCancel)="handleCancel()">
 
     <div nz-row nzGutter="16" [formGroup]="userForm">
-        <div nz-row>
+        <div nz-row nzGutter="24">
             <div nz-col nzSpan="8">
                 <div class="form-group">
                     <label for="">Preferred Name</label>
                     <input nz-input type="text"  oninput="this.value = this.value.toUpperCase()" formControlName="preferredName">
+                </div>
+            </div>
+            <div nz-col nzSpan="8" lass="form-group">
+                <div class="form-group">
+                    <label for="">Record ID</label>
+                    <input nz-input type="text"  oninput="this.value = this.value.toUpperCase()" formControlName="recordId" readonly>
                 </div>
             </div>
         </div>
@@ -812,7 +842,14 @@
                 <nz-rate formControlName="rating" [nzCount]="7"></nz-rate>
             </div>
         </div>
-
+        <div nz-row nzGutter="16">
+            <div nz-col class="form-group" nzSpan="7">
+                <label for="">Exclude From Roaster Conflict Checking : </label>
+            </div>
+            <div nz-col class="form-group" nzSpan="1">
+                <label nz-checkbox formControlName="excludeFromConflictChecking"></label>
+            </div>
+        </div>
     </div>
 
     <div *nzModalFooter>

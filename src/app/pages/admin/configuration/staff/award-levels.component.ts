@@ -134,7 +134,7 @@ export class AwardLevelsComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      let name        = group.get('name').value.trim().uppercase();
+      let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -165,7 +165,7 @@ export class AwardLevelsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          let name        = group.get('name').value.trim().uppercase();
+          let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
@@ -233,7 +233,7 @@ export class AwardLevelsComponent implements OnInit {
           
           this.drawerVisible = true;
           this.loading = true;
-          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" AND Domain='AWARDLEVEL'";
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER By Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='AWARDLEVEL'";
           
           const headerDict = {
             'Content-Type': 'application/json',

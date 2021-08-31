@@ -37,7 +37,7 @@ export class MedicalcontactComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   temp_title: any;
   
   constructor(
@@ -57,9 +57,9 @@ export class MedicalcontactComponent implements OnInit {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
       this.buildForm();
-      this.medicaltype = ['GENERAL PRACTITIONER','GP'];
       this.loading = false;
       this.loadData();
+      this.loadDropdown();
       this.cd.detectChanges();
     }
     loadTitle()
@@ -71,7 +71,7 @@ export class MedicalcontactComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -104,10 +104,17 @@ export class MedicalcontactComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,DeletedRecord as is_deleted FROM HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
+      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,xDeletedRecord as is_deleted FROM HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
+        this.loading = false;
+      });
+    }
+    loadDropdown(){
+      let sql1 = "select distinct Description from DataDomains where Domain = 'CONTACTSUBGROUP'  and HACCCode = '3-MEDICAL'";
+      this.listS.getlist(sql1).subscribe(data => {
+        this.medicaltype = data;
         this.loading = false;
       });
     }
@@ -167,14 +174,14 @@ export class MedicalcontactComponent implements OnInit {
       
       if(!this.isUpdate){       
         const group = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
           this.postLoading = false;
           return false;   
         }
-        let type     = this.globalS.isValueNull(group.get('type').value);
+        let type     = this.globalS.isValueNull(group.get('type').value.trim().toUpperCase());
             name     = this.globalS.isValueNull(group.get('name').value);
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
@@ -189,7 +196,7 @@ export class MedicalcontactComponent implements OnInit {
         let postcode = null; 
         let values = "'3-Medical'"+","+type+","+name+","+address1+","+address2+","+suburb+","+postcode+","+phone1+","+phone2+","+fax+","+mobile+","+email+","+end_date;
         let sql = "insert into HumanResourceTypes([Group],[Type],[Name],[Address1],[Address2],Suburb,Postcode,Phone1,Phone2,Fax,Mobile,email,EndDate) Values ("+values+")";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
@@ -202,7 +209,7 @@ export class MedicalcontactComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
@@ -212,7 +219,7 @@ export class MedicalcontactComponent implements OnInit {
             }
           }
         let type     = this.globalS.isValueNull(group.get('type').value);
-        name     = this.globalS.isValueNull(group.get('name').value);
+        name     = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
         let suburb   = this.globalS.isValueNull(group.get('suburb').value);
@@ -226,7 +233,7 @@ export class MedicalcontactComponent implements OnInit {
         let postcode = null;
         let recordnumber = group.get('recordNumber').value;
         let sql  = "Update HumanResourceTypes SET [Group]='3-Medical',[Type] ="+ type+ ",[Name] ="+ name+",[Address1] ="+ address1+ ",[Address2] ="+ address2+",[Suburb] ="+ suburb+",[Postcode] ="+ postcode+",[Phone1] ="+ phone1+",[Phone2] ="+ phone2+ ",[Fax] = "+ fax+ ",[Mobile] ="+ mobile +",[EMail] ="+ email + ",[EndDate] ="+ end_date + " WHERE [RecordNumber] ='"+recordnumber+"'";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
           if (data) 
@@ -283,7 +290,7 @@ export class MedicalcontactComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recordNumber) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 from HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 from HumanResourceTypes "+this.whereString+" [Group] like '3-Medical'";
       
       const headerDict = {
         'Content-Type': 'application/json',

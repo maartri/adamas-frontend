@@ -1,51 +1,86 @@
 <div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add Competency</button>
-        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
-            [nzData]="tableData">
-            <thead>
-                <tr>
-                    <th class="left">Competency</th>
-                    <th>Expiry Date</th>
-                    <th>Reminder Date</th>
-                    <th>Mandatory</th>
-                    <th>Cert/Reg.No</th>
-                    <th>Notes</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+        <div nz-row nzGutter="16" [formGroup]="skillsForm">
+            <div nz-col nzSpan="4">
+                <button class="botton success" (click)="showAddModal()">Add Competency</button>
+            </div>
+            <div nz-col nzSpan="10">
+                <label nz-checkbox formControlName="CompetencyException" (change)="changeStatus($event,1)">Exclude Staff Member From Mandatory Competency Checking </label>
+            </div>
+            <div nz-col nzSpan="10">
+                <label nz-checkbox formControlName="EmailCompetencyReminders" (change)="changeStatus($event,2)">Email Competency Reminder</label>
+            </div>
+        </div>
+        <nz-table #headerTable  [nzSize]="'small'" [nzScroll]="{ y: '240px' }" [nzFrontPagination]="false" [nzLoading]="loading"
+        [nzData]="tableData">
+        <thead>
+            <tr>
+                <th class="left">Competency</th>
+                <th>Expiry Date</th>
+                <th>Reminder Date</th>
+                <th nzWidth="100px">Mandatory</th>
+                <th>Cert/Reg.No</th>
+                <th>Notes</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of headerTable.data;let i = index;trackBy: trackByFn">
                 <td class="left">{{ data.competency  }}</td>
                 <td>{{ data.expiryDate | date: 'dd/MM/yyyy' }}</td>
                 <td>{{ data.reminderDate | date: 'dd/MM/yyyy'  }}</td>
                 <td>
-                    <label nz-checkbox nzDisabled [ngModel]="data.mandatory" nzDisabled ></label>
+                    <label nz-checkbox nzDisabled [ngModel]="data.mandatory" nzDisabled [ngModelOptions]="{standalone: true}"></label>
                 </td>
                 <td>{{ data.certReg }}</td>
                 <td>{{ data.notes }}</td>
-                    <td>
-                        <a (click)="showEditModal(i)">Update</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete competency?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
-    </div>
+                <td>
+                    <a (click)="showEditModal(i)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete competency?"
+                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <nz-card  nzTitle="SKILLS" [nzSize]="'small'" [formGroup]="skillsForm">
+        <div nz-row nzGutter="24" class="mrg-btm-2" >
+            <div nz-col nzSpan="6" class="text-right" *ngFor="let skill of skills;let i = index" style="cursor: pointer;">
+                <span (click)="showUpdateModal(skill)">{{skill.text}}</span> : <label formControlName="SB{{i+1}}" (change)="changeSbField($event,skill,i)" nz-checkbox> </label>
+            </div>
+        </div>
+    </nz-card>
+</div>
 </div>
 
-<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="'Add Competency'" (nzOnCancel)="handleCancel()">
+<nz-modal [nzWidth]="350" [(nzVisible)]="skillModal" [nzTitle]="'Update Skill Title'" (nzOnCancel)="handleCancel()">
     <div class="flexy">
-
+            <div nz-row nzGutter="24" class="mrg-btm-2" [formGroup]="titleskillsForm">
+                    <div class="form-group" nz-col nzSpan="24" style="width:100%;">
+                        <label for="">Title</label>
+                        <input type="text" formControlName="identifer" nz-input  style="width:100%;"/>
+                    </div>
+            </div>
+    </div>
+    <div *nzModalFooter>
+        <ng-container>
+            <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="updateSkills()">
+                <span>UPDATE</span>
+            </button>
+        </ng-container>
+    </div> 
+</nz-modal>
+<!--<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="'Add Competency'" (nzOnCancel)="handleCancel()">-->   
+<nz-modal [nzWidth]="700" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit ? 'Add Competency' : 'Edit Competency'" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+        
         <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
             <nz-step class="mini" nzTitle="Competencies" nzDescription=""></nz-step>
             <nz-step class="mini" nzTitle="Additional Details" nzDescription=""></nz-step>
         </nz-steps>
-
+        
         <nz-divider class="full-height" nzType="vertical"></nz-divider>
-
+        
         <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
             <div *ngIf="current == 0">
                 <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="competency" nzShowSearch nzAllowClear nzPlaceHolder="Select a competency" >
@@ -74,7 +109,7 @@
                 </div>
             </div>
         </div>
-
+        
     </div>
     <div *nzModalFooter>
         <ng-container>

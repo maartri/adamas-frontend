@@ -508,15 +508,16 @@ export class BookingClient implements OnInit, OnDestroy {
                 moment(this.date).format('MMM DD,YYYY'), 
                 moment(this.publishedEndDate).format('MMM DD,YYYY'), 
                 this.buildPermanentBookings()
-            )
+            ),
+            RecipientPersonId: this.token.uniqueID
         }
+
+        // console.log(this.token);
+        // return;
 
         if(this.slots.length == 0 && this.permanent){
             return this.globalS.createMessage(TYPE_MESSAGE.error, 'You have no slots added in step 1');
         }
-
-
-        // this.loadBooking = true;
 
         var id = this.globalS.loadingMessage('Processing booking...');
         this.bookingModalOpen = false;
@@ -632,11 +633,6 @@ A four weekly booking has been made from date ${startDate} to ${endDate}:
     };
 
     realBookings(): Array<PermanentBookings>{
-        // var sss = this.globalS.DIFFERENCE_DATE(this.publishedEndDate, this.date);
-        // console.log(sss);
-
-        // var diffWeeks = this.globalS.CALCULATE_WHAT_WEEK_FORTNIGHT(this.globalS.CONVERTSTRING_TO_DATETIME(this.payPeriod), this.date);
-        // console.log(diffWeeks);
      
         var bbb: any = this.buildDateFrames(this.slots);
         var currDate = this.date;

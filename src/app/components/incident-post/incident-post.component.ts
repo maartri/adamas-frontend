@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges,forwardRef, OnChanges, Output, EventEmitter  } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges,forwardRef, OnChanges, Output, EventEmitter, ChangeDetectorRef  } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, StaffService, view } from '@services/index';
@@ -8,10 +8,14 @@ import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
-
+import lastDayOfMonth from 'date-fns/lastDayOfMonth'
+import startOfMonth from 'date-fns/startOfMonth'
 import * as moment from 'moment';
 import { User, NewRelationShip, ProfileInterface, IM_Master } from '@modules/modules';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+
 const noop = () => {
 };
 
@@ -93,14 +97,18 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   modalOpen: boolean = false;
 
   incidentNotifications: Array<any>;
-
+  incidentmandatoryNotifications : Array<any>;
+  incidentnonmandatoryNotifications : Array<any>;
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   alist: Array<any> = [];
   blist: Array<any> = [];
   clist: Array<any> = [];
   dlist: Array<any> = [];
   mlist: Array<any> = [];
   recipientStrArr: Array<any> = [];
-
+  statuseffect :string;
+  tocken:any
+  
   private default = {
     notes: '',
     publishToApp: false,
@@ -115,19 +123,29 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     recordNumber: null,
     personID: ''
 }
+  tryDoctype: any;
+  pdfTitle: string;
+  drawerVisible: boolean;
+  loadingPDF: boolean;
+  noteSearchForm: FormGroup;
+  reportModal: boolean;
 
   constructor(
     private fb: FormBuilder,
+    private cd: ChangeDetectorRef,
     private listS: ListService,
     private globalS: GlobalService,
     private clientS: ClientService,
     private staffS: StaffService,
     private timeS: TimeSheetService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private sanitizer: DomSanitizer,
+    private http: HttpClient,
+    private ModalS: NzModalService,
   ) { 
 
   }
-
+  
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
@@ -138,17 +156,23 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       }
       if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.operation = changes[property].currentValue;
-        if(this.operation.process == 'UPDATE') this.current = 1;
+        if(this.operation.process == 'UPDATE') this.current = 0;
         if(this.operation.process == 'ADD') this.current = 0;
       }
     }
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
+    this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
     this.buildForm();
+    this.cd.detectChanges();
   }
-
+  detectChanges(){
+    this.cd.markForCheck();
+    this.cd.detectChanges();
+  }
   buildForm() {
+    
     this.incidentForm = this.fb.group({
         recordNo: '',
         incidentType: '',
@@ -167,17 +191,17 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         step7:'',
         
         // Office Use
-        officeUse1: false,
+        officeUse1: true,
         officeUse2: false,
         officeUse3: false,
         officeUse4: false,
         officeUse5: false,
         officeUse6: false,
-        officeUse7: false,
+        officeUse7: false ,
         officeUse8: false,
         officeUse9: false,
 
-        reportEnter:'',
+        reportEnter:this.tocken.user,
         communityService: '',
         regionalComm:'',
         comments: '',
@@ -208,7 +232,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         incident10: false,
         incident11: false,
         incident12: false,
-        incident13: false,
+        incident13: false,        
         incident14: false,
         incident15: false,
         incident16: false,
@@ -219,10 +243,11 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         incident21: false,
         incident22: false,
         other: '',
+        otherspecify: '',
         summary: '',
         description: '',
 
-        //
+
         accountNo: '',
         subjectName: '',
         dob: '',
@@ -234,6 +259,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         endTimeOfIncident: null,
         dateOfIncident: '',
         gender:'',
+        organisation: '',
+        //SubjectType : '',
 
         //staff
         name: '',
@@ -244,6 +271,12 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     });
 
     this.noteFormGroup = this.fb.group(this.default);
+
+    this.noteSearchForm = this.fb.group({
+      'start_date' : startOfMonth(new Date()),
+      'end_date'   : lastDayOfMonth(new Date()),
+      'personId'   : ''
+    });
   }
 
   searchStaff(): void {
@@ -361,7 +394,9 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       this.incidentForm.patchValue({
         accountNo: user.accountNo,
         gender: this.getGender(user.gender),
-        dob: this.getBirthdate(user.dateOfBirth)
+        dob: this.getBirthdate(user.dateOfBirth),
+        
+        
       });
     }
 
@@ -369,7 +404,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
       this.incidentForm.patchValue({
         accountNo: user.accountNo,
-
+        gender: this.getGender(user.gender),
         subjectName: `${user.firstName} ${user.lastName}`,
         dob: user.dob ? new Date(user.dob) : null
       });
@@ -409,19 +444,24 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     if(_gender === 'female')
       return 'female';
   }
+ 
 
   buildValueChanges(){
 
-    this.getSelect();
+  this.getSelect();
 
-    this.timeS.getincidentnotifications().subscribe(data => {
-      this.incidentNotifications = data.map(x =>{
-        var o = Object.assign({}, x);
-        o.checked = true;
-        return o;
-      });
-    });
-
+  // this.timeS.GetIncidentNotifications().subscribe(data => {
+  //    this.incidentNotifications = data.map(x =>{
+  //       var o = Object.assign({}, x);
+  //       o.checked = true;
+  //       return o;
+  //   });
+  // }); 
+  
+  this.timeS.Getincidentmandatorynotifications().subscribe(data => this.incidentmandatoryNotifications = data);
+  
+  this.timeS.Getincidentnonmandatorynotifications().subscribe(data => this.incidentnonmandatoryNotifications = data);
+    
     this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
         this.listIncidentTypes = data;
     });
@@ -486,6 +526,14 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     this.modalOpen = false;
     this.noteFormGroup.reset(this.default);
   }
+  handleReportCancel(){
+    this.reportModal = false;
+    this.noteSearchForm.reset({
+      'start_date' : startOfMonth(new Date()),
+      'end_date'   : lastDayOfMonth(new Date()),
+      'personId'   : ''
+    });
+  }
 
   updateStaffListing(staff: Array<any>){
     if(staff.length == 0 )return;
@@ -503,6 +551,13 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   showNoteModal(){
     this.modalOpen = true;
   }
+  showPrintModal(){
+    this.reportModal = true;
+    this.noteSearchForm.patchValue({
+      'personId' : this.incidentForm.value.recordNo,
+    })
+    console.log(this.incidentForm.value.recordNo);
+  }
 
   updateNewRelationShip(staff: Array<any>){
     if(staff.length == 0 )return;
@@ -519,6 +574,30 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     this.listNewPeople.splice(index, 1);
   }
 
+buildCheckBoxesInStep1(): string{
+  
+  var defaultVa: string = '';
+
+    const { 
+      organisation,
+      } = this.incidentForm.value;
+      //defaultVa = this.trueString(organisation);
+      defaultVa = organisation;
+      
+    return defaultVa;
+
+}
+updateCheckBoxesInStep1(defaultString: string){ 
+  
+  if(!defaultString) return;
+
+  this.incidentForm.patchValue({
+    //organisation: this.isChecked(defaultString[0])
+    organisation: defaultString
+  })
+  
+
+}
   buildCheckBoxesInStep2(): string{
     var defaultVa: string = '';
 
@@ -545,6 +624,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
         incident20,
         incident21,
         incident22,
+      //  organisation,
     } = this.incidentForm.value;
     
     defaultVa = defaultVa.concat(this.trueString(incident1));
@@ -569,6 +649,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     defaultVa = defaultVa.concat(this.trueString(incident20));
     defaultVa = defaultVa.concat(this.trueString(incident21));
     defaultVa = defaultVa.concat(this.trueString(incident22));
+    //defaultVa = defaultVa.concat(this.trueString(organisation));
 
     return defaultVa;
   }
@@ -599,6 +680,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       incident20: this.isChecked(defaultString[19]),
       incident21: this.isChecked(defaultString[20]),
       incident22: this.isChecked(defaultString[21]),
+      //organisation:this.isChecked(defaultString[22]),
     })
   }
 
@@ -669,20 +751,32 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     defaultVa = defaultVa.concat(this.trueString(officeUse7));
     defaultVa = defaultVa.concat(this.trueString(officeUse8));
     defaultVa = defaultVa.concat(this.trueString(officeUse9));
-
+  //  console.log(" debug  "+defaultVa)
     return defaultVa;    
   }
 
   updateCheckBoxesInOfficeUse(defaultString: string){
+    var temp;
     if(!defaultString) return;
+//&& this.operation.process == 'UPDATE'
+    if(this.statuseffect === "CLOSED"  ){
+      
+     temp  = true
+    }
+    else{temp = false}
+
+    //console.log("debug")
+
     this.incidentForm.patchValue({
-      officeUse1: this.isChecked(defaultString[0]),
+      //officeUse1: this.isChecked(defaultString[0]),
+      officeUse1: this.isChecked('1'), //as we are entering data so it should be true
       officeUse2: this.isChecked(defaultString[1]),
       officeUse3: this.isChecked(defaultString[2]),
       officeUse4: this.isChecked(defaultString[3]),
       officeUse5: this.isChecked(defaultString[4]),
-      officeUse6: this.isChecked(defaultString[5]),
-      officeUse7: this.isChecked(defaultString[6]),
+      officeUse6: this.isChecked(defaultString[5]),      
+      //officeUse7: this.isChecked(defaultString[6]),
+      officeUse7: temp,
       officeUse8: this.isChecked(defaultString[7]),
       officeUse9: this.isChecked(defaultString[8])
     })
@@ -695,33 +789,42 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   isChecked(data: string): boolean{
     return '1' == data ? true : false;
   }
-
   save(){
-
-    var { incidentType, serviceType,
+    var { incidentType, serviceType,program,
           step4, step51, step52, step53, step54,
           step61, step7, reportEnter, communityService, regionalComm, comments,
           other, summary, description,
-          accountNo, dateOfIncident, reportedBy, recordNo, startTimeOfIncident, endTimeOfIncident, commentsStaff, incidentNotes  } = 
-    this.incidentForm.value;
-
+          accountNo, dateOfIncident, reportedBy,recipient,recordNo,startTimeOfIncident , endTimeOfIncident, commentsStaff, incidentNotes,otherspecify, } = 
+      
+          this.incidentForm.value;
+      if (this.current == 1 && endTimeOfIncident != null && format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm') ){
+        this.modal.error({
+          nzTitle: 'TRACCS',
+            nzContent: 'End Time of Incident Must be greater than Start Time',
+            nzOnOk: () => {
+              this.current = 1;
+            },
+          });
+      
+    }else{
     var { 
       accountNo,
       primaryPhone
     } = this.user;
-
+    
+    
     var im_master: IM_Master = {
           RecordNo: recordNo || 0,
           PersonId: this.innerValue.id,
-          Type: incidentType,
-          Service: serviceType,
+          Type    : incidentType,
+          Service : serviceType,
           Date: dateOfIncident ? format(dateOfIncident,'yyyy-MM-dd HH:mm:ss') : null,
           Time: startTimeOfIncident ? format(startTimeOfIncident,'yyyy-MM-dd HH:mm:ss') : null,
           EstimatedTimeOther: endTimeOfIncident ? format(endTimeOfIncident, 'HH:mm') : null,
 
           Location: step4,
           ReportedBy: reportedBy,
-          CurrentAssignee: '',
+          CurrentAssignee: recipient,
           ShortDesc: summary,
           FullDesc: description,
           Triggers: step53,
@@ -730,7 +833,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           OngoingNotes: commentsStaff,
           Notes: comments,
           Setting: '',
-          Status: '',
+          Status: 'OPEN',
           Region: communityService,
           Phone: primaryPhone,
           Verbal_Date: new Date(),
@@ -740,17 +843,17 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           SummaryOfOtherAction: step7,
           SubjectName: accountNo,
           SubjectGender: '',
+          SubjectType: this.buildCheckBoxesInStep1(),
           ResidenceSubjectOther: '',
           TypeOther: this.buildCheckBoxesInStep2(),
           Manager: regionalComm,
           
-          IncidentTypeOther: other,
+          IncidentTypeOther: other,          
           Mobile: '',
           OfficeUse: this.buildCheckBoxesInOfficeUse(),
           FollowupContacted: this.buildCheckBoxesInStep6(),
-          FollowupContactedOther: '',
+          FollowupContactedOther: otherspecify,
           SubjectMood: step51,
-
           Staff: this.selectedStaff.length > 0 ? this.selectedStaff.map(x => {
             return {
               IM_MasterId: x.iM_MasterId || 0,
@@ -765,42 +868,49 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       this.timeS.updateincident(im_master).subscribe(data =>{
         this.globalS.sToast('Success', 'Data saved');
         this.reload.emit(true);
+        this.open = false;
       })
     }
 
     if(this.operation.process === Mode.ADD){
-       this.timeS.postincident(im_master).subscribe(data => {
+    this.timeS.postincident(im_master).subscribe(data => {
         this.globalS.sToast('Success', 'Data saved');
         this.reload.emit(true);
-      });
+        this.open = false;
+    });
     }   
   }
-
+  }
   saveNote(){
 
     if (!this.globalS.IsFormValid(this.noteFormGroup))
     return;
 
     const { alarmDate, restrictionsStr, whocode, restrictions } = this.noteFormGroup.value;
+    
     const cleanDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(alarmDate);
-
+    
     let privateFlag = restrictionsStr == 'workgroup' ? true : false;
     let restricts = restrictionsStr != 'restrict';
 
     this.noteFormGroup.controls["restrictionsStr"].setValue(privateFlag);
 
     this.noteFormGroup.controls["alarmDate"].setValue(cleanDate);
-
+    
     this.noteFormGroup.controls["whocode"].setValue(this.globalS.decode().nameid);
     this.noteFormGroup.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
 
     const noteValue = this.noteFormGroup.value;
+    if(noteValue.alarmDate != null){
+      var checknull = format(noteValue.alarmDate,"yyyy-MM-dd'T'HH:mm:ss")
+    }else{checknull = ''}
 
     const note: Note = {
       creator: 'sysmgr',
       detail: noteValue.notes,
       detailDate: format(new Date(),"yyyy-MM-dd'T'HH:mm:ss"),
-      alarmDate: format(noteValue.alarmDate,"yyyy-MM-dd'T'HH:mm:ss"),
+      alarmDate: checknull,
+    //  alarmDate: format(noteValue.alarmDate,"yyyy-MM-dd'T'HH:mm:ss"),
       personID: '',
       recordNumber: 0,
       restrictions: noteValue.restrictions,
@@ -878,22 +988,30 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   patchUpdateValues(data: any){
 
+    console.log(data)
+    
+    this.statuseffect = data.status;
+    this.updateCheckBoxesInStep1(data.subjectType)
     this.updateCheckBoxesInStep2(data.typeOther);
     this.updateCheckBoxesInOfficeUse(data.officeUse);
     this.updateCheckBoxesInStep6(data.followupContacted);
     this.updateStaffListing(data.staff);
     this.updateNewRelationShip(data.newRelationship);
-
+  
+  
     this.incidentForm.patchValue({
       summary: data.shortDesc,
-      description: data.fullDesc,
-
+      description: data.fullDesc, 
+      recipient:data.currentAssignee,
+      other:data.incidentTypeOther,
+      otherspecify:  data.followupContactedOther,
       step4: data.location,
-      step51: data.followupContactedOther,
+      step51: data.subjectMood,
       step52: data.releventBackground,
       step53: data.triggers,
       step54: data.initialNotes,
-
+      serviceType:data.service,
+      incidentType:data.type,
       step61: data.summaryofAction,
       step7: data.summaryOfOtherAction,
 
@@ -902,14 +1020,18 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       regionalComm: data.manager,
       comments: data.notes,
       commentsStaff: data.ongoingNotes,
-
+      
       endTimeOfIncident: data.estimatedTimeOther ? parse(data.estimatedTimeOther,'HH:mm', new Date()) : null,
       startTimeOfIncident: this.getRealDate(data.time),
+      
       dateOfIncident: this.getRealDate(data.date),
-      reportedBy: data.reportedBy,
+      reportedBy: data.reportedBy,      
+      recordNo: data.recordNo,
+      //organisation:this.getorganisation(data.subjectType),
+      organisation:data.subjectType ,
 
-      recordNo: data.recordNo
     });
+    
   }
 
   //From ControlValueAccessor interface
@@ -919,7 +1041,8 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       console.log(value);
 
       if(value.operation == 'UPDATE'){
-          this.timeS.getincidentnotes(value.recordNo).subscribe(data => {
+          
+        this.timeS.getincidentnotes(value.recordNo).subscribe(data => {
               data.map(x => {
                 if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
                   x.detail = x.detailOriginal
@@ -959,7 +1082,24 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   }
 
   next(): void {
-      this.current += 1;
+    // var  {startTimeOfIncident,endTimeOfIncident} = this.incidentForm.value
+
+     
+     
+    // if (this.current == 1 && endTimeOfIncident != null ){
+    //     //this.compareTimeofincidents();
+    //     if (format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm')){
+    //       //  alert("End Time of Incient must be greater then Start time")
+    //         this.modal.error({
+    //           nzTitle: 'TRACCS',
+    //             nzContent: 'End Time of Incident Must be greater than Start Time',
+    //             nzOnOk: () => {},
+    //           });
+    //     }
+        
+    // }else
+        
+          this.current += 1;
   }
 
   log(event: any) {
@@ -989,14 +1129,104 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
           data.push('*VARIOUS');
           this.clist = data;
       });
+    //  this.alist = this.listPrograms ;
+    
       this.timeS.getprogramop(this.innerValue.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           data.push('*VARIOUS');
           this.alist = data;
       });
-
+    
       this.listS.getcategoryincident().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           this.dlist = data;
       })
   }
+  compareTimeofincidents(){
+    var  {startTimeOfIncident,endTimeOfIncident} = this.incidentForm.value
 
+   // console.log("compare  "+format(startTimeOfIncident, 'HH:mm') + " ," + format(endTimeOfIncident, 'HH:mm'));
+    if (format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm')){
+      //  alert("End Time of Incient must be greater then Start time")
+        this.modal.error({
+          nzTitle: 'TRACCS',
+            nzContent: 'End Time of Incident Must be greater than Start Time',
+            nzOnOk: () => {},
+          });
+    }
+    else{this.current = 2}
+  }
+
+  handleOkTop() {
+    this.generatePdf();
+    this.tryDoctype = ""
+    this.pdfTitle = ""
+ }
+  handleCancelTop(): void {
+      this.drawerVisible = false;
+      this.pdfTitle = ""
+  }
+  generatePdf(){
+        this.drawerVisible = true;
+        this.loadingPDF = true;
+        var startdate = this.noteSearchForm.value.start_date;
+        var enddate   = this.noteSearchForm.value.end_date;
+        
+        if (startdate != null) { startdate = format(startdate, 'yyyy-MM-dd') } else {
+          startdate   = format(new Date(), 'yyyy-MM-dd');
+        }
+        if (enddate != null) {  enddate = format( enddate, 'yyyy-MM-dd') } else {
+            enddate =  format(new Date(), 'yyyy-MM-dd');
+        }
+        var whereString = '';
+
+        whereString = " AND DetailDate Between '" + startdate + "' and '" + enddate + "'";
+
+        var fQuery = "Select WhoCode as Field1,CONVERT(varchar, [DetailDate],105) as Field2,Detail as Field3,CONVERT(varchar, [AlarmDate],100) as Field4, Creator as Field5 FROM History WHERE PersonID = '"+this.incidentForm.value.recordNo+"' AND ExtraDetail1 = 'RECIMNOTE'  AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND DeletedRecord <> 1 "+whereString+" ORDER BY DetailDate DESC, RecordNumber DESC";
+        // console.log(fQuery);
+    const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    }
+    
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+    };
+    
+    const data = {
+        "template": { "_id": "0RYYxAkMCftBE9jc" },
+        "options": {
+            "reports": { "save": false },
+            "txtTitle": "Incident Ongoing Notes",
+            "userid": this.tocken.user,
+            "sql": fQuery,
+            "head1" : "WhoCode",
+            "head2" : "DetailDate",
+            "head3" : "Detail",
+            "head4" : "AlarmDate",
+            "head5" : "Creator",
+        }
+    }
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+    .subscribe((blob: any) => {
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loadingPDF = false;
+        console.log("compiled after data")
+        this.cd.detectChanges();
+    }, err => {
+        console.log(err);
+        this.loadingPDF = false;
+        this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+                this.drawerVisible = false;
+            },
+        });
+    });
+    this.cd.detectChanges();
+    this.loadingPDF = true;
+    this.tryDoctype = "";
+    this.pdfTitle = "";
 }
+}//

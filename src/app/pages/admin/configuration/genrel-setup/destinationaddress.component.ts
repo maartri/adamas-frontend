@@ -35,7 +35,7 @@ export class DestinationaddressComponent implements OnInit {
   drawerVisible: boolean =  false;  
   check : boolean = false;  
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
   temp_title: any;
   
   constructor(
@@ -68,7 +68,7 @@ export class DestinationaddressComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -85,7 +85,7 @@ export class DestinationaddressComponent implements OnInit {
       });
     }
     loadData(){
-      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,DeletedRecord as is_deleted from HumanResourceTypes "+this.whereString+" [Group] like 'DESTINATION'";
+      let sql ="SELECT *,ROW_NUMBER() OVER(ORDER BY Name) AS row_num,xDeletedRecord as is_deleted from HumanResourceTypes "+this.whereString+" [Group] like 'DESTINATION'";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -167,7 +167,7 @@ export class DestinationaddressComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group = this.inputForm;
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -175,7 +175,7 @@ export class DestinationaddressComponent implements OnInit {
           return false;   
         }
         let type     = "'DESTINATION'";
-            name     = this.globalS.isValueNull(group.get('name').value);
+            name     = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
         let suburb   = this.globalS.isValueNull(group.get('suburb').value);
@@ -188,7 +188,7 @@ export class DestinationaddressComponent implements OnInit {
         let postcode = null;
         let values = "'DESTINATION'"+","+type+","+name+","+address1+","+address2+","+suburb+","+postcode+","+phone1+","+phone2+","+fax+","+mobile+","+email+","+end_date;
         let sql = "insert into HumanResourceTypes([Group],[Type],[Name],[Address1],[Address2],[Suburb],[Postcode],[Phone1],[Phone2],[Fax],[Mobile],[email],[EndDate]) Values ("+values+")";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
@@ -201,17 +201,18 @@ export class DestinationaddressComponent implements OnInit {
         });
       }else{
         const group = this.inputForm;
-        let name        = group.get('title').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
               this.globalS.sToast('Unsuccess', 'Title Already Exist');
               this.postLoading = false;
+              this.loading = false;
               return false;   
             }
         }
         let type     = "'DESTINATION'";
-        name     = this.globalS.isValueNull(group.get('name').value);
+        name     = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let address1 = this.globalS.isValueNull(group.get('address1').value);
         let address2 = this.globalS.isValueNull(group.get('address2').value);
         let suburb   = this.globalS.isValueNull(group.get('suburb').value);
@@ -224,14 +225,14 @@ export class DestinationaddressComponent implements OnInit {
         let postcode = null;
         let recordnumber     = group.get('recordNumber').value;
         let sql  = "Update HumanResourceTypes SET [Group]='DESTINATION',[Type] ="+ type+ ",[Name] ="+ name+ ",[Address1] ="+ address1+",[Address2] ="+ address2+",[Suburb] ="+ suburb+",[Postcode] ="+ postcode+",[Phone1] ="+ phone1+",[Phone2] ="+ phone2+",[Fax] ="+ fax+",[Mobile] ="+ mobile +",[EMail] ="+email+",[EndDate] ="+end_date+" WHERE [RecordNumber] ='"+recordnumber+"'";
-        console.log(sql);
+        // console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
           else
           this.globalS.sToast('Success', 'Saved successful');
-          
+          this.loading = false;
           this.postLoading = false;      
           this.loadData();
           this.handleCancel();
@@ -278,7 +279,7 @@ export class DestinationaddressComponent implements OnInit {
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 ,DeletedRecord as is_deleted from HumanResourceTypes "+this.whereString+" [Group] like 'DESTINATION'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] as Field2,[Type] as Field3,[Address1] as Field4,[phone1] as Field5,[Fax] as Field6,CONVERT(varchar, [enddate],105) as Field7 ,xDeletedRecord as is_deleted from HumanResourceTypes "+this.whereString+" [Group] like 'DESTINATION'";
       
       const headerDict = {
         'Content-Type': 'application/json',

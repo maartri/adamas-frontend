@@ -57,11 +57,8 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
   }
 
   writeValue(value: any) {
-    console.log(value);
-    
     if (value) {
       this.innerValue = this.validateNumber(value);
-      console.log(this.innerValue);
 
       if (this.innerValue) {
         this.error = false;
@@ -89,8 +86,8 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
 
   ngOnDestroy(): void{
 
-  } 
-
+  }
+  
   isMobileType() {
     return this.isMobile ? '04' : `0${this.areaCode}`
   }

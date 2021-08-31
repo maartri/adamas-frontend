@@ -1,13 +1,21 @@
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, SimpleChanges, ViewChild, EventEmitter, Output, ChangeDetectorRef,ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
-import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap } from 'rxjs/operators';
+import { mergeMap, debounceTime, distinctUntilChanged, takeUntil, switchMap, concatMap, startWith } from 'rxjs/operators';
 
 import * as moment from 'moment';
 import { RemoveFirstLast } from '@pipes/pipes';
-import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
-import { Observable, of, from, Subject, EMPTY } from 'rxjs';
+import { TimeSheetService, GlobalService, dateFormat,ClientService, StaffService, ListService, UploadService, contactGroups, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { Observable, of, from, Subject, EMPTY, combineLatest } from 'rxjs';
+import { getMultipleValuesInSingleSelectionError } from '@angular/cdk/collections';
+import { Reminders } from '@modules/modules';
+import format from 'date-fns/format';
+import { setDate } from 'date-fns';
+import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import id from 'date-fns/locale/id';
+
 
 @Component({
   selector: 'app-add-referral',
@@ -15,18 +23,34 @@ import { Observable, of, from, Subject, EMPTY } from 'rxjs';
   styleUrls: ['./add-referral.component.css']
 })
   
-export class AddReferralComponent implements OnInit {
+export class AddReferralComponent implements OnInit, OnDestroy {
 
   private verifyAccount = new Subject<any>();
+  private verifyAccountCustom = new Subject<any>();
+
+  loadingGenerateAccount: boolean = false;
+
+  contactGroups: Array<string> = contactGroups;
 
   @Input() open: boolean = false;
   @Input() type: string = 'referral';
+  @ViewChild('sample', { static: false }) _lastname: ElementRef;
+  
+  @Input() followupremind: string = '';
 
   @Output() openRefer = new EventEmitter();
+
+  showEdit: boolean = null;
+  
 
   referralGroup: FormGroup;
 
   dateFormat: string = dateFormat;
+
+  notifCheckBoxGroup: any;
+  notifCheckBoxes: Array<string> = []
+  notifFollowUpGroup: any;
+  notifDocumentsGroup: any;
 
   genderArr: Array<string> = gender
   typesArr: Array<string> = types
@@ -34,6 +58,13 @@ export class AddReferralComponent implements OnInit {
   addressType: Array<string> = []
   contactType: Array<string> = []
 
+  email: Array<string> = []
+  acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";
+  file :File;
+  fileList2: Array<any> = [];
+  urlPath: string = `api/v2/file/upload-incident-document-procedure`;
+  loadedFiles: Array<any> = [];
+  
 
   loading: boolean;
 
@@ -42,26 +73,72 @@ export class AddReferralComponent implements OnInit {
   branches: Array<string>;
   managers: Array<string>;
   agencies: Array<string>;
+  followups: Array<string>;
+  notifications: Array<string>;
+  documentlist: Array<string>;
+  datalist: Array<string>;
+  adddoc :boolean = false;
 
   private addresses: FormArray;
   private contacts: FormArray;
+  private otherContacts: FormArray;
 
   current: number = 0;
   generatedAccount: string;
   accountTaken: boolean;
+  default_branch: string  = '';
+  default_manager: string = '';
+  default_agency: string  = '';
+  defaultDate: string;
+
+  private destroy$ = new Subject();
+
+  token :any ;
+  date: any;
 
   constructor(
     private clientS: ClientService,
     private formBuilder: FormBuilder,
     private globalS: GlobalService,
     private listS: ListService,
-    private cd: ChangeDetectorRef
+    private elemtRef :ElementRef,
+    private cd: ChangeDetectorRef,
+    private timeS: TimeSheetService,
+    private msg: NzMessageService,
   ) {
 
   }
-
   ngOnInit() {
-    this.resetGroup();    
+    this.resetGroup();
+    
+    this.verifyAccountCustom.pipe(
+      debounceTime(500),
+      concatMap(e => {
+        if (this.referralGroup && this.referralGroup.valid) {
+          this.generatedAccount = this.referralGroup.get('accountNo').value;
+          this.cd.markForCheck();
+          return this.clientS.isAccountNoUnique(this.generatedAccount);
+        } return EMPTY;
+      })
+    ).subscribe(next => {
+      this.loadingGenerateAccount = false;
+      if (next == 1) {
+        this.accountTaken = false;
+
+        this.referralGroup.patchValue({
+          accountNo: this.generatedAccount
+        });
+        this.cd.markForCheck();
+      }
+      if (next == 0) {
+        this.accountTaken = true;
+        this.referralGroup.patchValue({
+          accountNo: this.generatedAccount
+        });
+        this.cd.markForCheck();
+      }
+    });
+  
 
     this.verifyAccount.pipe(
       debounceTime(300),
@@ -91,7 +168,16 @@ export class AddReferralComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(){
+    this.destroy$.next();  // trigger the unsubscribe
+    this.destroy$.complete(); // finalize & clean up the subject stream
+  }
+
   ngOnChanges(changes: SimpleChanges) {
+    setTimeout(() => {
+      if(this._lastname)
+        this._lastname.nativeElement.focus();
+    });
     for (let property in changes) {
       if (property == 'open' && 
             !changes[property].firstChange &&
@@ -101,12 +187,36 @@ export class AddReferralComponent implements OnInit {
       }
     }
   }
+  getdefaultDate(){
+   this.defaultDate = this.globalS.getAgedCareDate()
+  }
+
+  defaultBirthDate(): Date{
+    var currDate = new Date();
+    currDate.setFullYear(currDate.getFullYear() - 65);
+    return currDate;
+  }
+
+  firstOpenChange: boolean = false;
+  dateOpenChange(data: any){
+    if(this.firstOpenChange || !data) return;
+    this.firstOpenChange = true;
+    this.referralGroup.patchValue({
+      dob: this.defaultBirthDate()
+    });
+  }
 
   resetGroup() {
+    setTimeout(() => {
+      this._lastname.nativeElement.focus();
+    });
 
+    this.firstOpenChange = false;
+    this.showEdit = null;
+    
     this.referralGroup = new FormGroup({
       gender: new FormControl(null),
-      dob: new FormControl('', Validators.required),
+      dob: new FormControl(null, Validators.required),
       title: new FormControl(null),
       lastname: new FormControl('', Validators.required),
       firstname: new FormControl('', Validators.required),
@@ -115,21 +225,73 @@ export class AddReferralComponent implements OnInit {
       appendName: new FormControl(''),
       accountNo: new FormControl(''),
       organisation: new FormControl(''),
-      type: new FormControl(0),
+      type: new FormControl(null),
+      ndisNumber: new FormControl(''),
 
       addresses: new FormArray([this.createAddress()]),
       contacts: new FormArray([this.createContact()]),
 
-      branch: new FormControl(''),
-      agencyDefinedGroup: new FormControl(''),
-      recipientCoordinator: new FormControl(''),
-      referral: new FormControl(''),
+      otherContacts: new FormArray([this.createOtherContact()]),
+      gpDetails: new FormArray([this.createGpDetails()]),
 
-      confirmation: new FormControl(null)
+      branch: new FormControl(this.default_branch),
+      agencyDefinedGroup: new FormControl(this.default_agency),
+      recipientCoordinator: new FormControl(this.default_manager),
+      document: new FormControl(null),
+      followup: new FormControl(null),
+      notifications: new FormControl(null),
+      dataList: new FormControl(null),
+
+      referral: new FormControl(''),
+      confirmation: new FormControl(null),
+
+      
+      
     });
 
 
     this.populateDropdowns();
+
+    combineLatest([
+      this.referralGroup.get('branch').valueChanges,
+      this.referralGroup.get('recipientCoordinator').valueChanges.pipe(startWith(false)),
+    ]).pipe(
+      switchMap(([x, x1]): any => {
+        let data = {
+          branch: x,
+          coordinator: x1
+        }
+        return this.listS.getnotifications(data);
+      })
+    ).subscribe((data: any) => {
+        // this.notifications = data;
+        //this.notifCheckBoxGroup = data.map(x => {
+
+          console.log(data);
+          
+          this.notifCheckBoxes = data.map(x => {
+          return {
+            label: x.staffToNotify,
+            value: x.staffToNotify,
+            disabled: x.mandatory ? true : false,
+            check: x.mandatory ? true : false
+          }
+        })
+    });
+
+    // this.referralGroup.get('otherContacts').valueChanges.subscribe(data => console.log(data))
+
+    this.referralGroup.get('branch').valueChanges.subscribe(data => console.log(data))
+
+    this.referralGroup.get('accountNo')
+        .valueChanges
+        .pipe(
+          debounceTime(100),
+          distinctUntilChanged()
+        ).subscribe(data => {
+          this.loadingGenerateAccount = true;
+          this.verifyAccountCustom.next();
+        })
 
     this.referralGroup.get('organisation').valueChanges
       .pipe(distinctUntilChanged(), debounceTime(200), mergeMap(x => {
@@ -167,11 +329,6 @@ export class AddReferralComponent implements OnInit {
         this.verifyAccount.next();
       });
     
-    // this.referralGroup.get('middlename').valueChanges
-    //   .pipe(debounceTime(300))
-    //   .subscribe(data => {
-    //     this.verifyAccount.next();
-    //   });
 
     this.referralGroup.get('gender').valueChanges
       .pipe(debounceTime(300))
@@ -193,9 +350,8 @@ export class AddReferralComponent implements OnInit {
         }
         this.verifyAccount.next();
       });
-
   }
-
+  
   // contactTypeChange(index: number) {
   //   var contact = this.referralGroup.get('contacts') as FormArray;
   //   contact.controls[index].get('contact').reset();
@@ -243,6 +399,56 @@ export class AddReferralComponent implements OnInit {
     // numbers only /[0-9\+\-\ ]/
     if (!event.key.match(/^[a-zA-Z ]*$/)) return false;
   }
+  getemails(data){
+    
+    
+    
+    var temp1 = data.find(x => x.checked === true)
+    
+  
+      this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)
+   
+       
+    
+    
+  }
+  log(data:any){
+    console.log(data)
+  }
+  doc(data:any){
+    
+    var temp = data.find(x => x.checked === true)
+    this.globalS.doc = temp.label.toString();
+    
+  }
+  notif(data: any){
+    
+    var temp1 = data.find(x => x.checked === true)
+    
+  
+      this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)
+   
+      
+      
+        
+  
+    
+    
+  }
+ 
+  followup(data: any){
+    
+    
+    
+    var temp
+   
+  
+  temp = data.find(x => x.checked === true)
+  this.globalS.followups = temp
+    
+  
+   
+  }
 
   isNamesComplete(): boolean {
     return !this.globalS.isEmpty(this.referralGroup.get('lastname').value) &&
@@ -275,32 +481,78 @@ export class AddReferralComponent implements OnInit {
   }
 
   populateDropdowns(): void {
-    this.clientS.getcontacttype().subscribe(data => {
+    this.clientS.getcontacttype().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.contactType = data.map(x => {
         return (new RemoveFirstLast().transform(x.description)).trim();
       });
     })
-    this.clientS.getaddresstype().subscribe(data => {
+    this.clientS.getaddresstype().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.addressType = data.map(x => {
         return new RemoveFirstLast().transform(x.description)
       });
     })
-    this.listS.getlistbranches().subscribe(data => this.branches = data.map(x => x.toUpperCase()));
-    this.clientS.getmanagers().subscribe(data => this.managers = data.map(x => {
+    this.listS.getlistbranches().pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.branches = data.map(x => x.toUpperCase())
+      if(this.branches.length == 1){
+        this.default_branch = this.branches[0];
+      }
+    });
+    this.clientS.getmanagers().pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.managers = data.map(x => {
         x['description'] =  x['description'].toUpperCase();
-        return x;
-    }));
-    this.listS.getserviceregion().subscribe(data => this.agencies = data.map(x => x.toUpperCase()));
+        return x;})
+        if(this.managers.length == 1){
+            this.default_manager = this.managers[0];
+        }
+        
+    });
+    this.listS.getserviceregion().pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.agencies = data.map(x => x.toUpperCase())
+        if(this.agencies.length == 1){
+          this.default_agency = this.agencies[0];
+        }
+      console.log();
+      }
+    );
+
+    // this.listS.getfollowups({ }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+    //   this.notifFollowUpGroup = data.map(x => {
+    //     return {
+    //       label: x,
+    //       value: x,
+    //       disabled: false,
+    //       checked: false
+    //     }
+    //   })
+    // })
+
+
+    // this.listS.getdocumentslist().pipe(takeUntil(this.destroy$)).subscribe(data => {
+    //   this.notifDocumentsGroup = data.map(x => {
+    //     return {
+    //       label: x,
+    //       value: x,
+    //       disabled: false,
+    //       checked: false
+    //     }
+    //   })
+    // })
+
+    // this.listS.getdatalist().pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+    //   this.datalist = data
+    // });
+
   }
 
   add() {
 
     this.referralGroup.controls["dob"].setValue(this.referralGroup.value.dob ? moment(this.referralGroup.value.dob).format() : '')
+
     // var manager = (this.managers[this.referralGroup.get('recipientCoordinator').value] as any);
     // this.referralGroup.controls["recipientCoordinator"].setValue(manager.description);
 
-    this.filterContacts(<FormArray>this.referralGroup.controls.contacts);
-    this.filterAddress(<FormArray>this.referralGroup.controls.addresses);
+    // this.filterContacts(<FormArray>this.referralGroup.controls.contacts);
+    // this.filterAddress(<FormArray>this.referralGroup.controls.addresses);
     
     // this.openRefer.emit({
     //   address: "",
@@ -312,15 +564,21 @@ export class AddReferralComponent implements OnInit {
     // });
 
     // return;
+    console.log(this.referralGroup.value)
 
     this.clientS.postprofile(this.referralGroup.value)
       .subscribe(data => {
+        
         this.handleCancel();
         this.openRefer.emit(data);
+        
         this.globalS.sToast('Success', 'Recipient Added')        
+        this.current = 1;
       });
+     
+     
   }
-
+  
   clearFormArray = (formArray: FormArray) => {
     while (formArray.length !== 0) {
       formArray.removeAt(0)
@@ -379,15 +637,25 @@ export class AddReferralComponent implements OnInit {
     this.addresses.push(this.createAddress());
   }
 
+  addOtherContacts(): void {
+    this.otherContacts = this.referralGroup.get('otherContacts') as FormArray;
+    this.otherContacts.push(this.createOtherContact());
+  }
+
   deleteAdd(i: number): void {
     this.addresses = this.referralGroup.get('addresses') as FormArray;
     this.addresses.removeAt(i);
   }
 
+  deleteOther(i: number): void {
+    this.otherContacts = this.referralGroup.get('otherContacts') as FormArray;
+    this.otherContacts.removeAt(i);
+  }
+
   createAddress(): FormGroup {
     return this.formBuilder.group({
       address1: new FormControl(''),
-      type: new FormControl(''),
+      type: new FormControl('USUAL'),
       suburb: new FormControl('')
     });
   }
@@ -408,6 +676,48 @@ export class AddReferralComponent implements OnInit {
       contact: new FormControl('')
     });
   }
+
+  createOtherContact(): FormGroup {
+    return this.formBuilder.group({
+      contactGroup: new FormControl(''),
+      contactList: [[]],
+      type: new FormControl(''),
+      name: new FormControl(''),
+      address1: new FormControl(''),
+      address2: new FormControl(''),
+      suburb: new FormControl(''),
+      email: new FormControl(''),
+      phone1: new FormControl(''),
+      phone2: new FormControl(''),
+      mobile: new FormControl(''),
+      fax: new FormControl(''),
+
+      list: new FormControl(['mark','aris'])
+    });
+  }
+
+  createGpDetails(): FormGroup {
+    return this.formBuilder.group({
+      contactGroup: new FormControl('3-MEDICAL'),
+      type: new FormControl('GP'),
+      name: new FormControl(''),
+      address1: new FormControl(''),
+      address2: new FormControl(''),
+      suburb: new FormControl(''),
+      email: new FormControl(''),
+      phone1: new FormControl(''),
+      phone2: new FormControl(''),
+      mobile: new FormControl(''),
+      fax: new FormControl(''),
+    });
+  }
+  createFolloupDetails():FormGroup { 
+    return this.formBuilder.group({ 
+    //  notifCheckBoxes :new FormControl()
+
+    });
+  }
+
 
   verify() {
 
@@ -438,8 +748,10 @@ export class AddReferralComponent implements OnInit {
     this.generatedAccount = null;
     this.accountTaken = null;
     this.current = 0;
+    this.adddoc = false;
 
-    this.resetGroup();
+    // this.resetGroup();
+    this.ngOnDestroy();
   }
 
   next() {
@@ -456,9 +768,31 @@ export class AddReferralComponent implements OnInit {
 
   get canGoNext(): boolean {
     //if (this.current == 0) return true;
+
+    if(this.current == 6 || this.current == 7 || this.current == 8 || this.current == 9){
+      const validateForm = this.referralGroup ;
+      
+      let branch =  this.globalS.isValueNull(validateForm.get('branch').value);
+      let agencyDefinedGroup         =  this.globalS.isValueNull(validateForm.get('agencyDefinedGroup').value);
+      let recipientCoordinator         =  this.globalS.isValueNull(validateForm.get('recipientCoordinator').value);
+      
+      if(this.globalS.isVarNull(branch) || this.globalS.isVarNull(agencyDefinedGroup) || this.globalS.isVarNull(recipientCoordinator)){
+        this.globalS.iToast('Alert', 'First Complete Step No 6  Administration !');
+        this.current = 5; 
+      }
+    }
+
+
     if (this.current == 0 && this.accountTaken == false) return true;
     if (this.current == 1) return true;
     if (this.current == 2) return true;
+    if (this.current == 3) return true;
+    if (this.current == 4) return true;
+    if (this.current == 5) return true;
+    if (this.current == 6) return true;
+    if (this.current == 7) return true;
+    if (this.current == 8) return true;
+    // if (this.current == 2) return true;
     return false;
   }
 
@@ -472,4 +806,54 @@ export class AddReferralComponent implements OnInit {
     contact.controls[index].get('contact').reset();
   }
 
+  contactGroupChange(group: FormGroup, index: number){
+    var contactGroup = (group[index] as FormGroup).get('contactGroup').value;
+    var specificGroup = (group[index] as FormGroup);
+    specificGroup.patchValue({
+      type: null
+    });
+
+    this.listS.gettypeother(contactGroup).subscribe(data => {
+      specificGroup.patchValue({
+        contactList: data
+      });
+    });    
+  }
+
+
+beforeUpload = (file: File): boolean => {
+  this.file = file;
+  console.log(file);
+  
+  this.referralGroup.patchValue({
+    name: this.globalS.removeExtension(this.file.name)
+  });
+
+  
+
+  return false;
+};
+handleChange({ file, fileList }: UploadChangeParam): void {
+  const status = file.status;
+  if (status !== 'uploading') {
+    // console.log(file, fileList);
+  }
+  if (status === 'done') {
+    this.msg.success(`${file.name} file uploaded successfully.`);
+    this.loadFiles();
+  } else if (status === 'error') {
+    this.msg.error(`${file.name} file upload failed.`);
+  }
 }
+
+loadFiles() {
+  this.timeS. getincidentdocuments(id)
+      .subscribe(data => {
+        this.loadedFiles = data;
+
+        this.cd.detectChanges();
+        this.cd.markForCheck();
+      });
+}
+
+}//

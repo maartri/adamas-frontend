@@ -19,3 +19,6 @@ nz-input-number{
 nz-time-picker{
     width:5rem;
 }
+.weekend-clr{
+    background: #ffd5d5;
+}

@@ -17,6 +17,13 @@ export enum RECIPIENT_OPTION {
     ITEM = "ITEM"
 }
 
+export enum TABS {
+    OPNOTES = "OPNOTES",
+    CASENOTES = "CASENOTES",
+    INCIDENTS = "INCIDENTS",
+    QUOTES = "QUOTES"
+}
+
 export enum PROCESS{
     UPDATE = "UPDATE",
     ADD = "ADD"
@@ -48,6 +55,71 @@ export interface Jwt {
     nbf: number,
     role: string,
     user: string
+}
+
+export interface QuoteLineDTO {
+    recordNumber?: any,
+    docHdrId?: number,
+    lineNo?:number,
+    COID?:number,
+    BRID?:number,
+    DPID?: number,
+    itemId?: number,
+    displayText?: string,
+    qty?: number,
+    frequency?: string,
+    lengthInWeeks?:number,
+    quoteQty?: number,
+    billUnit?: string,
+
+    unitBillRate?: number,
+    tax?: number,
+    priceType?: string,
+    quotePerc?: string,
+    budgetPerc?: string,
+    roster?: string,
+    strategyId?: number,
+    rcycle?: string,
+    notes?: string,
+    sortOrder?: number,
+
+    serviceType?: string,
+    code?: string,
+    mainGroup?: string,
+}
+
+export interface QuoteHeaderDTO {
+    recordNumber?: any,
+    docNo?: number,
+    clientId?:number,
+    programId?:number,
+    CPID?:number,
+    contribution?: number,
+    daysCalc?: number,
+    budget?: string,
+    govtContribution?: number,
+
+    quoteBase?: string,
+    packageSupplements?: string,
+    agreedTopUp?: string,
+    balanceAtQuote?: string,
+    clAssessedIncomeTestedFee?: string,
+    feesAccepted?: number,
+    basePension?: string,
+    dailyBasicCareFee?: string,
+    dailyIncomeTestedFee?: string,
+    dailyAgreedTopUp?: string,
+    quoteView?: string,
+
+    personId?: string,
+   
+    quoteLines?: Array<QuoteLineDTO>,
+    goals?: Array<string>,
+    program?: string,
+    user?: string,
+    template?: string,
+    type?: string,
+    documentId?: number
 }
 
 export interface Recipients {
@@ -100,6 +172,7 @@ export interface Staffs {
     nRegistration?: string,
     isRosterable?: boolean,
     emailTimesheet?: boolean,
+    excludeFromConflictChecking?:boolean,
     caseManager?: boolean,
     ubdMap?: string,
     contactIssues?: string,
@@ -181,7 +254,9 @@ export interface AddBooking {
     Notes?: string,
     PermanentBookings?: PermanentBookings[],
     RealDateBookings?:PermanentBookings[],
-    Summary?: string
+    Summary?: string,
+    RecipientPersonId?: string,
+    ManagerPersonId?: string
 }
 
 export interface PermanentBookings{
@@ -390,9 +465,11 @@ export interface AttendanceStaff {
     AutoLogout: string,
     EmailMessage: boolean,
     ExcludeShiftAlerts: boolean,
+    ExcludeFromTravelinterpretation:boolean,
     InAppMessage: boolean,
     LogDisplay: boolean,
     Pin: string,
+    StaffTimezoneOffset:string,
     RosterPublish: boolean,
     ShiftChange: boolean,
     SmsMessage: boolean,
@@ -463,7 +540,10 @@ export interface Reminders {
     date2: Date,
     state: string,
     notes: string,
-    recurring: boolean
+    recurring: boolean,
+    sameDate?:boolean,
+    sameDay?:boolean
+
 }
 
 export interface Consents {
@@ -477,6 +557,14 @@ export interface Consents {
 export interface IntakeCompetency {
     name: string,
     mandatory: boolean
+}
+
+export interface AlertCompetency {
+    personID?: string,
+    competencyValue?: string,
+    mandatory?: boolean,
+    notes?: string,
+    recordNumber?: number,
 }
 
 export interface IntakeServices {
@@ -674,10 +762,14 @@ export interface ProcedureSetClientPackage {
 }
 
 export interface Filters{
-    acceptedQuotes: boolean,
-    allDates: boolean,
-    archiveDocs: boolean,
-    display: number
+    acceptedQuotes?: boolean,
+    allDates?: boolean,
+    archiveDocs?: boolean,
+    includeClosedIncidents?: boolean,
+    includeArchivedNotes?: boolean,
+    display?: number,
+    startDate?: Date,
+    endDate?: Date
 }
 
 export interface CallProcedure {
@@ -736,7 +828,8 @@ export interface ModalVariables {
 }
 
 export interface ProfileInterface {
-    name: string,
+    name?: string,
+    code?: string,
     view: string,
     id?: string,
     sysmgr?: string        
@@ -780,6 +873,7 @@ export interface IM_Master {
     PersonId: string,
     Type: string,
     Service: string,
+    // program:string,
     Date: string,
     Time: string,
     EstimatedTimeOther: string,
@@ -805,6 +899,7 @@ export interface IM_Master {
     SummaryOfOtherAction: string,
     SubjectName: string,
     SubjectGender: string,
+    SubjectType: string,
     ResidenceSubjectOther: string,
     TypeOther: string,
     Manager: string,
@@ -819,6 +914,7 @@ export interface IM_Master {
     Staff?: Array<any>,
     IncidentNotes: Array<any>,
     NewRelationship: Array<any>
+    
 }
 
 export interface NewRelationShip

@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform} from '@angular/core';
 import * as moment from "moment";
 import format  from 'date-fns/format';
 
@@ -106,6 +106,19 @@ export class MonthPeriodFilter implements PipeTransform {
         const startOfMonth = moment(value).startOf('month').format('MMMM DD');
         const endOfMonth = moment(value).endOf('month').format('-DD YYYY');
         return startOfMonth + ' ' + endOfMonth;
+    }
+}
+@Pipe({ name: 'getTextFromHtml' })
+export class GetTextFromHtml implements PipeTransform {
+    transform(value: any): any {
+        if(value != null)
+        return value.replace(/<[^>]+>/g,'');
+        
+        return value;
+        // newstring.Replace(Convert.ToChar(160), ' ');
+        // var parser = new DOMParser();
+        // var parsetext = parser.parseFromString(value,'text/html');
+        // return parsetext;
     }
 }
 @Pipe({ name: 'replaceNullWithText' })

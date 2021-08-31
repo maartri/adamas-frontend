@@ -29,7 +29,9 @@ div.search-container i{
     cursor:pointer;
     color:#afafaf;
 }
-
+/* div.search-container label.viewAll{
+    margin-left:5rem;
+}  */
 div.search-containeri:hover{
     background: #ececec;
     border-color: #cacaca;

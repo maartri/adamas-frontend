@@ -66,7 +66,9 @@ hr{
 td, th{
     font-size:13px;
 }
-
+.mrg-btm-half{
+    margin-bottom:.5rem;
+}
 .mrg-btm{
     margin-bottom:1rem;
 }
@@ -204,6 +206,14 @@ button.other{
 button.other:not(:disabled):hover{
     background:#e15a5a;
 }
+button.extra{
+    background: #39B18A;
+    color: #fff;    
+}
+
+button.extra:not(:disabled):hover{
+    background:#39B18A;
+}
 button.find{
     background: #ff8787;
     color: #fff;
@@ -231,7 +241,9 @@ nz-step.mini .ant-steps-item-container > .ant-steps-item-content *{
 .space-top-2{
     margin-top: 2rem;
 }
-
+.space-top-3{
+    margin-top: 2rem;
+}
 .word-break{
     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
     white-space: -webkit-pre-wrap;          /* Chrome & Safari */ 

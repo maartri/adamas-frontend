@@ -32,7 +32,7 @@ export class HealthConditionsComponent implements OnInit {
     dateFormat: string ='dd/MM/yyyy';
     check : boolean = false;
     userRole:string="userrole";
-    whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
+    whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
     private unsubscribe: Subject<void> = new Subject();
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   temp_title: any;
@@ -114,7 +114,7 @@ export class HealthConditionsComponent implements OnInit {
         this.whereString = "WHERE";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE() AND ";
+        this.whereString = "Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -133,7 +133,7 @@ export class HealthConditionsComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      let name        = group.get('name').value.trim().uppercase();
+      let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -164,7 +164,7 @@ export class HealthConditionsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          let name        = group.get('name').value.trim().uppercase();
+          let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){

@@ -41,6 +41,8 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
   @Input() interval: string;
   @Input() mode: Mode = Mode.Default;
 
+  @Input() size: string;
+  
   // slots: Array<any> = [];
 
   private onTouchedCallback: () => void = noop;
@@ -103,6 +105,7 @@ export class IntervalDesignComponent implements OnInit, AfterViewInit, OnChanges
   }
 
   noOfLoops(data): number {
+    console.log(data);
     if (data == 'Weekly') {
       return 1;
     } else if (data == 'Fortnightly') {

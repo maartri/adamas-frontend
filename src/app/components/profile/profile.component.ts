@@ -23,7 +23,24 @@ const PROFILEPAGE_VALUE_ACCESSOR: any = {
   multi: true,
   useExisting: forwardRef(() => ProfileComponent),
 };
+class Address {
+  postcode: string;
+  address: string;
+  suburb: string;
+  state: string;
 
+  constructor(postcode: string, address: string, suburb: string, state: string) {
+      this.suburb = suburb.trim();
+      this.address = address;
+      this.postcode = postcode;
+      this.state = state;
+  }
+
+  getAddress() {
+      var _address = `${this.address} ${this.suburb} ${this.postcode}`;
+      return (_address.split(' ').join('+')).split('/').join('%2F');
+  }
+}
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile.component.html',
@@ -170,6 +187,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
 
     this.userForm = this.formBuilder.group({
+      recordId:[''],
       surnameOrg: [''],
       preferredName: [''],
       firstName: [''],
@@ -204,6 +222,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       isEmail: false,
       isRosterable: false,
       isCaseLoad: false,
+      excludeFromConflictChecking:false,
       stf_Department: '',
       rating: ''
     });
@@ -263,7 +282,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         month: this.globalS.searchOf(this.globalS.filterMonth(user.dob), months, 'December'),
         day: this.globalS.filterDay(user.dob),
         preferredName: user.preferredName,
-
+        recordId:user.uniqueID,
         casemanager: user.pan_Manager,
         type: user.category,
         stf_Department: user.stf_Department,
@@ -283,10 +302,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         note: user.contactIssues,
 
         isEmail: user.emailTimesheet,
+        excludeFromConflictChecking:user.excludeFromConflictChecking,
         isRosterable: user.isRosterable,
         isCaseLoad: user.caseManager
       });
-
+      this.globalS.var1 = this.userForm.value.recordId;      
       this.cd.markForCheck();
       this.cd.detectChanges();
 
@@ -313,7 +333,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     this.emailManagerOpen = true;
     this.caseManagerDetails = this.casemanagers.find(x => { return x.description == this.user.recipient_Coordinator });
-    
+    console.log(this.caseManagerDetails)
     this.emailManagerNoEmailShowNotif = this.globalS.isEmpty(this.caseManagerDetails) ? false : true; 
   }
 
@@ -353,6 +373,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
 
           // this.tempContactArray = this.contactForm.get('contacts').value;
+          console.log(this.user.filePhoto)
+          if(!this.user.filePhoto){
+            return EMPTY;
+          }
           return this.staffS.getimages({ directory: this.user.filePhoto })
         })
       ).subscribe(blob => {
@@ -402,6 +426,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.addressForm.setControl('addresses', this.formBuilder.array(this.addressBuilder(data[0]) || []));
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
           // this.tempContactArray = this.contactForm.get('contacts').value;
+          if(!this.user.filePhoto){
+            return EMPTY;
+          }
           return this.staffS.getimages({ directory: this.user.filePhoto })
         })
       ).subscribe(blob => {
@@ -598,7 +625,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           caseManager: data.isCaseLoad,
           isRosterable: data.isRosterable,
           emailTimesheet: data.isEmail,
-
+          excludeFromConflictChecking:data.excludeFromConflictChecking,
           preferredName: data.preferredName
         }
         
@@ -667,7 +694,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         gender: data.gender,
         title: data.title,
         dob: birthdate,
-
         rating: data.rating,
         pan_Manager: data.casemanager,
         category: data.type,
@@ -683,7 +709,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         caseManager: data.isCaseLoad,
         isRosterable: data.isRosterable,
         emailTimesheet: data.isEmail,
-
+        excludeFromConflictChecking:data.excludeFromConflictChecking,
         preferredName: data.preferredName
       }
       this.subscriptionArray.push(this.staffS.updateusername(user));
@@ -719,7 +745,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         this.subscriptionArray = [];
         this.globalS.sToast('Success', 'Profile Updated!');
         this.pathForm(this.innerValue);
-
+        this.handleCancel();
         this.closeDrawer();
         // let result = data.filter(x => x.success == false);
         // if (result.length > 0)
@@ -1107,5 +1133,12 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   isPhoneFax(data: any){
     return data == 'FAX' || data == 'HOME' || data == 'WORK';
   }
-  
+  toMap(address: any){
+             var adds = [];
+             var addr = new Address(address.postCode, address.address1, address.suburb, address.stat);
+             var addres = adds.concat('/',addr.getAddress());
+              console.log(addres);
+             window.open(`https://www.google.com/maps/dir${addres.join('')}`,'_blank');
+             return false;
+}
 }

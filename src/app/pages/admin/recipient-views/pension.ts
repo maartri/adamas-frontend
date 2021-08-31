@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -19,8 +19,12 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         div.divider-subs div{
             margin-top:1rem;
         }
+        .btn-container button{
+            margin-left:1rem;
+        }
     `],
-    templateUrl: './pension.html'
+    templateUrl: './pension.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -44,6 +48,7 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
     modalOpen: boolean = false;
     addOREdit: number;
     isLoading: boolean = false;
+    printLoad: boolean = false;
 
     constructor(
         private timeS: TimeSheetService,
@@ -52,6 +57,7 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
+        private cd: ChangeDetectorRef,
         private modalService: NzModalService
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -81,6 +87,15 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
+    print(){
+        console.log('sss')
+    }
+
+    changeDetection(){
+        this.cd.detectChanges();
+        this.cd.markForCheck();
+    }
+
     search(user: any = this.user) {
         
         this.timeS.getinsurance(user.id).subscribe(data => {
@@ -101,19 +116,33 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
                 whereWillHeld: data.whereWillHeld,
                 funeralArrangements: data.funeralArrangements
             });
+
+            this.changeDetection();
         });
 
         
-        this.listS.getpension(this.user.id).subscribe(data => this.blist = data);
+        this.listS.getpension(this.user.id).subscribe(data => {
+            this.blist = data;
+            this.changeDetection();
+        });
 
-        this.listS.getpensionall().subscribe(data => this.clist = data);
-        this.listS.getcardstatus().subscribe(data => this.dlist = data)
+        this.listS.getpensionall().subscribe(data => {
+            this.clist = data;
+            this.changeDetection();
+        });
+        this.listS.getcardstatus().subscribe(data => {
+            this.dlist = data;
+            this.changeDetection();
+        })
 
         this.getpension();
     }
 
     getpension() {
-        this.timeS.getpension(this.user.id).subscribe(data => this.alist = data);
+        this.timeS.getpension(this.user.id).subscribe(data => {
+            this.alist = data;
+            this.changeDetection();
+        });
     }
 
     showAddModal() {
@@ -133,7 +162,7 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
             notes
         });
 
-        this.addOREdit = 2;
+        this.addOREdit = 0;
         this.modalOpen = true;
     }
 

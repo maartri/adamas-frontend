@@ -1,17 +1,21 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, ClientService } from '@services/index';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd,ActivatedRoute } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { ReportsAdmin } from '@admin/reports';
 
 @Component({
     styles: [`
         nz-table{
             margin-top:20px;
+        }
+        th.action{
+            width: 12rem !important;
         }
         
     `],
@@ -32,8 +36,11 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     incidentOpen: boolean = false;
 
     incidentRecipient: any;
-
+    Reports: ReportsAdmin
     operation: any; 
+    btnid: string
+    id: string
+    
 
     constructor(
         private timeS: TimeSheetService,
@@ -43,9 +50,13 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private route: ActivatedRoute
+        
+        
+        
     ) {
-        cd.detach();
+
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -59,12 +70,13 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
                 this.search(data);
             }
         });
+
+        
     }
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
         if(this.user){
-            console.log(this.user);
             this.search(this.user);
             this.buildForm();
             return;
@@ -75,15 +87,16 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe.next();
         this.unsubscribe.complete();
+
     }
 
     search(user: any = this.user) {
-        this.cd.reattach();
+
         this.loading = true;
         this.clientS.getincidents(user.id).subscribe(data => {
             this.tableData = data.list;
             this.loading = false;
-            this.cd.detectChanges();
+            this.detectChanges();
         });
 
 
@@ -114,15 +127,22 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         });
     }
 
+    detectChanges(){
+        this.cd.markForCheck();
+        this.cd.detectChanges();        
+    }
+
 
     buildForm() {
         this.inputForm = this.formBuilder.group({
             autoLogout: [''],
             emailMessage: false,
             excludeShiftAlerts: false,
+            ExcludeFromTravelinterpretation:false,
             inAppMessage: false,
             logDisplay: false,
             pin: [''],
+            staffTimezoneOffset:[''],
             rosterPublish: false,
             shiftChange: false,
             smsMessage: false
@@ -144,9 +164,11 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
             AutoLogout: group.get('autoLogout').value,
             EmailMessage: group.get('emailMessage').value,
             ExcludeShiftAlerts: group.get('excludeShiftAlerts').value,
+            ExcludeFromTravelinterpretation:group.get('excludeFromTravelinterpretation').value,
             InAppMessage: group.get('inAppMessage').value,
             LogDisplay: group.get('logDisplay').value,
             Pin: group.get('pin').value,
+            StaffTimezoneOffset:group.get('staffTimezoneOffset').value,
             RosterPublish: group.get('rosterPublish').value,
             ShiftChange: group.get('shiftChange').value,
             SmsMessage: group.get('smsMessage').value,
@@ -216,6 +238,32 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
 
     delete(data: any) {
         this.timeS.deleteincident(data.recordNumber)
+            .subscribe(data => {
+                this.search();
+                this.globalS.sToast('Success','Incident has been deleted')
+            });
+    }
+ 
+    closeincidentstatus(data: any) {
+        
+        this.timeS.UpdateIncidentstatus(data.recordNumber)
             .subscribe(data => this.search());
     }
+    
+    Incidentlisting(){
+      
+        console.log(this.globalS.var1)
+       this.router.navigate(['/admin/reports'])
+
+       this.globalS.var1 = 'IncidentRegister';
+
+       console.log(this.globalS.var1)
+     /*   this.router.navigate(['/admin/reports'],{
+            queryParams:{
+                id :'incidentregister'
+            }
+
+        }); */
+  
+    }  
 }

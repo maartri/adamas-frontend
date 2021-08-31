@@ -77,11 +77,14 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
         this._subscription$ = this.searchResult$.pipe(debounceTime(500)).subscribe(data => {
 
             this.lists = data;
+            var index = this.searchListIndex(this.innerValue, this.lists);
 
-            if (this.lists.length > 0 && this.innerValue) {
-                this.innerValue = `${this.lists[0].postcode} ${this.lists[0].suburb}, ${this.lists[0].state}`;                
+            if (this.lists.length > index && this.innerValue) {     
+                var index = this.searchListIndex(this.innerValue, this.lists);       
+                if(index > -1)
+                    this.innerValue = `${this.lists[index].suburb} ${this.lists[index].postcode}, ${this.lists[index].state}`;                
             }
-
+            
             this.select(this.innerValue);
 
             this.isLoading = false;
@@ -90,6 +93,13 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
             this.cd.markForCheck();
             this.cd.detectChanges();
         });
+    }
+
+    searchListIndex(address: any, lists: Array<any>): number{
+        if(!this.lists || this.lists.length == 0)   return 0;        
+        let suburb = /(\D+)/g.test(address) ? address.match(/(\D+)/g)[0].trim() : "";
+        if(suburb != "")    return lists.findIndex(x => x.suburb == suburb);        
+        return 0;
     }
 
     ngOnInit() {
@@ -114,14 +124,12 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     writeValue(value: any) {
 
         let _value = value ? value.trim() : '';
-
         if (this.globalS.isEmpty(_value)) {
             this.lists = [];
             this.innerValue = '';
             this.select('');            
         } else {
             this.lists.push(this.innerValue);
-
             this.innerValue = value;
             this.loadComponent = true;          
             this.searchStream.next(value);
@@ -149,7 +157,7 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     }
 
     format(value: any): string {
-        return `${value.postcode} ${value.suburb}, ${value.state}`
+        return `${value.suburb} ${value.postcode}, ${value.state}`
     }
 
     // ControlValueAccessor methods and others

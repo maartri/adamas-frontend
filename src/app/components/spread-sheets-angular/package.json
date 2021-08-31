@@ -1,0 +1,78 @@
+{
+  "_args": [
+    [
+      "@grapecity/spread-sheets-angular@14.0.10",
+      "C:\\Users\\mark\\Desktop\\Programming\\Adamas\\adamas-frontend"
+    ]
+  ],
+  "_from": "@grapecity/spread-sheets-angular@14.0.10",
+  "_id": "@grapecity/spread-sheets-angular@14.0.10",
+  "_inBundle": false,
+  "_integrity": "sha512-1UbwIHnnSX+iWnry0hRc2oYgIwF6xFe8e/eUN1eHG7TEPJIjyOXJ6mlO744QUzG14zm+wP/9lfNhLd2zZKyrWw==",
+  "_location": "/@grapecity/spread-sheets-angular",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "@grapecity/spread-sheets-angular@14.0.10",
+    "name": "@grapecity/spread-sheets-angular",
+    "escapedName": "@grapecity%2fspread-sheets-angular",
+    "scope": "@grapecity",
+    "rawSpec": "14.0.10",
+    "saveSpec": null,
+    "fetchSpec": "14.0.10"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@grapecity/spread-sheets-angular/-/spread-sheets-angular-14.0.10.tgz",
+  "_spec": "14.0.10",
+  "_where": "C:\\Users\\mark\\Desktop\\Programming\\Adamas\\adamas-frontend",
+  "author": {
+    "name": "GrapeCity, Inc",
+    "email": "us.sales@grapecity.com"
+  },
+  "dependencies": {
+    "@grapecity/spread-sheets": "14.0.10",
+    "tslib": "^2.0.0"
+  },
+  "description": "SpreadJS angular support",
+  "es2015_ivy_ngcc": "__ivy_ngcc__/fesm2015/grapecity-spread-sheets-angular.js",
+  "es2015": "fesm2015/grapecity-spread-sheets-angular.js",
+  "esm2015": "esm2015/grapecity-spread-sheets-angular.js",
+  "fesm2015_ivy_ngcc": "__ivy_ngcc__/fesm2015/grapecity-spread-sheets-angular.js",
+  "fesm2015": "fesm2015/grapecity-spread-sheets-angular.js",
+  "homepage": "https://www.grapecity.com/spreadjs",
+  "keywords": [
+    "spread-sheets-angular",
+    "javascript spreadsheet",
+    "javascript excel",
+    "angular",
+    "angular2",
+    "sheets",
+    "spread",
+    "javascript",
+    "angular5",
+    "excel",
+    "grapecity"
+  ],
+  "license": "Commercial",
+  "main": "bundles/grapecity-spread-sheets-angular.umd.js",
+  "metadata": "grapecity-spread-sheets-angular.metadata.json",
+  "module_ivy_ngcc": "__ivy_ngcc__/fesm2015/grapecity-spread-sheets-angular.js",
+  "module": "fesm2015/grapecity-spread-sheets-angular.js",
+  "name": "@grapecity/spread-sheets-angular",
+  "private": false,
+  "sideEffects": false,
+  "typings": "grapecity-spread-sheets-angular.d.ts",
+  "version": "14.0.10",
+  "__processed_by_ivy_ngcc__": {
+    "es2015": "11.2.9",
+    "fesm2015": "11.2.9",
+    "module": "11.2.9",
+    "typings": "11.2.9"
+  },
+  "scripts": {
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by NGCC. This is not allowed.\\nPlease delete and rebuild the package, without compiling with NGCC, before attempting to publish.\\nNote that NGCC may have been run by importing this package into another project that is being built with Ivy enabled.\\n')\" && exit 1"
+  }
+}

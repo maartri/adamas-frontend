@@ -7,6 +7,7 @@ import { UploadFile } from 'ng-zorro-antd/upload';
 
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { filter } from 'rxjs/operators';
+import { GlobalService } from '@services/global.service';
 
 const noop = () => {
 };
@@ -49,11 +50,13 @@ export class UploadSharedComponent implements OnInit, OnDestroy, ControlValueAcc
   constructor(
     private http: HttpClient,
     private cd: ChangeDetectorRef,
+    private globalS: GlobalService,
     private msg: NzMessageService) {
 
   }
 
   ngOnInit(): void {
+    console.log(this.globalS.decode())
   }
 
   ngOnDestroy(): void {
@@ -156,7 +159,8 @@ export class UploadSharedComponent implements OnInit, OnDestroy, ControlValueAcc
     console.log(value);
     if (value != null) {
       this.innerValue = value;
-      this.urlPath = `api/v2/file/upload/document/${this.innerValue.id}`;
+      console.log(this.innerValue)
+      this.urlPath = `api/v2/file/upload/document/${this.innerValue.id}/${this.globalS.decode().user}`;
     }
   }
 

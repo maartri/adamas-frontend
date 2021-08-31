@@ -35,6 +35,7 @@ export class VehiclesComponent implements OnInit {
   tryDoctype: any;
   drawerVisible: boolean =  false;
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  temp_title: string;
   
   constructor(
     private globalS: GlobalService,
@@ -89,6 +90,7 @@ export class VehiclesComponent implements OnInit {
         end_date:end_date,
         recordNumber:recordNumber,
       });
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -154,15 +156,26 @@ export class VehiclesComponent implements OnInit {
           else
           this.globalS.sToast('Unsuccess', 'Saved successful');
           this.loadData();
-          this.postLoading = false;          
+          this.postLoading = false;     
+          this.loading = false;     
           this.handleCancel();
           this.resetModal();
         });
       }else{
         this.postLoading = true;     
         const group = this.inputForm;
-          let name        = this.globalS.isValueNull(group.get('name').value);
-          let expiry      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let name          = group.get('name').value.trim().toUpperCase();
+        // console.log(this.temp_title +"----"+ name);
+          if(this.temp_title != name){
+            let is_exist    = this.globalS.isNameExists(this.tableData,name);
+            if(is_exist){
+              this.globalS.sToast('Unsuccess', 'Title Already Exist');
+              this.postLoading = false;
+              return false;   
+            }
+        }
+          name              = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
+          let expiry        = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
           let recordNumber  = group.get('recordNumber').value;
 
           let sql  = "Update DataDomains SET [Description]="+name+",[EndDate]="+expiry+" WHERE [RecordNumber] ='"+recordNumber+"'";
@@ -172,7 +185,8 @@ export class VehiclesComponent implements OnInit {
             else
             this.globalS.sToast('Unsuccess', 'Updated successful');
             this.loadData();
-            this.postLoading = false;          
+            this.postLoading = false;    
+            this.loading = false;      
             this.isUpdate = false;
             this.handleCancel();
             this.resetModal();

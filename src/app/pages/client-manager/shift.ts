@@ -76,10 +76,13 @@ export class ShiftClientManager implements OnInit, OnDestroy {
 
     tabIndex: number;
     user: any;
+    userObject: any;
+    currUserObject: any;
 
     date = format(new Date(), 'yyyy/MM/dd');
 
     bookingCancellationType: string = "WithNotice";
+    
 
     cancelBookingModal: boolean = false;
     currentShift: any;
@@ -125,12 +128,17 @@ export class ShiftClientManager implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.user = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember).code : this.globalS.decode().code;
+        this.userObject = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
+        this.currUserObject = this.globalS.decode();
+
+        console.log(this.currUserObject)
         this.tabStream.next(0);
 
-        this.timeS.getuname(this.user)
+        this.timeS.getuname(this.currUserObject.code)
             .pipe(
                 takeUntil(this.unsubscribe),
                 mergeMap(res => {
+
                     return this.staffS.getsettings(res.uname)
                 })
             ).subscribe(settings => {
@@ -200,8 +208,8 @@ export class ShiftClientManager implements OnInit, OnDestroy {
 
     setShift(data: any, index: number) {
         this.currentShift = data[index];
-        console.log(this.currentShift);
-        console.log(index);
+        this.isConfirmLoading = false;
+
         if (this.tabIndex === 0) {
             this.cancelBookingModal = true;
         } else {
@@ -237,10 +245,10 @@ export class ShiftClientManager implements OnInit, OnDestroy {
             RosterDate: rosterDate,
             RosterTime: bookTime,
             Username: this.id,
-            TraccsUser: this.globalS.decode().user
+            TraccsUser: this.globalS.decode().user,
+            ManagerPersonId: this.globalS.decode().uniqueID,
+            RecipientPersonId: this.userObject.uniqueID
         }
-
-        // this.tabStream.next(this.tabActive);
 
         this.clientS.postcancelbooking(booking)
             .subscribe(data => {
@@ -250,6 +258,7 @@ export class ShiftClientManager implements OnInit, OnDestroy {
                 }
                 this.cancelBookingModal = false;
             }, (err: HttpErrorResponse) => {
+                this.isConfirmLoading = false;
                 this.globalS.eToast('Error', 'An error occurred')
             }, () => {
                 this.isConfirmLoading = false;

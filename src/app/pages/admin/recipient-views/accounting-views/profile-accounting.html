@@ -1,0 +1,147 @@
+<div>
+    <div nz-row>
+        <div nz-col nzSpan="18">
+            <div nz-row [formGroup]="profileForm">
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>TRACCS Billing Client: </span>
+                        <div>
+                            <span class="client">{{ profileForm.get('billTo').value }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Accounting Debtor Code: </span>
+                        <div>
+                            <input nz-input type="text" formControlName="accountingIdentifier">
+                        </div>
+                    </div>
+                </div>
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Contract ID#: </span>
+                        <div>
+                            <input nz-input type="text" formControlName="orderNo">
+                        </div>
+                    </div>
+                </div>
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Billing Cycle: </span>
+                        <div>
+                            <nz-select></nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Billing Rate: </span>
+                        <div>
+                            <nz-select></nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Contribution Activity Code: </span>
+                        <div>
+                            <nz-select></nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Payment Terms: </span>
+                        <div>
+                            <nz-select></nz-select>
+                        </div>
+                    </div>
+                </div>
+        
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Checkboxes: </span>
+                      
+                    </div>
+                </div>
+        
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Billing Profile: </span>
+                        <div>
+                            <textarea nz-input></textarea>
+                        </div>
+                    </div>
+                </div>
+        
+                <div nz-col nzSpan="24">
+                    <div class="layer2">
+                        <span>Checkboxes: </span>
+                        <div>
+                            <nz-select></nz-select>
+                        </div>
+                    </div>
+                </div>
+        
+               
+
+            </div>
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col nzSpan="18">
+            <div nz-row [formGroup]="profileForm">
+                 
+                <div nz-col nzSpan="24" [formGroup]="profileForm">
+                    <div class="layer2">
+                        <span>Credit Card Type: </span>
+                        <div>
+                            <nz-select formControlName="creditCardType"></nz-select>
+                        </div>
+                    </div>
+                </div>   
+        
+                <div nz-col nzSpan="12">
+                    <div class="layer2">
+                        <span>Credit Card Number: </span>
+                       <div>
+                            <input nz-input type="text" formControlName="creditCardNumber">
+                       </div>
+                    </div>
+                </div>
+        
+                <div nz-col nzSpan="12">
+                    <div class="layer2">
+                        <span>CCV Number: </span>
+                        <div>
+                            <input nz-input type="text" formControlName="creditCardCCV">
+                       </div>
+                    </div>
+                </div>
+        
+                <div nz-col nzSpan="12">
+                    <div class="layer2">
+                        <span>Name of Credit Card: </span>
+                        <div>
+                            <input nz-input type="text" formControlName="creditCardName">
+                       </div>
+                    </div>
+                </div>
+        
+                <div nz-col nzSpan="12">
+                    <div class="layer2">
+                        <span>Expiry Date: </span>
+                        <div>
+                            <nz-date-picker formControlName="creditCardExpiry"></nz-date-picker>
+        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

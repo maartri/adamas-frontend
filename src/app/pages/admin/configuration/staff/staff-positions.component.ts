@@ -136,7 +136,7 @@ export class StaffPositionsComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){      
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -166,7 +166,7 @@ export class StaffPositionsComponent implements OnInit {
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          let name        = group.get('name').value.trim().uppercase();
+          let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){

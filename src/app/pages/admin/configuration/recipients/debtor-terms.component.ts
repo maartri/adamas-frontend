@@ -133,7 +133,7 @@ whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
       this.postLoading = true;     
       const group = this.inputForm;
       if(!this.isUpdate){         
-        let name        = group.get('name').value.trim().uppercase();
+        let name        = group.get('name').value.trim().toUpperCase();
         let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
@@ -163,7 +163,7 @@ whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
-          let name        = group.get('name').value.trim().uppercase();
+          let name        = group.get('name').value.trim().toUpperCase();
           if(this.temp_title != name){
             let is_exist    = this.globalS.isNameExists(this.tableData,name);
             if(is_exist){
@@ -232,7 +232,7 @@ whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
       
       this.loading = true;
       
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 ,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" AND Domain='DEBTORTERMS'";
+      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 ,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='DEBTORTERMS'";
       
       const headerDict = {
         'Content-Type': 'application/json',

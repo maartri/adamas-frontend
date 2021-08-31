@@ -53,6 +53,7 @@ interface UserView{
     staffRecordView: string,
     staff: number
 }
+
 const license = "45.77.37.207,E493369696471956#B0EVbkl5QHhHbMZFOyFjQhlkS7FlVyFkeYlkauJWOyQza8lFMy8kS6gXR6hlbmlWexVzNMlTb48EMTdTMVJHdE3CUqhVcr3GS6VkTOp6Us9WNnhVVxN7YDdURLR7QrIGevcHTTd4SvplcolUZtpEbBRTNDVWe88UYXhDSJx4cGdEe6glVG5mQkRlQRNTV096VxFVdIdnaMd4aLhWWnpEal9WSwoWaKZ5MLNzY6F4SRJHVoJUMNd6M0NVaHFFd4JnMVNVcxNEd49GaBZkMFFndxNjVzUnN6FXNTZWZUN5QVJHU5YjW4FFR0hTSMdGMj5ER4UXMapmRLdnM09GO5YjUxJ6MyZlI0IyUiwiIzIUMygjMGdjI0ICSiwyN7cjM4czN5ETM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiI4UDN5cDMgcjM8ATMyAjMiojI4J7QiwiIxADMxIjMwIjI0ICc8VkIsIyNwIjL7MjL7cjL5QjI0IyctRkIsIycu3Wa4VHbvNFIlRXYy3Gcy36QgMXYtFGZBJiOiEmTDJCLlVnc4pjIsZXRiwiI6UTOxcDN6kjN9YzMzkDNiojIklkIs4XXbpjInxmZiwSZzxWYmpjIyNHZisnOiwmbBJye0ICRiwiI34zZIpHNwVXcCdjb6I5Yzp4TZZVVmRFTMRGRKpXTmxkbEJGeUl7ZnJWWPZjSPp4UnRlVmF7QUtkR5EkWzI7KzUDaldlNMtEaJJFdINmbLREduwUnt"
 
 function IconCellType(img) {
@@ -109,7 +110,8 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x, y, w, h, style, context]);
     ctx.beginPath();
     // let img = document.getElementById('icon-lock');
-    // ctx.drawImage(this.img, x, y , 20, 20);
+    //ctx.drawImage(this.img, x, y , 20, 20);
+   // ctx.drawImage(this.img, x, y , 20, 20);
    
     ctx.fill();
     ctx.stroke();
@@ -319,13 +321,13 @@ endRoster:any;
 
     let day:String="";
     switch(n){
-    case 1 : day="Mo"; break;
-    case 2 : day="Tu" ; break;
-    case 3 : day="We" ; break;
-    case 4 : day="Th" ; break;
-    case 5 : day="Fr" ; break;
-    case 6 : day="Sa" ; break;
-    case 0 : day="Su" ; break;
+    case 1 : day="Mon"; break;
+    case 2 : day="Tue" ; break;
+    case 3 : day="Wed" ; break;
+    case 4 : day="Thu" ; break;
+    case 5 : day="Fri" ; break;
+    case 6 : day="Sat" ; break;
+    case 0 : day="Sun" ; break;
     }
     return day;
   
@@ -978,7 +980,7 @@ ClearMultishift(){
         
     }else{
         cell.backColor("white");
-        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
+        cell.text(""); //.cellType(new IconCellType2(document.getElementById('icon-21')));
     }
     cell.text("")
     cell.tag(null);
@@ -1853,13 +1855,20 @@ ClearMultishift(){
    //
     
     let days:number =this.getDaysInMonth(m,y);
+
    if (this.Days_View>=30){
     this.Days_View=days
    }
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
 
+
+    if (this.Days_View==31) {this.Days_View==days}
     
-    for (let i=0; i<=this.Days_View ; i++)   {
+    sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
+    
+    for (let i=0; i<=this.Days_View ; i++)   
+        
+        {
                 
      // sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
      
@@ -1903,13 +1912,13 @@ ClearMultishift(){
       date.setDate(date.getDate()+1); 
     }
 
-   // sheet.deleteColumns(days+1,31-days );    
-  
    if (this.Already_loaded)
-   {
-    this.spreadsheet.resumePaint();
-    return;
-   } 
+        {
+        
+        this.spreadsheet.resumePaint();
+        return;
+        
+        }   
 
     let time:Time;
     time={hours:0,
@@ -1921,15 +1930,12 @@ ClearMultishift(){
    
         var row_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
         
-       if (time.minutes==0){
-            //sheet.setValue(j, 0, this.numStr(time.hours)  + ":" + this.numStr(time.minutes) +""  , GC.Spread.Sheets.SheetArea.rowHeader);        
+        if (time.minutes==0){
             row_txt = this.numStr(time.hours)  + ":" + this.numStr(time.minutes) 
-       }else if (time.minutes%15==0)
-          //  sheet.setValue(j, 0,  "     "+this.numStr(time.minutes)  , GC.Spread.Sheets.SheetArea.rowHeader);
-          row_txt = "     "+this.numStr(time.minutes)  ;
+        }else if (time.minutes%15==0)
+            row_txt = "     "+this.numStr(time.minutes)  ;
         else
             row_txt= "";
-         //sheet.setValue(j, 0,  ""  , GC.Spread.Sheets.SheetArea.rowHeader);
 
          sheet.setValue(j, 0, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
        
@@ -2006,55 +2012,55 @@ ClearMultishift(){
         text=Servicetype + "-" +RecordNo + ", type=" + type;
     switch(Number(type)){
         case 1:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-1')));                    
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-1')));                    
         break;
         case 2:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-2')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-2')));
             break;
         case 3:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-3')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-3')));
             break;
         case 4:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-4')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-4')));
             break;
         case 5:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-5')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-5')));
             break;
         case 6:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-6')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-6')));
             break;
         case 7:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-7')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-7')));
             break;           
         case 8:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-8')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-8')));
             break;   
         case 9:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-9')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-9')));
             break;   
         case 10:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-10')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-10')));
             break;
         case 11:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-11')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-11')));
             break;        
          case 12:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-12')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-12')));
             break;
         case 13:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-13')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-13')));
             break;
         case 14:
-            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-14')));
+            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-14')));
             break; 
         case 15:
-                sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-15')));
+                sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-15')));
                 break; 
         case 20:
-                sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-20')));
+                sheet.getCell(r,c).text(""); // .cellType(new IconCellType2(document.getElementById('icon-20')));
                 break; 
         default:
-           sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-21')));
+           sheet.getCell(r,c).text(""); // .cellType(new IconCellType2(document.getElementById('icon-21')));
             
     }
        
@@ -2098,7 +2104,9 @@ ClearMultishift(){
      
      // sheet.options.isProtected = true;
       var cell= sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport);
-      cell.setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
+     // cell.borderRight(new GC.Spread.Sheets.LineBorder("#084F58", GC.Spread.Sheets.LineStyle.thin), {all:true});
+      cell.setBorder(new GC.Spread.Sheets.LineBorder("#CAF0F5", GC.Spread.Sheets.LineStyle.thin), {all:true}); 
+      //sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).borderRight(new GC.Spread.Sheets.LineBorder("#084F58", GC.Spread.Sheets.LineStyle.thin))
     
     var new_duration:number=0;
 
@@ -2121,7 +2129,8 @@ ClearMultishift(){
 
       //  sheet.getCell(r,c).backColor("#ffffff");
        // sheet.getCell(r,c).backgroundImage(rowImage)
-        this.setIcon(r,c,type,RecordNo, service);
+        
+       this.setIcon(r,c,type,RecordNo, service);
        }  
        else{
             
@@ -3061,6 +3070,7 @@ reload(reload: boolean){
         }).pipe(takeUntil(this.unsubscribe)).subscribe(roster => {
 
             this.rosters = roster;
+            console.log(roster)
 
                 this.options = null;
                 var events = roster.map(x => {

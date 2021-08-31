@@ -3,7 +3,7 @@
         <nz-form-item>
             <nz-form-control [nzSpan]="14" nzErrorTip="The input is not valid E-mail!">
                 <nz-range-picker [nzFormat]="dateFormat" [(ngModel)]="dateRange"
-                    (ngModelChange)="dateStream.next($event)">
+                    (ngModelChange)="dateStream.next($event)" [nzAllowClear]="'false'">
                 </nz-range-picker>
             </nz-form-control>
         </nz-form-item>

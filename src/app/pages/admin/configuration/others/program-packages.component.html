@@ -26,7 +26,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let data of basicTable.data;let i = index;">
+                    <tr *ngFor="let data of basicTable.data;let i = index;" [contextMenu]="basicMenu" [contextMenuSubject]="data">
                         <td nzLeft>{{ data.title  }} </td> 
                         <td nzLeft nzBreakWord>{{ data.type  }} </td>
                         <td nzLeft nzBreakWord>{{ data.agencyID  }} </td>
@@ -1234,4 +1234,21 @@
                     <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
                 </div>
             </nz-drawer>
+            <context-menu>
+                <ng-template contextMenuItem>
+                  Clone Program
+                </ng-template>
+                
+                <ng-template contextMenuItem let-item >
+                  Merge Histories
+                </ng-template>
+            
+                <ng-template contextMenuItem let-item >
+                 Export To CSV File
+                </ng-template>
+            
+                <ng-template contextMenuItem let-item >
+                 View Referrals
+                </ng-template>
+            </context-menu>
         </div>

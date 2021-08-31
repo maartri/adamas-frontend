@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes,sbFieldsSkill} from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -27,11 +27,12 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     inputForm: FormGroup;
+    skillsForm: FormGroup;
     tableData: Array<any>;
     loading: boolean = false;
 
     modalOpen: boolean = false;
-
+    skillModal:boolean = false;
     current: number = 0;
     competencies: Array<any>;
 
@@ -40,6 +41,11 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     postLoading: boolean = false;
 
     isUpdate: boolean = false;
+    skills: any;
+    titleskillsForm: FormGroup;
+    updateString: string;
+    sbFieldsSkill:any;
+    addOREdit: number;
 
     constructor(
         private timeS: TimeSheetService,
@@ -79,6 +85,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();
         if(this.user){
             this.search(this.user);
+            this.sbFieldsSkill = sbFieldsSkill;
             this.buildForm();
             this.populateDropDowns(); 
             return;
@@ -101,6 +108,51 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             mandatory: false,
             notes: ''
         });
+        this.skillsForm = this.formBuilder.group({
+            CompetencyException:false,
+            EmailCompetencyReminders:false,
+            
+            SB1  : false,
+            SB2  : false,
+            SB3  : false,
+            SB4  : false,
+            SB5  : false,
+            SB6  : false,
+            SB7  : false,
+            SB8  : false,
+            SB9  : false,
+            SB10 : false,
+            SB11 : false,
+            SB12 : false,
+            SB13 : false,
+            SB14 : false,
+            SB15 : false,
+            SB16 : false,
+            SB17 : false,
+            SB18 : false,
+            SB19 : false,
+            SB20 : false,
+            SB21 : false,
+            SB22 : false,
+            SB23 : false,
+            SB24 : false,
+            SB25 : false,
+            SB26 : false,
+            SB27 : false,
+            SB28 : false,
+            SB29 : false,
+            SB30 : false,
+            SB31 : false,
+            SB32 : false,
+            SB33 : false,
+            SB34 : false,
+            SB35 : false,
+        
+        });
+        this.titleskillsForm = this.formBuilder.group({
+            identifer:'',
+            recordNumber:'',
+        });
     }
 
     search(user: any = this.user) {
@@ -109,6 +161,13 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             this.tableData = data;
             this.loading = false;
             this.cd.detectChanges();
+        });
+        this.listS.getcompetenciesheader(user.id).subscribe(data =>{
+            console.log(data);
+            this.skillsForm.patchValue({
+                CompetencyException:data[0].competencyException,
+                EmailCompetencyReminders:data[0].emailCompetencyReminders,
+            })
         });
     }
 
@@ -119,12 +178,39 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     showAddModal() {
         this.resetModal();      
         this.modalOpen = true;
+        this.addOREdit = 1;
     }
-
+    showUpdateModal(data:any){
+        this.skillModal  = true;
+        this.titleskillsForm.patchValue({
+            identifer:data.text,
+            recordNumber:data.sqlid,
+        });
+    }
+    updateSkills(){
+        this.skillsForm.value;
+        const input = this.titleskillsForm.value;
+        this.timeS.updateSkills(input).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
+            this.globalS.sToast('Success', 'Update Skill Title');
+            this.handleCancel();
+            this.populateDropDowns();
+        });
+    }
+    changeSbField(e,skill,sb){
+        if(e.target.checked){
+            console.log(skill.identifier);
+        }else{
+            console.log(skill.identifier);
+        }
+    }
+    getName(skill){
+        return sbFieldsSkill[skill.identifer];
+    }
     showEditModal(index: any) {
         this.isUpdate = true;
         this.current = 0;
         this.modalOpen = true;
+        this.addOREdit = 0;
 
         const { 
             recordNumber, 
@@ -149,6 +235,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
 
     handleCancel() {
         this.modalOpen = false;
+        this.skillModal= false;
     }
 
     delete(data: any) {
@@ -174,6 +261,12 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             .getcompetenciesall()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe(data => this.competencies = data)
+
+            this.listS.getskills().subscribe(data => {
+                this.skills = data
+                this.cd.detectChanges();
+            });
+            console.log(this.skills);
     }
 
     pre(): void {
@@ -204,5 +297,21 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.handleCancel();
         this.resetModal();
     }
-
+    changeStatus(e,typ){
+        console.log(this.user.id);
+        if(e.target.checked){
+            if(typ == 1)
+            this.updateString = "CompetencyException = 1";
+            if(typ == 2)
+            this.updateString = "EmailCompetencyReminders = 1";
+        }else{
+            if(typ == 1)
+            this.updateString = "CompetencyException = 0";
+            if(typ == 2)
+            this.updateString = "EmailCompetencyReminders = 0";
+        }
+        this.timeS.updateStaffCompetenciesHeader(this.updateString,this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
+            this.globalS.sToast('Success', 'Competency saved');
+        });
+    }
 }

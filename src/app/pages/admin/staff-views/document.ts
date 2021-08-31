@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, UploadService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -52,7 +52,7 @@ interface NewDocument{
 })
 
 
-export class StaffDocumentAdmin implements OnInit, OnDestroy {
+export class StaffDocumentAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     private unsubscribe: Subject<void> = new Subject();
     public templates$: Observable<any>;
@@ -69,6 +69,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
     selectedIndex: number;
 
     fileObject: NewDocument;
+    showUpload: boolean = false;
 
     constructor(
         private timeS: TimeSheetService,
@@ -97,6 +98,10 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
                 this.search(data);
             }
         });
+    }
+
+    ngAfterViewInit(){
+        this.showUpload = true;
     }
 
     ngOnInit(): void {
@@ -171,7 +176,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         this.uploadS.download({
             PersonID: this.user.id,
             Extension: doc.type,
-            FileName: doc.filename,
+            FileName:`${doc.filename}${doc.type}`,
             DocPath: doc.originalLocation
         }).pipe(takeUntil(this.unsubscribe)).subscribe(blob => {
 
@@ -205,7 +210,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         this.uploadS.getdocumentblob({
             PersonID: this.user.id,
             Extension: doc.type,
-            FileName: doc.filename,
+            FileName: `${doc.filename}${doc.type}`,
             DocPath: doc.originalLocation
         }).subscribe(data => {
           this.openDocumentTab(data);
@@ -250,6 +255,7 @@ export class StaffDocumentAdmin implements OnInit, OnDestroy {
         };
         this.uploadS.postdocumentstafftemplate(inp).subscribe(data => {
             this.globalS.sToast('Success','Document has been added');
+            this.handleCancel();
             this.search();
         }, (err) =>{
             console.log(err);

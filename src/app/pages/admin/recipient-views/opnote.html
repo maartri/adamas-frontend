@@ -1,6 +1,11 @@
 <div nz-row>
+    <button class="botton success" (click)="showAddModal()">Add OP Note</button>
+    <button nz-button nzType="primary" [nzLoading]="printLoad" (click)="print()"><i nz-icon nzType="printer" nzTheme="outline"></i></button>
+
+    <app-filter [tabs]="'OPNOTES'"  [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
+</div>
+<div nz-row>
     <div nz-col>
-        <button class="botton success" (click)="showAddModal()">Add OP Note</button>
         <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
@@ -32,8 +37,8 @@
     </div>
 </div>
 
-
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add OP Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()" nzWidth="800"
+<!--<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add OP Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()" nzWidth="800"-->
+<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add OP Note' : 'Edit OP Note'" (nzOnCancel)="handleCancel()" nzWidth="800"
     [nzStyle]="{ top: '20px' }">
     <div nz-row [formGroup]="caseFormGroup" nzGutter="16">
         <div nz-col nzSpan="7" [formGroup]="caseFormGroup">

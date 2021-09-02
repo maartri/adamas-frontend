@@ -133,11 +133,13 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     clientId: number;
 
     size: string = 'small'
-    from: string = 'quote';
+    from: any;
     quoteGeneralForm : FormGroup;
     title: string = 'Add New Quote';
     slots: any;
     weekly: string = 'Weekly';
+
+    program: string;
 
     listOfData = [
         // {
@@ -687,27 +689,35 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     showAcceptModal(item: any) {
+
         this.user = {...this.user, docId: item.docID };
 
-        console.log(item);
-        return;
+        
+        let data = {
+            program: item.program,
+            docId: item.docID,
+            personId: this.user.id,
+            recordNumber: item.recordNumber
+        }
+        
+        this.listS.getprogramstatus(data)
+            .subscribe(data => {
+                if(['REFERRAL','INACTIVE'].includes(data)){
 
-        if(this.globalS.isEmpty(item.programStatus)){
-            this.globalS.eToast('Error','Program Status is EMPTY');
-            return;
-        }
-        // this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;        
-        // this.x = {};
-        // return
-        if(['REFERRAL','INACTIVE'].includes(item.programStatus)){
-            console.log('referral')
-            this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
-            this.recipientOptionOpen = {};
-        }
-        if(['ACTIVE','ONHOLD'].includes(item.programStatus)){
-            console.log('active')
-            this.activeOpen = true;
-        }
+                    this.program = item.program;
+                    this.from = { display: 'quote' };
+        
+                    this.recipientOption =  this.RECIPIENT_OPTION.ADMIT;
+                    this.recipientOptionOpen = {};
+                    this.detectChanges();
+                    return;
+                }
+                if(['ACTIVE','ONHOLD'].includes(data)){
+                    this.activeOpen = true;
+                    this.detectChanges();
+                    return;
+                }
+            });
     }
 
     filterChange(data: any){

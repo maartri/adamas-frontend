@@ -148,7 +148,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     recipientOptionOpen: any;
     recipientOption: string;
-    from:string = 'admit';
+    from: any =  { display: 'admit'};
     fileList2: Array<any> = [];
     urlPath: string = `api/v2/file/upload-document-remote`;
     acceptedTypes: string = "image/png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf";
@@ -1228,9 +1228,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.listS.getstatusofwizard(this.user.id)
             .subscribe(data => {
                 this.status = data;
+                this.detectChanges();
             });
-
-        this.cd.detectChanges();
     }
 
     constructor(

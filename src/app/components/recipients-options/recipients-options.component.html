@@ -1005,6 +1005,7 @@
                 <nz-step class="mini" nzTitle="Followups" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Documents" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Additional Data" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Auto Roster Creation - Date Selection" nzDescription=""></nz-step>
                 <!-- <nz-step class="mini" nzTitle="Roster Date selection" nzDescription="" *ngIf="from == 'quote'"></nz-step> -->
             </nz-steps>
             
@@ -1170,14 +1171,16 @@
                         </div>
                     </div>
                 </div>
+
                 <div nz-row *ngIf="current == 8">
                     <div [formGroup]="admitGroup">
                             <div nz-row class="form-group">
-                                <label for="">Time Period</label>
-                                <nz-range-picker formControlName="timePeriod"></nz-range-picker>
+                                <label for="">Date Ranges</label>
+                                <nz-range-picker formControlName="rosterCreationDates"></nz-range-picker>
                             </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -1187,10 +1190,10 @@
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
                 <span>Previous</span>
             </button>
-            <button nz-button nzType="default" (click)="next()" *ngIf="current < 7" [disabled]="!canGoNext">
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 8" [disabled]="!canGoNext">
                 <span>Next</span>
             </button>
-            <button nz-button nzType="primary" (click)="done()" *ngIf="current == 7" [disabled]="!canBeDone">
+            <button nz-button nzType="primary" (click)="done()" *ngIf="current == 8" [disabled]="!canBeDone">
                 <span>Done</span>
             </button>
         </ng-container>

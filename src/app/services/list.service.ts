@@ -22,6 +22,14 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getrosterpublishdate():Observable<any>{
+        return this.auth.get(`${list}/last-roster-publish-date`);
+    }
+
+    getprogramstatus(program: any):Observable<any>{
+        return this.auth.getstring(`${list}/program-status-program`, program);
+    }
+
     getprimaryphoneaddress(program: any):Observable<any>{
         return this.auth.getstring(`${list}/primary-phone-address`, program);
     }

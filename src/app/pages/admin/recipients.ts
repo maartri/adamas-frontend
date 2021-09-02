@@ -109,6 +109,9 @@ import { FormBuilder, Validators } from '@angular/forms';
           float:none !important;
           color:green !important;
         }
+        .ant-table-thead>tr>th{
+          background:green;
+        }
     `],
     templateUrl: './recipients.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -1186,6 +1189,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   programsList: any;
   branchesList: any;
   filters: any;
+  quicksearch: any;
 
     nzEvent(event: NzFormatEmitEvent): void {
       console.log(event);
@@ -1308,11 +1312,17 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       
     }
     buildForm(){
+      this.quicksearch = this.fb.group({
+        active:   true,
+        inactive: false,
+        alltypes: true,
+      });
       this.filters = this.fb.group({
-        allBranches: false,
-        allPrograms: false,
-        allCordinatore: false,
-        allCategories: false,
+        allBranches: true,
+        allPrograms: true,
+        allCordinatore: true,
+        allCategories: true,
+        activeprogramsonly:false,
       });
     }
     getUserData() {
@@ -1563,8 +1573,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
             this.msg.error(`${this.file.name} file upload failed.`);
             this.msg.remove(id);
           }
-        );
-        
+        );  
       }; 
       handleChange({ file, fileList }: UploadChangeParam): void {
         const status = file.status;

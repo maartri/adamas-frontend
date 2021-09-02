@@ -1179,7 +1179,7 @@
                     <div [formGroup]="admitGroup">
                             <div nz-row class="form-group">
                                 <label for="">Date Ranges</label>
-                                <nz-range-picker formControlName="rosterCreationDates"></nz-range-picker>
+                                <nz-range-picker [nzFormat]="dateFormat" formControlName="rosterCreationDates"></nz-range-picker>
                             </div>
                     </div>
                 </div>

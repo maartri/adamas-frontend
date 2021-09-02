@@ -1045,30 +1045,9 @@
     </div>
 </nz-modal>
 
-<div>
-    <img id="icon-1" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r1.png"/>
-    <img id="icon-2" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r2.png"/>
-    <img id="icon-3" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r3.png"/>
-    <img id="icon-4" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r4.png"/>
-    <img id="icon-5" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r5.png"/>
-    <img id="icon-6" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r6.png"/>
 
-    <img id="icon-7" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r7.png"/>
-    <img id="icon-8" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r8.png"/>
-    <img id="icon-9" style="display:none; background-color: #D5D6DE;"  src="/assets/images/r9.png"/>
-    <img id="icon-10" style="display:none; background-color: #D5D6DE;" src="/assets/images/r10.png"/>
-    <img id="icon-11" style="display:none;background-color: #D5D6DE;"  src="/assets/images/r11.png"/>
-    <img id="icon-12" style="display:none; background-color: #D5D6DE;" src="/assets/images/r12.png"/>
-    <img id="icon-13" style="display:none; background-color: #D5D6DE;" src="/assets/images/r13.png"/>
-    <img id="icon-14" style="display:none; background-color: #D5D6DE;" src="/assets/images/r14.png"/>
-    <img id="icon-15" style="display:none; background-color: #D5D6DE;" src="/assets/images/r15.png"/>
-    <img id="icon-20" style="display:none; background-color: #D5D6DE;" src="/assets/images/r20.png"/>
-    <img id="icon-21" style="display:none; background-color: #D5D6DE;" src="/assets/images/r21.jpg"/>
-    <img id="icon-22" style="display:none; background-color: #D5D6DE;" src="/assets/images/r22.jpg"/>
-</div>
 
 <!-- Recurrent Services -->
-
 <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="showRecurentModal" nzTitle="Recurrent Service" (nzOnCancel)="showRecurentModal = false" >
     <div class="flexy" style="min-width:21rem">
         <form [formGroup]="RecurrentServiceForm" class="form-group">
@@ -1160,102 +1139,25 @@
         <button nz-button nzType="default"  (click)="close()">Cancel</button>
     </div>
 </nz-modal>
-<!-- 
-<nz-drawer
-    [nzBodyStyle]="{ overflow: 'auto' }"
-    [nzMaskClosable]="true"
-    [nzWidth]="720"
-    [nzVisible]="false"
-    nzTitle="Recurrent Services"
-    nzPlacement="top"
-    (nzOnClose)="close()"
->
-        
-      <form [formGroup]="RecurrentServiceForm" *nzDrawerContent nz-form>
-                <div nz-row>
-                    <div nz-col nzSpan="12" style="background-color: #002060;color:white;padding-left: 4px;">
-                        <label for="">Dates</label>
-                    </div>
-                    <div nz-col nzSpan="12" style="background-color: #002060;color:white;padding-left: 4px;">
-                        <label for="">Times</label> 
-                    </div>
-                </div>
 
-                <div nz-row>
-                    <div nz-col nzSpan="12" >
-                        <div class="form-group" style="padding-top: 5px;">
-                            <label for="">Start Date</label>
-                            <nz-date-picker [(ngModel)]="recurrentStartDate" [nzFormat]="dateFormat" formControlName="sartDate"></nz-date-picker>
-                        </div>
-                        <div class="form-group">
-                            <label for="">End Date</label>
-                            <nz-date-picker [(ngModel)]="recurrentEndDate" [nzFormat]="dateFormat" formControlName="endDate"></nz-date-picker>
-                        </div>
-                </div>
-                <div nz-col nzSpan="12">
-                        <div class="form-group" style="padding-top: 5px;">
-                            <label for="">Start Time</label>
-                            <nz-time-picker [(ngModel)]="recurrentStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
-                        </div>
-                
-                        <div class="form-group" >
-                            <label for="">End Time</label>
-                            <nz-time-picker [(ngModel)]="recurrentEndTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
-                        </div>
-                    </div>
-                </div>
-                <div nz-row style="background-color: #002060; color:white;padding-left: 4px">
-                    <div nz-col nzSpan="8">
-                        <label for="">Days</label>
-                    </div>
-                    <div nz-col nzSpan="8">
-                        <label for="">Frequency</label>
-                    </div>
-                    <div nz-col nzSpan="4">
-                        <label for="">Pattern</label>
-                    </div>
-                </div>
-                <div nz-row>
-                
-                    <div nz-col nzSpan="8" style="padding-top: 5px;">
-                    
-                        <nz-radio-group [(ngModel)]="weekDay" >
-                            <label nz-radio nzValue="Sunday">Sunday</label>
-                            <label nz-radio nzValue="Monday">Monday</label>
-                            <label nz-radio nzValue="Tuesday">Tuesday</label>
-                            <label nz-radio nzValue="Wednsday">Wednsday</label>
-                            <label nz-radio nzValue="Thursday">Thursday</label>
-                            <label nz-radio nzValue="Friday">Friday</label>
-                            <label nz-radio nzValue="Saturday">Saturday</label>
+<div>
+    <img id="icon-1" style="display: none; background-color: #D5D6DE;"  src="/media/r1.png"/>
+    <img id="icon-2" style="display: none; background-color: #D5D6DE;"  src="/media/r2.png"/>
+    <img id="icon-3" style="display: none; background-color: #D5D6DE;"  src="/media/r3.png"/>
+    <img id="icon-4" style="display: none; background-color: #D5D6DE;"  src="/media/r4.png"/>
+    <img id="icon-5" style="display: none; background-color: #D5D6DE;"  src="/media/r5.png"/>
+    <img id="icon-6" style="display: none; background-color: #D5D6DE;"  src="/media/r6.png"/>
 
-                        </nz-radio-group>
-                    </div>
-                    <div nz-col nzSpan="8" style="margin-top: 5px;">
-                    
-                        <nz-radio-group [(ngModel)]="Frequency">
-                            <label nz-radio nzValue="Weekly">Weekly</label>
-                            <label nz-radio nzValue="Fortnightly">Fortnightly</label>
-                            <label nz-radio nzValue="Monthly">Monthly</label>
-                            
-
-                        </nz-radio-group>
-                    </div>
-                    <div nz-col nzSpan="6" style="padding-top: 4px;">
-                    
-                        <nz-radio-group [(ngModel)]="Pattern">
-                            <label nz-radio nzValue="First">First</label>
-                            <label nz-radio nzValue="Second">Second</label>
-                            <label nz-radio nzValue="Third">Third</label>
-                            <label nz-radio nzValue="Fourth">Fourth</label>
-
-                        </nz-radio-group>
-                    </div>            
-                </div>
-                <ng-template #footerTpl>
-                    <div style="float: right">
-                        <button nz-button nzType="default"  (click)="set_RecurentView()">Set</button>
-                        <button nz-button nzType="default"  (click)="showRecurentModal=false">Cancel</button>
-                    </div> 
-                </ng-template>
-    </form>
-</nz-drawer> -->
+    <img id="icon-7" style="display: none; background-color: #D5D6DE;"  src="/media/r7.png"/>
+    <img id="icon-8" style="display: none; background-color: #D5D6DE;"  src="/media/r8.png"/>
+    <img id="icon-9" style="display: none; background-color: #D5D6DE;"  src="/media/r9.png"/>
+    <img id="icon-10" style="display: none; background-color: #D5D6DE;" src="/media/r10.png"/>
+    <img id="icon-11" style="display: none; background-color: #D5D6DE;"  src="/media/r11.png"/>
+    <img id="icon-12" style="display: none; background-color: #D5D6DE;" src="/media/r12.png"/>
+    <img id="icon-13" style="display: none; background-color: #D5D6DE;" src="/media/r13.png"/>
+    <img id="icon-14" style="display: none; background-color: #D5D6DE;" src="/media/r14.png"/>
+    <img id="icon-15" style="display: none; background-color: #D5D6DE;" src="/media/r15.png"/>
+    <img id="icon-20" style="display: none; background-color: #D5D6DE;" src="/media/r20.png"/>
+    <img id="icon-21" style="display: none; background-color: #D5D6DE;" src="/media/r21.jpg"/>
+    <img id="icon-22" style="display: none; background-color: #D5D6DE;" src="/media/r22.jpg"/>
+</div>  

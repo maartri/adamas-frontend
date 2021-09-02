@@ -57,6 +57,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   @Input() option: RECIPIENT_OPTION;
   @Input() user: any;
   @Input() from:any;
+  @Input() program: string;
 
   dateFormat: string = dateFormat;
 
@@ -227,7 +228,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     ngOnChanges(changes: SimpleChanges): void {
       for (let property in changes) {
         if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
-          console.log(this.user);
+          // console.log(this.user);
+          // console.log(this.from)
           // GETS Branch name or Gets it through database
           
           if('branch' in this.user){
@@ -268,6 +270,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       if(this.option == RECIPIENT_OPTION.DECEASE) this.deceaseOpen = true;
       if(this.option == RECIPIENT_OPTION.ADMIN) this.adminOpen = true;
       if(this.option == RECIPIENT_OPTION.ITEM)  this.itemOpen = true;
+      this.changeDetection();
     }
     
     buildForm(): void {
@@ -418,6 +421,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         admissionDate:new Date(defaultDate),
         time: new Date(defaultDateTime),
         timeSpent: new Date(defaultTimeSpent),
+        rosterCreationDates: [],
 
         adminsssion:null,
         admissionType:null,
@@ -429,9 +433,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       this.admitGroup.get('programChecked').valueChanges
         .pipe(
             switchMap(x => {
+              console.log(x)
                 if(!x) return EMPTY;
                 this.globalProgramSelection = {
-                  program: x.program,
+                  program: x,
                   option: 'ADMIT'
                 }
                 return this.listS.getreferraltype(this.globalProgramSelection)
@@ -443,7 +448,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   admissionType: this.admissionActiviType[0]
                 });
               }
-              return this.listS.gethumanresourcetypes(this.globalProgramSelection.program)
+              return this.listS.gethumanresourcetypes({ program: this.globalProgramSelection.program})
             })
           ).subscribe(data => {
               this.FUNDING_TYPE = data;
@@ -558,7 +563,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       }
 
       if(type == 4){
-          this.listS.gethumanresourcetypes(this.selectedProgram)
+          this.listS.gethumanresourcetypes({ program: this.selectedProgram })
               .subscribe(data => this.FUNDING_TYPE = data);
       }
       
@@ -1159,15 +1164,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               }
               
               if(this.option == RECIPIENT_OPTION.ADMIT){  
-
+                  
                   const { 
                     time,
                     timeSpent,
                     admissionDate,
                     notes,
                     programChecked,
-                    admissionType
-                    
+                    admissionType,
+                    rosterCreationDates
                   } = this.admitGroup.value; 
 
                   const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
@@ -1177,7 +1182,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   let data = {
                       docId: this.DOCUMENTID,
                       program: programChecked.program,
-                      admissionType: admissionType,
+                      admissionType: programChecked,
                       clientCode: this.user.code,
                       carerCode: this.token.code,
                       serviceType: 'referralType',
@@ -1196,6 +1201,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       reasonType: '',
                       tabType: 'ADMISSION',
                       timeSpent: format(timeSpent,'HH:mm'),
+
+                      startDate: rosterCreationDates[0],
+                      endDate:rosterCreationDates[1],
+
                       noteDetails: {
                           personId: this.user.id,
                           program: programChecked.program,
@@ -1645,26 +1654,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               
               this.whatOptionVar = {};
               this.loadPrograms = true;
-              // console.log(this.user);
-              // console.log()
+  
               switch(this.option){
                 case RECIPIENT_OPTION.REFER_IN:
-                // this.listS.getwizardprograms(this.user.id).subscribe(data => {
-                //   this.whatOptionVar = {
-                //     title: 'Referral In Wizard',
-                //     wizardTitle: '',
-                //     programsArr: data.map(x => {
-                //         return {
-                //             program: x.program,
-                //             type: x.type,
-                //             status: false,
-                //         }
-                //     })
-                //   }
-                
-                    // this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.REFER_IN);
-                //   this.changeDetection();
-                // })
+               
                 break;
                 case RECIPIENT_OPTION.REFER_ON:
                 this.listS.getlist(`SELECT DISTINCT UPPER(rp.[Program]) AS Program, hr.[type] FROM RecipientPrograms rp INNER JOIN HumanResourceTypes hr ON hr.NAME = rp.program WHERE rp.PersonID = '${this.user.id}' AND ProgramStatus = 'REFERRAL' AND isnull([Program], '') <> ''                 `)
@@ -1742,60 +1735,48 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 })
                 break;
                 case RECIPIENT_OPTION.ADMIT:
-                this.listS.getadmitprograms(this.user.id).subscribe(data => {
-                    this.whatOptionVar = {
-                        title: 'Admission Wizard',
-                        wizardTitle: '',
-                        programsArr: data.map(x => {
-                            return {
-                                program: x,
-                                status: false
-                            }
-                        })
-                    }
-                    this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.ADMIT);
-                    this.changeDetection();
-                    // this.changeNoteEvent();
-                })
+                
+                if(this.from.display == 'admit')
+                {
+                  this.listS.getadmitprograms(this.user.id).subscribe(data => {
+                      this.whatOptionVar = {
+                          title: 'Admission Wizard',
+                          wizardTitle: '',
+                          programsArr: data.map(x => {
+                              return {
+                                  program: x,
+                                  status: false
+                              }
+                          })
+                      }
+                      this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.ADMIT);
+                      this.changeDetection();
+                  });
+                }
+
+                if(this.from.display == 'quote')
+                {
+                  this.whatOptionVar = {
+                    title: 'Admission Wizard',
+                    wizardTitle: '',
+                    programsArr: [{ 
+                      program: this.program, 
+                      status: false
+                     }]
+                  }
+                  
+                  this.formProgramArray(this.whatOptionVar, RECIPIENT_OPTION.ADMIT);
+                  this.changeDetection();
+                }
                 
                 this.timeSteps = timeSteps;
                 
 
-                // this.listS.getfollowups({
-                //   branch: this.BRANCH_NAME,
-                //   fundingType: this.FUNDING_TYPE
-                // }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                //   this.notifFollowUpGroup = data.map(x => {
-                //     return {
-                //       label: x,
-                //       value: x,
-                //       disabled: false,
-                //       checked: false
-                //     }
-                //   })
-                // })
-                
-                
-                // this.listS.getdocumentslist({
-                //   branch: this.BRANCH_NAME,
-                //   fundingType: this.FUNDING_TYPE
-                // }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                //   this.notifDocumentsGroup = data.map(x => {
-                //     return {
-                //       label: x,
-                //       value: x,
-                //       disabled: false,
-                //       checked: false
-                //     }
-                //   })
-                // });
-
-                // this.listS.getdatalist({
-                //   branch: this.BRANCH_NAME,
-                //   fundingType: this.FUNDING_TYPE
-                // }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                //   this.datalist = data
-                // }); 
+                this.listS.getrosterpublishdate().subscribe(data => [
+                  this.admitGroup.patchValue({
+                    rosterCreationDates: [new Date(defaultDate), new Date(data.date)]
+                  })
+                ]);
 
                 break;
                 case RECIPIENT_OPTION.DISCHARGE:
@@ -2005,10 +1986,18 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.GET_FUNDINGTYPE()
               }
               if(type == RECIPIENT_OPTION.ADMIT){
-                var prog = this.adminGroup.get('programs') as FormArray;      
+                var prog = this.admitGroup.get('programs') as FormArray;      
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
-                this.globalFormGroup = this.adminGroup;
-                this.GET_FUNDINGTYPE()
+                this.globalFormGroup = this.admitGroup;
+
+                if((this.admitGroup.get('programs').value as Array<any>).length == 1){
+                  let programs = (<FormArray>this.admitGroup.controls['programs']).at(0);
+                  this.admitGroup.patchValue({
+                    programChecked: programs.value.program
+                  });
+                }
+
+                this.GET_FUNDINGTYPE();
               }
               if(type == RECIPIENT_OPTION.DECEASE){
                 var prog = this.deceaseGroup.get('programs') as FormArray;
@@ -2021,6 +2010,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.suspendGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.suspendGroup;
+
+                // if((this.suspendGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.suspendGroup.controls['programs']).at(0);
+                //   this.suspendGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.GET_FUNDINGTYPE()
               }
               
@@ -2028,6 +2025,13 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.dischargeGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.dischargeGroup;
+
+                // if((this.dischargeGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.dischargeGroup.controls['programs']).at(0);
+                //   this.dischargeGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
                 
                 this.noteArray = ['DISCHARGE'];
                 this.GET_FUNDINGTYPE()
@@ -2036,33 +2040,24 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               
               if(type == RECIPIENT_OPTION.WAIT_LIST){
                 var prog = this.waitListGroup.get('programs') as FormArray;
-                console.log(prog);
+
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.waitListGroup;
                 this.GET_FUNDINGTYPE()
-              }
-              
-              if(type == RECIPIENT_OPTION.ADMIT){
-                var prog = this.admitGroup.get('programs') as FormArray;
-                data.programsArr.map(x => prog.push(this.createProgramForm(x)));
-                this.globalFormGroup = this.admitGroup;
-
-                if((this.admitGroup.get('programs').value as Array<any>).length == 1){
-                  let programs = (<FormArray>this.admitGroup.controls['programs']).at(0);
-
-                  // set default when list is only one
-                  this.admitGroup.patchValue({
-                    programChecked: programs.value
-                  });
-                }
-                this.GET_FUNDINGTYPE()
-              }
-              
+              }              
+                     
               if(type == RECIPIENT_OPTION.ASSESS){
                 var prog = this.assessGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.assessGroup;
-                
+
+                // if((this.assessGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.assessGroup.controls['programs']).at(0);
+                //   this.assessGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.noteArray = ['SCREEN/ASSESS'];
                 this.GET_FUNDINGTYPE()
                 return;
@@ -2072,6 +2067,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.notProceedGroup.get('programs') as FormArray;
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.notProceedGroup;
+
+                // if((this.notProceedGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.notProceedGroup.controls['programs']).at(0);
+                //   this.notProceedGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.GET_FUNDINGTYPE()
               }
               
@@ -2080,6 +2083,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.referOnGroup;
                 
+
+                // if((this.referOnGroup.get('programs').value as Array<any>).length == 1){
+                //   let programs = (<FormArray>this.referOnGroup.controls['programs']).at(0);
+                //   this.referOnGroup.patchValue({
+                //     programChecked: programs.value.program
+                //   });
+                // }
+
                 this.noteArray = ['REFERRAL-OUT'];
                 this.GET_FUNDINGTYPE()
                 return;
@@ -2162,7 +2173,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }
                 
                 if(this.admitOpen){
-                  if(this.current < 7){
+                  if(this.current < 8){
                     this.current += 1;
                   }
                 }
@@ -2570,7 +2581,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 
                 handleCancel() {
                   this.open = false;
-                  this.from = 0;
                   this.itemOpen = false;
                   this.adminOpen = false;
                   this.deceaseOpen = false;

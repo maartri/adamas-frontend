@@ -1188,6 +1188,7 @@ export class AddQuoteComponent implements OnInit {
                     qty: quote.quantity,
                     frequency: quote.period,
                     quoteQty: quote.weekNo, 
+                    roster: quote.rosterString,
                     unitBillRate: quote.price,
                     tax: quote.gst,
                     itemId: quote.itemId,
@@ -1197,26 +1198,27 @@ export class AddQuoteComponent implements OnInit {
 
                 this.listS.createQuoteLine(_quote).subscribe(data => {
 
-                this.quoteLines = [...this.quoteLines, {
-                    code: data.code,
-                    displayText: data.displayText,
-                    quantity: data.qty,
-                    billUnit: data.billUnit,
-                    frequency: data.frequency,
-                    quoteQty: data.quoteQty,
-                    price: data.unitBillRate,
-                    tax: data.tax,
-                    mainGroup: data.mainGroup,
-                    recordNumber: data.recordNumber
-                    
-                }];
+                    this.quoteLines = [...this.quoteLines, {
+                        code: data.code,
+                        displayText: data.displayText,
+                        quantity: data.qty,
+                        billUnit: data.billUnit,
+                        frequency: data.frequency,
+                        quoteQty: data.quoteQty,
+                        price: data.unitBillRate,
+                        tax: data.tax,
+                        mainGroup: data.mainGroup,
+                        recordNumber: data.recordNumber
+                        
+                    }];
                 
-                this.total_base_quote = (this.generate_total()).toFixed(2);
-                this.total_admin = this.generate_total_admin();
-                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+                    this.total_base_quote = (this.generate_total()).toFixed(2);
+                    this.total_admin = this.generate_total_admin();
+                    this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
 
-                this.handleCancelLine();
-                this.detectChanges();
+                    this.handleCancelLine();
+                    this.globalS.sToast('Success','Added QuoteLine')
+                    this.detectChanges();
                 });     
 
                 return;
@@ -1272,6 +1274,7 @@ export class AddQuoteComponent implements OnInit {
                         this.total_admin = this.generate_total_admin();
                         this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
 
+                        this.globalS.sToast('Success','Updated QuoteLine')
                         this.handleCancelLine();
                         this.detectChanges();
 
@@ -1300,6 +1303,7 @@ export class AddQuoteComponent implements OnInit {
                     frequency: quote.period,
                     quoteQty: quote.weekNo, 
                     unitBillRate: quote.price,
+                    roster: quote.rosterString,
                     tax: quote.gst,
                     itemId: quote.itemId,
                     mainGroup: quote.mainGroup
@@ -1325,6 +1329,7 @@ export class AddQuoteComponent implements OnInit {
                     this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
     
                     // this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
+                    this.globalS.sToast('Success','Added QuoteLine')
                     this.handleCancelLine();
                     this.detectChanges();
                 });
@@ -1381,6 +1386,7 @@ export class AddQuoteComponent implements OnInit {
                         this.total_admin = this.generate_total_admin();
                         this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
 
+                        this.globalS.sToast('Success','Updated QuoteLine')
                         this.handleCancelLine();
                         this.detectChanges();
 
@@ -1396,6 +1402,7 @@ export class AddQuoteComponent implements OnInit {
   }
 
   loadingSaveQuote: boolean = false;
+
   saveQuote(){
       
     let qteLineArr: Array<QuoteLineDTO> = [];
@@ -1461,8 +1468,7 @@ export class AddQuoteComponent implements OnInit {
     }
 
     this.loadingSaveQuote = true;
-    console.log(qteHeader)
-    return;
+  
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');

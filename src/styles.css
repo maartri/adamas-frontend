@@ -317,3 +317,9 @@ th.action{
 .text-right{
     text-align:right;   
 }
+.custum-header thead tr th{
+    background: #fafafa;
+}
+.coulmn-color{
+    background: #fafafa !important;
+}

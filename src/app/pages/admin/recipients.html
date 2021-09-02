@@ -11,8 +11,9 @@
             <!-- <button class="botton other" (click)="openReferModal(null)"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Sample</button> -->
             
             <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
-        </div>
+        </div> 
     </div>
+    <!-- //s -->
     <div nz-row>
         <div *ngIf="recipientType" nz-col nzSpan="24" style="margin-top:10px;">
             <span class="status active" *ngIf="recipientStatus && recipientStatus == 'active'"><i nz-icon nzType="user" nzTheme="outline"></i> ACTIVE</span>
@@ -142,19 +143,26 @@
         </nz-tabset>
         
         <div>
-            <div *ngIf="tabFindIndex == 0"  nz-row nzGutter="32">
+            <div *ngIf="tabFindIndex == 0"  nz-row nzGutter="32" [formGroup]="quicksearch">
                 <div nz-col nzSpan="4">
-                    <div nz-row>
-                        <div nz-col nzSpan="12">
-                            <label class="columns" nz-checkbox>Active</label>
+                    <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                        <div nz-col [nzSpan]="12">
+                            <label nz-checkbox formControlName="active">
+                                <span><b>Active</b></span>
+                            </label>
                         </div>
-                        <div nz-col nzSpan="12">
-                            <label class="columns" nz-checkbox>Inactive</label>
+                        <div nz-col [nzSpan]="12">
+                            <label nz-checkbox formControlName="inactive">
+                                <span><b>Inactive</b></span>
+                            </label>
                         </div>
                     </div>
                     <div nz-row>      
-                        <div nz-row>
-                            <div nz-col style="margin:10px">
+                        <div nz-row  style="border: 1px solid #e8e8e8;">
+                            <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                <label nz-checkbox formControlName="alltypes"><b>ALL Types</b></label>
+                            </div>
+                            <div nz-col style="padding:4px;">
                                 <label class="columns" nz-checkbox>REFERRAL</label>
                                 <label class="columns" nz-checkbox>WAITING LIST</label>
                                 <label class="columns" nz-checkbox>RECIPIENT</label>
@@ -165,35 +173,90 @@
                             </div>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="Surname" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Surname'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="First Name" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'First Name'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="Phone #" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Phone #'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="Suburb" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Suburb'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="Date Of Birth" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Date Of Birth'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="File #" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'File #'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" />
+                            </nz-card>
                         </div>
                     </div>
                 </div>
                 <div nz-col nzSpan="19">
                     <div nz-row>
-                        <input nz-input placeholder="Type SURNAME here and press enter" [(ngModel)]="value" />
+                        <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+                            <input type="text" nz-input placeholder="Type SURNAME here and press enter" />
+                        </nz-input-group>
+                        <ng-template #suffixButton>
+                            <button nz-button nzType="primary" nzSize="large" nzSearch>Search</button>
+                        </ng-template>
+                    </div>
+                    <div nz-row>
+                        <nz-table #basicTable nzSize="small" nzBordered class="custum-header">
+                            <thead>
+                                <tr>
+                                    <th class="coulmn-color">Ur Number</th>
+                                    <th class="coulmn-color">Code</th>
+                                    <th class="coulmn-color">Surname</th>
+                                    <th class="coulmn-color">First Name</th>
+                                    <th class="coulmn-color">Name</th>
+                                    <th class="coulmn-color">D.O.B</th>
+                                    <th class="coulmn-color">Address</th>
+                                    <th class="coulmn-color">Type</th>
+                                    <th class="coulmn-color">Alert</th>
+                                    <th class="coulmn-color">Primary Code</th>
+                                    <th class="coulmn-color">ONI Rating</th>
+                                    <th class="coulmn-color">Activation Date</th>
+                                    <th class="coulmn-color">DeActivation Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                    <td>Type</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
                     </div>
                 </div>
             </div>
             
-            <div *ngIf="tabFindIndex == 1" nz-row nzGutter="16">
+            <div *ngIf="tabFindIndex == 1" nz-row nzGutter="16" [formGroup]="filters">
                 <div nz-col nzSpan="4">
-                    <label class="columns" nz-checkbox *ngFor="let list of columns" [(ngModel)]="list.checked">{{ list.name }}</label>
+                    <label class="columns" nz-checkbox *ngFor="let list of columns" [ngModel]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.name }}</label>
                 </div>
                 <div nz-col nzSpan="20">
                     <h4>Quick Filters</h4>
@@ -211,7 +274,7 @@
                                 </div>
                             </nz-card>
                             <ng-template #branches>
-                                <b>ALL Branches : </b> &nbsp;<label nz-checkbox formControlName="autoInsertNotes"></label>
+                                <b>ALL Branches : </b> &nbsp;<label nz-checkbox formControlName="allBranches"></label>
                             </ng-template>
                         </nz-tab>
                         <nz-tab nzTitle="Programs" (nzClick)="filterChange(1)">
@@ -227,7 +290,7 @@
                                 </div>
                             </nz-card>
                             <ng-template #program>
-                                <b>ALL Programs : </b> &nbsp;<label nz-checkbox formControlName="autoInsertNotes" style="margin-right:200px;"></label> <b>Search Recipient With Active Programs Only : </b> &nbsp;<label nz-checkbox formControlName="autoInsertNotes"></label>
+                                <b>ALL Programs : </b> &nbsp;<label nz-checkbox formControlName="allPrograms" style="margin-right:200px;"></label> <b>Search Recipient With Active Programs Only : </b> &nbsp;<label nz-checkbox formControlName="activeprogramsonly"></label>
                             </ng-template>
                         </nz-tab>
                         <nz-tab nzTitle="Case Coordinators" (nzClick)="filterChange(2)">
@@ -243,7 +306,7 @@
                                 </div>
                             </nz-card>
                             <ng-template #cordinators>
-                                <b>ALL Case Coordinators : </b> &nbsp;<label nz-checkbox formControlName="autoInsertNotes"></label>
+                                <b>ALL Case Coordinators : </b> &nbsp;<label nz-checkbox formControlName="allCordinatore"></label>
                             </ng-template>
                         </nz-tab>
                         <nz-tab nzTitle="Categories" (nzClick)="filterChange(3)">
@@ -259,7 +322,7 @@
                                 </div>
                             </nz-card>
                             <ng-template #category>
-                                <b>ALL Categories : </b> &nbsp;<label nz-checkbox formControlName="autoInsertNotes"></label>
+                                <b>ALL Categories : </b> &nbsp;<label nz-checkbox formControlName="allCategories"></label>
                             </ng-template>
                         </nz-tab>
                     </nz-tabset>
@@ -275,7 +338,7 @@
                 <div nz-col nzSpan="16">
                     <div nz-row>
                         <div class="form-group">
-                            <input nz-input placeholder="" [(ngModel)]="value" />
+                            <input nz-input placeholder=""/>
                         </div>
                     </div>
                     <div nz-row>
@@ -286,16 +349,16 @@
                             [dropdownPosition]="'bottom'"
                             [clearable]="false"
                             [closeOnSelect]="true"
-                            [(ngModel)]="sampleModel">
+                            >
                         </ng-select>
                     </div>
                 </div>
-                <div nz-row>
-                    <div nz-col nzSpan="10" class="form-group">
-                        <input nz-input [(ngModel)]="value" />
+                <div nz-row [nzGutter]="16">
+                    <div nz-col class="gutter-row" nzSpan="10" class="form-group">
+                        <input nz-input/>
                     </div>
-                    <div nz-col nzSpan="10" class="form-group">
-                        <input nz-input [(ngModel)]="value" />
+                    <div nz-col class="gutter-row" nzSpan="10" class="form-group">
+                        <input nz-input/>
                     </div>
                 </div>
                 <div nz-row>

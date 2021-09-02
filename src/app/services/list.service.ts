@@ -56,8 +56,8 @@ export class ListService {
     }
 
     
-    gethumanresourcetypes(program: string):Observable<any>{
-        return this.auth.getstring(`${list}/humanresourcetypes/type/${program}`);
+    gethumanresourcetypes(program: any):Observable<any>{
+        return this.auth.getstring(`${list}/humanresourcetypes/type`, program);
     }
 
 

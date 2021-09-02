@@ -448,7 +448,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   admissionType: this.admissionActiviType[0]
                 });
               }
-              return this.listS.gethumanresourcetypes(this.globalProgramSelection.program)
+              return this.listS.gethumanresourcetypes({ program: this.globalProgramSelection.program})
             })
           ).subscribe(data => {
               this.FUNDING_TYPE = data;
@@ -563,7 +563,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
       }
 
       if(type == 4){
-          this.listS.gethumanresourcetypes(this.selectedProgram)
+          this.listS.gethumanresourcetypes({ program: this.selectedProgram })
               .subscribe(data => this.FUNDING_TYPE = data);
       }
       

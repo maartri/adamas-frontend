@@ -121,7 +121,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     option: string = 'add';
-    
+    allChecked: boolean = true;
+    indeterminate: boolean = false;
     user: any = null;
     nzSelectedIndex: number = 0;
     isFirstLoad: boolean = false;
@@ -148,7 +149,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
 
     Unique_ID: string;
     Account_No: string;
-
+    /**
+     * Filter Data Vars
+     */
+    isActive: boolean =true;
+    inActive: boolean = false;
+    
     recipientOptionOpen: any;
     recipientOption: string;
     from: any =  { display: 'admit'};
@@ -169,7 +175,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     tabs = [1, 2, 3];
 
     checked: any;
-    sampleList: Array<any> = ["EQUALS","BETWEEN","LESS THEN","GREATER THAN","NOT EQUAL TO","IS NOTHING","IS ANYTHING","IS TRUE","IS FALSE"]
+    sampleList: Array<any> = ["EQUALS","BETWEEN","LESS THEN","GREATER THAN","NOT EQUAL TO","IS NOTHING","IS ANYTHING","IS TRUE","IS FALSE"];
+    recipeintTypes: Array<any> = [{name:"REFERRAL"},{name:"WAITING LIST"},{name:"CARER"},{name:"CARER/RECIPIENT"},{name:"BILLING CLIENT"},{name:"ASSOCIATE"}];
     sampleModel: any;
 
     columns: Array<any> = [
@@ -199,27 +206,27 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       },
       {
         name: 'Gender',
-        checked: false
+        checked: true
       },
       {
         name: 'DOB',
-        checked: false
+        checked: true
       },
       {
         name: 'Address',
-        checked: false
+        checked: true
       },
       {
         name: 'Contact',
-        checked: false
+        checked: true
       },
       {
         name: 'Type',
-        checked: false
+        checked: true
       },
       {
         name: 'Branch',
-        checked: false
+        checked: true
       },
       {
         name: 'Coord',
@@ -275,24 +282,89 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
           expanded: false,
           children: [
             {
-              title: 'parent 1-0',
+              title: 'Full Name-Surname First',
               key: '1001',
-              expanded: true,
-              children: [
-                { title: 'leaf', key: '10010', isLeaf: true },
-                { title: 'leaf', key: '10011', isLeaf: true },
-                { title: 'leaf', key: '10012', isLeaf: true }
-              ]
+              isLeaf: true
             },
             {
-              title: 'parent 1-1',
+              title: 'Date of Birth',
               key: '1002',
-              children: [{ title: 'leaf', key: '10020', isLeaf: true }]
+              isLeaf: true
             },
             {
-              title: 'parent 1-2',
+              title: 'Age',
               key: '1003',
-              children: [{ title: 'leaf', key: '10030', isLeaf: true }, { title: 'leaf', key: '10031', isLeaf: true }]
+              isLeaf: true
+            },
+            {
+              title: 'Ageband-Statistical',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Ageband-5 Year',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Month Of Birth',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Month Of Birth No',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Day Of Birth',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Day Of Birth No',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'CALD Score',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Country Of Birth',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Language',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Indigenous Status',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Primary Disability',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Financially Dependent',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Financial Status',
+              key: '1003',
+              isLeaf: true
+            },
+            {
+              title: 'Occupation',
+              key: '1003',
+              isLeaf: true
             }
           ]
         },
@@ -1190,6 +1262,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   branchesList: any;
   filters: any;
   quicksearch: any;
+  selectedRecpientTypes: any[];
+  types: any[];
+  extendedSearch: any;
 
     nzEvent(event: NzFormatEmitEvent): void {
       console.log(event);
@@ -1310,12 +1385,53 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
       
     }
+    searchData() : void{
+      console.log("Quick Search Form");
+      console.log(this.quicksearch.value);
+    }
+    updateAllChecked(): void {
+      this.types = [];
+      this.indeterminate = false;
+      if (this.allChecked) {
+        this.recipeintTypes = this.recipeintTypes.map(item => ({
+          ...item,
+          checked: true
+        }));
+        console.log("allchecked: ",this.recipeintTypes);
+        this.types = this.recipeintTypes;
+      } else {
+        this.recipeintTypes = this.recipeintTypes.map(item => ({
+          ...item,
+          checked: false
+        }));
+      }
+    }
+    updateSingleChecked(): void {
+      if (this.recipeintTypes.every(item => !item.checked)) {
+        this.allChecked = false;
+        this.indeterminate = false;
+      } else if (this.recipeintTypes.every(item => item.checked)) {
+        this.allChecked = true;
+        this.indeterminate = false;
+      } else {
+        this.indeterminate = true;
+      }
+    }
     buildForm(){
+
       this.quicksearch = this.fb.group({
         active:   true,
         inactive: false,
         alltypes: true,
+        surname:'',
+        firstname:'',
+        phoneno:'',
+        suburb:'',
+        dob:'',
+        fileno:'',
+        searchText:'',
       });
+
       this.filters = this.fb.group({
         allBranches: true,
         allPrograms: true,
@@ -1323,6 +1439,15 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         allCategories: true,
         activeprogramsonly:false,
       });
+
+      this.extendedSearch = this.fb.group({
+        title:'',
+        rule:'',
+        from:'',
+        to:'',
+        activeonly: true,
+      });
+
     }
     getUserData() {
       return forkJoin([

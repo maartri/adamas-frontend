@@ -137,7 +137,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     saveModal: boolean = false;
     
     newOtherModal: boolean = false;
-
+    loading: boolean = false;
     isLoading: boolean = false;
     current: number = 0;
 
@@ -1265,6 +1265,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   selectedRecpientTypes: any[];
   types: any[];
   extendedSearch: any;
+  filteredResult: any;
 
     nzEvent(event: NzFormatEmitEvent): void {
       console.log(event);
@@ -1386,8 +1387,14 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       
     }
     searchData() : void{
-      console.log("Quick Search Form");
-      console.log(this.quicksearch.value);
+      this.loading = true;
+      var filters = this.quicksearch.value;
+      this.timeS.getrecipientquicksearch()
+      .subscribe(data => {
+        this.filteredResult = data;
+        this.loading = false;
+        this.detectChanges();
+      })
     }
     updateAllChecked(): void {
       this.types = [];

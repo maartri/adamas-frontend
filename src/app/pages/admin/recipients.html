@@ -167,7 +167,7 @@
                                 [nzIndeterminate]="indeterminate"><b>ALL Types</b></label>
                             </div>
                             <div nz-col>
-                                <div class="staff-wrapper" style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                <div class="staff-wrapper" style="padding:4px;">
                                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let singletype of recipeintTypes">
@@ -220,7 +220,7 @@
                         </ng-template>
                     </div>
                     <div nz-row>
-                        <nz-table #basicTable nzSize="small" nzBordered class="custum-header">
+                        <nz-table #basicTable [nzLoading]="loading" [nzData]="filteredResult" nzSize="small" nzBordered class="custum-header">
                             <thead>
                                 <tr>
                                     <th class="coulmn-color">Ur Number</th>
@@ -239,20 +239,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
-                                    <td>Type</td>
+                                <tr *ngFor="let result of basicTable.data">
+                                    <td>{{result.id}}</td>
+                                    <td>{{result.urNumber}}</td>
+                                    <td>{{result.surnameOrganisation}}</td>
+                                    <td>{{result.firstName}}</td>
+                                    <td>{{result.name}}</td>
+                                    <td>{{result.dob | date: 'dd/MM/y'}}</td>
+                                    <td>{{result.address}}</td>
+                                    <td>{{result.type}}</td>
+                                    <td>{{result.alerts}}</td>
+                                    <td>{{result.primaryCoord}}</td>
+                                    <td>{{result.oniRating}}</td>
+                                    <td>{{result.activationDate | date: 'dd/MM/y'}}</td>
+                                    <td>{{result.deActivationDate | date: 'dd/MM/y'}}</td>
                                 </tr>
                             </tbody>
                         </nz-table>

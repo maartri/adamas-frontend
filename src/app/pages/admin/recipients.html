@@ -220,39 +220,39 @@
                         </ng-template>
                     </div>
                     <div nz-row>
-                        <nz-table #basicTable [nzLoading]="loading" [nzData]="filteredResult" nzSize="small" nzBordered class="custum-header">
+                        <nz-table #fixedTable [nzLoading]="loading" [nzScroll]="{ x: '1900px', y: '440px' }" [nzData]="filteredResult" nzSize="small" nzBordered class="custum-header">
                             <thead>
                                 <tr>
-                                    <th class="coulmn-color">Ur Number</th>
-                                    <th class="coulmn-color">Code</th>
-                                    <th class="coulmn-color">Surname</th>
-                                    <th class="coulmn-color">First Name</th>
-                                    <th class="coulmn-color">Name</th>
-                                    <th class="coulmn-color">D.O.B</th>
-                                    <th class="coulmn-color">Address</th>
-                                    <th class="coulmn-color">Type</th>
-                                    <th class="coulmn-color">Alert</th>
-                                    <th class="coulmn-color">Primary Code</th>
-                                    <th class="coulmn-color">ONI Rating</th>
-                                    <th class="coulmn-color">Activation Date</th>
-                                    <th class="coulmn-color">DeActivation Date</th>
+                                    <th  nzWidth="100px" nzLeft="0PX">Ur Number</th>
+                                    <!-- <th  nzWidth="100px" nzLeft="100PX">Code</th> -->
+                                    <th nzWidth="100px" nzLeft="100PX">Surname</th>
+                                    <th nzWidth="200px">First Name</th>
+                                    <th nzWidth="200px">Name</th>
+                                    <th nzWidth="200px">D.O.B</th>
+                                    <th nzWidth="200px">Address</th>
+                                    <th nzWidth="200px">Type</th>
+                                    <th nzWidth="200px">Alert</th>
+                                    <th nzWidth="200px">Primary Code</th>
+                                    <th nzWidth="100px">ONI Rating</th>
+                                    <th nzWidth="150px" nzRight="0px">Activation Date</th>
+                                    <!-- <th nzRight="0px">DeActivation Date</th> -->
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let result of basicTable.data">
-                                    <td>{{result.id}}</td>
-                                    <td>{{result.urNumber}}</td>
-                                    <td>{{result.surnameOrganisation}}</td>
-                                    <td>{{result.firstName}}</td>
-                                    <td>{{result.name}}</td>
-                                    <td>{{result.dob | date: 'dd/MM/y'}}</td>
-                                    <td>{{result.address}}</td>
-                                    <td>{{result.type}}</td>
-                                    <td>{{result.alerts}}</td>
-                                    <td>{{result.primaryCoord}}</td>
-                                    <td>{{result.oniRating}}</td>
-                                    <td>{{result.activationDate | date: 'dd/MM/y'}}</td>
-                                    <td>{{result.deActivationDate | date: 'dd/MM/y'}}</td>
+                                <tr *ngFor="let result of fixedTable.data">
+                                    <td nzLeft="0PX">{{result.id}}</td>
+                                    <!-- <td nzLeft="100PX">{{result.urNumber}}</td> -->
+                                    <td nzLeft="100PX">{{result.surnameOrganisation}}</td>
+                                    <td nzBreakWord>{{result.firstName}}</td>
+                                    <td nzBreakWord>{{result.name}}</td>
+                                    <td nzBreakWord>{{result.dob | date: 'dd/MM/y'}}</td>
+                                    <td nzBreakWord>{{result.address}}</td>
+                                    <td nzBreakWord>{{result.type}}</td>
+                                    <td nzBreakWord>{{result.alerts}}</td>
+                                    <td nzBreakWord>{{result.primaryCoord}}</td>
+                                    <td nzBreakWord>{{result.oniRating}}</td>
+                                    <td nzRight="0px">{{result.activationDate | date: 'dd/MM/y'}}</td>
+                                    <!-- <td nzRight="0px">{{result.deActivationDate | date: 'dd/MM/y'}}</td> -->
                                 </tr>
                             </tbody>
                         </nz-table>

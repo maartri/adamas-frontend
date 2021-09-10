@@ -574,6 +574,9 @@ export class ListService {
     getprogramsobj(): Observable<any>{
         return this.auth.get(`${list}/programs/obj`)
     }
+    getcategoriesobj(): Observable<any>{
+        return this.auth.get(`${list}/categories/obj`)
+    }
     
     getstaffcategory(): Observable<any>{
         return this.auth.get(`${list}/staff-category`)

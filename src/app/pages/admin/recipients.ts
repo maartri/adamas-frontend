@@ -131,8 +131,10 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   allCordinatore:boolean = true;
   allCordinatorIntermediate:boolean = false;
   
-  allCategories:boolean = true;
-  allCategoryIntermediate:boolean = false;
+  allcat:boolean = true;
+  allCatIntermediate:boolean = false;
+
+
   allChecked: boolean = true;
   indeterminate: boolean = false;
   
@@ -1451,6 +1453,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   selectedTypes:any;
   selectedbranches: any[];
   testcheck : boolean = false;
+  categoriesList: any;
   nzEvent(event: NzFormatEmitEvent): void {
     console.log(event);
   }
@@ -1666,29 +1669,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       }
       
       if(filter == 4 || filter == -1){
-        if (this.allCategories) {
-          this.categories.forEach(x => {
+        if (this.allcat) {
+          this.categoriesList.forEach(x => {
             x.checked = true;
           });
         }else{
-          this.categories.forEach(x => {
+          this.categoriesList.forEach(x => {
             x.checked = false;
           });
         }
       }
-      
-      // if(filter == 2 || filter == -1){
-      //   if (this.allProgarms) {
-      //     this.programsList.forEach(x => {
-      //       x.checked = true;
-      //     });
-      //   }else{
-      //     this.programsList.forEach(x => {
-      //       x.checked = false;
-      //     });
-      //   }
-      // }
-      
     }
     updateSingleChecked(): void {
       if (this.checkOptionsOne.every(item => !item.checked)) {
@@ -1700,6 +1690,56 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       } else {
         this.indeterminate = true;
         this.allChecked = false;
+      }
+    }
+    updateSingleCheckedFilters(index:number): void {
+      if(index == 1){
+        if (this.branchesList.every(item => !item.checked)) {
+          this.allBranches = false;
+          this.allBranchIntermediate = false;
+        } else if (this.branchesList.every(item => item.checked)) {
+          this.allBranches = true;
+          this.allBranchIntermediate = false;
+        } else {
+          this.allBranchIntermediate = true;
+          this.allBranches = false;
+        }
+      }
+      if(index == 2){
+        if (this.programsList.every(item => !item.checked)) {
+          this.allProgarms = false;
+          this.allprogramIntermediate = false;
+        } else if (this.programsList.every(item => item.checked)) {
+          this.allProgarms = true;
+          this.allprogramIntermediate = false;
+        } else {
+          this.allprogramIntermediate = true;
+          this.allProgarms = false;
+        }
+      }
+      if(index == 3){
+        if (this.casemanagers.every(item => !item.checked)) {
+          this.allCordinatore = false;
+          this.allCordinatorIntermediate = false;
+        } else if (this.casemanagers.every(item => item.checked)) {
+          this.allCordinatore = true;
+          this.allCordinatorIntermediate = false;
+        } else {
+          this.allCordinatorIntermediate = true;
+          this.allCordinatore = false;
+        }
+      }
+      if(index == 4){
+        if (this.categoriesList.every(item => !item.checked)) {
+          this.allcat = false;
+          this.allCatIntermediate = false;
+        } else if (this.categoriesList.every(item => item.checked)) {
+          this.allcat = true;
+          this.allCatIntermediate = false;
+        } else {
+          this.allCatIntermediate = true;
+          this.allcat = false;
+        }
       }
     }
     buildForm(){
@@ -1720,7 +1760,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         allBranches: true,
         allPrograms: true,
         allCordinatore: true,
-        allCategories: true,
+        allcat: true,
         activeprogramsonly:false,
       });
       
@@ -1738,12 +1778,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.listS.getlistbranchesObj(),
         this.listS.getprogramsobj(),
         this.listS.getcoordinatorslist(),
-        this.timeS.getlistcategories(),
+        this.listS.getcategoriesobj(),
       ]).subscribe(x => {
         this.branchesList = x[0];
         this.programsList = x[1];
         this.casemanagers = x[2];
-        this.categories   = x[3];
+        this.categoriesList   = x[3];
       });
     }
     view(index: number) {

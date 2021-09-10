@@ -1,9 +1,10 @@
 <div nz-row>
   <div style="padding:8px">
     <div nz-row *ngIf="userview?.staff >= 951">
-      <div nz-col nzSpan="2">
+      <div nz-col nzSpan="3">
         <button class="botton success" (click)="newStaffModal = !newStaffModal" ><i nz-icon nzType="plus" nzTheme="outline"></i> New Staff</button>
       </div>
+      <button class="botton find"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
     </div>
     <ng-container *ngIf="userview?.staff >= 951">
       <div nz-col nzSpan="6" style="margin-top: 10px;">

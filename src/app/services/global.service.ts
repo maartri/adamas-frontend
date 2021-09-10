@@ -559,8 +559,8 @@ admincharges :number = 0;
     getCurrentDate(){
         return moment().format('yyyy-MM-DD')
     }
-    convertDbDate(date:string){
-        const newDate = format(Date.parse(date),'yyyy/MM/dd');
+    convertDbDate(date:string,defaultformat:string = 'yyyy/MM/dd'){
+        const newDate = format(Date.parse(date),defaultformat);
         return newDate;
     }
 

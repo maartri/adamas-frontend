@@ -121,8 +121,21 @@ import { FormBuilder, Validators } from '@angular/forms';
 export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   
   option: string = 'add';
+  
+  allBranches:boolean = true;
+  allBranchIntermediate:boolean = false;
+  
+  allProgarms:boolean = true;
+  allprogramIntermediate:boolean = false;
+  
+  allCordinatore:boolean = true;
+  allCordinatorIntermediate:boolean = false;
+  
+  allCategories:boolean = true;
+  allCategoryIntermediate:boolean = false;
   allChecked: boolean = true;
   indeterminate: boolean = false;
+  
   user: any = null;
   nzSelectedIndex: number = 0;
   isFirstLoad: boolean = false;
@@ -176,7 +189,15 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   
   checked: any;
   sampleList: Array<any> = ["EQUALS","BETWEEN","LESS THEN","GREATER THAN","NOT EQUAL TO","IS NOTHING","IS ANYTHING","IS TRUE","IS FALSE"];
-  recipeintTypes: Array<any> = [{name:"REFERRAL"},{name:"WAITING LIST"},{name:"CARER"},{name:"CARER/RECIPIENT"},{name:"BILLING CLIENT"},{name:"ASSOCIATE"}];
+  checkOptionsOne = [
+    { label: 'REFERRAL', value: 'REFERRAL', checked: true },
+    { label: 'WAITING LIST', value: 'WAITING LIST', checked: true },
+    { label: 'RECIPIENT', value: 'RECIPIENT', checked: true },
+    { label: 'CARER', value: 'CARER', checked: true },
+    { label: 'CARER/RECIPIENT', value: 'CARER/RECIPIENT', checked: true },
+    { label: 'BILLING CLIENT', value: 'BILLING CLIENT', checked: true },
+    { label: 'ASSOCIATE', value: 'ASSOCIATE', checked: true },
+  ];
   sampleModel: any;
   
   columns: Array<any> = [
@@ -1421,17 +1442,20 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   programsList: any;
   branchesList: any;
   filters: any;
+  dateFormat: string ='dd/MM/yyyy';
   quicksearch: any;
   selectedRecpientTypes: any[];
   types: any[];
   extendedSearch: any;
   filteredResult: any;
+  selectedTypes:any;
+  selectedbranches: any[];
   
   nzEvent(event: NzFormatEmitEvent): void {
     console.log(event);
   }
   log(event: any) {
-    
+    this.selectedbranches = event;
   }
   
   listChange(event: any) {
@@ -1555,8 +1579,26 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
     searchData() : void{
       this.loading = true;
-      var filters = this.quicksearch.value;
-      this.timeS.getrecipientquicksearch()
+      console.log(this.selectedbranches);
+      
+      
+      this.selectedTypes = this.checkOptionsOne
+      .filter(opt => opt.checked)
+      .map(opt => opt.value).join("','")
+      
+      this.timeS.getrecipientquicksearch({
+        active:this.quicksearch.value.active,
+        inactive:this.quicksearch.value.inactive,
+        alltypes:this.allChecked,
+        selectedTypes:this.selectedTypes,
+        surname:this.quicksearch.value.surname,
+        firstname:this.quicksearch.value.firstname,
+        phoneno:this.quicksearch.value.phoneno,
+        suburb:this.quicksearch.value.suburb,
+        dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
+        fileno:this.quicksearch.value.fileno,
+        searchText:this.quicksearch.value.searchText,
+      })
       .subscribe(data => {
         this.filteredResult = data;
         this.loading = false;
@@ -1564,39 +1606,99 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       })
     }
     updateAllChecked(): void {
-      this.types = [];
       this.indeterminate = false;
       if (this.allChecked) {
-        this.recipeintTypes = this.recipeintTypes.map(item => ({
+        this.checkOptionsOne = this.checkOptionsOne.map(item => ({
           ...item,
           checked: true
         }));
-        console.log("allchecked: ",this.recipeintTypes);
-        this.types = this.recipeintTypes;
       } else {
-        this.recipeintTypes = this.recipeintTypes.map(item => ({
+        this.checkOptionsOne = this.checkOptionsOne.map(item => ({
           ...item,
           checked: false
         }));
       }
     }
+    updateAllCheckedFilters(filter: any): void {
+      if(filter == 1 || filter == -1){
+        console.log(this.types);
+        if(this.selectedbranches.length == 0){  // why its returing undefined 
+          if (this.allBranches) {
+            this.branchesList.forEach(x => {
+              x.checked = true;
+            });
+          }else{
+            this.branchesList.forEach(x => {
+              x.checked = false;
+            });
+          }
+        }
+      }
+      if(filter == 2 || filter == -1){
+        if (this.allProgarms) {
+          this.programsList.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.programsList.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+      if(filter == 3 || filter == -1){
+        if (this.allCordinatore) {
+          this.casemanagers.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.casemanagers.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+      
+      if(filter == 4 || filter == -1){
+        if (this.allCategories) {
+          this.categories.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.categories.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+      
+      // if(filter == 2 || filter == -1){
+      //   if (this.allProgarms) {
+      //     this.programsList.forEach(x => {
+      //       x.checked = true;
+      //     });
+      //   }else{
+      //     this.programsList.forEach(x => {
+      //       x.checked = false;
+      //     });
+      //   }
+      // }
+      
+    }
     updateSingleChecked(): void {
-      if (this.recipeintTypes.every(item => !item.checked)) {
+      if (this.checkOptionsOne.every(item => !item.checked)) {
         this.allChecked = false;
         this.indeterminate = false;
-      } else if (this.recipeintTypes.every(item => item.checked)) {
+      } else if (this.checkOptionsOne.every(item => item.checked)) {
         this.allChecked = true;
         this.indeterminate = false;
       } else {
         this.indeterminate = true;
+        this.allChecked = false;
       }
     }
     buildForm(){
-      
+      // alltypes: true,
       this.quicksearch = this.fb.group({
         active:   true,
         inactive: false,
-        alltypes: true,
         surname:'',
         firstname:'',
         phoneno:'',
@@ -1625,8 +1727,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
     getUserData() {
       return forkJoin([
-        this.listS.getlistbranches(),
-        this.listS.getleaveprograms(),
+        this.listS.getlistbranchesObj(),
+        this.listS.getprogramsobj(),
         this.listS.getcoordinatorslist(),
         this.timeS.getlistcategories(),
       ]).subscribe(x => {
@@ -1808,6 +1910,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     
     tabFindIndex: number = 0;
     tabFindChange(index: number){
+      if(index == 1){
+        this.updateAllCheckedFilters(-1);
+      }
       this.tabFindIndex = index;
     }
     
@@ -1894,6 +1999,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.newOtherModal = false;
         this.findModalOpen = false;
         this.referdocument = false;
+        this.quicksearch.reset();
       }
       
       

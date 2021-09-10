@@ -571,7 +571,10 @@ export class ListService {
     getleaveprograms(): Observable<any>{
         return this.auth.get(`${list}/leave/programs`)
     }
-
+    getprogramsobj(): Observable<any>{
+        return this.auth.get(`${list}/programs/obj`)
+    }
+    
     getstaffcategory(): Observable<any>{
         return this.auth.get(`${list}/staff-category`)
     }
@@ -687,7 +690,10 @@ export class ListService {
     getlistbranches(): Observable<any>{
         return this.auth.get(`${list}/branches`)
     }
-
+    getlistbranchesObj(): Observable<any>{
+        return this.auth.get(`${list}/branchesObj`)
+    }
+    
     getliststaffgroup(): Observable<any>{
         return this.auth.get(`${list}/staffgroup`)
     }
@@ -705,7 +711,6 @@ export class ListService {
     getlistcasemanagers(): Observable<any>{
         return this.auth.get(`${list}/casemanagers`)
     }
-
     getlistreminders(): Observable<any>{
         return this.auth.get(`${list}/reminders`)
     }    

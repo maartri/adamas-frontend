@@ -160,21 +160,16 @@
                     <div nz-row>      
                         <div nz-row  style="border: 1px solid #e8e8e8;">
                             <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
-                                <label nz-checkbox  
-                                formControlName="alltypes"
+                                <label nz-checkbox
                                 [(ngModel)]="allChecked"
                                 (ngModelChange)="updateAllChecked()"
-                                [nzIndeterminate]="indeterminate"><b>ALL Types</b></label>
+                                [nzIndeterminate]="indeterminate" [ngModelOptions]="{standalone: true}"><b>ALL Types</b></label>
                             </div>
                             <div nz-col>
                                 <div class="staff-wrapper" style="padding:4px;">
-                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                         <div nz-row>
-                                            <div nz-col nzSpan="24" *ngFor="let singletype of recipeintTypes">
-                                                <label nz-checkbox [nzValue]="singletype.name"  (ngModelChange)="updateSingleChecked()" [(ngModel)]="singletype.checked" [ngModelOptions]="{standalone: true}">{{ singletype.name }}</label>
-                                            </div>
+                                            <nz-checkbox-group [(ngModel)]="checkOptionsOne" (ngModelChange)="updateSingleChecked()" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                                         </div>
-                                    </nz-checkbox-wrapper>
                                 </div>
                             </div>
                         </div>
@@ -200,7 +195,7 @@
                         </div>
                         <div nz-row>
                             <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Date Of Birth'" [nzSize]="'small'">
-                                <input nz-input [nzSize]="'small'" formControlName="dob" />
+                                <nz-date-picker  formControlName="dob"  [nzSize]="'small'" [nzFormat]="dateFormat"></nz-date-picker>
                             </nz-card>
                         </div>
                         <div nz-row>
@@ -268,68 +263,80 @@
                     <h4>Quick Filters</h4>
                     <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
                         <nz-tab nzTitle="Branches" (nzClick)="filterChange(0)">
-                            <nz-card nzType="inner" [nzSize]="'small'" [nzExtra]="branches">
-                                <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
-                                        <div nz-row>
-                                            <div nz-col nzSpan="24" *ngFor="let branch of branchesList">
-                                                <label nz-checkbox nzDisabled [nzValue]="branch" [(ngModel)]="branch.checked" [ngModelOptions]="{standalone: true}">{{ branch }}</label>
-                                            </div>
-                                        </div>
-                                    </nz-checkbox-wrapper>
+                            <div nz-row  style="border: 1px solid #e8e8e8;">
+                                <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                    <label nz-checkbox
+                                    [(ngModel)]="allBranches"
+                                    (ngModelChange)="updateAllCheckedFilters(1)"
+                                    [nzIndeterminate]="allBranchIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Branches</b></label>
                                 </div>
-                            </nz-card>
-                            <ng-template #branches>
-                                <b>ALL Branches : </b> &nbsp;<label nz-checkbox formControlName="allBranches"></label>
-                            </ng-template>
+                                <div nz-col>
+                                    <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                        <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)"> 
+                                            <div nz-row>
+                                                <div nz-col nzSpan="24" *ngFor="let branch of branchesList">
+                                                    <label nz-checkbox [nzValue]="branch.description" [(ngModel)]="branch.checked" [ngModelOptions]="{standalone: true}">{{ branch.description }}</label>
+                                                </div>
+                                            </div>
+                                         </nz-checkbox-wrapper>   
+                                    </div>
+                                </div>
+                            </div>
                         </nz-tab>
                         <nz-tab nzTitle="Programs" (nzClick)="filterChange(1)">
-                            <nz-card nzType="inner" [nzSize]="'small'" [nzExtra]="program">
-                                <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                            <div nz-row  style="border: 1px solid #e8e8e8;">
+                                <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                    <label nz-checkbox
+                                    [(ngModel)]="allProgarms"
+                                    (ngModelChange)="updateAllCheckedFilters(2)"
+                                    [nzIndeterminate]="allprogramIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Programs</b></label>
+
+                                    <label nz-checkbox formControlName="activeprogramsonly"><b>Search Recipient With Active Programs Only</b></label>
+                                </div>
+                                <div nz-col>
+                                    <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let prog of programsList">
-                                                <label nz-checkbox nzDisabled [nzValue]="prog" [(ngModel)]="prog.checked" [ngModelOptions]="{standalone: true}">{{ prog }}</label>
+                                                <label nz-checkbox  [nzValue]="prog.name" [(ngModel)]="prog.checked" [ngModelOptions]="{standalone: true}">{{ prog.name }}</label>
                                             </div>
                                         </div>
-                                    </nz-checkbox-wrapper>
+                                    </div>
                                 </div>
-                            </nz-card>
-                            <ng-template #program>
-                                <b>ALL Programs : </b> &nbsp;<label nz-checkbox formControlName="allPrograms" style="margin-right:200px;"></label> <b>Search Recipient With Active Programs Only : </b> &nbsp;<label nz-checkbox formControlName="activeprogramsonly"></label>
-                            </ng-template>
+                            </div>
                         </nz-tab>
                         <nz-tab nzTitle="Case Coordinators" (nzClick)="filterChange(2)">
-                            <nz-card nzType="inner" [nzSize]="'small'" [nzExtra]="cordinators">
+                            <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                <label nz-checkbox
+                                [(ngModel)]="allCordinatore"
+                                (ngModelChange)="updateAllCheckedFilters(3)"
+                                [nzIndeterminate]="allCordinatorIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Case Coordinators</b></label>
+                            </div>
+                            <div nz-col>
                                 <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
-                                        <div nz-row>
-                                            <div nz-col nzSpan="24" *ngFor="let manager of casemanagers">
-                                                <label nz-checkbox nzDisabled [nzValue]="manager.accountNo" [(ngModel)]="manager.checked" [ngModelOptions]="{standalone: true}">{{ manager.accountNo }}</label>
-                                            </div>
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let manager of casemanagers">
+                                            <label nz-checkbox  [nzValue]="manager.accountNo" [(ngModel)]="manager.checked" [ngModelOptions]="{standalone: true}">{{ manager.accountNo }}</label>
                                         </div>
-                                    </nz-checkbox-wrapper>
+                                    </div>
                                 </div>
-                            </nz-card>
-                            <ng-template #cordinators>
-                                <b>ALL Case Coordinators : </b> &nbsp;<label nz-checkbox formControlName="allCordinatore"></label>
-                            </ng-template>
+                            </div>
                         </nz-tab>
                         <nz-tab nzTitle="Categories" (nzClick)="filterChange(3)">
-                            <nz-card nzType="inner" [nzSize]="'small'" [nzExtra]="category">
+                            <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                <label nz-checkbox
+                                [(ngModel)]="allCategories"
+                                (ngModelChange)="updateAllCheckedFilters(4)"
+                                [nzIndeterminate]="allCategoryIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Categories</b></label>
+                            </div>
+                            <div nz-col>
                                 <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
-                                        <div nz-row>
-                                            <div nz-col nzSpan="24" *ngFor="let categori of categories">
-                                                <label nz-checkbox nzDisabled [nzValue]="categori.description" [ngModel]="categori.checked" [ngModelOptions]="{standalone: true}">{{ categori.description }}</label>
-                                            </div>
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let categori of categories">
+                                            <label nz-checkbox  [nzValue]="categori.description" [ngModel]="categori.checked" [ngModelOptions]="{standalone: true}">{{ categori.description }}</label>
                                         </div>
-                                    </nz-checkbox-wrapper>
+                                    </div>
                                 </div>
-                            </nz-card>
-                            <ng-template #category>
-                                <b>ALL Categories : </b> &nbsp;<label nz-checkbox formControlName="allCategories"></label>
-                            </ng-template>
+                            </div>
                         </nz-tab>
                     </nz-tabset>
                 </div>

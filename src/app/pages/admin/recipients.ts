@@ -1450,12 +1450,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   filteredResult: any;
   selectedTypes:any;
   selectedbranches: any[];
-  
+  testcheck : boolean = false;
   nzEvent(event: NzFormatEmitEvent): void {
     console.log(event);
   }
   log(event: any) {
     this.selectedbranches = event;
+    this.testcheck = true;
+    
+    console.log(this.selectedbranches.length + " lenth");
+
   }
   
   listChange(event: any) {
@@ -1620,9 +1624,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     updateAllCheckedFilters(filter: any): void {
+      
       if(filter == 1 || filter == -1){
-        console.log(this.types);
-        if(this.selectedbranches.length == 0){  // why its returing undefined 
+
+        console.log(this.testcheck + "test flag");
+        
+        if(this.testcheck == false){  // why its returing undefined 
           if (this.allBranches) {
             this.branchesList.forEach(x => {
               x.checked = true;
@@ -1634,6 +1641,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
           }
         }
       }
+
       if(filter == 2 || filter == -1){
         if (this.allProgarms) {
           this.programsList.forEach(x => {

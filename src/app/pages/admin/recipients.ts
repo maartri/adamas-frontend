@@ -133,8 +133,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   
   allcat:boolean = true;
   allCatIntermediate:boolean = false;
-
-
+  
+  
   allChecked: boolean = true;
   indeterminate: boolean = false;
   
@@ -1454,15 +1454,24 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   selectedbranches: any[];
   testcheck : boolean = false;
   categoriesList: any;
+  selectedPrograms: any;
+  selectedCordinators: any;
+  selectedCategories: any;
   nzEvent(event: NzFormatEmitEvent): void {
     console.log(event);
   }
-  log(event: any) {
-    this.selectedbranches = event;
+  log(event: any,index:number) {
     this.testcheck = true;
     
-    console.log(this.selectedbranches.length + " lenth");
-
+    if(index == 1)
+    this.selectedbranches = event;
+    if(index == 2)
+    this.selectedPrograms = event;
+    if(index == 3)
+    this.selectedCordinators = event;
+    if(index == 4)
+    this.selectedCategories = event;
+    
   }
   
   listChange(event: any) {
@@ -1585,19 +1594,42 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       
     }
     searchData() : void{
-      this.loading = true;
-      console.log(this.selectedbranches);
-      
+      this.loading = true;      
       
       this.selectedTypes = this.checkOptionsOne
       .filter(opt => opt.checked)
       .map(opt => opt.value).join("','")
+      
+      this.selectedPrograms = this.programsList
+      .filter(opt => opt.checked)
+      .map(opt => opt.name).join("','")
+      
+      this.selectedCordinators = this.casemanagers
+      .filter(opt => opt.checked)
+      .map(opt => opt.uniqueID).join("','")
+      
+      this.selectedCategories = this.categoriesList
+      .filter(opt => opt.checked)
+      .map(opt => opt.description).join("','")
+      
+      this.selectedbranches = this.branchesList
+      .filter(opt => opt.checked)
+      .map(opt => opt.description).join("','")
       
       this.timeS.getrecipientquicksearch({
         active:this.quicksearch.value.active,
         inactive:this.quicksearch.value.inactive,
         alltypes:this.allChecked,
         selectedTypes:this.selectedTypes,
+        allBranches:this.allBranches,
+        selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+        allProgarms:this.allProgarms,
+        selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
+        allCordinatore:this.allCordinatore,
+        selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+        allcat:this.allcat,
+        selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+        activeprogramsonly:this.filters.value.activeprogramsonly,
         surname:this.quicksearch.value.surname,
         firstname:this.quicksearch.value.firstname,
         phoneno:this.quicksearch.value.phoneno,
@@ -1629,7 +1661,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     updateAllCheckedFilters(filter: any): void {
       
       if(filter == 1 || filter == -1){
-
+        
         console.log(this.testcheck + "test flag");
         
         if(this.testcheck == false){  // why its returing undefined 
@@ -1644,39 +1676,45 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
           }
         }
       }
-
+      
       if(filter == 2 || filter == -1){
-        if (this.allProgarms) {
-          this.programsList.forEach(x => {
-            x.checked = true;
-          });
-        }else{
-          this.programsList.forEach(x => {
-            x.checked = false;
-          });
+        if(this.testcheck == false){
+          if (this.allProgarms) {
+            this.programsList.forEach(x => {
+              x.checked = true;
+            });
+          }else{
+            this.programsList.forEach(x => {
+              x.checked = false;
+            });
+          }
         }
       }
       if(filter == 3 || filter == -1){
-        if (this.allCordinatore) {
-          this.casemanagers.forEach(x => {
-            x.checked = true;
-          });
-        }else{
-          this.casemanagers.forEach(x => {
-            x.checked = false;
-          });
+        if(this.testcheck == false){
+          if (this.allCordinatore) {
+            this.casemanagers.forEach(x => {
+              x.checked = true;
+            });
+          }else{
+            this.casemanagers.forEach(x => {
+              x.checked = false;
+            });
+          }
         }
       }
       
       if(filter == 4 || filter == -1){
-        if (this.allcat) {
-          this.categoriesList.forEach(x => {
-            x.checked = true;
-          });
-        }else{
-          this.categoriesList.forEach(x => {
-            x.checked = false;
-          });
+        if(this.testcheck == false){
+          if (this.allcat) {
+            this.categoriesList.forEach(x => {
+              x.checked = true;
+            });
+          }else{
+            this.categoriesList.forEach(x => {
+              x.checked = false;
+            });
+          }
         }
       }
     }
@@ -1757,10 +1795,6 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       });
       
       this.filters = this.fb.group({
-        allBranches: true,
-        allPrograms: true,
-        allCordinatore: true,
-        allcat: true,
         activeprogramsonly:false,
       });
       
@@ -1783,7 +1817,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.branchesList = x[0];
         this.programsList = x[1];
         this.casemanagers = x[2];
-        this.categoriesList   = x[3];
+        this.categoriesList = x[3];
       });
     }
     view(index: number) {

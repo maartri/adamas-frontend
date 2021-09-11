@@ -272,7 +272,7 @@
                                 </div>
                                 <div nz-col>
                                     <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                                        <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)"> 
+                                        <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,1)"> 
                                             <div nz-row>
                                                 <div nz-col nzSpan="24" *ngFor="let branch of branchesList">
                                                     <label nz-checkbox [nzValue]="branch.description" [(ngModel)]="branch.checked" (ngModelChange)="updateSingleCheckedFilters(1)" [ngModelOptions]="{standalone: true}">{{ branch.description }}</label>
@@ -295,11 +295,13 @@
                                 </div>
                                 <div nz-col>
                                     <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                                        <div nz-row>
-                                            <div nz-col nzSpan="24" *ngFor="let prog of programsList">
-                                                <label nz-checkbox  [nzValue]="prog.name" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.name }}</label>
+                                        <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+                                            <div nz-row>
+                                                <div nz-col nzSpan="24" *ngFor="let prog of programsList">
+                                                    <label nz-checkbox  [nzValue]="prog.name" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.name }}</label>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </nz-checkbox-wrapper>
                                     </div>
                                 </div>
                             </div>
@@ -313,11 +315,13 @@
                             </div>
                             <div nz-col>
                                 <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,3)">
                                     <div nz-row>
                                         <div nz-col nzSpan="24" *ngFor="let manager of casemanagers">
                                             <label nz-checkbox  [nzValue]="manager.accountNo" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(3)" [ngModelOptions]="{standalone: true}">{{ manager.accountNo }}</label>
                                         </div>
                                     </div>
+                                </nz-checkbox-wrapper>
                                 </div>
                             </div>
                         </nz-tab>
@@ -330,11 +334,13 @@
                             </div>
                             <div nz-col>
                                 <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,4)">
                                     <div nz-row>
                                         <div nz-col nzSpan="24" *ngFor="let manager of categoriesList">
                                             <label nz-checkbox  [nzValue]="manager.description" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(4)" [ngModelOptions]="{standalone: true}">{{ manager.description }}</label>
                                         </div>
                                     </div>
+                                </nz-checkbox-wrapper>
                                 </div>
                             </div>
                         </nz-tab>

@@ -943,7 +943,7 @@
 </nz-drawer>
 
 
-<nz-modal [(nzVisible)]="newFileNameOpen" [nzWidth]="450" [nzStyle]="{ top: '20px' }" [nzTitle]="'Enter New Filename'" (nzOnCancel)="closeFileName()" (nzOnOk)="saveNewFilename()">
+<nz-modal [(nzVisible)]="newFileNameOpen" [nzWidth]="450" [nzStyle]="{ top: '20px' }" [nzTitle]="'Enter New Filename for File already exists'" (nzOnCancel)="closeFileName()" (nzOnOk)="saveNewFilename()">
     <div nz-row nzGutter="16">
         <div nz-row class="form-group">
             <input nz-input placeholder="Filename..."  [(ngModel)]="newFileName" />

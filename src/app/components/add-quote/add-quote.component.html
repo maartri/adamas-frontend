@@ -7,7 +7,6 @@
     </div>
 </nz-modal>
 
-
 <nz-modal [(nzVisible)]="activeOpen" [nzWidth]="850" [nzStyle]="{ top: '20px' }" [nzTitle]="'Fee and Price Update Options'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div nz-row nzGutter="16">
         <div nz-row>
@@ -262,7 +261,7 @@
  
                 <div nz-col nzSpan="8">
                     <div class="form-group">
-                        <nz-select formControlName="program" nzSize="small"  [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Program">
+                        <nz-select formControlName="program" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Program">
                             <nz-option *ngFor="let list of quoteProgramList" [nzValue]="list" [nzLabel]="list"></nz-option>
                         </nz-select>
                     </div>
@@ -270,7 +269,7 @@
 
                 <div nz-col nzSpan="8">
                     <div class="form-group">
-                        <nz-select formControlName="template" nzSize="small" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Templates">
+                        <nz-select formControlName="template" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Templates">
                             <nz-option *ngFor="let list of quoteTemplateList" [nzValue]="list" [nzLabel]="list"></nz-option>
                         </nz-select>
                     </div>
@@ -943,3 +942,20 @@
     </div>
 </nz-drawer>
 
+
+<nz-modal [(nzVisible)]="newFileNameOpen" [nzWidth]="450" [nzStyle]="{ top: '20px' }" [nzTitle]="'Enter New Filename'" (nzOnCancel)="closeFileName()" (nzOnOk)="saveNewFilename()">
+    <div nz-row nzGutter="16">
+        <div nz-row class="form-group">
+            <input nz-input placeholder="Filename..."  [(ngModel)]="newFileName" />
+        </div>
+    </div>
+
+    <div *nzModalFooter>
+        <ng-container>
+            <button nz-button nzType="primary" (click)="saveNewFilename()">
+                <span>Proceed</span>
+            </button>
+        </ng-container>
+    </div>
+
+</nz-modal>

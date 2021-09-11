@@ -105,6 +105,7 @@ export class AddQuoteComponent implements OnInit {
     quoteLineOpen: boolean = false;
     activeOpen: boolean = false;
     inActiveOpen: boolean = false;
+    newFileNameOpen: boolean = false;
 
 
     goalAndStrategiesmodal : boolean = false;
@@ -117,6 +118,8 @@ export class AddQuoteComponent implements OnInit {
 
     IS_CDC: boolean = false;
     programLevel:any;
+
+    newFileName: string;
 
     codes: Array<any>;
     strategies: Array<any>;
@@ -720,6 +723,26 @@ export class AddQuoteComponent implements OnInit {
     this.quoteListForm.get('period').enable();
   }
 
+  saveNewFilename(){
+        this.qteHeaderDTO = { ...this.qteHeaderDTO, newFileName: this.newFileName };
+        
+        this.listS.getpostquote(this.qteHeaderDTO)
+        .subscribe(data => {
+            this.globalS.sToast('Success','Quote Added');
+
+            this.globalS.bToast('File Location', data.documentFileFolder);
+            this.loadingSaveQuote = false;
+            this.refresh.emit(true);
+            this.detectChanges();
+
+            this.quotesOpen = false;
+        }, (err: any) => {
+            this.loadingSaveQuote = false;
+            this.detectChanges();
+            this.quotesOpen = false;
+        });
+  }
+
   handleOkTop(type:any) {
     // this.generatePdf(type);
     this.tryDoctype = ""
@@ -734,7 +757,11 @@ export class AddQuoteComponent implements OnInit {
     //   this.listS.deletetempdoc(this.tableDocumentId).subscribe(data => console.log(data))
       this.quotesOpen = false;
       this.inActiveOpen = false;
-      this.activeOpen = false;
+      this.activeOpen = false;      
+  }
+
+  closeFileName(){
+    this.newFileNameOpen = false;
   }
 
   handleCancelTop(): void {
@@ -1403,6 +1430,8 @@ export class AddQuoteComponent implements OnInit {
 
   loadingSaveQuote: boolean = false;
 
+  qteHeaderDTO: QuoteHeaderDTO;
+
   saveQuote(){
       
     let qteLineArr: Array<QuoteLineDTO> = [];
@@ -1433,8 +1462,7 @@ export class AddQuoteComponent implements OnInit {
        
         qteLineArr.push(da);
     });
-    console.log(this.tempIds)
-    console.log(this.record)
+
     qteHeader = {
         recordNumber: this.tempIds ? this.tempIds.quoteHeaderId : this.record,
         programId: quoteForm.programId,
@@ -1467,10 +1495,25 @@ export class AddQuoteComponent implements OnInit {
         goals: goals
     }
 
+    this.qteHeaderDTO = qteHeader;
+
     this.loadingSaveQuote = true;
-  
-    this.listS.getpostquote(qteHeader)
-        .subscribe(data => {
+    // return;
+    this.listS.checkpostquote(qteHeader)
+        .pipe(
+            switchMap(x => {
+                if(x == null)
+                    return this.listS.getpostquote(qteHeader);
+                else{
+                    this.newFileName = x;
+                    this.loadingSaveQuote = false;
+                    this.newFileNameOpen = true;
+                    this.detectChanges();
+                    return EMPTY;
+                }
+                    
+            })
+        ).subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
 
             this.globalS.bToast('File Location', data.documentFileFolder);
@@ -1481,9 +1524,26 @@ export class AddQuoteComponent implements OnInit {
             this.quotesOpen = false;
         }, (err: any) => {
             this.loadingSaveQuote = false;
-            this.detectChanges();
             this.quotesOpen = false;
+            this.detectChanges();
         });
+  
+  
+    // this.listS.getpostquote(qteHeader)
+    //     .subscribe(data => {
+    //         this.globalS.sToast('Success','Quote Added');
+
+    //         this.globalS.bToast('File Location', data.documentFileFolder);
+    //         this.loadingSaveQuote = false;
+    //         this.refresh.emit(true);
+    //         this.detectChanges();
+
+    //         this.quotesOpen = false;
+    //     }, (err: any) => {
+    //         this.loadingSaveQuote = false;
+    //         this.detectChanges();
+    //         this.quotesOpen = false;
+    //     });
   }
 
     refreshQuoteLines(recordNo: any){
@@ -1507,7 +1567,6 @@ export class AddQuoteComponent implements OnInit {
     addNewQuoteLine: boolean = false;
 
     quoteLineModal(){
-        console.log(this.record);
         this.addNewQuoteLine = true;
 
         this.quoteLineOpen = true;

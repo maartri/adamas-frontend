@@ -725,7 +725,7 @@ export class AddQuoteComponent implements OnInit {
 
   saveNewFilename(){
         this.qteHeaderDTO = { ...this.qteHeaderDTO, newFileName: this.newFileName };
-        
+
         this.listS.getpostquote(this.qteHeaderDTO)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
@@ -733,13 +733,16 @@ export class AddQuoteComponent implements OnInit {
             this.globalS.bToast('File Location', data.documentFileFolder);
             this.loadingSaveQuote = false;
             this.refresh.emit(true);
+            this.newFileNameOpen = false;
             this.detectChanges();
 
             this.quotesOpen = false;
         }, (err: any) => {
             this.loadingSaveQuote = false;
-            this.detectChanges();
+            this.newFileNameOpen = false;            
             this.quotesOpen = false;
+            this.detectChanges();
+            
         });
   }
 
@@ -1520,11 +1523,12 @@ export class AddQuoteComponent implements OnInit {
             this.loadingSaveQuote = false;
             this.refresh.emit(true);
             this.detectChanges();
-
+            this.newFileNameOpen = false;
             this.quotesOpen = false;
         }, (err: any) => {
             this.loadingSaveQuote = false;
             this.quotesOpen = false;
+            this.newFileNameOpen = false;
             this.detectChanges();
         });
   

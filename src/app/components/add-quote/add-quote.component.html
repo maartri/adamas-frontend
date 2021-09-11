@@ -72,7 +72,7 @@
                                 </div>
                                 <div nz-col nzSpan="14">
                                     <div class="form-group">
-                                        <input nz-input formControlName="id" nzSize="small"  />
+                                        <input nz-input formControlName="id"  />
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                                 </div>
                                 <div nz-col nzSpan="16">
                                     <div class="form-group">
-                                        <nz-select  nzSize="small" formControlName="planType" nzAllowClear nzShowSearch>
+                                        <nz-select  formControlName="planType" nzAllowClear nzShowSearch>
                                             <nz-option *ngFor="let c of quotePlanType" [nzValue]="c" [nzLabel]="c"></nz-option>
                                         </nz-select>
                                     </div>
@@ -96,7 +96,7 @@
                                 </div>
                                 <div nz-col nzSpan="20">
                                     <div class="form-group">
-                                        <input nz-input formControlName="name" nzSize="small"  />
+                                        <input nz-input formControlName="name"  />
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                                 </div>
                                 <div nz-col nzSpan="20">
                                     <div class="form-group">
-                                        <nz-select  nzSize="small" formControlName="careDomain" nzAllowClear nzShowSearch>
+                                        <nz-select  formControlName="careDomain" nzAllowClear nzShowSearch>
                                             <nz-option *ngFor="let c of careDomainList" [nzValue]="c" [nzLabel]="c"></nz-option>
                                         </nz-select>
                                     </div>
@@ -126,7 +126,7 @@
                                 </div>
                                 <div nz-col nzSpan="20">
                                     <div class="form-group">
-                                        <nz-select  nzSize="small" formControlName="discipline" nzAllowClear nzShowSearch>
+                                        <nz-select   formControlName="discipline" nzAllowClear nzShowSearch>
                                             <nz-option *ngFor="let d of disciplineList" [nzValue]="d" [nzLabel]="d"></nz-option>
                                         </nz-select>
                                     </div>
@@ -140,7 +140,7 @@
                                 </div>
                                 <div nz-col nzSpan="20">
                                     <div class="form-group">
-                                        <nz-select  nzSize="small" formControlName="program" nzAllowClear nzShowSearch>
+                                        <nz-select  formControlName="program" nzAllowClear nzShowSearch>
                                             <nz-option *ngFor="let list of programList" [nzValue]="list" [nzLabel]="list"></nz-option>
                                         </nz-select>
                                     </div>
@@ -160,7 +160,7 @@
                                 </div>
                                 <div nz-col nzSpan="4">
                                     <div class="form-group">
-                                        <nz-date-picker nzSize="small" formControlName="starDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                        <nz-date-picker formControlName="starDate" [nzFormat]="dateFormat"></nz-date-picker>
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="4">
@@ -170,7 +170,7 @@
                                 </div>
                                 <div nz-col nzSpan="4">
                                     <div class="form-group">
-                                        <nz-date-picker nzSize="small" formControlName="signOfDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                        <nz-date-picker formControlName="signOfDate" [nzFormat]="dateFormat"></nz-date-picker>
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="8" class="text-right">
@@ -187,7 +187,7 @@
                                 </div>
                                 <div nz-col nzSpan="4">
                                     <div class="form-group">
-                                        <nz-date-picker nzSize="small" formControlName="reviewDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                        <nz-date-picker  formControlName="reviewDate" [nzFormat]="dateFormat"></nz-date-picker>
                                     </div>
                                 </div>
                             </div>
@@ -199,7 +199,7 @@
                                 </div>
                                 <div nz-col nzSpan="20">
                                     <div class="form-group">
-                                        <input nz-input nzSize="small" formControlName="rememberText" />
+                                        <input nz-input  formControlName="rememberText" />
                                     </div>
                                 </div>
                             </div>
@@ -224,7 +224,7 @@
                 </div>
                 
                 <div nz-row>
-                    <nz-table #headerTable [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="goalsAndStratergies" nzSize="small" [nzScroll]="{ y: '340px' }">
+                    <nz-table #headerTable [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="goalsAndStratergies"  [nzScroll]="{ y: '340px' }">
                         <thead>
                             <tr>
                                 <th style="width:10%;">Ant Complete</th>
@@ -279,11 +279,11 @@
 
             <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null">
                 <div nz-col nzSpan="6">
-                    <input nz-input formControlName="no" placeholder="Quote No" [disabled]="true" nzSize="small" />
+                    <input nz-input formControlName="no" placeholder="Quote No" [disabled]="true"  />
                 </div>
                 
                 <div nz-col nzSpan="4">
-                    <nz-select  class="select" formControlName="type" nzSize="small" nzAllowClear nzPlaceHolder="Type">
+                    <nz-select  class="select" formControlName="type"  nzAllowClear nzPlaceHolder="Type">
                         <nz-option *ngFor="let list of typeList" [nzValue]="list" [nzLabel]="list"></nz-option>
                     </nz-select>
                 </div>
@@ -292,9 +292,9 @@
                 </div>
                 <div nz-col nzSpan="8" >
                     <div class="right">
-                        <nz-range-picker nzSize="small" formControlName="period" [nzFormat]="dateFormat"></nz-range-picker>
+                        <nz-range-picker  formControlName="period" [nzFormat]="dateFormat"></nz-range-picker>
 
-                        <nz-select class="select" formControlName="basePeriod" nzSize="small" nzAllowClear nzPlaceHolder="Base Period">
+                        <nz-select class="select" formControlName="basePeriod"  nzAllowClear nzPlaceHolder="Base Period">
                             <nz-option *ngFor="let l of basePeriodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                         </nz-select>
                     </div>
@@ -313,7 +313,7 @@
             </div>
 
             <div nz-row *ngIf="quoteForm.get('program').value">
-                <nz-table #basicTable [nzData]="quoteLines" nzSize="small">
+                <nz-table #basicTable [nzData]="quoteLines" >
                     <thead>
                       <tr>
                         <th>Item Code</th>
@@ -358,25 +358,25 @@
                     <div nz-row nzGutter="16"> 
                         <div nz-col nzSpan="10" class="inline" *ngIf="!IS_CDC" [formGroup]="quoteForm">
                             <span class="title">Initial Budget</span>
-                            <input nz-input class="mini" placeholder="" nzSize="small" formControlName="initialBudget" />
+                            <input nz-input class="mini" placeholder="" formControlName="initialBudget" />
                         </div>
                         <div nz-col nzSpan="10" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
                             <span class="title">Gov't Contribution</span>
-                            <input nz-input class="mini" placeholder="" nzSize="small" formControlName="govtContrib" />
+                            <input nz-input class="mini" placeholder="" formControlName="govtContrib" />
                         </div>
                         <div nz-col nzSpan="14" class="inline"  *ngIf="IS_CDC">
                             <span class="title">Centrelink Income Tested Fee</span>
                             <span>
-                                <nz-select [(ngModel)]="value" nzSize="small" nzAllowClear nzPlaceHolder="Choose">
+                                <nz-select [(ngModel)]="value" nzAllowClear nzPlaceHolder="Choose">
                                     <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
                                     <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
                                     <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
                                 </nz-select>
                             </span>
                             <span>@</span>
-                            <span><input nz-input class="mini" placeholder="" nzSize="small" [(ngModel)]="value" /></span>
+                            <span><input nz-input class="mini" placeholder="" [(ngModel)]="value" /></span>
                             <span>=</span>
-                            <span><input nz-input class="mini" placeholder="" nzSize="small" [(ngModel)]="value" /></span>
+                            <span><input nz-input class="mini" placeholder="" [(ngModel)]="value" /></span>
                         </div>
                     </div>
                     <div nz-row class="line" *ngIf="IS_CDC">
@@ -389,31 +389,31 @@
                             </div>
                             <div>
                                 <div>Agreed Basic Care Fee</div>
-                                <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
-                                <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
-                                <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <input nz-input   [(ngModel)]="value" /></div>
+                                <div> <input nz-input   [(ngModel)]="value" /></div>
+                                <div> <input nz-input   [(ngModel)]="value" /></div>
                             </div>
                             <div>
                                 <div>Agreed Income Tested Fee</div>
-                                <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
-                                <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
-                                <div> <input nz-input nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <input nz-input   [(ngModel)]="value" /></div>
+                                <div> <input nz-input   [(ngModel)]="value" /></div>
+                                <div> <input nz-input  [(ngModel)]="value" /></div>
                             </div>
                             <div>
                                 <div></div>
-                                <div> <input nz-input nzSize="small" [(ngModel)]="value" /></div>
-                                <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
-                                <div> <input nz-input  nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <input nz-input  [(ngModel)]="value" /></div>
+                                <div> <input nz-input   [(ngModel)]="value" /></div>
+                                <div> <input nz-input   [(ngModel)]="value" /></div>
                             </div>
                             <div>
                                 <div>ADD Pro Rata Prev Balance</div>
-                                <div> <input nz-input nzSize="small" [(ngModel)]="value" /></div>
+                                <div> <input nz-input  [(ngModel)]="value" /></div>
                                 <div> </div>
                                 <div> </div>
                             </div>
                             <div>
                                 <div>Total Package Value</div>
-                                <div> <input nz-input  nzSize="small" [ngModel]="quoteForm.get('govtContrib').value" /></div>
+                                <div> <input nz-input   [ngModel]="quoteForm.get('govtContrib').value" /></div>
                                 <div> </div>
                                 <div> </div>
                             </div>
@@ -426,20 +426,20 @@
                             <div>
                                 <div>Base Quote</div>
                                 <div> 
-                                    <span nz-input nzSize="small"> $ {{ total_base_quote| number : '1.2-2' }} </span>                                    
+                                    <span nz-input > $ {{ total_base_quote| number : '1.2-2' }} </span>                                    
                                 </div>
                             </div>
                             <div>
                                 <div>Admin & Case Management</div>
-                                <div> <span nz-input nzSize="small"> $ {{ total_admin  | number : '1.2-2'}}</span></div>
+                                <div> <span nz-input > $ {{ total_admin  | number : '1.2-2'}}</span></div>
                             </div>
                             <div>
                                 <div>Total Quote</div>
-                                <div> <span nz-input nzSize="small"> $ {{ total_quote  | number : '1.2-2'}} </span></div>
+                                <div> <span nz-input > $ {{ total_quote  | number : '1.2-2'}} </span></div>
                             </div>
                             <div>
                                 <div style="padding-top:3rem">Remaining Funds</div>
-                                <div> <span nz-input nzSize="small" class="accept-admin" [ngClass]="{'negative': remaining_fund < 0, 'positive' : remaining_fund > 0 }"> $ {{( remaining_fund | number : '1.2-2' )}} </span></div>
+                                <div> <span nz-input  class="accept-admin" [ngClass]="{'negative': remaining_fund < 0, 'positive' : remaining_fund > 0 }"> $ {{( remaining_fund | number : '1.2-2' )}} </span></div>
                             </div>
                         </div>
                     </div>
@@ -528,7 +528,7 @@
                                     Financial Hardship Supplement 
                                 </div>
                                 <div nz-col nzSpan="4" class="text-right pad-r-5">
-                                    <div> <input nz-input  nzSize="small" formControlName="financialSup" /></div>
+                                    <div> <input nz-input   formControlName="financialSup" /></div>
                                 </div>
                                 <div nz-col nzSpan="4" class="text-right pad-r-5">
                                     <label>Per Day</label>
@@ -565,7 +565,7 @@
             <div nz-col nzSpan="6" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="form-group">
                     <label for="">Activity Code</label>
-                    <nz-select formControlName="code" nzSize="small" nzAllowClear nzPlaceHolder="Code">
+                    <nz-select formControlName="code"  nzAllowClear nzPlaceHolder="Code">
                         <nz-option *ngFor="let d of codes" [nzValue]="d" [nzLabel]="d"></nz-option>
                     </nz-select>
                 </div>
@@ -574,14 +574,14 @@
             <div nz-col nzSpan="12" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="form-group">
                     <label for="">Display Text</label>
-                    <input nz-input formControlName="displayText" placeholder="Display Text" nzSize="small"  />
+                    <input nz-input formControlName="displayText" placeholder="Display Text"   />
                 </div>
             </div>
 
             <div nz-col nzSpan="6" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="right">
                     <label for="">Sequence #</label>
-                    <input nz-input placeholder="Sequence Number" nzSize="small" formControlName="sequenceNo" />
+                    <input nz-input placeholder="Sequence Number"  formControlName="sequenceNo" />
                 </div>
             </div>
         </div>
@@ -590,7 +590,7 @@
             <div nz-col nzSpan="6" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="form-group">
                     <label for="">Strategy</label>
-                    <nz-select formControlName="strategy" nzSize="small" nzAllowClear nzPlaceHolder="Strategy">
+                    <nz-select formControlName="strategy"  nzAllowClear nzPlaceHolder="Strategy">
                         <nz-option *ngFor="let d of strategies" [nzValue]="d.recordNumber" [nzLabel]="d.strategy"></nz-option>
                     </nz-select>
                 </div>
@@ -617,12 +617,12 @@
                 <div nz-col nzSpan="9">
                     <div nz-row class="calc-wrapper" [hidden]="!weekly" >
                         <div class="spacing flex" [formGroup]="quoteListForm"> 
-                            <!-- <input class="three-five" formControlName="quantity" nz-input nzSize="small" /> -->
+                            <!-- <input class="three-five" formControlName="quantity" nz-input  /> -->
                             <nz-input-number formControlName="quantity" [nzMin]="1" [nzStep]="1" [nzSize]="size"></nz-input-number>
-                            <nz-select nzSize="small" nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Bill Unit" formControlName="billUnit">
+                            <nz-select  nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Bill Unit" formControlName="billUnit">
                                 <nz-option *ngFor="let l of billUnitArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
-                            <nz-select  nzSize="small" style="width:12rem" nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Period" formControlName="period">
+                            <nz-select   style="width:12rem" nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Period" formControlName="period">
                                 <nz-option *ngFor="let l of periodArr" [nzValue]="l" [nzLabel]="l"></nz-option>
                             </nz-select>
                             <span>X</span>
@@ -630,10 +630,10 @@
                         </div>
                         <div class="flex" [formGroup]="quoteListForm">
                             <span>Price</span>
-                            <input class="three-five" formControlName="price" nz-input nzSize="small" />
+                            <input class="three-five" formControlName="price" nz-input  />
                             <span>Min</span>
                             <span><label nz-checkbox formControlName="min">GST</label></span>
-                            <input class="three-five" nz-input nzSize="small" formControlName="gst" />
+                            <input class="three-five" nz-input  formControlName="gst" />
                         </div>
                         <div nz-row class="spacing" [formGroup]="quoteListForm">
                             <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteValue"></nz-input-number>
@@ -680,7 +680,7 @@
                     <div nz-col nzSpan="24">
                         <div class="form-group">    
                             <label nzFor="Care Domain">Select Care Plan Goal:</label>
-                            <nz-select  nzSize="small" formControlName="goal" nzAllowClear nzShowSearch>
+                            <nz-select   formControlName="goal" nzAllowClear nzShowSearch>
                                 <nz-option *ngFor="let c of goalOfCarelist" [nzValue]="c" [nzLabel]="c"></nz-option>
                             </nz-select>
                         </div>
@@ -704,7 +704,7 @@
                                             </div>
                                             <div nz-col nzSpan="15">
                                                 <div class="form-group" style="margin-bottom:7px;">
-                                                    <input nz-input formControlName="title" nzSize="small"  />
+                                                    <input nz-input formControlName="title"   />
                                                 </div>
                                             </div>
                                         </div>
@@ -731,7 +731,7 @@
                                             </div>
                                             <div nz-col nzSpan="10">
                                                 <div class="form-group" style="margin-bottom:7px;">
-                                                    <nz-date-picker nzSize="achievementDate" formControlName="achievementDate" nzSize="small" [nzFormat]="dateFormat"></nz-date-picker>
+                                                    <nz-date-picker nzSize="achievementDate" formControlName="achievementDate"  [nzFormat]="dateFormat"></nz-date-picker>
                                                 </div>
                                             </div>
                                         </div>
@@ -746,7 +746,7 @@
                                             </div>
                                             <div nz-col nzSpan="10">
                                                 <div class="form-group" style="margin-bottom:7px;">
-                                                    <nz-date-picker nzSize="small" formControlName="lastReviewed" [nzFormat]="dateFormat"></nz-date-picker>
+                                                    <nz-date-picker  formControlName="lastReviewed" [nzFormat]="dateFormat"></nz-date-picker>
                                                 </div>
                                             </div>
                                         </div>
@@ -761,7 +761,7 @@
                                             </div>
                                             <div nz-col nzSpan="6">
                                                 <div class="form-group" style="margin-bottom:7px;">
-                                                    <nz-date-picker nzSize="small" formControlName="dateAchieved" [nzFormat]="dateFormat"></nz-date-picker>
+                                                    <nz-date-picker  formControlName="dateAchieved" [nzFormat]="dateFormat"></nz-date-picker>
                                                 </div>
                                             </div>
                                             <div nz-col nzSpan="3" class="text-right pad-r-5">
@@ -769,7 +769,7 @@
                                             </div>
                                             <div nz-col nzSpan="1">
                                                 <div class="form-group" style="margin-bottom:7px;">
-                                                    <input nz-input formControlName="achievement" nzSize="small"  />
+                                                    <input nz-input formControlName="achievement"   />
                                                 </div>
                                             </div>
                                         </div>
@@ -784,7 +784,7 @@
                                             </div>
                                             <div nz-col nzSpan="10">
                                                 <div class="form-group" style="margin-bottom:7px;">
-                                                    <nz-select formControlName="achievementIndex" nzSize="small" nzAllowClear nzPlaceHolder="Code">
+                                                    <nz-select formControlName="achievementIndex"  nzAllowClear nzPlaceHolder="Code">
                                                         <nz-option *ngFor="let d of plangoalachivementlis" [nzValue]="d" [nzLabel]="d"></nz-option>
                                                     </nz-select>
                                                 </div>
@@ -822,7 +822,7 @@
                                 </div>
                             </div>
                             <div nz-row>
-                                <nz-table #headerTable [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="stratergiesList" nzSize="small" [nzScroll]="{ y: '340px' }">
+                                <nz-table #headerTable [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="stratergiesList"  [nzScroll]="{ y: '340px' }">
                                     <thead>
                                         <tr>
                                             <th style="width:50%;">Strategy</th>
@@ -891,7 +891,7 @@
                             </div>
                             <div nz-col nzSpan="6" class="pad-r-5">
                                 <div class="form-group" style="margin-bottom:7px;">
-                                    <nz-select formControlName="outcome" nzSize="small" nzAllowClear nzPlaceHolder="Code">
+                                    <nz-select formControlName="outcome"  nzAllowClear nzPlaceHolder="Code">
                                         <nz-option *ngFor="let d of expecteOutcome" [nzValue]="d" [nzLabel]="d"></nz-option>
                                     </nz-select>
                                 </div>
@@ -900,7 +900,7 @@
                                 Contracted Strategy ID : 
                             </div>
                             <div nz-col nzSpan="6">
-                                <input nz-input formControlName="strategyId" nzSize="small"  />
+                                <input nz-input formControlName="strategyId"   />
                             </div>
                         </div>
                     </div>  

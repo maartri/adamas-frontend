@@ -27,7 +27,7 @@
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
                 "output": "/assets/"
               }
-             ,{"glob": "**/*", "input": "./src/assets/images", "output": "/assets/images"}
+             
             ],
             "styles": [
               "node_modules/angular-calendar/css/angular-calendar.css",

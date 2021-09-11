@@ -1472,6 +1472,8 @@ export class AddQuoteComponent implements OnInit {
     this.listS.getpostquote(qteHeader)
         .subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
+
+            this.globalS.bToast('File Location', data.documentFileFolder);
             this.loadingSaveQuote = false;
             this.refresh.emit(true);
             this.detectChanges();

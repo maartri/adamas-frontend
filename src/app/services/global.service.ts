@@ -509,6 +509,10 @@ admincharges :number = 0;
         return this.message.loading(message, { nzDuration: 0 }).messageId;
     }
 
+    bToast(title: string, details: string){
+        this.notification.blank(title, details);
+    }
+
     sToast(title: string = 'Success', details: string) {
         this.notification.success(title, details);
         //this.toastr.success(details, title);

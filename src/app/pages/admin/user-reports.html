@@ -10,11 +10,20 @@
             <div nz-row *ngIf="frm_nodelist"  >
                 <div nz-col nzSpan="16" class="list_frame"  >
                     <nz-list [nzGrid] >
-                        <nz-list-item *ngFor="let item of list;let indexofelement= index;">                            
-                      <div> {{item}}  </div>
+                        <nz-list-item *ngFor="let item of list;let indexofelement= index;"> 
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span>   {{item}}    </span>
+                                    </td>
+                                    <td style="align-items: flex-end;"> <a  nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
+                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="deletelistitem(indexofelement)">Delete</a>
+                                    </td>
+                                </tr>
+                            </table>                           
+                      
                         
-                       <div style="align-items: flex-end;"> <a  nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
-                                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(indexofelement)">Delete</a>
+                       <div >
                         </div>
                         </nz-list-item>
                     </nz-list>
@@ -55,7 +64,7 @@
                     </div>                
                     <div nz-col nzSpan="10"   class="margin" >
                         <div class="form-group"  [formGroup]="inputForm">  
-                            <input nz-input placeholder=" Values"formControlName="valArr"/>                              
+                            <input nz-input placeholder=" Values"formControlName="valArr"  />                             
                         <!--    <nz-select formControlName="valArr"   >
                                 <nz-option *ngFor="let option of valArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                             </nz-select>    -->                                                           
@@ -69,16 +78,16 @@
                     <div nz-col nzSpan="22"  class="criteria" >                       
                             <table>                            
                                     <tr>
-                                        <td class="item-left">
+                                        <td class="colwidth" >
                                             <span>Entity </span>
                                         </td>
-                                        <td>
+                                        <td class="colwidth" >
                                             <span>Condition </span>
                                         </td>
-                                        <td>
+                                        <td class="colwidth" >
                                             <span> Value </span>
                                         </td>
-                                        <td class="item-right">
+                                        <td class="colwidth"  >
                                             <span> Action </span>
                                         </td>
                                     </tr>                                                            
@@ -113,18 +122,18 @@
 
                                     -->
                                     <tr >                                            
-                                        <td  *ngFor="let item of entity;let indexofelement= index;" >                                               
-                                            {{item}}                                            
+                                        <td class="colwidthentity"  *ngFor="let item of entity;let indexofelement= index;" >                                               
+                                            <span>{{item}}</span>                                            
                                         </td>
-                                        <td  *ngFor="let item of condition;let indexofelement= index;" >                                               
-                                            {{item}}                                            
+                                        <td class="colwidth"  *ngFor="let item of condition;let indexofelement= index;" >                                               
+                                            <span>{{item}}</span>                                            
                                         </td>
-                                        <td  *ngFor="let item of value;let indexofelement= index;" >                                               
-                                            {{item}}                                            
+                                        <td class="colwidth"  *ngFor="let item of value;let indexofelement= index;" >                                               
+                                            <span>{{item}}</span>                                                
                                         </td>
-                                        <td>
-                                            <div  > <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
-                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(datarow)">Delete</a>
+                                        <td  class="colwidth">
+                                            <div *ngIf="frm_delete"> <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(datarow)">Delete</a>                                            
                                             </div>
                                         </td>
                                   </tr>                                                                
@@ -132,7 +141,7 @@
                     </div>
                     <div class="form-group"  [formGroup]="inputForm">
                         <nz-radio-group formControlName="radiofiletr">
-                            <label nz-radio nzValue="meet">Onlyy Records that meet selection Criteria</label>
+                            <label nz-radio nzValue="meet">Only Records that meet selection Criteria</label>
                             <label nz-radio nzValue="donotmeet">Only Records that do not meet selection Criteria</label>                                                        
                         </nz-radio-group>
                     </div>

@@ -124,7 +124,8 @@ export interface QuoteHeaderDTO {
     user?: string,
     template?: string,
     type?: string,
-    documentId?: number
+    documentId?: number,
+    newFileName?: string
 }
 
 export interface Recipients {

@@ -980,7 +980,7 @@ ClearMultishift(){
         
     }else{
         cell.backColor("white");
-        cell.text(""); //.cellType(new IconCellType2(document.getElementById('icon-21')));
+        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
     }
     cell.text("")
     cell.tag(null);

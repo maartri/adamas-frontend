@@ -126,6 +126,10 @@ export class ListService {
         return this.auth.post(`${list}/post-quote`, data);
     }
 
+    checkpostquote(data: any): Observable<any> {
+        return this.auth.post(`${list}/check-post-quote`, data);
+    }
+
     getprogramproperties(program: string): Observable<any> {
         return this.auth.get(`${list}/program-properties/${program}`);
     }

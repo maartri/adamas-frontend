@@ -65,7 +65,9 @@ IconCellType.prototype = new GC.Spread.Sheets.CellTypes.Base();
 // EllipsisTextCellType.prototype
 IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
     if (!ctx) {
+        console.log('No icon loaded')
         return;
+        
     }
     ctx.save();
 
@@ -95,6 +97,7 @@ IconCellType2.prototype = new GC.Spread.Sheets.CellTypes.Base();
 // EllipsisTextCellType.prototype
 IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
     if (!ctx) {
+        console.log('No icon found')
         return;
     }
     ctx.save();
@@ -120,11 +123,9 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 @Component({
     selector: 'roster-component',
     styles: [`
-        
-        
+                
         nz-switch.master-class >>> button.ant-switch-checked{ background-color:red; }; 
        
-
         nz-table tbody tr.active  {  
             background-color:#48da24 !important;  
             color: white;  
@@ -233,8 +234,8 @@ endRoster:any;
   listOfSelection: Array <any> = [];
   NRecordNo:string;
   timeList:Array<any>=[];
-    addressList:Array<any>=[]
-    mobilityList:Array<any>=[]
+  addressList:Array<any>=[]
+  mobilityList:Array<any>=[]
     
     isVisible: boolean = false;
     hahays = new Subject<any>();
@@ -979,7 +980,7 @@ ClearMultishift(){
         
     }else{
         cell.backColor("white");
-        cell.text(""); //.cellType(new IconCellType2(document.getElementById('icon-21')));
+        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
     }
     cell.text("")
     cell.tag(null);
@@ -2011,55 +2012,55 @@ ClearMultishift(){
         text=Servicetype + "-" +RecordNo + ", type=" + type;
     switch(Number(type)){
         case 1:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-1')));                    
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-1')));                    
         break;
         case 2:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-2')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-2')));
             break;
         case 3:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-3')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-3')));
             break;
         case 4:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-4')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-4')));
             break;
         case 5:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-5')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-5')));
             break;
         case 6:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-6')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-6')));
             break;
         case 7:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-7')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-7')));
             break;           
         case 8:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-8')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-8')));
             break;   
         case 9:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-9')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-9')));
             break;   
         case 10:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-10')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-10')));
             break;
         case 11:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-11')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-11')));
             break;        
          case 12:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-12')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-12')));
             break;
         case 13:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-13')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-13')));
             break;
         case 14:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-14')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-14')));
             break; 
         case 15:
-                sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-15')));
+                sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-15')));
                 break; 
         case 20:
-                sheet.getCell(r,c).text(""); // .cellType(new IconCellType2(document.getElementById('icon-20')));
+                sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-20')));
                 break; 
         default:
-           sheet.getCell(r,c).text(""); // .cellType(new IconCellType2(document.getElementById('icon-21')));
+           sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-21')));
             
     }
        

@@ -2,13 +2,15 @@ import { Component } from "@angular/core";
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { OnInit, OnDestroy, AfterViewInit } from "@angular/core";
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, FormControlName, } from '@angular/forms';
 import { parseJSON } from "date-fns";
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService } from '@services/index';
+import { GlobalService, ReportService,ListService,MenuService } from '@services/index';
 import { concat, flatMapDeep, indexOf, size } from "lodash";
 import eachDayOfInterval from "date-fns/esm/eachDayOfInterval/index";
 
@@ -138,8 +140,10 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     rptfieldname:number = 0;
 
      sql: string;
+     Saverptsql : string;
      sqlselect: string;
      sqlcondition: string;
+     Savesqlcondition :string;
      sqlorder: string;
      ConditionEntity: string;
      FieldsNo: number;
@@ -225,9 +229,15 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     private GlobalS:GlobalService,
+    private ReportS:ReportService,
+    private ListS:ListService,
+    private MenuS:MenuService
+    
+    
   ) {
 
   }
+  private unsubscribe: Subject<void> = new Subject();
   ngOnInit(): void {
     this.inputForm = this.fb.group(inputFormDefault);
     this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
@@ -1393,10 +1403,10 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
               break;
 //General Demographics             
           case 'Full Name-Surname First':
-            this.ConditionEntity = '(R.[Surname/Organisation]' + ' ' +'FirstName)'
+            this.ConditionEntity = '(R.[Surname/Organisation]' + ' + ' +'FirstName)'
               break;
           case 'Full Name-Mailing':
-            this.ConditionEntity = '(R.[Surname/Organisation]' + ' ' +'FirstName)'  
+            this.ConditionEntity = '(R.[Surname/Organisation]' + ' + ' +'FirstName)'  
                   break;
                                  
           case 'Gender':
@@ -3736,43 +3746,56 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       case 'EQUALS':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +" like ('"  + this.value + "')"
+          this.Savesqlcondition = this.ConditionEntity +" like ('+'"  + this.value + "'+')"
         }else{ 
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" like ('"  + this.value + "')"
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '"  + this.value + "'+')"
         }
+        //console.log(this.Savesqlcondition);
         break;
         case 'BETWEEN':
           if(this.sqlcondition == null){
             this.sqlcondition = this.ConditionEntity +"  Between ('"  + this.value + "') and ('"  + this.Endvalue + "')"
+            this.Savesqlcondition = this.ConditionEntity +" Between ('+'"  + this.value + "'+')"
           }else{ 
           this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" Between ('"  + this.value + "') and ('"  + this.Endvalue + "')"
+          this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" Between (' + '"  + this.value + "'+')"
           }
           break;
         case 'LESS THAN':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +"  < ('"  + this.value + "')"
+          this.Savesqlcondition = this.ConditionEntity +" < ('+'"  + this.value + "'+')"
         }else{ 
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" <  ('"  + this.value + "')"
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" < (' + '"  + this.value + "'+')"
         }
         break;
       case 'GREATER THAN':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +" >  ('"  + this.value + "')"
+          this.Savesqlcondition = this.ConditionEntity +" > ('+'"  + this.value + "'+')"
         }else{ 
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"  > ('"  + this.value + "')"
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" > (' + '"  + this.value + "'+')"
         }
         break;
       case 'NOT EQUAL TO':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +" <>  ('"  + this.value + "')"
+          this.Savesqlcondition = this.ConditionEntity +" <> ('+'"  + this.value + "'+')"
         }else{ 
-        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" <>  ('"  + this.value + "')"
+        this.sqlcondition = this.sqlcondition + " AND " + this.ConditionEntity +" <>  ('"  + this.value + "')"
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" <> (' + '"  + this.value + "'+')"
         }
         break;
       case 'IS NOTHING':
         if(this.sqlcondition == null){
-          this.sqlcondition = this.ConditionEntity +"   ('"  + this.value + "')"
+        // this.sqlcondition = this.ConditionEntity +"   ('"  + this.value + "')"
+        // this.Savesqlcondition = this.ConditionEntity +" like ('+'"  + this.value + "'+')"
         }else{ 
-        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"   ('"  + this.value + "')"
+        //  this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"   ('"  + this.value + "')"
+        //  this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '"  + this.value + "'+')"
         }
         break;
       case 'IS ANYTHING':
@@ -3780,20 +3803,25 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         //  this.sqlcondition = " "//this.ConditionEntity +"   ('"  + this.value + "')"
         }else{ 
         //  this.sqlcondition =this.sqlcondition + " "// " AND " + this.ConditionEntity +"   ('"  + this.value + "')"
+        //  this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '"  + this.value + "'+')"
         }
         break; 
       case 'IS TRUE':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +"  = true "
+          this.Savesqlcondition = this.ConditionEntity +" = true "
         }else{ 
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"  = true "
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" = true "
         }
         break;
       case 'IS FALSE':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +"   = false"
+          this.Savesqlcondition = this.ConditionEntity +" = false "
         }else{ 
-        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"   = false"
+        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"   = false "
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" = false "
         }
         break;
       default:
@@ -3803,7 +3831,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Field"+ this.feildname() +", ")
 
   this.sql = this.sqlselect + this.TablesSetting(this.list) +  " where " + this.sqlcondition  ;    
-    
+  this.Saverptsql = this.sqlselect + this.TablesSetting(this.list) +  " where " + this.Savesqlcondition ;
 
   //  console.log(this.sql)
     
@@ -3812,6 +3840,33 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   ShowReport(){
     this.tryDoctype = "";
     this.ReportRender(this.sql);
+      
+     var RptSQL  =  this.Saverptsql;
+     var Title  = "TEST MUFEED";
+     var Format  = "USER REPORTS";
+     var CriteriaDisplay = "TEST CRITERIA" ;
+     var DateType = " ";
+     var UserID = "mufeed";
+     //table  : "ReportNames" 
+      console.log(RptSQL)
+    var insertsql = " INSERT INTO ReportNames(Title, Format,SQLText,UserID, DateType, CriteriaDisplay) " +
+    " VALUES( '" + Title +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "
+    console.log(insertsql)
+    //this.ListS.postSql(dataaArr) 
+    /*this.MenuS.InsertDomain(insertsql).subscribe(data=>{
+      console.log(insertsql)
+      console.log(data)
+      if (data) 
+      this.GlobalS.sToast('Success', 'Saved successful');     
+      else
+      this.GlobalS.eToast('Error', 'There is error');      
+    });*/
+    this.ReportS.InsertReport(insertsql).subscribe(data=>{
+    //  console.log(data)
+      
+      this. GlobalS.sToast('Success', 'Saved successful');     
+         
+    }); 
   }
   ReportRender(sql:string){
 
@@ -3984,13 +4039,13 @@ ColumnNameAdjuster(fld){
 //General Demographics          
       case 'Full Name-Surname First':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])
-        }else{columnNames = (['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' + ' +'FirstName) as Field'+fld.indexOf(key)])
+        }else{columnNames = (['(R.[Surname/Organisation]' + ' + ' +'FirstName) as Field'+fld.indexOf(key)])}        
           break;
       case 'Full Name-Mailing':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])
-            }else{columnNames = (['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' + ' +'FirstName) as Field'+fld.indexOf(key)])
+            }else{columnNames = (['(R.[Surname/Organisation]' + ' + ' +'FirstName) as Field'+fld.indexOf(key)])}        
               break;
       case 'Gender':
                   if(columnNames != []){

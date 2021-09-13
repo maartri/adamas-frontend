@@ -151,13 +151,18 @@
                                                         <i nz-icon nzType="plus"></i>
                                                     USER REPORTS
                                                 </button> 
-                                                </div> <!--   
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled  >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Approved Staff Listing
-                                                </button> 
                                                 </div> 
+                                                <div *ngIf="frm_CustomRptbtn" > 
+                                                    
+                                                    <div *ngFor="let item of UserRptButtonlist;let indexofelement= index;">
+                                                        <button  nz-button nzType="default"  (click)="FetchRuntimeReport(item)"    >
+                                                                <i nz-icon nzType="printer"></i>
+                                                                {{item}}
+                                                        </button>
+                                                    </div>    
+                                                       
+                                                     
+                                                </div> <!--   
                                                 <div>                                        
                                                     <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
                                                     <i nz-icon nzType="printer"></i>

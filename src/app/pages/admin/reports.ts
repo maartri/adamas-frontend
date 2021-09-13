@@ -14,7 +14,7 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router,ActivatedRoute, ParamMap } from '@angular/router';
 import * as constants from './../../services/global.service'
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { empty, Subject } from 'rxjs';
+import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 
 
 
@@ -133,6 +133,8 @@ const inputFormDefault = {
     frm_add_inclusion: [false],
     frm_RosterFormat: [false],
     frm_RosterInclusion: [false],
+
+    frm_CustomRptbtn : [false],
     
 
     whowhat: [''],
@@ -415,6 +417,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_RosterFormat: boolean;
     frm_RosterInclusion:boolean;
 
+    frm_CustomRptbtn: boolean;
+
     
 
     frm_mta_options: boolean;
@@ -550,6 +554,10 @@ stafftypeArr: Array<any> = constants.types;
     incidentcategoryArr: Array<any> = ['Open', 'Close'];
     Additional_inclusion: Array<any> = [];
     RosterCategory: Array<any> = []; 
+    UserRptButtonlist : Array<any> ;
+    UserRptFormatlist : Array<any> = [];
+    UserRptSQLlist : Array<any> = [];
+    DataArra : Array<any> = [];
     Rpt_Format : Array<any> = [];
     Roster_staffinclusion   : Array<any> = [];
     
@@ -665,6 +673,7 @@ stafftypeArr: Array<any> = constants.types;
     }
     ngOnInit(): void {
     
+        this.CustomReportSetting();
         
            //recepientincident
         const children: Array<{ label: string; value: string }> = [];
@@ -673,7 +682,7 @@ stafftypeArr: Array<any> = constants.types;
             children.push({ label: i.toString(36) + i, value: i.toString(36) + i });
 
         }
-        //
+        
         var date = new Date();
         let temp = new Date(date.getFullYear(), date.getMonth(), 1);
         let temp1 = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -684,13 +693,11 @@ stafftypeArr: Array<any> = constants.types;
       
         
 
-
+        
 
         this.listOfOption = children;
         this.inputForm = this.fb.group(inputFormDefault);
-
-         
-
+    
 
         this.inputForm.get('allPrograms').valueChanges.subscribe(data => {
             this.inputForm.patchValue({
@@ -1075,6 +1082,9 @@ stafftypeArr: Array<any> = constants.types;
         this.frm_mta_options = false;
 
         this.RosterCategory = []; 
+        //this.UserRptButtonlist = [];
+        this.UserRptFormatlist = [];
+        this.UserRptSQLlist = [];
 
 
 
@@ -1111,7 +1121,7 @@ stafftypeArr: Array<any> = constants.types;
         }        
     }
     showModal(e) {
-       
+       console.log(e)
        switch (e) {
            case 'btn-Regis-incidentregister':
             this.btnid = "btn-Regis-incidentregister"
@@ -20112,7 +20122,56 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
       });
 }
 
+CustomReportSetting(){
+    
+     
+    this.ReportS.GetReportNames().subscribe(data => {
+        //this.DataArra = data;                
+        this.UserRptButtonlist = data;                
+        console.log(data)
+        
+    });
 
+        
+        
+        if(this.DataArra != null){
+            console.log("Custom Reports exists")                        
+            this.frm_CustomRptbtn = true;
+        }
+   
+} 
+
+FetchRuntimeReport(title){
+    console.log("TITLE:  " +title)
+
+    forkJoin([
+        this.ReportS.GetReportFormat(title),
+        this.ReportS.GetReportSql(title)
+    ]).subscribe(data => {
+        this.UserRptFormatlist = data[0];
+        this.UserRptSQLlist = data[1];
+
+    });
+    /*
+    this.ReportS.GetReportFormat(title).subscribe(data => {
+        //this.DataArra = data;                        
+        this.UserRptFormatlist = data;        
+        //console.log(data)
+        
+    });
+
+    this.ReportS.GetReportSql(title).subscribe(data => {
+        //this.DataArra = data;                
+        this.UserRptSQLlist = data;
+        //console.log(data)
+        
+    });
+    */
+
+    console.log(this.UserRptFormatlist)
+    console.log(this.UserRptSQLlist)
+
+}
 
 
 } //ReportsAdmin

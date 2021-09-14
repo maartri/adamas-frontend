@@ -374,13 +374,13 @@
                     </div>
                 </div>
                 <div nz-row [nzGutter]="16">
-                    <div nz-col class="gutter-row" nzSpan="10" class="form-group">
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'EQUALS' || this.extendedSearch.get('rule').value == 'LESS THEN' || this.extendedSearch.get('rule').value == 'GREATER THAN' ||  this.extendedSearch.get('rule').value == 'NOT EQUAL TO' || this.extendedSearch.get('rule').value == 'BETWEEN' " nz-col class="gutter-row" nzSpan="10" class="form-group">
                         <input nz-input formControlName="from" />
                     </div>
-                    <div nz-col class="gutter-row text-center" nzSpan="2" class="form-group" style="text-align:center;">
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'BETWEEN'" nz-col class="gutter-row text-center" nzSpan="2" class="form-group" style="text-align:center;">
                         <label>AND</label>
                     </div>
-                    <div nz-col class="gutter-row" nzSpan="10" class="form-group">
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'BETWEEN'" nz-col class="gutter-row" nzSpan="10" class="form-group">
                         <input nz-input formControlName="to"/>
                     </div>
                 </div>
@@ -389,7 +389,7 @@
                         <label class="columns" nz-checkbox formControlName="activeonly">Active</label>
                     </div>
                     <div class="form-group">
-                        <button nz-button nzType="primary">Set Criteria</button>
+                        <button nz-button nzType="primary" (click)="setCriteria()">Set Criteria</button>
                     </div>
                 </div>
                 <div nz-row>
@@ -403,11 +403,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>lorem</td>
-                                <td>lorem ipsum</td>
-                                <td>lorem ipsum dollar</td>
-                                <td>lorem ipsum dollar sit amit</td>
+                            <tr *ngFor="let criteria of cariteriaList">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </nz-table>

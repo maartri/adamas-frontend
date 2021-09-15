@@ -15,6 +15,7 @@ import { Router,ActivatedRoute, ParamMap } from '@angular/router';
 import * as constants from './../../services/global.service'
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
+import { LEADING_TRIVIA_CHARS } from '@angular/compiler/src/render3/view/template';
 
 
 
@@ -554,7 +555,10 @@ stafftypeArr: Array<any> = constants.types;
     incidentcategoryArr: Array<any> = ['Open', 'Close'];
     Additional_inclusion: Array<any> = [];
     RosterCategory: Array<any> = []; 
-    UserRptButtonlist : Array<any> ;
+    UserRptButtonlist : Array<any>= [];
+    UserSTFButtonlist : Array<any> = [];
+    AGENCYSTFButtonlist : Array<any> = [];
+    RecpUserRptButtonlist : Array<any> = [];
     UserRptFormatlist : Array<any> = [];
     UserRptSQLlist : Array<any> = [];
     DataArra : Array<any> = [];
@@ -918,7 +922,7 @@ stafftypeArr: Array<any> = constants.types;
                 break;
         }  
 
-
+        
 
 
     }//ngOninit  
@@ -1104,9 +1108,13 @@ stafftypeArr: Array<any> = constants.types;
             this.FOReportsbodystyle = { height:'300px', overflow: 'auto' }
         } 
     }
-    showUserReport() {
-
+    showUserReport(e) {
+        e = e || window.event;
+        e = e.target || e.srcElement;
+        
         this.router.navigate(['/admin/user-reports']);
+        if(e.id !== null){this.GlobalS.var2 = e.id.toString();}
+        console.log(this.GlobalS.var2)
     }
     yearrange(){
        
@@ -20125,33 +20133,47 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
 CustomReportSetting(){
     
      
-    this.ReportS.GetReportNames().subscribe(data => {
-        //this.DataArra = data;                
-        this.UserRptButtonlist = data;                
-        console.log(data)
-        
-    });
+   let temp = forkJoin([
+        this.ReportS.GetReportNames('AGENCYSTFLIST') ,                        
+        this.ReportS.GetReportNames('AGENCYLIST'),
+        this.ReportS.GetReportNames('USERLIST'),
+        this.ReportS.GetReportNames('USERSTFLIST')
+    ]) 
+    temp.subscribe(data => {       
+        this.AGENCYSTFButtonlist = data[0];
+        this.UserRptButtonlist = data[1] ;
+        this.RecpUserRptButtonlist = data[2];
+        this.UserSTFButtonlist = data[3];
 
+    
+    });
+    
+        this.frm_CustomRptbtn = true;
+        //console.log(this.AGENCYSTFButtonlist)
         
-        
-        if(this.DataArra != null){
-            console.log("Custom Reports exists")                        
-            this.frm_CustomRptbtn = true;
-        }
+   
    
 } 
 
 FetchRuntimeReport(title){
     console.log("TITLE:  " +title)
 
-    forkJoin([
+  const temp =  forkJoin([
         this.ReportS.GetReportFormat(title),
         this.ReportS.GetReportSql(title)
-    ]).subscribe(data => {
+    ]);    
+    temp.subscribe(data => {
         this.UserRptFormatlist = data[0];
-        this.UserRptSQLlist = data[1];
+    //    this.UserRptSQLlist = data[1];
+
+    //    console.log(data[1])
+        this.UserRptSQLlist = data[1].toString().split(",")
+    //    console.log(this.UserRptSQLlist)
+
+        this.RenderRunTimeReport(this.UserRptSQLlist)
 
     });
+
     /*
     this.ReportS.GetReportFormat(title).subscribe(data => {
         //this.DataArra = data;                        
@@ -20168,8 +20190,70 @@ FetchRuntimeReport(title){
     });
     */
 
-    console.log(this.UserRptFormatlist)
-    console.log(this.UserRptSQLlist)
+   
+
+}
+RenderRunTimeReport(strSQL){
+
+    const data = {
+        
+        "template": { "_id": "qTQEyEz8zqNhNgbU" },
+                    
+        "options": {
+            "reports": { "save": false },
+            
+            "sql": strSQL,            
+            "userid": this.tocken.user,
+            
+            
+        }
+    }
+    this.loading = true;
+
+    const headerDict = {
+
+        'Content-Type': 'application/json',
+        'Accept': 'application/json', 
+        'Content-Disposition': 'inline;filename=XYZ.pdf'
+        //'Content-Disposition': 'ContentDisposition(hello)',
+        //'filename':'fname.pdf',            
+     //   (),
+        
+        
+    }
+
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict),
+        
+        credentials: true,
+       
+        
+    };
+
+    //this.rpthttp
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
+        .subscribe((blob: any) => {
+            console.log(blob);
+
+            let _blob: Blob = blob;
+
+            let fileURL = URL.createObjectURL(_blob)//+'#toolbar=1';
+            this.pdfTitle = "RunTimeReport.pdf"
+
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            
+            this.loading = false;
+
+        }, err => {
+            console.log(err);
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err + ')',
+                nzOnOk: () => {
+                         this.drawerVisible = false;
+                         },
+              });
+        }); this.drawerVisible = true;
 
 }
 

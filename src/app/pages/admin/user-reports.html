@@ -147,10 +147,28 @@
                     </div>
                     <div>
                         <button nzType="default"  nzJustify="start" (click)="ShowReport()">Preview</button>                       
+                        <button nzType="default"  nzJustify="start" (click)="showprompt()">Save</button> 
                     </div>
                 </div>        
         </div> 
-    </div>    
+    </div>   
+    <div>
+        <nz-modal
+                nzWidth="400px"
+                [nzStyle]="{ top: '20px' }"
+                [nzBodyStyle]=  "bodystyle"
+                [(nzVisible)]="isVisibleprompt"
+                nzTitle= "TRACCS"
+                (nzOnCancel)="handleCancelTop()"
+                (nzOnOk)="SaveReport()"
+        >
+        <div nz-col nzSpan="20" [formGroup]="inputForm">
+            <div class="form-group" >                
+                <input nz-input placeholder="Report Name" formControlName="RptTitle"  />                                        
+            </div>      
+        </div>
+        </nz-modal>
+    </div> 
 </div>
 
 <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">

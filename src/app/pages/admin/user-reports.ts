@@ -36,8 +36,9 @@ const inputFormDefault = {
   data: [[]],
   activeonly:[false],
   incl_internalCostclient: [false],
-  radiofiletr:["meet"],
+  radiofilter:["meet"],
   datarow: [[]],
+  isVisibleprompt : [false],
 
 }
 
@@ -133,14 +134,16 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     pdfTitle: string;
     drawerVisible: boolean = false;
     loading: boolean = false;
+    isVisibleprompt = false;
     reportid: string;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
     tocken :any;
-    radiofiletr:any;
+    radiofilter:any;
     rptfieldname:number = 0;
 
      sql: string;
      Saverptsql : string;
+     RptTitle : string;
      sqlselect: string;
      sqlcondition: string;
      Savesqlcondition :string;
@@ -162,6 +165,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      includeClinicHistoryWhere :string;
      includeRecipientCompetencyWhere :string;
      includeCareplanWhere :string;
+
+     bodystyle:object;
 
     
 IncludeFundingSource: boolean;  IncludeProgram: boolean;  IncludeStaffAttributes: boolean;  IncludePensions: boolean;  IncludeExcluded: boolean; IncludeIncluded: boolean;  IncludePreferences : boolean;
@@ -3841,32 +3846,31 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     this.tryDoctype = "";
     this.ReportRender(this.sql);
       
-     var RptSQL  =  this.Saverptsql;
-     var Title  = "TEST MUFEED";
-     var Format  = "USER REPORTS";
-     var CriteriaDisplay = "TEST CRITERIA" ;
-     var DateType = " ";
-     var UserID = "mufeed";
-     //table  : "ReportNames" 
-      console.log(RptSQL)
-    var insertsql = " INSERT INTO ReportNames(Title, Format,SQLText,UserID, DateType, CriteriaDisplay) " +
-    " VALUES( '" + Title +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "
-    console.log(insertsql)
-    //this.ListS.postSql(dataaArr) 
-    /*this.MenuS.InsertDomain(insertsql).subscribe(data=>{
-      console.log(insertsql)
-      console.log(data)
-      if (data) 
-      this.GlobalS.sToast('Success', 'Saved successful');     
-      else
-      this.GlobalS.eToast('Error', 'There is error');      
-    });*/
-    this.ReportS.InsertReport(insertsql).subscribe(data=>{
-    //  console.log(data)
-      
-      this. GlobalS.sToast('Success', 'Saved successful');     
-         
-    }); 
+    
+  }
+  showprompt(){
+    this.bodystyle = { height:'300px', overflow: 'auto'}
+    this.isVisibleprompt = true;
+  }
+  SaveReport(){
+      var RptSQL  =  this.Saverptsql;
+    var Title  = this.RptTitle;
+    var Format  = this.GlobalS.var2;
+    var CriteriaDisplay = "TEST CRITERIA" ;
+    var DateType = " ";
+    var UserID = "mufeed";
+    //table  : "ReportNames" 
+     console.log(RptSQL)
+   var insertsql = " INSERT INTO ReportNames(Title, Format,SQLText,UserID, DateType, CriteriaDisplay) " +
+   " VALUES( '" + Title +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "   
+   
+   this.ReportS.InsertReport(insertsql).subscribe(data=>{
+   //  console.log(data)
+    if(!data) {
+     this. GlobalS.sToast('Success', 'Saved successful');     
+    }    
+   }); 
+
   }
   ReportRender(sql:string){
 
@@ -3912,7 +3916,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       //  console.log(this.inputForm.value.printaslabel)
       
       
-      var Title = "Recipient User Defined Report"
+      var Title = "Run Time Report"
   //    console.log(this.tocken.user)
       const data = {
 
@@ -3971,6 +3975,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
       handleCancelTop(){
         this.drawerVisible = false;
+        this.isVisibleprompt = false;
       }
       feildname(){
         var temp

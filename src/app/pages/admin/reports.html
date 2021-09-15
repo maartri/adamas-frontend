@@ -147,9 +147,9 @@
                                                 <i nz-icon nzType="user"></i>
                                                 <strong>AGENCY LISTINGS</strong>
                                                 <div>                                        
-                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()"       >
+                                                    <button nz-button nzType="default" id="AGENCYLIST" (click)="showUserReport(this.id)"       >
                                                         <i nz-icon nzType="plus"></i>
-                                                    USER REPORTS
+                                                Add Report
                                                 </button> 
                                                 </div> 
                                                 <div *ngIf="frm_CustomRptbtn" > 
@@ -187,10 +187,19 @@
                                                 <i nz-icon nzType="user"></i>
                                                 <strong>USER LISTINGS</strong>
                                                 <div>                                        
-                                                    <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()" disabled >
+                                                    <button nz-button nzType="default" id="USERLIST" (click)="showUserReport(this.id)"  >
                                                         <i nz-icon nzType="plus"></i>
-                                                    USER REPORTS
+                                                    Add Report
                                                 </button> 
+                                                </div>
+                                                <div *ngIf="frm_CustomRptbtn" > 
+                                                    
+                                                    <div *ngFor="let item of RecpUserRptButtonlist;let indexofelement= index;">
+                                                        <button  nz-button nzType="default"  (click)="FetchRuntimeReport(item)"    >
+                                                                <i nz-icon nzType="printer"></i>
+                                                                {{item}}
+                                                        </button>
+                                                    </div>                                                                                                                
                                                 </div>
                                                 <!--
                                                 <div>                                        
@@ -409,23 +418,21 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>AGENCY LISTINGS</strong>
                                         <div>                                        
-                                            <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()" disabled >
+                                            <button nz-button nzType="default" id="AGENCYSTFLIST" (click)="showUserReport(this.id)"  >
                                                 <i nz-icon nzType="plus"></i>
-                                            USER REPORTS
+                                            Add Report
                                         </button> 
-                                        </div><!--
-                                        <div>
-                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled >
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Competency Expiry
+                                        </div>
+                                        <div *ngIf="frm_CustomRptbtn" > 
+                                                    
+                                            <div *ngFor="let item of AGENCYSTFButtonlist;let indexofelement= index;">
+                                                <button  nz-button nzType="default"  (click)="FetchRuntimeReport(item)"    >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        {{item}}
                                                 </button>
-                                        </div>                                    
-                                        <div>
-                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled>
-                                                <i nz-icon nzType="printer"></i>
-                                                Staff Hours
-                                                </button>
-                                        </div> -->
+                                            </div>                                                                                                
+                                        </div>
+                                        
                                                                                                                                           
                                     </li>                  
                                 </ul>
@@ -436,18 +443,20 @@
                                         <i nz-icon nzType="user"></i>
                                         <strong>USER LISTINGS</strong>
                                         <div>                                        
-                                            <button nz-button nzType="default" id="btn-userReports" (click)="showUserReport()" disabled >
+                                            <button nz-button nzType="default" id="USERSTFLIST" (click)="showUserReport(this.id)"  >
                                                 <i nz-icon nzType="plus"></i>
-                                            USER REPORTS
+                                            Add Report
                                         </button> 
-                                        </div> <!--
-                                        <div>
-                                            <button nz-button nzType="default" (click)="showModal(this.id)" disabled >
-                                                <i nz-icon nzType="printer"></i>
-                                                Competencies
+                                        </div> 
+                                        <div *ngIf="frm_CustomRptbtn" >                                                     
+                                            <div *ngFor="let item of UserSTFButtonlist;let indexofelement= index;">
+                                                <button  nz-button nzType="default"  (click)="FetchRuntimeReport(item)"    >
+                                                        <i nz-icon nzType="printer"></i>
+                                                        {{item}}
                                                 </button>
+                                            </div>                                                                                                
                                         </div>
-                                    -->                                                                                        
+                                                                                                                          
                                     </li>                  
                                 </ul>
                             </div>

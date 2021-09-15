@@ -16,8 +16,8 @@ export class ReportService {
     InsertReport(sqlString: string): Observable<any>{
         return this.auth.post(`${report}/addReport`, {Sql: sqlString})
     } 
-    GetReportNames(): Observable<any>{
-        return this.auth.get(`${report}/getreportlist`);
+    GetReportNames(format: string): Observable<any>{
+        return this.auth.get(`${report}/getreportlist/${format}`);
     }
     GetReportSql(title: string): Observable<any>{
         return this.auth.get(`${report}/report-sql/${title}`);

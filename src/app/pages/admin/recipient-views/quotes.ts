@@ -688,6 +688,10 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
+    showDocument(item: any){
+        console.log(item);
+    }
+
     showAcceptModal(item: any) {
 
         this.user = {...this.user, docId: item.docID };

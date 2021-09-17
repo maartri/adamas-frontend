@@ -191,6 +191,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   
   checked: any;
   sampleList: Array<any> = ["EQUALS","BETWEEN","LESS THEN","GREATER THAN","NOT EQUAL TO","IS NOTHING","IS ANYTHING","IS TRUE","IS FALSE"];
+  cariteriaList:any[];
+
   checkOptionsOne = [
     { label: 'REFERRAL', value: 'REFERRAL', checked: true },
     { label: 'WAITING LIST', value: 'WAITING LIST', checked: true },
@@ -1458,7 +1460,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   selectedCordinators: any;
   selectedCategories: any;
   nzEvent(event: NzFormatEmitEvent): void {
-    console.log(event);
+    if (event.eventName === 'click') {
+      var title = event.node.origin.title;
+
+      this.extendedSearch.patchValue({
+        title : title,
+      });
+      var keys       = event.keys;
+    
+    }
+
   }
   log(event: any,index:number) {
     this.testcheck = true;
@@ -1474,6 +1485,15 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     
   }
   
+  setCriteria(){
+    this.cariteriaList.push({
+      fieldName  : this.extendedSearch.value.title,
+      searchType : this.extendedSearch.value.rule,
+      textToLoc  : this.extendedSearch.value.from,
+      endText    : this.extendedSearch.value.to,
+    })
+  }
+
   listChange(event: any) {
     
     if (event == null) {

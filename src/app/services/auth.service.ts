@@ -92,7 +92,7 @@ export class AuthService implements ErrorHandler{
 
         if(!err.success)
         {
-            this.GlobalS.eToast('Error', err.Message)
+            this.GlobalS.eToast('Error', err.message)
         }
         
         // if (error.message === "No JWT present or has expired") {

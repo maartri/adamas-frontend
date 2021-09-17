@@ -25,7 +25,6 @@ const inputFormDefault = {
   entity:[[]],
   condition:[[]],
   value:[[]],
-  Endvalue : [[]],
   // = ['title','ASAD','key']
   //  data : Array<any> = [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr:[[]],
@@ -139,7 +138,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     pdfTitle: string;
     drawerVisible: boolean = false;
     loading: boolean = false;
-    isVisibleprompt : boolean = false;
+    isVisibleprompt = false;
     reportid: string;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
     tocken :any;
@@ -3862,7 +3861,6 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     this.isVisibleprompt = true;
   }
   SaveReport(){
-    /*
       var RptSQL  =  this.Saverptsql;
      
     var Title  = this.RptTitle;
@@ -3881,8 +3879,8 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
      this. GlobalS.sToast('Success', 'Saved successful');     
     }    
    }); 
-*/
-  } 
+
+  }
   ReportRender(sql:string){
 
   //  console.log(sql);

@@ -2,6 +2,11 @@ export interface StringValidator {
     isAcceptable(s: string): boolean;
 }
 
+export interface CallReferralOutProcedure{
+    roster: Array<ProcedureRoster>,
+    note: ProcedureClientStaffNote
+}
+
 export enum RECIPIENT_OPTION {
     REFER_IN = "REFER_IN",
     REFER_ON = "REFER_ON",
@@ -119,7 +124,8 @@ export interface QuoteHeaderDTO {
     user?: string,
     template?: string,
     type?: string,
-    documentId?: number
+    documentId?: number,
+    newFileName?: string
 }
 
 export interface Recipients {

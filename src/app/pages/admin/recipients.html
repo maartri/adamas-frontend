@@ -7,27 +7,28 @@
             <button class="botton warn" (click)="newQuoteModal = !newQuoteModal" [disabled]="user == null"><i nz-icon nzType="form" nzTheme="outline"></i> Quote</button>
             <button class="botton other" (click)="saveModal = true" [disabled]="user == null"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Save</button>
             <button class="botton extra" (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><i nz-icon nzType="printer" nzTheme="outline"></i> Print</button>
-
+            
             <!-- <button class="botton other" (click)="openReferModal(null)"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Sample</button> -->
-
+            
             <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
-        </div>
+        </div> 
     </div>
+    <!-- //s -->
     <div nz-row>
         <div *ngIf="recipientType" nz-col nzSpan="24" style="margin-top:10px;">
             <span class="status active" *ngIf="recipientStatus && recipientStatus == 'active'"><i nz-icon nzType="user" nzTheme="outline"></i> ACTIVE</span>
             <span class="status inactive" *ngIf="recipientStatus && recipientStatus == 'inactive'"><i nz-icon nzType="user" nzTheme="outline"></i> INACTIVE</span>
-
+            
             <span class="status type"><i nz-icon nzType="user" nzTheme="outline"></i> {{ recipientType }}</span>
             <div class="status-program"><i (click)="programModalOpen = true;loadPrograms()" nz-icon nzType="dollar" nzTheme="outline"></i></div>
         </div>
     </div>
     <div nz-row>
-            
+        
         <div nz-col nzSpan="6" style="margin-top: 10px;">
             <app-search-list [view]="0" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>           
         </div>
-            
+        
         <div nz-col nzSpan="18">
             <ul class="options">
                 <li><button (click)="clicky(0)" [disabled]="status?.b_IsDead || status == null"><div><i class="fas fa-file"></i></div>Refer In</button></li>
@@ -45,15 +46,15 @@
                 <!-- <li><button (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-print"></i></div>Print</button></li> -->
             </ul>
         </div>
-
-    
+        
+        
         <!-- <select [(ngModel)]="user" (ngModelChange)="change($event)">
             <option value=""></option>
             <option value="ABBERTON B">ABBERTON B</option>
             <option value="*****AAAZ T">*****AAAZ T</option>
             <option value="3CDC STEPH">3CDC STEPH</option>
         </select> -->
-    
+        
         <div nz-col nzSpan="24">
             <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzType]="'card'">
                 <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
@@ -67,26 +68,26 @@
                 <nz-tab nzTitle="History" (nzClick)="view(8)"> </nz-tab>
                 <nz-tab nzTitle="Insurance & Pension" (nzClick)="view(9)"> </nz-tab>
                 <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
-
+                
                 <nz-tab nzTitle="Documents" (nzClick)="view(11)"> </nz-tab>
                 <nz-tab nzTitle="Time & Attendance" (nzClick)="view(12)"> </nz-tab>
                 <nz-tab nzTitle="Other" (nzClick)="view(13)"> </nz-tab>
                 <nz-tab nzTitle="Accounting" (nzClick)="view(14)"> </nz-tab>
             </nz-tabset>
         </div>
-    
-        <nz-empty *ngIf="user == null" style="margin-top:8rem"
-            nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg" [nzNotFoundContent]="contentTpl">
-            <ng-template #contentTpl>
-                <p>Select Recipient</p>
-            </ng-template>
-        </nz-empty>
         
-        <div nz-col nzSpan="24">
-            <router-outlet></router-outlet>
-        </div>
-    </div>
+        <nz-empty *ngIf="user == null" style="margin-top:8rem"
+        nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg" [nzNotFoundContent]="contentTpl">
+        <ng-template #contentTpl>
+            <p>Select Recipient</p>
+        </ng-template>
+    </nz-empty>
     
+    <div nz-col nzSpan="24">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
 </div>
 
 <app-add-quote [open]="newQuoteModal" [user]="user" [option]="option"></app-add-quote>
@@ -100,34 +101,34 @@
 
 <nz-modal [(nzVisible)]="programModalOpen" nzWidth="920" nzTitle="Alert Status and Usage Analysis" (nzOnCancel)="closeProgram()" (nzOnOk)="closeProgram()">
     <div nz-row>
-       <div nz-row>
-        <nz-table #fixedTable [nzData]="programs" nzSize="small" [nzScroll]="{ x: '1150px', y: '240px' }">
-            <thead>
-              <tr>
-                <th nzWidth="150px" nzLeft="0px">Program</th>
-                <th nzWidth="100px" nzLeft="150px">Allowed</th>
-                <th nzWidth="100px">Used</th>
-                <th nzWidth="100px">Balance</th>
-                <th nzWidth="100px">Red Alert</th>
-                <th nzWidth="100px">Yellow Alert</th>
-                <th nzWidth="100px">Green Alert</th>
-                <th nzWidth="100px">Expires On</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of fixedTable.data">
-                <td nzLeft="0px">{{ data.program }}</td>
-                <td nzLeft="150px">{{ data.allowed }}</td>
-                <td>{{ data.address }}</td>
-                <td>{{ data.balance }}</td>
-                <td>{{ data.redAmount }}</td>
-                <td>{{ data.yellowAmount }}</td>
-                <td>{{ data.greenAmount }}</td>
-                <td>{{ data.alertStartDate }}</td>               
-              </tr>
-            </tbody>
-          </nz-table>
-       </div>
+        <div nz-row>
+            <nz-table #fixedTable [nzData]="programs" nzSize="small" [nzScroll]="{ x: '1150px', y: '240px' }">
+                <thead>
+                    <tr>
+                        <th nzWidth="150px" nzLeft="0px">Program</th>
+                        <th nzWidth="100px" nzLeft="150px">Allowed</th>
+                        <th nzWidth="100px">Used</th>
+                        <th nzWidth="100px">Balance</th>
+                        <th nzWidth="100px">Red Alert</th>
+                        <th nzWidth="100px">Yellow Alert</th>
+                        <th nzWidth="100px">Green Alert</th>
+                        <th nzWidth="100px">Expires On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of fixedTable.data">
+                        <td nzLeft="0px">{{ data.program }}</td>
+                        <td nzLeft="150px">{{ data.allowed }}</td>
+                        <td>{{ data.address }}</td>
+                        <td>{{ data.balance }}</td>
+                        <td>{{ data.redAmount }}</td>
+                        <td>{{ data.yellowAmount }}</td>
+                        <td>{{ data.greenAmount }}</td>
+                        <td>{{ data.alertStartDate }}</td>               
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
     </div>
 </nz-modal>
 
@@ -140,132 +141,290 @@
             <nz-tab nzTitle="Filters" (nzClick)="tabFindChange(1)"> </nz-tab>
             <nz-tab nzTitle="Extended Search" (nzClick)="tabFindChange(2)"></nz-tab>
         </nz-tabset>
-
+        
         <div>
-            <div *ngIf="tabFindIndex == 0"  nz-row nzGutter="32">
-                <div nz-col nzSpan="5">
-                    <div nz-row>
-                        <div nz-col nzSpan="12">
-                            <label class="columns" nz-checkbox>Active</label>
+            <div *ngIf="tabFindIndex == 0"  nz-row nzGutter="32" [formGroup]="quicksearch">
+                <div nz-col nzSpan="4">
+                    <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                        <div nz-col [nzSpan]="12">
+                            <label nz-checkbox formControlName="active">
+                                <span><b>Active</b></span>
+                            </label>
                         </div>
-                        <div nz-col nzSpan="12">
-                            <label class="columns" nz-checkbox>Inactive</label>
+                        <div nz-col [nzSpan]="12">
+                            <label nz-checkbox formControlName="inactive">
+                                <span><b>Inactive</b></span>
+                            </label>
                         </div>
                     </div>
-                    <div nz-row>
-                        <div nz-row>
-                            <div nz-col style="margin:10px">
-                                <label class="columns" nz-checkbox>REFERRAL</label>
-                                <label class="columns" nz-checkbox>WAITING LIST</label>
-                                <label class="columns" nz-checkbox>RECIPIENT</label>
-                                <label class="columns" nz-checkbox>CARER</label>
-                                <label class="columns" nz-checkbox>CARER/RECIPIENT</label>
-                                <label class="columns" nz-checkbox>BILLING CLIENT</label>
-                                <label class="columns" nz-checkbox>ASSOCIATE</label>
+                    <div nz-row>      
+                        <div nz-row  style="border: 1px solid #e8e8e8;">
+                            <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                <label nz-checkbox
+                                [(ngModel)]="allChecked"
+                                (ngModelChange)="updateAllChecked()"
+                                [nzIndeterminate]="indeterminate" [ngModelOptions]="{standalone: true}"><b>ALL Types</b></label>
+                            </div>
+                            <div nz-col>
+                                <div class="staff-wrapper" style="padding:4px;">
+                                        <div nz-row>
+                                            <nz-checkbox-group [(ngModel)]="checkOptionsOne" (ngModelChange)="updateSingleChecked()" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                                        </div>
+                                </div>
                             </div>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="Surname" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Surname'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" formControlName="surname" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="First Name" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'First Name'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" formControlName="firstname" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="Phone #" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Phone #'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" formControlName="phoneno" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="Suburb" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Suburb'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" formControlName="suburb" />
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="Date Of Birth" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'Date Of Birth'" [nzSize]="'small'">
+                                <nz-date-picker  formControlName="dob"  [nzSize]="'small'" [nzFormat]="dateFormat"></nz-date-picker>
+                            </nz-card>
                         </div>
                         <div nz-row>
-                            <input nz-input placeholder="File #" [(ngModel)]="value" />
+                            <nz-card [nzBodyStyle]="{'padding':'1px'}" nzType="inner" [nzTitle]="'File #'" [nzSize]="'small'">
+                                <input nz-input [nzSize]="'small'" formControlName="fileno" />
+                            </nz-card>
                         </div>
                     </div>
                 </div>
-                <div nz-col nzSpan="18">
+                <div nz-col nzSpan="19">
                     <div nz-row>
-                        <input nz-input placeholder="Type SURNAME here and press enter" [(ngModel)]="value" />
+                        <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+                            <input type="text" nz-input formControlName="searchText" placeholder="Type SURNAME here and press enter" />
+                        </nz-input-group>
+                        <ng-template #suffixButton>
+                            <button nz-button nzType="primary" nzSize="large" nzSearch (click)="searchData()">Search</button>
+                        </ng-template>
+                    </div>
+                    <div nz-row>
+                        <nz-table #fixedTable [nzLoading]="loading" [nzScroll]="{ x: '1900px', y: '440px' }" [nzData]="filteredResult" nzSize="small" nzBordered class="custum-header">
+                            <thead>
+                                <tr>
+                                    <th  nzWidth="100px" nzLeft="0PX">Ur Number</th>
+                                    <!-- <th  nzWidth="100px" nzLeft="100PX">Code</th> -->
+                                    <th nzWidth="100px" nzLeft="100PX">Surname</th>
+                                    <th nzWidth="200px">First Name</th>
+                                    <th nzWidth="200px">Name</th>
+                                    <th nzWidth="200px">D.O.B</th>
+                                    <th nzWidth="200px">Address</th>
+                                    <th nzWidth="200px">Type</th>
+                                    <th nzWidth="200px">Alert</th>
+                                    <th nzWidth="200px">Primary Code</th>
+                                    <th nzWidth="100px">ONI Rating</th>
+                                    <th nzWidth="150px" nzRight="0px">Activation Date</th>
+                                    <!-- <th nzRight="0px">DeActivation Date</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let result of fixedTable.data">
+                                    <td nzLeft="0PX">{{result.id}}</td>
+                                    <!-- <td nzLeft="100PX">{{result.urNumber}}</td> -->
+                                    <td nzLeft="100PX">{{result.surnameOrganisation}}</td>
+                                    <td nzBreakWord>{{result.firstName}}</td>
+                                    <td nzBreakWord>{{result.name}}</td>
+                                    <td nzBreakWord>{{result.dob | date: 'dd/MM/y'}}</td>
+                                    <td nzBreakWord>{{result.address}}</td>
+                                    <td nzBreakWord>{{result.type}}</td>
+                                    <td nzBreakWord>{{result.alerts}}</td>
+                                    <td nzBreakWord>{{result.primaryCoord}}</td>
+                                    <td nzBreakWord>{{result.oniRating}}</td>
+                                    <td nzRight="0px">{{result.activationDate | date: 'dd/MM/y'}}</td>
+                                    <!-- <td nzRight="0px">{{result.deActivationDate | date: 'dd/MM/y'}}</td> -->
+                                </tr>
+                            </tbody>
+                        </nz-table>
                     </div>
                 </div>
             </div>
-    
-            <div *ngIf="tabFindIndex == 1" nz-row nzGutter="16">
+            
+            <div *ngIf="tabFindIndex == 1" nz-row nzGutter="16" [formGroup]="filters">
                 <div nz-col nzSpan="4">
-                    <label class="columns" nz-checkbox *ngFor="let list of columns" [(ngModel)]="list.checked">{{ list.name }}</label>
+                    <label class="columns" nz-checkbox *ngFor="let list of columns" [ngModel]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.name }}</label>
                 </div>
                 <div nz-col nzSpan="20">
                     <h4>Quick Filters</h4>
                     <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
-                        <nz-tab nzTitle="Branches" (nzClick)="filterChange(0)"> </nz-tab>
-                        <nz-tab nzTitle="Programs" (nzClick)="filterChange(1)"> </nz-tab>
-                        <nz-tab nzTitle="Case Coordinators" (nzClick)="filterChange(2)"></nz-tab>
-                        <nz-tab nzTitle="Categories" (nzClick)="filterChange(3)"></nz-tab>
+                        <nz-tab nzTitle="Branches" (nzClick)="filterChange(0)">
+                            <div nz-row  style="border: 1px solid #e8e8e8;">
+                                <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                    <label nz-checkbox
+                                    [(ngModel)]="allBranches"
+                                    (ngModelChange)="updateAllCheckedFilters(1)"
+                                    [nzIndeterminate]="allBranchIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Branches</b></label>
+                                </div>
+                                <div nz-col>
+                                    <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                        <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,1)"> 
+                                            <div nz-row>
+                                                <div nz-col nzSpan="24" *ngFor="let branch of branchesList">
+                                                    <label nz-checkbox [nzValue]="branch.description" [(ngModel)]="branch.checked" (ngModelChange)="updateSingleCheckedFilters(1)" [ngModelOptions]="{standalone: true}">{{ branch.description }}</label>
+                                                </div>
+                                            </div>
+                                         </nz-checkbox-wrapper>   
+                                    </div>
+                                </div>
+                            </div>
+                        </nz-tab>
+                        <nz-tab nzTitle="Programs" (nzClick)="filterChange(1)">
+                            <div nz-row  style="border: 1px solid #e8e8e8;">
+                                <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                    <label nz-checkbox
+                                    [(ngModel)]="allProgarms"
+                                    (ngModelChange)="updateAllCheckedFilters(2)"
+                                    [nzIndeterminate]="allprogramIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Programs</b></label>
+
+                                    <label nz-checkbox formControlName="activeprogramsonly"><b>Search Recipient With Active Programs Only</b></label>
+                                </div>
+                                <div nz-col>
+                                    <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                        <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+                                            <div nz-row>
+                                                <div nz-col nzSpan="24" *ngFor="let prog of programsList">
+                                                    <label nz-checkbox  [nzValue]="prog.name" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.name }}</label>
+                                                </div>
+                                            </div>
+                                        </nz-checkbox-wrapper>
+                                    </div>
+                                </div>
+                            </div>
+                        </nz-tab>
+                        <nz-tab nzTitle="Case Coordinators" (nzClick)="filterChange(2)">
+                            <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                <label nz-checkbox
+                                [(ngModel)]="allCordinatore"
+                                (ngModelChange)="updateAllCheckedFilters(3)"
+                                [nzIndeterminate]="allCordinatorIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Case Coordinators</b></label>
+                            </div>
+                            <div nz-col>
+                                <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,3)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let manager of casemanagers">
+                                            <label nz-checkbox  [nzValue]="manager.accountNo" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(3)" [ngModelOptions]="{standalone: true}">{{ manager.accountNo }}</label>
+                                        </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                                </div>
+                            </div>
+                        </nz-tab>
+                        <nz-tab nzTitle="Categories" (nzClick)="filterChange(3)">
+                            <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                                <label nz-checkbox
+                                [(ngModel)]="allcat"
+                                (ngModelChange)="updateAllCheckedFilters(4)"
+                                [nzIndeterminate]="allCatIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Categories</b></label>
+                            </div>
+                            <div nz-col>
+                                <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,4)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let manager of categoriesList">
+                                            <label nz-checkbox  [nzValue]="manager.description" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(4)" [ngModelOptions]="{standalone: true}">{{ manager.description }}</label>
+                                        </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                                </div>
+                            </div>
+                        </nz-tab>
                     </nz-tabset>
                 </div>
             </div>
-    
-            <div nz-row *ngIf="tabFindIndex == 2" nzGutter="16">
+            
+            <div nz-row *ngIf="tabFindIndex == 2" nzGutter="16" [formGroup]="extendedSearch">
                 
                 <div nz-col nzSpan="8" class="tree-overflow">
                     <nz-tree [nzData]="nodes" nzShowLine (nzClick)="nzEvent($event)"> </nz-tree>
                 </div>
-
+                
                 <div nz-col nzSpan="16">
                     <div nz-row>
                         <div class="form-group">
-                            <input nz-input placeholder="Basic usage" [(ngModel)]="value" />
-                        </div>
-                    </div>
-                    <div nz-row nzGutter="16">
-                        <div nz-col nzSpan="10" class="form-group">
-                            <ng-select 
-                                [items]="sampleList" 
-                                [virtualScroll]="true"
-                                [dropdownPosition]="'bottom'"
-                                [clearable]="false"
-                        
-                                [closeOnSelect]="true"
-                                [(ngModel)]="sampleModel">
-                            </ng-select>
-                        </div>
-                        <div nz-col nzSpan="10" class="form-group">
-                            <input nz-input placeholder="Basic usage" [(ngModel)]="value" />
+                            <input nz-input placeholder="" formControlName="title" />
                         </div>
                     </div>
                     <div nz-row>
-                        <nz-table #smallTable nzSize="small" [nzData]="data">
-                            <thead>
-                              <tr>
-                                <th>Name</th>
-                                <th>Age</th>
-                                <th>Address</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let data of smallTable.data">
-                                <td>{{ data.name }}</td>
-                                <td>{{ data.age }}</td>
-                                <td>{{ data.address }}</td>
-                              </tr>
-                            </tbody>
-                          </nz-table>
+                        <div class="form-group">
+                            <ng-select 
+                            formControlName="rule"
+                            [items]="sampleList" 
+                            [virtualScroll]="true"
+                            [dropdownPosition]="'bottom'"
+                            [clearable]="false"
+                            [closeOnSelect]="true"
+                            >
+                            </ng-select>
                     </div>
                 </div>
-    
+                <div nz-row [nzGutter]="16">
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'EQUALS' || this.extendedSearch.get('rule').value == 'LESS THEN' || this.extendedSearch.get('rule').value == 'GREATER THAN' ||  this.extendedSearch.get('rule').value == 'NOT EQUAL TO' || this.extendedSearch.get('rule').value == 'BETWEEN' " nz-col class="gutter-row" nzSpan="10" class="form-group">
+                        <input nz-input formControlName="from" />
+                    </div>
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'BETWEEN'" nz-col class="gutter-row text-center" nzSpan="2" class="form-group" style="text-align:center;">
+                        <label>AND</label>
+                    </div>
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'BETWEEN'" nz-col class="gutter-row" nzSpan="10" class="form-group">
+                        <input nz-input formControlName="to"/>
+                    </div>
+                </div>
+                <div nz-row>
+                    <div class="form-group">
+                        <label class="columns" nz-checkbox formControlName="activeonly">Active</label>
+                    </div>
+                    <div class="form-group">
+                        <button nz-button nzType="primary" (click)="setCriteria()">Set Criteria</button>
+                    </div>
+                </div>
+                <div nz-row>
+                    <nz-table #smallTable nzSize="small" nzBordered class="custum-header">
+                        <thead>
+                            <tr>
+                                <th class="coulmn-color">Field/Item</th>
+                                <th class="coulmn-color">Search Type</th>
+                                <th class="coulmn-color">Text To Locate Search</th>
+                                <th class="coulmn-color">End Text For Between Search</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let criteria of cariteriaList">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
             </div>
         </div>
     </div>
+</div>
 </nz-modal>
 
 <nz-modal [(nzVisible)]="referdocument" [nzStyle]="{top: '20px'}" nzWidth="600"   nzTitle="Add Referral Document" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"  >
-<div nz-row *ngIf="referdocument">
-    <div nz-col nzSpan="16">
-        <nz-upload nzType="drag" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes" 
-             [nzAction]="urlPath" (nzChange)="handleChange($event)" nzListType="picture"
+    <div nz-row *ngIf="referdocument">
+        <div nz-col nzSpan="16">
+            <nz-upload nzType="drag" [nzMultiple]="true" [nzLimit]="2" [nzAccept]="acceptedTypes" 
+            [nzAction]="urlPath" (nzChange)="handleChange($event)" nzListType="picture"
             [(nzFileList)]="fileList2">
-
+            
             <p class="ant-upload-drag-icon">
                 <i nz-icon nzType="inbox"></i>
             </p>

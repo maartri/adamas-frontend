@@ -197,7 +197,7 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
             }, 100);
 
         }, err =>{
-            console.log(err);
+            this.message.remove(notifId);
             this.globalS.eToast('Error', "Document can't be found");
         })
     }

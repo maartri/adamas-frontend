@@ -22,17 +22,42 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getrosterpublishdate():Observable<any>{
+        return this.auth.get(`${list}/last-roster-publish-date`);
+    }
+
+    getprogramstatus(program: any):Observable<any>{
+        return this.auth.getstring(`${list}/program-status-program`, program);
+    }
+
+    getprimaryphoneaddress(program: any):Observable<any>{
+        return this.auth.getstring(`${list}/primary-phone-address`, program);
+    }
+
+    getwaitlist(): Observable<any> {
+        return this.auth.get(`${list}/waitlist`);
+    }    
+
     postadmissionacceptquote(data: any): Observable<any> {
         return this.auth.post(`${list}/admission-accept-quote`, data);
     }
-    
+
+    getspecificemailmanager(accountno: string):Observable<any>{
+        return this.auth.getstring(`${list}/specific-email-manager/${accountno}`);
+    }
+
+
+    getspecifictype(program: string):Observable<any>{
+        return this.auth.getstring(`${list}/specific-type/${program}`);
+    }
+
     getspecificbranch(personid: string):Observable<any>{
         return this.auth.get(`${list}/specific-branch/${personid}`);
     }
 
     
-    gethumanresourcetypes(program: string):Observable<any>{
-        return this.auth.getstring(`${list}/humanresourcetypes/type/${program}`);
+    gethumanresourcetypes(program: any):Observable<any>{
+        return this.auth.getstring(`${list}/humanresourcetypes/type`, program);
     }
 
 
@@ -99,6 +124,10 @@ export class ListService {
 
     getpostquote(data: any): Observable<any> {
         return this.auth.post(`${list}/post-quote`, data);
+    }
+
+    checkpostquote(data: any): Observable<any> {
+        return this.auth.post(`${list}/check-post-quote`, data);
     }
 
     getprogramproperties(program: string): Observable<any> {
@@ -528,7 +557,9 @@ export class ListService {
     getcoordinators(): Observable<any>{
         return this.auth.get(`${list}/coordinators`)
     }
-
+    getcoordinatorslist(): Observable<any>{
+        return this.auth.get(`${list}/coordinatorslist`)
+    }
     getactiveprograms(): Observable<any>{
         return this.auth.get(`${list}/active-programs`)
     }
@@ -544,7 +575,13 @@ export class ListService {
     getleaveprograms(): Observable<any>{
         return this.auth.get(`${list}/leave/programs`)
     }
-
+    getprogramsobj(): Observable<any>{
+        return this.auth.get(`${list}/programs/obj`)
+    }
+    getcategoriesobj(): Observable<any>{
+        return this.auth.get(`${list}/categories/obj`)
+    }
+    
     getstaffcategory(): Observable<any>{
         return this.auth.get(`${list}/staff-category`)
     }
@@ -660,7 +697,10 @@ export class ListService {
     getlistbranches(): Observable<any>{
         return this.auth.get(`${list}/branches`)
     }
-
+    getlistbranchesObj(): Observable<any>{
+        return this.auth.get(`${list}/branchesObj`)
+    }
+    
     getliststaffgroup(): Observable<any>{
         return this.auth.get(`${list}/staffgroup`)
     }
@@ -678,7 +718,6 @@ export class ListService {
     getlistcasemanagers(): Observable<any>{
         return this.auth.get(`${list}/casemanagers`)
     }
-
     getlistreminders(): Observable<any>{
         return this.auth.get(`${list}/reminders`)
     }    

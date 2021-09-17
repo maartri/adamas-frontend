@@ -509,6 +509,10 @@ admincharges :number = 0;
         return this.message.loading(message, { nzDuration: 0 }).messageId;
     }
 
+    bToast(title: string, details: string){
+        this.notification.blank(title, details);
+    }
+
     sToast(title: string = 'Success', details: string) {
         this.notification.success(title, details);
         //this.toastr.success(details, title);
@@ -559,8 +563,8 @@ admincharges :number = 0;
     getCurrentDate(){
         return moment().format('yyyy-MM-DD')
     }
-    convertDbDate(date:string){
-        const newDate = format(Date.parse(date),'yyyy/MM/dd');
+    convertDbDate(date:string,defaultformat:string = 'yyyy/MM/dd'){
+        const newDate = format(Date.parse(date),defaultformat);
         return newDate;
     }
 

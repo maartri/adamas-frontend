@@ -835,9 +835,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       id: -1
     });
 
-
-    //console.log(this.contactForm.value);
-
     this.subscriptionArray.push(this.clientS.addcontact(this.formatContact(this.contactForm)));
     this.processSubscriptions();
   }

@@ -105,6 +105,7 @@ export class AddQuoteComponent implements OnInit {
     quoteLineOpen: boolean = false;
     activeOpen: boolean = false;
     inActiveOpen: boolean = false;
+    newFileNameOpen: boolean = false;
 
 
     goalAndStrategiesmodal : boolean = false;
@@ -117,6 +118,8 @@ export class AddQuoteComponent implements OnInit {
 
     IS_CDC: boolean = false;
     programLevel:any;
+
+    newFileName: string;
 
     codes: Array<any>;
     strategies: Array<any>;
@@ -551,7 +554,8 @@ export class AddQuoteComponent implements OnInit {
               }
 
                 this.quoteForm.patchValue({
-                    govtContrib: x.quantity ? (x.quantity * 365).toFixed(2) : 0,
+                    govtContrib: x.quantity 
+                    ? (x.quantity * 365).toFixed(2) : 0,
                     programId: x.recordNumber
                 });
 
@@ -719,6 +723,29 @@ export class AddQuoteComponent implements OnInit {
     this.quoteListForm.get('period').enable();
   }
 
+  saveNewFilename(){
+        this.qteHeaderDTO = { ...this.qteHeaderDTO, newFileName: this.newFileName };
+
+        this.listS.getpostquote(this.qteHeaderDTO)
+        .subscribe(data => {
+            this.globalS.sToast('Success','Quote Added');
+
+            this.globalS.bToast('File Location', data.documentFileFolder);
+            this.loadingSaveQuote = false;
+            this.refresh.emit(true);
+            this.newFileNameOpen = false;
+            this.detectChanges();
+
+            this.quotesOpen = false;
+        }, (err: any) => {
+            this.loadingSaveQuote = false;
+            this.newFileNameOpen = false;            
+            this.quotesOpen = false;
+            this.detectChanges();
+            
+        });
+  }
+
   handleOkTop(type:any) {
     // this.generatePdf(type);
     this.tryDoctype = ""
@@ -733,7 +760,11 @@ export class AddQuoteComponent implements OnInit {
     //   this.listS.deletetempdoc(this.tableDocumentId).subscribe(data => console.log(data))
       this.quotesOpen = false;
       this.inActiveOpen = false;
-      this.activeOpen = false;
+      this.activeOpen = false;      
+  }
+
+  closeFileName(){
+    this.newFileNameOpen = false;
   }
 
   handleCancelTop(): void {
@@ -1187,6 +1218,7 @@ export class AddQuoteComponent implements OnInit {
                     qty: quote.quantity,
                     frequency: quote.period,
                     quoteQty: quote.weekNo, 
+                    roster: quote.rosterString,
                     unitBillRate: quote.price,
                     tax: quote.gst,
                     itemId: quote.itemId,
@@ -1196,26 +1228,27 @@ export class AddQuoteComponent implements OnInit {
 
                 this.listS.createQuoteLine(_quote).subscribe(data => {
 
-                this.quoteLines = [...this.quoteLines, {
-                    code: data.code,
-                    displayText: data.displayText,
-                    quantity: data.qty,
-                    billUnit: data.billUnit,
-                    frequency: data.frequency,
-                    quoteQty: data.quoteQty,
-                    price: data.unitBillRate,
-                    tax: data.tax,
-                    mainGroup: data.mainGroup,
-                    recordNumber: data.recordNumber
-                    
-                }];
+                    this.quoteLines = [...this.quoteLines, {
+                        code: data.code,
+                        displayText: data.displayText,
+                        quantity: data.qty,
+                        billUnit: data.billUnit,
+                        frequency: data.frequency,
+                        quoteQty: data.quoteQty,
+                        price: data.unitBillRate,
+                        tax: data.tax,
+                        mainGroup: data.mainGroup,
+                        recordNumber: data.recordNumber
+                        
+                    }];
                 
-                this.total_base_quote = (this.generate_total()).toFixed(2);
-                this.total_admin = this.generate_total_admin();
-                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+                    this.total_base_quote = (this.generate_total()).toFixed(2);
+                    this.total_admin = this.generate_total_admin();
+                    this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
 
-                this.handleCancelLine();
-                this.detectChanges();
+                    this.handleCancelLine();
+                    this.globalS.sToast('Success','Added QuoteLine')
+                    this.detectChanges();
                 });     
 
                 return;
@@ -1271,6 +1304,7 @@ export class AddQuoteComponent implements OnInit {
                         this.total_admin = this.generate_total_admin();
                         this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
 
+                        this.globalS.sToast('Success','Updated QuoteLine')
                         this.handleCancelLine();
                         this.detectChanges();
 
@@ -1299,6 +1333,7 @@ export class AddQuoteComponent implements OnInit {
                     frequency: quote.period,
                     quoteQty: quote.weekNo, 
                     unitBillRate: quote.price,
+                    roster: quote.rosterString,
                     tax: quote.gst,
                     itemId: quote.itemId,
                     mainGroup: quote.mainGroup
@@ -1324,6 +1359,7 @@ export class AddQuoteComponent implements OnInit {
                     this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
     
                     // this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
+                    this.globalS.sToast('Success','Added QuoteLine')
                     this.handleCancelLine();
                     this.detectChanges();
                 });
@@ -1380,6 +1416,7 @@ export class AddQuoteComponent implements OnInit {
                         this.total_admin = this.generate_total_admin();
                         this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
 
+                        this.globalS.sToast('Success','Updated QuoteLine')
                         this.handleCancelLine();
                         this.detectChanges();
 
@@ -1395,6 +1432,9 @@ export class AddQuoteComponent implements OnInit {
   }
 
   loadingSaveQuote: boolean = false;
+
+  qteHeaderDTO: QuoteHeaderDTO;
+
   saveQuote(){
       
     let qteLineArr: Array<QuoteLineDTO> = [];
@@ -1425,8 +1465,7 @@ export class AddQuoteComponent implements OnInit {
        
         qteLineArr.push(da);
     });
-    console.log(this.tempIds)
-    console.log(this.record)
+
     qteHeader = {
         recordNumber: this.tempIds ? this.tempIds.quoteHeaderId : this.record,
         programId: quoteForm.programId,
@@ -1459,22 +1498,56 @@ export class AddQuoteComponent implements OnInit {
         goals: goals
     }
 
+    this.qteHeaderDTO = qteHeader;
+
     this.loadingSaveQuote = true;
-    console.log(qteHeader)
-    return;
-    this.listS.getpostquote(qteHeader)
-        .subscribe(data => {
+    // return;
+    this.listS.checkpostquote(qteHeader)
+        .pipe(
+            switchMap(x => {
+                if(x == null)
+                    return this.listS.getpostquote(qteHeader);
+                else{
+                    this.newFileName = x;
+                    this.loadingSaveQuote = false;
+                    this.newFileNameOpen = true;
+                    this.detectChanges();
+                    return EMPTY;
+                }
+                    
+            })
+        ).subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
+
+            this.globalS.bToast('File Location', data.documentFileFolder);
             this.loadingSaveQuote = false;
             this.refresh.emit(true);
             this.detectChanges();
-
+            this.newFileNameOpen = false;
             this.quotesOpen = false;
         }, (err: any) => {
             this.loadingSaveQuote = false;
-            this.detectChanges();
             this.quotesOpen = false;
+            this.newFileNameOpen = false;
+            this.detectChanges();
         });
+  
+  
+    // this.listS.getpostquote(qteHeader)
+    //     .subscribe(data => {
+    //         this.globalS.sToast('Success','Quote Added');
+
+    //         this.globalS.bToast('File Location', data.documentFileFolder);
+    //         this.loadingSaveQuote = false;
+    //         this.refresh.emit(true);
+    //         this.detectChanges();
+
+    //         this.quotesOpen = false;
+    //     }, (err: any) => {
+    //         this.loadingSaveQuote = false;
+    //         this.detectChanges();
+    //         this.quotesOpen = false;
+    //     });
   }
 
     refreshQuoteLines(recordNo: any){
@@ -1498,7 +1571,6 @@ export class AddQuoteComponent implements OnInit {
     addNewQuoteLine: boolean = false;
 
     quoteLineModal(){
-        console.log(this.record);
         this.addNewQuoteLine = true;
 
         this.quoteLineOpen = true;

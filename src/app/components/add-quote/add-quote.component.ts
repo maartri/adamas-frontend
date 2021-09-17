@@ -738,9 +738,9 @@ export class AddQuoteComponent implements OnInit {
 
             this.quotesOpen = false;
         }, (err: any) => {
-            this.loadingSaveQuote = false;
-            this.newFileNameOpen = false;            
-            this.quotesOpen = false;
+            // this.loadingSaveQuote = false;
+            // this.newFileNameOpen = false;            
+            // this.quotesOpen = false;
             this.detectChanges();
             
         });

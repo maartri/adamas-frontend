@@ -224,7 +224,7 @@
                 </div>
                 
                 <div nz-row>
-                    <nz-table #headerTable [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="goalsAndStratergies"  [nzScroll]="{ y: '340px' }">
+                    <nz-table #headerTable [nzShowPagination]="false" [nzSize]="size" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="goalsAndStratergies"  [nzScroll]="{ y: '340px' }">
                         <thead>
                             <tr>
                                 <th style="width:10%;">Ant Complete</th>
@@ -313,7 +313,7 @@
             </div>
 
             <div nz-row *ngIf="quoteForm.get('program').value">
-                <nz-table #basicTable [nzData]="quoteLines" >
+                <nz-table #basicTable [nzSize]="size" [nzData]="quoteLines" >
                     <thead>
                       <tr>
                         <th>Item Code</th>
@@ -822,7 +822,7 @@
                                 </div>
                             </div>
                             <div nz-row>
-                                <nz-table #headerTable [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="stratergiesList"  [nzScroll]="{ y: '340px' }">
+                                <nz-table #headerTable [nzSize]="size" [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="stratergiesList"  [nzScroll]="{ y: '340px' }">
                                     <thead>
                                         <tr>
                                             <th style="width:50%;">Strategy</th>

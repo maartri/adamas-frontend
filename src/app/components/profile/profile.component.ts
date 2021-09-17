@@ -174,7 +174,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       id: [''],
       type: ['', [Validators.required]],
       details: ['', [Validators.required]],
-      personId: ['']
+      personId: [''],
+      primaryPhone: [false]
     });
 
     this.addressForm = this.formBuilder.group({
@@ -556,13 +557,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   formatContact(contactForm: FormGroup): Array<PhoneFaxOther> {
     let temp: Array<PhoneFaxOther> = [];
 
-    const { id, type, details, personId } = contactForm.value;
+    const { id, type, details, personId, primaryPhone } = contactForm.value;
 
     let pf: PhoneFaxOther = {
       RecordNumber: id,
       Type: type,
       Detail: details,
-      PersonID: personId
+      PersonID: personId,
+      PrimaryPhone: primaryPhone
     }
 
     temp.push(pf);
@@ -786,6 +788,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     if (this.window == 2) {
+      console.log(this.contactForm.value);
+      // return;
       this.clientS.updateusercontact(this.formatContact(this.contactForm)).subscribe(data => {
         if (data.success) {
           this.globalS.sToast('Success', 'Contact Updated!');
@@ -884,6 +888,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   editContactOpen(contact: any): void {
+
     this.editModalOpen = true;
     this.window = 2;
 
@@ -892,7 +897,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       type: contact.type,
       details: contact.detail,
       personId: contact.personID,
-
+      primaryPhone: contact.primaryPhone
     });
 
     this.POPULATE_CONTACTS();

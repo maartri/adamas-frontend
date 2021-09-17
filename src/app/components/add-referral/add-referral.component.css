@@ -36,7 +36,7 @@
     line-height: 32px;
 }
 .ref-form{
-    padding: 1rem 2rem;
+    padding: 1rem;
     border-bottom: 1px solid beige;
     display: inline-block;
     width: 100%;
@@ -65,4 +65,13 @@ nz-select{
 
 nz-checkbox-group >>> label{
     display:block;
+}
+.primary{
+    color:#1790ff !important;
+}
+.primary-icon{
+    color: gainsboro;
+    font-size: 1.4rem;
+    cursor:pointer;
+
 }

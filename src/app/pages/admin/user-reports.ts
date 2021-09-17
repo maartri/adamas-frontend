@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { OnInit, OnDestroy, AfterViewInit } from "@angular/core";
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, FormControlName, } from '@angular/forms';
@@ -25,6 +25,7 @@ const inputFormDefault = {
   entity:[[]],
   condition:[[]],
   value:[[]],
+  Endvalue : [[]],
   // = ['title','ASAD','key']
   //  data : Array<any> = [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr:[[]],
@@ -32,14 +33,13 @@ const inputFormDefault = {
   //Arr: [[]],
   Arr: '',
   valArr:'',
+  RptTitle :'',
   //valArr:[[]],
   data: [[]],
   activeonly:[false],
   incl_internalCostclient: [false],
   radiofilter:["meet"],
-  datarow: [[]],
-  isVisibleprompt : [false],
-
+  datarow: [[]],  
 }
 
 @Component({
@@ -97,6 +97,9 @@ const inputFormDefault = {
     height: 500px;
     overflow-y: scroll;
   }
+  .form-group label{
+    font-weight: bold;
+}
   
     `],
 
@@ -123,6 +126,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
  // valArr: Array<any>;
   Arr: '';
   valArr:'';
+  RptTitle : '';
+  
   data: Array<any> = [];
   activeonly: boolean;
   incl_internalCostclient: boolean;
@@ -134,7 +139,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     pdfTitle: string;
     drawerVisible: boolean = false;
     loading: boolean = false;
-    isVisibleprompt = false;
+    isVisibleprompt : boolean = false;
     reportid: string;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
     tocken :any;
@@ -142,8 +147,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     rptfieldname:number = 0;
 
      sql: string;
-     Saverptsql : string;
-     RptTitle : string;
+     Saverptsql : string;     
      sqlselect: string;
      sqlcondition: string;
      Savesqlcondition :string;
@@ -166,7 +170,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      includeRecipientCompetencyWhere :string;
      includeCareplanWhere :string;
 
-     bodystyle:object;
+     //bodystyle:object;
+     RptFormat :string;
 
     
 IncludeFundingSource: boolean;  IncludeProgram: boolean;  IncludeStaffAttributes: boolean;  IncludePensions: boolean;  IncludeExcluded: boolean; IncludeIncluded: boolean;  IncludePreferences : boolean;
@@ -242,10 +247,14 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   ) {
 
   }
-  private unsubscribe: Subject<void> = new Subject();
-  ngOnInit(): void {
-    this.inputForm = this.fb.group(inputFormDefault);
+  //private unsubscribe: Subject<void> = new Subject();
+  ngOnInit(): void {    
+    this.inputForm = this.fb.group(inputFormDefault);    
     this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
+    this.RptFormat = this.GlobalS.var2.toString();
+
+    console.log(this.tocken)
+    
     
   }
   ngOnDestroy(): void {
@@ -3849,18 +3858,20 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     
   }
   showprompt(){
-    this.bodystyle = { height:'300px', overflow: 'auto'}
+    //this.bodystyle = { height:'300px', overflow: 'auto'}
     this.isVisibleprompt = true;
   }
   SaveReport(){
+    /*
       var RptSQL  =  this.Saverptsql;
+     
     var Title  = this.RptTitle;
-    var Format  = this.GlobalS.var2;
+    var Format  = this.RptFormat;
     var CriteriaDisplay = "TEST CRITERIA" ;
     var DateType = " ";
-    var UserID = "mufeed";
-    //table  : "ReportNames" 
-     console.log(RptSQL)
+    var UserID = this.tocken.nameid;
+    
+     
    var insertsql = " INSERT INTO ReportNames(Title, Format,SQLText,UserID, DateType, CriteriaDisplay) " +
    " VALUES( '" + Title +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "   
    
@@ -3870,8 +3881,8 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
      this. GlobalS.sToast('Success', 'Saved successful');     
     }    
    }); 
-
-  }
+*/
+  } 
   ReportRender(sql:string){
 
   //  console.log(sql);

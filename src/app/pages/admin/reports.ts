@@ -1111,10 +1111,10 @@ stafftypeArr: Array<any> = constants.types;
     showUserReport(e) {
         e = e || window.event;
         e = e.target || e.srcElement;
-        
-        this.router.navigate(['/admin/user-reports']);
         if(e.id !== null){this.GlobalS.var2 = e.id.toString();}
         console.log(this.GlobalS.var2)
+        this.router.navigate(['/admin/user-reports']);
+      
     }
     yearrange(){
        
@@ -20167,7 +20167,7 @@ FetchRuntimeReport(title){
     //    this.UserRptSQLlist = data[1];
 
     //    console.log(data[1])
-        this.UserRptSQLlist = data[1].toString().split(",")
+    //    this.UserRptSQLlist = data[1].toString().split(",")
     //    console.log(this.UserRptSQLlist)
 
         this.RenderRunTimeReport(this.UserRptSQLlist)

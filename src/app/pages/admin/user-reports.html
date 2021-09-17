@@ -151,21 +151,24 @@
                     </div>
                 </div>        
         </div> 
-    </div>   
-    <div>
+    </div>  
+    
+    <div nz-row>
         <nz-modal
-                nzWidth="400px"
-                [nzStyle]="{ top: '20px' }"
-                [nzBodyStyle]=  "bodystyle"
-                [(nzVisible)]="isVisibleprompt"
-                nzTitle= "TRACCS"
-                (nzOnCancel)="handleCancelTop()"
-                (nzOnOk)="SaveReport()"
+            nzWidth="400px"
+            [nzStyle]="{ top: '50px',height:'300px', overflow: 'auto' }"
+         
+            [(nzVisible)]="isVisibleprompt"
+            nzTitle= "TRACCS"
+            (nzOnCancel)="handleCancelTop()"
+            (nzOnOk)="SaveReport()"
         >
-        <div nz-col nzSpan="20" [formGroup]="inputForm">
-            <div class="form-group" >                
-                <input nz-input placeholder="Report Name" formControlName="RptTitle"  />                                        
-            </div>      
+        <div nz-row [formGroup]="inputForm">
+            <div nz-col nzSpan="20" >
+                <div class="form-group" >                
+                    <input nz-input placeholder="Report Name" formControlName="RptTitle"  />                                        
+                </div>      
+            </div>
         </div>
         </nz-modal>
     </div> 

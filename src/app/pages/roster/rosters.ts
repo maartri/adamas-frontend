@@ -895,6 +895,15 @@ deleteRoster(){
     this.operation="Delete";                 
     this.spreadsheet.resumePaint();
     this.deleteRosterModal=false;
+
+    this.current_roster = this.find_roster(this.cell_value.recordNo)
+    let clientCode =this.current_roster.recipientCode;
+    let date= this.current_roster.date
+
+    this.txtAlertSubject = 'SHIFT DELETED : ' ;
+    this.txtAlertMessage = 'SHIFT DELETED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+   
+    this.show_alert=true;
 }
 reAllocate(){
     if (this.cell_value==null || this.cell_value.recordNo==0) return;
@@ -1552,7 +1561,7 @@ ClearMultishift(){
                         spread.resumePaint();
                        
 
-                        self.current_roster = self.find_roster(self.cell_value.recordNo);(self.copy_value.recordNo)
+                        self.current_roster = self.find_roster(self.cell_value.recordNo);
                         let clientCode =self.current_roster.recipientCode;
                         let date= self.current_roster.date
 
@@ -1600,6 +1609,7 @@ ClearMultishift(){
                         self.operation="Delete";     
 
                         Commands.endTransaction(context, options);
+
                       
                         return true;
                     }

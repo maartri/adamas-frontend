@@ -914,11 +914,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       publishToApp: publishToApp ? 1 : 0,
                       creator: this.token.user,
                       note: notes || "" ,
-                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      alarmDate: '',
                       reminderTo: ''
                     }
                   }
                 
+                   
                 // console.log(data);
                 // this.emailnotify();
                 // return;
@@ -928,7 +929,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       this.handleCancel();
                     
                       if (this.globalS.followups != null){
-                        this.writereminder(); 
+                        this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
                       }
                       
                       if (this.globalS.emailaddress != null){
@@ -1005,8 +1006,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
-                  console.log(data);
-                  return;
+                  // console.log(data);
+                  // return;
                   
                   this.listS.postreferralout(data).subscribe(data => {
                     this.globalS.sToast('Success', 'Package is saved');
@@ -2626,31 +2627,38 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     
                   }
                 }
-                writereminder(){
-                  var sql,temp;
-                  //let Date1,Date2;
-                  
-                  let Date1 : Date   = new Date();
-                  let Date2 : Date   = new Date(Date1);
-                  
-                  
-                  
-                  temp = (this.globalS.followups.label).toString().substring(0,2)
-                  
-                  switch (temp) {
-                    case '10':
-                    Date2.setDate(Date2.getDate() + 10)
-                    
-                    break;
-                    case '30':
-                    Date2.setDate(Date2.getDate() + 30)
-                    break;
-                    
-                    default:
-                    break;
+
+                writereminder(personid: string, notes: string, followups: Array<any>){
+                  var sql = '', temp = '';
+                
+                  // console.log(this.notifFollowUpGroup);
+
+                  for(var followup of followups)
+                  {
+                    sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" +format(new Date(),'yyyy/MM/dd') +"','"+format(new Date(),'yyyy/MM/dd') +"');";
                   }
-                  sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
+
+                  // let Date1 : Date   = new Date();
+                  // let Date2 : Date   = new Date(Date1);
                   
+                  // temp = (this.globalS.followups.label).toString().substring(0,2);
+                  
+                  // switch (temp) {
+                  //   case '10':
+                  //   Date2.setDate(Date2.getDate() + 10)
+                    
+                  //   break;
+                  //   case '30':
+                  //   Date2.setDate(Date2.getDate() + 30)
+                  //   break;
+                    
+                  //   default:
+                  //   break;
+                  // }
+
+                  // sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
+                  
+                  console.log(sql)
                   this.clientS.addRefreminder(sql).subscribe(x => console.log(x) )
                   
                   this.globalS.followups = null;

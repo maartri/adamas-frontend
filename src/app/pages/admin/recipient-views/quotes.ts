@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation, AfterViewInit } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService,expectedOutcome,qoutePlantype, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService,expectedOutcome,qoutePlantype, leaveTypes, UploadService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
@@ -18,6 +18,8 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { RECIPIENT_OPTION } from '@modules/modules';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotesClient } from '@client/notes';
+
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
     styleUrls:['./quotes.css'],
@@ -255,7 +257,9 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
         private http: HttpClient,
         private sanitizer: DomSanitizer,
         private ModalS: NzModalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private message: NzMessageService,
+        private uploadS: UploadService
     ) {
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
@@ -686,6 +690,35 @@ export class RecipientQuotesAdmin implements OnInit, OnDestroy, AfterViewInit {
             quantity: data.quantity,
             rosterString: data.roster
         });
+    }
+
+    showDocument(item: any){
+
+        var notifId = this.globalS.loadingMessage('Downloading Document');
+
+        this.uploadS.downloadquotedocument(item.docID)
+            .subscribe(blob => {
+
+                let data = window.URL.createObjectURL(blob);      
+                let link = document.createElement('a');
+                link.href = data;
+                link.download = item.filename;
+                link.click();
+    
+                setTimeout(() =>
+                {
+                    // For Firefox it is necessary to delay revoking the ObjectURL
+                    window.URL.revokeObjectURL(data);
+                    this.message.remove(notifId);
+    
+                    this.globalS.sToast('Success','Download Complete');
+                }, 100);
+    
+            }, err =>{
+                this.message.remove(notifId);
+                this.globalS.eToast('Error', "Document can't be found");
+            })
+
     }
 
     showAcceptModal(item: any) {

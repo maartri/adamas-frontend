@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation } from '@angular/core'
-import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
 //import dayGridPlugin from '@fullcalendar/daygrid';
@@ -42,6 +42,7 @@ import './styles.css';
 import { ElementSchemaRegistry } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router } from '@angular/router';
+import { SetLeftFeature } from 'ag-grid-community';
 
 
  
@@ -237,7 +238,11 @@ endRoster:any;
   addressList:Array<any>=[]
   mobilityList:Array<any>=[]
     
-    isVisible: boolean = false;
+  show_alert:boolean=false; 
+  txtAlertSubject:string="Shift Alerts";
+  txtAlertMessage:string="Shift Alert";
+
+  isVisible: boolean = false;
     hahays = new Subject<any>();
     optionsModal:boolean=false;
     
@@ -259,6 +264,7 @@ endRoster:any;
     bookingForm: FormGroup;
     TransportForm:FormGroup
     RecurrentServiceForm:FormGroup;
+    AlertForm:FormGroup;
     
     viewType: any;
     start_date:string="";
@@ -570,7 +576,8 @@ doneBooking(){
                     this.searchRoster(tsheet.date)
                  }
                   this.addTimesheetVisible = false;
-                
+             
+     
                // this.picked(this.selected);
                 this.IsGroupShift=false;
                console.log(data)
@@ -590,7 +597,11 @@ doneBooking(){
                 this.AddRecurrentRosters();
             }
 
-           
+            this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
+            this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+            this.clientCodes=inputs.clientCode;
+
+            this.show_alert=true;
 
                
             });
@@ -884,6 +895,15 @@ deleteRoster(){
     this.operation="Delete";                 
     this.spreadsheet.resumePaint();
     this.deleteRosterModal=false;
+
+    this.current_roster = this.find_roster(this.cell_value.recordNo)
+    let clientCode =this.current_roster.recipientCode;
+    let date= this.current_roster.date
+
+    this.txtAlertSubject = 'SHIFT DELETED : ' ;
+    this.txtAlertMessage = 'SHIFT DELETED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+   
+    this.show_alert=true;
 }
 reAllocate(){
     if (this.cell_value==null || this.cell_value.recordNo==0) return;
@@ -1519,9 +1539,7 @@ ClearMultishift(){
                         console.log(selected_Cell);     
                         
                         var value = sheet.getValue(selected_Cell.row, selected_Cell.col);
-                     
-                       
-                        
+                                                                    
                         if (self.copy_value.row>=0){
                           self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
                          
@@ -1530,8 +1548,7 @@ ClearMultishift(){
                             self.ProcessRoster("Cut",self.copy_value.recordNo);
                             self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
                         }else
-                            self.ProcessRoster("Copy",self.copy_value.recordNo);
-                        
+                            self.ProcessRoster("Copy",self.copy_value.recordNo);                      
                        
                        
                        // sheet.setValue(row,col,sheet.getCell(selected_Cell.row, selected_Cell.col));
@@ -1542,6 +1559,17 @@ ClearMultishift(){
                         Commands.endTransaction(context, options);
                       //  sheet.options.isProtected = true;
                         spread.resumePaint();
+                       
+
+                        self.current_roster = self.find_roster(self.cell_value.recordNo);
+                        let clientCode =self.current_roster.recipientCode;
+                        let date= self.current_roster.date
+
+                        self.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
+                        self.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+                       
+                        self.show_alert=true;
+
                         return true;
                     }
                 }
@@ -1581,6 +1609,7 @@ ClearMultishift(){
                         self.operation="Delete";     
 
                         Commands.endTransaction(context, options);
+
                       
                         return true;
                     }
@@ -2134,16 +2163,20 @@ ClearMultishift(){
        }  
        else{
             
-            //sheet.getCell(r+m,c).backColor("#CAF0F5");
-            sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#CAF0F5"},{position:1, color:"#CAF0F5"},]});
+           sheet.getCell(r+m,c).backColor("#CAF0F5");
+           // sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#abd8de"},{position:0.5, color:"#CAF0F5"},{position:1, color:"#CAF0F5"},]});
          //  sheet.getCell(r,c).backColor("#ffffff");
-            //this.setIcon(r+m,c,20,RecordNo, "");
+          //  this.setIcon(r+m,c,20,RecordNo, "");
+          sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#c8cccc", GC.Spread.Sheets.LineStyle.thin), {all:true});
         }
         //sheet.getCell(r+m,c).field=duration;
        sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(this.cell_value)
+
        }
-      
+       
+       
+
      // if (new_duration>1)
      //sheet.addSpan(r, c, new_duration, 1);
       //sheet.getCell(5, 4).value("Demo-" +c).hAlign(1).vAlign(1);
@@ -2332,6 +2365,7 @@ ClearMultishift(){
       this.add_multi_roster=true;
   }
     ProcessRoster(Option:any, recordNo:string):any {
+        
         let dt= new Date(this.date);
         
         let sheet = this.spreadsheet.getActiveSheet();
@@ -2349,18 +2383,20 @@ ClearMultishift(){
             startTime="00:00"
         }
        
-        let inputs={
+        let inputs = {
             "opsType": Option,
             "user": this.token.user,
             "recordNo": recordNo,
             "isMaster": this.master,
             "roster_Date" : date,
-            "start_Time":startTime,
-            "carer_code":this.viewType =="Staff" ? this.recipient.data : this.selectedCarer,
-            "recipient_code":this.viewType =="Staff" ? "" : this.recipient.data,
+            "start_Time": startTime,
+            "carer_code": this.viewType =="Staff" ? this.recipient.data : this.selectedCarer,
+            "recipient_code" : this.viewType =="Staff" ? "" : this.recipient.data,
             "notes" : this.notes,
             'clientCodes' : this.clientCodes
         }
+               
+
         this.timeS.ProcessRoster(inputs).subscribe(data => {
         //if  (this.ClearMultiShiftModal==false &&  this.SetMultiShiftModal==false) 
                this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
@@ -4510,31 +4546,50 @@ this.bookingForm.get('program').valueChanges.pipe(
             serviceTypePortal: tsheet.serviceType,
             recordNo: tsheet.recordNo
         };
+
         if(!this.rosterForm.valid){
             this.globalS.eToast('Error', 'All fields are required');
             return;
         }
 
+        
         if(this.whatProcess == PROCESS.ADD){
             this.timeS.posttimesheet(inputs).subscribe(data => {
                 this.globalS.sToast('Success', 'Timesheet has been added');
                 this.addTimesheetVisible = false;
                // this.picked(this.selected);
-              
                this.searchRoster(tsheet.date)
+               this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
+               this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+               this.clientCodes=inputs.clientCode;
+
+               this.show_alert=true;
+            
             });
         }   
         
         if(this.whatProcess == PROCESS.UPDATE){
+           
             this.timeS.updatetimesheet(inputs).subscribe(data => {
                 this.globalS.sToast('Success', 'Timesheet has been updated');
                 this.addTimesheetVisible = false;
-                //this.picked(this.selected);
+        
+                this.txtAlertSubject= 'SHIFT DAY/TIME CHANGE : ' ;
+                this.txtAlertMessage= 'SHIFT TIME CHANGE : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+                this.clientCodes=inputs.clientCode;
+                
+                this.show_alert=true;
                 this.searchRoster(tsheet.date)
             });
         }
     }
 
+    generate_alert(){
+        this.show_alert=false;
+        this.notes= this.txtAlertSubject + "\n" + this.txtAlertMessage;
+        
+        this.ProcessRoster("Alert","1");
+    }
     FIX_CLIENTCODE_INPUT(tgroup: any): string{
         if (tgroup.serviceType == 'ADMINISTRATION' || tgroup.serviceType == 'ALLOWANCE NON-CHARGEABLE' || tgroup.serviceType == 'ITEM') {
             return "!INTERNAL"

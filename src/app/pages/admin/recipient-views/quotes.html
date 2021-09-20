@@ -59,8 +59,8 @@
         Clone Quote to another Recipient
     </ng-template>
 
-    <ng-template contextMenuItem let-item >
-        Open Attached Careplan
+    <ng-template contextMenuItem let-item (execute)="showDocument($event.item)">
+        Open Service Agreement
     </ng-template>
 </context-menu>
 

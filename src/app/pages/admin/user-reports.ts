@@ -3729,11 +3729,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
         }
         QueryFormation(){
           
-          var keys = this.inputForm.value.functionsArr
-          
-          console.log("--------");
-          console.log(this.ConditionEntity);
-          console.log("----"+console.log(keys)+"----");      
+          var keys = this.inputForm.value.functionsArr 
           //["EQUALS", "BETWEEN", "LESS THAN", "GREATER THAN", "NOT EQUAL TO", "IS NOTHING", "IS ANYTHING", "IS TRUE", "IS FALSE"]
           switch (keys) {
             case 'EQUALS':
@@ -3770,10 +3766,6 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             }else{ 
               this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" <>  ('"  + this.value + "')"
             }
-            console.log("--------");
-            console.log(this.ConditionEntity);
-            console.log("----"+console.log(keys)+"----");
-            console.log(this.sqlcondition);
             break;
             case 'IS NOTHING':
             if(this.sqlcondition == null){

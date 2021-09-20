@@ -351,7 +351,7 @@
             <div nz-row *ngIf="tabFindIndex == 2" nzGutter="16" [formGroup]="extendedSearch">
                 
                 <div nz-col nzSpan="8" class="tree-overflow">
-                    <nz-tree [nzData]="nodes" nzShowLine (nzClick)="nzEvent($event)"> </nz-tree>
+                    <nz-tree [nzData]="nodelist" nzShowLine (nzClick)="nzEvent($event)"> </nz-tree>
                 </div>
                 
                 <div nz-col nzSpan="16">
@@ -404,10 +404,10 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let criteria of cariteriaList">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{{criteria.fieldName}}</td>
+                                <td>{{criteria.searchType}}</td>
+                                <td>{{criteria.textToLoc}}</td>
+                                <td>{{criteria.endText}}</td>
                             </tr>
                         </tbody>
                     </nz-table>

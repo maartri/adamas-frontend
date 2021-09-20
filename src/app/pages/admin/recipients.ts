@@ -473,12 +473,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       this.selectedbranches = this.branchesList
       .filter(opt => opt.checked)
       .map(opt => opt.description).join("','")
-      
-      console.log("criteria list");
-      console.log(this.cariteriaList);
-      console.log("criteria list");
 
-      this.timeS.getrecipientquicksearch({
+
+      var postdata = {
         active:this.quicksearch.value.active,
         inactive:this.quicksearch.value.inactive,
         alltypes:this.allChecked,
@@ -499,13 +496,15 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
         fileno:this.quicksearch.value.fileno,
         searchText:this.quicksearch.value.searchText,
-        criterias:this.cariteriaList  
-      })
-      .subscribe(data => {
+        criterias:this.cariteriaList // list of rules
+      }
+
+      this.timeS.postrecipientquicksearch(postdata).subscribe(data => {
         this.filteredResult = data;
         this.loading = false;
         this.detectChanges();
-      })
+      });
+
     }
     updateAllChecked(): void {
       this.indeterminate = false;

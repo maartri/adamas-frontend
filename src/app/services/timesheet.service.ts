@@ -988,9 +988,12 @@ export class TimeSheetService {
     getstaffbyphone(phoneno: string): Observable<any> {
         return this.auth.get(`${timesheet}/phone-search-staff/${phoneno}`);
     }
-    getrecipientquicksearch(data :any):Observable<any>{
-        return this.auth.get(`${timesheet}/Search-recipient`,data);
+    
+    postrecipientquicksearch(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/search-recipient`, data)
     }
+
+
     getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
     }

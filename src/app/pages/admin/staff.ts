@@ -4,7 +4,7 @@ import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
 import { GlobalService, StaffService, ShareService, leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
-import { EMPTY } from 'rxjs';
+import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ApplicationUser } from '@modules/modules';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -123,6 +123,10 @@ export class StaffAdmin implements OnInit, OnDestroy {
     Cycles: Array<any> = ['Cycle 1', 'Cycle 2', 'Cycle 3', 'Cycle 4', 'Cycle 5', 'Cycle 6', 'Cycle 7', 'Cycle 8', 'Cycle 9', 'Cycle 10'];
     DayNames: Array<any> = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
     fDays : Array<any> = ['7','14','21','28',];
+    branchesList: any;
+    programsList: any;
+    casemanagers: any;
+    categoriesList: any;
 
     listChange(event: any) {
 
@@ -344,6 +348,19 @@ export class StaffAdmin implements OnInit, OnDestroy {
     //    this.printSummaryModal = false;
      
     }
+    getUserData() {
+        return forkJoin([
+          this.listS.getlistbranchesObj(),
+          this.listS.getprogramsobj(),
+          this.listS.getcoordinatorslist(),
+          this.listS.getcategoriesobj(),
+        ]).subscribe(x => {
+          this.branchesList = x[0];
+          this.programsList = x[1];
+          this.casemanagers = x[2];
+          this.categoriesList = x[3];
+        });
+      }
     view(index: number) {
         this.nzSelectedIndex = index;
 

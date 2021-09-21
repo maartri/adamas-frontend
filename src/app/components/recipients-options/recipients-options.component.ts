@@ -17,6 +17,7 @@ import format from 'date-fns/format';
 import { setDate } from 'date-fns';
 import { filter } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import addDays from 'date-fns/addDays'
 
 // import * as RECIPIENT_OPTION from '../../modules/modules';
 
@@ -919,10 +920,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
                 
-                   
-                // console.log(data);
-                // this.emailnotify();
-                // return;
+                  // this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
+                  // return;
+                  // console.log(data);
+                  // this.emailnotify();
+                  // return;
 
                 this.listS.postreferralin(data).subscribe(x => {
                       this.globalS.sToast('Success', 'Package is saved'); 
@@ -1884,14 +1886,16 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE
                 }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                  
                   this.notifFollowUpGroup = data.map(x => {
                     return {
-                      label: x,
-                      value: x,
+                      label: x.reminders,
+                      value: x.reminders,
+                      dateCounter: x.user1,
                       disabled: false,
                       checked: false
                     }
-                  })
+                  });
                 })
                 
                 
@@ -2252,8 +2256,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifFollowUpGroup = data.map(x => {
                     return {
-                      label: x,
-                      value: x,
+                      label: x.reminders,
+                      value: x.reminders,
+                      dateCounter: x.user1,
                       disabled: false,
                       checked: false
                     }
@@ -2434,8 +2439,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                       this.notifFollowUpGroup = data.map(x => {
                         return {
-                          label: x,
-                          value: x,
+                          label: x.reminders,
+                          value: x.reminders,
+                          dateCounter: x.user1,
                           disabled: false,
                           checked: false
                         }
@@ -2635,7 +2641,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                   for(var followup of followups)
                   {
-                    sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" +format(new Date(),'yyyy/MM/dd') +"','"+format(new Date(),'yyyy/MM/dd') +"');";
+                    var dateCounter = parseInt(followup.dateCounter);
+                    var reminderDatePlusDateCounter = format(addDays(new Date(), dateCounter),'dd/MM/yyyy');
+
+                    if(followup.checked){
+                      sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderDatePlusDateCounter +"','"+ reminderDatePlusDateCounter +"');";
+                    }
                   }
 
                   // let Date1 : Date   = new Date();
@@ -2658,10 +2669,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                   // sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
                   
-                  console.log(sql)
-                  this.clientS.addRefreminder(sql).subscribe(x => console.log(x) )
-                  
-                  this.globalS.followups = null;
+                  this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );                  
+                  // this.globalS.followups = null;
                 }
 
                 addRefdoc(){

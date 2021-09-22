@@ -157,6 +157,8 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
 
     showAddModal() {
         this.addDocumentModal = true;
+        this.current = 0;
+        this.selectedIndex = null;
         this.templates$ = this.uploadS.getdocumenttemplate();
     }
 

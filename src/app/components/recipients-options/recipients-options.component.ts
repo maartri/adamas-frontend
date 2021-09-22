@@ -919,8 +919,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       reminderTo: ''
                     }
                   }
-                  this.emailnotify(); 
-                  return;
+                  // this.emailnotify(); 
+                  // return;
                   // this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
                   // return;
                   // console.log(data);
@@ -2624,16 +2624,16 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                 emailnotify(){              
               
-                  const {notes} = this.referInGroup.value;
-                  let notifications =  this.notifCheckBoxes.filter((x:any) => x.checked == true);
+                  const { notes } = this.referInGroup.value;
 
+                  let notifications =  this.notifCheckBoxes.filter((x:any) => x.checked == true);
                   let emails = notifications.map((x: any) => x.email).join(';')
    
                   // var emailTo = this.globalS.emailaddress; 
                   
                   var emailSubject = "ADAMAS NOTIFICATION";
                   var emailBody = notes;  
-                  
+
                   location.href = "mailto:" + emails + "?" +     
                   (emailSubject ? "subject=" + emailSubject : "") + 
                   (emailBody ? "&body=" + emailBody : "");

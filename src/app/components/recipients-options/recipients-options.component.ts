@@ -919,7 +919,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       reminderTo: ''
                     }
                   }
-                
+                  this.emailnotify(); 
+                  return;
                   // this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
                   // return;
                   // console.log(data);
@@ -1635,23 +1636,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 });
                 
               }           
-            }
-
-            emailnotify(){              
-              
-              const {notes} = this.referInGroup.value;
-              
-              var emailTo = this.globalS.emailaddress; 
-              
-              var emailSubject = "ADAMAS NOTIFICATION";
-              var emailBody = notes;  
-              location.href = "mailto:" + this.EMAIL_OF_COORDINATOR + "?" +     
-              (emailSubject ? "subject=" + emailSubject : "") + 
-              (emailBody ? "&body=" + emailBody : "");
-              
-              this.globalS.emailaddress = null;              
-            }
-            
+            }        
             
             populate(){
               
@@ -2242,6 +2227,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     return {
                       label: x.staffToNotify,
                       value: x.staffToNotify,
+                      email: x.email,
                       disabled: x.mandatory ? true : false,
                       checked: x.mandatory ? true : false
                     }
@@ -2415,6 +2401,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   if(this.option == RECIPIENT_OPTION.ADMIT){
 
                     this.populateNotificationDetails();
+
                     this.listS.getnotifications({
                       branch: this.BRANCH_NAME,
                       coordinator: this.COORDINATOR
@@ -2424,6 +2411,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                         return {
                           label: x.staffToNotify,
                           value: x.staffToNotify,
+                          email: x.email,
                           disabled: x.mandatory ? true : false,
                           checked: x.mandatory ? true : false
                         }
@@ -2632,6 +2620,25 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     this.globalS.sToast('Success', `${file.name} file upload failed.`);
                     
                   }
+                }
+
+                emailnotify(){              
+              
+                  const {notes} = this.referInGroup.value;
+                  let notifications =  this.notifCheckBoxes.filter((x:any) => x.checked == true);
+
+                  let emails = notifications.map((x: any) => x.email).join(';')
+   
+                  // var emailTo = this.globalS.emailaddress; 
+                  
+                  var emailSubject = "ADAMAS NOTIFICATION";
+                  var emailBody = notes;  
+                  
+                  location.href = "mailto:" + emails + "?" +     
+                  (emailSubject ? "subject=" + emailSubject : "") + 
+                  (emailBody ? "&body=" + emailBody : "");
+                  
+                  this.globalS.emailaddress = null;              
                 }
 
                 writereminder(personid: string, notes: string, followups: Array<any>){

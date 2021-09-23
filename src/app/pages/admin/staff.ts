@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService,nodes,checkOptionsOne,sampleList, leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService, StaffService, ShareService,nodes,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -164,6 +164,9 @@ export class StaffAdmin implements OnInit, OnDestroy {
     filters: FormGroup;
     loading: boolean;
     findModalOpen: boolean = false;
+    statusList:any = statusList;
+    genderList:any = genderList;
+    
     columns: Array<any> = [
         {
           name: 'ID',
@@ -320,16 +323,17 @@ export class StaffAdmin implements OnInit, OnDestroy {
         });
     }
     buildForms(){
-        // alltypes: true,
         this.quicksearch = this.fb.group({
-          active:   true,
-          inactive: false,
+          availble:   true,
+          option: false,
+          status:'Active',
+          gender:'Any Gender',
           surname:'',
-          firstname:'',
-          phoneno:'',
-          suburb:'',
-          dob:'',
-          fileno:'',
+          staff:true,
+          brokers:true,
+          volunteers:true,
+          onleaveStaff:true,
+          previousWork:'',
           searchText:'',
         });
         

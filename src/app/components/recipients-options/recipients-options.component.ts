@@ -924,9 +924,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   // return;
                   // this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
                   // return;
-                  console.log(data);
+                  // console.log(data);
                   // this.emailnotify();
-                  return;
+                  // return;
 
                 this.listS.postreferralin(data).subscribe(x => {
                       this.globalS.sToast('Success', 'Package is saved'); 

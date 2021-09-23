@@ -581,9 +581,11 @@ export class ListService {
     getcategoriesobj(): Observable<any>{
         return this.auth.get(`${list}/categories/obj`)
     }
-    
     getstaffcategory(): Observable<any>{
         return this.auth.get(`${list}/staff-category`)
+    }
+    getstaffcategorylist(): Observable<any>{
+        return this.auth.get(`${list}/staff-Job-category-list`) 
     }
     
     getstaffdiscipline(): Observable<any>{
@@ -611,6 +613,10 @@ export class ListService {
 
     getdiscipline(): Observable<any>{
         return this.auth.get(`${list}/intake/discipline/list`)
+    }
+    
+    getdisciplinelist(): Observable<any>{
+        return this.auth.get(`${list}/staff/dicipline/teams/list`)
     }
 
     getfileclassification(): Observable<any>{
@@ -717,6 +723,9 @@ export class ListService {
     }
     getlistcasemanagers(): Observable<any>{
         return this.auth.get(`${list}/casemanagers`)
+    }
+    casemanagerslist(): Observable<any>{
+        return this.auth.get(`${list}/casemanagerslist`)
     }
     getlistreminders(): Observable<any>{
         return this.auth.get(`${list}/reminders`)

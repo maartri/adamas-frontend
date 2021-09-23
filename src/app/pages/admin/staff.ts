@@ -130,7 +130,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     checkOptionsOne = checkOptionsOne;
     
     branchesList: any;
-    programsList: any;
+    diciplineList: any;
     casemanagers: any;
     categoriesList: any;
     selectedRecpientTypes: any[];
@@ -488,12 +488,12 @@ export class StaffAdmin implements OnInit, OnDestroy {
     getUserData() {
         return forkJoin([
           this.listS.getlistbranchesObj(),
-          this.listS.getprogramsobj(),
-          this.listS.getcoordinatorslist(),
-          this.listS.getcategoriesobj(),
+          this.listS.getdisciplinelist(),
+          this.listS.casemanagerslist(),
+          this.listS.getstaffcategorylist(),
         ]).subscribe(x => {
           this.branchesList = x[0];
-          this.programsList = x[1];
+          this.diciplineList = x[1];
           this.casemanagers = x[2];
           this.categoriesList = x[3];
         });
@@ -938,9 +938,9 @@ ReportRender(){
     .filter(opt => opt.checked)
     .map(opt => opt.value).join("','")
     
-    this.selectedPrograms = this.programsList
+    this.selectedPrograms = this.diciplineList
     .filter(opt => opt.checked)
-    .map(opt => opt.name).join("','")
+    .map(opt => opt.description).join("','")
     
     this.selectedCordinators = this.casemanagers
     .filter(opt => opt.checked)
@@ -1025,11 +1025,11 @@ ReportRender(){
     if(filter == 2 || filter == -1){
       if(this.testcheck == false){
         if (this.allProgarms) {
-          this.programsList.forEach(x => {
+          this.diciplineList.forEach(x => {
             x.checked = true;
           });
         }else{
-          this.programsList.forEach(x => {
+          this.diciplineList.forEach(x => {
             x.checked = false;
           });
         }
@@ -1089,10 +1089,10 @@ ReportRender(){
       }
     }
     if(index == 2){
-      if (this.programsList.every(item => !item.checked)) {
+      if (this.diciplineList.every(item => !item.checked)) {
         this.allProgarms = false;
         this.allprogramIntermediate = false;
-      } else if (this.programsList.every(item => item.checked)) {
+      } else if (this.diciplineList.every(item => item.checked)) {
         this.allProgarms = true;
         this.allprogramIntermediate = false;
       } else {
@@ -1128,6 +1128,7 @@ ReportRender(){
   openFindModal(){
     this.tabFindIndex = 0;
     this.findModalOpen = true;
+    this.getUserData();
   }
   
   tabFindIndex: number = 0;

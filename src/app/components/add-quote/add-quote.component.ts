@@ -1188,7 +1188,7 @@ export class AddQuoteComponent implements OnInit {
                     quantity: 1,
                     frequency: 'Daily'  ,
                     quoteQty: 365 , 
-                    price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365)
+                    price: this.AdmPErcAmt != null ? ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365) : null
                 }
 
        

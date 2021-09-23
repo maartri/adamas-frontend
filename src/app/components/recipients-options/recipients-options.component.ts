@@ -1905,7 +1905,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE
                 }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                  this.datalist = data
+                  this.datalist = data.map(x =>{
+                    return {
+                      form: x.form,
+                      link: (x.link).toLowerCase()
+                    }
+                  })
                 });          
                 break;
                 case RECIPIENT_OPTION.ITEM:
@@ -2275,7 +2280,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   fundingType: this.FUNDING_TYPE,
                   type: 'REF_DEFAULT_XTRADATA'
                 }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                  this.datalist = data;
+                  this.datalist = data.map(x =>{
+                    return {
+                      form: x.form,
+                      link: (x.link).toLowerCase()
+                    }
+                  })
                   this.changeDetection();
                 }); 
 
@@ -2460,7 +2470,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       fundingType: this.FUNDING_TYPE,
                       type: 'ADMIT_DEFAULT_XTRADATA'
                     }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                      this.datalist = data;
+                      this.datalist = data.map(x =>{
+                        return {
+                          form: x.form,
+                          link: (x.link).toLowerCase()
+                        }
+                      })
                       this.changeDetection();
                     }); 
                   }

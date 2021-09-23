@@ -894,7 +894,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       reasonType: '',
                       
                       tabType: 'REFERRAL-IN',
-                      program: packageName,
+                      program: this.IsNDIAorHCP() ?  packageName : this.selectedProgram,
                       packageStatus: 'REFERRAL'
                     }
                     
@@ -919,13 +919,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       reminderTo: ''
                     }
                   }
+
                   // this.emailnotify(); 
                   // return;
                   // this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
                   // return;
-                  // console.log(data);
+                  console.log(data);
                   // this.emailnotify();
-                  // return;
+                  return;
 
                 this.listS.postreferralin(data).subscribe(x => {
                       this.globalS.sToast('Success', 'Package is saved'); 

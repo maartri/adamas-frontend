@@ -597,12 +597,14 @@ doneBooking(){
                 this.AddRecurrentRosters();
             }
 
-            this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
-            this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
-            this.clientCodes=inputs.clientCode;
+            if (this.viewType=='Staff'){
+                    
+                this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
+                this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+                this.clientCodes=inputs.clientCode;
 
-            this.show_alert=true;
-
+                this.show_alert=true;
+            }
                
             });
             this.addRecurrent=false;
@@ -870,6 +872,10 @@ addBooking(type:any){
         }else{
             if (this.programsList.length==1){
                 this.defaultProgram=this.programsList[0];
+                this.bookingForm.patchValue({
+                    program:this.defaultProgram
+                })
+                
                 this.current+=1;
             }
             this.addBookingModel=true;
@@ -896,14 +902,16 @@ deleteRoster(){
     this.spreadsheet.resumePaint();
     this.deleteRosterModal=false;
 
-    this.current_roster = this.find_roster(this.cell_value.recordNo)
-    let clientCode =this.current_roster.recipientCode;
-    let date= this.current_roster.date
-
-    this.txtAlertSubject = 'SHIFT DELETED : ' ;
-    this.txtAlertMessage = 'SHIFT DELETED : \n' + date + ' : \n'  + clientCode + '\n'  ;
    
-    this.show_alert=true;
+    if (this.viewType=='Staff'){
+        this.current_roster = this.find_roster(this.cell_value.recordNo)
+        let clientCode =this.current_roster.recipientCode;
+        let date= this.current_roster.date
+        this.txtAlertSubject = 'SHIFT DELETED : ' ;
+        this.txtAlertMessage = 'SHIFT DELETED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+    
+        this.show_alert=true;
+    }
 }
 reAllocate(){
     if (this.cell_value==null || this.cell_value.recordNo==0) return;
@@ -1560,16 +1568,16 @@ ClearMultishift(){
                       //  sheet.options.isProtected = true;
                         spread.resumePaint();
                        
+                        if (self.viewType=='Staff'){
+                            self.current_roster = self.find_roster(self.cell_value.recordNo);
+                            let clientCode =self.current_roster.recipientCode;
+                            let date= self.current_roster.date
 
-                        self.current_roster = self.find_roster(self.cell_value.recordNo);
-                        let clientCode =self.current_roster.recipientCode;
-                        let date= self.current_roster.date
-
-                        self.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
-                        self.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
-                       
-                        self.show_alert=true;
-
+                            self.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
+                            self.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+                        
+                            self.show_alert=true;
+                        }
                         return true;
                     }
                 }
@@ -3375,7 +3383,7 @@ reload(reload: boolean){
 
     
 
-    GETSERVICEACTIVITY(program: any): Observable<any> {
+    GETSERVICEACTIVITY_old(program: any): Observable<any> {
 
         const { serviceType, date, time } = this.rosterForm.value;
 
@@ -3427,6 +3435,176 @@ reload(reload: boolean){
         }
     }
 
+    
+    GETSERVICEACTIVITY(program: any): Observable<any> {
+
+        let serviceType=this.serviceType;
+        const { recipientCode }  = this.rosterForm.value;
+
+        if (recipientCode!="" && recipientCode!=null){
+            this.FetchCode=recipientCode;
+          }
+        let sql ="";
+        if (!program) return EMPTY;
+       // console.log(this.rosterForm.value)
+ 
+        
+       if (serviceType == 'ADMINISTRATION' ){
+        // const { recipientCode, debtor } = this.rosterForm.value;
+        sql =` SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,     
+              I.Amount AS BILLRATE,
+              I.unit as UnitType,isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
+              (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+              HACCType,'' as Anal,
+              (select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+              FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID        
+              INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+              WHERE SO.ServiceProgram = '${program}'  and I.[Status] = 'NONATTRIBUTABLE'
+              AND EXISTS
+              (SELECT Title
+              FROM ItemTypes ITM
+              WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = 'ADMINISTRATION'
+              AND ITM.[Status] = 'NONATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+              ORDER BY [Service Type]`;
+
+    }else if (serviceType == 'ADMISSION' || serviceType =='ALLOWANCE NON-CHARGEABLE' || serviceType == 'ITEM'  || serviceType == 'SERVICE') {
+            // const { recipientCode, debtor } = this.rosterForm.value;
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END)
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${ program}' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = '${serviceType}'
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`;
+    
+        }else if (serviceType == 'TRAVEL TIME' || serviceType == 'TRAVELTIME') {
+
+            sql=` SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${ program}'
+			AND I.[RosterGroup] = 'TRAVELTIME' AND (I.EndDate Is Null OR I.EndDate >='${this.currentDate}') `
+            
+           
+
+         }else if (this.booking_case==4 && !this.IsGroupShift){
+           
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO 
+            INNER JOIN Recipients C ON C.UNIQUEID=SO.PERSONID AND C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${program}' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] 
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`;
+        
+        }  else if (this.booking_case==4 && this.IsGroupShift){
+           
+                sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
+                I.AMOUNT AS BILLRATE,
+                isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate, 0 as GST,
+                'N/A' as Service_Description,
+                HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+                FROM ServiceOverview SO         
+                INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+                WHERE SO.ServiceProgram = '${program}' 
+                AND EXISTS
+                (SELECT Title
+                FROM ItemTypes ITM
+                WHERE  RosterGroup = '${this.GroupShiftCategory}' And Title = SO.[Service Type] And ProcessClassification in ('EVENT','OUTPUT' )
+                AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+                ORDER BY [Service Type]`;
+
+    }else if (this.booking_case==8 ){
+           
+        sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
+        I.AMOUNT AS BILLRATE,
+        isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
+        'N/A' as Service_Description,
+        HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+        FROM ServiceOverview SO         
+        INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+        WHERE SO.ServiceProgram = '${program}' 
+        AND EXISTS
+        (SELECT Title
+        FROM ItemTypes ITM
+        WHERE  RosterGroup = 'RECPTABSENCE' And Title = SO.[Service Type] And ProcessClassification = 'EVENT' 
+        AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+        ORDER BY [Service Type]`;
+    }
+     else {          
+
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${program}' AND [SO].[ServiceStatus] = 'ACTIVE' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] 
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`; 
+
+            
+              }
+
+            return this.listS.getlist(sql);
+            
+        
+    };
     GETSERVICEACTIVITY2(program: any): Observable<any> {
 
         let serviceType=this.serviceType;
@@ -3932,6 +4110,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
         this.rosterForm.get('serviceType').valueChanges.pipe(
             takeUntil(this.unsubscribe),
             switchMap(x => {
+             
                 this.clearLowerLevelInputs();
 
                 this.multipleRecipientShow = this.isServiceTypeMultipleRecipient(x);
@@ -4079,11 +4258,9 @@ this.bookingForm.get('program').valueChanges.pipe(
             if(d && d.length == 1){
                 this.bookingForm.patchValue({
                     serviceActivity: d[0]               
-                    
-                    
-
+                   
                 });
-              
+               this.next_tab();
                 
             }
         });
@@ -4559,12 +4736,14 @@ this.bookingForm.get('program').valueChanges.pipe(
                 this.addTimesheetVisible = false;
                // this.picked(this.selected);
                this.searchRoster(tsheet.date)
-               this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
-               this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
-               this.clientCodes=inputs.clientCode;
 
-               this.show_alert=true;
-            
+               if (this.viewType=='Staff'){
+                this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
+                this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+                this.clientCodes=inputs.clientCode;
+
+                this.show_alert=true;
+               }
             });
         }   
         
@@ -4573,12 +4752,13 @@ this.bookingForm.get('program').valueChanges.pipe(
             this.timeS.updatetimesheet(inputs).subscribe(data => {
                 this.globalS.sToast('Success', 'Timesheet has been updated');
                 this.addTimesheetVisible = false;
-        
-                this.txtAlertSubject= 'SHIFT DAY/TIME CHANGE : ' ;
-                this.txtAlertMessage= 'SHIFT TIME CHANGE : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
-                this.clientCodes=inputs.clientCode;
-                
-                this.show_alert=true;
+                if (this.viewType=='Staff'){
+                    this.txtAlertSubject= 'SHIFT DAY/TIME CHANGE : ' ;
+                    this.txtAlertMessage= 'SHIFT TIME CHANGE : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+                    this.clientCodes=inputs.clientCode;
+                    
+                    this.show_alert=true;
+                }
                 this.searchRoster(tsheet.date)
             });
         }

@@ -84,7 +84,7 @@
         <div  nz-row nz-col nzSpan="24" *ngIf="formloading && !recurrenceView" style="margin-top: 10px;  margin-left: 10px; margin-bottom: 10px;">
             <div nz-col nzSpan="10" class="nz-button"  >
                 <nz-button-group >
-                    <button nz-button nzType="default" style="padding: 4px;" [disabled]="!enable_buttons"  (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button>
+                    <!-- <button nz-button nzType="default" style="padding: 4px;" [disabled]="!enable_buttons"  (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button> -->
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(1)"  *ngIf="viewType=='Recipient'"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(2)"  nz-tooltip nzTooltipTitle="Record Client Administration time"><i nz-icon nzType="font-colors" nzTheme="outline"></i></button>
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(4)" nz-tooltip nzTooltipTitle="Record Service with nominated staff member" ><i nz-icon nzType="team" nzTheme="outline"></i></button>
@@ -1174,8 +1174,7 @@
         </div>
         
     </nz-modal>
-    
-    
+<!--     
     <div>
         <img id="icon-1" style="display: none; background-color: #D5D6DE;"  src="/media/r1.png"/>
         <img id="icon-2" style="display: none; background-color: #D5D6DE;"  src="/media/r2.png"/>
@@ -1195,5 +1194,26 @@
         <img id="icon-20" style="display: none; background-color: #D5D6DE;" src="/media/r20.png"/>
         <img id="icon-21" style="display: none; background-color: #D5D6DE;" src="/media/r21.jpg"/>
         <img id="icon-22" style="display: none; background-color: #D5D6DE;" src="/media/r22.jpg"/>
+    </div>  
+     -->
+    <div>
+        <img id="icon-1" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r1.png"/>
+        <img id="icon-2" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r2.png"/>
+        <img id="icon-3" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r3.png"/>
+        <img id="icon-4" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r4.png"/>
+        <img id="icon-5" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r5.png"/>
+        <img id="icon-6" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r6.png"/>   
+        <img id="icon-7" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r7.png"/>
+        <img id="icon-8" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r8.png"/>
+        <img id="icon-9" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r9.png"/>
+        <img id="icon-10" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r10.png"/>
+        <img id="icon-11" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r11.png"/>
+        <img id="icon-12" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r12.png"/>
+        <img id="icon-13" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r13.png"/>
+        <img id="icon-14" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r14.png"/>
+        <img id="icon-15" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r15.png"/>
+        <img id="icon-20" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r20.png"/>
+        <img id="icon-21" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r21.jpg"/>
+        <img id="icon-22" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r22.jpg"/>
     </div>  
 

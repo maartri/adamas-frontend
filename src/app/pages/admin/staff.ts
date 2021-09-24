@@ -241,6 +241,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
           checked: false
         }
       ]
+  skillsList: unknown;
       handleCancel() {
         this.findModalOpen = false;
       }
@@ -294,6 +295,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.buildForm();
         this.buildForms();
+        this.getUserData();
         this.normalRoutePass();
     }
 
@@ -491,11 +493,13 @@ export class StaffAdmin implements OnInit, OnDestroy {
           this.listS.getdisciplinelist(),
           this.listS.casemanagerslist(),
           this.listS.getstaffcategorylist(),
+          this.listS.getskills(),
         ]).subscribe(x => {
-          this.branchesList = x[0];
-          this.diciplineList = x[1];
-          this.casemanagers = x[2];
+          this.branchesList   = x[0];
+          this.diciplineList  = x[1];
+          this.casemanagers   = x[2];
           this.categoriesList = x[3];
+          this.skillsList     = x[4];
         });
       }
     view(index: number) {
@@ -1128,7 +1132,6 @@ ReportRender(){
   openFindModal(){
     this.tabFindIndex = 0;
     this.findModalOpen = true;
-    this.getUserData();
   }
   
   tabFindIndex: number = 0;

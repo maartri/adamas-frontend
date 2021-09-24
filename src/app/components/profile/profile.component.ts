@@ -173,7 +173,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.contactForm = this.formBuilder.group({
       id: [''],
       type: ['', [Validators.required]],
-      details: ['', [Validators.required]],
+      details: [null, [Validators.required]],
       personId: [''],
       primaryPhone: [false]
     });
@@ -183,7 +183,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       description: [null, [Validators.required]],
       address: [null, [Validators.required]],
       pcodesuburb: [null],
-      personId: ['']
+      personId: [''],
+      primaryAddress: [false]
     });
 
 
@@ -661,7 +662,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   formatAddress(addressForm: FormGroup): Array<NamesAndAddresses> {
-    const { pcodesuburb, address, description, id, personId } = addressForm.value;
+    const { pcodesuburb, address, description, id, personId, primaryAddress } = addressForm.value;
 
     let pcode = /(\d+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\d+)/g)[0].trim() : "";
     let suburb = /(\D+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\D+)/g)[0].trim() : ""
@@ -676,7 +677,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       Description: description,
       Address1: address,
       RecordNumber: id,
-      PersonID: personId
+      PersonID: personId,
+      PrimaryAddress: primaryAddress
     }
 
     temp.push(na);
@@ -741,7 +743,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   processSubscriptions() {
+
     this.loading = true;
+    
     forkJoin(this.subscriptionArray).subscribe(
       data => {
         this.subscriptionArray = [];
@@ -773,6 +777,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if (this.window == 1) {
       this.loading = true;
+      // console.log(this.addressForm.value);
+      // return;
       this.clientS.updateuseraddress(this.formatAddress(this.addressForm))
         .subscribe(data => {
           if (data.success) {
@@ -788,8 +794,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     if (this.window == 2) {
-      console.log(this.contactForm.value);
-      // return;
       this.clientS.updateusercontact(this.formatContact(this.contactForm)).subscribe(data => {
         if (data.success) {
           this.globalS.sToast('Success', 'Contact Updated!');
@@ -821,7 +825,13 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   addContactOpen() {
     this.addContactDrawer = true;
-    this.contactForm.reset();
+    this.contactForm.reset({
+      id: '',
+      type: null,
+      details: null,
+      personId: '',
+      primaryPhone: false
+    });
     this.POPULATE_CONTACTS();
   }
 
@@ -875,13 +885,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.editModalOpen = true;
     this.window = 1;
     this.addressForm.reset();
-
+    console.log(address);
     this.addressForm.patchValue({
       id: address.recordNumber,
       description: address.description,
       address: address.address1,
       pcodesuburb: `${address.postCode} ${address.suburb ? address.suburb.trim() : ''} ${address.stat ? `, ${address.stat}` : ''}`,
-      personId: address.personID
+      personId: address.personID,
+      primaryAddress: address.primaryAddress
     });
 
     this.POPULATE_ADDRESS();
@@ -892,6 +903,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.editModalOpen = true;
     this.window = 2;
 
+    // console.log(contact);
     this.contactForm.patchValue({
       id: contact.recordNumber,
       type: contact.type,

@@ -268,13 +268,13 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
       
       
       var monQuant = ('0'+ (x['monday']['quantity'])).slice(-2).concat('.00');
-      parseString = parseString.concat(format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
+      // parseString = parseString.concat('||', format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
 
-      // if(index > 0){
-      //   parseString = parseString.concat('||',format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
-      // } else {
-      //   parseString = parseString.concat(format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
-      // }
+      if(index > 0){
+        parseString = parseString.concat('||',format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
+      } else {
+        parseString = parseString.concat(format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
+      }
       
       var tueQuant = ('0'+ (x['tuesday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['tuesday']['time']),'HH:mm'), '|', tueQuant);

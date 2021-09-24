@@ -1,12 +1,15 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import format from 'date-fns/format';
 import { FormGroup, FormBuilder } from '@angular/forms';
 // import { ListService, MenuService } from '@services/index';
 import { TimeSheetService, GlobalService, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, MenuService } from '@services/index';
+import { timeout } from 'rxjs/operators';
+import { setDate } from 'date-fns';
 
 @Component({
-  selector: 'app-billing',
-  templateUrl: './billing.component.html',
+  selector: 'app-billing1',
+  templateUrl: './travel.component.html',
   styles: [`
   .mrg-btm{
     margin-bottom:0.3rem;
@@ -24,14 +27,14 @@ import { TimeSheetService, GlobalService, ClientService, StaffService, ListServi
   }
   `]
 })
-export class BillingComponent implements OnInit {
+export class TravelComponent implements OnInit {
 
   branchList: Array<any>;
   programList: Array<any>;
   categoriesList: Array<any>;
   batchHistoryList: Array<any>;
   tableData: Array<any>;
-  PayPeriodLength: number = 0;
+  PayPeriodLength: number;
   PayPeriodEndDate: any;
 
   loading: boolean = false;
@@ -56,24 +59,29 @@ export class BillingComponent implements OnInit {
   check: boolean = false;
   temp_title: any;
   settingForm: FormGroup;
+  userRole:string="userrole";
   whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  dtpEndDate: number;
 
   constructor(
     private cd: ChangeDetectorRef,
     private router: Router,
+    private globalS: GlobalService,
     private listS: ListService,
     private formBuilder: FormBuilder,
     private menuS: MenuService,
   ) { }
 
   ngOnInit(): void {
+    this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+    this.userRole = this.tocken.role;
     this.buildForm();
     this.loadBranches();
     this.loadPrograms();
     this.loadCategories();
     this.populateDropdowns();
-    this.loadData();
-    // this.GetPayPeriodLength();
+    this.loadBatchHistory();
+    this.GetPayPeriodLength();
     this.GetPayPeriodEndDate();
     // this.chkAllDatesClick();
     this.loading = false;
@@ -133,7 +141,7 @@ export class BillingComponent implements OnInit {
       this.loading = false;
     });
   }
-  loadData() {
+  loadBatchHistory() {
     let sql = "Select pay_bill_batch.RecordNumber, pay_bill_batch.OperatorID, pay_bill_batch.BatchDate, pay_bill_batch.BatchNumber, pay_bill_batch.BatchDetail, pay_bill_batch.BatchType, pay_bill_batch.CDCBilled, pay_bill_batch.Date1, pay_bill_batch.Date2, pay_bill_batch.BillBatch# as BillBatch, pay_bill_batch.xDeletedRecord, pay_bill_batch.xEndDate FROM pay_bill_batch INNER JOIN batch_record on batchnumber = batch_record.BCH_NUM WHERE batch_record.bch_type in ('B','S') ORDER BY convert(int, batchnumber) DESC";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
@@ -143,68 +151,55 @@ export class BillingComponent implements OnInit {
     });
   }
   GetPayPeriodLength() {
-    let sql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
-    this.loading = true;
-    this.listS.getlist(sql).subscribe(data => {
-      if (data[0].defaultPayPeriod != "") {
-        this.PayPeriodLength = data;
-      }
-      else { this.PayPeriodLength = 14; }
-      // console.log("Result : " , this.PayPeriodLength);
-    });
+    // let sql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
+    // this.loading = true;
+    // this.listS.getlist(sql).subscribe(data => {
+    //   console.log("Result 0 is: ", data[0].defaultPayPeriod)
+    //   if (data[0].defaultPayPeriod != "") {
+    //     this.PayPeriodLength = data;
+    //   }
+    //   else { this.PayPeriodLength = 14; }
+    // })
+    // console.log("Result 1 is: " , this.PayPeriodLength);
   }
   GetPayPeriodEndDate() {
     let sql = "SELECT PayPeriodEndDate as PayPeriodEndDate FROM SysTable";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
-      console.log(data[0].payPeriodEndDate);
       if (data[0].PayPeriodEndDate != "") {
         this.inputForm.patchValue({
-              dtpEndDate: new Date() , //this.globalS.convertDbDate(data[0].PayPeriodEndDate),
+              dtpEndDate: this.globalS.convertDbDate(data[0].payPeriodEndDate),
           });
       }
       else { 
         this.inputForm.patchValue({
-          dtpEndDate: new Date(),
-      });
-        
+          dtpEndDate: new Date(),});
       }
     })
-    // const {
-    //   dtpEndDate,
-    // } = this.PayPeriodEndDate;
     // this.inputForm.patchValue({
-    //   dtpEndDate: dtpEndDate,
-    // });
-  }
-
-  chkAllDatesClick(){
-    // var dtpStartDate 
-    // var dtpEndDate
-    // // dtpStartDate = this.PayPeriodEndDate - (this.PayPeriodLength - 1);
-    // dtpStartDate = this.PayPeriodEndDate - (this.PayPeriodLength - 1);
-    // dtpEndDate = this.PayPeriodEndDate
-    // this.inputForm.patchValue({
-    //   dtpStartDate:dtpStartDate,
-    //   dtpEndDate:dtpEndDate,
+    //   dtpStartDate: this.dtpEndDate - ((this.PayPeriodLength * 24*30*60*1000)- 1),
     // })
-    // debugger;
+
+    let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
+    this.listS.getlist(fsql).subscribe(fdata => {
+      console.log("Result 1 is: ", fdata[0].defaultPayPeriod)
+      if (fdata[0].defaultPayPeriod != "") {
+        this.PayPeriodLength = fdata;
+      }
+      else { this.PayPeriodLength = 14; }
+    })
+    
+
+    var EndDate
+    EndDate = new Date(this.dtpEndDate);
+    let d = EndDate.getDate()-1;
+    EndDate.setDate(EndDate.getDate()-d) 
+    console.log("Result test is: ", (EndDate));
+
+    console.log("Result 2 is: ", (this.PayPeriodLength));
+    // console.log("Result 3 is: ", (this.dtpEndDate.setDate(this.dtpEndDate.getDate()-10)));
+    // console.log("Result 3 is: ", (this.dtpEndDate - (this.PayPeriodLength)));
   }
-
-  
-  // let sql;
-  // if (!type) return EMPTY;
-  // const { isMultipleRecipient } = this.timesheetForm.value;
-  // if (type === 'ADMINISTRATION' || type === 'ALLOWANCE NON-CHARGEABLE' || type === 'ITEM' || (type == 'SERVICE' && !isMultipleRecipient)) {
-  //     sql = `SELECT Distinct [Name] AS ProgName FROM HumanResourceTypes WHERE [group] = 'PROGRAMS' AND ISNULL(UserYesNo3,0) = 0 AND (EndDate Is Null OR EndDate >=  '${this.currentDate}') ORDER BY [ProgName]`;
-  // } else {
-  //     sql = `SELECT Distinct [Program] AS ProgName FROM RecipientPrograms 
-  //         INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
-  //         WHERE Recipients.AccountNo = '${type}' AND RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') ORDER BY [ProgName]`
-  // }
-  // if (!sql) return EMPTY;
-  // return this.listS.getlist(sql);
-
 }
 
 

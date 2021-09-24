@@ -90,8 +90,35 @@
                                         </td>
                                     </tr>                                                              
                                     
-                                    <tr >                                            
-                                        <td class="colwidthentity"  *ngFor="let item of entity;let indexofelement= index;" >                                               
+                                    <tr > 
+                                        <td>
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of entity;let indexofelement= index;"> 
+                                                    <span>{{item}}</span>                                                                                                                                                     
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td> 
+                                        <td>
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of condition;let indexofelement= index;"> 
+                                                    <span>{{item}}</span>                                                                                                                                           
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td>
+                                        <td>
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of value;let indexofelement= index;"> 
+                                                    <span>{{item}}</span>                                                                                                                                           
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td>
+                                        <td  class="colwidth">
+                                            <div *ngIf="frm_delete"> <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
+                                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(datarow)">Delete</a>                                            
+                                            </div>
+                                        </td>
+                                        
+                                        <!--<td class="colwidthentity"  *ngFor="let item of entity;let indexofelement= index;" >                                               
                                             <span>{{item}}</span>                                            
                                         </td>
                                         <td class="colwidth"  *ngFor="let item of condition;let indexofelement= index;" >                                               
@@ -104,7 +131,7 @@
                                             <div *ngIf="frm_delete"> <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
                                                 nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(datarow)">Delete</a>                                            
                                             </div>
-                                        </td>
+                                        </td> -->
                                   </tr>                                                                
                             </table>                                               
                     </div>
@@ -142,11 +169,11 @@
     </div> 
 </div>
 
-<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+<nz-drawer [nzHeight]= "650" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loading">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
     </div>
     <div nz-row>
-        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="650"></iframe> 
     </div>
 </nz-drawer>

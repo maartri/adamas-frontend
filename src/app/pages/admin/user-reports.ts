@@ -45,7 +45,7 @@ const inputFormDefault = {
   isVisibleprompt : false,
   rptfieldname:0,
   RptFormat: [''],
-  rpthttp :  'https://www.mark3nidad.com:5488/api/report',
+  
   
 }
 
@@ -54,6 +54,10 @@ const inputFormDefault = {
 
   },
   styles: [`
+  .spinner{
+    margin:1rem auto;
+    width:1px;
+}
   .item-right{
     text-align: right;
     align-content: right;
@@ -153,7 +157,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     loading: boolean =  false;
     isVisibleprompt ;
     reportid: string;
-    rpthttp : string ;//= 'https://www.mark3nidad.com:5488/api/report';
+    rpthttp : string = 'https://www.mark3nidad.com:5488/api/report';
     tocken :any;
     radiofilter:any;
     rptfieldname:number ;
@@ -1374,17 +1378,20 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   
   apply(){
     this.frm_delete = true;
-    this.entity  = this.inputForm.value.exportitemsArr;
-    this.condition  = this.inputForm.value.functionsArr;
-    this.value  = this.inputForm.value.Arr;
-    this.Endvalue  = this.inputForm.value.valArr;
+    
     
     var temp,temp1,temp2 :Array<any>
 
-      //if (this.entity == null){
-        this.entity = concat([this.entity]);
-        this.value = concat([this.value]);
-        this.condition = concat([this.condition]);
+      if (this.entity == null){
+        this.entity  = [this.inputForm.value.exportitemsArr];
+        this.condition  = [this.inputForm.value.functionsArr];
+        this.value  = [this.inputForm.value.Arr];
+        this.Endvalue  = [this.inputForm.value.valArr];
+    }else{
+      this.entity =[...this.entity, this.inputForm.value.exportitemsArr];
+      this.value = [...this.value, this.inputForm.value.Arr];
+      this.condition = [...this.condition, this.inputForm.value.functionsArr];
+    }
       
         
         switch ((this.inputForm.value.exportitemsArr).toString()) {
@@ -1420,10 +1427,10 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
               break;
 //General Demographics             
           case 'Full Name-Surname First':
-            this.ConditionEntity = '(R.[Surname/Organisation]' + ' + ' +'FirstName)'
+            this.ConditionEntity = '(R.[Surname/Organisation]' + ' + ' +' FirstName)'
               break;
           case 'Full Name-Mailing':
-            this.ConditionEntity = '(R.[Surname/Organisation]' + ' + ' +'FirstName)'  
+            this.ConditionEntity = '(R.[Surname/Organisation] ' + ' + ' +' FirstName)'  
                   break;
                                  
           case 'Gender':
@@ -3656,7 +3663,6 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           case 'MH-KP_Exit_6':
                this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_6]'
                   break;
-
           case 'MH-KP_Exit_7':
                this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_7]'
                   break;
@@ -3710,10 +3716,10 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           case 'Goal Completed Date':
                this.ConditionEntity =  'GOALS.DateInstalled'
                   break;                  
-            case 'Goal  Achieved':
-               this.ConditionEntity =  'GOALS.[State]'
-                  break;
-            case 'Quote Strategy':
+          case 'Goal  Achieved':
+              this.ConditionEntity =  'GOALS.[State]'
+                break;
+          case 'Quote Strategy':
                this.ConditionEntity =  'STRATEGIES.Notes'
                   break;
           case 'Strategy Expected Outcome':
@@ -3748,7 +3754,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       this.frm_delete = false;            
     }
   }
-  //  console.log(index)
+  //  console.log(index) 
   }
   deletelistitem(index){        
         this.list.splice(index, 1); 
@@ -3891,7 +3897,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   }
   ReportRender(sql:string){
 
-  //  console.log(sql);
+    console.log(sql);
     this.drawerVisible = true;
     this.loading = true;
 
@@ -3912,19 +3918,6 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     if(this.includeClinicHistoryWhere != undefined && this.includeClinicHistoryWhere != ""){sql = sql + " AND " + this.includeClinicHistoryWhere}
     if(this.includeRecipientCompetencyWhere != undefined && this.includeRecipientCompetencyWhere != ""){sql = sql + " AND " + this.includeRecipientCompetencyWhere}
     if(this.includeCareplanWhere != undefined && this.includeCareplanWhere != ""){sql = sql + " AND " + this.includeCareplanWhere}
-
-    
-
-    
-
-
-    
-
-    
-
-          
-    
-    
     
       
     var fQuery = sql 
@@ -3937,7 +3930,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   //    console.log(this.tocken.user)
       const data = {
 
-          "template": { "_id": "qTQEyEz8zqNhNgbU" },
+          "template": {"shortid":"w1Vify0-uA"}, //{ "_id": "qTQEyEz8zqNhNgbU" },
           "options": {
               "reports": { "save": false },
               //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"

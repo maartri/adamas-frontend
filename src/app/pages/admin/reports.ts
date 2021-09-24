@@ -20159,42 +20159,26 @@ FetchRuntimeReport(title){
     console.log("TITLE:  " +title)
 
   const temp =  forkJoin([
-        this.ReportS.GetReportFormat(title),
+    //    this.ReportS.GetReportFormat(title),
         this.ReportS.GetReportSql(title)
     ]);    
     temp.subscribe(data => {
-        this.UserRptFormatlist = data[0];
-    //    this.UserRptSQLlist = data[1];
-
-    //    console.log(data[1])
-    //    this.UserRptSQLlist = data[1].toString().split(",")
-    //    console.log(this.UserRptSQLlist)
-
-        this.RenderRunTimeReport(this.UserRptSQLlist)
+        //this.UserRptFormatlist = data[0];
+        this.UserRptSQLlist = data[0];   
+        var re = /~/gi;    
+        console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
+    
+     //   this.RenderRunTimeReport(this.UserRptSQLlist)
 
     });
 
-    /*
-    this.ReportS.GetReportFormat(title).subscribe(data => {
-        //this.DataArra = data;                        
-        this.UserRptFormatlist = data;        
-        //console.log(data)
-        
-    });
-
-    this.ReportS.GetReportSql(title).subscribe(data => {
-        //this.DataArra = data;                
-        this.UserRptSQLlist = data;
-        //console.log(data)
-        
-    });
-    */
+   
 
    
 
 }
 RenderRunTimeReport(strSQL){
-
+    console.log(strSQL)
     const data = {
         
         "template": { "_id": "qTQEyEz8zqNhNgbU" },

@@ -15,30 +15,38 @@ import { concat, flatMapDeep, indexOf, size } from "lodash";
 import eachDayOfInterval from "date-fns/esm/eachDayOfInterval/index";
 
 const inputFormDefault = {
-  frm_nodelist: [true],
-  frm_delete : [false],
   
-  btnid: '',
-  content:  '',
+  
+  btnid:[''],
+  content:  [''],
   one:[[]],
   list: [[]],
   entity:[[]],
   condition:[[]],
   value:[[]],
+  Endvalue:[[]],
   // = ['title','ASAD','key']
   //  data : Array<any> = [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr:[[]],
   functionsArr:  [["EQUALS", "BETWEEN", "LESS THAN", "GREATER THAN", "NOT EQUAL TO", "IS NOTHING", "IS ANYTHING", "IS TRUE", "IS FALSE"]],
   //Arr: [[]],
-  Arr: '',
-  valArr:'',
-  RptTitle :'',
+  Arr: [''],
+  valArr:[''],
+  RptTitle :[''],
   //valArr:[[]],
   data: [[]],
   activeonly:[false],
   incl_internalCostclient: [false],
-  radiofilter:["meet"],
+  radiofiletr:['meet'],
   datarow: [[]],  
+
+  drawerVisible:  false,
+  
+  isVisibleprompt : false,
+  rptfieldname:0,
+  RptFormat: [''],
+  rpthttp :  'https://www.mark3nidad.com:5488/api/report',
+  
 }
 
 @Component({
@@ -51,6 +59,11 @@ const inputFormDefault = {
     align-content: right;
     float:right;
     }
+    .btn{
+      margin : 10px;
+      padding: 2px;
+         
+  }
     .item-left{
     text-align: left;
     align-content: left;
@@ -118,16 +131,16 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   condition:Array<any>;
   value:Array<any>;
   Endvalue :Array<any>; // = ['title','ASAD','key']
-  //  data : Array<any> = [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
+  //data : Array<any> ;= [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr: Array<any>;
   functionsArr: Array<any> = ["EQUALS", "BETWEEN", "LESS THAN", "GREATER THAN", "NOT EQUAL TO", "IS NOTHING", "IS ANYTHING", "IS TRUE", "IS FALSE"];
  // Arr: Array<any>;
  // valArr: Array<any>;
-  Arr: '';
-  valArr:'';
-  RptTitle : '';
+  Arr: string;
+  valArr:string;
+  RptTitle : string;
   
-  data: Array<any> = [];
+  data: Array<any>;
   activeonly: boolean;
   incl_internalCostclient: boolean;
 
@@ -136,14 +149,14 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     id: string;
     tryDoctype: any;
     pdfTitle: string;
-    drawerVisible: boolean = false;
-    loading: boolean = false;
-    isVisibleprompt = false;
+    drawerVisible: boolean ;
+    loading: boolean =  false;
+    isVisibleprompt ;
     reportid: string;
-    rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+    rpthttp : string ;//= 'https://www.mark3nidad.com:5488/api/report';
     tocken :any;
     radiofilter:any;
-    rptfieldname:number = 0;
+    rptfieldname:number ;
 
      sql: string;
      Saverptsql : string;     
@@ -170,7 +183,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      includeCareplanWhere :string;
 
      //bodystyle:object;
-     RptFormat :string;
+     RptFormat :string ;
 
     
 IncludeFundingSource: boolean;  IncludeProgram: boolean;  IncludeStaffAttributes: boolean;  IncludePensions: boolean;  IncludeExcluded: boolean; IncludeIncluded: boolean;  IncludePreferences : boolean;
@@ -252,7 +265,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
     this.RptFormat = this.GlobalS.var2.toString();
 
-    console.log(this.tocken)
+    //console.log(this.tocken)
     
     
   }
@@ -264,6 +277,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   }
 
   ContentSetter(ekey) {
+  //  console.log(ekey + " Content setter ")
 
     var temp = (ekey.toString()).slice(-2)
     this.StrType = temp;
@@ -1294,6 +1308,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     // load child async
     if (event.eventName === 'expand') {
       const node = event.node;
+    //  console.log(event.keys)
       this.ContentSetter(event.keys);
       if (node?.getChildren().length === 0 && node?.isExpanded) {
         this.loadNode().then(data => {
@@ -1316,7 +1331,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     //  console.log(event.keys[0])
       if (this.list == null){
 
-        this.one  = [  event.node.title ]
+        this.one  = [event.node.title]
       }
       else{
         
@@ -1351,9 +1366,9 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
 
   }
   SetValueFrame() {
-    console.log("onchange value")
+   
     if(this.inputForm.value.functionsArr == "BETWEEN")  {
-      console.log("between")
+    
     }
   }
   
@@ -1366,22 +1381,11 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     
     var temp,temp1,temp2 :Array<any>
 
-    //  if (this.entity == null){
+      //if (this.entity == null){
         this.entity = concat([this.entity]);
         this.value = concat([this.value]);
         this.condition = concat([this.condition]);
-      //  console.log("datarow null " + this.entity)
-        //this.datarow  = [entity,condition,value];
-        this.datarow  =concat([this.entity,this.condition,this.value]);
-   /*   }else
-      {
-        this.entity = this.entity.concat([ this.entity]);
-        this.value = this.value.concat([ this.value]);
-        this.condition = this.condition.concat([ this.condition]);
-        console.log("datarow else" + this.entity)
-        //this.datarow = [this.entity,this.condition,this.value];
-      }  */
-        //console.log(this.entity,this.value,this.condition)    
+      
         
         switch ((this.inputForm.value.exportitemsArr).toString()) {
           //NAME AND ADDRESS
@@ -3861,24 +3865,28 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     this.isVisibleprompt = true;
   }
   SaveReport(){
+      this.isVisibleprompt = false;
       var RptSQL  =  this.Saverptsql;
-     
-    var Title  = this.RptTitle;
+      this.RptTitle = (this.inputForm.value.RptTitle).toString();
+      if(this.RptTitle != null && RptSQL != null){
+    //var Title  = this.RptTitle;
     var Format  = this.RptFormat;
+    //console.log(Format)
     var CriteriaDisplay = "TEST CRITERIA" ;
     var DateType = " ";
     var UserID = this.tocken.nameid;
     
      
    var insertsql = " INSERT INTO ReportNames(Title, Format,SQLText,UserID, DateType, CriteriaDisplay) " +
-   " VALUES( '" + Title +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "   
+   " VALUES( '" + this.RptTitle +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "   
    
-   this.ReportS.InsertReport(insertsql).subscribe(data=>{
+   this.ReportS.InsertReport(insertsql).subscribe(x=>{
    //  console.log(data)
-    if(!data) {
+    if(x != null) {
      this. GlobalS.sToast('Success', 'Saved successful');     
     }    
    }); 
+  }
 
   }
   ReportRender(sql:string){

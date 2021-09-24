@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { GlobalService, StaffService,nodes, ShareService, leaveTypes, ListService,TimeSheetService } from '@services/index';
+import { GlobalService, StaffService,nodes,checkOptionsOne,sampleList,ShareService, leaveTypes, ListService,TimeSheetService } from '@services/index';
 import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
 import { RECIPIENT_OPTION } from '../../modules/modules';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
@@ -189,19 +189,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   
   tabs = [1, 2, 3]; 
   checked: any;
-  sampleList: Array<any> = ["EQUALS","BETWEEN","LESS THEN","GREATER THAN","NOT EQUAL TO","IS NOTHING","IS ANYTHING","IS TRUE","IS FALSE"];
+  sampleList: Array<any> = sampleList;
   cariteriaList:Array<any> = [];
   nodelist:Array<any> = [];
 
-  checkOptionsOne = [
-    { label: 'REFERRAL', value: 'REFERRAL', checked: true },
-    { label: 'WAITING LIST', value: 'WAITING LIST', checked: true },
-    { label: 'RECIPIENT', value: 'RECIPIENT', checked: true },
-    { label: 'CARER', value: 'CARER', checked: true },
-    { label: 'CARER/RECIPIENT', value: 'CARER/RECIPIENT', checked: true },
-    { label: 'BILLING CLIENT', value: 'BILLING CLIENT', checked: true },
-    { label: 'ASSOCIATE', value: 'ASSOCIATE', checked: true },
-  ];
+  checkOptionsOne = checkOptionsOne;
+
   sampleModel: any;
   
   columns: Array<any> = [
@@ -330,9 +323,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
 
   }
+  
   log(event: any,index:number) {
-    this.testcheck = true;
-    
+    this.testcheck = true;   
     if(index == 1)
     this.selectedbranches = event;
     if(index == 2)
@@ -340,8 +333,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     if(index == 3)
     this.selectedCordinators = event;
     if(index == 4)
-    this.selectedCategories = event;
-    
+    this.selectedCategories = event;  
   }
   
   setCriteria(){
@@ -473,12 +465,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       this.selectedbranches = this.branchesList
       .filter(opt => opt.checked)
       .map(opt => opt.description).join("','")
-      
-      console.log("criteria list");
-      console.log(this.cariteriaList);
-      console.log("criteria list");
 
-      this.timeS.getrecipientquicksearch({
+
+      var postdata = {
         active:this.quicksearch.value.active,
         inactive:this.quicksearch.value.inactive,
         alltypes:this.allChecked,
@@ -499,13 +488,15 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
         fileno:this.quicksearch.value.fileno,
         searchText:this.quicksearch.value.searchText,
-        criterias:this.cariteriaList  
-      })
-      .subscribe(data => {
+        criterias:this.cariteriaList // list of rules
+      }
+
+      this.timeS.postrecipientquicksearch(postdata).subscribe(data => {
         this.filteredResult = data;
         this.loading = false;
         this.detectChanges();
-      })
+      });
+
     }
     updateAllChecked(): void {
       this.indeterminate = false;

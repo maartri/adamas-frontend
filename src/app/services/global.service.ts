@@ -134,6 +134,8 @@ export const caldStatuses = ['CALD BACKGROUND', 'NOT CALD BACKGROUND']
 export const titles = ["Br","Dame","Dr","EO","Fr","Lady","Master","Miss","Mr","Mrs","Ms","Prof","Sir","SR"]
 export const types = ['BROKERAGE ORGANISATION', 'STAFF', 'SUNDRY BROKERAGE SUPPLIER', 'VOLUNTEER']
 export const gender = ['MALE', 'FEMALE', 'NOT STATED']
+export const genderList = ['Any Gender','MALE', 'FEMALE']
+export const statusList = ['Active','Any Status','Inactive']
 export const months = moment.months()
 export const recurringInt = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
 export const recurringStr = ['Day/s', 'Week/s', 'Month/s', 'Year/s']
@@ -146,6 +148,17 @@ export const enforcement: string[] = ["HARD LIMIT", "SOFT LIMIT"];
 export const incidentSeverity: string[] = ["LOW", "MEDIUM", "HIGH"];
 export const statuses: Array<string> = ['', 'CASUAL', 'CONTRACT', 'FULL TIME CONTRACT', 'FULL TIME PERMANENT', 'PART TIME CONTRACT', 'PART TIME PERMANENT'];
 export const contactGroups: Array<string> = ['1-NEXT OF KIN', '2-CARER', '3-MEDICAL', '4-ALLIED HEALTH', '5-HEALTH INSURANCE', '6-POWER OF ATTORNEY', '7-LEGAL OTHER', '8-OTHER'];
+export const sampleList: Array<string> = ["EQUALS","BETWEEN","LESS THEN","GREATER THAN","NOT EQUAL TO","IS NOTHING","IS ANYTHING","IS TRUE","IS FALSE"];
+
+export const checkOptionsOne = [
+  { label: 'REFERRAL', value: 'REFERRAL', checked: true },
+  { label: 'WAITING LIST', value: 'WAITING LIST', checked: true },
+  { label: 'RECIPIENT', value: 'RECIPIENT', checked: true },
+  { label: 'CARER', value: 'CARER', checked: true },
+  { label: 'CARER/RECIPIENT', value: 'CARER/RECIPIENT', checked: true },
+  { label: 'BILLING CLIENT', value: 'BILLING CLIENT', checked: true },
+  { label: 'ASSOCIATE', value: 'ASSOCIATE', checked: true },
+];
 export const nodes = [
      {
       title: 'Name And Address',

@@ -566,6 +566,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     // return;
     console.log(this.referralGroup.value)
 
+
     this.clientS.postprofile(this.referralGroup.value)
       .subscribe(data => {
         
@@ -656,7 +657,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     return this.formBuilder.group({
       address1: new FormControl(''),
       type: new FormControl('USUAL'),
-      suburb: new FormControl('')
+      suburb: new FormControl(''),
+      primary: new FormControl(false)
     });
   }
 
@@ -673,7 +675,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   createContact(): FormGroup {
     return this.formBuilder.group({
       contacttype: new FormControl('MOBILE'),
-      contact: new FormControl('')
+      contact: new FormControl(''),
+      primary: new FormControl(false)
     });
   }
 
@@ -799,6 +802,36 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   get canBeDone(): boolean {
     let { branch, agencyDefinedGroup, recipientCoordinator } = this.referralGroup.value;
     return !this.globalS.isEmpty(branch) && !this.globalS.isEmpty(agencyDefinedGroup) && !this.globalS.isEmpty(recipientCoordinator)
+  }
+
+  contactIsPrimary(index: any){
+    this.uncheckPrimaryContacts();
+    var contact = this.referralGroup.get('contacts') as FormArray;
+    var isPrimary = contact.controls[index].get('primary').value
+    contact.controls[index].get('primary').patchValue(!isPrimary);    
+  }
+
+  addressIsPrimary(index: any){
+    this.uncheckPrimaryAddress();
+    var address = this.referralGroup.get('addresses') as FormArray;
+    var isPrimary = address.controls[index].get('primary').value
+    address.controls[index].get('primary').patchValue(!isPrimary);    
+  }
+
+  uncheckPrimaryAddress(){
+    var contact = this.referralGroup.get('addresses') as FormArray;
+    for(var c of contact.controls)
+    { 
+      c.get('primary').patchValue(false);
+    }
+  }
+
+  uncheckPrimaryContacts(){
+    var contact = this.referralGroup.get('contacts') as FormArray;
+    for(var c of contact.controls)
+    { 
+      c.get('primary').patchValue(false);
+    }
   }
 
   contactTypeChange(index: any) {

@@ -254,7 +254,7 @@ export class ListService {
         return this.auth.get(`${list}/getcharges/${id}`);
     } */
     GetCMPERC(id: string): Observable<any>{
-        return this.auth.get(`${list}/getcmperc/${id}`);
+        return this.auth.getstring(`${list}/getcmperc/${id}`);
     }
     GetTOpUP(id: string): Observable<any>{
         return this.auth.get(`${list}/gettopup/${id}`);
@@ -264,7 +264,7 @@ export class ListService {
     }
     
     GetAdmPerc(id: string): Observable<any>{
-        return this.auth.get(`${list}/getadmperc/${id}`);
+        return this.auth.getstring(`${list}/getadmperc/${id}`);
     }    
     
     GetDailyliving(id: string): Observable<any>{

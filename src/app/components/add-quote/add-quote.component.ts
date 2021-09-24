@@ -538,28 +538,32 @@ export class AddQuoteComponent implements OnInit {
               return this.listS.getprogramlevel(x)
           }),
           switchMap(x => {                
-              this.IS_CDC = false;
-              if(x.isCDC){
-                  this.IS_CDC = true;
-                //   if(x.quantity && x.timeUnit == 'DAY'){
-                //       this.quoteForm.patchValue({
-                //           govtContrib: (x.quantity*365).toFixed(2),
-                //           programId: x.recordNumber
-                //       });
-                //       console.log(this.quoteForm.value)
-                //       this.remaining_fund = this.quoteForm.value.govtContrib;
-                //   }
-                //   this.detectChanges();
-                //   return this.listS.getpensionandfee();
-              }
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
 
-                this.quoteForm.patchValue({
-                    govtContrib: x.quantity 
-                    ? (x.quantity * 365).toFixed(2) : 0,
-                    programId: x.recordNumber
-                });
+                    this.quoteForm.patchValue({
+                        govtContrib: x.quantity ? (x.quantity * 365).toFixed(2) : 0,
+                        programId: x.recordNumber
+                    });
+                    //   if(x.quantity && x.timeUnit == 'DAY'){
+                    //       this.quoteForm.patchValue({
+                    //           govtContrib: (x.quantity*365).toFixed(2),
+                    //           programId: x.recordNumber
+                    //       });
+                    //       console.log(this.quoteForm.value)
+                    //       this.remaining_fund = this.quoteForm.value.govtContrib;
+                    //   }
+                    //   this.detectChanges();
+                    //   return this.listS.getpensionandfee();
+                }
 
-                console.log(this.quoteForm.value)
+                // this.quoteForm.patchValue({
+                //     govtContrib: x.quantity ? (x.quantity * 365).toFixed(2) : 0,
+                //     programId: x.recordNumber
+                // });
+
+                // console.log(this.quoteForm.value)
                 // this.remaining_fund = this.quoteForm.value.govtContrib;
 
               this.detectChanges();
@@ -738,9 +742,9 @@ export class AddQuoteComponent implements OnInit {
 
             this.quotesOpen = false;
         }, (err: any) => {
-            this.loadingSaveQuote = false;
-            this.newFileNameOpen = false;            
-            this.quotesOpen = false;
+            // this.loadingSaveQuote = false;
+            // this.newFileNameOpen = false;            
+            // this.quotesOpen = false;
             this.detectChanges();
             
         });
@@ -1188,7 +1192,7 @@ export class AddQuoteComponent implements OnInit {
                     quantity: 1,
                     frequency: 'Daily'  ,
                     quoteQty: 365 , 
-                    price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365)
+                    price: this.AdmPErcAmt != null ? ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365) : null
                 }
 
        

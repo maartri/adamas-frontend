@@ -224,7 +224,7 @@
                 </div>
                 
                 <div nz-row>
-                    <nz-table #headerTable [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="goalsAndStratergies"  [nzScroll]="{ y: '340px' }">
+                    <nz-table #headerTable [nzShowPagination]="false" [nzSize]="size" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="goalsAndStratergies"  [nzScroll]="{ y: '340px' }">
                         <thead>
                             <tr>
                                 <th style="width:10%;">Ant Complete</th>
@@ -313,7 +313,7 @@
             </div>
 
             <div nz-row *ngIf="quoteForm.get('program').value">
-                <nz-table #basicTable [nzData]="quoteLines" >
+                <nz-table #basicTable [nzSize]="size" [nzData]="quoteLines" >
                     <thead>
                       <tr>
                         <th>Item Code</th>
@@ -362,7 +362,7 @@
                         </div>
                         <div nz-col nzSpan="10" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
                             <span class="title">Gov't Contribution</span>
-                            <input nz-input class="mini" placeholder="" formControlName="govtContrib" />
+                            <input nz-input class="mini" placeholder="" formControlName="govtContrib" disabled />
                         </div>
                         <div nz-col nzSpan="14" class="inline"  *ngIf="IS_CDC">
                             <span class="title">Centrelink Income Tested Fee</span>
@@ -413,7 +413,7 @@
                             </div>
                             <div>
                                 <div>Total Package Value</div>
-                                <div> <input nz-input   [ngModel]="quoteForm.get('govtContrib').value" /></div>
+                                <div> <input nz-input [ngModel]="quoteForm.get('govtContrib').value" disabled /></div>
                                 <div> </div>
                                 <div> </div>
                             </div>
@@ -822,7 +822,7 @@
                                 </div>
                             </div>
                             <div nz-row>
-                                <nz-table #headerTable [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="stratergiesList"  [nzScroll]="{ y: '340px' }">
+                                <nz-table #headerTable [nzSize]="size" [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="stratergiesList"  [nzScroll]="{ y: '340px' }">
                                     <thead>
                                         <tr>
                                             <th style="width:50%;">Strategy</th>

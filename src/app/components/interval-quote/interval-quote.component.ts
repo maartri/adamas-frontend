@@ -267,29 +267,31 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     clonedObjArray.forEach((x, index) => {
       
       
-      var monQuant = ('0'+ (x['monday']['quantity'])).slice(-2).concat(':00');
+      var monQuant = ('0'+ (x['monday']['quantity'])).slice(-2).concat('.00');
+      // parseString = parseString.concat('||', format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
+
       if(index > 0){
         parseString = parseString.concat('||',format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
       } else {
         parseString = parseString.concat(format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
       }
       
-      var tueQuant = ('0'+ (x['tuesday']['quantity'])).slice(-2).concat(':00');
+      var tueQuant = ('0'+ (x['tuesday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['tuesday']['time']),'HH:mm'), '|', tueQuant);
 
-      var wedQuant = ('0'+ (x['wednesday']['quantity'])).slice(-2).concat(':00');
+      var wedQuant = ('0'+ (x['wednesday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['wednesday']['time']),'HH:mm'), '|', wedQuant);
 
-      var thuQuant = ('0'+ (x['thursday']['quantity'])).slice(-2).concat(':00');
+      var thuQuant = ('0'+ (x['thursday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['thursday']['time']),'HH:mm'), '|', thuQuant);
 
-      var friQuant = ('0'+ (x['friday']['quantity'])).slice(-2).concat(':00');
+      var friQuant = ('0'+ (x['friday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['friday']['time']),'HH:mm'), '|', friQuant);
 
-      var satQuant = ('0'+ (x['saturday']['quantity'])).slice(-2).concat(':00');
+      var satQuant = ('0'+ (x['saturday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['saturday']['time']),'HH:mm'), '|', satQuant);
 
-      var sunQuant = ('0'+ (x['sunday']['quantity'])).slice(-2).concat(':00');
+      var sunQuant = ('0'+ (x['sunday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['sunday']['time']),'HH:mm'), '|', sunQuant);
       
     });

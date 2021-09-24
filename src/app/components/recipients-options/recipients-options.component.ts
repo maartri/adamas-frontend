@@ -17,6 +17,7 @@ import format from 'date-fns/format';
 import { setDate } from 'date-fns';
 import { filter } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import addDays from 'date-fns/addDays'
 
 // import * as RECIPIENT_OPTION from '../../modules/modules';
 
@@ -893,7 +894,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       reasonType: '',
                       
                       tabType: 'REFERRAL-IN',
-                      program: packageName,
+                      program: this.IsNDIAorHCP() ?  packageName : this.selectedProgram,
                       packageStatus: 'REFERRAL'
                     }
                     
@@ -914,21 +915,25 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       publishToApp: publishToApp ? 1 : 0,
                       creator: this.token.user,
                       note: notes || "" ,
-                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      alarmDate: '',
                       reminderTo: ''
                     }
                   }
-                
-                // console.log(data);
-                // this.emailnotify();
-                // return;
+
+                  // this.emailnotify(); 
+                  // return;
+                  // this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
+                  // return;
+                  // console.log(data);
+                  // this.emailnotify();
+                  // return;
 
                 this.listS.postreferralin(data).subscribe(x => {
                       this.globalS.sToast('Success', 'Package is saved'); 
                       this.handleCancel();
                     
                       if (this.globalS.followups != null){
-                        this.writereminder(); 
+                        this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
                       }
                       
                       if (this.globalS.emailaddress != null){
@@ -1005,8 +1010,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
-                  console.log(data);
-                  return;
+                  // console.log(data);
+                  // return;
                   
                   this.listS.postreferralout(data).subscribe(data => {
                     this.globalS.sToast('Success', 'Package is saved');
@@ -1632,23 +1637,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 });
                 
               }           
-            }
-
-            emailnotify(){              
-              
-              const {notes} = this.referInGroup.value;
-              
-              var emailTo = this.globalS.emailaddress; 
-              
-              var emailSubject = "ADAMAS NOTIFICATION";
-              var emailBody = notes;  
-              location.href = "mailto:" + this.EMAIL_OF_COORDINATOR + "?" +     
-              (emailSubject ? "subject=" + emailSubject : "") + 
-              (emailBody ? "&body=" + emailBody : "");
-              
-              this.globalS.emailaddress = null;              
-            }
-            
+            }        
             
             populate(){
               
@@ -1883,14 +1872,16 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE
                 }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                  
                   this.notifFollowUpGroup = data.map(x => {
                     return {
-                      label: x,
-                      value: x,
+                      label: x.reminders,
+                      value: x.reminders,
+                      dateCounter: x.user1,
                       disabled: false,
                       checked: false
                     }
-                  })
+                  });
                 })
                 
                 
@@ -1914,7 +1905,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE
                 }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                  this.datalist = data
+                  this.datalist = data.map(x =>{
+                    return {
+                      form: x.form,
+                      link: (x.link).toLowerCase()
+                    }
+                  })
                 });          
                 break;
                 case RECIPIENT_OPTION.ITEM:
@@ -2237,6 +2233,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     return {
                       label: x.staffToNotify,
                       value: x.staffToNotify,
+                      email: x.email,
                       disabled: x.mandatory ? true : false,
                       checked: x.mandatory ? true : false
                     }
@@ -2251,8 +2248,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifFollowUpGroup = data.map(x => {
                     return {
-                      label: x,
-                      value: x,
+                      label: x.reminders,
+                      value: x.reminders,
+                      dateCounter: x.user1,
                       disabled: false,
                       checked: false
                     }
@@ -2282,7 +2280,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   fundingType: this.FUNDING_TYPE,
                   type: 'REF_DEFAULT_XTRADATA'
                 }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                  this.datalist = data;
+                  this.datalist = data.map(x =>{
+                    return {
+                      form: x.form,
+                      link: (x.link).toLowerCase()
+                    }
+                  })
                   this.changeDetection();
                 }); 
 
@@ -2409,6 +2412,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   if(this.option == RECIPIENT_OPTION.ADMIT){
 
                     this.populateNotificationDetails();
+
                     this.listS.getnotifications({
                       branch: this.BRANCH_NAME,
                       coordinator: this.COORDINATOR
@@ -2418,6 +2422,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                         return {
                           label: x.staffToNotify,
                           value: x.staffToNotify,
+                          email: x.email,
                           disabled: x.mandatory ? true : false,
                           checked: x.mandatory ? true : false
                         }
@@ -2433,8 +2438,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                       this.notifFollowUpGroup = data.map(x => {
                         return {
-                          label: x,
-                          value: x,
+                          label: x.reminders,
+                          value: x.reminders,
+                          dateCounter: x.user1,
                           disabled: false,
                           checked: false
                         }
@@ -2464,7 +2470,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       fundingType: this.FUNDING_TYPE,
                       type: 'ADMIT_DEFAULT_XTRADATA'
                     }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                      this.datalist = data;
+                      this.datalist = data.map(x =>{
+                        return {
+                          form: x.form,
+                          link: (x.link).toLowerCase()
+                        }
+                      })
                       this.changeDetection();
                     }); 
                   }
@@ -2500,7 +2511,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                         return true;
                     }
 
-                    if(this.FUNDING_TYPE == null && this.selectedProgram){
+                    if(this.selectedProgram){
                         return true;
                     }
                   }
@@ -2626,34 +2637,63 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     
                   }
                 }
-                writereminder(){
-                  var sql,temp;
-                  //let Date1,Date2;
+
+                emailnotify(){              
+              
+                  const { notes } = this.referInGroup.value;
+
+                  let notifications =  this.notifCheckBoxes.filter((x:any) => x.checked == true);
+                  let emails = notifications.map((x: any) => x.email).join(';')
+   
+                  // var emailTo = this.globalS.emailaddress; 
                   
-                  let Date1 : Date   = new Date();
-                  let Date2 : Date   = new Date(Date1);
+                  var emailSubject = "ADAMAS NOTIFICATION";
+                  var emailBody = notes;  
+
+                  location.href = "mailto:" + emails + "?" +     
+                  (emailSubject ? "subject=" + emailSubject : "") + 
+                  (emailBody ? "&body=" + emailBody : "");
                   
-                  
-                  
-                  temp = (this.globalS.followups.label).toString().substring(0,2)
-                  
-                  switch (temp) {
-                    case '10':
-                    Date2.setDate(Date2.getDate() + 10)
-                    
-                    break;
-                    case '30':
-                    Date2.setDate(Date2.getDate() + 30)
-                    break;
-                    
-                    default:
-                    break;
+                  this.globalS.emailaddress = null;              
+                }
+
+                writereminder(personid: string, notes: string, followups: Array<any>){
+                  var sql = '', temp = '';
+                
+                  // console.log(this.notifFollowUpGroup);
+
+                  for(var followup of followups)
+                  {
+                    var dateCounter = parseInt(followup.dateCounter);
+                    var reminderDatePlusDateCounter = format(addDays(new Date(), dateCounter),'dd/MM/yyyy');
+
+                    if(followup.checked){
+                      sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderDatePlusDateCounter +"','"+ reminderDatePlusDateCounter +"');";
+                    }
                   }
-                  sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
+
+                  // let Date1 : Date   = new Date();
+                  // let Date2 : Date   = new Date(Date1);
                   
-                  this.clientS.addRefreminder(sql).subscribe(x => console.log(x) )
+                  // temp = (this.globalS.followups.label).toString().substring(0,2);
                   
-                  this.globalS.followups = null;
+                  // switch (temp) {
+                  //   case '10':
+                  //   Date2.setDate(Date2.getDate() + 10)
+                    
+                  //   break;
+                  //   case '30':
+                  //   Date2.setDate(Date2.getDate() + 30)
+                  //   break;
+                    
+                  //   default:
+                  //   break;
+                  // }
+
+                  // sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
+                  
+                  this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );                  
+                  // this.globalS.followups = null;
                 }
 
                 addRefdoc(){

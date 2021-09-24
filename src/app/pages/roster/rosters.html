@@ -94,7 +94,7 @@
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="recordCancellation()" *ngIf="viewType=='Recipient'" nz-tooltip nzTooltipTitle="Record Client Cancellation"><i nz-icon nzType="close-square" nzTheme="outline"></i></button>
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="showRecurentModal=true"  nz-tooltip nzTooltipTitle="Recurring Service Wizard"><i nz-icon nzType="setting" nzTheme="outline"></i></button>
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons"  nz-tooltip nzTooltipTitle="Load/Unload Staff Compare Roster"><i nz-icon nzType="retweet" nzTheme="outline"></i></button>
-                    <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons"  nz-tooltip nzTooltipTitle="Compress Rosters on Screen"><i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i></button>
+                    <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons"  (click)="show_alert=true" nz-tooltip nzTooltipTitle="Compress Rosters on Screen"><i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i></button>
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!master"  (click)="SaveMasterRosters()" nz-tooltip nzTooltipTitle="Save Master Rosters" ><i nz-icon nzType="save" nzTheme="outline"></i></button>
                    
                 </nz-button-group>    
@@ -1140,14 +1140,49 @@
         </div>
     </nz-modal>
     
+    <!-- Shift Change Alerts -->    
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="show_alert" nzTitle="Alert Staff" (nzOnCancel)="show_alert = false" >
+      
+        <!-- <div class="flexy" style="min-width:21rem; padding-left:20px;">
+            <form [formGroup]="AlertForm" class="form-group">
+         -->
+            <div nz-row >
+                <div nz-col nzSpan="24" style="padding-left: 5px;">                  
+                    <nz-label style="padding: 2px;" >Alert Staff: if Yes: Please review the following message to be sent: </nz-label >              
+                </div>
+            </div>
+        
+            <div nz-row>
+                <div nz-col nzSpan="24" style="padding-top: 10px; padding-left: 5px;" >
+                    <nz-label style="margin-left: 3px;">Subject </nz-label >                                 
+                    <input id="txtSubject"  style="margin-top: 5px;" nz-input [(ngModel)]="txtAlertSubject"/>                       
+                </div>  
+            </div>
+            <div nz-row > 
+            <div nz-col nzSpan="24" style="padding-top: 10px; padding-left: 5px;" > 
+                <nz-label style="margin-left: 3px;" >Message </nz-label >    
+                <textarea id="txtMessage" style="margin-top: 5px; height:200px;" nz-input [(ngModel)]="txtAlertMessage"> </textarea>                 
+               
+            </div>
+        </div>    
+       
+    
+        
+        <div *nzModalFooter>
+                <button nz-button nzType="default"  (click)="generate_alert()">Yes</button>
+                <button nz-button nzType="default"  (click)="show_alert=false">No</button>
+        </div>
+        
+    </nz-modal>
+    
+    
     <div>
-        <img id="icon-1" style="display: none; background-color: #D5D6DE;"  src="media/r1.png"/>
+        <img id="icon-1" style="display: none; background-color: #D5D6DE;"  src="/media/r1.png"/>
         <img id="icon-2" style="display: none; background-color: #D5D6DE;"  src="/media/r2.png"/>
         <img id="icon-3" style="display: none; background-color: #D5D6DE;"  src="/media/r3.png"/>
         <img id="icon-4" style="display: none; background-color: #D5D6DE;"  src="/media/r4.png"/>
         <img id="icon-5" style="display: none; background-color: #D5D6DE;"  src="/media/r5.png"/>
-        <img id="icon-6" style="display: none; background-color: #D5D6DE;"  src="/media/r6.png"/>
-    
+        <img id="icon-6" style="display: none; background-color: #D5D6DE;"  src="/media/r6.png"/>   
         <img id="icon-7" style="display: none; background-color: #D5D6DE;"  src="/media/r7.png"/>
         <img id="icon-8" style="display: none; background-color: #D5D6DE;"  src="/media/r8.png"/>
         <img id="icon-9" style="display: none; background-color: #D5D6DE;"  src="/media/r9.png"/>
@@ -1161,3 +1196,4 @@
         <img id="icon-21" style="display: none; background-color: #D5D6DE;" src="/media/r21.jpg"/>
         <img id="icon-22" style="display: none; background-color: #D5D6DE;" src="/media/r22.jpg"/>
     </div>  
+

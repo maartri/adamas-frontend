@@ -341,7 +341,7 @@
                         <td>{{ data.frequency }}</td>
                         <td>{{ data.quoteQty }}</td>
 
-                        <td>${{ data.price }}</td>
+                        <td>${{ data.price | number : '1.2-2' }}</td>
                         <td>${{ amount(data.price, data.quoteQty) | number : '1.2-2' }}  </td>                        
                         <td>{{ data.tax }}</td>
                         <td>${{ totalamount(data.price,data.quoteQty,data.tax,data.quantity) | number : '1.2-2' }}</td>
@@ -391,13 +391,13 @@
                             <div>
                                 <div>Agreed Basic Care Fee</div>
                                 <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" class="disabled" disabled [(ngModel)]="annualBasicCareFee" ></nz-input-number></div>
-                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" [(ngModel)]="dailyBasicCareFee" ></nz-input-number></div>
+                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" [(ngModel)]="dailyBasicCareFee" (ngModelChange)="calculateBasicCareFee()"></nz-input-number></div>
                                 <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" class="disabled" disabled [(ngModel)]="monthlyBasicCareFee" ></nz-input-number></div>
                             </div>
                             <div>
                                 <div>Agreed Income Tested Fee</div>
                                 <div> <nz-input-number nz-input class="disabled" [nzFormatter]="formatterDollar" disabled [(ngModel)]="annualIncomeTestedFee" ></nz-input-number></div>
-                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" [(ngModel)]="dailyIncomeTestedFee"></nz-input-number></div>
+                                <div> <nz-input-number nz-input class="disabled" [nzFormatter]="formatterDollar" class="disabled" [(ngModel)]="dailyIncomeTestedFee" disabled></nz-input-number></div>
                                 <div> <nz-input-number nz-input class="disabled" [nzFormatter]="formatterDollar" disabled [(ngModel)]="monthlyIncomeTestedFee" ></nz-input-number></div>
                             </div>
                             <!-- <div>
@@ -406,15 +406,15 @@
                                 <div> <input nz-input   [(ngModel)]="bb2" /></div>
                                 <div> <input nz-input   [(ngModel)]="bb3" /></div>
                             </div> -->
-                            <div>
+                            <!-- <div>
                                 <div>ADD Pro Rata Prev Balance</div>
                                 <div> <input nz-input  [(ngModel)]="value" /></div>
                                 <div> </div>
                                 <div> </div>
-                            </div>
+                            </div> -->
                             <div>
                                 <div>Total Package Value</div>
-                                <div> <input nz-input [ngModel]="quoteForm.get('govtContrib').value" disabled /></div>
+                                <div> <nz-input-number nz-input [ngModel]="get_total_package_value" [nzFormatter]="formatterDollar" disabled ></nz-input-number></div>
                                 <div> </div>
                                 <div> </div>
                             </div>

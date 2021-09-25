@@ -319,9 +319,11 @@
                         <th>Item Code</th>
                         <th>Description</th>
                         <th>Qty</th>
+
                         <th>Bill Unit</th>
                         <th>Frequency</th>
                         <th>Total Qty</th>
+
                         <th>Price</th>
                         <th>Amount</th>
                         <th>GST</th>
@@ -331,17 +333,18 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let data of basicTable.data;let i = index">
-                        <td>{{data.code}}</td>
-                        <td>{{data.displayText}}</td>
-                        <td>{{data.quantity}}</td>
+                        <td>{{ data.code }}</td>
+                        <td>{{ data.displayText }}</td>
+                        <td>{{ data.quantity }}</td>
 
-                        <td>{{data.billUnit}}</td>
-                        <td>{{data.frequency}}</td>
-                        <td>{{data.quoteQty}}</td>
-                        <td>${{data.price}}</td>
-                        <td>${{ amount(data.price,data.quoteQty) | number : '1.2-2' }}  </td>                        
-                        <td>{{data.tax}}</td>
-                        <td>${{totalamount(data.price,data.quoteQty,data.tax,data.quantity) | number : '1.2-2' }}</td>
+                        <td>{{ data.billUnit }}</td>
+                        <td>{{ data.frequency }}</td>
+                        <td>{{ data.quoteQty }}</td>
+
+                        <td>${{ data.price }}</td>
+                        <td>${{ amount(data.price, data.quoteQty) | number : '1.2-2' }}  </td>                        
+                        <td>{{ data.tax }}</td>
+                        <td>${{ totalamount(data.price,data.quoteQty,data.tax,data.quantity) | number : '1.2-2' }}</td>
                         <td>
                             <a (click)="showEditQuoteModal(data, i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
@@ -360,23 +363,21 @@
                             <span class="title">Initial Budget</span>
                             <input nz-input class="mini" placeholder="" formControlName="initialBudget" />
                         </div>
-                        <div nz-col nzSpan="10" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
+                        <div nz-col nzSpan="8" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
                             <span class="title">Gov't Contribution</span>
-                            <input nz-input class="mini" placeholder="" formControlName="govtContrib" disabled />
+                            <nz-input-number nz-input class="mini disabled" [nzFormatter]="formatterDollar" placeholder="" formControlName="govtContrib" disabled ></nz-input-number>
                         </div>
-                        <div nz-col nzSpan="14" class="inline"  *ngIf="IS_CDC">
+                        <div nz-col nzSpan="16" class="inline"  *ngIf="IS_CDC">
                             <span class="title">Centrelink Income Tested Fee</span>
                             <span>
-                                <nz-select [(ngModel)]="value" nzAllowClear nzPlaceHolder="Choose">
-                                    <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                                <nz-select [(ngModel)]="centreLinkListDropdown" nzAllowClear disabled>
+                                    <nz-option nzValue="Daily" nzLabel="Daily"></nz-option>
                                 </nz-select>
                             </span>
                             <span>@</span>
-                            <span><input nz-input class="mini" placeholder="" [(ngModel)]="value" /></span>
+                            <span><nz-input-number nz-input class="mini" placeholder="" [(ngModel)]="incomeTestedFee" [nzFormatter]="formatterDollar" (ngModelChange)="calculateIncomeTestedFee()"></nz-input-number> </span>
                             <span>=</span>
-                            <span><input nz-input class="mini" placeholder="" [(ngModel)]="value" /></span>
+                            <span><nz-input-number nz-input class="mini disabled" placeholder="" disabled [(ngModel)]="incomeTestedFeeTotal" [nzFormatter]="formatterDollar"></nz-input-number></span>
                         </div>
                     </div>
                     <div nz-row class="line" *ngIf="IS_CDC">
@@ -389,22 +390,22 @@
                             </div>
                             <div>
                                 <div>Agreed Basic Care Fee</div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
+                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" class="disabled" disabled [(ngModel)]="annualBasicCareFee" ></nz-input-number></div>
+                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" [(ngModel)]="dailyBasicCareFee" ></nz-input-number></div>
+                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" class="disabled" disabled [(ngModel)]="monthlyBasicCareFee" ></nz-input-number></div>
                             </div>
                             <div>
                                 <div>Agreed Income Tested Fee</div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input  [(ngModel)]="value" /></div>
+                                <div> <nz-input-number nz-input class="disabled" [nzFormatter]="formatterDollar" disabled [(ngModel)]="annualIncomeTestedFee" ></nz-input-number></div>
+                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" [(ngModel)]="dailyIncomeTestedFee"></nz-input-number></div>
+                                <div> <nz-input-number nz-input class="disabled" [nzFormatter]="formatterDollar" disabled [(ngModel)]="monthlyIncomeTestedFee" ></nz-input-number></div>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <div></div>
-                                <div> <input nz-input  [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                            </div>
+                                <div> <input nz-input  [(ngModel)]="bbb1" /></div>
+                                <div> <input nz-input   [(ngModel)]="bb2" /></div>
+                                <div> <input nz-input   [(ngModel)]="bb3" /></div>
+                            </div> -->
                             <div>
                                 <div>ADD Pro Rata Prev Balance</div>
                                 <div> <input nz-input  [(ngModel)]="value" /></div>

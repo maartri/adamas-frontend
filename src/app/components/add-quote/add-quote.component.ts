@@ -14,7 +14,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { dateFormat } from '@services/global.service'
 
-import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
+import { Filters, QuoteLineDTO, QuoteHeaderDTO, AcceptCharges } from '@modules/modules';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
 import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
 // import { Console } from 'node:console';
@@ -28,6 +28,7 @@ import { PrintPdfComponent } from '@components/print-pdf/print-pdf.component';
 import { filter, toLength, xor } from 'lodash';
 import { parseJSON } from 'date-fns';
 
+import { DecimalPipe } from '@angular/common';
 // import { Console } from 'node:console';
 
 
@@ -46,6 +47,7 @@ const noop = () => {};
   ],
 })
 export class AddQuoteComponent implements OnInit {
+    formatterDollar  = (value: number) => `$ ${this._decimalPipe.transform(value, '1.2-2')}`
 
     @Input() open: boolean = false;
     @Input() user: any; 
@@ -54,8 +56,21 @@ export class AddQuoteComponent implements OnInit {
 
     @Output() refresh = new EventEmitter<any>();
 
-    confirmModal?: NzModalRef; 
+    centreLinkListDropdown: string = 'Daily';
 
+    incomeTestedFee: number = 0;
+    incomeTestedFeeTotal: number = 0;
+
+    annualBasicCareFee: number = 0;
+    dailyBasicCareFee: number = 0;
+    monthlyBasicCareFee: number = 0;
+
+    annualIncomeTestedFee: number = 0;
+    dailyIncomeTestedFee: number = 0;
+    monthlyIncomeTestedFee: number = 0;
+
+
+    confirmModal?: NzModalRef;
 
     disableAddTabs: boolean = true;
     
@@ -68,6 +83,8 @@ export class AddQuoteComponent implements OnInit {
     title: string = 'Add New Quote';
 
     slots: any;
+
+    acceptCharges: AcceptCharges;
 
     billUnitArr: Array<string> = billunit;
     periodArr: Array<string> = periodQuote;
@@ -195,6 +212,7 @@ export class AddQuoteComponent implements OnInit {
     private ModalS: NzModalService,
     private modal: NzModalService,
     private zone: NgZone,
+    private _decimalPipe: DecimalPipe,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -1166,16 +1184,24 @@ export class AddQuoteComponent implements OnInit {
                 this.listS.GetTOpUP(sqlTopUpFee),
                 this.listS.GetBasicCare(sqlBasicCareFee),
                 this.listS.GetCMPERC(sqlCMPercAmt),
-                this.listS.GetAdmPerc(sqlAdminPercAmt)
+                this.listS.GetAdmPerc(sqlAdminPercAmt),
+
+                this.listS.getaccceptcharges(this.quoteForm.value.program)
             ]).subscribe(x => {
+
                 this.topup = x[0];
                 this.basiccarefee = x[1];
                 this.PercAmt = x[2];
                 this.AdmPErcAmt = x[3];
 
+                this.acceptCharges = x[4];
+
                 var temp:number = this.quoteForm.value.govtContrib
        
-        
+                this.dailyBasicCareFee = parseFloat(this.acceptCharges.p_Def_Fee_BasicCare);
+                this.annualBasicCareFee = this.dailyBasicCareFee * 365;
+                this.monthlyBasicCareFee = (this.dailyBasicCareFee * 365) / 12;
+
                 _quote = {        
                     code: '*HCP-PACKAGE ADMIN' ,
                     displayText: 'Charges' ,
@@ -1183,7 +1209,8 @@ export class AddQuoteComponent implements OnInit {
                     quantity: 1,
                     frequency: 'Daily'  ,
                     quoteQty: 365 , 
-                    price: this.PercAmt,              
+                    // price: this.PercAmt,
+                    price: parseFloat(this.acceptCharges.p_Def_Admin_Admin_PercAmt)
                 }
                 
                 
@@ -1194,7 +1221,8 @@ export class AddQuoteComponent implements OnInit {
                     quantity: 1,
                     frequency: 'Daily'  ,
                     quoteQty: 365 , 
-                    price: this.AdmPErcAmt != null ? ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365) : null
+                    // price: this.AdmPErcAmt != null ? ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365) : null
+                    price: parseFloat(this.acceptCharges.p_Def_Admin_CM_PercAmt)
                 }
 
        
@@ -1989,25 +2017,36 @@ return this.admincharges;
 
   } */
   
-  
-dailyliving(){
-    let daily;
-    var temp = this.dochdr
-    if(!temp) return;
+    
+    dailyliving(){
+        let daily;
+        var temp = this.dochdr
+        if(!temp) return;
 
-    this.listS.GetDailyliving(temp).subscribe(x => {
-        daily = x;
-    });
+        this.listS.GetDailyliving(temp).subscribe(x => {
+            daily = x;
+        });
 
-    return daily;   
-}
-
-checkValue(event){
-    if (event.target.checked){
-       this.option = 'add';
-        this.GENERATE_QUOTE_LINE();
+        return daily;   
     }
-}
+
+    checkValue(event){
+        if (event.target.checked){
+        this.option = 'add';
+            this.GENERATE_QUOTE_LINE();
+        }
+    }
+
+    calculateIncomeTestedFee(){
+        if(this.incomeTestedFee && this.incomeTestedFee > 0){
+            this.incomeTestedFeeTotal = this.incomeTestedFee * 365;
+
+            this.dailyIncomeTestedFee = this.incomeTestedFee;
+            this.annualIncomeTestedFee = this.dailyIncomeTestedFee * 365;
+            this.monthlyIncomeTestedFee = (this.dailyIncomeTestedFee * 365)/12;
+        }
+            
+    }
 
 
 

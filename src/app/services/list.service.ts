@@ -22,6 +22,10 @@ export class ListService {
     //     return this.auth.post(`${docSign}/create`, data);
     // }
 
+    getaccceptcharges(program: string):Observable<any>{
+        return this.auth.get(`${list}/accept-charges/${program}`);
+    }
+
     getrosterpublishdate():Observable<any>{
         return this.auth.get(`${list}/last-roster-publish-date`);
     }

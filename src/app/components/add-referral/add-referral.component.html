@@ -93,7 +93,7 @@
                         <div nz-row nzGutter="16" formArrayName="contacts" *ngFor="let item of referralGroup.get('contacts')['controls']; let i = index;">
                             <div class="ref-form" [formGroupName]="i">
                                 <div class="close"><i nz-icon nzType="close" nzTheme="outline" (click)="deleteCont(i)"></i></div>
-                                <div nz-col nzSpan="4" *ngIf="referralGroup.get('contacts').value.length  > 1">                                    
+                                <div nz-col nzSpan="3" *ngIf="referralGroup.get('contacts').value.length  > 1">                                    
                                     <i nz-icon class="primary-icon" [class.primary]="item.value.primary" (click)="contactIsPrimary(i)">
                                         <svg>
                                           <path
@@ -102,7 +102,7 @@
                                         </svg>
                                       </i>
                                 </div>
-                                <div nz-col nzSpan="10">
+                                <div nz-col nzSpan="9">
                                     <label for="">Type</label>
                                     <nz-radio-group formControlName="contacttype" (ngModelChange)="contactTypeChange(i)">
                                         <label nz-radio nzValue="MOBILE">Mobile</label>
@@ -111,7 +111,7 @@
                                         <label nz-radio nzValue="WORK">Work</label>
                                     </nz-radio-group>
                                 </div>
-                                <div nz-col nzSpan="10">
+                                <div nz-col nzSpan="12">
                                     <label for="">Detail</label>
                                     <app-phonefax *ngIf="isPhoneNumber(item)" [isMobile]="item.value.contacttype == 'MOBILE'" formControlName="contact"></app-phonefax>
                                     <input nz-input *ngIf="!isPhoneNumber(item)" formControlName="contact" autocomplete="nofill"  />

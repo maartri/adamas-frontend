@@ -1170,7 +1170,7 @@ export class AddQuoteComponent implements OnInit {
         var govtContrib = parseFloat(this.quoteForm.get('govtContrib').value);
 
         if(!acceptCharges.isPercent){
-            parseFloat(acceptCharges.p_Def_Admin_Admin_PercAmt);
+            return parseFloat(acceptCharges.p_Def_Admin_Admin_PercAmt);
         }
 
         if(acceptCharges.isPercent){
@@ -1198,7 +1198,7 @@ export class AddQuoteComponent implements OnInit {
         var govtContrib = parseFloat(this.quoteForm.get('govtContrib').value);
 
         if(!acceptCharges.isPercent){
-            parseFloat(acceptCharges.p_Def_Admin_CM_PercAmt);
+            return parseFloat(acceptCharges.p_Def_Admin_CM_PercAmt);
         }
 
         if(acceptCharges.isPercent){
@@ -1577,14 +1577,13 @@ export class AddQuoteComponent implements OnInit {
         packageSupplements: '000000000000000000',
         agreedTopUp: '0.00',
         balanceAtQuote: '0.00',
-        clAssessedIncomeTestedFee: '0.00',
-       
+        clAssessedIncomeTestedFee: '0.00',       
                
-            feesAccepted: 0,
-            basePension: 'SINGLE',
-            dailyBasicCareFee: '$0.00',
-            dailyIncomeTestedFee: '$0.00',
-            dailyAgreedTopUp: '$0.00',
+        feesAccepted: 0,
+        basePension: 'SINGLE',
+        dailyBasicCareFee: (this.dailyBasicCareFee.toFixed(2)).toString(),
+        dailyIncomeTestedFee: (this.dailyIncomeTestedFee.toFixed(2)).toString(),
+        dailyAgreedTopUp: '$0.00',
         
         quoteView: 'ANNUALLY',
 
@@ -1597,9 +1596,11 @@ export class AddQuoteComponent implements OnInit {
     }
 
     this.qteHeaderDTO = qteHeader;
-
     this.loadingSaveQuote = true;
+
+    // console.log(qteHeader);
     // return;
+
     this.listS.checkpostquote(qteHeader)
         .pipe(
             switchMap(x => {

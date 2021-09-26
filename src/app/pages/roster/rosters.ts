@@ -154,7 +154,7 @@ export class RostersAdmin implements AfterViewInit  {
     sheetName = "Staff Rosters";  
     hostStyle = {  
       width: '100%',     
-      height: '600px',
+      height: '1000px',
       overflow: 'auto',
       float: 'left'
     };  

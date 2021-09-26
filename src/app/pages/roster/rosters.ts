@@ -184,7 +184,7 @@ recurrentEndDate: Date | null = null;
 create_Recurrent_Rosters:boolean=false;
 
 weekDay:any;
-Frequency:string;
+Frequency:string="Weekly";
 Pattern:string;
 haccCode:string;
 defaultCode:string;
@@ -277,6 +277,7 @@ endRoster:any;
     Duration:String="5";
    
     master:boolean=false;
+    Master_Roster_label="Current Roster";
     tval:number;
     dval:number;
     sample: any;
@@ -569,10 +570,19 @@ doneBooking(){
             creator: this.token.user
             
         };
+
+        var sheet = this.spreadsheet.getActiveSheet();
+        var sels = sheet.getSelections();
+        var sel = sels[0];
+        var row = sel.row;
+        
+        for (let i=0; i<sels[0].colCount; i++)
+         {   
+
             this.timeS.posttimesheet(inputs).subscribe(data => {
                 this.NRecordNo=data;
                 if  (this.create_Recurrent_Rosters==false &&  this.add_multi_roster==false) {
-                    this.globalS.sToast('Success', 'Roster has been added successfully');
+                   // this.globalS.sToast('Success', 'Roster has been added successfully');
                     this.searchRoster(tsheet.date)
                  }
                   this.addTimesheetVisible = false;
@@ -592,6 +602,7 @@ doneBooking(){
                   this.showTransportModal=true;
                 this.searchRoster(tsheet.date)
             }
+        
 
             if (this.create_Recurrent_Rosters){
                 this.AddRecurrentRosters();
@@ -606,13 +617,20 @@ doneBooking(){
                 this.show_alert=true;
             }
                
-            });
+           });
+           tsheet.date=this.addDays(tsheet.date,1);
+           inputs.date=format(tsheet.date,'yyyy/MM/dd')
+           inputs.dayno= parseInt(format(tsheet.date, 'd'));
+        }
             this.addRecurrent=false;
             
            // this.resetBookingFormModal()
     
 }
-
+addDays(date: Date, days: number): Date {
+    date.setDate(date.getDate() + days);
+    return date;
+}
 RecordStaffAdmin(){
     this.resetBookingFormModal();
     this.booking_case=6;
@@ -891,14 +909,71 @@ SaveAdditionalInfo(notes:string){
     this.ProcessRoster("Additional", this.cell_value.recordNo);
    
 }
-deleteRoster(){
+deleteRoster_old(){
     if (this.cell_value==null || this.cell_value.recordNo==0) return;
+
     this.ProcessRoster("Delete",this.cell_value.recordNo);
 
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
     this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
     this.operation="Delete";                 
+    this.spreadsheet.resumePaint();
+    this.deleteRosterModal=false;
+
+   
+    if (this.viewType=='Staff'){
+        this.current_roster = this.find_roster(this.cell_value.recordNo)
+        let clientCode =this.current_roster.recipientCode;
+        let date= this.current_roster.date
+        this.txtAlertSubject = 'SHIFT DELETED : ' ;
+        this.txtAlertMessage = 'SHIFT DELETED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+    
+        this.show_alert=true;
+    }
+}
+
+deleteRoster(){
+
+    var sheet = this.spreadsheet.getActiveSheet();
+    var selected_Cell:any;                   
+    var sels = sheet.getSelections();
+    var sel = sels[0];
+    var row = sel.row;
+    selected_Cell=sel;
+    let selected_columns = selected_Cell.col + selected_Cell.colCount;
+   
+    let data_row=0;
+    let row_iterator=0;
+    let recdNo=0;
+ 
+    for (let i=selected_Cell.col; i<selected_columns; i++)
+    {
+        data_row=selected_Cell.row;
+        
+        for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
+           if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
+            data_row=data_row+1;
+            continue;
+           }
+                                       
+         if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
+            this.cell_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
+        
+        if (this.cell_value.recordNo==recdNo)
+            continue;
+        
+        recdNo=this.cell_value.recordNo;
+ 
+        //if (this.cell_value==null || this.cell_value.recordNo==0) return;
+        this.ProcessRoster("Delete",this.cell_value.recordNo);
+
+        this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+        this.operation="Delete";   
+        
+        
+      }
+    }
     this.spreadsheet.resumePaint();
     this.deleteRosterModal=false;
 
@@ -1062,10 +1137,12 @@ ClearMultishift(){
       this.master=$event;
       if (this.master){
         this.date="1900/01/01";
+        this.Master_Roster_label='Master Roster'
         //this.startRoster="1900/01/01";
        // this.endRoster="1900/01/31";
       }else{        
         this.date = moment()      
+        this.Master_Roster_label='Current Roster'
         //this.startRoster=this.date;
        // this.endRoster=this.date;
     }
@@ -1215,16 +1292,16 @@ ClearMultishift(){
                
                    // Set border lines to cell(1,1).
                  //7c996d
-                   for (let i=row; i<len; i++){
-                  var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
-                      cell.borderLeft(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
-                      cell.borderRight(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
-                      if (i==row)
-                      cell.borderTop(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
-                      if (i==len-1)
-                      cell.borderBottom(new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.thick));                      
+                //    for (let i=row; i<len; i++){
+                //   var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
+                //       cell.borderLeft(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                //       cell.borderRight(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                //       if (i==row)
+                //       cell.borderTop(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                //       if (i==len-1)
+                //       cell.borderBottom(new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.thick));                      
   
-                  }
+                //   }
                 }else {
                   
                   // sheet.getCell(row, col).backColor("#cfcfca");
@@ -1547,18 +1624,49 @@ ClearMultishift(){
                         console.log(selected_Cell);     
                         
                         var value = sheet.getValue(selected_Cell.row, selected_Cell.col);
-                                                                    
-                        if (self.copy_value.row>=0){
-                          self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
-                         
+                        let selected_columns = selected_Cell.col + selected_Cell.colCount;
+                        let dt= new Date(self.date);        
+                        let data_row=0;
+                        let row_iterator=0;
+                        let recdNo=0;
+                        col=col-1;
+                        for (let i=selected_Cell.col; i<selected_columns; i++)
+                        {
+                            data_row=selected_Cell.row;
+                            col=col+1;
+                            for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
+                               if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
+                                data_row=data_row+1;
+                                continue;
+                               }
+                                                           
+                             if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
+                                self.copy_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
+                            
+                            if (self.copy_value.recordNo==recdNo)
+                                continue;
+                            
+                            recdNo=self.copy_value.recordNo;
+                            let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col);
+                      
+                            if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
+                                continue;
+                            }
+                            //if (self.copy_value.row>=0){
+                                row=row+row_iterator;
+                            self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
+                            
+                            
+                            if (self.operation==="cut"){
+                                self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
+                                self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
+                            }else
+                                self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
+                            
+                             data_row=data_row+1;                 
+                            }// rows loop
+                            
                         }
-                        if (self.operation==="cut"){
-                            self.ProcessRoster("Cut",self.copy_value.recordNo);
-                            self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
-                        }else
-                            self.ProcessRoster("Copy",self.copy_value.recordNo);                      
-                       
-                       
                        // sheet.setValue(row,col,sheet.getCell(selected_Cell.row, selected_Cell.col));
   
                        //sheet.getCell(row,col).backColor(sheet.getCell(selected_Cell.row, selected_Cell.col).backColor);
@@ -1578,6 +1686,7 @@ ClearMultishift(){
                         
                             self.show_alert=true;
                         }
+                       // self.load_rosters();
                         return true;
                     }
                 }
@@ -1599,23 +1708,14 @@ ClearMultishift(){
                       
                         console.log("Delete Operation")
                        
-                        var sheet = spread.getActiveSheet();
                        
-                        var sels = sheet.getSelections();
-                        var sel = sels[0];
-                        var row = sel.row;
                        
-                        selected_Cell=sel;
-  
-                        if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null){
-                          self.cell_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)                      
-                          self.deleteRosterModal=true;
+                        
+                            self.deleteRosterModal=true;
                           
-                        }else
-                         self.cell_value={row:-1,col:-1,duration:-1, type:0}
-                       
-                        self.operation="Delete";     
-
+                        
+                            self.operation="Delete";     
+                        
                         Commands.endTransaction(context, options);
 
                       
@@ -1866,7 +1966,7 @@ ClearMultishift(){
 
    let sheet:any=this.spreadsheet.getActiveSheet(); 
 
-   this.changeHeight()
+   //this.changeHeight()
    this.spreadsheet.suspendPaint();
   
      // Set the default styles.
@@ -1997,6 +2097,17 @@ ClearMultishift(){
           time.minutes=0;
           time.hours+=1;
         }
+
+        sheet.setActiveCell(96,0)
+        sheet.showCell (96,0)
+        sheet.options.isProtected = true;
+        sheet.options.protectionOptions.allowDeleteRows  = false;
+        sheet.options.protectionOptions.allowDeleteColumns = false;
+        sheet.options.protectionOptions.allowInsertRows = false;
+        sheet.options.protectionOptions.allowInsertColumns = false;
+        sheet.options.protectionOptions.allowDargInsertRows = false;
+        sheet.options.protectionOptions.allowDragInsertColumns = false;
+
         
   }
   
@@ -2168,6 +2279,7 @@ ClearMultishift(){
        // sheet.getCell(r,c).backgroundImage(rowImage)
         
        this.setIcon(r,c,type,RecordNo, service);
+       sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
        }  
        else{
             
@@ -2183,8 +2295,7 @@ ClearMultishift(){
 
        }
        
-       
-
+   
      // if (new_duration>1)
      //sheet.addSpan(r, c, new_duration, 1);
       //sheet.getCell(5, 4).value("Demo-" +c).hAlign(1).vAlign(1);
@@ -2372,13 +2483,17 @@ ClearMultishift(){
       this.addBooking(0);
       this.add_multi_roster=true;
   }
-    ProcessRoster(Option:any, recordNo:string):any {
+    ProcessRoster(Option:any, recordNo:string, rdate:string=""):any {
+        
         
         let dt= new Date(this.date);
         
         let sheet = this.spreadsheet.getActiveSheet();
         let range = sheet.getSelections();
         let date = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(range[0].col+1);
+        if (rdate!=""){
+            date=rdate;
+        }
         let f_row= range[0].row;
         let l_row=f_row+range[0].rowCount;
        // let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
@@ -2390,7 +2505,9 @@ ClearMultishift(){
 
             startTime="00:00"
         }
-       
+        var sels = sheet.getSelections();
+        var sel = sels[0];
+        
         let inputs = {
             "opsType": Option,
             "user": this.token.user,
@@ -2403,11 +2520,9 @@ ClearMultishift(){
             "notes" : this.notes,
             'clientCodes' : this.clientCodes
         }
-               
-
         this.timeS.ProcessRoster(inputs).subscribe(data => {
         //if  (this.ClearMultiShiftModal==false &&  this.SetMultiShiftModal==false) 
-               this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
+             //  this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
         this.selectedCarer="";
         this.searchStaffModal=false;
         this.UnAllocateStaffModal=false;
@@ -2420,6 +2535,8 @@ ClearMultishift(){
         this.deleteRosterModal=false;
             
     });
+    
+    
 }
 
     find_roster(RecordNo:number):any{
@@ -3148,7 +3265,7 @@ reload(reload: boolean){
 
                
                
-                this.globalS.sToast('Roster Notifs',`There are ${(this.options.events).length} rosters found!`)
+               // this.globalS.sToast('Roster Notifs',`There are ${(this.options.events).length} rosters found!`)
                
         });
     }
@@ -3308,7 +3425,7 @@ reload(reload: boolean){
         }
         this.timeS.addRecurrentRosters(inputs).subscribe(data => {
         
-               this.globalS.sToast('Success', 'Recurrent Roater added successfully');
+              // this.globalS.sToast('Success', 'Recurrent Roater added successfully');
                this.searchRoster(sdate)
       
     });
@@ -4653,9 +4770,15 @@ this.bookingForm.get('program').valueChanges.pipe(
 
     get showDone2(){
 
-           
-            if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
-                return false;
+          
+            if (this.current>=6)
+                return true;
+            else if (this.selectedActivity!=null){
+                    if (this.selectedActivity.service_Description == '' )
+                            return false;
+                }
+            else if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
+                return false;            
             else if ((this.current >=1 && this.viewType=="Staff") && (this.activity_value!=12 || !this.ShowCentral_Location ))
                 return true;
             else if  (this.current >=1 && (this.booking_case==1 || this.booking_case==5 ))
@@ -4732,7 +4855,7 @@ this.bookingForm.get('program').valueChanges.pipe(
         
         if(this.whatProcess == PROCESS.ADD){
             this.timeS.posttimesheet(inputs).subscribe(data => {
-                this.globalS.sToast('Success', 'Timesheet has been added');
+                //this.globalS.sToast('Success', 'Timesheet has been added');
                 this.addTimesheetVisible = false;
                // this.picked(this.selected);
                this.searchRoster(tsheet.date)
@@ -4750,7 +4873,7 @@ this.bookingForm.get('program').valueChanges.pipe(
         if(this.whatProcess == PROCESS.UPDATE){
            
             this.timeS.updatetimesheet(inputs).subscribe(data => {
-                this.globalS.sToast('Success', 'Timesheet has been updated');
+                //this.globalS.sToast('Success', 'Timesheet has been updated');
                 this.addTimesheetVisible = false;
                 if (this.viewType=='Staff'){
                     this.txtAlertSubject= 'SHIFT DAY/TIME CHANGE : ' ;

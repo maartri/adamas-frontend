@@ -197,7 +197,13 @@
                                     <div nz-col nzSpan="16">
                                         <div class="form-group">
                                             <label for="">Name</label>
-                                            <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+
+                                            <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="name" (ngModelChange)="nameGroupChange(referralGroup.get('gpDetails')['controls'],i)" nzShowSearch nzAllowClear
+                                                nzPlaceHolder="Select a Name">
+                                                <nz-option *ngFor="let d of medicalList" [nzLabel]="d.name" [nzValue]="d.name"></nz-option>
+                                            </nz-select>
+
+                                            <!-- <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" /> -->
                                         </div>
                                     </div>
                                 </div>

@@ -96,6 +96,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   token :any ;
   date: any;
 
+  medicalList: Array<any> = [];
+
   constructor(
     private clientS: ClientService,
     private formBuilder: FormBuilder,
@@ -198,6 +200,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   }
 
   firstOpenChange: boolean = false;
+
   dateOpenChange(data: any){
     if(this.firstOpenChange || !data) return;
     this.firstOpenChange = true;
@@ -243,10 +246,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       dataList: new FormControl(null),
 
       referral: new FormControl(''),
-      confirmation: new FormControl(null),
-
-      
-      
+      confirmation: new FormControl(null)      
     });
 
 
@@ -506,6 +506,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
         }
         
     });
+
     this.listS.getserviceregion().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.agencies = data.map(x => x.toUpperCase())
         if(this.agencies.length == 1){
@@ -514,6 +515,10 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       console.log();
       }
     );
+
+    this.listS.getmedicallist().subscribe(data => {
+      this.medicalList = data;
+    });
 
     // this.listS.getfollowups({ }).pipe(takeUntil(this.destroy$)).subscribe(data => {
     //   this.notifFollowUpGroup = data.map(x => {
@@ -837,6 +842,30 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   contactTypeChange(index: any) {
     var contact = this.referralGroup.get('contacts') as FormArray;
     contact.controls[index].get('contact').reset();
+  }
+
+  nameGroupChange(group: FormGroup, index: number){
+    var contactGroup = (group[index] as FormGroup).get('name').value;
+    var specificGroup = (group[index] as FormGroup);
+
+    console.log(contactGroup);
+
+    console.log(this.medicalList.find(x => x.name == contactGroup));
+
+    let details = this.medicalList.find(x => x.name == contactGroup);
+
+    specificGroup.patchValue({
+      address1: details.address,
+      email: details.email,
+      phone1: details.phone,
+      fax: details.fax
+    });
+
+    // this.listS.gettypeother(contactGroup).subscribe(data => {
+    //   specificGroup.patchValue({
+    //     contactList: data
+    //   });
+    // });    
   }
 
   contactGroupChange(group: FormGroup, index: number){

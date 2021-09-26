@@ -860,12 +860,6 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       phone1: details.phone,
       fax: details.fax
     });
-
-    // this.listS.gettypeother(contactGroup).subscribe(data => {
-    //   specificGroup.patchValue({
-    //     contactList: data
-    //   });
-    // });    
   }
 
   contactGroupChange(group: FormGroup, index: number){

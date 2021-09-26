@@ -72,7 +72,7 @@
                                 </div>
                                 <div nz-col nzSpan="14">
                                     <div class="form-group">
-                                        <input nz-input formControlName="id"  />
+                                        <input nz-input formControlName="id" disabled />
                                     </div>
                                 </div>
                             </div>
@@ -140,9 +140,10 @@
                                 </div>
                                 <div nz-col nzSpan="20">
                                     <div class="form-group">
-                                        <nz-select  formControlName="program" nzAllowClear nzShowSearch>
+                                        <input nz-input formControlName="program"  disabled />
+                                        <!-- <nz-select  formControlName="program" nzAllowClear nzShowSearch>
                                             <nz-option *ngFor="let list of programList" [nzValue]="list" [nzLabel]="list"></nz-option>
-                                        </nz-select>
+                                        </nz-select> -->
                                     </div>
                                 </div>
                             </div>
@@ -277,7 +278,7 @@
 
             </div>
 
-            <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null">
+            <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null || quoteForm.get('template').value == null">
                 <div nz-col nzSpan="6">
                     <input nz-input formControlName="no" placeholder="Quote No" [disabled]="true"  />
                 </div>
@@ -301,7 +302,7 @@
                 </div>
             </div>
 
-            <div nz-row class="line" *ngIf="quoteForm.get('program').value">
+            <div nz-row class="line" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
                 <div nz-col nzSpan="12">
                     <div class="controls">
                         <div><i nz-icon nzType="plus" nzTheme="outline" (click)="quoteLineModal()"></i></div>
@@ -312,7 +313,7 @@
                 </div>
             </div>
 
-            <div nz-row *ngIf="quoteForm.get('program').value">
+            <div nz-row *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
                 <nz-table #basicTable [nzSize]="size" [nzData]="quoteLines" >
                     <thead>
                       <tr>
@@ -356,7 +357,7 @@
                   </nz-table>
             </div>
 
-            <div nz-row class="line" nzGutter="16" *ngIf="quoteForm.get('program').value">
+            <div nz-row class="line" nzGutter="16" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
                 <div nz-col nzSpan="17">
                     <div nz-row nzGutter="16"> 
                         <div nz-col nzSpan="10" class="inline" *ngIf="!IS_CDC" [formGroup]="quoteForm">
@@ -375,7 +376,7 @@
                                 </nz-select>
                             </span>
                             <span>@</span>
-                            <span><nz-input-number nz-input class="mini" placeholder="" [(ngModel)]="incomeTestedFee" [nzFormatter]="formatterDollar" (ngModelChange)="calculateIncomeTestedFee()"></nz-input-number> </span>
+                            <span><nz-input-number nz-input class="mini" [nzMin]="0" [(ngModel)]="incomeTestedFee" [nzFormatter]="formatterDollar" (ngModelChange)="calculateIncomeTestedFee()"></nz-input-number> </span>
                             <span>=</span>
                             <span><nz-input-number nz-input class="mini disabled" placeholder="" disabled [(ngModel)]="incomeTestedFeeTotal" [nzFormatter]="formatterDollar"></nz-input-number></span>
                         </div>
@@ -447,7 +448,7 @@
                 </div>
             </div>
 
-            <div nz-row class="line" *ngIf="quoteForm.get('program').value">
+            <div nz-row class="line" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
                 <textarea rows="4" nz-input [(ngModel)]="value" placeholder="Extra Information"></textarea>
             </div>
            </div>

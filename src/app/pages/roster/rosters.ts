@@ -1119,7 +1119,9 @@ ClearMultishift(){
             if (code=="!INTERNAL")
                     code="ADMIN SHIFT";
                 
-                text=  r.start_Time + "-" + r.end_Time + " " + code + " (" + r.serviceType + ")";
+              //  text=  r.start_Time + "-" + r.end_Time + " " + code + " (" + r.serviceType + ")";
+
+              text=   code + " (" + r.serviceType + ")";
 
             if (row!=null && col !=null)
             this.draw_Cells(sheet,row,col,r.duration, r.type, r.recordNo, text)
@@ -1295,12 +1297,13 @@ ClearMultishift(){
                 //    for (let i=row; i<len; i++){
                 //   var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
                 //       cell.borderLeft(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
-                //       cell.borderRight(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                                          
                 //       if (i==row)
                 //       cell.borderTop(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
-                //       if (i==len-1)
-                //       cell.borderBottom(new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.thick));                      
-  
+                //       if (i==len-1){
+                //         cell.borderBottom(new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.thick));                      
+                //         cell.borderRight(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                //       }
                 //   }
                 }else {
                   
@@ -1358,24 +1361,36 @@ ClearMultishift(){
           spread.bind(spreadNS.Events.SelectionChanged, function (e: any, args: any) {
               let selection = args.newSelections;
               //if (selection.rowCount > 1 && selection.colCount > 1) {
-                  let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
+                //   let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
                   
-                  if(args.sheetArea==1 || args.sheetArea==2){
-                      return;
-                  }
-                  return;
+                //   if(args.sheetArea==1 || args.sheetArea==2){
+                //       return;
+                //   }
+                //   return;
                   self.eventLog =
                       'SpreadEvent: ' + GC.Spread.Sheets.Events.SelectionChanged + ' event called' + '\n' +
-                      'sheetArea: ' + sheetArea + '\n' +
+                      
                       'row: ' + selection.row + '\n' +
                       'column: ' + selection.col + '\n' +
                       'rowCount: ' + selection.rowCount + '\n' +
                       'colCount: ' + selection.colCount;
 
                       var len =selection[0].rowCount;
+                      var cols = selection[0].colCount;
                       var row=selection[0].row;
                       var col = selection[0].col;
                       
+
+                      spread.suspendPaint()
+                      
+                    var style = new GC.Spread.Sheets.Style();
+                    style.backColor = "red";
+                    style.foreColor = "black";
+                    var cells = new GC.Spread.Sheets.CellRange(sheet , row,col, len, cols );
+                    
+                    
+                    spread.resumePaint();
+                    return;
 
                       if (sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)==null) {
                         self.prev_cell ={row:row,col:col,duration:len};
@@ -1383,15 +1398,19 @@ ClearMultishift(){
                        for (let i=row; i<len; i++){
                       var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
                           cell.borderLeft(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
-                          cell.borderRight(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
-                          if (i==row)
-                          cell.borderTop(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
-                          if (i==len-1)
-                          cell.borderBottom(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));    
                           
+                          if (i==row)
+                            cell.borderTop(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                          if (i==len-1){
+                            cell.borderBottom(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));    
+                            cell.borderRight(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                          }
       
                       }
-              }
+                      spread.resumePaint();
+                    }
+
+              
           });
           spread.bind(spreadNS.Events.EditStarting, function (e: any, args: any) {
               self.eventLog =
@@ -1973,6 +1992,7 @@ ClearMultishift(){
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "Segoe UI";
      defaultStyle.themeFont = "Segoe UI";
+     
      sheet.clearSelection();
      sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
      let date:Date = new Date(this.date);
@@ -2035,7 +2055,7 @@ ClearMultishift(){
         //        
        // sheet.autoFitColumn(i)            
 
-      if ((this.DayOfWeek( date.getDay())=="Sa") || (this.DayOfWeek( date.getDay())=="Su")){
+      if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")){
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
           sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: '#c7060c' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
           
@@ -3764,7 +3784,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END)
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
-            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,I.unit as UnitType,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
@@ -3789,13 +3809,13 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
-            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,I.unit as UnitType,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
             INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
             INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
-            WHERE SO.ServiceProgram = '${ program}'
+            WHERE SO.ServiceProgram = '${program}'
 			AND I.[RosterGroup] = 'TRAVELTIME' AND (I.EndDate Is Null OR I.EndDate >='${this.currentDate}') `
             
            
@@ -3811,7 +3831,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
-            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,I.unit as UnitType,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO 
@@ -3829,7 +3849,7 @@ reload(reload: boolean){
            
                 sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
                 I.AMOUNT AS BILLRATE,
-                isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate, 0 as GST,
+                isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate, 0 as GST,I.unit as UnitType,
                 'N/A' as Service_Description,
                 HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
                 FROM ServiceOverview SO         
@@ -3846,7 +3866,7 @@ reload(reload: boolean){
            
         sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
         I.AMOUNT AS BILLRATE,
-        isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
+        isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,I.unit as UnitType,
         'N/A' as Service_Description,
         HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
         FROM ServiceOverview SO         
@@ -3870,7 +3890,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
-            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,I.unit as UnitType,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
@@ -4771,7 +4791,7 @@ this.bookingForm.get('program').valueChanges.pipe(
     get showDone2(){
 
           
-            if (this.current>=6)
+            if (this.current>=4)
                 return true;
             else if (this.selectedActivity!=null){
                     if (this.selectedActivity.service_Description == '' )

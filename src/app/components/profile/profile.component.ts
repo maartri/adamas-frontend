@@ -167,7 +167,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   buildForms(): void {
 
     this.contactIssueGroup = this.formBuilder.group({
-      value: ''
+      contactIssues: '',
+      rosterAlerts: '',
+      runsheetAlerts: ''
     });
 
     this.contactForm = this.formBuilder.group({
@@ -226,7 +228,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       isCaseLoad: false,
       excludeFromConflictChecking:false,
       stf_Department: '',
-      rating: ''
+      rating: '',
     });
 
     this.resetEmailCoordinator();
@@ -234,6 +236,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   patchTheseValuesInForm(user = this.user) {
+    console.log(user);
 
     if (this.innerValue.view === view.recipient) {
       this.userForm.patchValue({
@@ -251,11 +254,15 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         branch: user.branch,
         file2: user.urNumber,
         subCategory: user.ubdMap,
-        serviceRegion: user.agencyDefinedGroup
+        serviceRegion: user.agencyDefinedGroup,
+        uniqueID: user.uniqueID,
+        preferredName: user.preferredName
       });
 
       this.contactIssueGroup.patchValue({
-        value: user.contactIssues
+        contactIssues: user.contactIssues,
+        rosterAlerts: user.notes,
+        runsheetAlerts: user.specialConsiderations
       })
 
       // this.contactIssueGroup.patchValue({
@@ -650,8 +657,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           urNumber: data.file2,
           branch: data.branch,
           agencyDefinedGroup: data.serviceRegion,
-          ubdMap: data.subCategory
-
+          ubdMap: data.subCategory,
+          preferredName: data.preferredName
         }
 
         this.subscriptionArray.push(this.clientS.updateusername(user));
@@ -1005,8 +1012,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if (!this.emailCoordinatorGroup.valid)
       return;
-    
-    console.log(this.user);
+
     const { title, firstName, surnameOrg, accountNo } = this.user;
     const { subject, content } = this.emailCoordinatorGroup.value;
     const { detail, description } = this.caseManagerDetails;
@@ -1046,7 +1052,19 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   saveTab() {
-    const { sqlId } = this.user;
+    const { sqlId, uniqueID } = this.user;
+    const { contactIssues,  rosterAlerts, runsheetAlerts  } = this.contactIssueGroup.value;
+
+    console.log(this.user);
+
+    this.timeS.updatecontactrosterrunsheet({
+      contactIssues,
+      rosterAlerts,
+      runsheetAlerts,
+      uniqueId: uniqueID
+    }).subscribe(data => this.globalS.sToast('Success', 'Contact Issues Updated'));
+
+    return;
 
     if (this.tabIndex == 0) {
 
@@ -1057,8 +1075,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       }).subscribe(data => {
         this.globalS.sToast('Success', 'Contact Issues Updated');
       });
-      this.contactIssueGroup.markAsPristine();
 
+      this.contactIssueGroup.markAsPristine();
     }
 
     if (this.tabIndex == 1) {

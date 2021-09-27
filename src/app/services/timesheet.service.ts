@@ -253,6 +253,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/get-username/${accountNo}`)
     }
 
+    updatecontactrosterrunsheet(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/update/contact-roster-runsheet`, data)
+    }
+
     /**
      * Update Alerts and Issues - Profile Page
      */

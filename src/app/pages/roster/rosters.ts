@@ -1217,16 +1217,8 @@ ClearMultishift(){
             
                 sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
                    
-                //    if (self.prev_cell.service==null)
-                //        sheet.getCell(infos.row, infos.col).backColor("#cfcfca");
-
-                //     sheet.getCell(infos.row, infos.col).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
-                 
-                //    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#ff2060");
-                //    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
-                // //Set the backcolor of destination cells (currently active cells)
-                //     infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
-                //    // infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).text("#002060")
+                  
+               // infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).text("#002060")
             });
             
          
@@ -1235,9 +1227,9 @@ ClearMultishift(){
             spread.suspendPaint();
               let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
              
-              if(args.sheetArea==1 || args.sheetArea==2){
+              if(args.sheetArea==1 || args.sheetArea==2)
                 return;
-            }
+            
 
               self.eventLog =
                   'SpreadEvent: ' + GC.Spread.Sheets.Events.CellClick + ' event called' + '\n' +
@@ -1267,7 +1259,7 @@ ClearMultishift(){
                   type=self.cell_value.type;
                   service=self.cell_value.service;
                  
-                  
+      
 
                   if (service!=null)
                     self.ActiveCellText=self.cell_value.recordNo + " - " + service 
@@ -1291,7 +1283,11 @@ ClearMultishift(){
                   sheet.addSelection(row, col, new_duration, 1);
 
                   let len =row+new_duration;
-               
+
+             
+             
+            
+              
                    // Set border lines to cell(1,1).
                  //7c996d
                 //    for (let i=row; i<len; i++){
@@ -1357,6 +1353,8 @@ ClearMultishift(){
         //           'column: ' + selection.col + '\n' +
         //           'rowCount: ' + selection.rowCount + '\n' +
         //           'colCount: ' + selection.colCount;
+               
+             
         //   });
           spread.bind(spreadNS.Events.SelectionChanged, function (e: any, args: any) {
               let selection = args.newSelections;
@@ -1383,12 +1381,19 @@ ClearMultishift(){
 
                       spread.suspendPaint()
                       
-                    var style = new GC.Spread.Sheets.Style();
-                    style.backColor = "red";
-                    style.foreColor = "black";
-                    var cells = new GC.Spread.Sheets.CellRange(sheet , row,col, len, cols );
-                    
-                    
+                
+                // Set the backcolor and forecolor for the entire column header.
+                var columns = sheet.getRange(0,col, len, cols, GC.Spread.Sheets.SheetArea.colHeader);
+                columns.backColor("#002060");
+                columns.foreColor("White");
+
+                // Set the backcolor of second row header.
+                //sheet.getCell(row, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("Yellow");
+                var rows = sheet.getRange(row,0, len, 0, GC.Spread.Sheets.SheetArea.rowHeader);
+                rows.backColor("#002060");
+                rows.foreColor("White");
+
+      
                     spread.resumePaint();
                     return;
 
@@ -1642,7 +1647,7 @@ ClearMultishift(){
                         var row = sel.row;
                         console.log(selected_Cell);     
                         
-                        var value = sheet.getValue(selected_Cell.row, selected_Cell.col);
+                        
                         let selected_columns = selected_Cell.col + selected_Cell.colCount;
                         let dt= new Date(self.date);        
                         let data_row=0;
@@ -1672,8 +1677,8 @@ ClearMultishift(){
                                 continue;
                             }
                             //if (self.copy_value.row>=0){
-                                row=row+row_iterator;
-                            self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
+                               let n_row=row+row_iterator;
+                            self.draw_Cells(sheet,n_row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
                             
                             
                             if (self.operation==="cut"){
@@ -2017,11 +2022,11 @@ ClearMultishift(){
     this.Days_View=days
    }
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
+    sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
 
-
-    if (this.Days_View==31) {this.Days_View==days}
+    // if (this.Days_View==31) {this.Days_View==days}
     
-    sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
+    // sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
     
     for (let i=0; i<=this.Days_View ; i++)   
         
@@ -2069,18 +2074,10 @@ ClearMultishift(){
       date.setDate(date.getDate()+1); 
     }
 
-   if (this.Already_loaded)
-        {
-        
-        this.spreadsheet.resumePaint();
-        return;
-        
-        }   
-
     let time:Time;
     time={hours:0,
         minutes:0}
-        
+      
     
 
     for (let j=0; j<this.time_slot; j++)   {      
@@ -2118,19 +2115,22 @@ ClearMultishift(){
           time.hours+=1;
         }
 
-        sheet.setActiveCell(96,0)
-        sheet.showCell (96,0)
-        sheet.options.isProtected = true;
-        sheet.options.protectionOptions.allowDeleteRows  = false;
-        sheet.options.protectionOptions.allowDeleteColumns = false;
-        sheet.options.protectionOptions.allowInsertRows = false;
-        sheet.options.protectionOptions.allowInsertColumns = false;
-        sheet.options.protectionOptions.allowDargInsertRows = false;
-        sheet.options.protectionOptions.allowDragInsertColumns = false;
-
+        // sheet.setActiveCell(96,0)
+        // sheet.showCell (96,0)
+     
+        
         
   }
   
+  sheet.options.isProtected = true;
+        // sheet.options.protectionOptions.allowDeleteRows  = false;
+        // sheet.options.protectionOptions.allowDeleteColumns = false;
+        // sheet.options.protectionOptions.allowInsertRows = false;
+        // sheet.options.protectionOptions.allowInsertColumns = false;
+        // sheet.options.protectionOptions.allowDargInsertRows = false;
+        // sheet.options.protectionOptions.allowDragInsertColumns = false;
+
+
   this.Already_loaded=true;
   this.spreadsheet.resumePaint();
   
@@ -2930,6 +2930,7 @@ return rst;
             this.defaultProgram = program;
             this.defaultActivity = activity;
             this.defaultCategory = analysisCode;
+            this.serviceType =  activity;//this.DETERMINE_SERVICE_TYPE(index);
 
             this.Timesheet_label="Edit Timesheet (RecordNo : " + recordNo +")"
             this.rosterForm.patchValue({
@@ -2943,7 +2944,8 @@ return rst;
                 pay:pay,
                 bill:bill,
                 recipientCode: recipientCode,
-                debtor: debtor
+                debtor: debtor,
+                type: serviceType
                 
             });
         }, 100);
@@ -4112,6 +4114,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             recordNo: [''],
             date: [this.payPeriodEndDate, Validators.required],
             serviceType: ['', Validators.required],
+            type:0,
             program: ['', Validators.required],
             serviceActivity: ['', Validators.required],
             payType: ['', Validators.required],
@@ -4859,7 +4862,7 @@ this.bookingForm.get('program').valueChanges.pipe(
             taxPercent: parseInt(tsheet.bill.tax || 0),
             transferred: 0,
             // type: this.activity_value,
-            type: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
+            type: tsheet.type,//this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
             unitBillRate: parseInt(tsheet.bill.rate || 0),
             unitPayRate: tsheet.pay.rate || 0,
             yearNo: parseInt(format(tsheet.date, 'yyyy')),

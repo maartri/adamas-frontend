@@ -72,7 +72,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
 
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
-        this.searchKin(this.user);      
+        console.log('run contacts')
+        this.searchKin(this.user);
     }
   }
 
@@ -96,7 +97,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       oni2: false,
       ecode: [''],
       creator: [''],
-      recordNumber: null
+      recordNumber: null,
+      subType: ''
     });
 
     this.inputForm = this.formBuilder.group({
@@ -190,7 +192,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           address1: data.address1,
           address2: data.address2,
           name: data.contactName,
-          type: data.contactType,
+          type: data.subType,
           email: data.email,
           fax: data.fax,
           mobile: data.mobile,
@@ -203,7 +205,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           listOrder: '',
           oni1: (data.equipmentCode || '').toUpperCase() == 'PERSON1',
           oni2: (data.equipmentCode || '').toUpperCase() == 'PERSON2',
-          recordNumber: data.recordNumber
+          recordNumber: data.recordNumber,
+          // subType: data.subType
         })
       })
 

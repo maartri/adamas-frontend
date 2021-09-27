@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, AfterContentInit } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -13,7 +13,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class RecipientContactsAdmin implements OnInit, OnDestroy {
+export class RecipientContactsAdmin implements OnInit, OnDestroy, AfterContentInit {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     inputForm: FormGroup;
@@ -44,15 +44,19 @@ export class RecipientContactsAdmin implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'contacts')) {
-                this.user = data;
+                this.user = {...data};
+                this.cd.markForCheck();
             }
         });
         
     }
 
-    ngOnInit(): void {
-        this.user = this.sharedS.getPicked();
+    ngAfterContentInit(){
         this.visible = true;
+    }
+
+    ngOnInit(): void {
+        this.user = Object.assign({}, this.sharedS.getPicked());        
         this.cd.markForCheck();
     }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation } from '@angular/core'
-import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
 //import dayGridPlugin from '@fullcalendar/daygrid';
@@ -42,6 +42,7 @@ import './styles.css';
 import { ElementSchemaRegistry } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router } from '@angular/router';
+import { SetLeftFeature } from 'ag-grid-community';
 
 
  
@@ -65,7 +66,9 @@ IconCellType.prototype = new GC.Spread.Sheets.CellTypes.Base();
 // EllipsisTextCellType.prototype
 IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
     if (!ctx) {
+        console.log('No icon loaded')
         return;
+        
     }
     ctx.save();
 
@@ -95,6 +98,7 @@ IconCellType2.prototype = new GC.Spread.Sheets.CellTypes.Base();
 // EllipsisTextCellType.prototype
 IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context) {            
     if (!ctx) {
+        console.log('No icon found')
         return;
     }
     ctx.save();
@@ -120,11 +124,9 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 @Component({
     selector: 'roster-component',
     styles: [`
-        
-        
+                
         nz-switch.master-class >>> button.ant-switch-checked{ background-color:red; }; 
        
-
         nz-table tbody tr.active  {  
             background-color:#48da24 !important;  
             color: white;  
@@ -152,7 +154,7 @@ export class RostersAdmin implements AfterViewInit  {
     sheetName = "Staff Rosters";  
     hostStyle = {  
       width: '100%',     
-      height: '600px',
+      height: '1000px',
       overflow: 'auto',
       float: 'left'
     };  
@@ -182,7 +184,7 @@ recurrentEndDate: Date | null = null;
 create_Recurrent_Rosters:boolean=false;
 
 weekDay:any;
-Frequency:string;
+Frequency:string="Weekly";
 Pattern:string;
 haccCode:string;
 defaultCode:string;
@@ -233,10 +235,14 @@ endRoster:any;
   listOfSelection: Array <any> = [];
   NRecordNo:string;
   timeList:Array<any>=[];
-    addressList:Array<any>=[]
-    mobilityList:Array<any>=[]
+  addressList:Array<any>=[]
+  mobilityList:Array<any>=[]
     
-    isVisible: boolean = false;
+  show_alert:boolean=false; 
+  txtAlertSubject:string="Shift Alerts";
+  txtAlertMessage:string="Shift Alert";
+
+  isVisible: boolean = false;
     hahays = new Subject<any>();
     optionsModal:boolean=false;
     
@@ -258,6 +264,7 @@ endRoster:any;
     bookingForm: FormGroup;
     TransportForm:FormGroup
     RecurrentServiceForm:FormGroup;
+    AlertForm:FormGroup;
     
     viewType: any;
     start_date:string="";
@@ -270,6 +277,7 @@ endRoster:any;
     Duration:String="5";
    
     master:boolean=false;
+    Master_Roster_label="Current Roster";
     tval:number;
     dval:number;
     sample: any;
@@ -562,14 +570,24 @@ doneBooking(){
             creator: this.token.user
             
         };
+
+        var sheet = this.spreadsheet.getActiveSheet();
+        var sels = sheet.getSelections();
+        var sel = sels[0];
+        var row = sel.row;
+        
+        for (let i=0; i<sels[0].colCount; i++)
+         {   
+
             this.timeS.posttimesheet(inputs).subscribe(data => {
                 this.NRecordNo=data;
                 if  (this.create_Recurrent_Rosters==false &&  this.add_multi_roster==false) {
-                    this.globalS.sToast('Success', 'Roster has been added successfully');
+                   // this.globalS.sToast('Success', 'Roster has been added successfully');
                     this.searchRoster(tsheet.date)
                  }
                   this.addTimesheetVisible = false;
-                
+             
+     
                // this.picked(this.selected);
                 this.IsGroupShift=false;
                console.log(data)
@@ -584,21 +602,35 @@ doneBooking(){
                   this.showTransportModal=true;
                 this.searchRoster(tsheet.date)
             }
+        
 
             if (this.create_Recurrent_Rosters){
                 this.AddRecurrentRosters();
             }
 
-           
+            if (this.viewType=='Staff'){
+                    
+                this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
+                this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+                this.clientCodes=inputs.clientCode;
 
+                this.show_alert=true;
+            }
                
-            });
+           });
+           tsheet.date=this.addDays(tsheet.date,1);
+           inputs.date=format(tsheet.date,'yyyy/MM/dd')
+           inputs.dayno= parseInt(format(tsheet.date, 'd'));
+        }
             this.addRecurrent=false;
             
            // this.resetBookingFormModal()
     
 }
-
+addDays(date: Date, days: number): Date {
+    date.setDate(date.getDate() + days);
+    return date;
+}
 RecordStaffAdmin(){
     this.resetBookingFormModal();
     this.booking_case=6;
@@ -858,6 +890,10 @@ addBooking(type:any){
         }else{
             if (this.programsList.length==1){
                 this.defaultProgram=this.programsList[0];
+                this.bookingForm.patchValue({
+                    program:this.defaultProgram
+                })
+                
                 this.current+=1;
             }
             this.addBookingModel=true;
@@ -873,8 +909,9 @@ SaveAdditionalInfo(notes:string){
     this.ProcessRoster("Additional", this.cell_value.recordNo);
    
 }
-deleteRoster(){
+deleteRoster_old(){
     if (this.cell_value==null || this.cell_value.recordNo==0) return;
+
     this.ProcessRoster("Delete",this.cell_value.recordNo);
 
     let sheet=this.spreadsheet.getActiveSheet();
@@ -883,6 +920,73 @@ deleteRoster(){
     this.operation="Delete";                 
     this.spreadsheet.resumePaint();
     this.deleteRosterModal=false;
+
+   
+    if (this.viewType=='Staff'){
+        this.current_roster = this.find_roster(this.cell_value.recordNo)
+        let clientCode =this.current_roster.recipientCode;
+        let date= this.current_roster.date
+        this.txtAlertSubject = 'SHIFT DELETED : ' ;
+        this.txtAlertMessage = 'SHIFT DELETED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+    
+        this.show_alert=true;
+    }
+}
+
+deleteRoster(){
+
+    var sheet = this.spreadsheet.getActiveSheet();
+    var selected_Cell:any;                   
+    var sels = sheet.getSelections();
+    var sel = sels[0];
+    var row = sel.row;
+    selected_Cell=sel;
+    let selected_columns = selected_Cell.col + selected_Cell.colCount;
+   
+    let data_row=0;
+    let row_iterator=0;
+    let recdNo=0;
+ 
+    for (let i=selected_Cell.col; i<selected_columns; i++)
+    {
+        data_row=selected_Cell.row;
+        
+        for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
+           if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
+            data_row=data_row+1;
+            continue;
+           }
+                                       
+         if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
+            this.cell_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
+        
+        if (this.cell_value.recordNo==recdNo)
+            continue;
+        
+        recdNo=this.cell_value.recordNo;
+ 
+        //if (this.cell_value==null || this.cell_value.recordNo==0) return;
+        this.ProcessRoster("Delete",this.cell_value.recordNo);
+
+        this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+        this.operation="Delete";   
+        
+        
+      }
+    }
+    this.spreadsheet.resumePaint();
+    this.deleteRosterModal=false;
+
+   
+    if (this.viewType=='Staff'){
+        this.current_roster = this.find_roster(this.cell_value.recordNo)
+        let clientCode =this.current_roster.recipientCode;
+        let date= this.current_roster.date
+        this.txtAlertSubject = 'SHIFT DELETED : ' ;
+        this.txtAlertMessage = 'SHIFT DELETED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+    
+        this.show_alert=true;
+    }
 }
 reAllocate(){
     if (this.cell_value==null || this.cell_value.recordNo==0) return;
@@ -979,7 +1083,7 @@ ClearMultishift(){
         
     }else{
         cell.backColor("white");
-        cell.text(""); //.cellType(new IconCellType2(document.getElementById('icon-21')));
+        cell.text("").cellType(new IconCellType2(document.getElementById('icon-21')));
     }
     cell.text("")
     cell.tag(null);
@@ -1015,7 +1119,9 @@ ClearMultishift(){
             if (code=="!INTERNAL")
                     code="ADMIN SHIFT";
                 
-                text=  r.start_Time + "-" + r.end_Time + " " + code + " (" + r.serviceType + ")";
+              //  text=  r.start_Time + "-" + r.end_Time + " " + code + " (" + r.serviceType + ")";
+
+              text=   code + " (" + r.serviceType + ")";
 
             if (row!=null && col !=null)
             this.draw_Cells(sheet,row,col,r.duration, r.type, r.recordNo, text)
@@ -1033,10 +1139,12 @@ ClearMultishift(){
       this.master=$event;
       if (this.master){
         this.date="1900/01/01";
+        this.Master_Roster_label='Master Roster'
         //this.startRoster="1900/01/01";
        // this.endRoster="1900/01/31";
       }else{        
         this.date = moment()      
+        this.Master_Roster_label='Current Roster'
         //this.startRoster=this.date;
        // this.endRoster=this.date;
     }
@@ -1109,16 +1217,8 @@ ClearMultishift(){
             
                 sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
                    
-                //    if (self.prev_cell.service==null)
-                //        sheet.getCell(infos.row, infos.col).backColor("#cfcfca");
-
-                //     sheet.getCell(infos.row, infos.col).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
-                 
-                //    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#ff2060");
-                //    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
-                // //Set the backcolor of destination cells (currently active cells)
-                //     infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
-                //    // infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).text("#002060")
+                  
+               // infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).text("#002060")
             });
             
          
@@ -1127,9 +1227,9 @@ ClearMultishift(){
             spread.suspendPaint();
               let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
              
-              if(args.sheetArea==1 || args.sheetArea==2){
+              if(args.sheetArea==1 || args.sheetArea==2)
                 return;
-            }
+            
 
               self.eventLog =
                   'SpreadEvent: ' + GC.Spread.Sheets.Events.CellClick + ' event called' + '\n' +
@@ -1159,7 +1259,7 @@ ClearMultishift(){
                   type=self.cell_value.type;
                   service=self.cell_value.service;
                  
-                  
+      
 
                   if (service!=null)
                     self.ActiveCellText=self.cell_value.recordNo + " - " + service 
@@ -1183,19 +1283,24 @@ ClearMultishift(){
                   sheet.addSelection(row, col, new_duration, 1);
 
                   let len =row+new_duration;
-               
+
+             
+             
+            
+              
                    // Set border lines to cell(1,1).
                  //7c996d
-                   for (let i=row; i<len; i++){
-                  var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
-                      cell.borderLeft(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
-                      cell.borderRight(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
-                      if (i==row)
-                      cell.borderTop(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
-                      if (i==len-1)
-                      cell.borderBottom(new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.thick));                      
-  
-                  }
+                //    for (let i=row; i<len; i++){
+                //   var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
+                //       cell.borderLeft(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                                          
+                //       if (i==row)
+                //       cell.borderTop(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                //       if (i==len-1){
+                //         cell.borderBottom(new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.thick));                      
+                //         cell.borderRight(new GC.Spread.Sheets.LineBorder("blue", GC.Spread.Sheets.LineStyle.thick));
+                //       }
+                //   }
                 }else {
                   
                   // sheet.getCell(row, col).backColor("#cfcfca");
@@ -1248,28 +1353,49 @@ ClearMultishift(){
         //           'column: ' + selection.col + '\n' +
         //           'rowCount: ' + selection.rowCount + '\n' +
         //           'colCount: ' + selection.colCount;
+               
+             
         //   });
           spread.bind(spreadNS.Events.SelectionChanged, function (e: any, args: any) {
               let selection = args.newSelections;
               //if (selection.rowCount > 1 && selection.colCount > 1) {
-                  let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
+                //   let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
                   
-                  if(args.sheetArea==1 || args.sheetArea==2){
-                      return;
-                  }
-                  return;
+                //   if(args.sheetArea==1 || args.sheetArea==2){
+                //       return;
+                //   }
+                //   return;
                   self.eventLog =
                       'SpreadEvent: ' + GC.Spread.Sheets.Events.SelectionChanged + ' event called' + '\n' +
-                      'sheetArea: ' + sheetArea + '\n' +
+                      
                       'row: ' + selection.row + '\n' +
                       'column: ' + selection.col + '\n' +
                       'rowCount: ' + selection.rowCount + '\n' +
                       'colCount: ' + selection.colCount;
 
                       var len =selection[0].rowCount;
+                      var cols = selection[0].colCount;
                       var row=selection[0].row;
                       var col = selection[0].col;
                       
+
+                      spread.suspendPaint()
+                      
+                
+                // Set the backcolor and forecolor for the entire column header.
+                var columns = sheet.getRange(0,col, len, cols, GC.Spread.Sheets.SheetArea.colHeader);
+                columns.backColor("#002060");
+                columns.foreColor("White");
+
+                // Set the backcolor of second row header.
+                //sheet.getCell(row, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("Yellow");
+                var rows = sheet.getRange(row,0, len, 0, GC.Spread.Sheets.SheetArea.rowHeader);
+                rows.backColor("#002060");
+                rows.foreColor("White");
+
+      
+                    spread.resumePaint();
+                    return;
 
                       if (sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)==null) {
                         self.prev_cell ={row:row,col:col,duration:len};
@@ -1277,15 +1403,19 @@ ClearMultishift(){
                        for (let i=row; i<len; i++){
                       var cell = sheet.getCell(i, col, GC.Spread.Sheets.SheetArea.viewport);
                           cell.borderLeft(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
-                          cell.borderRight(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
-                          if (i==row)
-                          cell.borderTop(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
-                          if (i==len-1)
-                          cell.borderBottom(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));    
                           
+                          if (i==row)
+                            cell.borderTop(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                          if (i==len-1){
+                            cell.borderBottom(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));    
+                            cell.borderRight(new GC.Spread.Sheets.LineBorder("Blue", GC.Spread.Sheets.LineStyle.thick));
+                          }
       
                       }
-              }
+                      spread.resumePaint();
+                    }
+
+              
           });
           spread.bind(spreadNS.Events.EditStarting, function (e: any, args: any) {
               self.eventLog =
@@ -1517,22 +1647,50 @@ ClearMultishift(){
                         var row = sel.row;
                         console.log(selected_Cell);     
                         
-                        var value = sheet.getValue(selected_Cell.row, selected_Cell.col);
-                     
-                       
                         
-                        if (self.copy_value.row>=0){
-                          self.draw_Cells(sheet,row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
-                         
+                        let selected_columns = selected_Cell.col + selected_Cell.colCount;
+                        let dt= new Date(self.date);        
+                        let data_row=0;
+                        let row_iterator=0;
+                        let recdNo=0;
+                        col=col-1;
+                        for (let i=selected_Cell.col; i<selected_columns; i++)
+                        {
+                            data_row=selected_Cell.row;
+                            col=col+1;
+                            for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
+                               if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
+                                data_row=data_row+1;
+                                continue;
+                               }
+                                                           
+                             if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
+                                self.copy_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
+                            
+                            if (self.copy_value.recordNo==recdNo)
+                                continue;
+                            
+                            recdNo=self.copy_value.recordNo;
+                            let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col);
+                      
+                            if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
+                                continue;
+                            }
+                            //if (self.copy_value.row>=0){
+                               let n_row=row+row_iterator;
+                            self.draw_Cells(sheet,n_row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
+                            
+                            
+                            if (self.operation==="cut"){
+                                self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
+                                self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
+                            }else
+                                self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
+                            
+                             data_row=data_row+1;                 
+                            }// rows loop
+                            
                         }
-                        if (self.operation==="cut"){
-                            self.ProcessRoster("Cut",self.copy_value.recordNo);
-                            self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
-                        }else
-                            self.ProcessRoster("Copy",self.copy_value.recordNo);
-                        
-                       
-                       
                        // sheet.setValue(row,col,sheet.getCell(selected_Cell.row, selected_Cell.col));
   
                        //sheet.getCell(row,col).backColor(sheet.getCell(selected_Cell.row, selected_Cell.col).backColor);
@@ -1541,6 +1699,18 @@ ClearMultishift(){
                         Commands.endTransaction(context, options);
                       //  sheet.options.isProtected = true;
                         spread.resumePaint();
+                       
+                        if (self.viewType=='Staff'){
+                            self.current_roster = self.find_roster(self.cell_value.recordNo);
+                            let clientCode =self.current_roster.recipientCode;
+                            let date= self.current_roster.date
+
+                            self.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
+                            self.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+                        
+                            self.show_alert=true;
+                        }
+                       // self.load_rosters();
                         return true;
                     }
                 }
@@ -1562,24 +1732,16 @@ ClearMultishift(){
                       
                         console.log("Delete Operation")
                        
-                        var sheet = spread.getActiveSheet();
                        
-                        var sels = sheet.getSelections();
-                        var sel = sels[0];
-                        var row = sel.row;
                        
-                        selected_Cell=sel;
-  
-                        if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null){
-                          self.cell_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)                      
-                          self.deleteRosterModal=true;
+                        
+                            self.deleteRosterModal=true;
                           
-                        }else
-                         self.cell_value={row:-1,col:-1,duration:-1, type:0}
-                       
-                        self.operation="Delete";     
-
+                        
+                            self.operation="Delete";     
+                        
                         Commands.endTransaction(context, options);
+
                       
                         return true;
                     }
@@ -1828,13 +1990,14 @@ ClearMultishift(){
 
    let sheet:any=this.spreadsheet.getActiveSheet(); 
 
-   this.changeHeight()
+   //this.changeHeight()
    this.spreadsheet.suspendPaint();
   
      // Set the default styles.
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "Segoe UI";
      defaultStyle.themeFont = "Segoe UI";
+     
      sheet.clearSelection();
      sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
      let date:Date = new Date(this.date);
@@ -1859,11 +2022,11 @@ ClearMultishift(){
     this.Days_View=days
    }
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
+    sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
 
-
-    if (this.Days_View==31) {this.Days_View==days}
+    // if (this.Days_View==31) {this.Days_View==days}
     
-    sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
+    // sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
     
     for (let i=0; i<=this.Days_View ; i++)   
         
@@ -1897,7 +2060,7 @@ ClearMultishift(){
         //        
        // sheet.autoFitColumn(i)            
 
-      if ((this.DayOfWeek( date.getDay())=="Sa") || (this.DayOfWeek( date.getDay())=="Su")){
+      if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")){
           sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
           sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: '#c7060c' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
           
@@ -1911,18 +2074,10 @@ ClearMultishift(){
       date.setDate(date.getDate()+1); 
     }
 
-   if (this.Already_loaded)
-        {
-        
-        this.spreadsheet.resumePaint();
-        return;
-        
-        }   
-
     let time:Time;
     time={hours:0,
         minutes:0}
-        
+      
     
 
     for (let j=0; j<this.time_slot; j++)   {      
@@ -1959,9 +2114,23 @@ ClearMultishift(){
           time.minutes=0;
           time.hours+=1;
         }
+
+        // sheet.setActiveCell(96,0)
+        // sheet.showCell (96,0)
+     
+        
         
   }
   
+  sheet.options.isProtected = true;
+        // sheet.options.protectionOptions.allowDeleteRows  = false;
+        // sheet.options.protectionOptions.allowDeleteColumns = false;
+        // sheet.options.protectionOptions.allowInsertRows = false;
+        // sheet.options.protectionOptions.allowInsertColumns = false;
+        // sheet.options.protectionOptions.allowDargInsertRows = false;
+        // sheet.options.protectionOptions.allowDragInsertColumns = false;
+
+
   this.Already_loaded=true;
   this.spreadsheet.resumePaint();
   
@@ -2011,55 +2180,55 @@ ClearMultishift(){
         text=Servicetype + "-" +RecordNo + ", type=" + type;
     switch(Number(type)){
         case 1:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-1')));                    
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-1')));                    
         break;
         case 2:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-2')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-2')));
             break;
         case 3:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-3')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-3')));
             break;
         case 4:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-4')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-4')));
             break;
         case 5:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-5')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-5')));
             break;
         case 6:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-6')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-6')));
             break;
         case 7:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-7')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-7')));
             break;           
         case 8:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-8')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-8')));
             break;   
         case 9:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-9')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-9')));
             break;   
         case 10:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-10')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-10')));
             break;
         case 11:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-11')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-11')));
             break;        
          case 12:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-12')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-12')));
             break;
         case 13:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-13')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-13')));
             break;
         case 14:
-            sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-14')));
+            sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-14')));
             break; 
         case 15:
-                sheet.getCell(r,c).text(text); //.cellType(new IconCellType(document.getElementById('icon-15')));
+                sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-15')));
                 break; 
         case 20:
-                sheet.getCell(r,c).text(""); // .cellType(new IconCellType2(document.getElementById('icon-20')));
+                sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-20')));
                 break; 
         default:
-           sheet.getCell(r,c).text(""); // .cellType(new IconCellType2(document.getElementById('icon-21')));
+           sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-21')));
             
     }
        
@@ -2130,19 +2299,23 @@ ClearMultishift(){
        // sheet.getCell(r,c).backgroundImage(rowImage)
         
        this.setIcon(r,c,type,RecordNo, service);
+       sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
        }  
        else{
             
-            //sheet.getCell(r+m,c).backColor("#CAF0F5");
-            sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#CAF0F5"},{position:1, color:"#CAF0F5"},]});
+           sheet.getCell(r+m,c).backColor("#CAF0F5");
+           // sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#abd8de"},{position:0.5, color:"#CAF0F5"},{position:1, color:"#CAF0F5"},]});
          //  sheet.getCell(r,c).backColor("#ffffff");
-            //this.setIcon(r+m,c,20,RecordNo, "");
+          //  this.setIcon(r+m,c,20,RecordNo, "");
+          sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#c8cccc", GC.Spread.Sheets.LineStyle.thin), {all:true});
         }
         //sheet.getCell(r+m,c).field=duration;
        sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(this.cell_value)
+
        }
-      
+       
+   
      // if (new_duration>1)
      //sheet.addSpan(r, c, new_duration, 1);
       //sheet.getCell(5, 4).value("Demo-" +c).hAlign(1).vAlign(1);
@@ -2330,12 +2503,17 @@ ClearMultishift(){
       this.addBooking(0);
       this.add_multi_roster=true;
   }
-    ProcessRoster(Option:any, recordNo:string):any {
+    ProcessRoster(Option:any, recordNo:string, rdate:string=""):any {
+        
+        
         let dt= new Date(this.date);
         
         let sheet = this.spreadsheet.getActiveSheet();
         let range = sheet.getSelections();
         let date = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(range[0].col+1);
+        if (rdate!=""){
+            date=rdate;
+        }
         let f_row= range[0].row;
         let l_row=f_row+range[0].rowCount;
        // let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
@@ -2347,22 +2525,24 @@ ClearMultishift(){
 
             startTime="00:00"
         }
-       
-        let inputs={
+        var sels = sheet.getSelections();
+        var sel = sels[0];
+        
+        let inputs = {
             "opsType": Option,
             "user": this.token.user,
             "recordNo": recordNo,
             "isMaster": this.master,
             "roster_Date" : date,
-            "start_Time":startTime,
-            "carer_code":this.viewType =="Staff" ? this.recipient.data : this.selectedCarer,
-            "recipient_code":this.viewType =="Staff" ? "" : this.recipient.data,
+            "start_Time": startTime,
+            "carer_code": this.viewType =="Staff" ? this.recipient.data : this.selectedCarer,
+            "recipient_code" : this.viewType =="Staff" ? "" : this.recipient.data,
             "notes" : this.notes,
             'clientCodes' : this.clientCodes
         }
         this.timeS.ProcessRoster(inputs).subscribe(data => {
         //if  (this.ClearMultiShiftModal==false &&  this.SetMultiShiftModal==false) 
-               this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
+             //  this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
         this.selectedCarer="";
         this.searchStaffModal=false;
         this.UnAllocateStaffModal=false;
@@ -2375,6 +2555,8 @@ ClearMultishift(){
         this.deleteRosterModal=false;
             
     });
+    
+    
 }
 
     find_roster(RecordNo:number):any{
@@ -2748,6 +2930,7 @@ return rst;
             this.defaultProgram = program;
             this.defaultActivity = activity;
             this.defaultCategory = analysisCode;
+            this.serviceType =  activity;//this.DETERMINE_SERVICE_TYPE(index);
 
             this.Timesheet_label="Edit Timesheet (RecordNo : " + recordNo +")"
             this.rosterForm.patchValue({
@@ -2761,7 +2944,8 @@ return rst;
                 pay:pay,
                 bill:bill,
                 recipientCode: recipientCode,
-                debtor: debtor
+                debtor: debtor,
+                type: serviceType
                 
             });
         }, 100);
@@ -3103,7 +3287,7 @@ reload(reload: boolean){
 
                
                
-                this.globalS.sToast('Roster Notifs',`There are ${(this.options.events).length} rosters found!`)
+               // this.globalS.sToast('Roster Notifs',`There are ${(this.options.events).length} rosters found!`)
                
         });
     }
@@ -3263,7 +3447,7 @@ reload(reload: boolean){
         }
         this.timeS.addRecurrentRosters(inputs).subscribe(data => {
         
-               this.globalS.sToast('Success', 'Recurrent Roater added successfully');
+              // this.globalS.sToast('Success', 'Recurrent Roater added successfully');
                this.searchRoster(sdate)
       
     });
@@ -3338,7 +3522,7 @@ reload(reload: boolean){
 
     
 
-    GETSERVICEACTIVITY(program: any): Observable<any> {
+    GETSERVICEACTIVITY_old(program: any): Observable<any> {
 
         const { serviceType, date, time } = this.rosterForm.value;
 
@@ -3390,10 +3574,11 @@ reload(reload: boolean){
         }
     }
 
-    GETSERVICEACTIVITY2(program: any): Observable<any> {
+    
+    GETSERVICEACTIVITY(program: any): Observable<any> {
 
         let serviceType=this.serviceType;
-        const { recipientCode }  = this.bookingForm.value;
+        const { recipientCode }  = this.rosterForm.value;
 
         if (recipientCode!="" && recipientCode!=null){
             this.FetchCode=recipientCode;
@@ -3539,6 +3724,175 @@ reload(reload: boolean){
             ELSE I.Amount END )
             ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
             isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${program}' AND [SO].[ServiceStatus] = 'ACTIVE' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] 
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`; 
+
+            
+              }
+
+            return this.listS.getlist(sql);
+            
+        
+    };
+    GETSERVICEACTIVITY2(program: any): Observable<any> {
+
+        let serviceType=this.serviceType;
+        const { recipientCode }  = this.bookingForm.value;
+
+        if (recipientCode!="" && recipientCode!=null){
+            this.FetchCode=recipientCode;
+          }
+        let sql ="";
+        if (!program) return EMPTY;
+       // console.log(this.rosterForm.value)
+ 
+        
+       if (serviceType == 'ADMINISTRATION' ){
+        // const { recipientCode, debtor } = this.rosterForm.value;
+        sql =` SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,     
+              I.Amount AS BILLRATE,
+              I.unit as UnitType,isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
+              (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+              HACCType,'' as Anal,
+              (select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+              FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID        
+              INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+              WHERE SO.ServiceProgram = '${program}'  and I.[Status] = 'NONATTRIBUTABLE'
+              AND EXISTS
+              (SELECT Title
+              FROM ItemTypes ITM
+              WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = 'ADMINISTRATION'
+              AND ITM.[Status] = 'NONATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+              ORDER BY [Service Type]`;
+
+    }else if (serviceType == 'ADMISSION' || serviceType =='ALLOWANCE NON-CHARGEABLE' || serviceType == 'ITEM'  || serviceType == 'SERVICE') {
+            // const { recipientCode, debtor } = this.rosterForm.value;
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END)
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,I.unit as UnitType,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${ program}' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = '${serviceType}'
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`;
+    
+        }else if (serviceType == 'TRAVEL TIME' || serviceType == 'TRAVELTIME') {
+
+            sql=` SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,I.unit as UnitType,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${program}'
+			AND I.[RosterGroup] = 'TRAVELTIME' AND (I.EndDate Is Null OR I.EndDate >='${this.currentDate}') `
+            
+           
+
+         }else if (this.booking_case==4 && !this.IsGroupShift){
+           
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,I.unit as UnitType,
+            (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+            HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+            FROM ServiceOverview SO 
+            INNER JOIN Recipients C ON C.UNIQUEID=SO.PERSONID AND C.AccountNO = '${this.FetchCode}'
+            INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+            WHERE SO.ServiceProgram = '${program}' 
+            AND EXISTS
+            (SELECT Title
+            FROM ItemTypes ITM
+            WHERE Title = SO.[Service Type] 
+            AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+            ORDER BY [Service Type]`;
+        
+        }  else if (this.booking_case==4 && this.IsGroupShift){
+           
+                sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
+                I.AMOUNT AS BILLRATE,
+                isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate, 0 as GST,I.unit as UnitType,
+                'N/A' as Service_Description,
+                HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+                FROM ServiceOverview SO         
+                INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+                WHERE SO.ServiceProgram = '${program}' 
+                AND EXISTS
+                (SELECT Title
+                FROM ItemTypes ITM
+                WHERE  RosterGroup = '${this.GroupShiftCategory}' And Title = SO.[Service Type] And ProcessClassification in ('EVENT','OUTPUT' )
+                AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+                ORDER BY [Service Type]`;
+
+    }else if (this.booking_case==8 ){
+           
+        sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
+        I.AMOUNT AS BILLRATE,
+        isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,I.unit as UnitType,
+        'N/A' as Service_Description,
+        HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+        FROM ServiceOverview SO         
+        INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+        WHERE SO.ServiceProgram = '${program}' 
+        AND EXISTS
+        (SELECT Title
+        FROM ItemTypes ITM
+        WHERE  RosterGroup = 'RECPTABSENCE' And Title = SO.[Service Type] And ProcessClassification = 'EVENT' 
+        AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+        ORDER BY [Service Type]`;
+    }
+     else {          
+
+            sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+            (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+            (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+             WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+             WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+             WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+             WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+            ELSE I.Amount END )
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,I.unit as UnitType,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
@@ -3760,6 +4114,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             recordNo: [''],
             date: [this.payPeriodEndDate, Validators.required],
             serviceType: ['', Validators.required],
+            type:0,
             program: ['', Validators.required],
             serviceActivity: ['', Validators.required],
             payType: ['', Validators.required],
@@ -3895,6 +4250,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
         this.rosterForm.get('serviceType').valueChanges.pipe(
             takeUntil(this.unsubscribe),
             switchMap(x => {
+             
                 this.clearLowerLevelInputs();
 
                 this.multipleRecipientShow = this.isServiceTypeMultipleRecipient(x);
@@ -4042,11 +4398,9 @@ this.bookingForm.get('program').valueChanges.pipe(
             if(d && d.length == 1){
                 this.bookingForm.patchValue({
                     serviceActivity: d[0]               
-                    
-                    
-
+                   
                 });
-              
+               this.next_tab();
                 
             }
         });
@@ -4439,9 +4793,15 @@ this.bookingForm.get('program').valueChanges.pipe(
 
     get showDone2(){
 
-           
-            if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
-                return false;
+          
+            if (this.current>=4)
+                return true;
+            else if (this.selectedActivity!=null){
+                    if (this.selectedActivity.service_Description == '' )
+                            return false;
+                }
+            else if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
+                return false;            
             else if ((this.current >=1 && this.viewType=="Staff") && (this.activity_value!=12 || !this.ShowCentral_Location ))
                 return true;
             else if  (this.current >=1 && (this.booking_case==1 || this.booking_case==5 ))
@@ -4502,38 +4862,60 @@ this.bookingForm.get('program').valueChanges.pipe(
             taxPercent: parseInt(tsheet.bill.tax || 0),
             transferred: 0,
             // type: this.activity_value,
-            type: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
+            type: tsheet.type,//this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
             unitBillRate: parseInt(tsheet.bill.rate || 0),
             unitPayRate: tsheet.pay.rate || 0,
             yearNo: parseInt(format(tsheet.date, 'yyyy')),
             serviceTypePortal: tsheet.serviceType,
             recordNo: tsheet.recordNo
         };
+
         if(!this.rosterForm.valid){
             this.globalS.eToast('Error', 'All fields are required');
             return;
         }
 
+        
         if(this.whatProcess == PROCESS.ADD){
             this.timeS.posttimesheet(inputs).subscribe(data => {
-                this.globalS.sToast('Success', 'Timesheet has been added');
+                //this.globalS.sToast('Success', 'Timesheet has been added');
                 this.addTimesheetVisible = false;
                // this.picked(this.selected);
-              
                this.searchRoster(tsheet.date)
+
+               if (this.viewType=='Staff'){
+                this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
+                this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+                this.clientCodes=inputs.clientCode;
+
+                this.show_alert=true;
+               }
             });
         }   
         
         if(this.whatProcess == PROCESS.UPDATE){
+           
             this.timeS.updatetimesheet(inputs).subscribe(data => {
-                this.globalS.sToast('Success', 'Timesheet has been updated');
+                //this.globalS.sToast('Success', 'Timesheet has been updated');
                 this.addTimesheetVisible = false;
-                //this.picked(this.selected);
+                if (this.viewType=='Staff'){
+                    this.txtAlertSubject= 'SHIFT DAY/TIME CHANGE : ' ;
+                    this.txtAlertMessage= 'SHIFT TIME CHANGE : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+                    this.clientCodes=inputs.clientCode;
+                    
+                    this.show_alert=true;
+                }
                 this.searchRoster(tsheet.date)
             });
         }
     }
 
+    generate_alert(){
+        this.show_alert=false;
+        this.notes= this.txtAlertSubject + "\n" + this.txtAlertMessage;
+        
+        this.ProcessRoster("Alert","1");
+    }
     FIX_CLIENTCODE_INPUT(tgroup: any): string{
         if (tgroup.serviceType == 'ADMINISTRATION' || tgroup.serviceType == 'ALLOWANCE NON-CHARGEABLE' || tgroup.serviceType == 'ITEM') {
             return "!INTERNAL"

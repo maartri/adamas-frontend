@@ -14,7 +14,8 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router,ActivatedRoute, ParamMap } from '@angular/router';
 import * as constants from './../../services/global.service'
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { empty, Subject } from 'rxjs';
+import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
+import { LEADING_TRIVIA_CHARS } from '@angular/compiler/src/render3/view/template';
 
 
 
@@ -133,6 +134,8 @@ const inputFormDefault = {
     frm_add_inclusion: [false],
     frm_RosterFormat: [false],
     frm_RosterInclusion: [false],
+
+    frm_CustomRptbtn : [false],
     
 
     whowhat: [''],
@@ -415,6 +418,8 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_RosterFormat: boolean;
     frm_RosterInclusion:boolean;
 
+    frm_CustomRptbtn: boolean;
+
     
 
     frm_mta_options: boolean;
@@ -550,6 +555,13 @@ stafftypeArr: Array<any> = constants.types;
     incidentcategoryArr: Array<any> = ['Open', 'Close'];
     Additional_inclusion: Array<any> = [];
     RosterCategory: Array<any> = []; 
+    UserRptButtonlist : Array<any>= [];
+    UserSTFButtonlist : Array<any> = [];
+    AGENCYSTFButtonlist : Array<any> = [];
+    RecpUserRptButtonlist : Array<any> = [];
+    UserRptFormatlist : Array<any> = [];
+    UserRptSQLlist : Array<any> = [];
+    DataArra : Array<any> = [];
     Rpt_Format : Array<any> = [];
     Roster_staffinclusion   : Array<any> = [];
     
@@ -665,6 +677,7 @@ stafftypeArr: Array<any> = constants.types;
     }
     ngOnInit(): void {
     
+        this.CustomReportSetting();
         
            //recepientincident
         const children: Array<{ label: string; value: string }> = [];
@@ -673,7 +686,7 @@ stafftypeArr: Array<any> = constants.types;
             children.push({ label: i.toString(36) + i, value: i.toString(36) + i });
 
         }
-        //
+        
         var date = new Date();
         let temp = new Date(date.getFullYear(), date.getMonth(), 1);
         let temp1 = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -684,13 +697,11 @@ stafftypeArr: Array<any> = constants.types;
       
         
 
-
+        
 
         this.listOfOption = children;
         this.inputForm = this.fb.group(inputFormDefault);
-
-         
-
+    
 
         this.inputForm.get('allPrograms').valueChanges.subscribe(data => {
             this.inputForm.patchValue({
@@ -911,7 +922,7 @@ stafftypeArr: Array<any> = constants.types;
                 break;
         }  
 
-
+        
 
 
     }//ngOninit  
@@ -1075,6 +1086,9 @@ stafftypeArr: Array<any> = constants.types;
         this.frm_mta_options = false;
 
         this.RosterCategory = []; 
+        //this.UserRptButtonlist = [];
+        this.UserRptFormatlist = [];
+        this.UserRptSQLlist = [];
 
 
 
@@ -1094,9 +1108,13 @@ stafftypeArr: Array<any> = constants.types;
             this.FOReportsbodystyle = { height:'300px', overflow: 'auto' }
         } 
     }
-    showUserReport() {
-
+    showUserReport(e) {
+        e = e || window.event;
+        e = e.target || e.srcElement;
+        if(e.id !== null){this.GlobalS.var2 = e.id.toString();}
+        console.log(this.GlobalS.var2)
         this.router.navigate(['/admin/user-reports']);
+      
     }
     yearrange(){
        
@@ -1111,7 +1129,7 @@ stafftypeArr: Array<any> = constants.types;
         }        
     }
     showModal(e) {
-       
+       console.log(e)
        switch (e) {
            case 'btn-Regis-incidentregister':
             this.btnid = "btn-Regis-incidentregister"
@@ -20112,7 +20130,116 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
       });
 }
 
+CustomReportSetting(){
+    
+     
+   let temp = forkJoin([
+        this.ReportS.GetReportNames('AGENCYSTFLIST') ,                        
+        this.ReportS.GetReportNames('AGENCYLIST'),
+        this.ReportS.GetReportNames('USERLIST'),
+        this.ReportS.GetReportNames('USERSTFLIST')
+    ]) 
+    temp.subscribe(data => {       
+        this.AGENCYSTFButtonlist = data[0];
+        this.UserRptButtonlist = data[1] ;
+        this.RecpUserRptButtonlist = data[2];
+        this.UserSTFButtonlist = data[3];
 
+    
+    });
+    
+        this.frm_CustomRptbtn = true;
+        //console.log(this.AGENCYSTFButtonlist)
+        
+   
+   
+} 
+
+FetchRuntimeReport(title){
+    console.log("TITLE:  " +title)
+
+  const temp =  forkJoin([
+    //    this.ReportS.GetReportFormat(title),
+        this.ReportS.GetReportSql(title)
+    ]);    
+    temp.subscribe(data => {
+        //this.UserRptFormatlist = data[0];
+        this.UserRptSQLlist = data[0];   
+        var re = /~/gi;    
+        console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
+    
+     //   this.RenderRunTimeReport(this.UserRptSQLlist)
+
+    });
+
+   
+
+   
+
+}
+RenderRunTimeReport(strSQL){
+    console.log(strSQL)
+    const data = {
+        
+        "template": { "_id": "qTQEyEz8zqNhNgbU" },
+                    
+        "options": {
+            "reports": { "save": false },
+            
+            "sql": strSQL,            
+            "userid": this.tocken.user,
+            
+            
+        }
+    }
+    this.loading = true;
+
+    const headerDict = {
+
+        'Content-Type': 'application/json',
+        'Accept': 'application/json', 
+        'Content-Disposition': 'inline;filename=XYZ.pdf'
+        //'Content-Disposition': 'ContentDisposition(hello)',
+        //'filename':'fname.pdf',            
+     //   (),
+        
+        
+    }
+
+    const requestOptions = {
+        headers: new HttpHeaders(headerDict),
+        
+        credentials: true,
+       
+        
+    };
+
+    //this.rpthttp
+    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
+        .subscribe((blob: any) => {
+            console.log(blob);
+
+            let _blob: Blob = blob;
+
+            let fileURL = URL.createObjectURL(_blob)//+'#toolbar=1';
+            this.pdfTitle = "RunTimeReport.pdf"
+
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            
+            this.loading = false;
+
+        }, err => {
+            console.log(err);
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+nzContent: 'The report has encountered the error and needs to close (' + err + ')',
+                nzOnOk: () => {
+                         this.drawerVisible = false;
+                         },
+              });
+        }); this.drawerVisible = true;
+
+}
 
 
 } //ReportsAdmin

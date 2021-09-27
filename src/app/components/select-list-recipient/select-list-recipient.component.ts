@@ -86,7 +86,6 @@ export class SelectListRecipientComponent implements OnInit, ControlValueAccesso
 
   onClickHandler(data: any){   
     this.value = data;
-    console.log(data);
     this.onChange(this.value);
   }
 }

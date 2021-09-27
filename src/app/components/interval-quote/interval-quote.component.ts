@@ -229,7 +229,7 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
 
   //From ControlValueAccessor interface
   writeValue(value: any) {
-    console.log(value)
+
     if(value != null){
       
       if(value.length > 0) {
@@ -240,8 +240,6 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
 
       this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {     
         this.innerValue = data;
-        // console.log(this.innerValue)
-        // this.calculateDuration(data);
         this.onChangeCallback(this.innerValue);      
         this.cd.markForCheck();
       });
@@ -269,29 +267,31 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     clonedObjArray.forEach((x, index) => {
       
       
-      var monQuant = (x['monday']['quantity']).toFixed(2);
+      var monQuant = ('0'+ (x['monday']['quantity'])).slice(-2).concat('.00');
+      // parseString = parseString.concat('||', format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
+
       if(index > 0){
         parseString = parseString.concat('||',format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
       } else {
         parseString = parseString.concat(format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
       }
       
-      var tueQuant = (x['tuesday']['quantity']).toFixed(2);
+      var tueQuant = ('0'+ (x['tuesday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['tuesday']['time']),'HH:mm'), '|', tueQuant);
 
-      var wedQuant = (x['wednesday']['quantity']).toFixed(2);
+      var wedQuant = ('0'+ (x['wednesday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['wednesday']['time']),'HH:mm'), '|', wedQuant);
 
-      var thuQuant = (x['thursday']['quantity']).toFixed(2);
+      var thuQuant = ('0'+ (x['thursday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['thursday']['time']),'HH:mm'), '|', thuQuant);
 
-      var friQuant = (x['friday']['quantity']).toFixed(2);
+      var friQuant = ('0'+ (x['friday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['friday']['time']),'HH:mm'), '|', friQuant);
 
-      var satQuant = (x['saturday']['quantity']).toFixed(2);
+      var satQuant = ('0'+ (x['saturday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['saturday']['time']),'HH:mm'), '|', satQuant);
 
-      var sunQuant = (x['sunday']['quantity']).toFixed(2);
+      var sunQuant = ('0'+ (x['sunday']['quantity'])).slice(-2).concat('.00');
       parseString = parseString.concat('||',format(new Date(x['sunday']['time']),'HH:mm'), '|', sunQuant);
       
     });

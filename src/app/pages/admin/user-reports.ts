@@ -2,40 +2,51 @@ import { Component } from "@angular/core";
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { OnInit, OnDestroy, AfterViewInit } from "@angular/core";
+import { takeUntil } from 'rxjs/operators';
+import { forkJoin, Subject } from 'rxjs';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, FormControlName, } from '@angular/forms';
 import { parseJSON } from "date-fns";
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService } from '@services/index';
+import { GlobalService, ReportService,ListService,MenuService } from '@services/index';
 import { concat, flatMapDeep, indexOf, size } from "lodash";
 import eachDayOfInterval from "date-fns/esm/eachDayOfInterval/index";
 
 const inputFormDefault = {
-  frm_nodelist: [true],
   
-  btnid: '',
-  content:  '',
+  
+  btnid:[''],
+  content:  [''],
   one:[[]],
   list: [[]],
   entity:[[]],
   condition:[[]],
   value:[[]],
+  Endvalue:[[]],
   // = ['title','ASAD','key']
   //  data : Array<any> = [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr:[[]],
   functionsArr:  [["EQUALS", "BETWEEN", "LESS THAN", "GREATER THAN", "NOT EQUAL TO", "IS NOTHING", "IS ANYTHING", "IS TRUE", "IS FALSE"]],
   //Arr: [[]],
-  Arr: '',
-  valArr:'',
+  Arr: [''],
+  valArr:[''],
+  RptTitle :[''],
   //valArr:[[]],
   data: [[]],
   activeonly:[false],
   incl_internalCostclient: [false],
-  radiofiletr:[],
-  datarow: [[]],
+  radiofiletr:['meet'],
+  datarow: [[]],  
 
+  drawerVisible:  false,
+  
+  isVisibleprompt : false,
+  rptfieldname:0,
+  RptFormat: [''],
+  
+  
 }
 
 @Component({
@@ -43,11 +54,20 @@ const inputFormDefault = {
 
   },
   styles: [`
+  .spinner{
+    margin:1rem auto;
+    width:1px;
+}
   .item-right{
     text-align: right;
     align-content: right;
     float:right;
     }
+    .btn{
+      margin : 10px;
+      padding: 2px;
+         
+  }
     .item-left{
     text-align: left;
     align-content: left;
@@ -58,6 +78,12 @@ const inputFormDefault = {
         text-align: center;
          vertical-align: center;
             
+    }
+    .colwidth{
+      width: 200px;
+    }
+    .colwidthentity{
+      width: 300px;
     }
     nz-layout{
       height: fit-content;
@@ -87,6 +113,9 @@ const inputFormDefault = {
     height: 500px;
     overflow-y: scroll;
   }
+  .form-group label{
+    font-weight: bold;
+}
   
     `],
 
@@ -95,6 +124,7 @@ const inputFormDefault = {
 
 export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   frm_nodelist: boolean = true;
+  frm_delete : boolean = false;
   inputForm: FormGroup;
   btnid: string;
   content: string;
@@ -105,14 +135,16 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   condition:Array<any>;
   value:Array<any>;
   Endvalue :Array<any>; // = ['title','ASAD','key']
-  //  data : Array<any> = [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
+  //data : Array<any> ;= [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr: Array<any>;
   functionsArr: Array<any> = ["EQUALS", "BETWEEN", "LESS THAN", "GREATER THAN", "NOT EQUAL TO", "IS NOTHING", "IS ANYTHING", "IS TRUE", "IS FALSE"];
  // Arr: Array<any>;
  // valArr: Array<any>;
-  Arr: '';
-  valArr:'';
-  data: Array<any> = [];
+  Arr: string;
+  valArr:string;
+  RptTitle : string;
+  
+  data: Array<any>;
   activeonly: boolean;
   incl_internalCostclient: boolean;
 
@@ -121,17 +153,20 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
     id: string;
     tryDoctype: any;
     pdfTitle: string;
-    drawerVisible: boolean = false;
-    loading: boolean = false;
+    drawerVisible: boolean ;
+    loading: boolean =  false;
+    isVisibleprompt ;
     reportid: string;
-    rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+    rpthttp : string = 'https://www.mark3nidad.com:5488/api/report';
     tocken :any;
-    radiofiletr:any;
-    rptfieldname:number = 0;
+    radiofilter:any;
+    rptfieldname:number ;
 
      sql: string;
+     Saverptsql : string;     
      sqlselect: string;
      sqlcondition: string;
+     Savesqlcondition :string;
      sqlorder: string;
      ConditionEntity: string;
      FieldsNo: number;
@@ -148,6 +183,11 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      includeSvcSpecCompetencyWhere :string;
      includeOPHistoryWhere :string;
      includeClinicHistoryWhere :string;
+     includeRecipientCompetencyWhere :string;
+     includeCareplanWhere :string;
+
+     //bodystyle:object;
+     RptFormat :string ;
 
     
 IncludeFundingSource: boolean;  IncludeProgram: boolean;  IncludeStaffAttributes: boolean;  IncludePensions: boolean;  IncludeExcluded: boolean; IncludeIncluded: boolean;  IncludePreferences : boolean;
@@ -215,12 +255,22 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     private GlobalS:GlobalService,
+    private ReportS:ReportService,
+    private ListS:ListService,
+    private MenuS:MenuService
+    
+    
   ) {
 
   }
-  ngOnInit(): void {
-    this.inputForm = this.fb.group(inputFormDefault);
+  //private unsubscribe: Subject<void> = new Subject();
+  ngOnInit(): void {    
+    this.inputForm = this.fb.group(inputFormDefault);    
     this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
+    this.RptFormat = this.GlobalS.var2.toString();
+
+    //console.log(this.tocken)
+    
     
   }
   ngOnDestroy(): void {
@@ -231,6 +281,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   }
 
   ContentSetter(ekey) {
+  //  console.log(ekey + " Content setter ")
 
     var temp = (ekey.toString()).slice(-2)
     this.StrType = temp;
@@ -1261,6 +1312,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     // load child async
     if (event.eventName === 'expand') {
       const node = event.node;
+    //  console.log(event.keys)
       this.ContentSetter(event.keys);
       if (node?.getChildren().length === 0 && node?.isExpanded) {
         this.loadNode().then(data => {
@@ -1283,7 +1335,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     //  console.log(event.keys[0])
       if (this.list == null){
 
-        this.one  = [  event.node.title ]
+        this.one  = [event.node.title]
       }
       else{
         
@@ -1291,7 +1343,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         
       }
       
-    this.test(this.one);
+    this.FinalizeArray(this.one);
     
 
     }
@@ -1310,36 +1362,37 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       );
     });
   }
-  test(node) { 
+  FinalizeArray(node) { 
     this.frm_nodelist = true;  
-  this.list = node;
-  this.exportitemsArr = [...this.list,"Service Date", "Service Start Time", "Service Hours", "Service Code", "Service Location/Activity Group", "Service Program", "Service Group", "Service HACCType", "Service Category", "Service Pay Rate", "Service Bill Rate", "Service Bill Qty", "Service Status", "Service Pay Type", "Service Pay Qty", "Service Bill Unit", "Service Funding Source"]
-  
+    this.list = node;
+    this.exportitemsArr = [...this.list,"Service Date", "Service Start Time", "Service Hours", "Service Code", "Service Location/Activity Group", "Service Program", "Service Group", "Service HACCType", "Service Category", "Service Pay Rate", "Service Bill Rate", "Service Bill Qty", "Service Status", "Service Pay Type", "Service Pay Qty", "Service Bill Unit", "Service Funding Source"]
 
-  } 
+
+  }
+  SetValueFrame() {
+   
+    if(this.inputForm.value.functionsArr == "BETWEEN")  {
+    
+    }
+  }
   
   apply(){
-    this.entity  = this.inputForm.value.exportitemsArr;
-    this.condition  = this.inputForm.value.functionsArr;
-    this.value  = this.inputForm.value.Arr;
-    this.Endvalue  = this.inputForm.value.valArr;
+    this.frm_delete = true;
+    
     
     var temp,temp1,temp2 :Array<any>
 
-      if (this.datarow == null){
-        this.entity = concat([ this.entity]);
-        this.value = concat([ this.value]);
-        this.condition = concat([ this.condition]);
-        //this.datarow  = [entity,condition,value];
-        //this.datarow  =concat(this.entity,this.condition,this.value);
-      }else
-      {
-        this.entity = this.entity.concat([ this.entity]);
-        this.value = this.value.concat([ this.value]);
-        this.condition = this.condition.concat([ this.condition]);
-        //this.datarow = [this.entity,this.condition,this.value];
-      }  
-        //console.log(this.entity,this.value,this.condition)    
+      if (this.entity == null){
+        this.entity  = [this.inputForm.value.exportitemsArr];
+        this.condition  = [this.inputForm.value.functionsArr];
+        this.value  = [this.inputForm.value.Arr];
+        this.Endvalue  = [this.inputForm.value.valArr];
+    }else{
+      this.entity =[...this.entity, this.inputForm.value.exportitemsArr];
+      this.value = [...this.value, this.inputForm.value.Arr];
+      this.condition = [...this.condition, this.inputForm.value.functionsArr];
+    }
+      
         
         switch ((this.inputForm.value.exportitemsArr).toString()) {
           //NAME AND ADDRESS
@@ -1374,10 +1427,10 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
               break;
 //General Demographics             
           case 'Full Name-Surname First':
-            this.ConditionEntity = '(R.[Surname/Organisation]' + ' ' +'FirstName)'
+            this.ConditionEntity = '(R.[Surname/Organisation]' + ' + ' +' FirstName)'
               break;
           case 'Full Name-Mailing':
-            this.ConditionEntity = '(R.[Surname/Organisation]' + ' ' +'FirstName)'  
+            this.ConditionEntity = '(R.[Surname/Organisation] ' + ' + ' +' FirstName)'  
                   break;
                                  
           case 'Gender':
@@ -1390,28 +1443,28 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 this.ConditionEntity = ' DateDiff(YEAR,R.Dateofbirth,GetDate())'
               break;
           case 'Ageband-Statistical':
-              //  this.ConditionEntity = ''
+                 this.ConditionEntity = "DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() )"
               break;
           case 'Ageband-5 Year':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity = "DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() )"
               break;
           case 'Ageband-10 Year':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity = "DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() )"
               break;
               case 'Age-ATSI Status':
               //  this.ConditionEntity =''
               break;
           case 'Month Of Birth':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity =   'DateName(Month, DateOfBirth)'
               break;
           case 'Day Of Birth No.':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity =   'DateName(Weekday, DateOfBirth)'
               break;
           case 'CALD Score':
-              //  this.ConditionEntity =''
+                this.ConditionEntity =    'DataDomains.CALDStatus'
               break;                     
           case 'Country Of Birth':
-                this.ConditionEntity = 'R.CountryOfBirth'
+                this.ConditionEntity =  'R.CountryOfBirth'
               break;
           case 'Language':
                 this.ConditionEntity = 'R.HomeLanguage'
@@ -1423,7 +1476,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 this.ConditionEntity = 'R.PermDisability'
               break;
           case 'Financially Dependent':
-              //  this.ConditionEntity =''
+                this.ConditionEntity = 'R.[FDP]'
               break;
           case 'Financial Status':
                 this.ConditionEntity = 'R.FinancialStatus'
@@ -1436,13 +1489,13 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 this.ConditionEntity = 'R.UniqueID'
               break;
           case 'Code':
-              //  this.ConditionEntity =''
+                 this.ConditionEntity = 'R.[AccountNo]'
                 break;
           case 'Type':
-              //  this.ConditionEntity =''
+                this.ConditionEntity ='R.[Type]'
                 break;             
           case 'Category':
-              //  this.ConditionEntity =''
+                 //this.ConditionEntity =''
               break;
           case 'CoOrdinator':
                 this.ConditionEntity = 'R.RECIPIENT_CoOrdinator'
@@ -1486,19 +1539,19 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
             this.ConditionEntity =  'R.OHSProfile'
                 break;
           case 'OLD WH&S Date':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'R.[WH&S]'
                 break;
           case 'Billing Profile':
             this.ConditionEntity =  'R.BillProfile'
                 break;                       
           case 'Sub Category':
-          //  this.ConditionEntity =  
+             this.ConditionEntity =  'R.[UBDMap]'
                 break;
           case 'Roster Alerts':
-           // this.ConditionEntity =  
+             this.ConditionEntity =  'R.[Notes]'
                 break;
           case 'Timesheet Alerts':
-           // this.ConditionEntity =  
+             this.ConditionEntity =  'R.[SpecialConsiderations]'
                 break;                 
           case 'Contact Issues':
             this.ConditionEntity =  'R.ContactIssues'
@@ -1506,12 +1559,9 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           case 'Survey Consent Given':
             this.ConditionEntity =  'R.SurveyConsent'
                 break;
-          case 'Copy Rosters':
+          case 'Copy Rosters Enabled':
             this.ConditionEntity =  'R.Autocopy'
-                break;
-          case 'Enabled':
-           // this.ConditionEntity =  
-                break;
+                break;           
           case 'Activation Date':
            // this.ConditionEntity =  
                 break;
@@ -1523,10 +1573,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 break;
           case 'Specific Competencies':
             this.ConditionEntity =  'R.SpecialConsiderations'
-                break;                
-          case 'Carer Info':
-          //  this.ConditionEntity =  
-                break;
+                break;                           
 //  Contacts & Next of Kin
           case 'Contact Group':
             this.ConditionEntity =  'HR.[Group]'
@@ -1551,24 +1598,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                break;
           case 'Contact Suburb':
             this.ConditionEntity = 'HR.[Suburb]' 
-                break;
-/*
-PersonID,  
-                         HR.[Group] As [Contact Group], 
-                         HR.[Type] As [Contact Type], 
-                         HR.[SubType] As [Contact Sub Type], 
-                         HR.[User1] As [Contact User Flag], 
-                         HR.[EquipmentCode] As [Contact Person Type] , 
-                         HR.[Name] As [Contact Name], 
-                         HR.[Address1] As [Contact Address], 
-                         HR.[Suburb] As [Contact Suburb], 
-                         HR.[Postcode] As [Contact Postcode], 
-                         HR.[Phone1] As [Contact Phone 1], 
-                         HR.[Phone2] As [Contact Phone 2], 
-                         HR.[Mobile] As [Contact Mobile], 
-                         HR.[FAX] As [Contact FAX], 
-                         HR.[Email] As [Contact Email]
-*/                
+                break;                
           case 'Contact Postcode':
             this.ConditionEntity = 'HR.[Postcode]' 
                 break;
@@ -1602,9 +1632,7 @@ PersonID,
                 break;
           case 'Carer Indigenous Status':
              this.ConditionEntity =  'C.[IndiginousStatus]'
-                break;
-//   
-//                    
+                break;                       
           case 'Carer Address':
              this.ConditionEntity =  "N.Address1 + ' ' +  N.Suburb + ' ' + N.Postcode"
                 break;
@@ -1732,15 +1760,15 @@ PersonID,
           case 'Preference Note':
                this.ConditionEntity =  'Prefr.[Notes]'
                   break;
-// FIXED REVIEW DATES                  
+// FIXED REVIEW DATES                   
           case 'Review Date 1':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[OpReASsessmentDate]'
                   break;
           case 'Review Date 2':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[ClinicalReASsessmentDate]'
                   break;
           case 'Review Date 3':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'R.[FileReviewDate]'
                   break;           
 //Staffing Inclusions/Exclusions                  
           case 'Excluded Staff':
@@ -1796,10 +1824,10 @@ PersonID,
                this.ConditionEntity =  'RecipientPrograms.[TotalAllocation]'
                   break;
           case 'Used':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecipientPrograms.[Used]'
                   break;
           case 'Remaining':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  '(RecipientPrograms.[TotalAllocation] - RecipientPrograms.[Used])'
                   break;
 //LEGACY CARE PLAN                  
           case 'Name':
@@ -1940,7 +1968,7 @@ PersonID,
                this.ConditionEntity =  'R.[ReferralSource]'
                   break;
           case 'HACC-Date Of Birth':
-               this.ConditionEntity =  'Recipients.[DateOfBirth]'
+               this.ConditionEntity =  'R.[DateOfBirth]'
                   break;
           case 'HACC-Date Of Birth Estimated':
                this.ConditionEntity =  'R.[CSTDA_BDEstimate]'
@@ -3330,20 +3358,20 @@ PersonID,
                   break;
 //  Recipient Competencies                  
             case 'Recipient Competency':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecpCompet.Name'
                   break;
             case 'Recipient Competency Mandatory':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecpCompet.Recurring'
                   break;
           case 'Recipient Competency Notes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'RecpCompet.[Notes]'
                   break;
 //Care Plan                  
           case 'CarePlan ID':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'D.Doc#'
                   break;
           case 'CarePlan Name':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'D.Title'
                   break;
           case 'CarePlan Type':
             //  this.ConditionEntity =  
@@ -3358,349 +3386,350 @@ PersonID,
             //  this.ConditionEntity =  
                   break;
           case 'CarePlan StartDate':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'D.DocStartDate'
                   break;
           case 'CarePlan SignOffDate':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'D.DocEndDate'
                   break;
           case 'CarePlan ReviewDate':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'D.AlarmDate'
                   break;
             case 'CarePlan ReminderText':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'D.AlarmText'
                   break;
             case 'CarePlan Archived':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'D.DeletedRecord'
                   break;
 //Mental Health                  
           case 'MH-PERSONID':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[PERSONID]'
                   break;
           case 'MH-HOUSING TYPE ON REFERRAL':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[HOUSING TYPE ON REFERRAL]'
                   break;
           case 'MH-RE REFERRAL':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[RE REFERRAL]'
                   break;
           case 'MH-REFERRAL SOURCE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[REFERRAL SOURCE]'
                   break;
             case 'MH-REFERRAL RECEIVED DATE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[REFERRAL RECEIVED DATE]'
                   break;
+
             case 'MH-ENGAGED AND CONSENT DATE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ENGAGED AND CONSENT DATE]'
                   break;
           case 'MH-OPEN TO HOSPITAL':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[OPEN TO HOSPITAL]'
                   break;                
           case 'MH-OPEN TO HOSPITAL DETAILS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[OPEN TO HOSPITAL DETAILS]'
                   break;
           case 'MH-ALERTS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ALERTS]'
                   break;
           case 'MH-ALERTS DETAILS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ALERTS DETAILS]'
                   break;
             case 'MH-MH DIAGNOSIS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[MH DIAGNOSIS]'
                   break;
             case 'MH-MEDICAL DIAGNOSIS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[MEDICAL DIAGNOSIS]'
                   break;
           case 'MH-REASONS FOR EXIT':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[REASONS FOR EXIT]'
+                  break;                  
           case 'MH-SERVICES LINKED INTO':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[SERVICES LINKED INTO]'
                   break;
           case 'MH-NON ACCEPTED REASONS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[NON ACCEPTED REASONS]'
                   break;
           case 'MH-NOT PROCEEDED':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[NOT PROCEEDED]'
                   break;               
             case 'MH-DISCHARGE DATE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[DISCHARGE DATE]'
                   break;
             case 'MH-CURRENT AOD':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[CURRENT AOD]'
                   break;
           case 'MH-CURRENT AOD DETAILS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[CURRENT AOD DETAILS]'
                   break;
           case 'MH-PAST AOD':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[PAST AOD]'
                   break;
           case 'MH-PAST AOD DETAILS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[PAST AOD DETAILS]'
                   break;
           case 'MH-ENGAGED AOD':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ENGAGED AOD]'
                   break;
             case 'MH-ENGAGED AOD DETAILS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ENGAGED AOD DETAILS]'
                   break;
             case 'MH-SERVICES CLIENT IS LINKED WITH ON INTAKE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[SERVICES CLIENT IS LINKED WITH ON INTAKE]'
                   break;
           case 'MH-SERVICES CLIENT IS LINKED WITH ON EXIT':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[SERVICES CLIENT IS LINKED WITH ON EXIT]'
                   break;
           case 'MH-ED PRESENTATIONS ON REFERRAL':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ED PRESENTATIONS ON REFERRAL]'
                   break;               
           case 'MH-ED PRESENTATIONS ON 3 MONTH REVIEW':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ED PRESENTATIONS ON 3 MONTH REVIEW]'
                   break;
           case 'MH-ED PRESENTATIONS ON EXIT':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ED PRESENTATIONS ON EXIT]'
                   break;
             case 'MH-AMBULANCE ARRIVAL ON REFERRAL':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON REFERRAL]'
                   break;
             case 'MH-AMBULANCE ARRIVAL ON MID 3 MONTH REVIEW':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON MID 3 MONTH REVIEW]'
                   break;
           case 'MH-AMBULANCE ARRIVAL ON EXIT':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON EXIT]'
                   break;
           case 'MH-ADMISSIONS ON REFERRAL':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ADMISSIONS ON REFERRAL]'
                   break;
-                  case 'MH-ADMISSIONS ON MID-3 MONTH REVIEW':
-            //  this.ConditionEntity =  
+          case 'MH-ADMISSIONS ON MID-3 MONTH REVIEW':
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[ADMISSIONS ON MID- 3 MONTH REVIEW]'
                   break;
           case 'MH-ADMISSIONS TO ED ON TIME OF EXIT':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'MENTALHEALTHDATASET.[ADMISSIONS TO ED ON TIME OF EXIT]' 
                   break;                  
             case 'MH-RESIDENTIAL MOVES':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[RESIDENTIAL MOVES]'
                   break;
             case 'MH-DATE OF RESIDENTIAL CHANGE OF ADDRESS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[DATE OF RESIDENTIAL CHANGE OF ADDRESS]'
                   break;
           case 'MH-LOCATION OF NEW ADDRESS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[LOCATION OF NEW ADDRESS]'
                   break;
           case 'MH-HOUSING TYPE ON EXIT':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[HOUSING TYPE ON EXIT]'
                   break;
           case 'MH-KPI - INTAKE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KPI - INTAKE]'
                   break;
           case 'MH-KPI - 3 MONTH REVEIEW':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KPI - 3 MONTH REVEIEW]'
                   break;
             case 'MH-KPI - EXIT':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KPI - EXIT]'
                   break;
             case 'MH-MEDICAL DIAGNOSIS DETAILS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[MEDICAL DIAGNOSIS DETAILS]'
                   break;
           case 'MH-SERVICES LINKED DETAILS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[SERVICES LINKED DETAILS]'
                   break;
           case 'MH-NDIS TYPE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[NDIS TYPE]'
                   break;
           case 'MH-NDIS TYPE COMMENTS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[NDIS TYPE COMMENTS]'
                   break;
           case 'MH-NDIS NUMBER':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[NDIS NUMBER]'
                   break;
             case 'MH-REVIEW APPEAL':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[REVIEW APPEAL]'
                   break;
             case 'MH-REVIEW COMMENTS':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[REVIEW COMMENTS]'
                   break;
           case 'MH-KP_Intake_1':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_IN_1]'
                   break;
           case 'MH-KP_Intake_2':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_IN_2]'
                   break;
           case 'MH-KP_Intake_3MH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_IN_3M]'
                   break;                                   
           case 'MH-KP_Intake_3PH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_IN_3P]'
                   break;
             case 'MH-KP_Intake_4':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_IN_4]'
                   break;
             case 'MH-KP_Intake_5':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'MENTALHEALTHDATASET.[KP_IN_5]' 
                   break;
           case 'MH-KP_Intake_6':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_IN_6]'
                   break;
           case 'MH-KP_Intake_7':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_IN_7]'
                   break;
           case 'MH-KP_3Months_1':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_1]'
                   break;
           case 'MH-KP_3Months_2':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_2]'
                   break;
             case 'MH-KP_3Months_3MH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_3M]'
                   break;
             case 'MH-KP_3Months_3PH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_3P]'
                   break;
           case 'MH-KP_3Months_4':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_4]'
                   break;
           case 'MH-KP_3Months_5':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_5]'
                   break;
           case 'MH-KP_3Months_6':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_6]'
                   break;
           case 'MH-KP_3Months_7':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_7]'
                   break;
             case 'MH-KP_6Months_1':
-            //  this.ConditionEntity =  
-                  break;
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_6_1]'
+                  break; 
             case 'MH-KP_6Months_2':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_6_2]'
                   break;
           case 'MH-KP_6Months_3MH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_6_3M]'
                   break;
           case 'MH-KP_6Months_3PH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_6_3P]'
                   break;
           case 'MH-KP_6Months_4':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_6_4]'
                   break;
           case 'MH-KP_6Months_5':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_6_5]'
                   break;
             case 'MH-KP_6Months_6':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_6_6]'
                   break;
             case 'MH-KP_6Months_7':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_6_7]'
                   break;
           case 'MH-KP_9Months_1':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_1]'
                   break;
           case 'MH-KP_9Months_2':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_2]'
                   break;
           case 'MH-KP_9Months_3MH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_3M]'
                   break;
           case 'MH-KP_9Months_3PH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_3P]'
                   break;
             case 'MH-KP_9Months_4':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_4]'
                   break;
             case 'MH-KP_9Months_5':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_5]'
                   break;
           case 'MH-KP_9Months_6':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_6]'
                   break;
           case 'MH-KP_9Months_7':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_7]'
                   break;
           case 'MH-KP_Exit_1':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_1]'
                   break;
           case 'MH-KP_Exit_2':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_2]'
                   break;
             case 'MH-KP_Exit_3MH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_3M]'
                   break;
             case 'MH-KP_Exit_3PH':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_3P]'
                   break;
           case 'MH-KP_Exit_4':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_4]'
                   break;       
           case 'MH-KP_Exit_5':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_5]'
                   break;
           case 'MH-KP_Exit_6':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_6]'
                   break;
           case 'MH-KP_Exit_7':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_7]'
                   break;
             case 'MH-KP_Intake_DATE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_IN_DATE]'
                   break;
             case 'MH-KP_3Months_DATE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_3_DATE]'
                   break;
           case 'MH-KP_6Months_DATE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'MENTALHEALTHDATASET.[KP_6_DATE]' 
                   break;
           case 'MH-KP_9Months_DATE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_9_DATE]'
                   break;
           case 'MH-KP_Exit_DATE':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'MENTALHEALTHDATASET.[KP_EX_DATE]'
                   break;
 //Recipient Placements                  
           case 'Placement Type':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Type]'
                   break;
             case 'Placement Carer Name':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Name]'
                   break;
             case 'Placement Start':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Date1]'
                   break;
           case 'Placement End':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Date2]'
                   break;
           case 'Placement Referral':
-            //  this.ConditionEntity =  
+               this.ConditionEntity = 'HRPlacements.[Recurring]' 
                   break;        
           case 'Placement ATC':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Completed]'
                   break;
             case 'Placement Notes':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'HRPlacements.[Notes]'
                   break;
 //Quote Goals and stratagies                  
             case 'Quote Goal':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'GOALS.User1'
                   break;
           case 'Goal Expected Completion Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'GOALS.Date1'
                   break;
           case 'Goal Last Review Date':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'GOALS.Date2'
                   break;
           case 'Goal Completed Date':
-            //  this.ConditionEntity =  
-                  break;
-            case 'Goal  Achieved':
-            //  this.ConditionEntity =  
-                  break;
-            case 'Quote Strategy':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'GOALS.DateInstalled'
+                  break;                  
+          case 'Goal  Achieved':
+              this.ConditionEntity =  'GOALS.[State]'
+                break;
+          case 'Quote Strategy':
+               this.ConditionEntity =  'STRATEGIES.Notes'
                   break;
           case 'Strategy Expected Outcome':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'STRATEGIES.Address1'
                   break;
           case 'Strategy Contracted ID':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'STRATEGIES.[State]'
                   break;
           case 'Strategy DS Services':
-            //  this.ConditionEntity =  
+               this.ConditionEntity =  'STRATEGIES.User1'
                   break;
           
           default:
@@ -3721,11 +3750,17 @@ PersonID,
     if (index != -1) {
       this.value.splice(index, 1);
       this.entity.splice(index, 1);
-      this.condition.splice(index, 1);             
+      this.condition.splice(index, 1); 
+      this.frm_delete = false;            
     }
   }
-  //  console.log(index)
+  //  console.log(index) 
   }
+  deletelistitem(index){        
+        this.list.splice(index, 1); 
+        this.exportitemsArr.splice(index, 1);            
+     
+    }
   QueryFormation(){
     
     var keys = this.inputForm.value.functionsArr
@@ -3734,43 +3769,56 @@ PersonID,
       case 'EQUALS':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +" like ('"  + this.value + "')"
+          this.Savesqlcondition = this.ConditionEntity +" like ('+'"  + this.value + "'+')"
         }else{ 
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" like ('"  + this.value + "')"
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '"  + this.value + "'+')"
         }
+        //console.log(this.Savesqlcondition);
         break;
         case 'BETWEEN':
           if(this.sqlcondition == null){
             this.sqlcondition = this.ConditionEntity +"  Between ('"  + this.value + "') and ('"  + this.Endvalue + "')"
+            this.Savesqlcondition = this.ConditionEntity +" Between ('+'"  + this.value + "'+')"
           }else{ 
           this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" Between ('"  + this.value + "') and ('"  + this.Endvalue + "')"
+          this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" Between (' + '"  + this.value + "'+')"
           }
           break;
         case 'LESS THAN':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +"  < ('"  + this.value + "')"
+          this.Savesqlcondition = this.ConditionEntity +" < ('+'"  + this.value + "'+')"
         }else{ 
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" <  ('"  + this.value + "')"
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" < (' + '"  + this.value + "'+')"
         }
         break;
       case 'GREATER THAN':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +" >  ('"  + this.value + "')"
+          this.Savesqlcondition = this.ConditionEntity +" > ('+'"  + this.value + "'+')"
         }else{ 
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"  > ('"  + this.value + "')"
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" > (' + '"  + this.value + "'+')"
         }
         break;
       case 'NOT EQUAL TO':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +" <>  ('"  + this.value + "')"
+          this.Savesqlcondition = this.ConditionEntity +" <> ('+'"  + this.value + "'+')"
         }else{ 
-        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" <>  ('"  + this.value + "')"
+        this.sqlcondition = this.sqlcondition + " AND " + this.ConditionEntity +" <>  ('"  + this.value + "')"
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" <> (' + '"  + this.value + "'+')"
         }
         break;
       case 'IS NOTHING':
         if(this.sqlcondition == null){
-          this.sqlcondition = this.ConditionEntity +"   ('"  + this.value + "')"
+        // this.sqlcondition = this.ConditionEntity +"   ('"  + this.value + "')"
+        // this.Savesqlcondition = this.ConditionEntity +" like ('+'"  + this.value + "'+')"
         }else{ 
-        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"   ('"  + this.value + "')"
+        //  this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"   ('"  + this.value + "')"
+        //  this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '"  + this.value + "'+')"
         }
         break;
       case 'IS ANYTHING':
@@ -3778,20 +3826,25 @@ PersonID,
         //  this.sqlcondition = " "//this.ConditionEntity +"   ('"  + this.value + "')"
         }else{ 
         //  this.sqlcondition =this.sqlcondition + " "// " AND " + this.ConditionEntity +"   ('"  + this.value + "')"
+        //  this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '"  + this.value + "'+')"
         }
         break; 
       case 'IS TRUE':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +"  = true "
+          this.Savesqlcondition = this.ConditionEntity +" = true "
         }else{ 
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"  = true "
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" = true "
         }
         break;
       case 'IS FALSE':
         if(this.sqlcondition == null){
           this.sqlcondition = this.ConditionEntity +"   = false"
+          this.Savesqlcondition = this.ConditionEntity +" = false "
         }else{ 
-        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"   = false"
+        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +"   = false "
+        this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" = false "
         }
         break;
       default:
@@ -3801,7 +3854,7 @@ PersonID,
   this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Field"+ this.feildname() +", ")
 
   this.sql = this.sqlselect + this.TablesSetting(this.list) +  " where " + this.sqlcondition  ;    
-    
+  this.Saverptsql = this.sqlselect + this.TablesSetting(this.list) +  " where " + this.Savesqlcondition ;
 
   //  console.log(this.sql)
     
@@ -3810,10 +3863,41 @@ PersonID,
   ShowReport(){
     this.tryDoctype = "";
     this.ReportRender(this.sql);
+      
+    
+  }
+  showprompt(){
+    //this.bodystyle = { height:'300px', overflow: 'auto'}
+    this.isVisibleprompt = true;
+  }
+  SaveReport(){
+      this.isVisibleprompt = false;
+      var RptSQL  =  this.Saverptsql;
+      this.RptTitle = (this.inputForm.value.RptTitle).toString();
+      if(this.RptTitle != null && RptSQL != null){
+    //var Title  = this.RptTitle;
+    var Format  = this.RptFormat;
+    //console.log(Format)
+    var CriteriaDisplay = "TEST CRITERIA" ;
+    var DateType = " ";
+    var UserID = this.tocken.nameid;
+    
+     
+   var insertsql = " INSERT INTO ReportNames(Title, Format,SQLText,UserID, DateType, CriteriaDisplay) " +
+   " VALUES( '" + this.RptTitle +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "   
+   
+   this.ReportS.InsertReport(insertsql).subscribe(x=>{
+   //  console.log(data)
+    if(x != null) {
+     this. GlobalS.sToast('Success', 'Saved successful');     
+    }    
+   }); 
+  }
+
   }
   ReportRender(sql:string){
 
-  //  console.log(sql);
+    console.log(sql);
     this.drawerVisible = true;
     this.loading = true;
 
@@ -3832,15 +3916,8 @@ PersonID,
     if(this.includeSvcSpecCompetencyWhere != undefined && this.includeSvcSpecCompetencyWhere != ""){sql = sql + " AND " + this.includeSvcSpecCompetencyWhere}
     if(this.includeOPHistoryWhere != undefined && this.includeOPHistoryWhere != ""){sql = sql + " AND " + this.includeOPHistoryWhere}
     if(this.includeClinicHistoryWhere != undefined && this.includeClinicHistoryWhere != ""){sql = sql + " AND " + this.includeClinicHistoryWhere}
-
-
-    
-
-    
-
-          
-    
-    
+    if(this.includeRecipientCompetencyWhere != undefined && this.includeRecipientCompetencyWhere != ""){sql = sql + " AND " + this.includeRecipientCompetencyWhere}
+    if(this.includeCareplanWhere != undefined && this.includeCareplanWhere != ""){sql = sql + " AND " + this.includeCareplanWhere}
     
       
     var fQuery = sql 
@@ -3849,11 +3926,11 @@ PersonID,
       //  console.log(this.inputForm.value.printaslabel)
       
       
-      var Title = "Recipient User Defined Report"
+      var Title = "Run Time Report"
   //    console.log(this.tocken.user)
       const data = {
 
-          "template": { "_id": "qTQEyEz8zqNhNgbU" },
+          "template": {"shortid":"w1Vify0-uA"}, //{ "_id": "qTQEyEz8zqNhNgbU" },
           "options": {
               "reports": { "save": false },
               //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
@@ -3908,6 +3985,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
 
       handleCancelTop(){
         this.drawerVisible = false;
+        this.isVisibleprompt = false;
       }
       feildname(){
         var temp
@@ -3976,13 +4054,13 @@ ColumnNameAdjuster(fld){
 //General Demographics          
       case 'Full Name-Surname First':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])
-        }else{columnNames = (['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])}        
+          columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' + ' +'FirstName) as Field'+fld.indexOf(key)])
+        }else{columnNames = (['(R.[Surname/Organisation]' + ' + ' +'FirstName) as Field'+fld.indexOf(key)])}        
           break;
       case 'Full Name-Mailing':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])
-            }else{columnNames = (['(R.[Surname/Organisation]' + ' ' +'FirstName) as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' + ' +'FirstName) as Field'+fld.indexOf(key)])
+            }else{columnNames = (['(R.[Surname/Organisation]' + ' + ' +'FirstName) as Field'+fld.indexOf(key)])}        
               break;
       case 'Gender':
                   if(columnNames != []){
@@ -4001,17 +4079,17 @@ ColumnNameAdjuster(fld){
               break;
       case 'Ageband-Statistical':
         var AgebandStatic = " CASE " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 6 AND 13 THEN ' 6-13' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 14 AND 17 THEN '14-17' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 18 AND 45 THEN '18-45' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 46 AND 65 THEN '46-65' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 66 AND 70 THEN '66-70' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 71 AND 75 THEN '71-75' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 76 AND 80 THEN '76-80' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) BETWEEN 81 AND 90 THEN '81-90' " +
-        "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(Now, 'yyyy-mm-dd') ) > 90 THEN 'OVER 90' " +
-        "ELSE 'UNKNOWN' END "  
+        "case WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN 0 AND 5 THEN ' 0- 5' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN 6 AND 13 THEN ' 6-13' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 14 AND 17 THEN '14-17' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 18 AND 45 THEN '18-45' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 46 AND 65 THEN '46-65' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 66 AND 70 THEN '66-70' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 71 AND 75 THEN '71-75' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) BETWEEN 76 AND 80 THEN '76-80' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN 81 AND 90 THEN '81-90' "+
+        "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()   ) > 90 THEN 'OVER 90' "+
+        "ELSE 'UNKNOWN' END  "
         
                   if(columnNames != []){
               columnNames = columnNames.concat([AgebandStatic+' as Field'+fld.indexOf(key)])
@@ -4019,26 +4097,26 @@ ColumnNameAdjuster(fld){
               break;
           case 'Ageband-5 Year':
             var Ageband5 =" CASE " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 6 AND 10 THEN ' 6-10' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 11 AND 15 THEN '11-15' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 16 AND 20 THEN '16-20' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 21 AND 25 THEN '21-25' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 26 AND 30 THEN '26-30' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 36 AND 40 THEN '36-40' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 41 AND 45 THEN '41-45' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 46 AND 50 THEN '46-50' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 51 AND 55 THEN '51-55' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 56 AND 60 THEN '56-60' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 61 AND 65 THEN '61-65' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 66 AND 70 THEN '66-70' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 71 AND 75 THEN '71-75' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(NGETDATE(),'yyyy-mm-dd') ) BETWEEN 76 AND 80 THEN '76-80' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 81 AND 85 THEN '81-85' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 86 AND 90 THEN '86-90' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 91 AND 95 THEN '91-95' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 96 AND 100 THEN '96-100' "+ 
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth, Format(GETDATE(), 'yyyy-mm-dd')) > 100 THEN 'OVER 100' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN 0 AND 5 THEN ' 0- 5' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  6 AND 10 THEN ' 6-10' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  11 AND 15 THEN '11-15' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  16 AND 20 THEN '16-20' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  21 AND 25 THEN '21-25' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  26 AND 30 THEN '26-30' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  36 AND 40 THEN '36-40' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  41 AND 45 THEN '41-45' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  46 AND 50 THEN '46-50' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  51 AND 55 THEN '51-55' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  56 AND 60 THEN '56-60' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  61 AND 65 THEN '61-65' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  66 AND 70 THEN '66-70' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  71 AND 75 THEN '71-75' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() ) BETWEEN 76 AND 80 THEN '76-80' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  81 AND 85 THEN '81-85' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  86 AND 90 THEN '86-90' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  91 AND 95 THEN '91-95' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  96 AND 100 THEN '96-100' "+ 
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth, GETDATE()) > 100 THEN 'OVER 100' " +
             "ELSE 'UNKNOWN' END " 
             
                   if(columnNames != []){
@@ -4047,26 +4125,27 @@ ColumnNameAdjuster(fld){
               break;
           case 'Ageband-10 Year':
             var Ageban10 = "CASE "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 0 AND 10 THEN '0- 10' " +
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 11 AND 20 THEN '11-20' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd') ) BETWEEN 21 AND 30 THEN '21-30' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 31 AND 40 THEN '31-40' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 41 AND 50 THEN '41-50' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 51 AND 60 THEN '51-60' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 61 AND 70 THEN '61-70' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 71 AND 80 THEN '71-80' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 81 AND 90 THEN '81-90' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) BETWEEN 91 AND 100 THEN '91-100' "+
-            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  Format(GETDATE(), 'yyyy-mm-dd')) > 100 THEN 'OVER 100' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  0 AND 10 THEN '0- 10' " +
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  11 AND 20 THEN '11-20' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE()  ) BETWEEN  21 AND 30 THEN '21-30' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() ) BETWEEN 31 AND 40 THEN '31-40' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,  GETDATE() ) BETWEEN 41 AND 50 THEN '41-50' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth, GETDATE() ) BETWEEN 51 AND 60 THEN '51-60' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) BETWEEN 61 AND 70 THEN '61-70' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) BETWEEN 71 AND 80 THEN '71-80' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) BETWEEN 81 AND 90 THEN '81-90' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) BETWEEN 91 AND 100 THEN '91-100' "+
+            "WHEN DATEDIFF(YEAR, R.DateOfBirth,   GETDATE() ) > 100 THEN 'OVER 100' "+
             "ELSE 'UNKNOWN' END  "
                   if(columnNames != []){
               columnNames = columnNames.concat([Ageban10+ ' as Field'+fld.indexOf(key)])
             }else{columnNames = ([Ageban10+ ' as Field'+fld.indexOf(key)])}        
               break;
               case 'Age-ATSI Status':
+                var AgeATSI = " case WHEN DATEADD(YEAR,65, CONVERT(DATETIME,DateOfBirth)) <= GETDATE() OR (DATEADD(YEAR,50, CONVERT(DATETIME,DateOfBirth)) <= GETDATE() AND LEFT( CSTDA_INDIGINOUS, 3) IN ('ABO', 'TOR', 'BOT')) THEN 'OVER 64 OR ATSI OVER 49' ELSE 'UNDER 65 OR ATSI UNDER 50' END "
                   if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-            }else{columnNames = (['  as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat([AgeATSI +'  as Field'+fld.indexOf(key)])
+            }else{columnNames = ([AgeATSI + '  as Field'+fld.indexOf(key)])}        
               break;
         case 'Month Of Birth':
             var Month = "DateName(Month, DateOfBirth)  "
@@ -4080,10 +4159,11 @@ ColumnNameAdjuster(fld){
               columnNames = columnNames.concat([day +' as Field'+fld.indexOf(key)])
             }else{columnNames = ([day +' as Field'+fld.indexOf(key)])}        
               break;
-              case 'CALD Score':
+              case 'CALD Score': 
+                var caldscore = " (SELECT distinct DD.CALDStatus FROM DataDomains DD WHERE DOMAIN = 'Countries' and DD.DESCRIPTION = R.CountryOfBirth) "
                   if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-            }else{columnNames = (['  as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat([caldscore +'  as Field'+fld.indexOf(key)])
+            }else{columnNames = ([caldscore +'  as Field'+fld.indexOf(key)])}        
               break;             
               case 'Country Of Birth':
                   if(columnNames != []){
@@ -4112,7 +4192,7 @@ ColumnNameAdjuster(fld){
             }else{columnNames = (['R.CSTDA_DisabilityGroup as Field'+fld.indexOf(key)])}        
               break;
       case 'Financially Dependent':
-        var FinanceDepend = "CASE WHEN R.[FDP] = 1 THEN 'YES'   ELSE 'NO' END AS [Financially Dependent]"
+        var FinanceDepend = "CASE WHEN R.[FDP] = 1 THEN 'YES'   ELSE 'NO' END "
                   if(columnNames != []){
               columnNames = columnNames.concat([FinanceDepend+'  as Field'+fld.indexOf(key)])
             }else{columnNames = ([FinanceDepend +'  as Field'+fld.indexOf(key)])}        
@@ -4135,13 +4215,13 @@ ColumnNameAdjuster(fld){
               break;
               case 'Code':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-            }else{columnNames = (['  as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.[AccountNo]  as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.[AccountNo]  as Field'+fld.indexOf(key)])}        
               break;             
               case 'Type':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-            }else{columnNames = (['  as Field'+fld.indexOf(key)])}        
+              columnNames = columnNames.concat(['R.[Type]  as Field'+fld.indexOf(key)])
+            }else{columnNames = (['R.[Type]  as Field'+fld.indexOf(key)])}        
               break;             
               case 'Category':
                   if(columnNames != []){
@@ -4217,8 +4297,8 @@ ColumnNameAdjuster(fld){
                   break;
             case 'OLD WH&S Date':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                columnNames = columnNames.concat(['R.[WH&S]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[WH&S]  as Field'+fld.indexOf(key)])}  
                   break;   
               case 'Billing Profile':
                   if(columnNames != []){
@@ -4227,18 +4307,18 @@ ColumnNameAdjuster(fld){
                 break;          
             case 'Sub Category':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['R.[UBDMap]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[UBDMap]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Roster Alerts':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['R.[Notes]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[Notes]  as Field'+fld.indexOf(key)])} 
                   break;
             case 'Timesheet Alerts':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                columnNames = columnNames.concat(['R.[SpecialConsiderations]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['R.[SpecialConsiderations]  as Field'+fld.indexOf(key)])} 
                   break;                 
             case 'Contact Issues':
                     if(columnNames != []){
@@ -4612,21 +4692,21 @@ ColumnNameAdjuster(fld){
                   columnNames = columnNames.concat(['Prefr.[Notes]  as Field'+fld.indexOf(key)])
                 }else{columnNames = (['Prefr.[Notes]  as Field'+fld.indexOf(key)])}  
                       break;
-// FIXED REVIEW DATES                      
+// FIXED REVIEW DATES                    
               case 'Review Date 1':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[OpReASsessmentDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[OpReASsessmentDate]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Review Date 2':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['R.[ClinicalReASsessmentDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[ClinicalReASsessmentDate]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Review Date 3':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['R.[FileReviewDate]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['R.[FileReviewDate]  as Field'+fld.indexOf(key)])} 
                       break;   
 //Staffing Inclusions/Exclusions                                 
               case 'Excluded Staff':
@@ -4723,14 +4803,16 @@ ColumnNameAdjuster(fld){
                 }else{columnNames = ([Allocation +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'Used':
+                var used = " CASE WHEN RecipientPrograms.[Used] <> '' THEN RecipientPrograms.[Used] ELSE 0 END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat([used +'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([used +'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'Remaining':
+                var remaining = " CASE WHEN RecipientPrograms.[TotalAllocation] <> '' AND RecipientPrograms.[Used] <> '' THEN (RecipientPrograms.[TotalAllocation] - RecipientPrograms.[Used]) ELSE 0 END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([remaining + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([remaining +'  as Field'+fld.indexOf(key)])}  
                       break;
 //LEGACY CARE PLAN                      
               case 'Name':
@@ -5688,181 +5770,181 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
                 }else{columnNames = (['R.[DateOfBirth]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Usual Address-Street':
-                var AddressStreet = " (SELECT TOP 1 Address1 from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<USUAL>') "
+                var AddressStreet = " (SELECT TOP 1 Address1 from namesandaddresses WHERE personid = R.UniqueID AND Description = '<USUAL>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressStreet +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressStreet +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Usual Address-Suburb':
-                var AddressSburb = " (SELECT TOP 1 Suburb from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<USUAL>') "
+                var AddressSburb = " (SELECT TOP 1 Suburb from namesandaddresses WHERE personid = R.UniqueID AND Description = '<USUAL>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressSburb +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressSburb +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Usual Address-Postcode':
-                var AddressPostCode = " (SELECT TOP 1 Postcode from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<USUAL>') "
+                var AddressPostCode = " (SELECT TOP 1 Postcode from namesandaddresses WHERE personid = R.UniqueID AND Description = '<USUAL>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressPostCode+ '  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressPostCode +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Contact Address-Street':
-                var AddressCotactStreet = " (SELECT TOP 1 Address1 from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<CONTACT>') "
+                var AddressCotactStreet = " (SELECT TOP 1 Address1 from namesandaddresses WHERE personid = R.UniqueID AND Description = '<CONTACT>') "
                         if(columnNames != []){
                           columnNames = columnNames.concat([AddressCotactStreet +'  as Field'+fld.indexOf(key)])
                         }else{columnNames = ([AddressCotactStreet +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Contact Address-Suburb':
-                var AddressCotactSuburb = " (SELECT TOP 1 Suburb from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<CONTACT>') "
+                var AddressCotactSuburb = " (SELECT TOP 1 Suburb from namesandaddresses WHERE personid = R.UniqueID AND Description = '<CONTACT>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressCotactSuburb +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressCotactSuburb +'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Contact Address-Postcode':
-                var AddressCotactPostCode = " (SELECT TOP 1 Postcode from namesandaddresses WHERE personid = Recipients.UniqueID AND Description = '<CONTACT>') "
+                var AddressCotactPostCode = " (SELECT TOP 1 Postcode from namesandaddresses WHERE personid = R.UniqueID AND Description = '<CONTACT>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([AddressCotactPostCode +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([AddressCotactPostCode +'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Phone-Home':
-                var PhoneHome = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<HOME>') "
+                var PhoneHome = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<HOME>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([PhoneHome + '  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([PhoneHome +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Phone-Work':
-                var PhoneWork = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<WORK>') "
+                var PhoneWork = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<WORK>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([PhoneWork +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([PhoneWork +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Phone-Mobile':
-                var PhoneMobile = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<MOBILE>') "
+                var PhoneMobile = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<MOBILE>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([PhoneMobile +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([PhoneMobile + '  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Phone-FAX':
-                var PhoneFax = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<FAX>') "
+                var PhoneFax = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<FAX>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([PhoneFax +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([PhoneFax +'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-EMAIL':
-                var Email = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = Recipients.UniqueID AND [Type] = '<EMAIL>') "
+                var Email = " (SELECT TOP 1 Detail from PhoneFaxOther WHERE personid = R.UniqueID AND [Type] = '<EMAIL>') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Email +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Email +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Person 1 Name':
-                var Person1name = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1name = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1name +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1name +'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Person 1 Street':
-                var Person1Street = " (SELECT TOP 1 [Address1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1Street = " (SELECT TOP 1 [Address1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1Street +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1Street +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Person 1 Suburb':
-                var Person1Suburb = " (SELECT TOP 1 [Suburb] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1Suburb = " (SELECT TOP 1 [Suburb] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1Suburb +'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1Suburb +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Person 1 Postcode':
-                var Person1PostCode = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1PostCode = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1PostCode+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1PostCode+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 1 Phone':
-                var Person1Phone = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1Phone = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1Phone+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1Phone+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 1 Relationship':
-                var Person1Relationship = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON1') "
+                var Person1Relationship = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON1') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person1Relationship+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person1Relationship+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 2 Name':
-                var Person2name = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2name = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2name+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2name+'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Person 2 Street':
-                var Person2Street = " (SELECT TOP 1 [Address1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2Street = " (SELECT TOP 1 [Address1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2Street+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2Street+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Person 2 Suburb':
-                var Person2Suburb = " (SELECT TOP 1 [Suburb] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2Suburb = " (SELECT TOP 1 [Suburb] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2Suburb+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2Suburb+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 2 Postcode':
-                var Person2PostCode = " (SELECT TOP 1 [Postcode] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2PostCode = " (SELECT TOP 1 [Postcode] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2PostCode+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2PostCode+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Person 2 Phone':
-                var Person2Phone = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2Phone = " (SELECT TOP 1 [Phone1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2Phone+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2Phone+ ' as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Person 2 Relationship':
-                var Person2Relationship = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'PERSON2') "
+                var Person2Relationship = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'PERSON2') "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Person2Relationship+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Person2Relationship+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Doctor Name':
-                var Doctorname = " (SELECT Top 1 [Name] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var Doctorname = " (SELECT Top 1 [Name] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                   columnNames = columnNames.concat([Doctorname+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([Doctorname+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Doctor Street':
-                var DoctorStreet = " (SELECT Top 1 [Address1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorStreet = " (SELECT Top 1 [Address1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                   columnNames = columnNames.concat([DoctorStreet+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([DoctorStreet+'  as Field'+fld.indexOf(key)])} 
                       break;
               case 'ONI-Doctor Suburb':
-                var DoctorSuburb = " (SELECT Top 1 [Suburb] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorSuburb = " (SELECT Top 1 [Suburb] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                   columnNames = columnNames.concat([DoctorSuburb+'  as Field'+fld.indexOf(key)])
                 }else{columnNames = ([DoctorSuburb+'  as Field'+fld.indexOf(key)])}  
                       break;
               case 'ONI-Doctor Postcode':
-                var DoctorPostCode = " (SELECT Top 1 [Postcode] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorPostCode = " (SELECT Top 1 [Postcode] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                 columnNames = columnNames.concat([DoctorPostCode+'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([DoctorPostCode+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Doctor Phone':
-                var DoctorPhone = " (SELECT Top 1 [Phone1] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorPhone = " (SELECT Top 1 [Phone1] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                 columnNames = columnNames.concat([DoctorPhone+'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([DoctorPhone+'  as Field'+fld.indexOf(key)])}
                       break;                           
               case 'ONI-Doctor FAX':
-                var DoctorFax = " (SELECT Top 1 [FAX] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
+                var DoctorFax = " (SELECT Top 1 [FAX] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber) "
                   if(columnNames != []){
                 columnNames = columnNames.concat([DoctorFax+'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([DoctorFax+'  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Doctor EMAIL':
-                var DoctorEmail = " (SELECT Top 1 [Email] from HumanResources WHERE personid = Recipients.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber)  "
+                var DoctorEmail = " (SELECT Top 1 [Email] from HumanResources WHERE personid = R.UniqueID AND [EquipmentCode] = 'GP' ORDER BY RecordNumber)  "
                   if(columnNames != []){
                 columnNames = columnNames.concat([DoctorEmail+'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([DoctorEmail+'  as Field'+fld.indexOf(key)])}
@@ -5939,13 +6021,13 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
               }else{columnNames = (['R.[InsuranceStatus]  as Field'+fld.indexOf(key)])}
                       break;
               case 'ONI-Health Insurer':
-                var healthinsurer = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = Recipients.UniqueID AND [GROUP]= 'HEALTHINSURER') "
+                var healthinsurer = " (SELECT TOP 1 [Type] from HumanResources WHERE personid = R.UniqueID AND [GROUP]= 'HEALTHINSURER') "
                   if(columnNames != []){
                 columnNames = columnNames.concat([healthinsurer +'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([healthinsurer +'  as Field'+fld.indexOf(key)])}
                       break;        
               case 'ONI-Health Insurance Card#':
-              var healthinsurercardNum = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = Recipients.UniqueID AND [GROUP]= 'HEALTHINSURER') "
+              var healthinsurercardNum = " (SELECT TOP 1 [Name] from HumanResources WHERE personid = R.UniqueID AND [GROUP]= 'HEALTHINSURER') "
                   if(columnNames != []){
                 columnNames = columnNames.concat([healthinsurercardNum +'  as Field'+fld.indexOf(key)])
               }else{columnNames = ([healthinsurercardNum +'  as Field'+fld.indexOf(key)])}
@@ -7351,622 +7433,631 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
 //  Recipient Competencies                      
                 case 'Recipient Competency':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['RecpCompet.Name  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['RecpCompet.Name  as Field'+fld.indexOf(key)])}
                       break;
                 case 'Recipient Competency Mandatory':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['RecpCompet.Recurring  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['RecpCompet.Recurring  as Field'+fld.indexOf(key)])}
                       break;
               case 'Recipient Competency Notes':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['RecpCompet.[Notes]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['RecpCompet.[Notes]  as Field'+fld.indexOf(key)])}
                       break;
 //Care Plan                      
               case 'CarePlan ID':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['D.Doc#  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['D.Doc#  as Field'+fld.indexOf(key)])}
                       break;
               case 'CarePlan Name':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['D.Title  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['D.Title  as Field'+fld.indexOf(key)])}
                       break;
               case 'CarePlan Type':
+                var careplantype = " (SELECT Description FROM DataDomains Left join DOCUMENTS D on  DataDomains.RecordNumber = D.SubId) "
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat([careplantype +'  as Field'+fld.indexOf(key)])
+              }else{columnNames = ([careplantype +'  as Field'+fld.indexOf(key)])}
+                      break;                      
                 case 'CarePlan Program':
+                  var careplanprogram = " SELECT [Name] FROM HumanResourceTypes WHERE HumanResourceTypes.RecordNumber = D.Department AND [Group] = 'PROGRAMS' "
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat([careplanprogram +'  as Field'+fld.indexOf(key)])
+              }else{columnNames = ([careplanprogram +'  as Field'+fld.indexOf(key)])}
                       break;                  
                 case 'CarePlan Discipline':
+                  var careplandescipline = " SELECT [Description] FROM DataDomains WHERE DataDomains.RecordNumber = D.DPID "
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat([careplandescipline + '  as Field'+fld.indexOf(key)])
+              }else{columnNames = ([careplandescipline +'  as Field'+fld.indexOf(key)])}
                       break;
               case 'CarePlan CareDomain':
+                var careplandomain = " SELECT [Description] FROM DataDomains WHERE DataDomains.RecordNumber = D.CareDomain "
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat([careplandomain + '  as Field'+fld.indexOf(key)])
+              }else{columnNames = ([careplandomain + '  as Field'+fld.indexOf(key)])}
                       break;
               case 'CarePlan StartDate':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['D.DocStartDate  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['D.DocStartDate  as Field'+fld.indexOf(key)])}
                       break;
               case 'CarePlan SignOffDate':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['D.DocEndDate  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['D.DocEndDate  as Field'+fld.indexOf(key)])}
                       break;
               case 'CarePlan ReviewDate':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['D.AlarmDate  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['D.AlarmDate  as Field'+fld.indexOf(key)])}
                       break;
                 case 'CarePlan ReminderText':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['D.AlarmText  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['D.AlarmText  as Field'+fld.indexOf(key)])}
                       break;
                 case 'CarePlan Archived':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['IsNull(D.DeletedRecord,0)  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['IsNull(D.DeletedRecord,0)  as Field'+fld.indexOf(key)])}
                       break;
 //Mental Health                       
               case 'MH-PERSONID':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[PERSONID]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[PERSONID]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-HOUSING TYPE ON REFERRAL':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[HOUSING TYPE ON REFERRAL]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[HOUSING TYPE ON REFERRAL]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-RE REFERRAL':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[RE REFERRAL]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[RE REFERRAL]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-REFERRAL SOURCE':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[REFERRAL SOURCE]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[REFERRAL SOURCE]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-REFERRAL RECEIVED DATE':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[REFERRAL RECEIVED DATE]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[REFERRAL RECEIVED DATE]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-ENGAGED AND CONSENT DATE':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ENGAGED AND CONSENT DATE]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ENGAGED AND CONSENT DATE]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-OPEN TO HOSPITAL':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[OPEN TO HOSPITAL]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[OPEN TO HOSPITAL]  as Field'+fld.indexOf(key)])}
                       break;                
               case 'MH-OPEN TO HOSPITAL DETAILS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[OPEN TO HOSPITAL DETAILS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[OPEN TO HOSPITAL DETAILS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-ALERTS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ALERTS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ALERTS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-ALERTS DETAILS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ALERTS DETAILS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ALERTS DETAILS]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-MH DIAGNOSIS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[MH DIAGNOSIS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[MH DIAGNOSIS]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-MEDICAL DIAGNOSIS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[MEDICAL DIAGNOSIS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[MEDICAL DIAGNOSIS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-REASONS FOR EXIT':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[REASONS FOR EXIT]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[REASONS FOR EXIT]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-SERVICES LINKED INTO':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[SERVICES LINKED INTO]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[SERVICES LINKED INTO]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-NON ACCEPTED REASONS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[NON ACCEPTED REASONS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[NON ACCEPTED REASONS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-NOT PROCEEDED':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[NOT PROCEEDED]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[NOT PROCEEDED]  as Field'+fld.indexOf(key)])}
                       break;               
                 case 'MH-DISCHARGE DATE':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[DISCHARGE DATE]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[DISCHARGE DATE]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-CURRENT AOD':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[CURRENT AOD]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[CURRENT AOD]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-CURRENT AOD DETAILS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[CURRENT AOD DETAILS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[CURRENT AOD DETAILS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-PAST AOD':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[PAST AOD]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[PAST AOD]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-PAST AOD DETAILS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[PAST AOD DETAILS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[PAST AOD DETAILS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-ENGAGED AOD':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ENGAGED AOD]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ENGAGED AOD]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-ENGAGED AOD DETAILS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ENGAGED AOD DETAILS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ENGAGED AOD DETAILS]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-SERVICES CLIENT IS LINKED WITH ON INTAKE':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[SERVICES CLIENT IS LINKED WITH ON INTAKE]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[SERVICES CLIENT IS LINKED WITH ON INTAKE]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-SERVICES CLIENT IS LINKED WITH ON EXIT':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[SERVICES CLIENT IS LINKED WITH ON EXIT]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[SERVICES CLIENT IS LINKED WITH ON EXIT]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-ED PRESENTATIONS ON REFERRAL':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ED PRESENTATIONS ON REFERRAL]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ED PRESENTATIONS ON REFERRAL]  as Field'+fld.indexOf(key)])}
                       break;               
               case 'MH-ED PRESENTATIONS ON 3 MONTH REVIEW':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ED PRESENTATIONS ON 3 MONTH REVIEW]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ED PRESENTATIONS ON 3 MONTH REVIEW]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-ED PRESENTATIONS ON EXIT':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ED PRESENTATIONS ON EXIT]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ED PRESENTATIONS ON EXIT]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-AMBULANCE ARRIVAL ON REFERRAL':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON REFERRAL]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON REFERRAL]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-AMBULANCE ARRIVAL ON MID 3 MONTH REVIEW':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON MID 3 MONTH REVIEW]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON MID 3 MONTH REVIEW]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-AMBULANCE ARRIVAL ON EXIT':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON EXIT]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[AMBULANCE ARRIVAL ON EXIT]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-ADMISSIONS ON REFERRAL':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ADMISSIONS ON REFERRAL]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ADMISSIONS ON REFERRAL]  as Field'+fld.indexOf(key)])}
                       break;
                       case 'MH-ADMISSIONS ON MID-3 MONTH REVIEW':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ADMISSIONS ON MID- 3 MONTH REVIEW]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ADMISSIONS ON MID- 3 MONTH REVIEW]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-ADMISSIONS TO ED ON TIME OF EXIT':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[ADMISSIONS TO ED ON TIME OF EXIT]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[ADMISSIONS TO ED ON TIME OF EXIT]  as Field'+fld.indexOf(key)])}
                       break;                  
                 case 'MH-RESIDENTIAL MOVES':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[RESIDENTIAL MOVES]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[RESIDENTIAL MOVES]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-DATE OF RESIDENTIAL CHANGE OF ADDRESS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[DATE OF RESIDENTIAL CHANGE OF ADDRESS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[DATE OF RESIDENTIAL CHANGE OF ADDRESS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-LOCATION OF NEW ADDRESS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[LOCATION OF NEW ADDRESS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[LOCATION OF NEW ADDRESS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-HOUSING TYPE ON EXIT':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[HOUSING TYPE ON EXIT]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[HOUSING TYPE ON EXIT]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KPI - INTAKE':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KPI - INTAKE]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KPI - INTAKE]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KPI - 3 MONTH REVEIEW':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KPI - 3 MONTH REVEIEW]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KPI - 3 MONTH REVEIEW]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KPI - EXIT':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KPI - EXIT]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KPI - EXIT]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-MEDICAL DIAGNOSIS DETAILS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[MEDICAL DIAGNOSIS DETAILS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[MEDICAL DIAGNOSIS DETAILS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-SERVICES LINKED DETAILS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[SERVICES LINKED DETAILS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[SERVICES LINKED DETAILS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-NDIS TYPE':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[NDIS TYPE]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[NDIS TYPE]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-NDIS TYPE COMMENTS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[NDIS TYPE COMMENTS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[NDIS TYPE COMMENTS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-NDIS NUMBER':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[NDIS NUMBER]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[NDIS NUMBER]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-REVIEW APPEAL':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[REVIEW APPEAL]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[REVIEW APPEAL]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-REVIEW COMMENTS':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[REVIEW COMMENTS]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[REVIEW COMMENTS]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Intake_1':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_1]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_1]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Intake_2':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
-                      break;
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_2]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_2]  as Field'+fld.indexOf(key)])}
+                      break;                     
               case 'MH-KP_Intake_3MH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_3M]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_3M]  as Field'+fld.indexOf(key)])}
                       break;                                   
               case 'MH-KP_Intake_3PH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_3P]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_3P] as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_Intake_4':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_4]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_4]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_Intake_5':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_5]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_5]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Intake_6':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_6]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_6]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Intake_7':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_7]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_7]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_3Months_1':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_1]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_1]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_3Months_2':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_2]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_2]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_3Months_3MH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_3M]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_3M]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_3Months_3PH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_3P]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_3P]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_3Months_4':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_4]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_4]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_3Months_5':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_5]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_5]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_3Months_6':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_6]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_6]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_3Months_7':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_7]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_7]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_6Months_1':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_1]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_1]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_6Months_2':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_2]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_2]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_6Months_3MH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_3M]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_3M]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_6Months_3PH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_3P]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_3P]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_6Months_4':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_4]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_4]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_6Months_5':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_5]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_5]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_6Months_6':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_6]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_6]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_6Months_7':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_7]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_7]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_9Months_1':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_1]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_1]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_9Months_2':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_2]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_2]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_9Months_3MH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_3M]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_3M]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_9Months_3PH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_3P]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_3P]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_9Months_4':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_4]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_4]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_9Months_5':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_5]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_5]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_9Months_6':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_6]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_6]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_9Months_7':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_7]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_7]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Exit_1':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_1]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_1]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Exit_2':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_2]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_2]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_Exit_3MH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_3M]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_3M]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_Exit_3PH':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_3P]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_3P]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Exit_4':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_4]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_4]  as Field'+fld.indexOf(key)])}
                       break;                        
               case 'MH-KP_Exit_5':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_5]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_5]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Exit_6':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_6]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_6]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_Exit_7':
                   if(columnNames != []){
-                columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-              }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_7]  as Field'+fld.indexOf(key)])
+              }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_7]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'MH-KP_Intake_DATE':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                    columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_IN_DATE]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['MENTALHEALTHDATASET.[KP_IN_DATE]  as Field'+fld.indexOf(key)])}  
                       break;
                 case 'MH-KP_3Months_DATE':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                    columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_3_DATE]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['MENTALHEALTHDATASET.[KP_3_DATE]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'MH-KP_6Months_DATE':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_6_DATE]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['MENTALHEALTHDATASET.[KP_6_DATE]  as Field'+fld.indexOf(key)])}
                       break;
               case 'MH-KP_9Months_DATE':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_9_DATE]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['MENTALHEALTHDATASET.[KP_9_DATE]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'MH-KP_Exit_DATE':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['MENTALHEALTHDATASET.[KP_EX_DATE]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['MENTALHEALTHDATASET.[KP_EX_DATE]  as Field'+fld.indexOf(key)])}
                       break;
 //Recipient Placements                      
               case 'Placement Type':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat(['HRPlacements.[Type]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['HRPlacements.[Type]  as Field'+fld.indexOf(key)])} 
                       break;
                 case 'Placement Carer Name':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                    columnNames = columnNames.concat(['HRPlacements.[Name]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['HRPlacements.[Name]  as Field'+fld.indexOf(key)])}
                       break;
                 case 'Placement Start':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                    columnNames = columnNames.concat(['HRPlacements.[Date1]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['HRPlacements.[Date1]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Placement End':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['HRPlacements.[Date2]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['HRPlacements.[Date2]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Placement Referral':
+                var placementrefferal = " CASE HRPlacements.[Recurring]  WHEN 1 THEN 'True' else 'False' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([placementrefferal + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([placementrefferal + '  as Field'+fld.indexOf(key)])}  
                       break;        
               case 'Placement ATC':
+                var placementATC = " CASE HRPlacements.[Completed]  WHEN 1 THEN 'True' else 'False' END "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat([placementATC +'  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([placementATC + '  as Field'+fld.indexOf(key)])} 
                       break;
                 case 'Placement Notes':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                    columnNames = columnNames.concat(['HRPlacements.[Notes]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['HRPlacements.[Notes]  as Field'+fld.indexOf(key)])} 
                       break;
 //Quote Goals and stratagies                      
                 case 'Quote Goal':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                    columnNames = columnNames.concat(['GOALS.User1  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['GOALS.User1  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Goal Expected Completion Date':
+                var GExpecCompletion = " Convert(varchar,GOALS.Date1,103) "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat([GExpecCompletion + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([GExpecCompletion + '  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Goal Last Review Date':
+                var GlastReviewDate = " Convert(varchar,GOALS.Date2,103) "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat([GlastReviewDate + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([GlastReviewDate + '  as Field'+fld.indexOf(key)])}
                       break;
               case 'Goal Completed Date':
+                var GCompleteDate = " Convert(varchar,GOALS.DateInstalled,103) "
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])} 
+                  columnNames = columnNames.concat([GCompleteDate + '  as Field'+fld.indexOf(key)])
+                }else{columnNames = ([GCompleteDate + '  as Field'+fld.indexOf(key)])} 
                       break;
                 case 'Goal  Achieved':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                    columnNames = columnNames.concat(['GOALS.[State]  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['GOALS.[State]  as Field'+fld.indexOf(key)])}  
                       break;
                 case 'Quote Strategy':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                  }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                    columnNames = columnNames.concat(['STRATEGIES.Notes  as Field'+fld.indexOf(key)])
+                  }else{columnNames = (['STRATEGIES.Notes  as Field'+fld.indexOf(key)])}
                       break;
               case 'Strategy Expected Outcome':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}
+                  columnNames = columnNames.concat(['STRATEGIES.Address1  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['STRATEGIES.Address1  as Field'+fld.indexOf(key)])}
                       break;
               case 'Strategy Contracted ID':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['STRATEGIES.[State]  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['STRATEGIES.[State]  as Field'+fld.indexOf(key)])}  
                       break;
               case 'Strategy DS Services':
                   if(columnNames != []){
-                  columnNames = columnNames.concat(['  as Field'+fld.indexOf(key)])
-                }else{columnNames = (['  as Field'+fld.indexOf(key)])}  
+                  columnNames = columnNames.concat(['STRATEGIES.User1  as Field'+fld.indexOf(key)])
+                }else{columnNames = (['STRATEGIES.User1  as Field'+fld.indexOf(key)])}  
                       break;
 
 
@@ -8011,7 +8102,7 @@ TablesSetting(arr){
   if(arr.includes("Carer Last Name") || arr.includes("Carer Age") || arr.includes("Carer Gender") || arr.includes("Carer Indigenous Status") || arr.includes("Carer First Name") ){
     FromSql = FromSql + " INNER JOIN RECIPIENTS C ON R.DatasetCarer = C.AccountNo  "
   }         
-  if(arr.includes("Carer Phone <Home>") ){
+  if(arr.includes("Carer Phone <Home>") ){ 
     FromSql = FromSql + " LEFT JOIN PhoneFaxOther PhHome ON C.UniqueID = PhHome.PersonID AND PhHome.[Type] = '<HOME>'  "
   }
   if(arr.includes("Carer Phone <Work>") ){
@@ -8162,25 +8253,25 @@ TablesSetting(arr){
       FromSql = FromSql + " LEFT JOIN History ON CONVERT(varchar,SvcDetail.RecordNo,100) = History.PersonID  "
       this.includeSvnDetailNotesWhere = "   History.ExtraDetail1 = 'SVCNOTE'  "
       }
-      if(arr.includes("Activity")  || arr.includes("Competency")    ){
+    if(arr.includes("Activity")  || arr.includes("Competency")    ){
         FromSql = FromSql + " LEFT JOIN HumanResources SvcSpecCompetency  ON R.UniqueID = SvcSpecCompetency.PersonID "
         this.includeSvcSpecCompetencyWhere = " SvcSpecCompetency.[Type] = 'STAFFATTRIBUTE  "
         }         
-      if(arr.includes("SS Status")    ){
+    if(arr.includes("SS Status")    ){
         FromSql = FromSql + " LEFT JOIN  ServiceOverview ServiceCompetencyStatus ON ServiceCompetencyStatus.[PersonID]  = R.[UniqueID]  "        
         if(arr.includes("Activity")  || arr.includes("Competency")    ){
           FromSql = FromSql +  " AND ServiceCompetencyStatus.[SERVICE TYPE] = SvcSpecCompetency.[Service] "
         } else { FromSql = FromSql +  " LEFT JOIN  HumanResources SvcSpecCompetency on ServiceCompetencyStatus.[SERVICE TYPE] = SvcSpecCompetency.[Service] " }
         }
-        if(arr.includes("OP Notes Date")   || arr.includes("OP Notes Detail") ||  arr.includes("OP Notes Creator") || arr.includes("OP Notes Alarm") || arr.includes("OP Notes Program") || arr.includes("OP Notes Category")  ){
+    if(arr.includes("OP Notes Date")   || arr.includes("OP Notes Detail") ||  arr.includes("OP Notes Creator") || arr.includes("OP Notes Alarm") || arr.includes("OP Notes Program") || arr.includes("OP Notes Category")  ){
           FromSql = FromSql + " LEFT JOIN History OPHistory ON R.UniqueID = OPHistory.PersonID   "        
           this.includeOPHistoryWhere = " OPHistory.ExtraDetail1 = 'OPNOTE'  "
         } 
-        if(arr.includes("Clinical Notes Date")   || arr.includes("Clinical Notes Detail") ||  arr.includes("Clinical Notes Creator") || arr.includes("Clinical Notes Category") || arr.includes("Clinical Notes Alarm")   ){
+    if(arr.includes("Clinical Notes Date")   || arr.includes("Clinical Notes Detail") ||  arr.includes("Clinical Notes Creator") || arr.includes("Clinical Notes Category") || arr.includes("Clinical Notes Alarm")   ){
           FromSql = FromSql + "  LEFT JOIN History CliniHistory ON R.UniqueID = CliniHistory.PersonID    "        
           this.includeClinicHistoryWhere = " CliniHistory.ExtraDetail1 = 'CLINNOTE'  "
         }        
-      if(
+    if(
         arr.includes("INCD_Status") || arr.includes("INCD_Date") || arr.includes("INCD_Type") || arr.includes("INCD_Description") || arr.includes("INCD_SubCategory") || arr.includes("INCD_Assigned_To") || arr.includes("INCD_Service")
         || arr.includes("INCD_Severity") || arr.includes("INCD_Time") || arr.includes("INCD_Duration") || arr.includes("INCD_Location") || arr.includes("INCD_LocationNotes") || arr.includes("INCD_ReportedBy") || arr.includes("INCD_DateReported")
         || arr.includes("INCD_Reported") || arr.includes("INCD_FullDesc") || arr.includes("INCD_Program") || arr.includes("INCD_DSCServiceType") || arr.includes("INCD_TriggerShort") || arr.includes("INCD_incident_level") || arr.includes("INCD_Area")
@@ -8194,12 +8285,79 @@ TablesSetting(arr){
           " left Join HumanResourceTypes HRT ON  [IMM].Program   = [HRT].[Name] " +
           " left Join  IM_INVOLVEDSTAFF IMI ON   IMM.RecordNo  = IMI.IM_Master# " 
         }
+    if(arr.includes("Recipient Competency")  || arr.includes("Recipient Competency Mandatory") || arr.includes("Recipient Competency Notes")   ){
+          FromSql = FromSql + " Left Join HumanResources RecpCompet ON R.UniqueID = RecpCompet.PersonID "
+          this.includeRecipientCompetencyWhere = " RecpCompet.[Type] = 'RECIPATTRIBUTE'  "
+          }
+    if(
+      arr.includes("CarePlan Archived") || arr.includes("CarePlan ReminderText") || arr.includes("CarePlan ReviewDate") || arr.includes("CarePlan SignOffDate") || arr.includes("CarePlan StartDate") || arr.includes("CarePlan CareDomain")
+      || arr.includes("CarePlan Discipline") || arr.includes("CarePlan Program") || arr.includes("CarePlan Type") || arr.includes("CarePlan Name") || arr.includes("CarePlan ID")
+          ){
+      FromSql = FromSql + " Right JOIN   Documents D on R.UniqueID = D.PersonID LEFT JOIN qte_hdr QH ON QH.CPID = D.DOC_ID  "
+      this.includeCareplanWhere = "  ISNULL(D.[Status], '') <> '' AND D.DOCUMENTGROUP IN ('CAREPLAN') "
+      }
+    if(     
+      arr.includes("MH-PERSONID") || arr.includes("MH-HOUSING TYPE ON REFERRAL")|| arr.includes("MH-RE REFERRAL") || arr.includes("MH-REFERRAL SOURCE") || arr.includes("MH-REFERRAL RECEIVED DATE") || arr.includes("MH-ENGAGED AND CONSENT DATE")|| arr.includes("MH-OPEN TO HOSPITAL") 
+      || arr.includes("MH-OPEN TO HOSPITAL DETAILS") || arr.includes("MH-ALERTS") || arr.includes("MH-ALERTS DETAILS") || arr.includes("MH-MH DIAGNOSIS") || arr.includes("MH-MEDICAL DIAGNOSIS") || arr.includes("MH-REASONS FOR EXIT") || arr.includes("MH-SERVICES LINKED INTO") 
+      || arr.includes("MH-NON ACCEPTED REASONS") || arr.includes("MH-NOT PROCEEDED") || arr.includes("MH-DISCHARGE DATE") || arr.includes("MH-CURRENT AOD") 
+      || arr.includes("MH-CURRENT AOD DETAILS") || arr.includes("MH-PAST AOD") || arr.includes("MH-PAST AOD DETAILS")|| arr.includes("MH-ENGAGED AOD") || arr.includes("MH-ENGAGED AOD DETAILS") || arr.includes("MH-SERVICES CLIENT IS LINKED WITH ON INTAKE") || arr.includes("MH-SERVICES CLIENT IS LINKED WITH ON EXIT") 
+      || arr.includes("MH-ED PRESENTATIONS ON REFERRAL") 
+      || arr.includes("MH-ED PRESENTATIONS ON 3 MONTH REVIEW") || arr.includes("MH-ED PRESENTATIONS ON EXIT") || arr.includes("MH-AMBULANCE ARRIVAL ON REFERRAL") || arr.includes("MH-AMBULANCE ARRIVAL ON MID 3 MONTH REVIEW") || arr.includes("MH-AMBULANCE ARRIVAL ON EXIT") || arr.includes("MH-ADMISSIONS ON REFERRAL") 
+      || arr.includes("MH-ADMISSIONS ON MID-3 MONTH REVIEW") || arr.includes("MH-ADMISSIONS TO ED ON TIME OF EXIT") 
+      || arr.includes("MH-RESIDENTIAL MOVES") || arr.includes("MH-DATE OF RESIDENTIAL CHANGE OF ADDRESS") || arr.includes("MH-LOCATION OF NEW ADDRESS") || arr.includes("MH-HOUSING TYPE ON EXIT") || arr.includes("MH-KPI - INTAKE")|| arr.includes("MH-KPI - 3 MONTH REVEIEW") || arr.includes("MH-KPI - EXIT")     
+      || arr.includes("MH-MEDICAL DIAGNOSIS DETAILS") || arr.includes("MH-SERVICES LINKED DETAILS") || arr.includes("MH-NDIS TYPE") || arr.includes("MH-NDIS TYPE COMMENTS") 
+      || arr.includes("MH-NDIS NUMBER") || arr.includes("MH-REVIEW APPEAL") || arr.includes("MH-REVIEW COMMENTS")|| arr.includes("MH-KP_Intake_1") || arr.includes("MH-KP_Intake_2") || arr.includes("MH-KP_Intake_3MH") || arr.includes("MH-KP_Intake_3PH") || arr.includes("MH-KP_Intake_4") || arr.includes("MH-KP_Intake_5") 
+      || arr.includes("MH-KP_Intake_6") 
+      || arr.includes("MH-KP_Intake_7") || arr.includes("MH-KP_3Months_1") || arr.includes("MH-KP_3Months_2") || arr.includes("MH-KP_3Months_3MH") || arr.includes("MH-KP_3Months_3PH") || arr.includes("MH-KP_3Months_4") || arr.includes("MH-KP_3Months_5") || arr.includes("MH-KP_3Months_6") || arr.includes("MH-KP_3Months_7")
+      || arr.includes("MH-KP_6Months_1") 
+      || arr.includes("MH-KP_6Months_2") || arr.includes("MH-KP_6Months_3MH") || arr.includes("MH-KP_6Months_3PH") || arr.includes("MH-KP_6Months_4") || arr.includes("MH-KP_6Months_5") || arr.includes("MH-KP_6Months_6") || arr.includes("MH-KP_6Months_7")|| arr.includes("MH-KP_9Months_1") || arr.includes("MH-KP_9Months_2") 
+      || arr.includes("MH-KP_9Months_3MH") 
+      || arr.includes("MH-KP_9Months_3PH") || arr.includes("MH-KP_9Months_4") || arr.includes("MH-KP_9Months_5") || arr.includes("MH-KP_9Months_6") || arr.includes("MH-KP_9Months_7") || arr.includes("MH-KP_Exit_1") || arr.includes("MH-KP_Exit_2") || arr.includes("MH-KP_Exit_3MH") || arr.includes("MH-KP_Exit_3PH") 
+      || arr.includes("MH-KP_Exit_4") || arr.includes("MH-KP_Exit_5") 
+      || arr.includes("MH-KP_Exit_6")|| arr.includes("MH-KP_Exit_7") || arr.includes("MH-KP_Intake_DATE") || arr.includes("MH-KP_3Months_DATE") || arr.includes("MH-KP_6Months_DATE") || arr.includes("MH-KP_9Months_DATE") || arr.includes("MH-KP_Exit_DATE") 
+    ){
+      FromSql = FromSql + "  LEFT JOIN MENTALHEALTHDATASET ON R.UniqueID = MENTALHEALTHDATASET.PersonID "    
+      }         
+    if(arr.includes("Placement Type") || arr.includes("Placement Carer Name") || arr.includes("Placement Start") || arr.includes("Placement End") || arr.includes("Placement Referral") || arr.includes("Placement ATC") || arr.includes("Placement Notes")
+      ){
+      FromSql = FromSql + "  LEFT JOIN HumanResources HRPlacements ON R.UniqueID = HRPlacements.PersonID AND [GROUP] = 'PLACEMENT' "    
+    }
+
+    if( arr.includes("Quote Strategy") || arr.includes("Strategy Expected Outcome") || arr.includes("Strategy Contracted ID") || arr.includes("Strategy DS Services")
+        || arr.includes("Goal  Achieved") || arr.includes("Goal Completed Date") || arr.includes("Goal Last Review Date") || arr.includes("Goal Expected Completion Date") || arr.includes("Quote Goal")
+    ){
+
+        if( arr.includes("Goal  Achieved") || arr.includes("Goal Completed Date") || arr.includes("Goal Last Review Date") || arr.includes("Goal Expected Completion Date") || arr.includes("Quote Goal")
+        ){
+            FromSql = FromSql + "  Right JOIN Documents D   on R.UniqueID = D.PersonID LEFT JOIN HumanResources GOALS on GOALS.PersonID = CONVERT(varchar, D.Doc_ID) "    
+          }
+          
+        if( arr.includes("Quote Strategy") || arr.includes("Strategy Expected Outcome") || arr.includes("Strategy Contracted ID") || arr.includes("Strategy DS Services") 
+        ){
+            if( arr.includes("Goal  Achieved") || arr.includes("Goal Completed Date") || arr.includes("Goal Last Review Date") || arr.includes("Goal Expected Completion Date") || arr.includes("Quote Goal")
+            ){
+              FromSql = FromSql + "  LEFT JOIN HumanResources STRATEGIES on STRATEGIES.PersonID = GOALS.RecordNumber "    
+            }else{
+              FromSql = FromSql + "  Right JOIN Documents D   on R.UniqueID = D.PersonID LEFT JOIN HumanResources GOALS on GOALS.PersonID = CONVERT(varchar, D.Doc_ID) "    
+              FromSql = FromSql + "  LEFT JOIN HumanResources STRATEGIES on STRATEGIES.PersonID = GOALS.RecordNumber "      
+            }
+          
+        }
+      
         
+  }
+
+
+
+
+
+
+
+
+
+
 
   
-
-
-
   return FromSql
 }
 

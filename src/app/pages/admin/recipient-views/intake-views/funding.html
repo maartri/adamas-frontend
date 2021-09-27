@@ -33,7 +33,9 @@
     </nz-table>
 </div>
 </div>
-<nz-modal [nzWidth]="1050"  [(nzVisible)]="modalOpen"  (nzOnCancel)="handleCancel()">
+
+
+<nz-modal [nzWidth]="1050" [nzStyle]="{ top: '10px' }"  [(nzVisible)]="modalOpen"  (nzOnCancel)="handleCancel()">
     <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSelectedIndex]="tabFindIndex">
         <nz-tab nzTitle="Package Detail/s" (nzClick)="tabFindChange(0)"> </nz-tab>
         <nz-tab nzTitle="Supplements/Fees" (nzClick)="tabFindChange(1)" *ngIf="IS_CDC"></nz-tab>

@@ -201,3 +201,12 @@ label.upload-pic:hover{
     text-decoration:underline;
     cursor:pointer;
 }
+.primary{
+    color:#1790ff;
+}
+.recordid-title{
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #515151;
+    margin: 0 !important;
+}

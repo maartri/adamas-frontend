@@ -167,14 +167,17 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   buildForms(): void {
 
     this.contactIssueGroup = this.formBuilder.group({
-      value: ''
+      contactIssues: '',
+      rosterAlerts: '',
+      runsheetAlerts: ''
     });
 
     this.contactForm = this.formBuilder.group({
       id: [''],
       type: ['', [Validators.required]],
-      details: ['', [Validators.required]],
-      personId: ['']
+      details: [null, [Validators.required]],
+      personId: [''],
+      primaryPhone: [false]
     });
 
     this.addressForm = this.formBuilder.group({
@@ -182,7 +185,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       description: [null, [Validators.required]],
       address: [null, [Validators.required]],
       pcodesuburb: [null],
-      personId: ['']
+      personId: [''],
+      primaryAddress: [false]
     });
 
 
@@ -224,7 +228,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       isCaseLoad: false,
       excludeFromConflictChecking:false,
       stf_Department: '',
-      rating: ''
+      rating: '',
     });
 
     this.resetEmailCoordinator();
@@ -232,6 +236,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   patchTheseValuesInForm(user = this.user) {
+    console.log(user);
 
     if (this.innerValue.view === view.recipient) {
       this.userForm.patchValue({
@@ -249,11 +254,15 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         branch: user.branch,
         file2: user.urNumber,
         subCategory: user.ubdMap,
-        serviceRegion: user.agencyDefinedGroup
+        serviceRegion: user.agencyDefinedGroup,
+        uniqueID: user.uniqueID,
+        preferredName: user.preferredName
       });
 
       this.contactIssueGroup.patchValue({
-        value: user.contactIssues
+        contactIssues: user.contactIssues,
+        rosterAlerts: user.notes,
+        runsheetAlerts: user.specialConsiderations
       })
 
       // this.contactIssueGroup.patchValue({
@@ -556,13 +565,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   formatContact(contactForm: FormGroup): Array<PhoneFaxOther> {
     let temp: Array<PhoneFaxOther> = [];
 
-    const { id, type, details, personId } = contactForm.value;
+    const { id, type, details, personId, primaryPhone } = contactForm.value;
 
     let pf: PhoneFaxOther = {
       RecordNumber: id,
       Type: type,
       Detail: details,
-      PersonID: personId
+      PersonID: personId,
+      PrimaryPhone: primaryPhone
     }
 
     temp.push(pf);
@@ -647,8 +657,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           urNumber: data.file2,
           branch: data.branch,
           agencyDefinedGroup: data.serviceRegion,
-          ubdMap: data.subCategory
-
+          ubdMap: data.subCategory,
+          preferredName: data.preferredName
         }
 
         this.subscriptionArray.push(this.clientS.updateusername(user));
@@ -659,7 +669,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   formatAddress(addressForm: FormGroup): Array<NamesAndAddresses> {
-    const { pcodesuburb, address, description, id, personId } = addressForm.value;
+    const { pcodesuburb, address, description, id, personId, primaryAddress } = addressForm.value;
 
     let pcode = /(\d+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\d+)/g)[0].trim() : "";
     let suburb = /(\D+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\D+)/g)[0].trim() : ""
@@ -674,7 +684,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       Description: description,
       Address1: address,
       RecordNumber: id,
-      PersonID: personId
+      PersonID: personId,
+      PrimaryAddress: primaryAddress
     }
 
     temp.push(na);
@@ -739,7 +750,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   processSubscriptions() {
+
     this.loading = true;
+    
     forkJoin(this.subscriptionArray).subscribe(
       data => {
         this.subscriptionArray = [];
@@ -771,6 +784,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if (this.window == 1) {
       this.loading = true;
+      // console.log(this.addressForm.value);
+      // return;
       this.clientS.updateuseraddress(this.formatAddress(this.addressForm))
         .subscribe(data => {
           if (data.success) {
@@ -817,7 +832,13 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   addContactOpen() {
     this.addContactDrawer = true;
-    this.contactForm.reset();
+    this.contactForm.reset({
+      id: '',
+      type: null,
+      details: null,
+      personId: '',
+      primaryPhone: false
+    });
     this.POPULATE_CONTACTS();
   }
 
@@ -834,9 +855,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       personId: this.user.uniqueID,
       id: -1
     });
-
-
-    //console.log(this.contactForm.value);
 
     this.subscriptionArray.push(this.clientS.addcontact(this.formatContact(this.contactForm)));
     this.processSubscriptions();
@@ -874,28 +892,31 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.editModalOpen = true;
     this.window = 1;
     this.addressForm.reset();
-
+    console.log(address);
     this.addressForm.patchValue({
       id: address.recordNumber,
       description: address.description,
       address: address.address1,
       pcodesuburb: `${address.postCode} ${address.suburb ? address.suburb.trim() : ''} ${address.stat ? `, ${address.stat}` : ''}`,
-      personId: address.personID
+      personId: address.personID,
+      primaryAddress: address.primaryAddress
     });
 
     this.POPULATE_ADDRESS();
   }
 
   editContactOpen(contact: any): void {
+
     this.editModalOpen = true;
     this.window = 2;
 
+    // console.log(contact);
     this.contactForm.patchValue({
       id: contact.recordNumber,
       type: contact.type,
       details: contact.detail,
       personId: contact.personID,
-
+      primaryPhone: contact.primaryPhone
     });
 
     this.POPULATE_CONTACTS();
@@ -991,8 +1012,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if (!this.emailCoordinatorGroup.valid)
       return;
-    
-    console.log(this.user);
+
     const { title, firstName, surnameOrg, accountNo } = this.user;
     const { subject, content } = this.emailCoordinatorGroup.value;
     const { detail, description } = this.caseManagerDetails;
@@ -1032,7 +1052,19 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   saveTab() {
-    const { sqlId } = this.user;
+    const { sqlId, uniqueID } = this.user;
+    const { contactIssues,  rosterAlerts, runsheetAlerts  } = this.contactIssueGroup.value;
+
+    console.log(this.user);
+
+    this.timeS.updatecontactrosterrunsheet({
+      contactIssues,
+      rosterAlerts,
+      runsheetAlerts,
+      uniqueId: uniqueID
+    }).subscribe(data => this.globalS.sToast('Success', 'Contact Issues Updated'));
+
+    return;
 
     if (this.tabIndex == 0) {
 
@@ -1043,8 +1075,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       }).subscribe(data => {
         this.globalS.sToast('Success', 'Contact Issues Updated');
       });
-      this.contactIssueGroup.markAsPristine();
 
+      this.contactIssueGroup.markAsPristine();
     }
 
     if (this.tabIndex == 1) {

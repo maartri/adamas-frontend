@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService, leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService, StaffService, ShareService,nodes,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
-import { EMPTY } from 'rxjs';
+import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ApplicationUser } from '@modules/modules';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -123,8 +123,130 @@ export class StaffAdmin implements OnInit, OnDestroy {
     Cycles: Array<any> = ['Cycle 1', 'Cycle 2', 'Cycle 3', 'Cycle 4', 'Cycle 5', 'Cycle 6', 'Cycle 7', 'Cycle 8', 'Cycle 9', 'Cycle 10'];
     DayNames: Array<any> = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
     fDays : Array<any> = ['7','14','21','28',];
-
-    listChange(event: any) {
+    
+    sampleList: Array<any> = sampleList;
+    cariteriaList:Array<any> = [];
+    nodelist:Array<any> = [];
+    checkOptionsOne = checkOptionsOne;
+    
+    branchesList: any;
+    diciplineList: any;
+    casemanagers: any;
+    categoriesList: any;
+    selectedRecpientTypes: any[];
+    types: any[];
+    
+    extendedSearch: any;
+    filteredResult: any;
+    selectedTypes:any;
+    selectedbranches: any[];
+    testcheck : boolean = false;
+    selectedPrograms: any;
+    selectedCordinators: any;
+    selectedCategories: any;
+    
+    allBranches:boolean = true;
+    allBranchIntermediate:boolean = false;
+    
+    allProgarms:boolean = true;
+    allprogramIntermediate:boolean = false;
+    
+    allCordinatore:boolean = true;
+    allCordinatorIntermediate:boolean = false;
+    
+    allcat:boolean = true;
+    allCatIntermediate:boolean = false;
+    
+    
+    allChecked: boolean = true;
+    indeterminate: boolean = false;
+    quicksearch: FormGroup;
+    filters: FormGroup;
+    loading: boolean;
+    findModalOpen: boolean = false;
+    statusList:any = statusList;
+    genderList:any = genderList;
+    
+    columns: Array<any> = [
+        {
+          name: 'ID',
+          checked: false
+        },
+        {
+          name: 'URNumber',
+          checked: false
+        },
+        {
+          name: 'AccountNo',
+          checked: false
+        },
+        {
+          name: 'Surname',
+          checked: false
+        },
+        {
+          name: 'Firstname',
+          checked: false
+        },
+        {
+          name: 'Fullname',
+          checked: false
+        },
+        {
+          name: 'Gender',
+          checked: true
+        },
+        {
+          name: 'DOB',
+          checked: true
+        },
+        {
+          name: 'Address',
+          checked: true
+        },
+        {
+          name: 'Contact',
+          checked: true
+        },
+        {
+          name: 'Type',
+          checked: true
+        },
+        {
+          name: 'Branch',
+          checked: true
+        },
+        {
+          name: 'Coord',
+          checked: false
+        },
+        {
+          name: 'Category',
+          checked: false
+        },
+        {
+          name: 'ONI',
+          checked: false
+        },
+        {
+          name: 'Activated',
+          checked: false
+        },
+        {
+          name: 'Deactivated',
+          checked: false
+        },
+        {
+          name: 'Suburb',
+          checked: false
+        }
+      ]
+  skillsList: unknown;
+      handleCancel() {
+        this.findModalOpen = false;
+      }
+      
+      listChange(event: any) {
 
         if (event == null) {
             this.user = null;
@@ -137,14 +259,6 @@ export class StaffAdmin implements OnInit, OnDestroy {
             this.view(0);
             this.isFirstLoad = true;
         }
-
-        // this.user = {
-        //     agencyDefinedGroup: undefined,
-        //     code: "AASTAFF HELP",
-        //     id: "S0100005616",
-        //     sysmgr: true,
-        //     view: "staff"
-        // }
 
         this.user = {
             code: event.accountNo,
@@ -177,11 +291,12 @@ export class StaffAdmin implements OnInit, OnDestroy {
       
     }
 
-    ngOnInit(): void {        
+    ngOnInit(): void {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.buildForm();
+        this.buildForms();
+        this.getUserData();
         this.normalRoutePass();
-
     }
 
     normalRoutePass(): void{
@@ -209,7 +324,35 @@ export class StaffAdmin implements OnInit, OnDestroy {
             console.log(data);
         });
     }
-
+    buildForms(){
+        this.quicksearch = this.fb.group({
+          availble:   true,
+          option: false,
+          status:'Active',
+          gender:'Any Gender',
+          surname:'',
+          staff:true,
+          brokers:true,
+          volunteers:true,
+          onleaveStaff:true,
+          previousWork:'',
+          searchText:'',
+        });
+        
+        this.filters = this.fb.group({
+          activeprogramsonly:false,
+        });
+        
+        this.extendedSearch = this.fb.group({
+          title:'',
+          rule:'',
+          from:'',
+          to:'',
+          
+          activeonly: true,
+        });
+        
+    }
     buildForm(): void{
         var date = new Date();
         let monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -344,6 +487,21 @@ export class StaffAdmin implements OnInit, OnDestroy {
     //    this.printSummaryModal = false;
      
     }
+    getUserData() {
+        return forkJoin([
+          this.listS.getlistbranchesObj(),
+          this.listS.getdisciplinelist(),
+          this.listS.casemanagerslist(),
+          this.listS.getstaffcategorylist(),
+          this.listS.getskills(),
+        ]).subscribe(x => {
+          this.branchesList   = x[0];
+          this.diciplineList  = x[1];
+          this.casemanagers   = x[2];
+          this.categoriesList = x[3];
+          this.skillsList     = x[4];
+        });
+      }
     view(index: number) {
         this.nzSelectedIndex = index;
 
@@ -495,12 +653,6 @@ ReportRender(){
         id = "RYeIj0QuEc"
         var Title = "Summary Sheet"
     }
-  
-   
-   
-    
-
-
         if(id == "RYeIj0QuEc"){
           var date = new Date();
    
@@ -755,19 +907,242 @@ ReportRender(){
                     nzTitle: 'TRACCS',
                     nzContent: 'The report has encountered the error and needs to close (' + err + ')',
                     nzOnOk: () => {
-                             this.SummarydrawerVisible = false;
-                              
-                             },
-                  });
-            });
+                             this.SummarydrawerVisible = false;               
+                            },
+                    });
+                });
+            }
+}
 
-        }
-            
-            
 
-          
+ log(event: any,index:number) {
+    this.testcheck = true;   
+    if(index == 1)
+    this.selectedbranches = event;
+    if(index == 2)
+    this.selectedPrograms = event;
+    if(index == 3)
+    this.selectedCordinators = event;
+    if(index == 4)
+    this.selectedCategories = event;  
+ }
+  
+  setCriteria(){ 
+    this.cariteriaList.push({
+      fieldName  : this.extendedSearch.value.title,
+      searchType : this.extendedSearch.value.rule,
+      textToLoc  : this.extendedSearch.value.from,
+      endText    : this.extendedSearch.value.to,
+    })
+  }
+  searchData() : void{
+    this.loading = true;      
     
+    this.selectedTypes = this.checkOptionsOne
+    .filter(opt => opt.checked)
+    .map(opt => opt.value).join("','")
+    
+    this.selectedPrograms = this.diciplineList
+    .filter(opt => opt.checked)
+    .map(opt => opt.description).join("','")
+    
+    this.selectedCordinators = this.casemanagers
+    .filter(opt => opt.checked)
+    .map(opt => opt.uniqueID).join("','")
+    
+    this.selectedCategories = this.categoriesList
+    .filter(opt => opt.checked)
+    .map(opt => opt.description).join("','")
+    
+    this.selectedbranches = this.branchesList
+    .filter(opt => opt.checked)
+    .map(opt => opt.description).join("','")
+
+
+    var postdata = {
+      active:this.quicksearch.value.active,
+      inactive:this.quicksearch.value.inactive,
+      alltypes:this.allChecked,
+      selectedTypes:this.selectedTypes,
+      allBranches:this.allBranches,
+      selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+      allProgarms:this.allProgarms,
+      selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
+      allCordinatore:this.allCordinatore,
+      selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+      allcat:this.allcat,
+      selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+      activeprogramsonly:this.filters.value.activeprogramsonly,
+      surname:this.quicksearch.value.surname,
+      firstname:this.quicksearch.value.firstname,
+      phoneno:this.quicksearch.value.phoneno,
+      suburb:this.quicksearch.value.suburb,
+      dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
+      fileno:this.quicksearch.value.fileno,
+      searchText:this.quicksearch.value.searchText,
+      criterias:this.cariteriaList // list of rules
+    }
+
+    this.timeS.postrecipientquicksearch(postdata).subscribe(data => {
+      this.filteredResult = data;
+      this.loading = false;
+      this.detectChanges();
+    });
 
   }
+    detectChanges() {
+        throw new Error('Method not implemented.');
+    }
+  updateAllChecked(): void {
+    this.indeterminate = false;
+    if (this.allChecked) {
+      this.checkOptionsOne = this.checkOptionsOne.map(item => ({
+        ...item,
+        checked: true
+      }));
+    } else {
+      this.checkOptionsOne = this.checkOptionsOne.map(item => ({
+        ...item,
+        checked: false
+      }));
+    }
+  }
+  updateAllCheckedFilters(filter: any): void {
     
+    if(filter == 1 || filter == -1){
+      
+      console.log(this.testcheck + "test flag");
+      
+      if(this.testcheck == false){  // why its returing undefined 
+        if (this.allBranches) {
+          this.branchesList.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.branchesList.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+    }
+    
+    if(filter == 2 || filter == -1){
+      if(this.testcheck == false){
+        if (this.allProgarms) {
+          this.diciplineList.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.diciplineList.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+    }
+    if(filter == 3 || filter == -1){
+      if(this.testcheck == false){
+        if (this.allCordinatore) {
+          this.casemanagers.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.casemanagers.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+    }
+    
+    if(filter == 4 || filter == -1){
+      if(this.testcheck == false){
+        if (this.allcat) {
+          this.categoriesList.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.categoriesList.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+    }
+  }
+  updateSingleChecked(): void {
+    if (this.checkOptionsOne.every(item => !item.checked)) {
+      this.allChecked = false;
+      this.indeterminate = false;
+    } else if (this.checkOptionsOne.every(item => item.checked)) {
+      this.allChecked = true;
+      this.indeterminate = false;
+    } else {
+      this.indeterminate = true;
+      this.allChecked = false;
+    }
+  }
+  updateSingleCheckedFilters(index:number): void {
+    if(index == 1){
+      if (this.branchesList.every(item => !item.checked)) {
+        this.allBranches = false;
+        this.allBranchIntermediate = false;
+      } else if (this.branchesList.every(item => item.checked)) {
+        this.allBranches = true;
+        this.allBranchIntermediate = false;
+      } else {
+        this.allBranchIntermediate = true;
+        this.allBranches = false;
+      }
+    }
+    if(index == 2){
+      if (this.diciplineList.every(item => !item.checked)) {
+        this.allProgarms = false;
+        this.allprogramIntermediate = false;
+      } else if (this.diciplineList.every(item => item.checked)) {
+        this.allProgarms = true;
+        this.allprogramIntermediate = false;
+      } else {
+        this.allprogramIntermediate = true;
+        this.allProgarms = false;
+      }
+    }
+    if(index == 3){
+      if (this.casemanagers.every(item => !item.checked)) {
+        this.allCordinatore = false;
+        this.allCordinatorIntermediate = false;
+      } else if (this.casemanagers.every(item => item.checked)) {
+        this.allCordinatore = true;
+        this.allCordinatorIntermediate = false;
+      } else {
+        this.allCordinatorIntermediate = true;
+        this.allCordinatore = false;
+      }
+    }
+    if(index == 4){
+      if (this.categoriesList.every(item => !item.checked)) {
+        this.allcat = false;
+        this.allCatIntermediate = false;
+      } else if (this.categoriesList.every(item => item.checked)) {
+        this.allcat = true;
+        this.allCatIntermediate = false;
+      } else {
+        this.allCatIntermediate = true;
+        this.allcat = false;
+      }
+    }
+  }
+  openFindModal(){
+    this.tabFindIndex = 0;
+    this.findModalOpen = true;
+  }
+  
+  tabFindIndex: number = 0;
+  tabFindChange(index: number){
+    if(index == 1){
+      this.updateAllCheckedFilters(-1);
+    }
+    this.tabFindIndex = index;
+  }
+  
+  filterChange(index: number){
+    
+  }
 }

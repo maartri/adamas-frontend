@@ -14,7 +14,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { dateFormat } from '@services/global.service'
 
-import { Filters, QuoteLineDTO, QuoteHeaderDTO } from '@modules/modules';
+import { Filters, QuoteLineDTO, QuoteHeaderDTO, AcceptCharges } from '@modules/modules';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
 import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
 // import { Console } from 'node:console';
@@ -28,6 +28,7 @@ import { PrintPdfComponent } from '@components/print-pdf/print-pdf.component';
 import { filter, toLength, xor } from 'lodash';
 import { parseJSON } from 'date-fns';
 
+import { DecimalPipe } from '@angular/common';
 // import { Console } from 'node:console';
 
 
@@ -46,6 +47,7 @@ const noop = () => {};
   ],
 })
 export class AddQuoteComponent implements OnInit {
+    formatterDollar  = (value: number) => `$ ${this._decimalPipe.transform(value, '1.2-2')}`
 
     @Input() open: boolean = false;
     @Input() user: any; 
@@ -54,8 +56,23 @@ export class AddQuoteComponent implements OnInit {
 
     @Output() refresh = new EventEmitter<any>();
 
-    confirmModal?: NzModalRef; 
+    centreLinkListDropdown: string = 'Daily';
 
+    _tempGovtContribution: any;
+
+    incomeTestedFee: number = 0;
+    incomeTestedFeeTotal: number = 0;
+
+    annualBasicCareFee: number = 0;
+    dailyBasicCareFee: number = 0;
+    monthlyBasicCareFee: number = 0;
+
+    annualIncomeTestedFee: number = 0;
+    dailyIncomeTestedFee: number = 0;
+    monthlyIncomeTestedFee: number = 0;
+
+
+    confirmModal?: NzModalRef;
 
     disableAddTabs: boolean = true;
     
@@ -68,6 +85,8 @@ export class AddQuoteComponent implements OnInit {
     title: string = 'Add New Quote';
 
     slots: any;
+
+    acceptCharges: AcceptCharges;
 
     billUnitArr: Array<string> = billunit;
     periodArr: Array<string> = periodQuote;
@@ -105,6 +124,7 @@ export class AddQuoteComponent implements OnInit {
     quoteLineOpen: boolean = false;
     activeOpen: boolean = false;
     inActiveOpen: boolean = false;
+    newFileNameOpen: boolean = false;
 
 
     goalAndStrategiesmodal : boolean = false;
@@ -117,6 +137,8 @@ export class AddQuoteComponent implements OnInit {
 
     IS_CDC: boolean = false;
     programLevel:any;
+
+    newFileName: string;
 
     codes: Array<any>;
     strategies: Array<any>;
@@ -192,6 +214,7 @@ export class AddQuoteComponent implements OnInit {
     private ModalS: NzModalService,
     private modal: NzModalService,
     private zone: NgZone,
+    private _decimalPipe: DecimalPipe,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -281,8 +304,9 @@ export class AddQuoteComponent implements OnInit {
       
     var contribution = 0;
 
-    if(!this.IS_CDC){
-        contribution = this.quoteForm.value.initialBudget
+    if(this.IS_CDC){
+        // contribution = this.quoteForm.value.initialBudget;
+        contribution = this.get_total_package_value;
     } else {
         contribution = this.quoteForm.value.govtContrib;
     }
@@ -531,32 +555,43 @@ export class AddQuoteComponent implements OnInit {
               if(!x) {
                 return EMPTY
               };
-       
+              this.quoteGeneralForm.patchValue({
+                  program: x
+              })
               return this.listS.getprogramlevel(x)
           }),
           switchMap(x => {                
-              this.IS_CDC = false;
-              if(x.isCDC){
-                  this.IS_CDC = true;
-                //   if(x.quantity && x.timeUnit == 'DAY'){
-                //       this.quoteForm.patchValue({
-                //           govtContrib: (x.quantity*365).toFixed(2),
-                //           programId: x.recordNumber
-                //       });
-                //       console.log(this.quoteForm.value)
-                //       this.remaining_fund = this.quoteForm.value.govtContrib;
-                //   }
-                //   this.detectChanges();
-                //   return this.listS.getpensionandfee();
-              }
+                this.IS_CDC = false;
+                if(x.isCDC){
+                    this.IS_CDC = true;
+                    this._tempGovtContribution =  x.quantity ? (x.quantity * 365).toFixed(2) : 0;
+
+                    this.quoteForm.patchValue({
+                        govtContrib: this._tempGovtContribution,
+                        programId: x.recordNumber
+                    });
+
+                    this.dailyBasicCareFee = x.defaultDailyFee;
+                    this.calculateBasicCareFee();
+                    //   if(x.quantity && x.timeUnit == 'DAY'){
+                    //       this.quoteForm.patchValue({
+                    //           govtContrib: (x.quantity*365).toFixed(2),
+                    //           programId: x.recordNumber
+                    //       });
+                    //       console.log(this.quoteForm.value)
+                    //       this.remaining_fund = this.quoteForm.value.govtContrib;
+                    //   }
+                    //   this.detectChanges();
+                    //   return this.listS.getpensionandfee();
+                    this.detectChanges();
+                }
 
                 this.quoteForm.patchValue({
-                    govtContrib: x.quantity 
-                    ? (x.quantity * 365).toFixed(2) : 0,
+                    govtContrib: x.quantity ? (x.quantity * 365).toFixed(2) : 0,
                     programId: x.recordNumber
                 });
 
-                console.log(this.quoteForm.value)
+                // console.log(this.quoteForm.value)
                 // this.remaining_fund = this.quoteForm.value.govtContrib;
 
               this.detectChanges();
@@ -720,6 +755,29 @@ export class AddQuoteComponent implements OnInit {
     this.quoteListForm.get('period').enable();
   }
 
+  saveNewFilename(){
+        this.qteHeaderDTO = { ...this.qteHeaderDTO, newFileName: this.newFileName };
+
+        this.listS.getpostquote(this.qteHeaderDTO)
+        .subscribe(data => {
+            this.globalS.sToast('Success','Quote Added');
+
+            this.globalS.bToast('File Location', data.documentFileFolder);
+            this.loadingSaveQuote = false;
+            this.refresh.emit(true);
+            this.newFileNameOpen = false;
+            this.detectChanges();
+
+            this.quotesOpen = false;
+        }, (err: any) => {
+            // this.loadingSaveQuote = false;
+            // this.newFileNameOpen = false;            
+            // this.quotesOpen = false;
+            this.detectChanges();
+            
+        });
+  }
+
   handleOkTop(type:any) {
     // this.generatePdf(type);
     this.tryDoctype = ""
@@ -734,7 +792,11 @@ export class AddQuoteComponent implements OnInit {
     //   this.listS.deletetempdoc(this.tableDocumentId).subscribe(data => console.log(data))
       this.quotesOpen = false;
       this.inActiveOpen = false;
-      this.activeOpen = false;
+      this.activeOpen = false;      
+  }
+
+  closeFileName(){
+    this.newFileNameOpen = false;
   }
 
   handleCancelTop(): void {
@@ -1039,7 +1101,7 @@ export class AddQuoteComponent implements OnInit {
             this.quoteListForm.patchValue({
                 chargeType: this.getChargeType(x.mainGroup),
                 code: x.title,
-                roster: 'NONE',
+                roster: x.frequency,
                 displayText: x.displayText,
                 frequency: x.frequency,
                 quantity: x.qty,
@@ -1050,6 +1112,8 @@ export class AddQuoteComponent implements OnInit {
                 notes: x.notes,
                 recordNumber: data.recordNumber
             });
+
+            this.slots = x.roster;
 
             this.detectChanges();
         });
@@ -1084,7 +1148,7 @@ export class AddQuoteComponent implements OnInit {
     generate_total(){
         var total: number = 0;
         this.quoteLines.forEach(x => {        
-            if(x.mainGroup != "ADMIN" && x.mainGroup != "CASE MANAGEMENT")
+            if(x.mainGroup != "ADMIN" && x.mainGroup != "CASE MANAGEMENT" && x.mainGroup != 'ADMIN-DEFAULT')
             {
                 total = total + this.totalamount(x.price, x.quoteQty, x.tax, x.quantity);
             }     
@@ -1095,7 +1159,7 @@ export class AddQuoteComponent implements OnInit {
     generate_total_admin(){
         var total: number = 0;
         this.quoteLines.forEach(x => {   
-            if(x.mainGroup == "ADMIN" || x.mainGroup == "CASE MANAGEMENT")
+            if(x.mainGroup == "ADMIN" || x.mainGroup == "CASE MANAGEMENT" || x.mainGroup == 'ADMIN-DEFAULT')
             {
                 total = total + this.totalamount(x.price, x.quoteQty, x.tax, x.quantity);
             }                
@@ -1108,294 +1172,353 @@ export class AddQuoteComponent implements OnInit {
     total_admin: any;
     // remaining_fund: any;
 
-  GENERATE_QUOTE_LINE(){
+    calculate_HCP_Admin(acceptCharges: AcceptCharges = this.acceptCharges){
 
-        const quote  = this.quoteListForm.getRawValue();
+        var govtContrib = parseFloat(this.quoteForm.get('govtContrib').value);
 
-        if(this.option == 'add')
-        {
-           
-           var _quote, _quote2;
-           
-           if(this.quoteForm.value.charges == true)
-           {
+        if(!acceptCharges.isPercent){
+            return parseFloat(acceptCharges.p_Def_Admin_Admin_PercAmt);
+        }
 
-            var sqlTopUpFee = "SELECT P_Def_IncludeTopUpFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
-            var sqlBasicCareFee = "SELECT P_Def_IncludeBasicCareFeeInAdmin FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
-            var sqlCMPercAmt = "SELECT P_Def_Admin_CM_PercAmt FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
-            var sqlAdminPercAmt ="Select P_Def_Admin_Admin_PercAmt FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' and [Name] = '" +this.quoteForm.value.program+"'"
-      
+        if(acceptCharges.isPercent){
+            var percentage = parseFloat(acceptCharges.p_Def_Admin_Admin_PercAmt) / 100.0;
 
-            forkJoin([
-                this.listS.GetTOpUP(sqlTopUpFee),
-                this.listS.GetBasicCare(sqlBasicCareFee),
-                this.listS.GetCMPERC(sqlCMPercAmt),
-                this.listS.GetAdmPerc(sqlAdminPercAmt)
-            ]).subscribe(x => {
-                this.topup = x[0];
-                this.basiccarefee = x[1];
-                this.PercAmt = x[2];
-                this.AdmPErcAmt = x[3];
-
-                var temp:number = this.quoteForm.value.govtContrib
-       
-        
-                _quote = {        
-                    code: '*HCP-PACKAGE ADMIN' ,
-                    displayText: 'Charges' ,
-                    billUnit:'Service',
-                    quantity: 1,
-                    frequency: 'Daily'  ,
-                    quoteQty: 365 , 
-                    price: this.PercAmt,              
-                }
-                
-                
-                _quote2 = {        
-                    code: '*HCP FEE-PACKAGE ADMINISTRATION' ,
-                    displayText: 'Charges' ,
-                    billUnit:'Service',
-                    quantity: 1,
-                    frequency: 'Daily'  ,
-                    quoteQty: 365 , 
-                    price: ((Number(this.AdmPErcAmt.toString().substring(0,2))/100 * temp)/ 365)
-                }
-
-       
-                this.quoteLines = [...this.quoteLines, _quote, _quote2];
-                this.detectChanges();
-                
-                this.total_admin = this.generate_total_admin();
-                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
-                this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
-
-                // this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
-    
-                this.handleCancelLine();
-                this.detectChanges();
-             
-            });
-           
-        }  else{
-
-            if(this.addNewQuoteLine)
-            {
-                let _quote: QuoteLineDTO = {
-                    docHdrId: this.tempIds.quoteHeaderId,
-                    billUnit: quote.billUnit,
-                    code: quote.code,
-                    displayText: quote.displayText,
-                    qty: quote.quantity,
-                    frequency: quote.period,
-                    quoteQty: quote.weekNo, 
-                    unitBillRate: quote.price,
-                    tax: quote.gst,
-                    itemId: quote.itemId,
-                    mainGroup: quote.mainGroup,
-                    recordNumber: quote.recordNumber
-                }
-
-                this.listS.createQuoteLine(_quote).subscribe(data => {
-
-                this.quoteLines = [...this.quoteLines, {
-                    code: data.code,
-                    displayText: data.displayText,
-                    quantity: data.qty,
-                    billUnit: data.billUnit,
-                    frequency: data.frequency,
-                    quoteQty: data.quoteQty,
-                    price: data.unitBillRate,
-                    tax: data.tax,
-                    mainGroup: data.mainGroup,
-                    recordNumber: data.recordNumber
-                    
-                }];
-                
-                this.total_base_quote = (this.generate_total()).toFixed(2);
-                this.total_admin = this.generate_total_admin();
-                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
-
-                this.handleCancelLine();
-                this.detectChanges();
-                });     
-
-                return;
+            if(acceptCharges.p_Def_IncludeBasicCareFeeInAdmin == false 
+                && acceptCharges.p_Def_IncludeIncomeTestedFeeInAdmin == false){
+                    return (percentage * (govtContrib/365));
             }
 
-            let da: QuoteLineDTO = {
-                sortOrder: 0,
-                billUnit: quote.billUnit,
-                itemId: quote.itemId,
-                qty: quote.quantity,
-                displayText: quote.displayText,
+            if(acceptCharges.p_Def_IncludeBasicCareFeeInAdmin == true 
+                && acceptCharges.p_Def_IncludeIncomeTestedFeeInAdmin == false){
+                    return percentage * ((govtContrib + this.annualBasicCareFee)/365);
+            }
 
-                unitBillRate: quote.price,
-                frequency: quote.period,
-                lengthInWeeks: quote.weekNo,
-                roster: quote.rosterString,
-                serviceType: quote.code,
-                quoteQty: quote.weekNo
-            };
-
-            this.listS.updatequoteline(da, quote.recordNumber)
-                .subscribe(data => {
-                        console.log(data);
-                        this.globalS.sToast('Success', 'Quote Line updated');
-
-                        // var q = this.quoteLines[this.quoteLineIndex];
-                        // console.log(q);
-                        // q.code = quoteLine.code;
-                        // q.displayText = quoteLine.displayText;
-                        // q.quantity = quoteLine.quantity;
-                        // q.billUnit = quoteLine.billUnit;
-                        // q.frequency = quoteLine.period;
-                        // q.lengthInWeeks = quoteLine.weekNo;
-                        // q.price = quoteLine.price;
-                        // q.tax = quoteLine.gst;
-                        // q.recordNumber = quoteLine.recordNumber;
-
-                        const quoteLinesTemp = [...this.quoteLines];            
-                        quoteLinesTemp[this.quoteLineIndex] = { ...quoteLinesTemp[this.quoteLineIndex], 
-                            code: data.code,
-                            displayText: data.displayText,
-                            quantity: data.qty,
-                            billUnit: data.billUnit,
-                            frequency: data.frequency,
-                            lengthInWeeks: data.lengthInWeeks,
-                            price: data.unitBillRate,
-                            tax: data.tax,
-                            recordNumber: data.recordNumber,
-                            quoteQty: data.quoteQty
-                        }
-                        this.quoteLines = quoteLinesTemp;
-                        this.total_base_quote = (this.generate_total()).toFixed(2);
-                        this.total_admin = this.generate_total_admin();
-                        this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
-
-                        this.handleCancelLine();
-                        this.detectChanges();
-
-                        this.quoteLineOpen = false;
-                        this.detectChanges();
-                });
-
-           this.handleCancelLine();
-           this.detectChanges();
+            if(acceptCharges.p_Def_IncludeBasicCareFeeInAdmin == true 
+                && acceptCharges.p_Def_IncludeIncomeTestedFeeInAdmin == true){
+                    return percentage * ((govtContrib + this.annualBasicCareFee + this.annualIncomeTestedFee)/365);
+            }
         }
     }
 
-       if(this.option == 'update'){
-           var quoteForm = this.quoteForm.value;
-           var quoteLine = this.quoteListForm.getRawValue();
+    calculate_CM_Admin(acceptCharges: AcceptCharges = this.acceptCharges){
 
+        var govtContrib = parseFloat(this.quoteForm.get('govtContrib').value);
 
-            if(this.addNewQuoteLine){           
-                console.log('add');
-                let _quote: QuoteLineDTO = {
-                    docHdrId: this.record,
-                    billUnit: quote.billUnit,
-                    code: quote.code,
-                    displayText: quote.displayText,
-                    qty: quote.quantity,
-                    frequency: quote.period,
-                    quoteQty: quote.weekNo, 
-                    unitBillRate: quote.price,
-                    tax: quote.gst,
-                    itemId: quote.itemId,
-                    mainGroup: quote.mainGroup
-                }
-                // console.log(_quote);
+        if(!acceptCharges.isPercent){
+            return parseFloat(acceptCharges.p_Def_Admin_CM_PercAmt);
+        }
 
-                this.listS.createQuoteLine(_quote).subscribe(data => {
+        if(acceptCharges.isPercent){
+            var percentage = parseFloat(acceptCharges.p_Def_Admin_CM_PercAmt) / 100.0;
 
-                    this.quoteLines = [...this.quoteLines, {
-                        code: data.code,
-                        displayText: data.displayText,
-                        quantity: data.qty,
-                        billUnit: data.billUnit,
-                        frequency: data.frequency,
-                        quoteQty: data.quoteQty,
-                        price: data.unitBillRate,
-                        tax: data.tax,
-                        mainGroup: data.mainGroup
-                    }];
-                    
-                    this.total_base_quote = (this.generate_total()).toFixed(2);
-                    this.total_admin = this.generate_total_admin();
-                    this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
-    
-                    // this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
-                    this.handleCancelLine();
-                    this.detectChanges();
-                });
-                return;
+            if(acceptCharges.p_Def_IncludeBasicCareFeeInAdmin == false 
+                && acceptCharges.p_Def_IncludeIncomeTestedFeeInAdmin == false){
+                    return (percentage * (govtContrib/365));
             }
 
-            let da: QuoteLineDTO = {
-                sortOrder: 0,
-                billUnit: quoteLine.billUnit,
-                itemId: quoteLine.itemId,
-                qty: quoteLine.quantity,
-                displayText: quoteLine.displayText,
+            if(acceptCharges.p_Def_IncludeBasicCareFeeInAdmin == true 
+                && acceptCharges.p_Def_IncludeIncomeTestedFeeInAdmin == false){
+                    return percentage * ((govtContrib + this.annualBasicCareFee)/365);
+            }
 
-                unitBillRate: quoteLine.price,
-                frequency: quoteLine.period,
-                lengthInWeeks: quoteLine.weekNo,
-                roster: quoteLine.rosterString,
-                serviceType: quoteLine.code,
-                quoteQty: quoteLine.weekNo
-            };
+            if(acceptCharges.p_Def_IncludeBasicCareFeeInAdmin == true 
+                && acceptCharges.p_Def_IncludeIncomeTestedFeeInAdmin == true){
+                    return percentage * ((govtContrib + this.annualBasicCareFee + this.annualIncomeTestedFee)/365);
+            }
+        }
+    }
 
-            this.listS.updatequoteline(da, this.updateValues.recordNumber)
-                .subscribe(data => {
+    get get_total_package_value() {
+        return (this.annualBasicCareFee + parseFloat(this.quoteForm.get('govtContrib').value) + this.annualIncomeTestedFee);
+    }
 
-                        this.globalS.sToast('Success', 'Quote Line updated');
+    CHECKACCEPTCHARGES(){
 
-                        // var q = this.quoteLines[this.quoteLineIndex];
-                        // console.log(q);
-                        // q.code = quoteLine.code;
-                        // q.displayText = quoteLine.displayText;
-                        // q.quantity = quoteLine.quantity;
-                        // q.billUnit = quoteLine.billUnit;
-                        // q.frequency = quoteLine.period;
-                        // q.lengthInWeeks = quoteLine.weekNo;
-                        // q.price = quoteLine.price;
-                        // q.tax = quoteLine.gst;
-                        // q.recordNumber = quoteLine.recordNumber;
+        var _quote, _quote2;
 
-                        const quoteLinesTemp = [...this.quoteLines];            
-                        quoteLinesTemp[this.quoteLineIndex] = { ...quoteLinesTemp[this.quoteLineIndex], 
-                            code: quoteLine.code,
-                            displayText: quoteLine.displayText,
-                            quantity: quoteLine.quantity,
-                            billUnit: quoteLine.billUnit,
-                            frequency: quoteLine.period,
-                            lengthInWeeks: quoteLine.weekNo,
-                            price: quoteLine.price,
-                            tax: quoteLine.gst,
-                            recordNumber: quoteLine.recordNumber,
-                            quoteQty: quoteLine.weekNo
+        forkJoin([
+            this.listS.getaccceptcharges(this.quoteForm.value.program)
+        ]).subscribe(x => {
+
+            this.acceptCharges = x[0];
+            var temp:number = this.quoteForm.value.govtContrib
+
+            // this.dailyBasicCareFee = parseFloat(this.acceptCharges.p_Def_Fee_BasicCare);
+            // this.annualBasicCareFee = this.dailyBasicCareFee * 365;
+            // this.monthlyBasicCareFee = (this.dailyBasicCareFee * 365) / 12;
+
+            _quote = {        
+                code:  this.acceptCharges.p_Def_Admin_AdminType,
+                displayText: 'Charges' ,
+                billUnit:'Service',
+                quantity: 1,
+                frequency: 'Daily'  ,
+                quoteQty: 365 , 
+                mainGroup: 'ADMIN-DEFAULT',
+                price: this.calculate_HCP_Admin(this.acceptCharges)
+            }
+            
+            
+            _quote2 = {        
+                code: this.acceptCharges.p_Def_Admin_CMType ,
+                displayText: 'Charges' ,
+                billUnit:'Service',
+                quantity: 1,
+                frequency: 'Daily',
+                mainGroup: 'ADMIN-DEFAULT',
+                quoteQty: 365,
+                price: this.calculate_CM_Admin(this.acceptCharges)
+            }
+
+
+            this.quoteLines = [...this.quoteLines, _quote, _quote2];
+
+            
+            this.total_admin = this.generate_total_admin();
+            this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+            this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
+
+            // this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
+
+            this.handleCancelLine();
+            this.detectChanges();                
+        });
+    }
+
+    GENERATE_QUOTE_LINE(){
+
+            const quote  = this.quoteListForm.getRawValue();
+
+            if(this.option == 'add')
+            {
+            
+                if(this.addNewQuoteLine)
+                    {
+                        let _quote: QuoteLineDTO = {
+                            docHdrId: this.tempIds.quoteHeaderId,
+                            billUnit: quote.billUnit,
+                            code: quote.code,
+                            displayText: quote.displayText,
+                            qty: quote.quantity,
+                            frequency: quote.period,
+                            quoteQty: quote.weekNo, 
+                            roster: quote.rosterString,
+                            unitBillRate: quote.price,
+                            tax: quote.gst,
+                            itemId: quote.itemId,
+                            mainGroup: quote.mainGroup,
+                            recordNumber: quote.recordNumber
                         }
-                        this.quoteLines = quoteLinesTemp;
-                        this.total_base_quote = (this.generate_total()).toFixed(2);
-                        this.total_admin = this.generate_total_admin();
-                        this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
 
-                        this.handleCancelLine();
-                        this.detectChanges();
+                        this.listS.createQuoteLine(_quote).subscribe(data => {
 
-                        this.quoteLineOpen = false;
-                        this.detectChanges();
-                });
+                            this.quoteLines = [...this.quoteLines, {
+                                code: data.code,
+                                displayText: data.displayText,
+                                quantity: data.qty,
+                                billUnit: data.billUnit,
+                                frequency: data.frequency,
+                                quoteQty: data.quoteQty,
+                                price: data.unitBillRate,
+                                tax: data.tax,
+                                mainGroup: data.mainGroup,
+                                recordNumber: data.recordNumber
+                                
+                            }];
+                        
+                            this.total_base_quote = (this.generate_total()).toFixed(2);
+                            this.total_admin = this.generate_total_admin();
+                            this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
 
-       }
-  }
+                            this.handleCancelLine();
+                            this.globalS.sToast('Success','Added QuoteLine')
+                            this.detectChanges();
+                        });     
 
-  handleCancelLine(){
-      this.quoteLineOpen = false;
-  }
+                        return;
+                    }
+
+                    let da: QuoteLineDTO = {
+                        sortOrder: 0,
+                        billUnit: quote.billUnit,
+                        itemId: quote.itemId,
+                        qty: quote.quantity,
+                        displayText: quote.displayText,
+
+                        unitBillRate: quote.price,
+                        frequency: quote.period,
+                        lengthInWeeks: quote.weekNo,
+                        roster: quote.rosterString,
+                        serviceType: quote.code,
+                        quoteQty: quote.weekNo
+                    };
+
+                    this.listS.updatequoteline(da, quote.recordNumber)
+                        .subscribe(data => {
+                                // console.log(data);
+                                this.globalS.sToast('Success', 'Quote Line updated');
+
+                                // var q = this.quoteLines[this.quoteLineIndex];
+                                // console.log(q);
+                                // q.code = quoteLine.code;
+                                // q.displayText = quoteLine.displayText;
+                                // q.quantity = quoteLine.quantity;
+                                // q.billUnit = quoteLine.billUnit;
+                                // q.frequency = quoteLine.period;
+                                // q.lengthInWeeks = quoteLine.weekNo;
+                                // q.price = quoteLine.price;
+                                // q.tax = quoteLine.gst;
+                                // q.recordNumber = quoteLine.recordNumber;
+
+                                const quoteLinesTemp = [...this.quoteLines];            
+                                quoteLinesTemp[this.quoteLineIndex] = { ...quoteLinesTemp[this.quoteLineIndex], 
+                                    code: data.code,
+                                    displayText: data.displayText,
+                                    quantity: data.qty,
+                                    billUnit: data.billUnit,
+                                    frequency: data.frequency,
+                                    lengthInWeeks: data.lengthInWeeks,
+                                    price: data.unitBillRate,
+                                    tax: data.tax,
+                                    recordNumber: data.recordNumber,
+                                    quoteQty: data.quoteQty
+                                }
+                                this.quoteLines = quoteLinesTemp;
+                                this.total_base_quote = (this.generate_total()).toFixed(2);
+                                this.total_admin = this.generate_total_admin();
+                                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+
+                                this.globalS.sToast('Success','Updated QuoteLine')
+                                this.handleCancelLine();
+                                this.detectChanges();
+
+                                this.quoteLineOpen = false;
+                                this.detectChanges();
+                        });
+
+                    this.handleCancelLine();
+                    this.detectChanges();
+                
+            }
+
+            if(this.option == 'update'){
+                var quoteForm = this.quoteForm.value;
+                var quoteLine = this.quoteListForm.getRawValue();
+
+
+                    if(this.addNewQuoteLine){           
+                        console.log('add');
+                        let _quote: QuoteLineDTO = {
+                            docHdrId: this.record,
+                            billUnit: quote.billUnit,
+                            code: quote.code,
+                            displayText: quote.displayText,
+                            qty: quote.quantity,
+                            frequency: quote.period,
+                            quoteQty: quote.weekNo, 
+                            unitBillRate: quote.price,
+                            roster: quote.rosterString,
+                            tax: quote.gst,
+                            itemId: quote.itemId,
+                            mainGroup: quote.mainGroup
+                        }
+                        // console.log(_quote);
+
+                        this.listS.createQuoteLine(_quote).subscribe(data => {
+
+                            this.quoteLines = [...this.quoteLines, {
+                                code: data.code,
+                                displayText: data.displayText,
+                                quantity: data.qty,
+                                billUnit: data.billUnit,
+                                frequency: data.frequency,
+                                quoteQty: data.quoteQty,
+                                price: data.unitBillRate,
+                                tax: data.tax,
+                                mainGroup: data.mainGroup
+                            }];
+                            
+                            this.total_base_quote = (this.generate_total()).toFixed(2);
+                            this.total_admin = this.generate_total_admin();
+                            this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+            
+                            // this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
+                            this.globalS.sToast('Success','Added QuoteLine')
+                            this.handleCancelLine();
+                            this.detectChanges();
+                        });
+                        return;
+                    }
+
+                    let da: QuoteLineDTO = {
+                        sortOrder: 0,
+                        billUnit: quoteLine.billUnit,
+                        itemId: quoteLine.itemId,
+                        qty: quoteLine.quantity,
+                        displayText: quoteLine.displayText,
+
+                        unitBillRate: quoteLine.price,
+                        frequency: quoteLine.period,
+                        lengthInWeeks: quoteLine.weekNo,
+                        roster: quoteLine.rosterString,
+                        serviceType: quoteLine.code,
+                        quoteQty: quoteLine.weekNo
+                    };
+
+                    this.listS.updatequoteline(da, this.updateValues.recordNumber)
+                        .subscribe(data => {
+
+                                this.globalS.sToast('Success', 'Quote Line updated');
+
+                                // var q = this.quoteLines[this.quoteLineIndex];
+                                // console.log(q);
+                                // q.code = quoteLine.code;
+                                // q.displayText = quoteLine.displayText;
+                                // q.quantity = quoteLine.quantity;
+                                // q.billUnit = quoteLine.billUnit;
+                                // q.frequency = quoteLine.period;
+                                // q.lengthInWeeks = quoteLine.weekNo;
+                                // q.price = quoteLine.price;
+                                // q.tax = quoteLine.gst;
+                                // q.recordNumber = quoteLine.recordNumber;
+
+                                const quoteLinesTemp = [...this.quoteLines];            
+                                quoteLinesTemp[this.quoteLineIndex] = { ...quoteLinesTemp[this.quoteLineIndex], 
+                                    code: quoteLine.code,
+                                    displayText: quoteLine.displayText,
+                                    quantity: quoteLine.quantity,
+                                    billUnit: quoteLine.billUnit,
+                                    frequency: quoteLine.period,
+                                    lengthInWeeks: quoteLine.weekNo,
+                                    price: quoteLine.price,
+                                    tax: quoteLine.gst,
+                                    recordNumber: quoteLine.recordNumber,
+                                    quoteQty: quoteLine.weekNo
+                                }
+                                this.quoteLines = quoteLinesTemp;
+                                this.total_base_quote = (this.generate_total()).toFixed(2);
+                                this.total_admin = this.generate_total_admin();
+                                this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+
+                                this.globalS.sToast('Success','Updated QuoteLine')
+                                this.handleCancelLine();
+                                this.detectChanges();
+
+                                this.quoteLineOpen = false;
+                                this.detectChanges();
+                        });
+
+            }
+    }
+
+    handleCancelLine(){
+        this.quoteLineOpen = false;
+    }
 
   loadingSaveQuote: boolean = false;
+
+  qteHeaderDTO: QuoteHeaderDTO;
+
   saveQuote(){
       
     let qteLineArr: Array<QuoteLineDTO> = [];
@@ -1426,8 +1549,7 @@ export class AddQuoteComponent implements OnInit {
        
         qteLineArr.push(da);
     });
-    console.log(this.tempIds)
-    console.log(this.record)
+
     qteHeader = {
         recordNumber: this.tempIds ? this.tempIds.quoteHeaderId : this.record,
         programId: quoteForm.programId,
@@ -1441,14 +1563,13 @@ export class AddQuoteComponent implements OnInit {
         packageSupplements: '000000000000000000',
         agreedTopUp: '0.00',
         balanceAtQuote: '0.00',
-        clAssessedIncomeTestedFee: '0.00',
-       
+        clAssessedIncomeTestedFee: '0.00',       
                
-            feesAccepted: 0,
-            basePension: 'SINGLE',
-            dailyBasicCareFee: '$0.00',
-            dailyIncomeTestedFee: '$0.00',
-            dailyAgreedTopUp: '$0.00',
+        feesAccepted: 0,
+        basePension: 'SINGLE',
+        dailyBasicCareFee: (this.dailyBasicCareFee.toFixed(2)).toString(),
+        dailyIncomeTestedFee: (this.dailyIncomeTestedFee.toFixed(2)).toString(),
+        dailyAgreedTopUp: '$0.00',
         
         quoteView: 'ANNUALLY',
 
@@ -1460,22 +1581,58 @@ export class AddQuoteComponent implements OnInit {
         goals: goals
     }
 
+    this.qteHeaderDTO = qteHeader;
     this.loadingSaveQuote = true;
-    console.log(qteHeader)
-    return;
-    this.listS.getpostquote(qteHeader)
-        .subscribe(data => {
+
+    // console.log(qteHeader);
+    // return;
+
+    this.listS.checkpostquote(qteHeader)
+        .pipe(
+            switchMap(x => {
+                if(x == null)
+                    return this.listS.getpostquote(qteHeader);
+                else{
+                    this.newFileName = x;
+                    this.loadingSaveQuote = false;
+                    this.newFileNameOpen = true;
+                    this.detectChanges();
+                    return EMPTY;
+                }
+                    
+            })
+        ).subscribe(data => {
             this.globalS.sToast('Success','Quote Added');
+
+            this.globalS.bToast('File Location', data.documentFileFolder);
             this.loadingSaveQuote = false;
             this.refresh.emit(true);
             this.detectChanges();
-
+            this.newFileNameOpen = false;
             this.quotesOpen = false;
         }, (err: any) => {
             this.loadingSaveQuote = false;
-            this.detectChanges();
             this.quotesOpen = false;
+            this.newFileNameOpen = false;
+            this.detectChanges();
         });
+  
+  
+    // this.listS.getpostquote(qteHeader)
+    //     .subscribe(data => {
+    //         this.globalS.sToast('Success','Quote Added');
+
+    //         this.globalS.bToast('File Location', data.documentFileFolder);
+    //         this.loadingSaveQuote = false;
+    //         this.refresh.emit(true);
+    //         this.detectChanges();
+
+    //         this.quotesOpen = false;
+    //     }, (err: any) => {
+    //         this.loadingSaveQuote = false;
+    //         this.detectChanges();
+    //         this.quotesOpen = false;
+    //     });
   }
 
     refreshQuoteLines(recordNo: any){
@@ -1499,7 +1656,6 @@ export class AddQuoteComponent implements OnInit {
     addNewQuoteLine: boolean = false;
 
     quoteLineModal(){
-        console.log(this.record);
         this.addNewQuoteLine = true;
 
         this.quoteLineOpen = true;
@@ -1912,25 +2068,55 @@ return this.admincharges;
 
   } */
   
-  
-dailyliving(){
-    let daily;
-    var temp = this.dochdr
-    if(!temp) return;
+    
+    dailyliving(){
+        let daily;
+        var temp = this.dochdr
+        if(!temp) return;
 
-    this.listS.GetDailyliving(temp).subscribe(x => {
-        daily = x;
-    });
+        this.listS.GetDailyliving(temp).subscribe(x => {
+            daily = x;
+        });
 
-    return daily;   
-}
-
-checkValue(event){
-    if (event.target.checked){
-       this.option = 'add';
-        this.GENERATE_QUOTE_LINE();
+        return daily;   
     }
-}
+
+    checkValue(event){
+        if (event.target.checked){
+            this.CHECKACCEPTCHARGES();
+            // this.option = 'add';
+            // this.GENERATE_QUOTE_LINE();
+            // this.CHECKACCEPTCHARGES();
+        } else {
+            console.log(this.quoteLines)
+            console.log(this.quoteLines.findIndex(x => x.mainGroup === 'ADMIN-DEFAULT'));
+        }
+    }
+
+    calculateIncomeTestedFee(){
+            this.dailyIncomeTestedFee = this.incomeTestedFee;
+            this.annualIncomeTestedFee = this.dailyIncomeTestedFee * 365;
+            this.monthlyIncomeTestedFee = (this.dailyIncomeTestedFee * 365)/12;
+
+            this.incomeTestedFeeTotal = this.incomeTestedFee * 365;
+
+            this.quoteForm.patchValue({
+                govtContrib: this._tempGovtContribution - this.annualIncomeTestedFee
+            });
+
+            this.calculate_HCP_Admin();
+            this.calculate_CM_Admin();
+    }
+
+    calculateBasicCareFee(){
+        // if(this.dailyBasicCareFee && this.dailyBasicCareFee > -1){
+            this.annualBasicCareFee = this.dailyBasicCareFee * 365;
+            this.monthlyBasicCareFee = (this.dailyBasicCareFee * 365) / 12;
+
+            this.calculate_HCP_Admin();
+            this.calculate_CM_Admin();
+        // }
+    }
 
 
 

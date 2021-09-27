@@ -253,6 +253,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/get-username/${accountNo}`)
     }
 
+    updatecontactrosterrunsheet(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/update/contact-roster-runsheet`, data)
+    }
+
     /**
      * Update Alerts and Issues - Profile Page
      */
@@ -988,6 +992,12 @@ export class TimeSheetService {
     getstaffbyphone(phoneno: string): Observable<any> {
         return this.auth.get(`${timesheet}/phone-search-staff/${phoneno}`);
     }
+    
+    postrecipientquicksearch(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/search-recipient`, data)
+    }
+
+
     getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
     }

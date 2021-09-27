@@ -50,6 +50,11 @@ nz-select.select{
 .inline{
     display:flex;
 }
+.inline > *{
+    display:flex;
+    align-items: center;
+    padding: 0 3px;
+}
 .inline > .title{
     font-size:12px;
     margin-right:5px;
@@ -107,3 +112,12 @@ nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-
 }
 
 
+.disabled:disabled{
+    color: #8e8e8e;
+    font-weight: bold;
+    background-color: #e9e9e9;
+}
+
+nz-input-number{
+    width:100%;
+}

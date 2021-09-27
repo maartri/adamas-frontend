@@ -157,6 +157,8 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
 
     showAddModal() {
         this.addDocumentModal = true;
+        this.current = 0;
+        this.selectedIndex = null;
         this.templates$ = this.uploadS.getdocumenttemplate();
     }
 
@@ -197,7 +199,7 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
             }, 100);
 
         }, err =>{
-            console.log(err);
+            this.message.remove(notifId);
             this.globalS.eToast('Error', "Document can't be found");
         })
     }

@@ -15,6 +15,10 @@ export class UploadService {
       public auth: AuthService
    ) { }
 
+   downloadquotedocument(docId: number): Observable<any> {
+      return this.http.post(`${upload}/download-quote-document/${docId}`, null , { responseType: 'blob', reportProgress: true })
+   }
+
    getdocumentblob(data: any): Observable<any> {
       // return this.http.post(`${upload}/copy-mta-document`, data , { responseType: 'blob', reportProgress: true });
       return this.http.post(`${upload}/copy-mta-document`, data);

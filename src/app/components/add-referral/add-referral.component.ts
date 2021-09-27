@@ -96,6 +96,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   token :any ;
   date: any;
 
+  medicalList: Array<any> = [];
+
   constructor(
     private clientS: ClientService,
     private formBuilder: FormBuilder,
@@ -198,6 +200,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   }
 
   firstOpenChange: boolean = false;
+
   dateOpenChange(data: any){
     if(this.firstOpenChange || !data) return;
     this.firstOpenChange = true;
@@ -243,10 +246,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       dataList: new FormControl(null),
 
       referral: new FormControl(''),
-      confirmation: new FormControl(null),
-
-      
-      
+      confirmation: new FormControl(null)      
     });
 
 
@@ -506,6 +506,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
         }
         
     });
+
     this.listS.getserviceregion().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.agencies = data.map(x => x.toUpperCase())
         if(this.agencies.length == 1){
@@ -514,6 +515,10 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       console.log();
       }
     );
+
+    this.listS.getmedicallist().subscribe(data => {
+      this.medicalList = data;
+    });
 
     // this.listS.getfollowups({ }).pipe(takeUntil(this.destroy$)).subscribe(data => {
     //   this.notifFollowUpGroup = data.map(x => {
@@ -565,6 +570,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
     // return;
     console.log(this.referralGroup.value)
+
 
     this.clientS.postprofile(this.referralGroup.value)
       .subscribe(data => {
@@ -656,7 +662,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     return this.formBuilder.group({
       address1: new FormControl(''),
       type: new FormControl('USUAL'),
-      suburb: new FormControl('')
+      suburb: new FormControl(''),
+      primary: new FormControl(false)
     });
   }
 
@@ -673,7 +680,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
   createContact(): FormGroup {
     return this.formBuilder.group({
       contacttype: new FormControl('MOBILE'),
-      contact: new FormControl('')
+      contact: new FormControl(''),
+      primary: new FormControl(false)
     });
   }
 
@@ -801,9 +809,57 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     return !this.globalS.isEmpty(branch) && !this.globalS.isEmpty(agencyDefinedGroup) && !this.globalS.isEmpty(recipientCoordinator)
   }
 
+  contactIsPrimary(index: any){
+    this.uncheckPrimaryContacts();
+    var contact = this.referralGroup.get('contacts') as FormArray;
+    var isPrimary = contact.controls[index].get('primary').value
+    contact.controls[index].get('primary').patchValue(!isPrimary);    
+  }
+
+  addressIsPrimary(index: any){
+    this.uncheckPrimaryAddress();
+    var address = this.referralGroup.get('addresses') as FormArray;
+    var isPrimary = address.controls[index].get('primary').value
+    address.controls[index].get('primary').patchValue(!isPrimary);    
+  }
+
+  uncheckPrimaryAddress(){
+    var contact = this.referralGroup.get('addresses') as FormArray;
+    for(var c of contact.controls)
+    { 
+      c.get('primary').patchValue(false);
+    }
+  }
+
+  uncheckPrimaryContacts(){
+    var contact = this.referralGroup.get('contacts') as FormArray;
+    for(var c of contact.controls)
+    { 
+      c.get('primary').patchValue(false);
+    }
+  }
+
   contactTypeChange(index: any) {
     var contact = this.referralGroup.get('contacts') as FormArray;
     contact.controls[index].get('contact').reset();
+  }
+
+  nameGroupChange(group: FormGroup, index: number){
+    var contactGroup = (group[index] as FormGroup).get('name').value;
+    var specificGroup = (group[index] as FormGroup);
+
+    console.log(contactGroup);
+
+    console.log(this.medicalList.find(x => x.name == contactGroup));
+
+    let details = this.medicalList.find(x => x.name == contactGroup);
+
+    specificGroup.patchValue({
+      address1: details.address,
+      email: details.email,
+      phone1: details.phone,
+      fax: details.fax
+    });
   }
 
   contactGroupChange(group: FormGroup, index: number){

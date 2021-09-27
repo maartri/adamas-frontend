@@ -1073,7 +1073,7 @@ export class AddQuoteComponent implements OnInit {
             this.quoteListForm.patchValue({
                 chargeType: this.getChargeType(x.mainGroup),
                 code: x.title,
-                roster: 'NONE',
+                roster: x.frequency,
                 displayText: x.displayText,
                 frequency: x.frequency,
                 quantity: x.qty,
@@ -1084,6 +1084,8 @@ export class AddQuoteComponent implements OnInit {
                 notes: x.notes,
                 recordNumber: data.recordNumber
             });
+
+            this.slots = x.roster;
 
             this.detectChanges();
         });

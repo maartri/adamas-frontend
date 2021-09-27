@@ -339,7 +339,7 @@
                         <td>{{data.frequency}}</td>
                         <td>{{data.quoteQty}}</td>
                         <td>${{data.price}}</td>
-                        <td>$ {{amount(data.price,data.quoteQty)}}  </td>                        
+                        <td>${{ amount(data.price,data.quoteQty) | number : '1.2-2' }}  </td>                        
                         <td>{{data.tax}}</td>
                         <td>${{totalamount(data.price,data.quoteQty,data.tax,data.quantity) | number : '1.2-2' }}</td>
                         <td>

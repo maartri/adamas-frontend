@@ -2591,6 +2591,7 @@ ClearMultishift(){
             "selected": false,
             "serviceType": r.type,
             "recipientCode": r.clientCode,            
+            "staffCode": r.carerCode,  
             "serviceActivity": r.serviceType,
             "serviceSetting": r.serviceSetting,
             "analysisCode": r.anal,
@@ -2746,7 +2747,7 @@ return rst;
     options: any;
     recipient: any;
     serviceType:any;
-
+    recipientCode:string;
     loading: boolean = true;
     formloading: boolean = false;
     basic: boolean = false;
@@ -2888,13 +2889,13 @@ return rst;
             duration, 
             durationNumber,
             serviceTypePortal,
-            recipientCode,
+            recipientCode,            
             startTime,
             program,
-            payType,
             paytype,
             shiftbookNo,
             recordNo,
+            staffCode,
             endTime } = index;
 
             
@@ -2930,11 +2931,11 @@ return rst;
             this.defaultProgram = program;
             this.defaultActivity = activity;
             this.defaultCategory = analysisCode;
-            this.serviceType =  activity;//this.DETERMINE_SERVICE_TYPE(index);
-
+            this.serviceType =  this.DETERMINE_SERVICE_TYPE(serviceType);
+            this.recipientCode=recipientCode;
             this.Timesheet_label="Edit Timesheet (RecordNo : " + recordNo +")"
             this.rosterForm.patchValue({
-                serviceType: this.DETERMINE_SERVICE_TYPE(index),
+                serviceType: this.serviceType,
                 date: date,
                 program: program,
                 serviceActivity: activity,
@@ -2942,10 +2943,11 @@ return rst;
                 analysisCode: analysisCode,
                 recordNo: shiftbookNo,            
                 pay:pay,
-                bill:bill,
-                recipientCode: recipientCode,
+                bill:bill,                
                 debtor: debtor,
-                type: serviceType
+                type: serviceType,
+                recipientCode: recipientCode,
+                staffCode:staffCode                
                 
             });
         }, 100);
@@ -3578,7 +3580,7 @@ reload(reload: boolean){
     GETSERVICEACTIVITY(program: any): Observable<any> {
 
         let serviceType=this.serviceType;
-        const { recipientCode }  = this.rosterForm.value;
+        let recipientCode   = this.recipientCode;
 
         if (recipientCode!="" && recipientCode!=null){
             this.FetchCode=recipientCode;
@@ -3586,7 +3588,8 @@ reload(reload: boolean){
         let sql ="";
         if (!program) return EMPTY;
        // console.log(this.rosterForm.value)
- 
+          if (serviceType=='SERVICE' )
+            this.booking_case=4;
         
        if (serviceType == 'ADMINISTRATION' ){
         // const { recipientCode, debtor } = this.rosterForm.value;
@@ -3605,8 +3608,8 @@ reload(reload: boolean){
               WHERE Title = SO.[Service Type] AND ITM.[RosterGroup] = 'ADMINISTRATION'
               AND ITM.[Status] = 'NONATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
               ORDER BY [Service Type]`;
-
-    }else if (serviceType == 'ADMISSION' || serviceType =='ALLOWANCE NON-CHARGEABLE' || serviceType == 'ITEM'  || serviceType == 'SERVICE') {
+                //|| serviceType=='SERVICE' 
+    }else if (serviceType == 'ADMISSION' || serviceType =='ALLOWANCE NON-CHARGEABLE' || serviceType == 'ITEM' ) {
             // const { recipientCode, debtor } = this.rosterForm.value;
             sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
             (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
@@ -3616,14 +3619,14 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END)
-            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,I.unit as UnitType,
             isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
             FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
             INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
             INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
-            WHERE SO.ServiceProgram = '${ program}' 
+            WHERE SO.ServiceProgram = '${program}' 
             AND EXISTS
             (SELECT Title
             FROM ItemTypes ITM
@@ -3641,7 +3644,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
-            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,I.unit as UnitType,
             isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
@@ -3663,7 +3666,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
-            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,I.unit as UnitType,
             isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
@@ -3681,7 +3684,7 @@ reload(reload: boolean){
         }  else if (this.booking_case==4 && this.IsGroupShift){
            
                 sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
-                I.AMOUNT AS BILLRATE,
+                I.AMOUNT AS BILLRATE,I.unit as UnitType,
                 isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate, 0 as GST,
                 'N/A' as Service_Description,
                 HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
@@ -3698,7 +3701,7 @@ reload(reload: boolean){
     }else if (this.booking_case==8 ){
            
         sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
-        I.AMOUNT AS BILLRATE,
+        I.AMOUNT AS BILLRATE,I.unit as UnitType,
         isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,
         'N/A' as Service_Description,
         HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
@@ -3722,7 +3725,7 @@ reload(reload: boolean){
              WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
              WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
             ELSE I.Amount END )
-            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+            ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,I.unit as UnitType,
             isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,
             (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
             HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
@@ -4278,7 +4281,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             }
         });
         this.rosterForm.get('program').valueChanges.pipe(
-            distinctUntilChanged(),
+           // distinctUntilChanged(),
             switchMap(x => {
                 if(!x) return EMPTY;
                 this.serviceActivityList = [];
@@ -4305,7 +4308,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                     serviceActivity: d[0]
                 });
 
-                this.current+=1;
+                //this.current+=1;
             }
         });
 
@@ -4737,13 +4740,14 @@ this.bookingForm.get('program').valueChanges.pipe(
         }
         if (this.current==1 && this.serviceActivityList.length==1){
            
-            if (this.showDone2)
+            if (this.showDone2){
                 this.doneBooking();
+                return;
+            }
+              
             if (!this.ShowCentral_Location)
                 this.current+=2;
                 
-                return;
-            
         }
 
         
@@ -4751,9 +4755,7 @@ this.bookingForm.get('program').valueChanges.pipe(
             this.current += 1;
         }
         //console.log(this.current + ", " + this.ShowCentral_Location +", " + this.viewType + ", " + this.IsGroupShift )
-        
-
-        
+                
         
         if (this.viewType=="Staff" && this.current == 3 ){
      

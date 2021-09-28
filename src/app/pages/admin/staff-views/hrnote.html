@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addORView ? 'Add HR Note' : 'Details'" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzStyle]="{ top: '20px' }" [nzTitle]="addORView ? 'Add HR Note' : 'Details'" (nzOnCancel)="handleCancel()">
     <div [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>

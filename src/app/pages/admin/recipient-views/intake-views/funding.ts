@@ -5,7 +5,10 @@ import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject,EMPTY } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
-
+import addYears from 'date-fns/addYears';
+import addMonths from 'date-fns/addMonths';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import * as moment from 'moment';
 
@@ -150,9 +153,9 @@ export class IntakeFunding implements OnInit, OnDestroy {
                 aP_OrangeQty:'',
                 aP_RedQty:'',
                 shared:false,
-                startDate:'',
-                expiryDate:'',
-                reminderDate:'',
+                startDate:[startOfMonth(new Date())],
+                expiryDate:[addMonths(new Date(),11)],
+                reminderDate:[addMonths(new Date(),11)],
                 packageTermType:'',
                 autoRenew:false,
                 rolloverRemainder:false,

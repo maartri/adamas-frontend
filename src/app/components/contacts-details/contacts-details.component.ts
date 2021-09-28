@@ -182,22 +182,20 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   showDetails(kin: any) {
-
-    console.log("show detail of "+ kin);
     this.timeS.getcontactskinstaffdetails(kin.recordNumber)
       .subscribe(data => {
         this.kindetailsGroup.patchValue({
           address1: data.address1,
           address2: data.address2,
           name: data.contactName,
-          type: data.contactType,
+          type: data.subType,
           email: data.email,
           fax: data.fax,
           mobile: data.mobile,
           notes: data.notes,
           phone1: data.phone1,
           phone2: data.phone2,
-          suburbcode: (data.postcode || '').trim() + ' ' + (data.suburb || '').trim(),
+          suburbcode: (data.postcode != '') ? (data.postcode || '').trim() + ' ' + (data.suburb || '').trim() : '',
           suburb: data.suburb,
           postcode: data.postcode,
           listOrder: '',

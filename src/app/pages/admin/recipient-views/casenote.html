@@ -17,7 +17,7 @@
                 <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
                     <td class="left">
                         <div class="word-break">
-                            {{ data.detail  }}
+                            <td >{{ data.detail  | getTextFromHtml }}</td>
                         </div>
                     </td>
                     <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>

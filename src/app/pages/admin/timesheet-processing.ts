@@ -8,7 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 import { Subject } from 'rxjs';
 @Component({
-    templateUrl: './billing.html',
+    templateUrl: './timesheet-processing.html',
     styles: [`
         
     button{
@@ -59,7 +59,7 @@ import { Subject } from 'rxjs';
     
 `]
 })
-export class BillingAdmin implements OnInit, OnDestroy, AfterViewInit{
+export class TimesheetProcessingAdmin implements OnInit, OnDestroy, AfterViewInit{
     
     dateFormat: string ='dd/MM/yyyy';
     constructor(
@@ -84,11 +84,11 @@ export class BillingAdmin implements OnInit, OnDestroy, AfterViewInit{
             if(index == 1){
                 // this.router.navigate(['/admin/companies']);
             }
-            if(index == 4){
-                this.router.navigate(['/admin/debtor-updates-exports']);
+            if(index == 5){
+                this.router.navigate(['/admin/pay-update']);
             }
             if(index == 6){
-                this.router.navigate(['/admin/travel-update']);
+                // this.router.navigate(['/admin/travel-update']);
             }
         }
         ngOnDestroy(): void {

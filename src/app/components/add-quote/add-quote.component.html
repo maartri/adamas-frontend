@@ -72,7 +72,7 @@
                                 </div>
                                 <div nz-col nzSpan="14">
                                     <div class="form-group">
-                                        <input nz-input formControlName="id"  />
+                                        <input nz-input formControlName="id" disabled />
                                     </div>
                                 </div>
                             </div>
@@ -140,9 +140,10 @@
                                 </div>
                                 <div nz-col nzSpan="20">
                                     <div class="form-group">
-                                        <nz-select  formControlName="program" nzAllowClear nzShowSearch>
+                                        <input nz-input formControlName="program"  disabled />
+                                        <!-- <nz-select  formControlName="program" nzAllowClear nzShowSearch>
                                             <nz-option *ngFor="let list of programList" [nzValue]="list" [nzLabel]="list"></nz-option>
-                                        </nz-select>
+                                        </nz-select> -->
                                     </div>
                                 </div>
                             </div>
@@ -277,7 +278,7 @@
 
             </div>
 
-            <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null">
+            <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null || quoteForm.get('template').value == null">
                 <div nz-col nzSpan="6">
                     <input nz-input formControlName="no" placeholder="Quote No" [disabled]="true"  />
                 </div>
@@ -301,7 +302,7 @@
                 </div>
             </div>
 
-            <div nz-row class="line" *ngIf="quoteForm.get('program').value">
+            <div nz-row class="line" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
                 <div nz-col nzSpan="12">
                     <div class="controls">
                         <div><i nz-icon nzType="plus" nzTheme="outline" (click)="quoteLineModal()"></i></div>
@@ -312,16 +313,18 @@
                 </div>
             </div>
 
-            <div nz-row *ngIf="quoteForm.get('program').value">
+            <div nz-row *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
                 <nz-table #basicTable [nzSize]="size" [nzData]="quoteLines" >
                     <thead>
                       <tr>
                         <th>Item Code</th>
                         <th>Description</th>
                         <th>Qty</th>
+
                         <th>Bill Unit</th>
                         <th>Frequency</th>
                         <th>Total Qty</th>
+
                         <th>Price</th>
                         <th>Amount</th>
                         <th>GST</th>
@@ -331,17 +334,18 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let data of basicTable.data;let i = index">
-                        <td>{{data.code}}</td>
-                        <td>{{data.displayText}}</td>
-                        <td>{{data.quantity}}</td>
+                        <td>{{ data.code }}</td>
+                        <td>{{ data.displayText }}</td>
+                        <td>{{ data.quantity }}</td>
 
-                        <td>{{data.billUnit}}</td>
-                        <td>{{data.frequency}}</td>
-                        <td>{{data.quoteQty}}</td>
-                        <td>${{data.price}}</td>
-                        <td>${{ amount(data.price,data.quoteQty) | number : '1.2-2' }}  </td>                        
-                        <td>{{data.tax}}</td>
-                        <td>${{totalamount(data.price,data.quoteQty,data.tax,data.quantity) | number : '1.2-2' }}</td>
+                        <td>{{ data.billUnit }}</td>
+                        <td>{{ data.frequency }}</td>
+                        <td>{{ data.quoteQty }}</td>
+
+                        <td>${{ data.price | number : '1.2-2' }}</td>
+                        <td>${{ amount(data.price, data.quoteQty) | number : '1.2-2' }}  </td>                        
+                        <td>{{ data.tax }}</td>
+                        <td>${{ totalamount(data.price,data.quoteQty,data.tax,data.quantity) | number : '1.2-2' }}</td>
                         <td>
                             <a (click)="showEditQuoteModal(data, i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
@@ -353,30 +357,28 @@
                   </nz-table>
             </div>
 
-            <div nz-row class="line" nzGutter="16" *ngIf="quoteForm.get('program').value">
+            <div nz-row class="line" nzGutter="16" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
                 <div nz-col nzSpan="17">
                     <div nz-row nzGutter="16"> 
                         <div nz-col nzSpan="10" class="inline" *ngIf="!IS_CDC" [formGroup]="quoteForm">
                             <span class="title">Initial Budget</span>
                             <input nz-input class="mini" placeholder="" formControlName="initialBudget" />
                         </div>
-                        <div nz-col nzSpan="10" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
+                        <div nz-col nzSpan="8" class="inline"  *ngIf="IS_CDC" [formGroup]="quoteForm"> 
                             <span class="title">Gov't Contribution</span>
-                            <input nz-input class="mini" placeholder="" formControlName="govtContrib" disabled />
+                            <nz-input-number nz-input class="mini disabled" [nzFormatter]="formatterDollar" placeholder="" formControlName="govtContrib" disabled ></nz-input-number>
                         </div>
-                        <div nz-col nzSpan="14" class="inline"  *ngIf="IS_CDC">
+                        <div nz-col nzSpan="16" class="inline"  *ngIf="IS_CDC">
                             <span class="title">Centrelink Income Tested Fee</span>
                             <span>
-                                <nz-select [(ngModel)]="value" nzAllowClear nzPlaceHolder="Choose">
-                                    <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                                <nz-select [(ngModel)]="centreLinkListDropdown" nzAllowClear disabled>
+                                    <nz-option nzValue="Daily" nzLabel="Daily"></nz-option>
                                 </nz-select>
                             </span>
                             <span>@</span>
-                            <span><input nz-input class="mini" placeholder="" [(ngModel)]="value" /></span>
+                            <span><nz-input-number nz-input class="mini" [nzMin]="0" [(ngModel)]="incomeTestedFee" [nzFormatter]="formatterDollar" (ngModelChange)="calculateIncomeTestedFee()"></nz-input-number> </span>
                             <span>=</span>
-                            <span><input nz-input class="mini" placeholder="" [(ngModel)]="value" /></span>
+                            <span><nz-input-number nz-input class="mini disabled" placeholder="" disabled [(ngModel)]="incomeTestedFeeTotal" [nzFormatter]="formatterDollar"></nz-input-number></span>
                         </div>
                     </div>
                     <div nz-row class="line" *ngIf="IS_CDC">
@@ -389,31 +391,31 @@
                             </div>
                             <div>
                                 <div>Agreed Basic Care Fee</div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
+                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" class="disabled" disabled [(ngModel)]="annualBasicCareFee" ></nz-input-number></div>
+                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" [(ngModel)]="dailyBasicCareFee" (ngModelChange)="calculateBasicCareFee()"></nz-input-number></div>
+                                <div> <nz-input-number nz-input [nzFormatter]="formatterDollar" class="disabled" disabled [(ngModel)]="monthlyBasicCareFee" ></nz-input-number></div>
                             </div>
                             <div>
                                 <div>Agreed Income Tested Fee</div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input  [(ngModel)]="value" /></div>
+                                <div> <nz-input-number nz-input class="disabled" [nzFormatter]="formatterDollar" disabled [(ngModel)]="annualIncomeTestedFee" ></nz-input-number></div>
+                                <div> <nz-input-number nz-input class="disabled" [nzFormatter]="formatterDollar" class="disabled" [(ngModel)]="dailyIncomeTestedFee" disabled></nz-input-number></div>
+                                <div> <nz-input-number nz-input class="disabled" [nzFormatter]="formatterDollar" disabled [(ngModel)]="monthlyIncomeTestedFee" ></nz-input-number></div>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <div></div>
-                                <div> <input nz-input  [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                                <div> <input nz-input   [(ngModel)]="value" /></div>
-                            </div>
-                            <div>
+                                <div> <input nz-input  [(ngModel)]="bbb1" /></div>
+                                <div> <input nz-input   [(ngModel)]="bb2" /></div>
+                                <div> <input nz-input   [(ngModel)]="bb3" /></div>
+                            </div> -->
+                            <!-- <div>
                                 <div>ADD Pro Rata Prev Balance</div>
                                 <div> <input nz-input  [(ngModel)]="value" /></div>
                                 <div> </div>
                                 <div> </div>
-                            </div>
+                            </div> -->
                             <div>
                                 <div>Total Package Value</div>
-                                <div> <input nz-input [ngModel]="quoteForm.get('govtContrib').value" disabled /></div>
+                                <div> <nz-input-number nz-input [ngModel]="get_total_package_value" [nzFormatter]="formatterDollar" disabled ></nz-input-number></div>
                                 <div> </div>
                                 <div> </div>
                             </div>
@@ -446,7 +448,7 @@
                 </div>
             </div>
 
-            <div nz-row class="line" *ngIf="quoteForm.get('program').value">
+            <div nz-row class="line" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
                 <textarea rows="4" nz-input [(ngModel)]="value" placeholder="Extra Information"></textarea>
             </div>
            </div>

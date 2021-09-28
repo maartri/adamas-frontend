@@ -50,7 +50,7 @@
                         </div>
                         <div nz-col nzSpan="16" class="pad-r-5">
                             <div class="form-group" *ngIf="addOREdit == 1">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear nzShowSearch formControlName="program">
+                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear nzShowSearch formControlName="program">
                                 <nz-option *ngFor="let prog of programsNames" [nzLabel]="prog" [nzValue]="prog"></nz-option>
                             </nz-select>
                             </div>
@@ -59,18 +59,19 @@
                             </div>
                         </div>
                         <div nz-col nzSpan="4" *ngIf="IS_CDC">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear nzShowSearch formControlName="packageLevel">
+                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear nzShowSearch formControlName="packageLevel">
                                 <nz-option *ngFor="let level of levels" [nzLabel]="level" [nzValue]="level"></nz-option>
                             </nz-select>
                         </div>
                     </div>
-                    <nz-divider></nz-divider>
+                    <!-- <nz-divider></nz-divider> -->
+                    <hr>
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label nzFor="Type">Type : </label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear  nzPlaceHolder="" formControlName="packageType">
+                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear  nzPlaceHolder="" formControlName="packageType">
                                 <nz-option *ngFor="let typ of type" [nzLabel]="typ" [nzValue]="typ"></nz-option>
                             </nz-select>
                         </div>
@@ -78,7 +79,7 @@
                             <label nzFor="Status">Status : </label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear  nzPlaceHolder="" formControlName="programStatus">
+                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear  nzPlaceHolder="" formControlName="programStatus">
                                 <nz-option *ngFor="let stat of status" [nzLabel]="stat" [nzValue]="stat"></nz-option>
                             </nz-select>
                         </div>
@@ -86,7 +87,7 @@
                             <label nzFor="Expire Using">Expire Using: </label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear  nzPlaceHolder="" formControlName="expireUsing">  
+                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear  nzPlaceHolder="" formControlName="expireUsing">  
                                 <nz-option *ngFor="let using of expireUsing" [nzLabel]="using" [nzValue]="using"></nz-option>
                             </nz-select>
                         </div>
@@ -94,7 +95,7 @@
                             <label nzFor="Priority"> Priority : </label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <nz-select style="width:100%" [nzSize]="'small'" nzAllowClear  nzPlaceHolder="" formControlNmae="priority">
+                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear  nzPlaceHolder="" formControlNmae="priority">
                                 <nz-option *ngFor="let prior of fundingprioritylist" [nzLabel]="prior" [nzValue]="prior"></nz-option>                                
                             </nz-select>
                         </div>
@@ -108,29 +109,29 @@
                         <div nz-col nzSpan="20">
                             <div nz-col nzSpan="4"  class="pad-r-5">
                                 <label for="">Amount</label>
-                                <input nz-input placeholder="" [nzSize]="'small'" formControlName="quantity" />
+                                <input nz-input placeholder="" [nzSize]="'default'" formControlName="quantity" />
                             </div>
                             <div nz-col nzSpan="5" class="pad-r-5">
                                 <label for="">Cost Type</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="itemUnit"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'default'" formControlName="itemUnit"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="4" class="pad-r-5">
                                 <label for="">Per Unit</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="perUnit"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'default'" formControlName="perUnit"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let unit of unitsArray" [nzLabel]="unit" [nzValue]="unit"></nz-option>
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="5" class="pad-r-5">
                                 <label for="">Period</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="period"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'default'" formControlName="period"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                 </nz-select>
                             </div>
                             <div nz-col nzSpan="4">
                                 <label for="">Length</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="timeUnit"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'default'" formControlName="timeUnit"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                 </nz-select>
                             </div>
@@ -139,12 +140,12 @@
                     <nz-divider></nz-divider>
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="4" class="text-center" style="padding: 0px 20px;">
-                            <label for="" class="space-top">Alerts</label>
-                            <nz-select  nz-col nzSpan="22" nzOffset = "1" [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="aP_CostType"  nzShowSearch nzAllowClear style="width:100%;">
+                            <label for="">Alerts</label>
+                            <nz-select  nz-col nzSpan="22" nzOffset = "1" [nzDropdownMatchSelectWidth]="false" [nzSize]="'default'" formControlName="aP_CostType"  nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let alert of alerts" [nzLabel]="alert" [nzValue]="alert"></nz-option>
                             </nz-select>
                         </div>
-                        <div nz-col nzSpan="8" style="padding: 0px 20px;" class="space-top">
+                        <div nz-col nzSpan="8" style="padding: 0px 20px;">
                             <div nz-col nzSpan="12">
                                 <label><b>Base On</b></label>
                             </div>
@@ -156,24 +157,24 @@
                                     <label nz-checkbox (change)="recurrentChange($event)" nzDisabled="!this.packageDetailForm.get('aP_CostType').value"  formControlName="recurant">Recurrent Usage</label>
                                 </div>
                             </div>
-                            <div nz-col nzSpan="12" class="pad-r-5 space-top" *ngIf="this.packageDetailForm.get('recurant').value">
+                            <div nz-col nzSpan="12" class="pad-r-5" *ngIf="this.packageDetailForm.get('recurant').value">
                                 <label for="period">period</label>
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="aP_Period"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'default'" formControlName="aP_Period"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let def of DefPeriod" [nzLabel]="def" [nzValue]="def"></nz-option>
                                 </nz-select>
                             </div>
-                            <div nz-col nzSpan="12" class="space-top" *ngIf="this.packageDetailForm.get('recurant').value">
+                            <div nz-col nzSpan="12" *ngIf="this.packageDetailForm.get('recurant').value">
                                 <label for="Commencing">Commencing</label>
-                                <nz-date-picker  [nzSize]="'small'"   formControlName="alertStartDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker  [nzSize]="'default'"   formControlName="alertStartDate" [nzFormat]="dateFormat"></nz-date-picker>
                             </div>
                         </div>
-                        <div nz-col nzSpan="12" style="padding: 0px 20px;" class="space-top">
+                        <div nz-col nzSpan="12" style="padding: 0px 20px;">
                             <div nz-row nzJustify class="mrg-btm">
                                 <div nz-col nzSpan="8" class="text-right pad-r-5">
                                     <label nzFor="Allowed"><b>Allowed:</b></label>
                                 </div>
                                 <div nz-col nzSpan="10" class="pad-r-5">
-                                    <input nz-input [nzSize]="'small'" Disabled="!this.packageDetailForm.get('alertStartDate').value" formControlName="aP_BasedOn" />
+                                    <input nz-input [nzSize]="'default'" Disabled="!this.packageDetailForm.get('alertStartDate').value" formControlName="aP_BasedOn" />
                                 </div>
                                 <div nz-col nzSpan="6">
                                     <label nz-checkbox  formControlName="shared" nzDisabled="this.packageDetailForm.get('alertStartDate').value" >Shared</label>
@@ -185,7 +186,7 @@
                                         <label nzFor="Yellow"><b>Yellow:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="aP_YellowQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
+                                        <input nz-input [nzSize]="'default'" formControlName="aP_YellowQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="24" class="mrg-btm">
@@ -193,7 +194,7 @@
                                         <label nzFor="green"><b>Green:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="aP_OrangeQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
+                                        <input nz-input [nzSize]="'default'" formControlName="aP_OrangeQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
                                     </div>
                                 </div>
                                 <div nz-col nzSpan="24" class="mrg-btm">
@@ -201,7 +202,7 @@
                                         <label nzFor="Red"><b>Red:</b></label>
                                     </div>
                                     <div nz-col nzSpan="13" class="pad-r-5">
-                                        <input nz-input [nzSize]="'small'" formControlName="aP_RedQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
+                                        <input nz-input [nzSize]="'default'" formControlName="aP_RedQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
                                     </div>
                                 </div>
                             </div>
@@ -228,13 +229,13 @@
                                 <tbody>
                                     <tr>
                                         <td>Basic Care Fee</td>
-                                        <td><input nz-input [nzSize]="'small'" formControlName="dailyBasicCareFee" /></td>
-                                        <td><input nz-input [nzSize]="'small'" formControlName="clientCont" /></td>  
+                                        <td><input nz-input [nzSize]="'default'" formControlName="dailyBasicCareFee" /></td>
+                                        <td><input nz-input [nzSize]="'default'" formControlName="clientCont" /></td>  
                                    </tr>
                                    <tr>
                                         <td>Income Tested Fee</td>
-                                        <td><input nz-input [nzSize]="'small'" formControlName="dailyIncomeTestedFee" /></td>
-                                        <td><input nz-input [nzSize]="'small'" formControlName="incomeTestedFee" /></td>  
+                                        <td><input nz-input [nzSize]="'default'" formControlName="dailyIncomeTestedFee" /></td>
+                                        <td><input nz-input [nzSize]="'default'" formControlName="incomeTestedFee" /></td>  
                                    </tr>
                                 </tbody>
                             </nz-table>
@@ -243,19 +244,19 @@
                                     <label>Contingency:</label>
                                 </div>
                                 <div nz-col nzSpan="3" class="pad-r-5">
-                                    <label><input nz-input [nzSize]="'small'" formControlName="contingency_Start" /></label>
+                                    <label><input nz-input [nzSize]="'default'" formControlName="contingency_Start" /></label>
                                 </div>
                                 <div nz-col nzSpan="4" class="pad-r-5">
                                     <label>Per Day Billing To:</label>
                                 </div>
                                 <div nz-col nzSpan="3" class="pad-r-5">
-                                    <label><input nz-input [nzSize]="'small'" formControlName="contingency" /></label>
+                                    <label><input nz-input [nzSize]="'default'" formControlName="contingency" /></label>
                                 </div>
                                 <div nz-col nzSpan="4" class="pad-r-5">
                                     <label>Currently Banked:</label>
                                 </div>
                                 <div nz-col nzSpan="3" class="pad-r-5">
-                                    <label><input nz-input [nzSize]="'small'" formControlName="currentlyBanked" /></label>
+                                    <label><input nz-input [nzSize]="'default'" formControlName="currentlyBanked" /></label>
                                 </div>
                             </div>
                         </div>                                                      
@@ -269,7 +270,7 @@
                                 <label nzFor="Start of Current Plan Funcding">Start of Current Plan Funding:</label>
                             </div>
                             <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                <nz-date-picker  [nzSize]="'small'"  formControlName="startDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker  [nzSize]="'default'"  formControlName="startDate" [nzFormat]="dateFormat"></nz-date-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="12">
@@ -277,7 +278,7 @@
                                 <label nzFor="Package Term:">Package Term:</label>
                             </div>
                             <div nz-col nzSpan="16" class="text-right pad-r-5">
-                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="packageTermType"  nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'default'" formControlName="packageTermType"  nzShowSearch nzAllowClear style="width:100%;">
                                     <nz-option *ngFor="let term of packageTerm" [nzLabel]="term" [nzValue]="term"></nz-option>
                                 </nz-select>
                             </div>
@@ -289,7 +290,7 @@
                                 <label nzFor="Start of Current Plan Funcding">End of Current Plan Funding:</label>
                             </div>
                             <div nz-col nzSpan="8" class="text-right pad-r-5">
-                                <nz-date-picker  [nzSize]="'small'"  formControlName="expiryDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker  [nzSize]="'default'"  formControlName="expiryDate" [nzFormat]="dateFormat"></nz-date-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="12">
@@ -297,7 +298,7 @@
                                 <label nzFor="Package Term:">Reminder Date:</label>
                             </div>
                             <div nz-col nzSpan="16" class="pad-r-5">
-                                <nz-date-picker  [nzSize]="'small'"  formControlName="reminderDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                <nz-date-picker  [nzSize]="'default'"  formControlName="reminderDate" [nzFormat]="dateFormat"></nz-date-picker>
                             </div>
                         </div>
                     </div>
@@ -396,7 +397,7 @@
                                 Financial Hardship Supplement 
                             </div>
                             <div nz-col nzSpan="4" class="text-right pad-r-5">
-                                <div> <input nz-input  nzSize="small" formControlName="hardShipSupplement" /></div>
+                                <div> <input nz-input  nzSize="default" formControlName="hardShipSupplement" /></div>
                             </div>
                             <div nz-col nzSpan="4" class="text-right pad-r-5">
                                 <label>Per Day</label>

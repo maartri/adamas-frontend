@@ -93,6 +93,7 @@ import {
   HCPComponent,
   PrintComponent,
   BillingAdmin,   //AHSAN
+  TimesheetProcessingAdmin,   //AHSAN
 } from '@admin/index'
 
 import {
@@ -255,7 +256,9 @@ import { StaffAdminActivitiesComponent } from '@admin/configuration/services/sta
 import { RecipientAbsenceComponent } from '@admin/configuration/services/recipient-absence.component';
 import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.component';
 import { DocumentTemplateComponent } from '@admin/configuration/documents/document-template.component';
-import { BillingComponent } from '@admin/billing/billing.component'; //AHSAN 
+import { DebtorComponent } from '@admin/billing/debtor.component'; //AHSAN 
+import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN 
+import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
 
 const routes: Routes = [
   {
@@ -535,14 +538,26 @@ const routes: Routes = [
       {
         path: 'configuration',
         component: ConfigurationAdmin
-      },      
+      },
       {
         path: 'billing', //AHSAN
         component: BillingAdmin
       },
       {
         path: 'debtor-updates-exports', //AHSAN
-        component: BillingComponent
+        component: DebtorComponent
+      },
+      {
+        path: 'travel-update', //AHSAN
+        component: TravelComponent
+      },
+      {
+        path: 'timesheet-processing', //AHSAN
+        component: TimesheetProcessingAdmin
+      },
+      {
+        path: 'pay-update', //AHSAN
+        component: PayComponent
       },
       {
         path: 'hcp',
@@ -1177,7 +1192,8 @@ export const PAGE_COMPONENTS = [
   ConfigurationAdmin,
   HCPComponent,
   PrintComponent,
-  BillingAdmin, //AHSAN 
+  BillingAdmin, //AHSAN
+  TimesheetProcessingAdmin, //AHSAN
   
   // Components
   ProfilePage,
@@ -1192,7 +1208,9 @@ export const PAGE_COMPONENTS = [
   TargetgroupsComponent,
   PurposestatementComponent,
   HCPComponent,
-  BillingComponent, //AHSAN 
+  DebtorComponent, //AHSAN 
+  TravelComponent, //AHSAN
+  PayComponent, //AHSAN 
   BudgetgroupsComponent,
   BudgetsComponent,
   ContactgroupsComponent,

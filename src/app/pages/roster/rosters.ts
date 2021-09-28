@@ -534,14 +534,14 @@ doneBooking(){
         tsheet.recordNo=0;
         let inputs = {
            
-            billQty: (tsheet.bill.quantity==null || tsheet.bill.quantity==0) ? (tsheet.bill.unit=='HOUR'? this.roundToTwo(durationObject.duration/12) : 1):0 || 0,
+            billQty: (tsheet.bill.quantity==null || tsheet.bill.quantity==0) ? (tsheet.bill.pay_Unit=='HOUR'? this.roundToTwo(durationObject.duration/12) : 1):0 || 0,
             billTo: clientCode,
-            billUnit: tsheet.bill.unit || 0,
+            billUnit: tsheet.bill.pay_Unit || 0,
             blockNo: durationObject.blockNo,
             carerCode: this.selected.option == 0 ? this.selected.data : carerCode,
             clientCode: this.selected.option == 0 ? clientCode : this.selected.data,
-            costQty: (tsheet.pay.quantity==null || tsheet.pay.quantity==0)? (tsheet.pay.unit=='HOUR'? this.roundToTwo(durationObject.duration/12) : 1 ):0 || 0,
-            costUnit: tsheet.pay.unit || 0,
+            costQty: (tsheet.pay.quantity==null || tsheet.pay.quantity==0)? (tsheet.pay.pay_Unit=='HOUR'? this.roundToTwo(durationObject.duration/12) : 1 ):0 || 0,
+            costUnit: tsheet.pay.pay_Unit || 0,
             date: format(tsheet.date,'yyyy/MM/dd'),
             dayno: parseInt(format(tsheet.date, 'd')),
             duration: durationObject.duration,
@@ -560,8 +560,8 @@ doneBooking(){
             taxPercent: tsheet.bill.tax || 0,
             transferred: 0,            
             type: this.serviceType,
-            unitBillRate:( tsheet.bill.rate || 0),
-            unitPayRate: tsheet.pay.rate || 0,
+            unitBillRate:( tsheet.bill.bill_Rate || 0),
+            unitPayRate: tsheet.pay.pay_Rate || 0,
             yearNo: parseInt(format(tsheet.date, 'yyyy')),
             serviceTypePortal: tsheet.serviceType,
             recordNo: tsheet.recordNo,
@@ -2896,7 +2896,9 @@ return rst;
             shiftbookNo,
             recordNo,
             staffCode,
-            endTime } = index;
+            endTime           
+        
+        } = index;
 
             
         // this.rosterForm.patchValue({
@@ -2913,7 +2915,7 @@ return rst;
         // });
         this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
-
+        let time:any={startTime:this.defaultStartTime, endTime:this.defaultEndTime}
         //this.defaultStartTime = parseISO( "2020-11-20T" + startTime + ":01.516Z");
         //this.defaultEndTime = parseISO( "2020-11-20T" + endTime + ":01.516Z");;
         this.current = 0;
@@ -2937,6 +2939,7 @@ return rst;
             this.rosterForm.patchValue({
                 serviceType: this.serviceType,
                 date: date,
+                time:time,
                 program: program,
                 serviceActivity: activity,
                 payType: paytype,
@@ -3128,6 +3131,8 @@ reload(reload: boolean){
                 });
         } 
         
+       // return;
+        
         this.picked$ = this.timeS.gettimesheets({
             AccountNo: data.data,            
             personType: this.viewType,
@@ -3135,7 +3140,7 @@ reload(reload: boolean){
             endDate: moment(this.date).endOf('month').format('YYYY/MM/DD'),
         }).pipe(takeUntil(this.unsubscribe))
             .subscribe(data => {
-
+                console.log(data);
                 this.loading = false;
               
                 this.rosters = data.map(x => {
@@ -3144,15 +3149,12 @@ reload(reload: boolean){
                         date: x.activityDate,
                         startTime: this.fixDateTime(x.activityDate, x.activity_Time.start_time),
                         endTime: this.fixDateTime(x.activityDate, x.activity_Time.end_Time),
-                        duration: x.activity_Time.calculated_Duration,
-                        dayNo: x.dayNo,
-                        monthNo: x.monthNo,
-                        yearNo: x.yearNo,                       
+                        duration: x.activity_Time.calculated_Duration,                                         
                         durationNumber: x.activity_Time.duration,
                         recipient: x.recipientLocation,
                         program: x.program.title,
                         activity: x.activity.name,
-                        paytype: x.payType.paytype,
+                        paytype: x.payType.paytype,                     
                         payquant: x.pay.quantity,
                         payrate: x.pay.pay_Rate,
                         billquant: x.bill.quantity,
@@ -3161,14 +3163,18 @@ reload(reload: boolean){
                         billto: x.billedTo.accountNo,
                         notes: x.note,
                         selected: false,
-
                         serviceType: x.roster_Type,
                         recipientCode: x.recipient_staff.accountNo,
                         debtor: x.billedTo.accountNo,
                         serviceActivity: x.activity.name,
                         serviceSetting: x.recipientLocation,
                         analysisCode: x.anal,
-                        type:x.type
+                        type:x.type,
+                        bill:x.bill,
+                        pay:x.pay,
+                        dayNo: x.dayNo,
+                        monthNo: x.monthNo,
+                        yearNo: x.yearNo
 
                     }
                    
@@ -3178,7 +3184,7 @@ reload(reload: boolean){
             
             });
         
-        this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));
+       // this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));
      
         this.selectAll = false;
     }
@@ -3247,7 +3253,8 @@ reload(reload: boolean){
        if(!this.recipient) return;
         
            this.ActiveCellText="";     
-        this.staffS.getroster({
+         
+      this.staffS.getroster({
             RosterType: this.recipient.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',            
             AccountNo: this.recipient.data,
             StartDate: this.startRoster,
@@ -4056,14 +4063,14 @@ reload(reload: boolean){
                 endTime: '',
             },
             pay: {
-                unit: 'HOUR',
-                rate: '0',
+                pay_Unit: 'HOUR',
+                pay_Rate: '0',
                 quantity: '1',
                 position: ''
             },
             bill: {
-                unit: 'HOUR',
-                rate: '0',
+                pay_Unit: 'HOUR',
+                bill_Rate: '0',
                 quantity: '1',
                 tax: '0'
             },
@@ -4135,16 +4142,16 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 endTime:  [''],
             }),
             pay: this.formBuilder.group({
-                unit:  ['HOUR'],
-                rate:  ['0'],
+                pay_Unit:  ['HOUR'],
+                pay_Rate:  ['0.0'],
                 quantity:  ['1'],
                 position: ''
             }),
             bill: this.formBuilder.group({
-                unit: ['HOUR'],
-                rate: ['0'],
+                pay_Unit: ['HOUR'],
+                bill_Rate: ['1.0'],
                 quantity: ['1'],
-                tax: '1'
+                tax: '1.0'
             })
             
         });
@@ -4190,8 +4197,8 @@ isServiceTypeMultipleRecipient(type: string): boolean {
         ).subscribe(d => {
             this.rosterForm.patchValue({
                 pay: {
-                    unit: d.unit,
-                    rate: d.amount,
+                    pay_Unit: d.unit,
+                    pay_Rate: d.amount,
                     quantity: (this.durationObject.duration) ? 
                         (((this.durationObject.duration * 5) / 60)).toFixed(2) : 0
                 }
@@ -4254,7 +4261,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             takeUntil(this.unsubscribe),
             switchMap(x => {
              
-                this.clearLowerLevelInputs();
+               // this.clearLowerLevelInputs();
 
                 this.multipleRecipientShow = this.isServiceTypeMultipleRecipient(x);
                 this.isTravelTimeChargeable = this.isTravelTimeChargeableProcess(x);
@@ -4357,16 +4364,16 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 endTime:  [''],
             }),
             pay: this.formBuilder.group({
-                unit:  ['HOUR'],
-                rate:  ['0'],
+                pay_Unit:  ['HOUR'],
+                pay_Rate:  ['0.0'],
                 quantity:  ['1'],
                 position: ''
             }),
             bill: this.formBuilder.group({
-                unit: ['HOUR'],
-                rate: ['0'],
+                pay_Unit: ['HOUR'],
+                bill_Rate: ['0.0'],
                 quantity: ['1'],
-                tax: '1'
+                tax: '1.0'
             }),
             central_Location:false
             
@@ -4442,14 +4449,14 @@ this.bookingForm.get('program').valueChanges.pipe(
         this.bookingForm.patchValue({
            
             bill:{
-            unit: this.selectedActivity.unitType,
-            rate: this.selectedActivity.billrate,            
+            pay_Unit: this.selectedActivity.unitType,
+            bill_Rate: this.selectedActivity.billrate,            
             tax: this.selectedActivity.taxrate,
             
             },
             pay:{
-                unit: this.selectedActivity.unitType,
-                rate: this.selectedActivity.payrate,
+                pay_Unit: this.selectedActivity.unitType,
+                pay_Rate: this.selectedActivity.payrate,
                 tax: this.selectedActivity.taxrate
             },
             haccType: this.selectedActivity.haccType,
@@ -4585,16 +4592,16 @@ this.bookingForm.get('program').valueChanges.pipe(
                 endTime: '',
             }),
             pay: this.formBuilder.group({
-                unit: 'HOUR',
-                rate: '0',
+                pay_Unit: 'HOUR',
+                pay_Rate: '0.0',
                 quantity: '1',
                 position: ''
             }),
             bill: this.formBuilder.group({
-                unit: 'HOUR',
-                rate: 0,
+                pay_Unit: 'HOUR',
+                bill_Rate: '0.0',
                 quantity: '1',
-                tax: '1'
+                tax: '1.0'
             }),
         });
         
@@ -4629,14 +4636,14 @@ this.bookingForm.get('program').valueChanges.pipe(
                 endTime: '',
             }),
             pay: this.formBuilder.group({
-                unit: 'HOUR',
-                rate: '0',
+                pay_Unit: 'HOUR',
+                pay_Rate: '0',
                 quantity: '1',
                 position: ''
             }),
             bill: this.formBuilder.group({
-                unit: 'HOUR',
-                rate: 0,
+                pay_Unit: 'HOUR',
+                bill_Rate: 0,
                 quantity: '1',
                 tax: '1'
             }),
@@ -4669,8 +4676,8 @@ this.bookingForm.get('program').valueChanges.pipe(
                 }).subscribe(data => {
                     this.rosterForm.patchValue({
                         bill: {
-                            unit: data.unit,
-                            rate: this.DEFAULT_NUMERIC(data.rate),
+                            pay_Unit: data.unit,
+                            bill_Rate: this.DEFAULT_NUMERIC(data.rate),
                             tax: this.DEFAULT_NUMERIC(data.tax)
                         }
                     });
@@ -4711,8 +4718,8 @@ this.bookingForm.get('program').valueChanges.pipe(
                 }).subscribe(data => {
                     this.rosterForm.patchValue({
                         bill: {
-                            unit: data.unit,
-                            rate: this.DEFAULT_NUMERIC(data.rate),
+                            pay_Unit: data.unit,
+                            bill_Rate: this.DEFAULT_NUMERIC(data.rate),
                             tax: this.DEFAULT_NUMERIC(data.tax)
                         }
                     });
@@ -4829,7 +4836,9 @@ this.bookingForm.get('program').valueChanges.pipe(
         const tsheet = this.rosterForm.value;
         let clientCode = this.FIX_CLIENTCODE_INPUT(tsheet);
 
-        var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime, tsheet.time.endTime));
+        this.defaultStartTime = tsheet.time.startTime;
+        this.defaultEndTime = tsheet.time.endTime;
+        var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime,  this.defaultEndTime));
 
         if(typeof tsheet.date === 'string'){
             tsheet.date = parseISO(this.datepipe.transform(tsheet.date, 'yyyy-MM-dd'));
@@ -4840,12 +4849,12 @@ this.bookingForm.get('program').valueChanges.pipe(
             anal: tsheet.analysisCode || "",
             billQty: parseInt(tsheet.bill.quantity || 0),
             billTo: clientCode,
-            billUnit: tsheet.bill.unit || 0,
+            billUnit: tsheet.bill.pay_Unit || 0,
             blockNo: durationObject.blockNo,
             carerCode: this.selected.option == 0 ? this.selected.data : tsheet.staffCode,
             clientCode: this.selected.option == 0 ? clientCode : this.selected.data,
             costQty: parseInt(tsheet.pay.quantity || 0),
-            costUnit: tsheet.pay.unit || 0,
+            costUnit: tsheet.pay.pay_Unit || 0,
             date: format(tsheet.date,'yyyy/MM/dd'),
             dayno: parseInt(format(tsheet.date, 'd')),
             duration: durationObject.duration,
@@ -4859,14 +4868,14 @@ this.bookingForm.get('program').valueChanges.pipe(
             paytype: tsheet.payType.paytype==null ? tsheet.payType : tsheet.payType.paytype,
             // serviceType: this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
             staffPosition: null || "",
-            startTime: format(tsheet.time.startTime,'HH:mm'),
+            startTime: format(this.defaultStartTime,'HH:mm'),
             status: "1",
             taxPercent: parseInt(tsheet.bill.tax || 0),
             transferred: 0,
             // type: this.activity_value,
             type: tsheet.type,//this.DETERMINE_SERVICE_TYPE_NUMBER(tsheet.serviceType),
-            unitBillRate: parseInt(tsheet.bill.rate || 0),
-            unitPayRate: tsheet.pay.rate || 0,
+            unitBillRate: parseInt(tsheet.bill.bill_Rate || 0),
+            unitPayRate: tsheet.pay.pay_Rate || 0,
             yearNo: parseInt(format(tsheet.date, 'yyyy')),
             serviceTypePortal: tsheet.serviceType,
             recordNo: tsheet.recordNo

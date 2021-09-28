@@ -426,7 +426,7 @@
                                 <div nz-col nzSpan="10">
                                     <div class="form-group">
                                         <label for="">Unit</label>
-                                        <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
                                             <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list"></nz-option> 
                                         </nz-select>
                                     </div>
@@ -436,7 +436,7 @@
                                 <div nz-col nzSpan="7">
                                     <div class="form-group">
                                         <label for="">Rate</label>
-                                        <nz-input-number formControlName="rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        <nz-input-number formControlName="pay_Rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
                                             [nzParser]="parserDollar"></nz-input-number>
                                     </div>
                                 </div>
@@ -456,7 +456,7 @@
                                 <div nz-col nzSpan="8">
                                     <div class="form-group">
                                         <label for="">Unit</label>
-                                        <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
                                             <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
                                             </nz-option>
                                         </nz-select>
@@ -467,7 +467,7 @@
                                 <div nz-col nzSpan="7">
                                     <div class="form-group">
                                         <label for="">Rate</label>
-                                        <nz-input-number formControlName="rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        <nz-input-number formControlName="bill_Rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
                                             [nzParser]="parserDollar"></nz-input-number>
                                     </div>
                                 </div>
@@ -866,7 +866,7 @@
                                 <div nz-col nzSpan="10">
                                     <div class="form-group">
                                         <label for="">Unit</label>
-                                        <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
                                             <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list"></nz-option> 
                                         </nz-select>
                                     </div>
@@ -876,7 +876,7 @@
                                 <div nz-col nzSpan="7">
                                     <div class="form-group">
                                         <label for="">Rate</label>
-                                        <nz-input-number formControlName="rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        <nz-input-number formControlName="pay_Rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
                                             [nzParser]="parserDollar"></nz-input-number>
                                     </div>
                                 </div>
@@ -896,7 +896,7 @@
                                 <div nz-col nzSpan="8">
                                     <div class="form-group">
                                         <label for="">Unit</label>
-                                        <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
                                             <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
                                             </nz-option>
                                         </nz-select>
@@ -907,7 +907,7 @@
                                 <div nz-col nzSpan="7">
                                     <div class="form-group">
                                         <label for="">Rate</label>
-                                        <nz-input-number formControlName="rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        <nz-input-number formControlName="bill_Rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
                                             [nzParser]="parserDollar"></nz-input-number>
                                     </div>
                                 </div>

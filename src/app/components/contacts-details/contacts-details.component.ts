@@ -184,10 +184,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   showDetails(kin: any) {
-
     this.timeS.getcontactskinstaffdetails(kin.recordNumber)
       .subscribe(data => {
-    
         this.kindetailsGroup.patchValue({
           address1: data.address1,
           address2: data.address2,
@@ -199,7 +197,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           notes: data.notes,
           phone1: data.phone1,
           phone2: data.phone2,
-          suburbcode: (data.postcode || '').trim() + ' ' + (data.suburb || '').trim(),
+          suburbcode: (data.postcode != '') ? (data.postcode || '').trim() + ' ' + (data.suburb || '').trim() : '',
           suburb: data.suburb,
           postcode: data.postcode,
           listOrder: '',
@@ -209,7 +207,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           // subType: data.subType
         })
       })
-
   }
 
   //From ControlValueAccessor interface

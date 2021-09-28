@@ -38,7 +38,7 @@
 </div>
 
 <!--<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add OP Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()" nzWidth="800"-->
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add OP Note' : 'Edit OP Note'" (nzOnCancel)="handleCancel()" nzWidth="800"
+<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzTitle]="addOrEdit == 1 ? 'Add OP Note' : 'Edit OP Note'" (nzOnCancel)="handleCancel()"
     [nzStyle]="{ top: '20px' }">
     <div nz-row [formGroup]="caseFormGroup" nzGutter="16">
         <div nz-col nzSpan="7" [formGroup]="caseFormGroup">
@@ -85,7 +85,7 @@
                 </nz-form-item>
             </div>
         </div>
-        <div nz-col nzSpan="14">
+        <div nz-col nzSpan="17">
             <div nz-row nzGutter="32" [formGroup]="caseFormGroup">
                 <div nz-col nzSpan="12" class="form-group">
                     <label for="">Reminder Date</label>
@@ -116,7 +116,8 @@
                 <nz-form-item>
                     <nz-form-label>Notes</nz-form-label>
                     <nz-form-control nzErrorTip="Required Field">
-                        <textarea rows="4" nz-input formControlName="notes"></textarea>
+                        <angular-editor  formControlName="notes" [config]="editorConfig"></angular-editor>
+                        <!-- <textarea rows="4" nz-input formControlName="notes"></textarea> -->
                     </nz-form-control>
                 </nz-form-item>
             </div>

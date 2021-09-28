@@ -82,7 +82,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     public editorConfig:AngularEditorConfig = {
         editable: true,
         spellcheck: true,
-        height: '15rem',
+        height: '20rem',
         minHeight: '5rem',
         translate: 'no',
         customClasses: []

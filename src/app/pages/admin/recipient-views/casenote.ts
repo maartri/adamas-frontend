@@ -8,7 +8,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Filters } from '@modules/modules';
-
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
     styles: [`
          nz-table{
@@ -59,6 +59,15 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
     blist: Array<any> = [];
     clist: Array<any> = [];
     mlist: Array<any> = [];
+    
+    public editorConfig:AngularEditorConfig = {
+        editable: true,
+        spellcheck: true,
+        height: '20rem',
+        minHeight: '5rem',
+        translate: 'no',
+        customClasses: []
+    };
 
     filters: Filters = {
         acceptedQuotes: false,

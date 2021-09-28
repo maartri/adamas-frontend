@@ -983,7 +983,7 @@ ReportRender(){
       criterias:this.cariteriaList // list of rules
     }
 
-    this.timeS.postrecipientquicksearch(postdata).subscribe(data => {
+    this.timeS.poststaffquicksearch({}).subscribe(data => {
       this.filteredResult = data;
       this.loading = false;
       this.detectChanges();

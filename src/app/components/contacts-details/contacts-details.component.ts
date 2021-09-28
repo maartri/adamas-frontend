@@ -183,9 +183,9 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
 
   showDetails(kin: any) {
 
+    console.log("show detail of "+ kin);
     this.timeS.getcontactskinstaffdetails(kin.recordNumber)
       .subscribe(data => {
-    
         this.kindetailsGroup.patchValue({
           address1: data.address1,
           address2: data.address2,
@@ -206,7 +206,6 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
           recordNumber: data.recordNumber
         })
       })
-
   }
 
   //From ControlValueAccessor interface

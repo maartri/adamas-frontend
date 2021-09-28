@@ -331,6 +331,11 @@ export class TimeSheetService {
         return this.auth.put(`${timesheet}/intake/funding/program-details/update`, data);
     }
 
+    deleteprogramdetails(recordNo: number) {
+        return this.auth.delete(`${timesheet}/intake/funding/program-details/delete/${recordNo}`);
+    }
+
+
     /**
      * Nudge Time
      */

@@ -225,7 +225,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         const { alarmDate, restrictionsStr, whocode, restrictions } = this.inputForm.value;
 
         let privateFlag = restrictionsStr == 'workgroup' ? true : false;
-
+            
         let restricts = restrictionsStr != 'restrict';
 
         this.inputForm.controls["restrictionsStr"].setValue(privateFlag);
@@ -252,7 +252,13 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
                     if (data) {
                         this.globalS.sToast('Success', 'Note Updated');
                         this.search();
+                        if(!this.globalS.isEmpty(this.restrict_list)){
+                            this.mlist.forEach(element => {
+                                    element.checked = false;
+                            });
+                        }
                         this.restrict_list = [];
+                        
                         this.handleCancel();
                         return;
                     }else{

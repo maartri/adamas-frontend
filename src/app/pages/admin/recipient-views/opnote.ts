@@ -240,8 +240,12 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
 
     getSelect() {
         this.timeS.getmanagerop().subscribe(data => {
-            this.mlist = data;
-            this.cd.markForCheck();
+                data.forEach(x => {
+                    this.mlist.push({
+                         name:x, value:x, checked:false
+                      });
+                });
+                this.cd.markForCheck();
         });
 
         this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {

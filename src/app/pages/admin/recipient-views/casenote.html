@@ -11,6 +11,7 @@
                     <th class="left" style="width: 75%">Details</th>
                     <th>Detail Date</th>
                     <th>Creator </th>
+                    <th>>Action<th>
                 </tr>
             </thead>
             <tbody>
@@ -18,6 +19,12 @@
                     <td class="left">{{ data.detail | getTextFromHtml  }}</td>
                     <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
                     <td>{{ data.creator || '-' | uppercase }}</td>
+                    <td>
+                        <a (click)="showEditModal(i)">Update</a>
+                        <!-- <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="delete(i)">Delete</a> -->
+                    </td>
                 </tr>
             </tbody>
         </nz-table>

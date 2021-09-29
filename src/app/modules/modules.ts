@@ -141,6 +141,11 @@ export interface AcceptCharges{
     p_Def_IncludeIncomeTestedFeeInAdmin: boolean
 }
 
+export interface ReferralSourceDto{
+    ProgramName: string,
+    ProgramType: string
+} 
+
 export interface Recipients {
     sqlID?: number,
     uniqueID?: string,

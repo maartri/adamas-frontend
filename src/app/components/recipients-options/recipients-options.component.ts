@@ -19,7 +19,7 @@ import { filter } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import addDays from 'date-fns/addDays'
 
-// import * as RECIPIENT_OPTION from '../../modules/modules';
+import { ReferralSourceDto } from '@modules/modules';
 
 // enum RECIPIENT_OPTION {
 //   REFER_IN = "REFER_IN",
@@ -204,6 +204,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   file: File;
   originalPackageName: string;
   admissionActiviType: any;
+
+  activityCodes: Array<any> = [];
+  loadActivityCodes: boolean = false;
   
   constructor(
     private listS: ListService,
@@ -429,6 +432,38 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         timePeriod: [],
       
       });
+
+      this.adminGroup.get('programChecked').valueChanges
+        .pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                this.globalProgramSelection = {
+                  program: x,
+                  option: 'ADMIN'
+                }
+                return this.listS.getreferraltype(this.globalProgramSelection)
+            }),
+            switchMap(data => {
+              this.admissionActiviType = data;
+              if(data.length == 1){
+                this.admitGroup.patchValue({
+                  adminGroup: this.admissionActiviType[0]
+                });
+              }
+              return this.listS.gethumanresourcetypes({ program: this.globalProgramSelection.program})
+            }),
+            switchMap(data => {
+              this.GET_PRIMARY_ADDRESS()
+              this.FUNDING_TYPE = data;
+              this.loadActivityCodes = true;
+              return this.listS.getreferraltypes({ 
+                ProgramName: this.globalProgramSelection.program, 
+                ProgramType: RECIPIENT_OPTION.ADMIN })
+            }),
+          ).subscribe(data => {
+              this.activityCodes = data;
+              this.loadActivityCodes = false;
+          });
       
       
       this.admitGroup.get('programChecked').valueChanges
@@ -1160,9 +1195,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
-                  console.log(data);
-                  return;
-                  
+                             
                   this.listS.postassessment(data).subscribe(data =>{
                     this.globalS.sToast('Success', 'Package is saved');
                   });
@@ -1850,6 +1883,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 })
                 break;
                 case RECIPIENT_OPTION.ADMIN:
+
                 this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
                 .subscribe(data => {
                   this.whatOptionVar = {
@@ -1868,50 +1902,51 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   this.changeDetection();
                 })
                 
-                this.listS.getfollowups({
-                  branch: this.BRANCH_NAME,
-                  fundingType: this.FUNDING_TYPE
-                }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                // this.listS.getfollowups({
+                //   branch: this.BRANCH_NAME,
+                //   fundingType: this.FUNDING_TYPE
+                // }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   
-                  this.notifFollowUpGroup = data.map(x => {
-                    return {
-                      label: x.reminders,
-                      value: x.reminders,
-                      dateCounter: x.user1,
-                      disabled: false,
-                      checked: false
-                    }
-                  });
-                })
+                //   this.notifFollowUpGroup = data.map(x => {
+                //     return {
+                //       label: x.reminders,
+                //       value: x.reminders,
+                //       dateCounter: x.user1,
+                //       disabled: false,
+                //       checked: false
+                //     }
+                //   });
+                // })
                 
                 
-                this.listS.getdocumentslist(
-                  {
-                    branch: this.BRANCH_NAME,
-                    fundingType: this.FUNDING_TYPE
-                  }
-                ).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                  this.notifDocumentsGroup = data.map(x => {
-                    return {
-                      label: x,
-                      value: x,
-                      disabled: false,
-                      checked: false
-                    }
-                  })
-                })
+                // this.listS.getdocumentslist(
+                //   {
+                //     branch: this.BRANCH_NAME,
+                //     fundingType: this.FUNDING_TYPE
+                //   }
+                // ).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                //   this.notifDocumentsGroup = data.map(x => {
+                //     return {
+                //       label: x,
+                //       value: x,
+                //       disabled: false,
+                //       checked: false
+                //     }
+                //   })
+                // })
                 
-                this.listS.getdatalist({
-                  branch: this.BRANCH_NAME,
-                  fundingType: this.FUNDING_TYPE
-                }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                  this.datalist = data.map(x =>{
-                    return {
-                      form: x.form,
-                      link: (x.link).toLowerCase()
-                    }
-                  })
-                });          
+                // this.listS.getdatalist({
+                //   branch: this.BRANCH_NAME,
+                //   fundingType: this.FUNDING_TYPE
+                // }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+                //   this.datalist = data.map(x =>{
+                //     return {
+                //       form: x.form,
+                //       link: (x.link).toLowerCase()
+                //     }
+                //   })
+                // });
+
                 break;
                 case RECIPIENT_OPTION.ITEM:
                 this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
@@ -1979,6 +2014,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.adminGroup.get('programs') as FormArray;      
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.adminGroup;
+
+                if((this.adminGroup.get('programs').value as Array<any>).length == 1){
+                  let programs = (<FormArray>this.adminGroup.controls['programs']).at(0);
+                  this.adminGroup.patchValue({
+                    programChecked: programs.value.program
+                  });
+                }
+
                 this.GET_FUNDINGTYPE()
               }
               if(type == RECIPIENT_OPTION.ADMIT){
@@ -2219,12 +2262,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 // Other Details Tab Populate 
                 if(this.current == 1){
                   this.populateOtherDetails();      
-                }
-                
+                }                
                 // this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
               }
 
-              populateNotificationDetails(){
+              populateNotificationDetails(): void{
+
                 this.listS.getnotifications({
                   branch: this.BRANCH_NAME,
                   coordinator: this.COORDINATOR
@@ -2410,74 +2453,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
 
                   if(this.option == RECIPIENT_OPTION.ADMIT){
-
                     this.populateNotificationDetails();
-
-                    this.listS.getnotifications({
-                      branch: this.BRANCH_NAME,
-                      coordinator: this.COORDINATOR
-                    }).subscribe(data => {
-                      
-                      this.notifCheckBoxes = data.map(x => {
-                        return {
-                          label: x.staffToNotify,
-                          value: x.staffToNotify,
-                          email: x.email,
-                          disabled: x.mandatory ? true : false,
-                          checked: x.mandatory ? true : false
-                        }
-                      });
-
-                      this.changeDetection();
-                    });
-                    
-                    this.listS.getfollowups({
-                      branch: this.BRANCH_NAME,
-                      fundingType: this.FUNDING_TYPE,
-                      type: 'ADMIT_DEFAULT_REMINDERS'
-                    }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                      this.notifFollowUpGroup = data.map(x => {
-                        return {
-                          label: x.reminders,
-                          value: x.reminders,
-                          dateCounter: x.user1,
-                          disabled: false,
-                          checked: false
-                        }
-                      });
-                      this.changeDetection();
-                    })
-  
-  
-                    this.listS.getdocumentslist({
-                      branch: this.BRANCH_NAME,
-                      fundingType: this.FUNDING_TYPE,
-                      type: 'ADMIT_DEFAULT_DOCS',
-                    }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                      this.notifDocumentsGroup = data.map(x => {
-                        return {
-                          label: x,
-                          value: x,
-                          disabled: false,
-                          checked: false
-                        }
-                      });
-                      this.changeDetection();
-                    });
-  
-                    this.listS.getdatalist({
-                      branch: this.BRANCH_NAME,
-                      fundingType: this.FUNDING_TYPE,
-                      type: 'ADMIT_DEFAULT_XTRADATA'
-                    }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                      this.datalist = data.map(x =>{
-                        return {
-                          form: x.form,
-                          link: (x.link).toLowerCase()
-                        }
-                      })
-                      this.changeDetection();
-                    }); 
                   }
 
                   if(this.option == RECIPIENT_OPTION.NOT_PROCEED){
@@ -2521,8 +2497,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
 
                   if(this.option == RECIPIENT_OPTION.DECEASE){
-                    return true;
-                }
+                      return true;
+                  }
 
                   if(this.option == RECIPIENT_OPTION.WAIT_LIST && this.waitListGroup.get('programChecked').value){
                       return true;
@@ -2560,6 +2536,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   if(this.option == RECIPIENT_OPTION.ITEM && this.itemGroup.get('programChecked').value){
                     return true;
                   }
+
+                  if(this.option == RECIPIENT_OPTION.ADMIN && this.adminGroup.get('programChecked').value){
+                    return true;
+                  }
+
+
 
 
                   return false;

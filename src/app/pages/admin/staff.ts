@@ -986,7 +986,7 @@ ReportRender(){
     this.timeS.poststaffquicksearch({}).subscribe(data => {
       this.filteredResult = data;
       this.loading = false;
-      this.detectChanges();
+      this.cd.detectChanges();
     });
 
   }

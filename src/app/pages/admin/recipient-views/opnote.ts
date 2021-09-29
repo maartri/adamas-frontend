@@ -352,7 +352,6 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         this.restrict_list = restrictions.split('|');
         
         if(!this.globalS.isEmpty(restrictions)){
-            console.log("qqqqqqq");
             this.mlist.forEach(element => {
                 if(this.restrict_list.includes(element.name)){
                     element.checked = true;

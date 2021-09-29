@@ -78,7 +78,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     tryDoctype: any;
     drawerVisible: boolean =  false;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
-    mlist: any;
+    mlist: Array<any> = [];
     public editorConfig:AngularEditorConfig = {
         editable: true,
         spellcheck: true,
@@ -88,6 +88,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         customClasses: []
     };
     recipientStrArr: any;
+    restrict_list: any;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -153,9 +154,14 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     }
     getSelect() {
         this.timeS.getmanagerop().subscribe(data => {
-            this.mlist = data;
+            data.forEach(x => {
+                this.mlist.push({
+                     name:x, value:x, checked:false
+                  });
+            });
             this.cd.markForCheck();
         });
+        
 
     //     this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
     //         data.push('*VARIOUS');
@@ -257,6 +263,17 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         this.addOREdit = 0;
         const { alarmDate, detail, isPrivate, category, creator,restrictions,privateFlag, recordNumber } = this.tableData[index];
 
+        this.restrict_list = restrictions.split('|');
+        
+        if(!this.globalS.isEmpty(this.restrict_list)){
+            this.mlist.forEach(element => {
+                console.log(element.name + "name");
+                if(this.restrict_list.includes(element.name)){
+                    element.checked = true;
+                }
+            });
+        }
+
         this.inputForm.patchValue({
             notes: detail,
             isPrivate: isPrivate,
@@ -268,6 +285,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
             category: category
         });   
         this.modalOpen = true;
+        this.cd.detectChanges();
     }
     determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
         if (!privateFlag && this.globalS.isEmpty(restrictions)) {

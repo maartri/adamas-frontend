@@ -58,6 +58,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
     alist: Array<any> = [];
     blist: Array<any> = [];
     clist: Array<any> = [];
+    dlist: Array<any> = [];
     mlist: Array<any> = [];
     
     public editorConfig:AngularEditorConfig = {
@@ -75,11 +76,24 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         archiveDocs: true,
         display: 20
     };
+    
+    private default = {
+        notes: '',
+        publishToApp: false,
+        restrictions: '',
+        restrictionsStr: 'public',
+        alarmDate: null,
+        whocode: '',
+        program: '*VARIOUS',
+        discipline: '*VARIOUS',
+        careDomain: '*VARIOUS',
+        category: null,
+        recordNumber: null
+    }
 
     recipientStrArr: Array<any> = [];
     restrict_list: any;
     addOrEdit: number;
-
 
     constructor(
         private timeS: TimeSheetService,
@@ -110,7 +124,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
-        // this.search(this.user);
+        // this.search();
         this.buildForm();
     }
 
@@ -229,7 +243,11 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
 
     getSelect() {
         this.timeS.getmanagerop().subscribe(data => {
-            this.mlist = data;
+            data.forEach(x => {
+                this.mlist.push({
+                     name:x, value:x, checked:false
+                  });
+            });
             this.cd.markForCheck();
         });
 
@@ -245,9 +263,14 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             data.push('*VARIOUS');
             this.alist = data;
         });
+
+        this.timeS.getcategoryop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            this.dlist = data;
+        })
     }
 
     showAddModal() {
+        this.addOrEdit = 1;
         this.buildForm();
         this.modalOpen = true;       
     }
@@ -278,7 +301,18 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         this.addOrEdit = 2;
         const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
         
+        if(restrictions != null)
         this.restrict_list = restrictions.split('|');
+        
+        if(!this.globalS.isEmpty(restrictions)){
+            this.mlist.forEach(element => {
+                if(this.restrict_list.includes(element.name)){
+                    element.checked = true;
+                    console.log(element.name + "yes")
+                }
+            });
+        }
+
         this.caseFormGroup.patchValue({
             notes: detail,
             publishToApp: publishToApp,
@@ -294,6 +328,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         this.modalOpen = true;
         this.cd.detectChanges();
     }
+
     determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
         if (!privateFlag && this.globalS.isEmpty(restrictions)) {
             return 'public';

@@ -343,10 +343,25 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
     }
 
     showEditModal(index: number) {
+
         this.addOrEdit = 2;
+        
         const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
         
+        
         this.restrict_list = restrictions.split('|');
+        
+        if(!this.globalS.isEmpty(restrictions)){
+            console.log("qqqqqqq");
+            this.mlist.forEach(element => {
+                if(this.restrict_list.includes(element.name)){
+                    element.checked = true;
+                    console.log(element.name + "yes")
+                }
+            });
+        }
+
+
         this.caseFormGroup.patchValue({
             notes: detail,
             publishToApp: publishToApp,

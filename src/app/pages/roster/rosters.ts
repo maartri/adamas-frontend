@@ -2115,20 +2115,21 @@ ClearMultishift(){
           time.hours+=1;
         }
 
-        // sheet.setActiveCell(96,0)
-        // sheet.showCell (96,0)
+         
      
         
         
   }
-  
-  sheet.options.isProtected = true;
-        // sheet.options.protectionOptions.allowDeleteRows  = false;
-        // sheet.options.protectionOptions.allowDeleteColumns = false;
-        // sheet.options.protectionOptions.allowInsertRows = false;
-        // sheet.options.protectionOptions.allowInsertColumns = false;
-        // sheet.options.protectionOptions.allowDargInsertRows = false;
-        // sheet.options.protectionOptions.allowDragInsertColumns = false;
+
+        sheet.setActiveCell(96,0)
+        sheet.showCell (96,0)
+        sheet.options.isProtected = true;
+        sheet.options.protectionOptions.allowDeleteRows  = false;
+        sheet.options.protectionOptions.allowDeleteColumns = false;
+        sheet.options.protectionOptions.allowInsertRows = false;
+        sheet.options.protectionOptions.allowInsertColumns = false;
+        sheet.options.protectionOptions.allowDargInsertRows = false;
+        sheet.options.protectionOptions.allowDragInsertColumns = false;
 
 
   this.Already_loaded=true;
@@ -4197,10 +4198,10 @@ isServiceTypeMultipleRecipient(type: string): boolean {
         ).subscribe(d => {
             this.rosterForm.patchValue({
                 pay: {
-                    pay_Unit: d.unit,
-                    pay_Rate: d.amount,
-                    quantity: (this.durationObject.duration) ? 
-                        (((this.durationObject.duration * 5) / 60)).toFixed(2) : 0
+                    // pay_Unit: d.unit,
+                    // pay_Rate: d.amount,
+                    // quantity: (this.durationObject.duration) ? 
+                    //     (((this.durationObject.duration * 5) / 60)).toFixed(2) : 0
                 }
             });
         });
@@ -4275,8 +4276,13 @@ isServiceTypeMultipleRecipient(type: string): boolean {
                 )
             })
         ).subscribe(d => {
+            const {payType}= this.rosterForm.value;
+
             this.analysisCodeList = d[0];
-            this.payTypeList = d[1];
+            if (payType=='AWARD')
+                this.payTypeList.push ({id:1,title:'AWARD'})
+            else
+                 this.payTypeList = d[1];
            // this.programsList = d[2];
            
             this.programsList = d[2].map(x => x.progName);
@@ -4802,14 +4808,15 @@ this.bookingForm.get('program').valueChanges.pipe(
 
     get showDone2(){
 
-          
             if (this.current>=4)
                 return true;
-            else if (this.selectedActivity!=null){
-                    if (this.selectedActivity.service_Description == '' )
-                            return false;
-                }
-            else if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
+            
+            if (this.selectedActivity!=null){
+                if (this.selectedActivity.service_Description == '' )
+                    return false;
+            }
+
+            if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
                 return false;            
             else if ((this.current >=1 && this.viewType=="Staff") && (this.activity_value!=12 || !this.ShowCentral_Location ))
                 return true;

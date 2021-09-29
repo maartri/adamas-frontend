@@ -252,28 +252,24 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
                     if (data) {
                         this.globalS.sToast('Success', 'Note Updated');
                         this.search();
+                        this.restrict_list = [];
                         this.handleCancel();
                         return;
+                    }else{
+                        this.globalS.sToast('error', 'Some thing weng wrong');
+                        this.search();
+                        this.handleCancel();
                     }
                 });
         }
     }
 
     showEditModal(index: any) {
-        this.addOREdit = 0;
+        this.addOREdit = 2;
         const { alarmDate, detail, isPrivate, category, creator,restrictions,privateFlag, recordNumber } = this.tableData[index];
 
         this.restrict_list = restrictions.split('|');
         
-        if(!this.globalS.isEmpty(this.restrict_list)){
-            this.mlist.forEach(element => {
-                console.log(element.name + "name");
-                if(this.restrict_list.includes(element.name)){
-                    element.checked = true;
-                }
-            });
-        }
-
         this.inputForm.patchValue({
             notes: detail,
             isPrivate: isPrivate,
@@ -284,6 +280,14 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
             recordNumber: recordNumber,
             category: category
         });   
+        
+        if(!this.globalS.isEmpty(this.restrict_list)){
+            this.mlist.forEach(element => {
+                if(this.restrict_list.includes(element.name)){
+                    element.checked = true;
+                }
+            });
+        }
         this.modalOpen = true;
         this.cd.detectChanges();
     }

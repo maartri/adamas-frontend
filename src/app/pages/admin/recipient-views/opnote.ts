@@ -304,6 +304,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
                 .subscribe(data => {
                     this.globalS.sToast('Success', 'Note updated');
                     this.handleCancel();
+                    this.restrict_list = [];
                     this.getNotes(this.user);                    
                 });
         }

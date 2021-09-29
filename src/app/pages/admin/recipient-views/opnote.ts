@@ -96,6 +96,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         category: null,
         recordNumber: null
     }
+    restrict_list: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -340,7 +341,8 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
     showEditModal(index: number) {
         this.addOrEdit = 2;
         const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
-
+        
+        this.restrict_list = restrictions.split('|');
         this.caseFormGroup.patchValue({
             notes: detail,
             publishToApp: publishToApp,
@@ -354,6 +356,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
             recordNumber: recordNumber
         });
         this.modalOpen = true;
+        this.cd.detectChanges();
     }
 
     determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
@@ -364,7 +367,6 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         if (!privateFlag && !this.globalS.isEmpty(restrictions)) {
             return 'restrict'
         }
-
         return 'workgroup';
     }
 

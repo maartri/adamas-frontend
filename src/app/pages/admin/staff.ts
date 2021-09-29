@@ -800,7 +800,7 @@ ReportRender(){
                  "StaffInclusion":this.printSummaryGroup.value.recepientSearc,
 
                  "cycleSDate":format(cyclestrdate,'yyyy/MM/dd'),
-                "cycleEDate":format(cycleendate,'yyyy/MM/dd'),
+                 "cycleEDate":format(cycleendate,'yyyy/MM/dd'),
                  //"days":this.inputForm.value.fDays,
                  //"dayname":this.inputForm.value.DayNames,
                  
@@ -986,7 +986,7 @@ ReportRender(){
     this.timeS.poststaffquicksearch({}).subscribe(data => {
       this.filteredResult = data;
       this.loading = false;
-      this.detectChanges();
+      this.cd.detectChanges();
     });
 
   }

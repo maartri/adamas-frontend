@@ -39,6 +39,7 @@ export class PayComponent implements OnInit {
   selectedBranch: Array<any> = [];
 
   loading: boolean = false;
+  allchecked: boolean = false;
   modalOpen: boolean = false;
   billingType: Array<any>;
   AccountPackage: Array<any>;
@@ -63,6 +64,8 @@ export class PayComponent implements OnInit {
   userRole:string="userrole";
   whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   dtpEndDate: number;
+  selectedBranches: any;
+  btnid: any;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -110,6 +113,51 @@ export class PayComponent implements OnInit {
       invType: 'General',
       updateStaffServices: false,
     });
+  }
+  log(event: any) {
+    this.selectedBranches = event;
+  }
+
+
+checkAll(){
+  debugger;
+  switch (this.btnid) {
+      
+    case "btn-Systm-selectAllBranches":
+      console.log("modal change" + this.allchecked);
+      this.branchList.forEach(x => {
+        x.checked = true;
+        this.selectedBranches = x.description;
+      });
+        break;
+
+    // case "btn-Systm-selectAllCategories":
+    //   console.log("modal change" + this.allchecked);
+    //   this.branchList.forEach(x => {
+    //     x.checked = true;
+    //     this.selectedBranches = x.description;
+    //   });
+    //     break;
+
+          default:
+              break;
+      }
+}
+
+  // checkAll(){
+  //     console.log("modal change" + this.allchecked);
+
+  //     this.branchList.forEach(x => {
+  //       x.checked = true;
+  //       this.selectedBranches = x.description;
+  //     });
+  // }
+  
+  uncheckAll(){
+      this.branchList.forEach(x => {
+        x.checked = false;
+      });
+      this.selectedBranches = [];
   }
   populateDropdowns() {
     this.billingType = ['CONSOLIDATED BILLING', 'PROGRAM BILLING'];

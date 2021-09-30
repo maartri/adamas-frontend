@@ -175,13 +175,13 @@
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                             <div nz-col style="text-align: right;">
                                 <button nz-button nzType="primary" (click)="clearBranchlist()"
-                                    style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
+                                    style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;" id="btn-Systm-unselectAllBranches">
                                     Un-Select All
                                 </button>
                             </div>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox style="margin-top: 5px;" ></label>
+                            <label nz-checkbox style="margin-top: 5px;" (onclick)="checkAll()" id="btn-Systm-selectAllBranches"></label>
                         </div>
                         <div>
                             <div nz-col nzSpan="16" class="mrg-btm">

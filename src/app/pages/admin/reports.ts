@@ -223,7 +223,7 @@ const inputFormDefault = {
     AGE_ATSI_StatusArr: ['All'],
     Additional_inclusion: ['Default Display'],
     Rpt_Format: ['Detail'],
-    Roster_staffinclusion : ['Show Staff Code']    ,
+    Roster_staffinclusion : ['Show Staff Code'],
     
 
     monthArr: [[]],
@@ -242,6 +242,7 @@ const inputFormDefault = {
         '[style.overflow]': 'hidden'
     },
     styles: [`
+    
     
     
         button {
@@ -1112,7 +1113,7 @@ stafftypeArr: Array<any> = constants.types;
         e = e || window.event;
         e = e.target || e.srcElement;
         if(e.id !== null){this.GlobalS.var2 = e.id.toString();}
-        console.log(this.GlobalS.var2)
+        //console.log(this.GlobalS.var2)
         this.router.navigate(['/admin/user-reports']);
       
     }
@@ -1129,7 +1130,7 @@ stafftypeArr: Array<any> = constants.types;
         }        
     }
     showModal(e) {
-       console.log(e)
+       //console.log(e)
        switch (e) {
            case 'btn-Regis-incidentregister':
             this.btnid = "btn-Regis-incidentregister"
@@ -20156,7 +20157,7 @@ CustomReportSetting(){
 } 
 
 FetchRuntimeReport(title){
-    console.log("TITLE:  " +title)
+ //   console.log("TITLE:  " +title)
 
   const temp =  forkJoin([
     //    this.ReportS.GetReportFormat(title),
@@ -20166,7 +20167,7 @@ FetchRuntimeReport(title){
         //this.UserRptFormatlist = data[0];
         this.UserRptSQLlist = data[0];   
         var re = /~/gi;    
-        console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
+        //console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
     
      //   this.RenderRunTimeReport(this.UserRptSQLlist)
 
@@ -20178,7 +20179,7 @@ FetchRuntimeReport(title){
 
 }
 RenderRunTimeReport(strSQL){
-    console.log(strSQL)
+//    console.log(strSQL)
     const data = {
         
         "template": { "_id": "qTQEyEz8zqNhNgbU" },

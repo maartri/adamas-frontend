@@ -86,7 +86,9 @@ export class AuthService implements ErrorHandler{
     }
 
     handleError(error: HttpErrorResponse) {
-        console.log(error)
+        if(error.error == null){
+            return throwError(error);
+        }
 
         var err = error.error;
 

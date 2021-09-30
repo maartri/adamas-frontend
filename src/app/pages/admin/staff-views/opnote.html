@@ -32,7 +32,7 @@
 </div>
 
 
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOREdit ? 'Add OP Note' : 'Edit OP Note'" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzStyle]="{ top: '20px' }" [nzTitle]="addOREdit ? 'Add OP Note' : 'Edit OP Note'" (nzOnCancel)="handleCancel()">
     <div [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>
@@ -67,8 +67,10 @@
         <div nz-row class="overflow-list" *ngIf="inputForm.get('restrictionsStr').value == 'restrict'">
             <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
                 <div nz-row *ngFor="let list of mlist; let i = index">
-                    <div class="chkboxes" nz-col nzOffset="2" nzSpan="22"><label nz-checkbox
-                            [nzValue]="list">{{ list }}</label></div>
+                    <div class="chkboxes" nz-col nzOffset="2" nzSpan="22">
+                        
+                        <label nz-checkbox [nzValue]="list.name" [(ngModel)]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.name }}</label>
+                    </div>
                 </div>
             </nz-checkbox-wrapper>
         </div>

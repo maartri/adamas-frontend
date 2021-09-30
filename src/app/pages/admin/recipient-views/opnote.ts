@@ -8,7 +8,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Filters } from '@modules/modules';
-
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
     styles: [`
         nz-table{
@@ -73,7 +73,14 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
     clist: Array<any> = [];
     dlist: Array<any> = [];
     mlist: Array<any> = [];
-
+    public editorConfig:AngularEditorConfig = {
+        editable: true,
+        spellcheck: true,
+        height: '20rem',
+        minHeight: '5rem',
+        translate: 'no',
+        customClasses: []
+    };
     recipientStrArr: Array<any> = [];
 
     private default = {
@@ -89,6 +96,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         category: null,
         recordNumber: null
     }
+    restrict_list: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -232,8 +240,12 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
 
     getSelect() {
         this.timeS.getmanagerop().subscribe(data => {
-            this.mlist = data;
-            this.cd.markForCheck();
+                data.forEach(x => {
+                    this.mlist.push({
+                         name:x, value:x, checked:false
+                      });
+                });
+                this.cd.markForCheck();
         });
 
         this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -292,6 +304,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
                 .subscribe(data => {
                     this.globalS.sToast('Success', 'Note updated');
                     this.handleCancel();
+                    this.restrict_list = [];
                     this.getNotes(this.user);                    
                 });
         }
@@ -331,8 +344,23 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
     }
 
     showEditModal(index: number) {
+
         this.addOrEdit = 2;
+        
         const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
+        
+        
+        this.restrict_list = restrictions.split('|');
+        
+        if(!this.globalS.isEmpty(restrictions)){
+            this.mlist.forEach(element => {
+                if(this.restrict_list.includes(element.name)){
+                    element.checked = true;
+                    console.log(element.name + "yes")
+                }
+            });
+        }
+
 
         this.caseFormGroup.patchValue({
             notes: detail,
@@ -347,6 +375,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
             recordNumber: recordNumber
         });
         this.modalOpen = true;
+        this.cd.detectChanges();
     }
 
     determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
@@ -357,7 +386,6 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         if (!privateFlag && !this.globalS.isEmpty(restrictions)) {
             return 'restrict'
         }
-
         return 'workgroup';
     }
 

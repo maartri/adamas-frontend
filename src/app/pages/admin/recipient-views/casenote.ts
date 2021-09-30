@@ -8,7 +8,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Filters } from '@modules/modules';
-
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
     styles: [`
          nz-table{
@@ -59,6 +59,15 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
     blist: Array<any> = [];
     clist: Array<any> = [];
     mlist: Array<any> = [];
+    
+    public editorConfig:AngularEditorConfig = {
+        editable: true,
+        spellcheck: true,
+        height: '20rem',
+        minHeight: '5rem',
+        translate: 'no',
+        customClasses: []
+    };
 
     filters: Filters = {
         acceptedQuotes: false,
@@ -68,6 +77,8 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
     };
 
     recipientStrArr: Array<any> = [];
+    restrict_list: any;
+    addOrEdit: number;
 
 
     constructor(
@@ -263,7 +274,46 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             });
           
     }
+    showEditModal(index: number) {
+        this.addOrEdit = 2;
+        const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
+        
+        this.restrict_list = restrictions.split('|');
+        this.caseFormGroup.patchValue({
+            notes: detail,
+            publishToApp: publishToApp,
+            restrictions: '',
+            restrictionsStr: this.determineRadioButtonValue(privateFlag, restrictions),
+            alarmDate: alarmDate,
+            program: program,
+            discipline: discipline,
+            careDomain: careDomain,
+            category: extraDetail2,
+            recordNumber: recordNumber
+        });
+        this.modalOpen = true;
+        this.cd.detectChanges();
+    }
+    determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
+        if (!privateFlag && this.globalS.isEmpty(restrictions)) {
+            return 'public';
+        }
 
+        if (!privateFlag && !this.globalS.isEmpty(restrictions)) {
+            return 'restrict'
+        }
+        return 'workgroup';
+    }
+
+    // delete(index: any) {
+    //     const { recordNumber } = this.tableData[index];
+
+    //     this.clientS.deleteopnotes(recordNumber).subscribe(data => {
+    //         this.globalS.sToast('Success', 'Note deleted');
+    //         this.handleCancel();
+    //         this.getNotes(this.user);
+    //     });
+    // }
     listStringify(): string{
         let tempStr = '';
         this.recipientStrArr.forEach((data,index,array) =>{

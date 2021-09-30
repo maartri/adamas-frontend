@@ -457,85 +457,43 @@
         </nz-tabset>
         <div *ngIf="tabFindIndex == 0">
           <div nz-row>
-            <nz-table style="margin-top:0px;" #fixedTable [nzLoading]="loading" [nzScroll]="{ x: '1700px', y: '640px' }"  nzSize="small" nzBordered class="custum-header">
+            <nz-table style="margin-top:0px;" #fixedTable [nzData]="filteredResult" [nzLoading]="loading" [nzScroll]="{ x: '2400px', y: '540px' }"  nzSize="small" nzBordered class="custum-header">
               <thead>
                 <tr>
-                  <th>MIN</th>
-                  <th>MAX</th>
-                  <th>WKD</th>
-                  <th>Staff Name</th>
-                  <th>Suburb</th>
-                  <th>Category</th>
-                  <th>Primary Phone</th>
-                  <th>Address</th>
-                  <th>Branch</th>
-                  <th>Team</th>
-                  <th>CoOrdinator</th>
-                  <th>Alerts</th>
-                  <th>Last Address</th>
-                  <th>KM</th>
-                  <th>Rating</th>
-                  <th>CW</th>
-                  <th >Preferred</th>
+                  <th nzWidth="100px" nzLeft="0PX">ID</th>
+                  <th nzWidth="50px"  nzLeft="100PX">MIN</th>
+                  <th nzWidth="50px"  nzLeft="150PX">MAX</th>
+                  <th nzWidth="200px">Staff Name</th>
+                  <th nzWidth="200px">Suburb</th>
+                  <th nzWidth="200px">Category</th>
+                  <th nzWidth="200px">Primary Phone</th>
+                  <th nzWidth="200px">Address</th>
+                  <th nzWidth="200px">Branch</th>
+                  <th nzWidth="200px">Team</th>
+                  <th nzWidth="200px">CoOrdinator</th>
+                  <th nzWidth="200px">Alerts</th>
+                  <th nzWidth="200px">Last Address</th>
+                  <th nzWidth="100px">Rating</th>
+                  <th nzRight="0px">CW</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td nzBreakWord>one</td>
-                  <td nzBreakWord>two</td>
-                  <td nzBreakWord>three</td>
-                  <td nzBreakWord>four</td>
-                  <td nzBreakWord>five</td>
-                  <td nzBreakWord>six</td>
-                  <td nzBreakWord>seven</td>
-                  <td nzBreakWord>eight</td>
-                  <td nzBreakWord>nine</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                </tr>
-                <tr>
-                  <td nzBreakWord>one</td>
-                  <td nzBreakWord>two</td>
-                  <td nzBreakWord>three</td>
-                  <td nzBreakWord>four</td>
-                  <td nzBreakWord>five</td>
-                  <td nzBreakWord>six</td>
-                  <td nzBreakWord>seven</td>
-                  <td nzBreakWord>eight</td>
-                  <td nzBreakWord>nine</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                </tr>
-                <tr>
-                  <td nzBreakWord>one</td>
-                  <td nzBreakWord>two</td>
-                  <td nzBreakWord>three</td>
-                  <td nzBreakWord>four</td>
-                  <td nzBreakWord>five</td>
-                  <td nzBreakWord>six</td>
-                  <td nzBreakWord>seven</td>
-                  <td nzBreakWord>eight</td>
-                  <td nzBreakWord>nine</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
-                  <td nzBreakWord>ten</td>
+                <tr *ngFor="let result of fixedTable.data">
+                  <td  nzLeft="0PX">{{result.id}}</td>
+                  <td  nzLeft="100PX">{{result.hfmin}}</td>
+                  <td  nzLeft="150PX">{{result.hfmax}}</td>
+                  <td>{{result.name}}</td>
+                  <td>{{result.suburb}}</td>
+                  <td>{{result.category}}</td>
+                  <td>{{result.contact}}</td>
+                  <td>{{result.address}}</td>
+                  <td>{{result.branch}}</td>
+                  <td>{{result.team}}</td>
+                  <td>{{result.coOrdinator}}</td>
+                  <td>{{result.alerts}}</td>
+                  <td>{{result.lastKnownLocation}}</td>
+                  <td>{{result.rating}}</td>
+                  <td nzRight="0px">{{result.jobWeighting}}</td>
                 </tr>
               </tbody>
             </nz-table>

@@ -16,7 +16,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ data.detail  | getTextFromHtml }}</td>
+                    <td class="left">{{ data.detail | getTextFromHtml  }}</td>
                     <td>{{ data.category }}</td>
                     <td>{{ data.detailDate | date: 'dd/MM/y'  }}</td>
                     <td>{{ data.creator || '-' }}</td>
@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addORView ? 'Add HR Note' : 'Details'" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzStyle]="{ top: '20px' }" [nzTitle]="addORView ? 'Add HR Note' : 'Details'" (nzOnCancel)="handleCancel()">
     <div [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>

@@ -158,9 +158,18 @@ export class IntakeGroups implements OnInit, OnDestroy {
     showAddModal(view: number) {
         this.addOREdit = 1;
         if (view == 1){
-            this.definedOpen = true;
+            if(this.dropDowns.userGroups.length){
+                this.definedOpen = true;
+            }else{
+                this.globalS.iToast('Info','There Is No Group');
+            }
         }else{
-            this.preferenceOpen = true;
+            if(this.dropDowns.preferences.length){
+                this.preferenceOpen = true;
+            }else{
+                this.globalS.iToast('Info','There Is No Preference');
+            }
+        
         }
     }
 

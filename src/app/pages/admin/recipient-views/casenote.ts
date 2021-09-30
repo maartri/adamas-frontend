@@ -117,6 +117,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                 if (this.globalS.isCurrentRoute(this.router, 'casenote')) {
                     this.user = data
                     this.search(data);
+                    this.getSelect();
                 }
             });
             
@@ -135,7 +136,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         
         search(user: any = this.user) {        
             this.getNotes(this.user);
-            this.getSelect();
+            // this.getSelect();
         }
         
         filterChange(data: any){

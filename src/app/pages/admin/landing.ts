@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import {Router,RouterLink} from '@angular/router'
 
 @Component({
     styles: [`
@@ -46,7 +47,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 
 export class LandingAdmin implements OnInit, OnDestroy {
 
-    constructor() {
+    constructor(private router: Router,) {
 
     }
 
@@ -57,4 +58,6 @@ export class LandingAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
 
     }
+
+    
 }

@@ -109,13 +109,13 @@
                     <div nz-row nzJustify class="mrg-btm-half">
                         <nz-card [nzSize]="'small'" nzTitle="Budget">
                             <div nz-row nzJustify>
-                                <div nz-col nzSpan="6" class="text-left pad-r-5">
+                                <div nz-col nzSpan="7" class="text-left pad-r-5">
                                     <label for="Type">Type</label>
                                     <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="budgetType" nzShowSearch nzAllowClear style="width:100%;">
                                         <nz-option *ngFor="let type of budgetTypes" [nzLabel]="type" [nzValue]="type"></nz-option>
                                     </nz-select>
                                 </div>
-                                <div nz-col nzSpan="4" class="text-left pad-r-5">
+                                <div nz-col nzSpan="5" class="text-left pad-r-5">
                                     <label for="Amount">Amount</label>
                                     <input nz-input [nzSize]="'small'" formControlName="bamount" />
                                 </div>
@@ -135,13 +135,13 @@
                     <div nz-row nzJustify class="mrg-btm-half">
                         <nz-card [nzSize]="'small'" nzTitle="Special Pricing" [nzExtra]="extraTemplate">
                             <div nz-row nzJustify>
-                                <div nz-col nzSpan="6" class="text-left pad-r-5">
+                                <div nz-col nzSpan="7" class="text-left pad-r-5">
                                     <label for="Bill Unit">Bill Unit</label>
                                     <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" [nzDisabled]="!this.inputForm.get('specialPricing').value" formControlName="billunit" nzShowSearch nzAllowClear style="width:100%;">
                                         <nz-option *ngFor="let unit of billunit" [nzLabel]="unit" [nzValue]="unit"></nz-option>
                                     </nz-select>
                                 </div>
-                                <div nz-col nzSpan="3" class="text-left pad-r-5">
+                                <div nz-col nzSpan="5" class="text-left pad-r-5">
                                     <label for="Amount">Amount</label>
                                     <input nz-input [nzSize]="'small'" [disabled]="!this.inputForm.get('specialPricing').value" formControlName="namount" />
                                 </div>

@@ -310,6 +310,19 @@ const inputFormDefault = {
         .span{
             font-weight: 300 !important;
         }
+        iframe {
+            width= 950px;
+            height=650px
+        }
+        
+@media only screen 
+and (min-width : 1224px) {
+    iframe {
+        width= 1200px;
+        height=860px;
+    }
+}
+
        
         
     `],

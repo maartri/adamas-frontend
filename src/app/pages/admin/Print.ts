@@ -203,7 +203,7 @@ export class PrintComponent implements OnInit , OnDestroy {
      
     handleCancel() {
       
-      console.log("cancel clicked")
+    //  console.log("cancel clicked")
       this.ShowModal = false;
       this.router.navigate(['/admin/recipient/personal'])
     }

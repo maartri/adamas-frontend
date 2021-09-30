@@ -150,6 +150,23 @@
                     <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left">
                     </nz-divider>
 
+
+<!-- need to delete -->
+                    <!-- <div nz-col nzSpan="8">
+                        <button (click)="clearStaff()" nzSize="small" class="btn-staff" nz-button nzType="danger">Unselect All </button>
+                        <div class="staff-wrapper">
+                            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                <div nz-row>
+                                    <div nz-col nzSpan="24" *ngFor="let staff of listStaff">
+                                        <label nz-checkbox [nzValue]="staff.accountNo" [(ngModel)]="staff.checked" [ngModelOptions]="{standalone: true}">{{ staff.accountNo }}</label>
+                                    </div>
+                                </div>
+                            </nz-checkbox-wrapper>
+                        </div>
+                    </div> -->
+<!-- delete end here -->
+
+
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="4">
                             <h3 style="color:#1890FF;"> Branches </h3>
@@ -157,7 +174,7 @@
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                             <div nz-col style="text-align: right;">
-                                <button nz-button nzType="primary"
+                                <button nz-button nzType="primary" (click)="clearBranchlist()"
                                     style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
                                     Un-Select All
                                 </button>
@@ -174,12 +191,23 @@
                                             [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
+                                                <!-- <div class="staff-wrapper">
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24" *ngFor="let data of branchList;let i = index;">
+                                                                <label nz-checkbox [nzValue]="data.description" >{{ data.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </div> -->
+
                                                 <tr *ngFor="let data of branchList;let i = index;">
                                                     <td style="width: 4px;" class="right">
                                                         <label nz-checkbox ></label>
                                                     </td>
                                                     <td class="left">{{ data.description }}</td>
                                                 </tr>
+
                                             </tbody>
                                         </nz-table>
                                     </div>
@@ -321,7 +349,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Update Staff Services :</label>
+                        <label nz-checkbox formControlName="updateStaffServices">Update Staff Services :</label>
                     </div>
                     <!-- <div nz-col nzSpan="8">
                         <label nz-checkbox >Include Staff Code on Invoice</label>

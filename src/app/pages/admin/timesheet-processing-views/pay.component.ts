@@ -36,6 +36,7 @@ export class PayComponent implements OnInit {
   tableData: Array<any>;
   PayPeriodLength: number;
   PayPeriodEndDate: any;
+  selectedBranch: Array<any> = [];
 
   loading: boolean = false;
   modalOpen: boolean = false;
@@ -97,7 +98,7 @@ export class PayComponent implements OnInit {
   }
   handleCancel() {
     this.modalOpen = false;
-    this.router.navigate(['/admin/billing']);
+    this.router.navigate(['/admin/timesheet-processing']);
   }
   buildForm() {
     this.inputForm = this.formBuilder.group({
@@ -107,6 +108,7 @@ export class PayComponent implements OnInit {
       billingMode: 'CONSOLIDATED BILLING',
       AccPackage: 'TEST 1',
       invType: 'General',
+      updateStaffServices: false,
     });
   }
   populateDropdowns() {
@@ -200,6 +202,36 @@ export class PayComponent implements OnInit {
     // console.log("Result 3 is: ", (this.dtpEndDate.setDate(this.dtpEndDate.getDate()-10)));
     // console.log("Result 3 is: ", (this.dtpEndDate - (this.PayPeriodLength)));
   }
+  
+  selectAllBranches(){
+    this.branchList.forEach(x => {
+      x.checked = true
+    });
+
+    // this.selectedBranch = [];
+  }
+
+  clearBranchlist(){
+    this.branchList.forEach(x => {
+      x.checked = false
+    });
+
+    this.selectedBranch = [];
+  }
+
+  updateBranchListing(branch: Array<any>){
+    if(branch.length == 0 )return;
+    var _branch = branch.map(x => x.branch);
+
+    this.branchList.forEach(x => {
+      if(_branch.includes(x.description)){
+        x.checked = true;
+      }
+    });
+
+    this.selectedBranch = branch.map(x => x.branch);
+  }
+
 }
 
 

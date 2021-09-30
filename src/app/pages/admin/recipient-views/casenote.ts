@@ -197,14 +197,14 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             this.caseFormGroup = this.formBuilder.group({
                 notes: '',
                 publishToApp: false,
-                restrictions: '',
-                restrictionsStr: 'public',
+                restrictions:'',
+                restrictionsStr:'public',
                 alarmDate: null,
-                whocode: '',
-                program: '*VARIOUS',
-                discipline: '*VARIOUS',
-                careDomain: '*VARIOUS',
-                category: '',
+                whocode:'',
+                program:'*VARIOUS',
+                discipline:'*VARIOUS',
+                careDomain:'*VARIOUS',
+                category:'',
                 recordNumber: null
             });
             

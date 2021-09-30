@@ -169,6 +169,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                 
                 this.loading = false;
                 this.cd.markForCheck();
+                this.cd.detectChanges();
             });
             
             // this.clientS.getcasenotes(user.code).pipe(takeUntil(this.unsubscribe)).subscribe(data => {

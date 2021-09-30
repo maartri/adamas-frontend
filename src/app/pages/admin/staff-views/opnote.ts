@@ -78,16 +78,17 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     tryDoctype: any;
     drawerVisible: boolean =  false;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
-    mlist: any;
+    mlist: Array<any> = [];
     public editorConfig:AngularEditorConfig = {
         editable: true,
         spellcheck: true,
-        height: '15rem',
+        height: '20rem',
         minHeight: '5rem',
         translate: 'no',
         customClasses: []
     };
     recipientStrArr: any;
+    restrict_list: any;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -153,9 +154,14 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
     }
     getSelect() {
         this.timeS.getmanagerop().subscribe(data => {
-            this.mlist = data;
+            data.forEach(x => {
+                this.mlist.push({
+                     name:x, value:x, checked:false
+                  });
+            });
             this.cd.markForCheck();
         });
+        
 
     //     this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
     //         data.push('*VARIOUS');
@@ -219,7 +225,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         const { alarmDate, restrictionsStr, whocode, restrictions } = this.inputForm.value;
 
         let privateFlag = restrictionsStr == 'workgroup' ? true : false;
-
+            
         let restricts = restrictionsStr != 'restrict';
 
         this.inputForm.controls["restrictionsStr"].setValue(privateFlag);
@@ -246,17 +252,30 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
                     if (data) {
                         this.globalS.sToast('Success', 'Note Updated');
                         this.search();
+                        if(!this.globalS.isEmpty(this.restrict_list)){
+                            this.mlist.forEach(element => {
+                                    element.checked = false;
+                            });
+                        }
+                        this.restrict_list = [];
+                        
                         this.handleCancel();
                         return;
+                    }else{
+                        this.globalS.sToast('error', 'Some thing weng wrong');
+                        this.search();
+                        this.handleCancel();
                     }
                 });
         }
     }
 
     showEditModal(index: any) {
-        this.addOREdit = 0;
+        this.addOREdit = 2;
         const { alarmDate, detail, isPrivate, category, creator,restrictions,privateFlag, recordNumber } = this.tableData[index];
 
+        this.restrict_list = restrictions.split('|');
+        
         this.inputForm.patchValue({
             notes: detail,
             isPrivate: isPrivate,
@@ -267,7 +286,16 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
             recordNumber: recordNumber,
             category: category
         });   
+        
+        if(!this.globalS.isEmpty(this.restrict_list)){
+            this.mlist.forEach(element => {
+                if(this.restrict_list.includes(element.name)){
+                    element.checked = true;
+                }
+            });
+        }
         this.modalOpen = true;
+        this.cd.detectChanges();
     }
     determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
         if (!privateFlag && this.globalS.isEmpty(restrictions)) {

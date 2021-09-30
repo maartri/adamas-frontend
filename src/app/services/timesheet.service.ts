@@ -331,6 +331,11 @@ export class TimeSheetService {
         return this.auth.put(`${timesheet}/intake/funding/program-details/update`, data);
     }
 
+    deleteprogramdetails(recordNo: number) {
+        return this.auth.delete(`${timesheet}/intake/funding/program-details/delete/${recordNo}`);
+    }
+
+
     /**
      * Nudge Time
      */
@@ -996,8 +1001,9 @@ export class TimeSheetService {
     postrecipientquicksearch(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/search-recipient`, data)
     }
-
-
+    poststaffquicksearch(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/search-staff`, data)
+    }
     getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
     }

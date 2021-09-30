@@ -23,7 +23,7 @@
                         <button  nz-button nzType="primary" (click)="prev_date()" ><i nz-icon nzType="left"></i></button>
                         <button  nz-button nzType="primary" (click)="next_date()" ><i nz-icon nzType="right"></i></button>
                         <button  nz-button nzType="primary" (click)="show_views=true"  style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
-                        <!-- <label nz-box style=" padding:2px; height:32px; background-color: #1E91E8; color:white ">Views</label>         -->
+                         <!-- <label nz-box style=" padding:2px; height:32px; background-color: #1E91E8; color:white ">Views</label>         -->
                         
                     </nz-button-group> 
                     
@@ -109,6 +109,8 @@
         
         <div nz-row nz-col nzSpan="23" *ngIf="formloading" style="margin-top: 0px;  margin-left: 10px; margin-right: 10px; background-color: white; ">
             
+            <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
+                   
         <gc-spread-sheets  id="#ss"
         [backColor]="spreadBackColor"  
         [hostStyle]="hostStyle"  
@@ -307,10 +309,10 @@
                             </div>
                         </div>
                        
-                        <div nz-row *ngIf="multipleRecipientShow">
+                        <!-- <div nz-row *ngIf="multipleRecipientShow" >
                             <label for="">Multiple Recipients</label>
                             <nz-switch nzSize="small" formControlName="isMultipleRecipient"></nz-switch>
-                        </div>
+                        </div> -->
                         <div nz-row *ngIf="isTravelTimeChargeable">
                             <label for="">Is Travel Time Chargeable</label>
                             <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch>
@@ -426,7 +428,7 @@
                                 <div nz-col nzSpan="10">
                                     <div class="form-group">
                                         <label for="">Unit</label>
-                                        <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
                                             <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list"></nz-option> 
                                         </nz-select>
                                     </div>
@@ -436,7 +438,7 @@
                                 <div nz-col nzSpan="7">
                                     <div class="form-group">
                                         <label for="">Rate</label>
-                                        <nz-input-number formControlName="rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        <nz-input-number formControlName="pay_Rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
                                             [nzParser]="parserDollar"></nz-input-number>
                                     </div>
                                 </div>
@@ -456,7 +458,7 @@
                                 <div nz-col nzSpan="8">
                                     <div class="form-group">
                                         <label for="">Unit</label>
-                                        <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
                                             <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
                                             </nz-option>
                                         </nz-select>
@@ -467,7 +469,7 @@
                                 <div nz-col nzSpan="7">
                                     <div class="form-group">
                                         <label for="">Rate</label>
-                                        <nz-input-number formControlName="rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        <nz-input-number formControlName="bill_Rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
                                             [nzParser]="parserDollar"></nz-input-number>
                                     </div>
                                 </div>
@@ -866,7 +868,7 @@
                                 <div nz-col nzSpan="10">
                                     <div class="form-group">
                                         <label for="">Unit</label>
-                                        <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
                                             <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list"></nz-option> 
                                         </nz-select>
                                     </div>
@@ -876,7 +878,7 @@
                                 <div nz-col nzSpan="7">
                                     <div class="form-group">
                                         <label for="">Rate</label>
-                                        <nz-input-number formControlName="rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        <nz-input-number formControlName="pay_Rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
                                             [nzParser]="parserDollar"></nz-input-number>
                                     </div>
                                 </div>
@@ -896,7 +898,7 @@
                                 <div nz-col nzSpan="8">
                                     <div class="form-group">
                                         <label for="">Unit</label>
-                                        <nz-select formControlName="unit" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
                                             <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
                                             </nz-option>
                                         </nz-select>
@@ -907,7 +909,7 @@
                                 <div nz-col nzSpan="7">
                                     <div class="form-group">
                                         <label for="">Rate</label>
-                                        <nz-input-number formControlName="rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        <nz-input-number formControlName="bill_Rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
                                             [nzParser]="parserDollar"></nz-input-number>
                                     </div>
                                 </div>
@@ -1175,7 +1177,7 @@
         
     </nz-modal>
       
-    <div>
+     <div>
         <img id="icon-1" style="display: none; background-color: #D5D6DE;"  src="/media/r1.png"/>
         <img id="icon-2" style="display: none; background-color: #D5D6DE;"  src="/media/r2.png"/>
         <img id="icon-3" style="display: none; background-color: #D5D6DE;"  src="/media/r3.png"/>
@@ -1194,9 +1196,9 @@
         <img id="icon-20" style="display: none; background-color: #D5D6DE;" src="/media/r20.png"/>
         <img id="icon-21" style="display: none; background-color: #D5D6DE;" src="/media/r21.jpg"/>
         <img id="icon-22" style="display: none; background-color: #D5D6DE;" src="/media/r22.jpg"/>
-    </div>   
+    </div>     
 
- <!-- <div>
+  <!-- <div>
         <img id="icon-1" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r1.png"/>
         <img id="icon-2" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r2.png"/>
         <img id="icon-3" style="display: none; background-color: #D5D6DE;"  src="../../../assets/media/r3.png"/>
@@ -1216,4 +1218,4 @@
         <img id="icon-21" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r21.jpg"/>
         <img id="icon-22" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r22.jpg"/>
     </div>   
-  -->
+ -->

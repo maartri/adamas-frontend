@@ -11,27 +11,40 @@
                     <th class="left" style="width: 75%">Details</th>
                     <th>Detail Date</th>
                     <th>Creator </th>
+                    <th>>Action<th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
-                    <td class="left">
-                        <div class="word-break">
-                            {{ data.detail  }}
-                        </div>
-                    </td>
+                    <td class="left">{{ data.detail | getTextFromHtml  }}</td>
                     <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
                     <td>{{ data.creator || '-' | uppercase }}</td>
+                    <td>
+                        <a (click)="showEditModal(i)">Update</a>
+                        <!-- <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="delete(i)">Delete</a> -->
+                    </td>
                 </tr>
             </tbody>
         </nz-table>
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="'Add Case Note'" (nzOnCancel)="handleCancel()" nzWidth="800" [nzStyle]="{ top: '20px' }">
+<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzStyle]="{ top: '20px' }" [nzTitle]="addOrEdit == 1 ? 'Add Case Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()">
     <div nz-row nzGutter="16">
         <div nz-col nzSpan="7" [formGroup]="caseFormGroup">
             <div nz-row>
+                <div nz-row>
+                    <nz-form-item>
+                        <nz-form-label>Category</nz-form-label>
+                        <nz-form-control nzErrorTip="Required Field">
+                            <nz-select nzAllowClear formControlName="category" [nzDropdownMatchSelectWidth]="false">
+                                <nz-option *ngFor="let list of dlist" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
                 <nz-form-item>
                     <nz-form-label>Program</nz-form-label>
                     <nz-form-control nzErrorTip="Required Field">
@@ -62,7 +75,7 @@
                 </nz-form-item>
             </div>
         </div>
-        <div nz-col nzSpan="14">
+        <div nz-col nzSpan="17">
             <div nz-row nzGutter="32" [formGroup]="caseFormGroup">
                 <div nz-col nzSpan="12" class="form-group">
                     <label for="">Reminder Date</label>
@@ -92,7 +105,8 @@
                 <nz-form-item>
                     <nz-form-label>Notes</nz-form-label>
                     <nz-form-control nzErrorTip="Required Field">
-                        <textarea rows="4" nz-input formControlName="notes"></textarea>
+                        <angular-editor  formControlName="notes" [config]="editorConfig"></angular-editor>
+                        <!-- <textarea rows="4" nz-input formControlName="notes"></textarea> -->
                     </nz-form-control>
                 </nz-form-item>
             </div>

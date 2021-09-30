@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { HttpParams } from '@angular/common/http';
 
-import { CallDeceaseProcedure, CallReferralOutProcedure } from '@modules/modules';
+import { CallDeceaseProcedure, CallReferralOutProcedure, ReferralSourceDto } from '@modules/modules';
 import { PackageClient } from '@client/package';
 
 const list: string = "api/list"
@@ -16,8 +16,11 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
-    
 
+    getreferraltypes(source: any):Observable<any>{
+        return this.auth.get(`${list}/referral-source-v2`, source);
+    }
+    
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }

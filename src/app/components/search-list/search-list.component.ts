@@ -122,7 +122,6 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
         view: this.view == 0 ? 'recipient' : 'staff'
       }
     }
-    console.log(user);
     this.searchModel = user.accountNo;
 
     this.onChangeCallback(user);

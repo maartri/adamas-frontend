@@ -30,12 +30,12 @@
     </div>
 </div>
 
-<nz-modal [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit ? 'Add Reminder' : 'Edit Reminder'" (nzOnCancel)="handleCancel()">
+<nz-modal [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit == 1 ? 'Add Reminder' : 'Edit Reminder'" (nzOnCancel)="handleCancel()">
     <div [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>
                 <nz-form-label [nzNoColon]="true">Reminders</nz-form-label>
-                <nz-form-control nzErrorTip="Preferences is required!">
+                <nz-form-control nzErrorTip="Reminders is required!">
                     <nz-select formControlName="staffAlert" nzAllowClear nzPlaceHolder=""
                         [nzDropdownMatchSelectWidth]="false">
                         <nz-option *ngFor="let d of alist" [nzValue]="d" [nzLabel]="d"></nz-option>
@@ -61,7 +61,7 @@
             <div nz-col nzOffset="3" nzSpan="8">
                 <nz-form-item style="margin: 0 0 1px">
                     <nz-form-label [nzNoColon]="true">Recurring Every</nz-form-label>
-                    <nz-form-control nzErrorTip="Preferences is required!">
+                    <nz-form-control nzErrorTip="Every Recurring is required!">
                         <nz-select formControlName="recurrInt" nzAllowClear nzPlaceHolder=""
                             [nzDropdownMatchSelectWidth]="false">
                             <nz-option *ngFor="let d of dayInt" [nzValue]="d" [nzLabel]="d"></nz-option>
@@ -72,7 +72,7 @@
             <div nz-col nzSpan="8">
                 <nz-form-item style="margin: 0 0 1px">
                     <nz-form-label [nzNoColon]="true"></nz-form-label>
-                    <nz-form-control nzErrorTip="Preferences is required!">
+                    <nz-form-control>
                         <nz-select formControlName="recurrStr" nzAllowClear nzPlaceHolder=""
                             [nzDropdownMatchSelectWidth]="false">
                             <nz-option *ngFor="let d of dayStr" [nzValue]="d" [nzLabel]="d"></nz-option>

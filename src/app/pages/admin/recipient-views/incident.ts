@@ -225,8 +225,6 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
         this.operation = {
             process: 'UPDATE'
         }
-
-        console.log(newPass);
         
         this.incidentRecipient = newPass;
         this.incidentOpen = !this.incidentOpen;

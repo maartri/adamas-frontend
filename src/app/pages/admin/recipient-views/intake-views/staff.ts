@@ -116,7 +116,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
     
     get title() {
       const str = this.whatView == 1 ? 'Excluded Staff' : 'Approved Staff';
-      const pro = this.editOrAdd == 1 ? 'Add' : 'Update';
+      const pro = this.editOrAdd == 1 ? 'Add' : 'Edit';
       return `${pro} ${str}`;
     }
     trackByFn(index, item) {

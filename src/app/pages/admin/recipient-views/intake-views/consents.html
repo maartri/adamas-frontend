@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="consentOpen" [nzTitle]="addOREdit ? 'Add Consent' : 'Edit Consent'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="consentOpen" [nzTitle]="addOREdit == 0 ? 'Add Consent' : 'Edit Consent'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div>
         
         <div nz-row nzGutter="16">
@@ -55,7 +55,7 @@
                 <button nz-button nzType="default" (click)="handleCancel()">
                     <span>Cancel</span>
                 </button>
-                <button nz-button nzType="primary" (click)="consentProcess()">
+                <button nz-button nzType="primary" (click)="consentProcess()" [disabled]="!this.consentGroup.get('consent').value">
                     <span>Save</span>
                 </button>
             </ng-container>

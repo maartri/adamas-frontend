@@ -31,7 +31,7 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzStyle]="{ top: '20px' }" [nzTitle]="addOrEdit == 1 ? 'Add Case Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()" nzWidth="800" [nzStyle]="{ top: '20px' }">
+<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzStyle]="{ top: '20px' }" [nzTitle]="addOrEdit == 1 ? 'Add Case Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()">
     <div nz-row nzGutter="16">
         <div nz-col nzSpan="7" [formGroup]="caseFormGroup">
             <div nz-row>

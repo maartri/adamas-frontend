@@ -304,16 +304,22 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             if (this.addOrEdit == 2) {
                 this.clientS.updatecasenotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
                 .subscribe(data => {
-                    this.globalS.sToast('Success', 'Note updated');
-                    this.handleCancel();
-                    
-                    if(!this.globalS.isEmpty(this.restrict_list)){
-                        this.mlist.forEach(element => {
-                            element.checked = false;
-                        });
+
+                    if(data){
+                        this.globalS.sToast('Success', 'Note updated');
+                        this.handleCancel();
+                        
+                        if(!this.globalS.isEmpty(this.restrict_list)){
+                            this.mlist.forEach(element => {
+                                element.checked = false;
+                            });
+                        }
+                        this.restrict_list = [];
+                        this.getNotes(this.user);   
+                    }else{
+                        this.handleCancel();
+                        this.getNotes(this.user); 
                     }
-                    this.restrict_list = [];
-                    this.getNotes(this.user);                    
                 });
             }
             

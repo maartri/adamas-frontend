@@ -21,6 +21,23 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .ant-card-small>.ant-card-head {
             min-height: 20px !important;
         }
+
+        nz-tabset{
+            margin-top:1rem;
+        }
+        nz-tabset >>> div > div.ant-tabs-nav-container{
+            height: 25px !important;
+            font-size: 13px !important;
+        }
+        
+        nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+            line-height: 24px;
+            height: 25px;
+        }
+        nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+            background: #717e94;
+            color: #fff;
+        }
     `],
 })
 

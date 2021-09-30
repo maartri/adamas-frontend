@@ -36,8 +36,8 @@
 <nz-modal [nzWidth]="1000" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit == 1 ? 'Add New Service Profile Detail' : 'Edit Service Profile Detail'"
 (nzOnCancel)="handleCancel()">
 <div [formGroup]="inputForm">
-    <div nz-row nzGutter="24" class="mrg-btm" >
-        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSelectedIndex]="tabFindIndex">
+    <div nz-row lass="mrg-btm" >
+        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSize]="'small'" [nzSelectedIndex]="tabFindIndex">
             <nz-tab nzTitle="Service Information" (nzClick)="tabFindChange(0)"> </nz-tab>
         </nz-tabset>      
         <div *ngIf="tabFindIndex == 0">

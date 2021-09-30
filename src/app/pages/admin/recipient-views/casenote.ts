@@ -1,13 +1,19 @@
+import { Filters } from '@modules/modules';
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
+import { GlobalService, ListService, TimeSheetService,ClientService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
-
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Filters } from '@modules/modules';
+
+import format from 'date-fns/format';
+import getYear from 'date-fns/getYear';
+import getDate from 'date-fns/getDate';
+import getMonth from 'date-fns/getMonth';
+import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
     styles: [`
@@ -87,7 +93,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         program: '*VARIOUS',
         discipline: '*VARIOUS',
         careDomain: '*VARIOUS',
-        category: null,
+        category: ['', [Validators.required]],
         recordNumber: null
     }
     
@@ -117,6 +123,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                 if (this.globalS.isCurrentRoute(this.router, 'casenote')) {
                     this.user = data
                     this.search(data);
+                    // this.getSelect();
                 }
             });
             
@@ -125,6 +132,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         ngOnInit(): void {
             this.user = this.sharedS.getPicked();
             // this.search();
+            this.getSelect();
             this.buildForm();
         }
         
@@ -135,7 +143,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         
         search(user: any = this.user) {        
             this.getNotes(this.user);
-            this.getSelect();
+            // this.getSelect();
         }
         
         filterChange(data: any){
@@ -161,6 +169,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                 
                 this.loading = false;
                 this.cd.markForCheck();
+                this.cd.detectChanges();
             });
             
             // this.clientS.getcasenotes(user.code).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -197,20 +206,20 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             this.caseFormGroup = this.formBuilder.group({
                 notes: '',
                 publishToApp: false,
-                restrictions: '',
-                restrictionsStr: 'public',
+                restrictions:'',
+                restrictionsStr:'public',
                 alarmDate: null,
-                whocode: '',
-                program: '*VARIOUS',
-                discipline: '*VARIOUS',
-                careDomain: '*VARIOUS',
-                category: '',
+                whocode:'',
+                program:'*VARIOUS',
+                discipline:'*VARIOUS',
+                careDomain:'*VARIOUS',
+                category:'',
                 recordNumber: null
             });
             
             this.caseFormGroup.get('restrictionsStr').valueChanges.subscribe(data => {
                 if (data == 'restrict') {
-                    this.getSelect();
+                    // this.getSelect();
                 }
             });
         }
@@ -271,6 +280,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         
         showAddModal() {
             this.addOrEdit = 1;
+            // this.getSelect();
             this.buildForm();
             this.modalOpen = true;       
         }
@@ -325,8 +335,9 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             
         }
         showEditModal(index: number) {
+            // this.getSelect();
             this.addOrEdit = 2;
-            const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
+            const { personID, recordNumber, privateFlag, whoCode, detailDate,category,craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
             
             if(restrictions != null)
             this.restrict_list = restrictions.split('|');
@@ -349,7 +360,7 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                 program: program,
                 discipline: discipline,
                 careDomain: careDomain,
-                category: extraDetail2,
+                category: category,
                 recordNumber: recordNumber
             });
             this.modalOpen = true;

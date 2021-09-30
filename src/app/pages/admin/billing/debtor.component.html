@@ -161,9 +161,10 @@
                             <h3 style="color:#1890FF;"> Branches </h3>
                         </div>
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
-                            <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
+                            <label for="Name" style="margin-top: 5px; font-size: 11pt;" 
+                            > Select All</label>
                             <div nz-col style="text-align: right;">
-                                <button nz-button nzType="primary"
+                                <button nz-button nzType="primary" (onclick)="uncheckAll()"
                                     style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
                                     Un-Select All
                                 </button>
@@ -180,12 +181,17 @@
                                             [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
-                                                <tr *ngFor="let data of branchList;let i = index;">
+                                                <!-- <tr *ngFor="let data of branchList;let i = index;">
                                                     <td style="width: 4px;" class="right">
                                                         <label nz-checkbox ></label>
                                                     </td>
                                                     <td class="left">{{ data.description }}</td>
-                                                </tr>
+                                                </tr> -->
+                                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+                                                    <div nz-row *ngFor="let list of branchList; let i = index">
+                                                        <label nz-checkbox [nzValue]="list.description" [(ngModel)]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.description }}</label>
+                                                    </div>
+                                                </nz-checkbox-wrapper>
                                             </tbody>
                                         </nz-table>
                                     </div>
@@ -195,7 +201,6 @@
                     </div>
                     <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left">
                     </nz-divider>
-
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="4">
                             <h3 style="color:#1890FF;"> Programs </h3>

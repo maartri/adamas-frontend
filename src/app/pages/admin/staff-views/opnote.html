@@ -32,7 +32,7 @@
 </div>
 
 
-<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzStyle]="{ top: '20px' }" [nzTitle]="addOREdit ? 'Add OP Note' : 'Edit OP Note'" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="modalOpen" nzWidth="960" [nzStyle]="{ top: '20px' }" [nzTitle]="addOREdit == 1 ? 'Add OP Note' : 'Edit OP Note'" (nzOnCancel)="handleCancel()">
     <div [formGroup]="inputForm">
         <div nz-row>
             <nz-form-item>

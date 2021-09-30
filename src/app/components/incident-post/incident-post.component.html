@@ -1,7 +1,7 @@
 
 
 <!--<nz-modal [nzWidth]="1200" [nzStyle]="{ top: '20px' }" [(nzVisible)]="open" [nzTitle]="'Add Incident'" (nzAfterClose)="handleCancel()" (nzOnCancel)="handleCancel()">-->
-    <nz-modal [nzWidth]="1200" [nzStyle]="{ top: '20px' }" [(nzVisible)]="open" [nzTitle]="current ? 'Edit Incident' : 'Add Incident'" (nzAfterClose)="handleCancel()" (nzOnCancel)="handleCancel()">
+    <nz-modal [nzWidth]="1200" [nzStyle]="{ top: '20px' }" [(nzVisible)]="open" [nzTitle]="operation.process == 'UPDATE' ? 'Edit Incident' : 'Add Incident'" (nzAfterClose)="handleCancel()" (nzOnCancel)="handleCancel()">
         <div class="flexy">
     
             <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">

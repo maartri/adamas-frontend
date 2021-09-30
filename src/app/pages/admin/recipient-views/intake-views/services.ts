@@ -273,33 +273,36 @@ export class IntakeServices implements OnInit, OnDestroy {
     }
 
     showEditModal(data: any) {
+        console.log(data);
+
         this.addOREdit = 2;
         this.listDropDown();
         this.loadCompetency();
         this.modalOpen = true;
         this.isUpdate = true;
-        this.checkValueChange(data.specialPricing)
+        // this.checkValueChange(data.specialPricing);
+
         this.inputForm.patchValue({
             PersonID: this.user.id,
-              status: data.status,
-              program: data.serviceProgram,
-              activity:data.activity,
-              freq:data.frequency,
-              period:data.period,
-              duration:data.duration,
-              billunit:data.unitType,
-              namount:data.unitBillRate,
-              activityBreakDown:data.activityBreakDown,
-              serviceBiller:data.serviceBiller,
-              specialPricing:(data.forceSpecialPrice == false) ? false : true,
-              gst:(data.taxRate == false) ? false : true,
-              autoInsertNotes:(data.autoInsertNotes == false) ? false : true,
-              excludeFromNDIAPriceUpdates:(data.excludeFromNDIAPriceUpdates == false) ? false : true,
-              budgetType:data.budgetType,
-              bamount:'',
-              enforcement:data.budgetLimitType,
-              starting:data.budgetStartDate,
-              recordNumber:data.recordNumber
+            status: data.status,
+            program: data.serviceProgram,
+            activity:data.activity,
+            freq:data.frequency,
+            period:data.period,
+            duration:data.duration,
+            billunit:data.unitType,
+            namount:data.unitBillRate,
+            activityBreakDown:data.activityBreakDown,
+            serviceBiller:data.serviceBiller,
+            specialPricing:(data.forceSpecialPrice == false) ? false : true,
+            gst:(data.taxRate == false) ? false : true,
+            autoInsertNotes:(data.autoInsertNotes == false) ? false : true,
+            excludeFromNDIAPriceUpdates:(data.excludeFromNDIAPriceUpdates == false) ? false : true,
+            budgetType:data.budgetType,
+            bamount:'',
+            enforcement:data.budgetLimitType,
+            starting:data.budgetStartDate,
+            recordNumber:data.recordNumber
         });
         
     }

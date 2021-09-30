@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { TimeSheetService, GlobalService, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, MenuService } from '@services/index';
 import { timeout } from 'rxjs/operators';
 import { setDate } from 'date-fns';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-billing',
@@ -115,8 +116,6 @@ export class DebtorComponent implements OnInit {
     this.selectedBranches = event;
   }
   checkAll(){
-      console.log("modal change" + this.allchecked);
-
       this.branchList.forEach(x => {
         x.checked = true;
         this.selectedBranches = x.description;
@@ -124,9 +123,11 @@ export class DebtorComponent implements OnInit {
   }
   
   uncheckAll(){
+    console.log("[==========]")
       this.branchList.forEach(x => {
         x.checked = false;
       });
+      this.allchecked = false;
       this.selectedBranches = [];
   }
 

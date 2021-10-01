@@ -62,7 +62,7 @@
                                     </div>
                                     <div nz-col nzSpan="18">
                                         <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="program" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let prog of program" [nzLabel]="prog.name" [nzValue]="prog.name"></nz-option>
+                                            <nz-option *ngFor="let prog of program" [nzLabel]="prog" [nzValue]="prog"></nz-option>
                                         </nz-select>
                                     </div>
                                 </div>

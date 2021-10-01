@@ -36,9 +36,8 @@
               "src/sass/styles.scss",
               "node_modules/@grapecity/spread-sheets/styles/gc.spread.sheets.css",
               "node_modules/@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016colorful.css",
-              "node_modules/@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016darkGray.css"
-
-          
+              "node_modules/@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016darkGray.css",
+              "node_modules/@jorgeinv/font-awesome-5.7.2/css/all.min.css"          
             ],
             "stylePreprocessorOptions": {
               "includePaths": [

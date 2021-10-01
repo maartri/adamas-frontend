@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation, OnChanges } from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
@@ -55,7 +55,9 @@ interface UserView{
     staff: number
 }
 
-const license = "45.77.37.207,E493369696471956#B0EVbkl5QHhHbMZFOyFjQhlkS7FlVyFkeYlkauJWOyQza8lFMy8kS6gXR6hlbmlWexVzNMlTb48EMTdTMVJHdE3CUqhVcr3GS6VkTOp6Us9WNnhVVxN7YDdURLR7QrIGevcHTTd4SvplcolUZtpEbBRTNDVWe88UYXhDSJx4cGdEe6glVG5mQkRlQRNTV096VxFVdIdnaMd4aLhWWnpEal9WSwoWaKZ5MLNzY6F4SRJHVoJUMNd6M0NVaHFFd4JnMVNVcxNEd49GaBZkMFFndxNjVzUnN6FXNTZWZUN5QVJHU5YjW4FFR0hTSMdGMj5ER4UXMapmRLdnM09GO5YjUxJ6MyZlI0IyUiwiIzIUMygjMGdjI0ICSiwyN7cjM4czN5ETM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiI4UDN5cDMgcjM8ATMyAjMiojI4J7QiwiIxADMxIjMwIjI0ICc8VkIsIyNwIjL7MjL7cjL5QjI0IyctRkIsIycu3Wa4VHbvNFIlRXYy3Gcy36QgMXYtFGZBJiOiEmTDJCLlVnc4pjIsZXRiwiI6UTOxcDN6kjN9YzMzkDNiojIklkIs4XXbpjInxmZiwSZzxWYmpjIyNHZisnOiwmbBJye0ICRiwiI34zZIpHNwVXcCdjb6I5Yzp4TZZVVmRFTMRGRKpXTmxkbEJGeUl7ZnJWWPZjSPp4UnRlVmF7QUtkR5EkWzI7KzUDaldlNMtEaJJFdINmbLREduwUnt"
+const license = "portal-traccs.integratedliving.org.au,E493369696471956#B0EVbkl5QHhHbMZFOyFjQhlkS7FlVyFkeYlkauJWOyQza8lFMy8kS6gXR6hlbmlWexVzNMlTb48EMTdTMVJHdE3CUqhVcr3GS6VkTOp6Us9WNnhVVxN7YDdURLR7QrIGevcHTTd4SvplcolUZtpEbBRTNDVWe88UYXhDSJx4cGdEe6glVG5mQkRlQRNTV096VxFVdIdnaMd4aLhWWnpEal9WSwoWaKZ5MLNzY6F4SRJHVoJUMNd6M0NVaHFFd4JnMVNVcxNEd49GaBZkMFFndxNjVzUnN6FXNTZWZUN5QVJHU5YjW4FFR0hTSMdGMj5ER4UXMapmRLdnM09GO5YjUxJ6MyZlI0IyUiwiIzIUMygjMGdjI0ICSiwyN7cjM4czN5ETM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiI4UDN5cDMgcjM8ATMyAjMiojI4J7QiwiIxADMxIjMwIjI0ICc8VkIsIyNwIjL7MjL7cjL5QjI0IyctRkIsIycu3Wa4VHbvNFIlRXYy3Gcy36QgMXYtFGZBJiOiEmTDJCLlVnc4pjIsZXRiwiI6UTOxcDN6kjN9YzMzkDNiojIklkIs4XXbpjInxmZiwSZzxWYmpjIyNHZisnOiwmbBJye0ICRiwiI34zZIpHNwVXcCdjb6I5Yzp4TZZVVmRFTMRGRKpXTmxkbEJGeUl7ZnJWWPZjSPp4UnRlVmF7QUtkR5EkWzI7KzUDaldlNMtEaJJFdINmbLREduwUnt"
+
+
 
 function IconCellType(img) {
     this.typeName = "IconCellType";
@@ -226,7 +228,7 @@ endRoster:any;
   include_item:boolean=false;
   spreadsheet:any;
   customizeHref: string;
-  time_slot:number=288;
+  time_slot:number=96;
   ShowCentral_Location:boolean=false;
   IsClientCancellation:boolean=false;
   showtMultiRecipientModal:boolean=false;
@@ -1169,6 +1171,8 @@ ClearMultishift(){
 
   //MainSpread:any=GC.Spread;
     workbookInit(args) {  
+        console.log("workbookInit called");
+      
       let spread = args.spread;
      // this.MainSpread=args.spread;
       this.spreadsheet = GC.Spread.Sheets.Workbook = args.spread;  
@@ -1988,6 +1992,11 @@ ClearMultishift(){
   
   prepare_Sheet(){
 
+    if (this.spreadsheet==null){
+       
+        return;
+    }
+
    let sheet:any=this.spreadsheet.getActiveSheet(); 
 
    //this.changeHeight()
@@ -2121,8 +2130,16 @@ ClearMultishift(){
         
   }
 
-        sheet.setActiveCell(96,0)
-        sheet.showCell (96,0)
+        if (this.time_slot==288){
+            sheet.setActiveCell(96,0)
+            sheet.showCell (96,0)
+        } else if (this.time_slot==144){
+            sheet.setActiveCell(48,0)
+            sheet.showCell (48,0)
+        } else if (this.time_slot==96){
+            sheet.setActiveCell(32,0)
+            sheet.showCell (32,0)
+        }
         sheet.options.isProtected = true;
         sheet.options.protectionOptions.allowDeleteRows  = false;
         sheet.options.protectionOptions.allowDeleteColumns = false;
@@ -2774,6 +2791,12 @@ return rst;
         private sharedS: ShareService,
       
     ) {
+        this.router.routeReuseStrategy.shouldReuseRoute = function () {        
+
+            return false;
+        };
+        
+
         const navigation = this.router.getCurrentNavigation();
         const state = navigation.extras.state as {
             StaffCode: string,
@@ -2783,7 +2806,11 @@ return rst;
         if (state!=null){
        
         this.info = {StaffCode:state.StaffCode, ViewType:state.ViewType, IsMaster:state.IsMaster} ;
+
+
     }
+
+   
         this.currentDate = format(new Date(), 'yyyy/MM/dd');
 
         this.dateStream.pipe(
@@ -2861,16 +2888,6 @@ return rst;
         
     }
    
-    
- 
-    
-    // navigationExtras: NavigationExtras = {state : {StaffCode:'', ViewType:'',IsMaster:false }};
-    // onClick(){
-    // this.navigationExtras ={state : {StaffCode:'MELLOW MARSHA', ViewType:'Staff',IsMaster:false }};
-    //     this.router.navigate(["/admin/rosters"],this.navigationExtras )
-      
-    // }
-    
       
     whatProcess = PROCESS.ADD;
     details(index: any){
@@ -2974,22 +2991,42 @@ return rst;
             this.picked(data);
         }
 
-       
+      
       
 }
-
+ngOnChange(change:OnChanges) {
+   // console.log("ngOnChanges"+change);
+    
+}
+ngAfterContentInit() {
+   // console.log("ngAfterContentInit");
+    
+}
+ngAfterViewChecked(){
+   /// console.log("ngAfterViewChecked");
+ 
+}
 ngAfterViewInit(){
 
-    this.formloading=true;
+  this.formloading=true;
+    console.log("ngAfterViewInit");   
+   
 }
 
+ngOnDestroy(){
+    console.log("ngDestroy");
+  
+}
 refreshPage() {
-    
+    //this._document.defaultView.location.reload();
+    window.location.reload();
+   
   }
-
 reloadVal: boolean = false;
 reload(reload: boolean){
+    
     this.reloadVal = !this.reloadVal;
+
 }
 
     public clickStream;
@@ -3081,13 +3118,6 @@ reload(reload: boolean){
 
   
 
-    // ngAfterViewInit(): void {
-    //     // console.log(this.calendarComponent.getApi());
-    //     this.searchRoster(this.date);
-
-    //     console.log(document)
-        
-    // }
 
     picked(data: any) {
         console.log(data);

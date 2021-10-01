@@ -21,6 +21,23 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .ant-card-small>.ant-card-head {
             min-height: 20px !important;
         }
+
+        nz-tabset{
+            margin-top:1rem;
+        }
+        nz-tabset >>> div > div.ant-tabs-nav-container{
+            height: 25px !important;
+            font-size: 13px !important;
+        }
+        
+        nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+            line-height: 24px;
+            height: 25px;
+        }
+        nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+            background: #717e94;
+            color: #fff;
+        }
     `],
 })
 
@@ -256,33 +273,36 @@ export class IntakeServices implements OnInit, OnDestroy {
     }
 
     showEditModal(data: any) {
+        console.log(data);
+
         this.addOREdit = 2;
         this.listDropDown();
         this.loadCompetency();
         this.modalOpen = true;
         this.isUpdate = true;
-        this.checkValueChange(data.specialPricing)
+        // this.checkValueChange(data.specialPricing);
+
         this.inputForm.patchValue({
             PersonID: this.user.id,
-              status: data.status,
-              program: data.serviceProgram,
-              activity:data.activity,
-              freq:data.frequency,
-              period:data.period,
-              duration:data.duration,
-              billunit:data.unitType,
-              namount:data.unitBillRate,
-              activityBreakDown:data.activityBreakDown,
-              serviceBiller:data.serviceBiller,
-              specialPricing:(data.forceSpecialPrice == false) ? false : true,
-              gst:(data.taxRate == false) ? false : true,
-              autoInsertNotes:(data.autoInsertNotes == false) ? false : true,
-              excludeFromNDIAPriceUpdates:(data.excludeFromNDIAPriceUpdates == false) ? false : true,
-              budgetType:data.budgetType,
-              bamount:'',
-              enforcement:data.budgetLimitType,
-              starting:data.budgetStartDate,
-              recordNumber:data.recordNumber
+            status: data.status,
+            program: data.serviceProgram,
+            activity:data.activity,
+            freq:data.frequency,
+            period:data.period,
+            duration:data.duration,
+            billunit:data.unitType,
+            namount:data.unitBillRate,
+            activityBreakDown:data.activityBreakDown,
+            serviceBiller:data.serviceBiller,
+            specialPricing:(data.forceSpecialPrice == false) ? false : true,
+            gst:(data.taxRate == false) ? false : true,
+            autoInsertNotes:(data.autoInsertNotes == false) ? false : true,
+            excludeFromNDIAPriceUpdates:(data.excludeFromNDIAPriceUpdates == false) ? false : true,
+            budgetType:data.budgetType,
+            bamount:'',
+            enforcement:data.budgetLimitType,
+            starting:data.budgetStartDate,
+            recordNumber:data.recordNumber
         });
         
     }

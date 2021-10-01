@@ -75,7 +75,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   incidentDocument: any;
 
   current: number = 0;
-
+  addEdit: number = 0;
   incidentTypeList: Array<any> = [];
 
   listPrograms: Array<string> = [];
@@ -156,8 +156,14 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       }
       if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.operation = changes[property].currentValue;
-        if(this.operation.process == 'UPDATE') this.current = 0;
-        if(this.operation.process == 'ADD') this.current = 0;
+        if(this.operation.process == 'UPDATE'){
+          this.current = 0;
+          this.addEdit = 1;
+        }
+        if(this.operation.process == 'ADD'){
+          this.current = 0;
+          this.addEdit = 0;
+        }
       }
     }
   }

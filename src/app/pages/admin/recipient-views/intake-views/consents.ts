@@ -77,8 +77,8 @@ export class IntakeConsents implements OnInit, OnDestroy {
         this.consentGroup = this.formBuilder.group({
             recordNumber: null,
             personID: null,
-            consent: null,
-            notes: null,
+            consent: '',
+            notes: '',
             expiryDate: null
          })
 
@@ -98,7 +98,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
     consentProcess(){
         const group = this.consentGroup.value;
         // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
-
+        // this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
         let _consentGroup: Consents = {
             recordNumber: group.recordNumber,
             personID: this.user.id,

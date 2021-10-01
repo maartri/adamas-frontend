@@ -13,9 +13,9 @@ const packageDefaultForm: any = {
     personID:'',
     program: null,
     packageLevel:'',
-    packageType: null,
-    programStatus: null,
-    expireUsing: null,
+    packageType:[null, Validators.required],
+    programStatus:[null, Validators.required],
+    expireUsing:[null, Validators.required],
     priority: null,
     notes:'',
     quantity:'',
@@ -298,6 +298,16 @@ export class IntakeFunding implements OnInit, OnDestroy {
             }
 
             save() {
+                
+                var prog_status = this.packageDetailForm.value.programStatus;
+                var expireUsing = this.packageDetailForm.value.expireUsing;
+                var packageType = this.packageDetailForm.value.packageType;
+                var program     = this.packageDetailForm.value.program;
+                if(prog_status == null || expireUsing == null || packageType == null || program == null ){
+                        this.globalS.wToast('Error', 'All manmdatpry fields must be completed'); 
+                        return false;
+                }
+
                 this.packageDetailForm.controls['personID'].setValue(this.user.id);                
 
                 if(this.addOREdit == 1){

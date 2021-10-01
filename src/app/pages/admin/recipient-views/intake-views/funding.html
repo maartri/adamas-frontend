@@ -26,7 +26,7 @@
                     <a (click)="showEditModal(data.recordNumber)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
                     <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Funding?" nzPopconfirmPlacement="bottom"
-                        (nzOnConfirm)="delete(data)">Delete</a>
+                    (nzOnConfirm)="delete(data)">Delete</a>
                 </td>            
             </tr>
         </tbody>
@@ -46,13 +46,13 @@
                 <nz-card [nzBodyStyle]="{'padding':'5px'}" class="mrg-btm">
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
-                            <label nzFor="Title/ID">Name : </label>
+                            <nz-form-label nzRequired nzFor="Name">Name</nz-form-label>
                         </div>
                         <div nz-col nzSpan="16" class="pad-r-5">
                             <div class="form-group" *ngIf="addOREdit == 1">
-                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear nzShowSearch formControlName="program">
-                                <nz-option *ngFor="let prog of programsNames" [nzLabel]="prog" [nzValue]="prog"></nz-option>
-                            </nz-select>
+                                <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear nzShowSearch formControlName="program">
+                                    <nz-option *ngFor="let prog of programsNames" [nzLabel]="prog" [nzValue]="prog"></nz-option>
+                                </nz-select>
                             </div>
                             <div class="form-group" *ngIf="addOREdit == 2">
                                 <input nz-input formControlName="program" disabled />
@@ -68,28 +68,40 @@
                     <hr>
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
-                            <label nzFor="Type">Type : </label>
+                            <nz-form-label nzRequired nzFor="Type">Type</nz-form-label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear  nzPlaceHolder="" formControlName="packageType">
-                                <nz-option *ngFor="let typ of type" [nzLabel]="typ" [nzValue]="typ"></nz-option>
-                            </nz-select>
+                            <nz-form-item>
+                                <nz-form-control nzErrorTip="Type is required">
+                                    <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear nzPlaceHolder="" formControlName="packageType">
+                                        <nz-option *ngFor="let typ of type" [nzLabel]="typ" [nzValue]="typ"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
                         </div>
                         <div nz-col nzSpan="3" class="text-center">
-                            <label nzFor="Status">Status : </label>
+                            <nz-form-label nzRequired nzFor="Status">Status</nz-form-label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear  nzPlaceHolder="" formControlName="programStatus">
-                                <nz-option *ngFor="let stat of status" [nzLabel]="stat" [nzValue]="stat"></nz-option>
-                            </nz-select>
+                            <nz-form-item>
+                                <nz-form-control nzErrorTip="Status is required">
+                                    <nz-select style="width:100%" [nzSize]="'default'" nzErrorTip="Status is required" nzAllowClear  nzPlaceHolder="" formControlName="programStatus">
+                                        <nz-option *ngFor="let stat of status" [nzLabel]="stat" [nzValue]="stat"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
                         </div>
                         <div nz-col nzSpan="3" class="text-center">
-                            <label nzFor="Expire Using">Expire Using: </label>
+                            <nz-form-label nzRequired nzFor="Expire Using">Expire Using</nz-form-label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear  nzPlaceHolder="" formControlName="expireUsing">  
-                                <nz-option *ngFor="let using of expireUsing" [nzLabel]="using" [nzValue]="using"></nz-option>
-                            </nz-select>
+                            <nz-form-item>
+                                <nz-form-control nzErrorTip="Expire Using is required">
+                                    <nz-select style="width:100%" [nzSize]="'default'" nzAllowClear  nzErrorTip="Expire Using is required" nzPlaceHolder="" formControlName="expireUsing">  
+                                        <nz-option *ngFor="let using of expireUsing" [nzLabel]="using" [nzValue]="using"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
                         </div>
                         <div nz-col nzSpan="2" class="text-center">
                             <label nzFor="Priority"> Priority : </label>
@@ -231,12 +243,12 @@
                                         <td>Basic Care Fee</td>
                                         <td><input nz-input [nzSize]="'default'" formControlName="dailyBasicCareFee" /></td>
                                         <td><input nz-input [nzSize]="'default'" formControlName="clientCont" /></td>  
-                                   </tr>
-                                   <tr>
+                                    </tr>
+                                    <tr>
                                         <td>Income Tested Fee</td>
                                         <td><input nz-input [nzSize]="'default'" formControlName="dailyIncomeTestedFee" /></td>
                                         <td><input nz-input [nzSize]="'default'" formControlName="incomeTestedFee" /></td>  
-                                   </tr>
+                                    </tr>
                                 </tbody>
                             </nz-table>
                             <div nz-row nzJustify class="space-top">
@@ -414,7 +426,8 @@
                 <span>Get Payout</span>
             </button>
             <button nz-button nzType="primary" [nzLoading]="postLoading" (click)="save()">
-                <span>Save</span>
+                <span *ngIf="addOREdit == 1">Save</span>
+                <span *ngIf="addOREdit == 2">Update</span>
             </button>
             <button nz-button nzType="default" (click)="handleCancel()">
                 <span>Cancel</span>

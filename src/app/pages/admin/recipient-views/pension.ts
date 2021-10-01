@@ -239,6 +239,7 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
             var address1 = this.pensionForm.value.address1;
             if(address1 == null || name == null){
                 this.globalS.wToast('Error', 'All manmdatpry fields must be completed'); 
+                this.isLoading = false;
                 return false;
             }
             

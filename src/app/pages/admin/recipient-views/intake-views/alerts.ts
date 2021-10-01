@@ -178,6 +178,7 @@ export class IntakeAlerts implements OnInit, OnDestroy {
 
         const competency = this.competencyGroup.value;
         this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
+        this.competencyGroup.controls['notes'].setValue((this.competencyGroup.value.notes == null) ? '' : this.competencyGroup.value.notes)
         if(this.addOREdit == 0){
                 this.timeS.postintakecompetency(this.competencyGroup.value)
                     .subscribe(data => {

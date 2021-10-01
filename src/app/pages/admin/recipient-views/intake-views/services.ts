@@ -140,10 +140,10 @@ export class IntakeServices implements OnInit, OnDestroy {
             this.activities = data;
         });
         this.program = [];
-        let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > GETDATE()))";
-        this.listS.getlist(prog).subscribe(data => {
+        
+        this.listS.getintakeprogram(this.user.id).subscribe(data => {
             this.program = data;
-        });
+        })
 
         let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' OR Domain = 'RECIPATTRIBUTE' ORDER BY Description";
         this.listS.getlist(comp).subscribe(data => {
@@ -385,6 +385,9 @@ export class IntakeServices implements OnInit, OnDestroy {
     saveCompetency(){
         this.postLoading = true;
         let insertOne = false;
+        
+        this.competencyForm.controls['mandatory'].setValue((this.competencyForm.value.mandatory == null) ? false : this.competencyForm.value.mandatory)
+        this.competencyForm.controls['notes'].setValue((this.competencyForm.value.notes == null) ? '' : this.competencyForm.value.notes)
         const { notes,competency,mandatory,PersonID,recordNumber} = this.competencyForm.value;
         if(!this.isUpdateCompetency){
           this.CompetencycheckedList.forEach( (element) => {
@@ -436,6 +439,7 @@ export class IntakeServices implements OnInit, OnDestroy {
     handleCompetencyCancel(){
         this.competencyForm.reset();
         this.competencymodal = false;
+        this.isUpdateCompetency = false;
     }
     
     tabFindIndex: number = 0;

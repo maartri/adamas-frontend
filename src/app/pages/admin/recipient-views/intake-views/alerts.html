@@ -73,7 +73,7 @@
                 <button nz-button nzType="default" (click)="handleCancel()">
                     <span>Cancel</span>
                 </button>
-                <button nz-button nzType="primary" (click)="competencyProcess()">
+                <button nz-button nzType="primary" (click)="competencyProcess()" [disabled]="!this.competencyGroup.get('competencyValue').value">
                     <span>Save</span>
                 </button>
             </ng-container>

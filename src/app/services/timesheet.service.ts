@@ -584,7 +584,7 @@ export class TimeSheetService {
      *  Service Competency
      */
 
-     postintakeServicecompetency(data: any): Observable<any> {
+    postintakeServicecompetency(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/Servicecompetency`, data)
     }
    

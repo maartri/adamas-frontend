@@ -110,7 +110,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
         recordNumber: '',
         personID: '',
         list: '',
-        notes: ''
+        notes: ['']
       })
     }
     
@@ -148,7 +148,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
       
       if (index == 1) {    
         this.timeS.postintakestaff({
-          Notes: notes,
+          Notes: (notes == null) ? '' : notes,
           PersonID: this.user.id,
           Name: list,
           StaffCategory:0,
@@ -165,7 +165,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
       
       if (index == 2) {
         this.timeS.postintakestaff({
-          notes: notes,
+          Notes: (notes == null) ? '' : notes,
           personID: this.user.id,
           name: list,
           staffCategory:1,

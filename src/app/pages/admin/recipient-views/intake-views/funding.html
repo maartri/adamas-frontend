@@ -43,7 +43,7 @@
     <div *ngIf="tabFindIndex == 0">
         <form nz-form [formGroup]="packageDetailForm" >
             <div nz-row nzGutter="24">
-                <nz-card [nzBodyStyle]="{'padding':'5px'}" class="mrg-btm-half">
+                <nz-card [nzBodyStyle]="{'padding':'5px'}" class="mrg-btm-one-third">
                     <div nz-row nzJustify>
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <nz-form-label nzRequired nzFor="Name">Name</nz-form-label>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                 </nz-card>    
-                <nz-card [nzBodyStyle]="{'padding':'5px'}" class="mrg-btm-half">
+                <nz-card [nzBodyStyle]="{'padding':'5px'}" class="mrg-btm-one-third">
                     <div nz-row nzJustify>
                         <div nz-col nzSpan="4" class="text-center" style="padding: 0px 20px;">
                             <label for="" style="font-size: 16px;font-weight: 700;margin-top: 12px;">Funding Profile</label>
@@ -168,7 +168,7 @@
                             </div>
                         </div>
                         <div nz-col nzSpan="12" style="padding: 0px 20px;">
-                            <div nz-row nzJustify class="mrg-btm-half">
+                            <div nz-row nzJustify class="mrg-btm-one-third">
                                 <div nz-col nzSpan="8" class="text-right pad-r-5">
                                     <label nzFor="Allowed"><b>Allowed:</b></label>
                                 </div>
@@ -180,7 +180,7 @@
                                 </div>
                             </div>
                             <div nz-col nzSpan="18">
-                                <div nz-col nzSpan="24" class="mrg-btm-half">
+                                <div nz-col nzSpan="24" class="mrg-btm-one-third">
                                     <div nz-col nzSpan="11" class="text-right pad-r-5">
                                         <label nzFor="Yellow"><b>Yellow:</b></label>
                                     </div>
@@ -188,7 +188,7 @@
                                         <input nz-input [nzSize]="'small'" formControlName="aP_YellowQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
                                     </div>
                                 </div>
-                                <div nz-col nzSpan="24" class="mrg-btm-half">
+                                <div nz-col nzSpan="24" class="mrg-btm-one-third">
                                     <div nz-col nzSpan="11" class="text-right pad-r-5">
                                         <label nzFor="green"><b>Green:</b></label>
                                     </div>
@@ -196,7 +196,7 @@
                                         <input nz-input [nzSize]="'small'" formControlName="aP_OrangeQty" Disabled="!this.packageDetailForm.get('alertStartDate').value" />
                                     </div>
                                 </div>
-                                <div nz-col nzSpan="24" class="mrg-btm-half">
+                                <div nz-col nzSpan="24" class="mrg-btm-one-third">
                                     <div nz-col nzSpan="11" class="text-right pad-r-5">
                                         <label nzFor="Red"><b>Red:</b></label>
                                     </div>
@@ -211,10 +211,10 @@
                         </div>  
                     </div>
                 </nz-card>
-                <nz-card [nzBodyStyle]="{'padding':'0px'}" class="mrg-btm-half">
+                <nz-card [nzBodyStyle]="{'padding':'0px'}" class="mrg-btm-one-third">
                     <div nz-row nzJustify>
                         <div nz-col nzSpan="4" class="text-center space-top-2" style="padding: 0px 10px;">
-                            <label for="">Contribution <br>&<br>Contingencies</label>
+                            <label for="" style="font-size:18px;font-weight:700;">Contribution <br>&<br>Contingencies</label>
                         </div>
                         <div nz-col nzSpan="20">
                             <nz-table nzBordered nzTemplateMode [nzSize]="'small'" style="margin-top:10px;">
@@ -262,7 +262,7 @@
                     </div>
                 </nz-card>        
                 <nz-card [nzBodyStyle]="{'padding':'5px'}">
-                    <div nz-row nzJustify class="mrg-btm-half">
+                    <div nz-row nzJustify class="mrg-btm-one-third">
                         <div nz-col nzSpan="12">
                             <div nz-col nzSpan="16" class="text-right pad-r-5">
                                 <label nzFor="Start of Current Plan Funcding">Start of Current Plan Funding:</label>
@@ -282,7 +282,7 @@
                             </div>
                         </div>
                     </div>
-                    <div nz-row nzJustify class="mrg-btm-half">
+                    <div nz-row nzJustify class="mrg-btm-one-third">
                         <div nz-col nzSpan="12">
                             <div nz-col nzSpan="16" class="text-right pad-r-5">
                                 <label nzFor="Start of Current Plan Funcding">End of Current Plan Funding:</label>

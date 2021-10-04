@@ -56,8 +56,11 @@ const packageDefaultForm: any = {
     nz-select{
         width:100%
     }
-    nz-divider{
-        margin:8px ​0 !important;
+    .ant-divider, .ant-divider-vertical{
+        margin:4px ​0 !important;
+    }
+    nz-form-item.ant-form-item{
+        margin:0 ​0 0 0 !important;
     }
     `],
     templateUrl: './funding.html',

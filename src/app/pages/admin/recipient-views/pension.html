@@ -153,7 +153,7 @@
     <div [formGroup]="pensionForm">
         <div nz-row>
             <nz-form-item *ngIf="addOREdit == 1">
-                <nz-form-label [nzNoColon]="true">Pension</nz-form-label>
+                <nz-form-label nzRequired nzFor="Name" [nzNoColon]="true">Name</nz-form-label>
                 <nz-form-control nzErrorTip="This is required!">
                     <nz-select formControlName="name"  nzAllowClear nzPlaceHolder=""
                         [nzDropdownMatchSelectWidth]="false">
@@ -171,7 +171,7 @@
         <div nz-row [nzGutter]="12">
             <div nz-col nzSpan="12" class="form-group">
                 <div nz-row class="form-group" nzOffset="2">
-                    <label for="">Number</label>
+                    <nz-form-label nzRequired nzFor="Number" [nzNoColon]="true">Number</nz-form-label>
                     <input nz-input formControlName="address1" />
                 </div>
             </div>

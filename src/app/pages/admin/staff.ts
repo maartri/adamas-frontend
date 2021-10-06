@@ -977,10 +977,16 @@ ReportRender(){
 
 
     var postdata = {
-      active:this.quicksearch.value.active,
-      inactive:this.quicksearch.value.inactive,
-      alltypes:this.allChecked,
-      selectedTypes:this.selectedTypes,
+      availble:this.quicksearch.value.availble,
+      option:this.quicksearch.value.option,
+      status:this.quicksearch.value.status,
+      gender:this.quicksearch.value.gender,
+      staff:this.quicksearch.value.staff,
+      brokers:this.quicksearch.value.brokers,
+      volunteers:this.quicksearch.value.volunteers,
+      onleaveStaff:this.quicksearch.value.onleaveStaff,
+      previousWork:this.quicksearch.value.previousWork,
+      
       allBranches:this.allBranches,
       selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
       allProgarms:this.allProgarms,

@@ -10,10 +10,10 @@
                             <div><input type="text" formControlName="accountNo" nz-input></div>
                         </div>
                         <div class="form-group-inline">
-                            <label for="">Supervisor Name</label>
+                            <label for="">Case Manager</label>
                             <div>
                                 <nz-select class="nzselect-min" formControlName="recipient" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select an Incident Type" >
-                                    <nz-option *ngFor="let d of listRecipients" [nzLabel]="d.accountNo" [nzValue]="d.accountNo"></nz-option>
+                                    <nz-option *ngFor="let d of listRecipients" [nzLabel]="d.RECIPIENT_COORDINATOR" [nzValue]="d.accountNo"></nz-option>
                                 </nz-select>
                             </div>
                         </div>

@@ -7,16 +7,13 @@ import { SwitchService } from '@services/switch.service';
 import { NzModalService,NzModalRef } from 'ng-zorro-antd/modal';
 import { Router, ActivatedRoute } from '@angular/router';
 import format from 'date-fns/format';
-
+/*
 const inputFormDefault = {
   Printtype : ['Summary Sheet'],
   ShowModal: false,
   Addresslbl : false,
   sheet : false,
-  IDlbl : false,
-
-  
-
+  IDlbl : false,  
    NameContactDetail: [false],
    FNameHeader : [true],
    ContactIssues : [true],
@@ -77,12 +74,74 @@ const inputFormDefault = {
   Roster_staffinclusion : ['Show Staff Code'],
   Cycles : ['Cycle 1'],
   DayNames : ['Monday'],
-  fDays: ['7'],
-    
-  
-
+  fDays: ['7'],      
 }
- 
+ */
+const inputFormDefault = {
+  Printtype : ['Summary Sheet'],
+  ShowModal: false,
+  Addresslbl : false,
+  sheet : false,
+  IDlbl : false,  
+   NameContactDetail: [false],
+   FNameHeader : [false],
+   ContactIssues : [false],
+   TimesheetAlert : [false],
+   RosterAlert : [false],
+   Occupational_Saftey : [false],
+   Reminder_Reviews  : [false],
+   Consents : [false],
+   ApprovedFundingSummary : [false],
+   ApprovedServiceSummary : [false],
+   GoalsofCare : [false],
+   showstrategies: [false],
+   CarePlan : [false],
+   ServiceOverview : [false],
+   AddlNotes: [false],
+   txtAddlNotes: '',
+   ServiceContent : [false],
+   Roster : [false],
+   AddlInfo  : [false],
+   CaseSummary : [false],
+   DemographicSummary : [false],
+   ClinicalSummary : [false],
+   NursingDiag : [false],
+   MedicalDiag : [false],
+   MedicalProcedures : [false],
+   Medications : [false],
+   ClinicalNotes: [false],
+   LoanItems  : [false],
+   Will_Legal : [false],
+   Insurance_Pension : [false],
+   MiscNotes : [false],
+   OPNotes : [false],
+   AccInfo : [false],
+   CaseProgressNotes : [false],
+   CaseAgencyStaff : [false],    
+   HidePhoto : [false],
+   HidePhones : [false],
+   HideAddress : [false],
+   HideGenderDOB : [false],
+   OtherContacts: [false],
+    
+   CaseNotesDate  : [false],
+    
+  SvcOvrPrintSeppg : [false],
+  SvcOvrDisplay  : [false],
+   fontsize: [false],
+   Sepratepg: [false],
+   SheetSig : [false],
+   pgSignature  : [false],
+   logo  : [false],
+   hideRosterActivity  : [false],
+   hideRosterDuration: [false],
+   SummarySfooter : [false],  
+  Roster_inclusion : ['Presentation - with Activity'],
+  Roster_staffinclusion : ['Show Staff Code'],
+  Cycles : ['Cycle 1'],
+  DayNames : ['Monday'],
+  fDays: ['7'],      
+}
 @Component({
  
   templateUrl: './Print.html',
@@ -203,7 +262,7 @@ export class PrintComponent implements OnInit , OnDestroy {
      
     handleCancel() {
       
-      console.log("cancel clicked")
+    //  console.log("cancel clicked")
       this.ShowModal = false;
       this.router.navigate(['/admin/recipient/personal'])
     }
@@ -325,7 +384,10 @@ export class PrintComponent implements OnInit , OnDestroy {
      }
      
      
-      var Title = "Summary Sheet"
+      var Title = "Summary Sheet" 
+       if(this.inputForm.value.FNameHeader == true){
+      //  Title = Title + this.globalS.var1.toString() + " "  +this.globalS.var2.toString()
+       }
           //    console.log(this.tocken.user)
 
           if(id == "PDg8Im0vdY"){
@@ -415,18 +477,19 @@ export class PrintComponent implements OnInit , OnDestroy {
                     break;
                 }
                 let cyclestrdate =  new Date(temp1)
+                let enddate =  new Date(temp1)
                 switch (this.inputForm.value.fDays.toString()) {
                   case '14':
-                    temp2 = cyclestrdate.setDate(14)
+                    temp2 = enddate.setDate(14)
                     break;
                   case '21':
-                    temp2 = cyclestrdate.setDate(21)
+                    temp2 = enddate.setDate(21)
                     break;
                   case '28':
-                    temp2 = cyclestrdate.setDate(28)
+                    temp2 = enddate.setDate(28)
                     break;            
                   default:
-                    temp2 = cyclestrdate.setDate(7)
+                    temp2 = enddate.setDate(7)
                     break;
                 } 
                     let cycleendate =  new Date(temp2) 
@@ -435,7 +498,7 @@ export class PrintComponent implements OnInit , OnDestroy {
 
 
             //  console.log(Pstrdate, Pendate, OPstrdate, OPendate, Rstrdate, Rendate)
-            //  console.log(cyclestrdate, cycleendate)
+            //  console.log(format(cyclestrdate,'yyyy/MM/dd'), format(cycleendate,'yyyy/MM/dd'))
 
 
 
@@ -518,7 +581,7 @@ export class PrintComponent implements OnInit , OnDestroy {
 
                    "SvcPrintSepPg" : this.inputForm.value.SvcOvrPrintSeppg  ,
                    "SvcDisplayContribution" : this.inputForm.value.SvcOvrDisplay   ,
-                   
+                   "NameinHeader" : this.inputForm.value.FNameHeader
                
 
                   

@@ -326,7 +326,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     }
     buildForms(){
         this.quicksearch = this.fb.group({
-          availble:   true,
+          availble: false,
           option: false,
           status:'Active',
           gender:'Any Gender',
@@ -1131,14 +1131,12 @@ ReportRender(){
   }
   openFindModal(){
     this.tabFindIndex = 0;
+    this.updateAllCheckedFilters(-1);
     this.findModalOpen = true;
   }
   
   tabFindIndex: number = 0;
   tabFindChange(index: number){
-    if(index == 1){
-      this.updateAllCheckedFilters(-1);
-    }
     this.tabFindIndex = index;
   }
   

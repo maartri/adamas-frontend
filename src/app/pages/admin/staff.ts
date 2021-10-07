@@ -492,10 +492,10 @@ export class StaffAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
 
     }
-    handleOk(){                         
+    handleOk(){ 
+                            
         this.ReportRender();
-        this.tryDoctype = ""
-        this.pdfTitle = ""        
+                
     //    this.printSummaryModal = false;
      
     }
@@ -652,6 +652,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     }
     handleCancelTop(){
         this.SummarydrawerVisible = false;
+        this.tryDoctype = ""
+        this.pdfTitle = ""
     }
 ReportRender(){
       
@@ -661,9 +663,11 @@ ReportRender(){
     if(this.printSummaryGroup.value.fileLabels == true){
         id = "PDg8Im0vdY"
         var Title = "Address Labels"
+        rptfile = "Staff Address Labels"
     }else{
         id = "2OIfvSiZPw5TUnvz"
         var Title = "Summary Sheet"
+        rptfile = "Staff Summary Sheet"
     }
         if(id == "2OIfvSiZPw5TUnvz"){
           var date = new Date();
@@ -768,7 +772,7 @@ ReportRender(){
               } 
                   let cycleendate =  new Date(temp2) 
 
-console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
+      //console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
           const data = {
             //"_id": "2OIfvSiZPw5TUnvz"
             "template": { "_id": id },

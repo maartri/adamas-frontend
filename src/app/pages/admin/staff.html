@@ -129,6 +129,55 @@
     <button nz-button nzType="primary" (click)="updateStaffCode()"  [nzLoading]="isConfirmLoading">Update Staff Code</button>
   </div>
 </nz-modal>
+<nz-modal [nzWidth]="600" [(nzVisible)]="searchAvaibleModal" nzTitle="Change Day or Times" (nzOnCancel)="searchAvaibleModal = false">
+    <nz-card nzTitle="Set Search Detail For Availability">
+      <p class="text-center">Enter The Date, Start and End Time for Searching for Availble Staff</p>
+    </nz-card>
+    <form nz-form [nzLayout]="'vertical'">
+      <div nz-row [nzGutter]="16" [formGroup]="avilibilityForm">
+        <div nz-col class="gutter-row" [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="Title">Date</nz-form-label>
+            <nz-form-control [nzSpan]="24">
+              <nz-date-picker   formControlName="date" [nzFormat]="dateFormat"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item >
+        </div>
+        <div nz-col class="gutter-row" [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="Title">Start</nz-form-label>
+            <nz-form-control [nzSpan]="24">
+              <nz-select [nzDropdownMatchSelectWidth]="false"  formControlName="start"  nzShowSearch nzAllowClear style="width:100%;">
+                <nz-option *ngFor="let main of timeSteps" [nzLabel]="main"  [nzValue]="main"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col class="gutter-row" [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="Title">End</nz-form-label>
+            <nz-form-control [nzSpan]="24">
+              <nz-select [nzDropdownMatchSelectWidth]="false"  formControlName="end"  nzShowSearch nzAllowClear style="width:100%;">
+                <nz-option *ngFor="let main of timeSteps" [nzLabel]="main"  [nzValue]="main"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item >
+        </div>
+        <div nz-col class="gutter-row" [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="Title">Durat'n</nz-form-label>
+            <nz-form-control [nzSpan]="24">
+              <input type="text" formControlName="drtn" nz-input>
+            </nz-form-control>
+          </nz-form-item >
+        </div>
+      </div>
+    </form>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="searchAvaibleModal = false">Cancel</button>
+    <button nz-button nzType="primary" (click)="updateStaffCode()"  [nzLoading]="isConfirmLoading">Update Staff Code</button>
+  </div>
+</nz-modal>
 <nz-modal [nzWidth]="850" [nzStyle]="{ top: '20px' }" [(nzVisible)]="printSummaryModal" nzTitle="Print Staff Sheet Summary" (nzOnCancel)="printSummaryModal = false">
   <div nz-row [formGroup]="printSummaryGroup">
     <div nz-row class="checks" style="border: 1px solid;">
@@ -356,11 +405,11 @@
       <div nz-col nzSpan="4" [formGroup]="quicksearch" style="margin-right: 5px;">
         <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
           <div nz-col [nzSpan]="12">
-            <label nz-checkbox formControlName="availble">
+            <label nz-checkbox formControlName="availble" (change)="log($event,5)">
               <span><b>Availble</b></span>
             </label>
           </div>
-          <div nz-col [nzSpan]="12">
+          <div nz-col [nzSpan]="12" *ngIf="this.quicksearch.get('availble').value">
             <label nz-checkbox formControlName="option">
               <span><b>Option</b></span>
             </label>
@@ -402,7 +451,7 @@
         <br />
         <label nz-checkbox  formControlName="onleaveStaff">Include Staff On Leave</label>
         <br />
-        <label nz-checkbox  formControlName="previousWork">Previous Work</label>
+        <label nz-checkbox  formControlName="previousWork" *ngIf="this.quicksearch.get('availble').value">Previous Work</label>
       </div>
     </div>
     <div nz-row>      

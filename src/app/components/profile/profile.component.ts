@@ -348,6 +348,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.emailManagerNoEmailShowNotif = this.globalS.isEmpty(this.caseManagerDetails) ? false : true; 
   }
 
+  detectChanges(): void{
+    this.cd.markForCheck();
+    this.cd.detectChanges();
+  }
+
   pathForm(token: ProfileInterface) {
 
     if (this.globalS.isEmpty(token))
@@ -370,8 +375,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           this.user.contacts = this.contactBuilder(data[1]);
           this.user.casestaff = data[2];
 
-          this.cd.markForCheck();
-          this.cd.detectChanges();
+          this.detectChanges();
 
           // this.globalS.userProfile = this.user;
 
@@ -386,6 +390,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.tempContactArray = this.contactForm.get('contacts').value;
           console.log(this.user.filePhoto)
           if(!this.user.filePhoto){
+            this.imgSrc = null;
+            this.showAvatar = true;
+            this.src = null;
+            this.detectChanges();
             return EMPTY;
           }
           return this.staffS.getimages({ directory: this.user.filePhoto })
@@ -397,13 +405,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
           this.imgSrc = this.ds.bypassSecurityTrustUrl(this.defaultURL);
           this.src = this.defaultURL;
+          
         } else {
+          this.imgSrc = null;
           this.showAvatar = true;
           this.src = null;
         }
 
-        this.cd.markForCheck();
-        this.cd.detectChanges();
+        this.detectChanges();
       });     
     }
 
@@ -438,6 +447,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
           // this.tempContactArray = this.contactForm.get('contacts').value;
           if(!this.user.filePhoto){
+            this.imgSrc = null;
             return EMPTY;
           }
           return this.staffS.getimages({ directory: this.user.filePhoto })
@@ -454,6 +464,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         } else {
           this.showAvatar = true;
           this.src = null;
+          this.imgSrc = null;
         }
 
         this.cd.markForCheck();

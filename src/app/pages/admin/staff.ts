@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService,nodes,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService, StaffService, ShareService,timeSteps,nodes,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -89,6 +89,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     terminateModal: boolean = false;
     changeCodeModal: boolean = false;
+    searchAvaibleModal : boolean = false;
     putonLeaveModal: boolean = false;
     newStaffModal: boolean = false;
     
@@ -166,7 +167,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     findModalOpen: boolean = false;
     statusList:any = statusList;
     genderList:any = genderList;
-    
+    timeSteps:Array<string>;
     columns: Array<any> = [
         {
           name: 'ID',
@@ -242,6 +243,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
       ]
   skillsList: unknown;
+  avilibilityForm: FormGroup;
+      
       handleCancel() {
         this.findModalOpen = false;
       }
@@ -295,6 +298,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.buildForm();
         this.buildForms();
+        this.timeSteps = timeSteps;
         this.getUserData();
         this.normalRoutePass();
     }
@@ -325,7 +329,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
         });
     }
     buildForms(){
-        this.quicksearch = this.fb.group({
+        
+      this.quicksearch = this.fb.group({
           availble: false,
           option: false,
           status:'Active',
@@ -335,10 +340,17 @@ export class StaffAdmin implements OnInit, OnDestroy {
           brokers:true,
           volunteers:true,
           onleaveStaff:true,
-          previousWork:'',
+          previousWork:false,
           searchText:'',
         });
         
+        this.avilibilityForm = this.fb.group({
+          date  :[new Date()],
+          start :'09:00',
+          end   :'10:00',
+          drtn :'01:00',
+        });
+
         this.filters = this.fb.group({
           activeprogramsonly:false,
         });
@@ -917,6 +929,7 @@ console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
 
 
  log(event: any,index:number) {
+    console.log("-----");
     this.testcheck = true;   
     if(index == 1)
     this.selectedbranches = event;
@@ -926,6 +939,10 @@ console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
     this.selectedCordinators = event;
     if(index == 4)
     this.selectedCategories = event;  
+
+    if(index == 5 && event.target.checked){
+      this.searchAvaibleModal = true;
+    }
  }
   
   setCriteria(){ 
@@ -961,10 +978,16 @@ console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
 
 
     var postdata = {
-      active:this.quicksearch.value.active,
-      inactive:this.quicksearch.value.inactive,
-      alltypes:this.allChecked,
-      selectedTypes:this.selectedTypes,
+      availble:this.quicksearch.value.availble,
+      option:this.quicksearch.value.option,
+      status:this.quicksearch.value.status,
+      gender:this.quicksearch.value.gender,
+      staff:this.quicksearch.value.staff,
+      brokers:this.quicksearch.value.brokers,
+      volunteers:this.quicksearch.value.volunteers,
+      onleaveStaff:this.quicksearch.value.onleaveStaff,
+      previousWork:this.quicksearch.value.previousWork,
+      
       allBranches:this.allBranches,
       selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
       allProgarms:this.allProgarms,
@@ -1132,8 +1155,11 @@ console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
   }
   openFindModal(){
     this.tabFindIndex = 0;
+    
     this.updateAllCheckedFilters(-1);
+    
     this.findModalOpen = true;
+
   }
   
   tabFindIndex: number = 0;

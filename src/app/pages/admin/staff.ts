@@ -650,10 +650,10 @@ ReportRender(){
         id = "PDg8Im0vdY"
         var Title = "Address Labels"
     }else{
-        id = "RYeIj0QuEc"
+        id = "2OIfvSiZPw5TUnvz"
         var Title = "Summary Sheet"
     }
-        if(id == "RYeIj0QuEc"){
+        if(id == "2OIfvSiZPw5TUnvz"){
           var date = new Date();
    
             if (this.trainingFrom != null) { Trainstrdate = format(this.trainingFrom, 'yyyy/MM/dd') } 
@@ -739,33 +739,34 @@ ReportRender(){
                   break;
               }
               let cyclestrdate =  new Date(temp1)
+                let enddate =  new Date(temp1)
               switch (this.printSummaryGroup.value.fDays.toString()) {
                 case '14':
-                  temp2 = cyclestrdate.setDate(14)
+                  temp2 = enddate.setDate(14)
                   break;
                 case '21':
-                  temp2 = cyclestrdate.setDate(21)
+                  temp2 = enddate.setDate(21)
                   break;
                 case '28':
-                  temp2 = cyclestrdate.setDate(28)
+                  temp2 = enddate.setDate(28)
                   break;            
                 default:
-                  temp2 = cyclestrdate.setDate(7)
+                  temp2 = enddate.setDate(7)
                   break;
               } 
                   let cycleendate =  new Date(temp2) 
 
-
+console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
           const data = {
-    
-            "template": { "shortid": id },
+            //"_id": "2OIfvSiZPw5TUnvz"
+            "template": { "_id": id },
                         
             "options": {
                 "reports": { "save": false },                                  
                 "userid": this.tocken.user,
                 "txtTitle": Title,
                 "txtid":this.globalS.var1.toString(),
-                "txtacc":this.globalS.var2.toString(),
+              //  "txtacc":this.globalS.var2.toString(),
 
                 "inclNameContact": this.printSummaryGroup.value.nameandContacts,
                 "inclContactIssues": this.printSummaryGroup.value.contactIssue,

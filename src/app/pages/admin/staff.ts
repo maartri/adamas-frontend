@@ -979,38 +979,40 @@ ReportRender(){
     .filter(opt => opt.checked)
     .map(opt => opt.description).join("','")
 
-
     var postdata = {
-      availble:this.quicksearch.value.availble,
-      option:this.quicksearch.value.option,
+      // availble:this.quicksearch.value.availble,
+      // option:this.quicksearch.value.option,
+      
       status:this.quicksearch.value.status,
       gender:this.quicksearch.value.gender,
       staff:this.quicksearch.value.staff,
       brokers:this.quicksearch.value.brokers,
       volunteers:this.quicksearch.value.volunteers,
       onleaveStaff:this.quicksearch.value.onleaveStaff,
-      previousWork:this.quicksearch.value.previousWork,
+      // onleaveStaff:this.quicksearch.value.onleaveStaff,
+      // previousWork:this.quicksearch.value.previousWork,
       
-      allBranches:this.allBranches,
-      selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
-      allProgarms:this.allProgarms,
-      selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
-      allCordinatore:this.allCordinatore,
-      selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
-      allcat:this.allcat,
-      selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
-      activeprogramsonly:this.filters.value.activeprogramsonly,
-      surname:this.quicksearch.value.surname,
-      firstname:this.quicksearch.value.firstname,
-      phoneno:this.quicksearch.value.phoneno,
-      suburb:this.quicksearch.value.suburb,
-      dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
-      fileno:this.quicksearch.value.fileno,
-      searchText:this.quicksearch.value.searchText,
-      criterias:this.cariteriaList // list of rules
+      // allBranches:this.allBranches,
+      // selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+      // allProgarms:this.allProgarms,
+      // selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
+      // allCordinatore:this.allCordinatore,
+      // selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+      // allcat:this.allcat,
+      // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+      // activeprogramsonly:this.filters.value.activeprogramsonly,
+      // surname:this.quicksearch.value.surname,
+      // firstname:this.quicksearch.value.firstname,
+      // phoneno:this.quicksearch.value.phoneno,
+      // suburb:this.quicksearch.value.suburb,
+      // dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
+      // fileno:this.quicksearch.value.fileno,
+      // searchText:this.quicksearch.value.searchText,
+      // criterias:this.cariteriaList
+       // list of rules
     }
 
-    this.timeS.poststaffquicksearch({}).subscribe(data => {
+    this.timeS.poststaffquicksearch(postdata).subscribe(data => {
       this.filteredResult = data;
       this.loading = false;
       this.cd.detectChanges();

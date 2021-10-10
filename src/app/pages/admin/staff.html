@@ -430,7 +430,6 @@
             <label nz-checkbox formControlName="availble" (change)="log($event,5)">
               <span><b>Availble</b></span>
             </label>
-            <button nz-button nzType="default" (click)="searchAvaibleModal = true">test modal</button>
           </div>
           <div nz-col [nzSpan]="12" *ngIf="this.quicksearch.get('availble').value">
             <label nz-checkbox formControlName="option">
@@ -555,12 +554,13 @@
         </nz-tabset>
         <div *ngIf="tabFindIndex == 0">
           <div nz-row>
-            <nz-table style="margin-top:0px;" #fixedTable [nzData]="filteredResult" [nzLoading]="loading" [nzScroll]="{ x: '2400px', y: '540px' }"  nzSize="small" nzBordered class="custum-header">
+            <nz-table style="margin-top:0px;" #fixedTable [nzData]="filteredResult" [nzLoading]="loading" [nzScroll]="{ x: '2600px', y: '540px' }"  nzSize="small" nzBordered class="custum-header">
               <thead>
                 <tr>
                   <th nzWidth="100px" nzLeft="0PX">ID</th>
                   <th nzWidth="50px"  nzLeft="100PX">MIN</th>
                   <th nzWidth="50px"  nzLeft="150PX">MAX</th>
+                  <th nzWidth="200px">Type</th>
                   <th nzWidth="200px">Staff Name</th>
                   <th nzWidth="200px">Suburb</th>
                   <th nzWidth="200px">Category</th>
@@ -580,6 +580,7 @@
                   <td  nzLeft="0PX">{{result.id}}</td>
                   <td  nzLeft="100PX">{{result.hfmin}}</td>
                   <td  nzLeft="150PX">{{result.hfmax}}</td>
+                  <td>{{result.type}}</td>
                   <td>{{result.name}}</td>
                   <td>{{result.suburb}}</td>
                   <td>{{result.category}}</td>

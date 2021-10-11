@@ -965,7 +965,7 @@ ReportRender(){
     
     this.selectedPrograms = this.diciplineList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
     
     this.selectedCordinators = this.casemanagers
     .filter(opt => opt.checked)
@@ -990,13 +990,16 @@ ReportRender(){
       volunteers:this.quicksearch.value.volunteers,
       onleaveStaff:this.quicksearch.value.onleaveStaff,
       searchText:this.quicksearch.value.searchText,
+      
+      allTeamAreas      : this.allProgarms,
+      selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
+
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,
                      
       // allBranches:this.allBranches,
       // selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
-      // allProgarms:this.allProgarms,
-      // selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
+
       // allCordinatore:this.allCordinatore,
       // selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
       // allcat:this.allcat,

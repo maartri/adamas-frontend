@@ -416,7 +416,7 @@
       </div>
       <div nz-col class="gutter-row" nzSpan="17" [formGroup]="quicksearch">
         <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
-            <input type="text" nz-input formControlName="searchText" placeholder="Type SURNAME here and press enter" />
+            <input type="text" nz-input formControlName="searchText" placeholder="" />
         </nz-input-group>
         <ng-template #suffixButton>
             <button nz-button nzType="primary" nzSize="large" nzSearch (click)="searchData()">Search</button>

@@ -14,7 +14,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzRadioModule  } from 'ng-zorro-antd/radio';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import * as _ from 'lodash';
-
+import {ShiftDetail} from './shiftdetail'
 
 
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
@@ -43,6 +43,7 @@ import { ElementSchemaRegistry } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
+
 
 
  
@@ -161,7 +162,7 @@ export class RostersAdmin implements AfterViewInit  {
       float: 'left'
     };  
 @Input() info = {StaffCode:'', ViewType:'',IsMaster:false}; 
-
+@ViewChild(ShiftDetail) detail:ShiftDetail;
 selectedrow: string ="class.selected"   
 timesheets: Array<any> = [];
 timesheetsGroup: Array<any> = [];   
@@ -180,6 +181,7 @@ HighlightRow6!: number;
 recurrentStartTime:string;
 recurrentEndTime:string;
 
+testComp:boolean=false;
 
 recurrentStartDate: Date | null = null;
 recurrentEndDate: Date | null = null;
@@ -197,6 +199,8 @@ data:any=[];
 ActiveCellText:any;
 startRoster:any;
 endRoster:any;
+searchAvaibleModal:boolean=false;
+
   rosters: Array<any> = [];
   current_roster:any;
   time_map = new Map();
@@ -251,7 +255,7 @@ endRoster:any;
     enable_buttons :boolean=false;
     
     private picked$: Subscription;   
-
+    isConfirmLoading = false;
     changeModalView = new Subject<number>();
     changeViewRecipientDetails = new Subject<number>();
     changeViewRosterDetails = new Subject<number>();
@@ -414,6 +418,7 @@ get_group_Shift_Setting()
 
     
 }
+
 Save_Transport(){
     
     const tdata =  this.TransportForm.value;
@@ -2891,7 +2896,12 @@ return rst;
       
     whatProcess = PROCESS.ADD;
     details(index: any){
-        
+        this.detail.isVisible=true;
+           this.detail.data=index;
+           this.detail.viewType =this.viewType
+           this.detail.editRecord=false;
+           this.detail.ngAfterViewInit();
+           return;
         this.whatProcess = PROCESS.UPDATE;
         console.log(index);
         const {
@@ -3438,9 +3448,14 @@ reload(reload: boolean){
             this.addTimesheetVisible=false;
             this.addBookingModel=false;
             this.ShowCentral_Location=false;
+            this.testComp=false;
     }
     handleOk(){
-
+        this.isConfirmLoading = true;
+        setTimeout(() => {
+          this.isVisible = false;
+          this.isConfirmLoading = false;
+        }, 1000);
     }
 
     AddMultiShiftRosters(){
@@ -5034,7 +5049,22 @@ this.bookingForm.get('program').valueChanges.pipe(
            // console.log(sql);
         return this.listS.getlist(sql);
 }      
-     
+
+
+shiftChanged(value:any){
+   if (this.viewType=='Staff' && value.show_alert){
+        this.txtAlertSubject= 'SHIFT DAY/TIME CHANGE : ';
+        this.txtAlertMessage= 'SHIFT TIME CHANGE : \n Date: ' + format(value.date,'dd/MM/yyyy') + '  \n Recipient: ' + value.clientCode + '\n'  ,
+        this.clientCodes=value.clientCode;      
+      
+        this.show_alert=true;
+    }
+    this.searchRoster(value.date)
+}
+
+
+
+
 }
 
 

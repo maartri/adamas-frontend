@@ -989,9 +989,10 @@ ReportRender(){
       brokers:this.quicksearch.value.brokers,
       volunteers:this.quicksearch.value.volunteers,
       onleaveStaff:this.quicksearch.value.onleaveStaff,
+      searchText:this.quicksearch.value.searchText,
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,
-      
+                     
       // allBranches:this.allBranches,
       // selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
       // allProgarms:this.allProgarms,

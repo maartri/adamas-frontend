@@ -21,7 +21,7 @@ import differenceInDays from 'date-fns/differenceInDays'
 import differenceInWeeks from 'date-fns/differenceInWeeks'
 import differenceInMinutes from 'date-fns/differenceInMinutes'
 import { Jwt, DateTimeVariables } from '@modules/modules';
-
+import {  JsConfig } from '@modules/modules';
 const helper = new JwtHelperService();
 
 import { FormGroup} from '@angular/forms';
@@ -1447,6 +1447,15 @@ admincharges :number = 0;
             this.router.navigate(['portal']);
         if (data.role === roles.manager)
             this.router.navigate(['client-manager']);
+    }
+
+    get jsreportSettings(): any {
+        var jsconfig: JsConfig = JSON.parse(localStorage.getItem('jsreportSettings'));
+        return btoa(`${jsconfig.username}:${jsconfig.password}`);
+    }
+
+    set jsreportSettings(data: any) {
+        localStorage.setItem('jsreportSettings', JSON.stringify(data));
     }
 
     get settings(): string {

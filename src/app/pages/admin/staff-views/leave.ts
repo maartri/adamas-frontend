@@ -59,6 +59,8 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     defaultLeaveForm: FormGroup;
     operation: any;
     userUpdated: any;
+    currentDate: string;
+    
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,

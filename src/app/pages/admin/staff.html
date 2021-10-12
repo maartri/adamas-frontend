@@ -113,7 +113,7 @@
     <button nz-button nzType="primary" (click)="terminate()"  [nzLoading]="isConfirmLoading">Terminate</button>
   </div>
 </nz-modal>
-<nz-modal [nzZIndex]="1001" [nzWidth]="600" [(nzVisible)]="searchAvaibleModal" nzTitle="Change Day or Times" (nzOnCancel)="searchAvaibleModal = false">
+<!-- <nz-modal [nzZIndex]="1001" [nzWidth]="600" [(nzVisible)]="searchAvaibleModal" nzTitle="Change Day or Times" (nzOnCancel)="searchAvaibleModal = false">
   <nz-card nzTitle="Set Search Detail For Availability">
     <p class="text-center">Enter The Date, Start and End Time for Searching for Availble Staff</p>
   </nz-card>
@@ -161,7 +161,29 @@
   <button nz-button nzType="default" (click)="searchAvaibleModal = false">Cancel</button>
   <button nz-button nzType="primary" (click)="updateStaffCode()"  [nzLoading]="isConfirmLoading">Update Staff Code</button>
 </div>
+</nz-modal> -->
+
+<nz-modal
+ [(nzVisible)]="searchAvaibleModal"
+ [nzTitle]="modalTitle"
+ [nzContent]="modalContent"
+ [nzFooter]="modalFooter"
+ (nzOnCancel)="searchAvaibleModal = false"
+>
+ <ng-template #modalTitle>Custom Modal Title</ng-template>
+ <ng-template #modalContent>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+ </ng-template>
+ <ng-template #modalFooter>
+   <span>Modal Footer:</span>
+   <button nz-button nzType="default" (click)="searchAvaibleModal = false">Custom Callback</button>
+ </ng-template>
 </nz-modal>
+
 <nz-modal [nzWidth]="400" [(nzVisible)]="changeCodeModal" nzTitle="Agency Defined Code" (nzOnCancel)="changeCodeModal = false">
   <div nz-row [formGroup]="updateStaff">
     <form nz-form [nzLayout]="'vertical'" [formGroup]="updateStaff" >
@@ -394,7 +416,7 @@
       </div>
       <div nz-col class="gutter-row" nzSpan="17" [formGroup]="quicksearch">
         <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
-            <input type="text" nz-input formControlName="searchText" placeholder="Type SURNAME here and press enter" />
+            <input type="text" nz-input formControlName="searchText" placeholder="" />
         </nz-input-group>
         <ng-template #suffixButton>
             <button nz-button nzType="primary" nzSize="large" nzSearch (click)="searchData()">Search</button>
@@ -532,12 +554,13 @@
         </nz-tabset>
         <div *ngIf="tabFindIndex == 0">
           <div nz-row>
-            <nz-table style="margin-top:0px;" #fixedTable [nzData]="filteredResult" [nzLoading]="loading" [nzScroll]="{ x: '2400px', y: '540px' }"  nzSize="small" nzBordered class="custum-header">
+            <nz-table style="margin-top:0px;" #fixedTable [nzData]="filteredResult" [nzLoading]="loading" [nzScroll]="{ x: '2600px', y: '540px' }"  nzSize="small" nzBordered class="custum-header">
               <thead>
                 <tr>
                   <th nzWidth="100px" nzLeft="0PX">ID</th>
                   <th nzWidth="50px"  nzLeft="100PX">MIN</th>
                   <th nzWidth="50px"  nzLeft="150PX">MAX</th>
+                  <th nzWidth="200px">Type</th>
                   <th nzWidth="200px">Staff Name</th>
                   <th nzWidth="200px">Suburb</th>
                   <th nzWidth="200px">Category</th>
@@ -557,6 +580,7 @@
                   <td  nzLeft="0PX">{{result.id}}</td>
                   <td  nzLeft="100PX">{{result.hfmin}}</td>
                   <td  nzLeft="150PX">{{result.hfmax}}</td>
+                  <td>{{result.type}}</td>
                   <td>{{result.name}}</td>
                   <td>{{result.suburb}}</td>
                   <td>{{result.category}}</td>

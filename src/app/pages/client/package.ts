@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { ClientService, GlobalService } from '@services/index';
+import { ClientService, GlobalService, PrintService } from '@services/index';
 import { MonthPeriodFilter } from '@pipes/pipes';
 import { APP_BASE_HREF, Location, PlatformLocation } from '@angular/common';
 
@@ -7,7 +7,10 @@ import { Subscription, Subject, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { switchMap, distinctUntilChanged, debounceTime, mergeMap, map, tap } from 'rxjs/operators';
 
-import { GetPackage } from '@modules/modules';
+import { GetPackage, JsConfig } from '@modules/modules';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 @Component({
     selector: 'package-client',
@@ -48,6 +51,8 @@ import { GetPackage } from '@modules/modules';
 
 export class PackageClient implements OnInit, OnDestroy {
 
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+
     @Input() id: any;
     @Input() MINUS_MONTH: number = 0;
 
@@ -83,10 +88,12 @@ export class PackageClient implements OnInit, OnDestroy {
         private clientS: ClientService,
         private globalS: GlobalService,
         private monthPeriodFilter: MonthPeriodFilter,
-        private platformLocation: PlatformLocation
+        private platformLocation: PlatformLocation,
+        private sanitizer: DomSanitizer,
+        private printS: PrintService,
+        private http: HttpClient
     ) {
         
-
         this.dateResult$ = this.dateStream.pipe(
             debounceTime(500),
             distinctUntilChanged(),
@@ -270,5 +277,29 @@ export class PackageClient implements OnInit, OnDestroy {
             });
             return minDate.balance;
         }
+    }
+
+    printPackage(): void{
+
+        var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'OPNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
+
+        const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+                "reports": { "save": false },
+                "txtTitle": "Staff OP NOTES List",
+                "sql": fQuery,
+                "userid": ' ',
+                "head1" : "Date",
+                "head2" : "Detail",
+                "head3" : "Created By",
+                "head4" : "Remember Date",
+            }
+        }
+
+        this.printS.print(data).subscribe(data => console.log(data));
+
+        return;
+        
     }
 }

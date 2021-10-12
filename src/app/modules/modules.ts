@@ -948,3 +948,7 @@ export interface NewRelationShip
     checked: boolean
 }
 
+export interface JsConfig{
+    username: string,
+    password: string
+}

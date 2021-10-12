@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { GlobalService } from '@services/index';
+import { GlobalService } from '@services/global.service';
 import { JsConfig } from '@modules/modules';
 
 const url: string = "https://www.mark3nidad.com:5488/api/report"

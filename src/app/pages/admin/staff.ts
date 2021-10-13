@@ -973,7 +973,7 @@ ReportRender(){
     
     this.selectedCategories = this.categoriesList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
     
     this.selectedbranches = this.branchesList
     .filter(opt => opt.checked)
@@ -994,12 +994,14 @@ ReportRender(){
       allTeamAreas      : this.allProgarms,
       selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
 
+      allcat:this.allcat,
+      selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+
+
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,
-                     
       // allBranches:this.allBranches,
       // selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
-
       // allCordinatore:this.allCordinatore,
       // selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
       // allcat:this.allcat,
@@ -1013,7 +1015,8 @@ ReportRender(){
       // fileno:this.quicksearch.value.fileno,
       // searchText:this.quicksearch.value.searchText,
       // criterias:this.cariteriaList
-       // list of rules
+      // list of rules
+    
     }
 
     this.timeS.poststaffquicksearch(postdata).subscribe(data => {

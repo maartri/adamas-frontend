@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, AfterViewInit,ChangeDetectorRef } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, } from '@angular/forms';
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ViewEncapsulation } from '@angular/core';
-import { ListService, states, TimeSheetService,GlobalService,MenuService,ReportService } from '@services/index';
+import { ListService, states, TimeSheetService,GlobalService,MenuService,ReportService,PrintService } from '@services/index'
 import * as FileSaver from 'file-saver';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
@@ -686,6 +686,8 @@ stafftypeArr: Array<any> = constants.types;
         private ModalS: NzModalService,
         private router: Router,
         private route: ActivatedRoute,
+        private printS: PrintService,
+        private cd: ChangeDetectorRef,
     ) {
 
     }
@@ -2745,8 +2747,7 @@ stafftypeArr: Array<any> = constants.types;
             //    console.log(this.tocken.user)
                 const data = {
         
-                    "template": { "_id": this.reportid },
-                                
+                    "template": { "_id": this.reportid },                                
                     "options": {
                         "reports": { "save": false },
                         //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
@@ -2759,9 +2760,33 @@ stafftypeArr: Array<any> = constants.types;
                     }
                 }
                 this.loading = true;
+               
+
+                this.printS.print(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Referral list.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
         
+                return;
+               
+        /*
                 const headerDict = {
-        
+         
                     'Content-Type': 'application/json',
                     'Accept': 'application/json', 
                     'Content-Disposition': 'inline;filename=XYZ.pdf'
@@ -2794,16 +2819,19 @@ stafftypeArr: Array<any> = constants.types;
                         
                         this.loading = false;
         
-                    }, err => {
-                        console.log(err);
                         this.ModalS.error({
                             nzTitle: 'TRACCS',
         nzContent: 'The report has encountered the error and needs to close (' + err + ')',
                             nzOnOk: () => {
                                      this.drawerVisible = false;
                                      },
-                          });
-                    }); this.drawerVisible = true;
+                          });   
+                    }); */ 
+                    
+                    
+                    
+                 //   this.drawerVisible = true;
+                  
         }
 
 
@@ -2907,46 +2935,31 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       
 
-        const headerDict = {
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Waiting list.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
+        return;
 
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),
-            credentials: true
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Waiting list.pdf"
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                                this.drawerVisible = false;
-                                },
-                    });
-            }); this.drawerVisible = true;
-
-        }
-
-        
+    }
         }
 
     ActivePackage_list(branch, manager, region, program, startdate, enddate) {
@@ -3025,37 +3038,33 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Active Packages.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Active Packages.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
+
+        
+
+     
     }
 
     RecipientRoster(branch, stfgroup, recipient, stafftype, startdate, enddate, tempsdate, tempedate,format) {
@@ -3152,7 +3161,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             break;
     }
     //console.log(fQuery)
-        this.drawerVisible = true;
+       
 
         const data = {
             "template": { "_id": this.reportid },
@@ -3166,37 +3175,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Recipient Rosters.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Recipient Rosters.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
     SuspendedRecipient(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
@@ -3260,7 +3261,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)*/
         //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "AqAvj5SAJimxblUC" },
@@ -3274,37 +3275,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Suspended Recipients.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Suspended Recipients.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
 
@@ -3367,7 +3360,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)
         console.log(fQuery)*/
 
-        this.drawerVisible = true;
+      
 
         const data = {
             "template": { "_id": "OyCHjzwx6HGfc3jQ" },
@@ -3380,37 +3373,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Voucher Summary.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Voucher Summary.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
     PackageUsage(branch, manager, region, program) {
@@ -3469,7 +3454,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)*/
         // //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "IOYgvXGLDyJsHZDk" },
@@ -3482,37 +3467,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Package Usage Report.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Package Usage Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
 
@@ -3538,8 +3515,8 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)*/
         //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+        this.loading = true;
+                
         const data = {
             "template": { "_id": "apWdClVOiUcJ8xT0" },
             "options": {
@@ -3551,37 +3528,28 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
 
-        this.loading = true;
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Recipient Time Length Report.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Recipient Time Length Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
     UnallocatedBookings(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
@@ -3655,37 +3623,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Unallocated Bookings.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Unallocated Bookings.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
     TransportSummary(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
@@ -3748,7 +3708,10 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CoordinatorSQL)*/
         //////console.log(fQuery)
 
-        this.drawerVisible = true;
+    //    this.drawerVisible = true;
+
+        this.loading = true;
+        
 
         const data = {
             "template": { "_id": "zf77m2pHrfjGcpvM" },
@@ -3760,38 +3723,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "userid": this.tocken.user,
             }
         }
-        this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Transport Summary Report.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Transport Summary Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
 
@@ -3867,37 +3821,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+       
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Referral During Period.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Referral During Period.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
     RecipientMasterRoster(branch, stfgroup, recipient, stafftype, startdate, enddate ,s_Cycle,format) {
@@ -3989,37 +3935,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Recipients Master Roster.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Recipients Master Roster.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
     MasterRosteredhours(program, s_Cycle) {        
           
@@ -4117,37 +4055,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Master Rostered Hours Report.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Master Rostered Hours Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
     ActiveRecipientList(branch, manager, region, program,inclusion) {
 
@@ -4237,37 +4167,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Active Recipient List.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Active Recipient List.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
         }
        
     
@@ -4362,37 +4284,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "InActive Recipient List.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "InActive Recipient List.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
         }
 
         
@@ -4482,37 +4396,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Carer list.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Carer list.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
 
         }
 
@@ -4603,37 +4509,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Billing Clients.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Billing Clients.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
         }
 
         
@@ -4712,37 +4610,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Admissions During Period.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Billing Clients.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
     DischargeDuringPeriod(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
 
@@ -4806,7 +4696,14 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
         // //////console.log(fQuery)
-        // console.log(lblcriteria)               
+        // console.log(lblcriteria)  
+        
+        
+        this.loading = true;
+        
+
+
+
         this.drawerVisible = true;
 
         const data = {
@@ -4819,38 +4716,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 "userid": this.tocken.user,
             }
         }
-        this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Discharge During Period.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Discharge During Period.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
 
     AbsentClientStatus(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
@@ -4929,37 +4817,29 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Absent Client Status Report.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                             this.drawerVisible = false;
-                             },
-                  });
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Absent Client Status Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
             });
+        });
+
+        return;
     }
     Associate_list(branch, manager, region, program) {
 
@@ -5054,6 +4934,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 }
             }
             this.loading = true;
+            this.pdfTitle = "Associate Listing.pdf"
     
             const headerDict = {
                 'Content-Type': 'application/json',
@@ -5071,7 +4952,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                     let _blob: Blob = blob;
     
                     let fileURL = URL.createObjectURL(_blob);
-                    this.pdfTitle = "Associate Listing.pdf"
+                    
                     this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                     this.loading = false;
     
@@ -5172,6 +5053,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             }
         }
         this.loading = true;
+        this.pdfTitle = "Unserviced Recipient Report.pdf"
 
         const headerDict = {
             'Content-Type': 'application/json',
@@ -5189,7 +5071,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 let _blob: Blob = blob;
 
                 let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Unserviced Recipient Report.pdf"
+                
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
 
@@ -5269,6 +5151,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
             this.drawerVisible = true;        
             
             this.loading = true;
+            this.pdfTitle = "Active Staff List.pdf"
         const data = {
             "template": { "_id":  this.reportid },
             "options": {
@@ -5296,7 +5179,7 @@ nzContent: 'The report has encountered the error and needs to close (' + err.cod
                 let _blob: Blob = blob;
 
                 let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "Active Staff List.pdf"
+                
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                 this.loading = false;
 
@@ -20182,7 +20065,7 @@ FetchRuntimeReport(title){
         var re = /~/gi;    
         //console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
     
-     //   this.RenderRunTimeReport(this.UserRptSQLlist)
+        this.RenderRunTimeReport(this.UserRptSQLlist)
 
     });
 

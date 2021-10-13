@@ -1710,11 +1710,11 @@
     
     
         
-    <nz-drawer [nzHeight]= "650" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <nz-drawer [nzHeight]= "768" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
         <div class="col-md-12 spinner" *ngIf="loading">
             <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
         </div>
-        <div nz-row>
-            <iframe *ngIf="tryDoctype" [src]="tryDoctype" ></iframe> 
+        <div nz-row>   
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="1224" height="768" ></iframe> 
         </div>
     </nz-drawer>

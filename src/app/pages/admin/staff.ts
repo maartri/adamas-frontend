@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService, StaffService, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService,PrintService } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -292,6 +292,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private http: HttpClient,
         private ModalS: NzModalService,
         private sanitizer: DomSanitizer,
+        private printS: PrintService,
     ) {        
       
     }
@@ -831,44 +832,31 @@ ReportRender(){
                 
             }
         }
-        this.SummarydrawerVisible = true;
+         
         this.spinloading = true;
         
-        const headerDict = {
+        
+        this.printS.print(data).subscribe((blob: any) => {
+          this.pdfTitle = rptfile;
+          this.SummarydrawerVisible = true;                   
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.loading = false;
+          this.cd.detectChanges();
+      }, err => {
+          console.log(err);
+          this.loading = false;
+          this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                  this.SummarydrawerVisible = false;
+              },
+          });
+      });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',                                                
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),
-            credentials: true
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = rptfile;
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.spinloading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                    nzOnOk: () => {
-                             this.SummarydrawerVisible = false;
-                              
-                             },
-                  });
-            }); 
+      return;
         }
         else{
 
@@ -894,44 +882,30 @@ ReportRender(){
                 
             }
         }
-        this.SummarydrawerVisible = true;
+        
         this.spinloading = true;
         
-        const headerDict = {
+        this.printS.print(data).subscribe((blob: any) => {
+          this.pdfTitle = rptfile;
+          this.SummarydrawerVisible = true;                   
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.loading = false;
+          this.cd.detectChanges();
+      }, err => {
+          console.log(err);
+          this.loading = false;
+          this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                  this.SummarydrawerVisible = false;
+              },
+          });
+      });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',                                                
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),            
-            credentials: true,                       
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob) ;
-                this.pdfTitle = rptfile;
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.ifrmtryDoctype = true;
-                this.spinloading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                    nzOnOk: () => {
-                             this.SummarydrawerVisible = false;               
-                            },
-                    });
-                });
+      return;
             }
 }
 

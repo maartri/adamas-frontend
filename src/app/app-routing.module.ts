@@ -190,7 +190,7 @@ import { DestinationaddressComponent } from '@admin/configuration/genrel-setup/d
 import { ProgramcoordinatesComponent } from '@admin/configuration/genrel-setup/programcoordinates.component';
 import { DistributionlistComponent } from '@admin/configuration/genrel-setup/distributionlist.component';
 import { NotificationlistComponent } from '@admin/configuration/genrel-setup/notificationlist.component';
-
+import {FollowupComponent} from '@admin/configuration/genrel-setup/followup.component';
 import { InitialactionsComponent } from '@admin/configuration/incidents/initialactions.component';
 import { OngoingactionsComponent } from '@admin/configuration/incidents/ongoingactions.component';
 import { IncidenttriggersComponent } from '@admin/configuration/incidents/incidenttriggers.component';
@@ -655,6 +655,10 @@ const routes: Routes = [
       {
         path:"notification-list",
         component:NotificationlistComponent,
+      },
+      {
+        path:"followup-list",
+        component:FollowupComponent,
       },
       {
         path:"initial-actions",
@@ -1241,6 +1245,7 @@ export const PAGE_COMPONENTS = [
   ProgramcoordinatesComponent,
   DistributionlistComponent,
   NotificationlistComponent,
+  FollowupComponent,
   InitialactionsComponent,
   OngoingactionsComponent,
   IncidenttriggersComponent,

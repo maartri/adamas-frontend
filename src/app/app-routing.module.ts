@@ -189,6 +189,8 @@ import { MedicalcontactComponent } from '@admin/configuration/genrel-setup/medic
 import { DestinationaddressComponent } from '@admin/configuration/genrel-setup/destinationaddress.component';
 import { ProgramcoordinatesComponent } from '@admin/configuration/genrel-setup/programcoordinates.component';
 import { DistributionlistComponent } from '@admin/configuration/genrel-setup/distributionlist.component';
+import { NotificationlistComponent } from '@admin/configuration/genrel-setup/notificationlist.component';
+
 import { InitialactionsComponent } from '@admin/configuration/incidents/initialactions.component';
 import { OngoingactionsComponent } from '@admin/configuration/incidents/ongoingactions.component';
 import { IncidenttriggersComponent } from '@admin/configuration/incidents/incidenttriggers.component';
@@ -649,6 +651,10 @@ const routes: Routes = [
       {
         path:"distribution-list",
         component:DistributionlistComponent,
+      },
+      {
+        path:"notification-list",
+        component:NotificationlistComponent,
       },
       {
         path:"initial-actions",
@@ -1234,6 +1240,7 @@ export const PAGE_COMPONENTS = [
   DestinationaddressComponent,
   ProgramcoordinatesComponent,
   DistributionlistComponent,
+  NotificationlistComponent,
   InitialactionsComponent,
   OngoingactionsComponent,
   IncidenttriggersComponent,

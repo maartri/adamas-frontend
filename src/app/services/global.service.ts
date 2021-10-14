@@ -116,6 +116,7 @@ export const fundingDropDowns = {
     levels: ['LEVEL 1', 'LEVEL 2', 'LEVEL 3','LEVEL 4'],
     cycle: ['CYCLE 1', 'CYCLE 2', 'CYCLE 3', 'CYCLE 4', 'CYCLE 5', 'CYCLE 6', 'CYCLE 7', 'CYCLE 8', 'CYCLE 9', 'CYCLE 10']
 }
+export const notificationTypes = ['Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification']
 export const othersType = ['REFERRAL','WAITING LIST','CARER','RECIPIENT','CARER/RECIPIENT','BILLING CLIENT ONLY','ASSOCIATE']
 export const attendance = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL']
 export const dateFormat = "dd/MM/yyyy";

@@ -842,11 +842,11 @@ ReportRender(){
           let _blob: Blob = blob;
           let fileURL = URL.createObjectURL(_blob);
           this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-          this.loading = false;
+          this.spinloading = false;
           this.cd.detectChanges();
       }, err => {
           console.log(err);
-          this.loading = false;
+          this.spinloading = false;
           this.ModalS.error({
               nzTitle: 'TRACCS',
               nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
@@ -891,11 +891,11 @@ ReportRender(){
           let _blob: Blob = blob;
           let fileURL = URL.createObjectURL(_blob);
           this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-          this.loading = false;
+          this.spinloading = false;
           this.cd.detectChanges();
       }, err => {
           console.log(err);
-          this.loading = false;
+          this.spinloading = false;
           this.ModalS.error({
               nzTitle: 'TRACCS',
               nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',

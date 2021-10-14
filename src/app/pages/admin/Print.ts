@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService ,MenuService } from '@services/index';
+import { GlobalService, ListService ,MenuService,PrintService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService,NzModalRef } from 'ng-zorro-antd/modal';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -234,6 +234,7 @@ export class PrintComponent implements OnInit , OnDestroy {
     private ModalS: NzModalService,
     private sanitizer: DomSanitizer,
     private router: Router,
+    private printS : PrintService,
      
     ){}
     ngOnInit(): void {
@@ -588,45 +589,29 @@ export class PrintComponent implements OnInit , OnDestroy {
               }
           }
           this.loading = true;
+          
   
-          const headerDict = {
-  
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',                                                        
-          }
-  
-          const requestOptions = {
-              headers: new HttpHeaders(headerDict),
-              
-              credentials: true,
-             
-              
-          };
-  
-          //this.rpthttp
-          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
-              .subscribe((blob: any) => {
-                  console.log(blob);
-  
-                  let _blob: Blob = blob;
-  
-                  let fileURL = URL.createObjectURL(_blob)//+'#toolbar=1';
-                  this.pdfTitle = rptfile;
+          this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = rptfile;
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
-                  this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                  console.log(this.tryDoctype);
-                  this.loading = false;
-  
-              }, err => {
-                  console.log(err);
-                  this.ModalS.error({
-                      nzTitle: 'TRACCS',
-                      nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                      nzOnOk: () => {
-                               this.drawerVisible = false;
-                               },
-                    });
-              }); this.drawerVisible = true;
+        return;
 
           }else{
             const data = {
@@ -648,48 +633,27 @@ export class PrintComponent implements OnInit , OnDestroy {
           }
           this.loading = true;
   
-          const headerDict = {
-  
-              'Content-Type': 'application/json',
-              'Accept': 'application/json', 
-              'Content-Disposition': 'inline;filename=XYZ.pdf'
-             
-              
-              
-          }
-  
-          const requestOptions = {
-              headers: new HttpHeaders(headerDict),
-              
-              credentials: true,
-             
-              
-          };
-  
-          //this.rpthttp
-          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
-              .subscribe((blob: any) => {
-                  console.log(blob);
-  
-                  let _blob: Blob = blob;
-  
-                  let fileURL = URL.createObjectURL(_blob);
-                  this.pdfTitle = rptfile;
-  
-                  this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                  console.log(this.tryDoctype);
-                  this.loading = false;
-  
-              }, err => {
-                  console.log(err);
-                  this.ModalS.error({
-                      nzTitle: 'TRACCS',
-                      nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                      nzOnOk: () => {
-                               this.drawerVisible = false;
-                               },
-                    });
-              }); this.drawerVisible = true;
+          this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = rptfile;
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
+
+        return;
           }
 
 

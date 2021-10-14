@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService,nodes,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService, StaffService, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -89,6 +89,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     terminateModal: boolean = false;
     changeCodeModal: boolean = false;
+    searchAvaibleModal : boolean = false;
     putonLeaveModal: boolean = false;
     newStaffModal: boolean = false;
     
@@ -166,6 +167,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     findModalOpen: boolean = false;
     statusList:any = statusList;
     genderList:any = genderList;
+    conflictpointList:any = conflictpointList;
+    timeSteps:Array<string>;
     
     columns: Array<any> = [
         {
@@ -242,6 +245,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
       ]
   skillsList: unknown;
+  avilibilityForm: FormGroup;
+      
       handleCancel() {
         this.findModalOpen = false;
       }
@@ -295,6 +300,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.buildForm();
         this.buildForms();
+        this.timeSteps = timeSteps;
         this.getUserData();
         this.normalRoutePass();
     }
@@ -325,8 +331,9 @@ export class StaffAdmin implements OnInit, OnDestroy {
         });
     }
     buildForms(){
-        this.quicksearch = this.fb.group({
-          availble:   true,
+        
+      this.quicksearch = this.fb.group({
+          availble: false,
           option: false,
           status:'Active',
           gender:'Any Gender',
@@ -335,10 +342,19 @@ export class StaffAdmin implements OnInit, OnDestroy {
           brokers:true,
           volunteers:true,
           onleaveStaff:true,
-          previousWork:'',
+          previousWork:false,
           searchText:'',
         });
         
+        this.avilibilityForm = this.fb.group({
+          date  :[new Date()],
+          start :'09:00',
+          end   :'10:00',
+          drtn  :'01:00',
+          conflict:true,
+          conflictminutes:'',
+        });
+
         this.filters = this.fb.group({
           activeprogramsonly:false,
         });
@@ -916,6 +932,7 @@ ReportRender(){
 
 
  log(event: any,index:number) {
+    console.log("-----");
     this.testcheck = true;   
     if(index == 1)
     this.selectedbranches = event;
@@ -925,6 +942,10 @@ ReportRender(){
     this.selectedCordinators = event;
     if(index == 4)
     this.selectedCategories = event;  
+
+    if(index == 5 && event.target.checked){
+      this.searchAvaibleModal = true;
+    }
  }
   
   setCriteria(){ 
@@ -958,32 +979,41 @@ ReportRender(){
     .filter(opt => opt.checked)
     .map(opt => opt.description).join("','")
 
-
     var postdata = {
-      active:this.quicksearch.value.active,
-      inactive:this.quicksearch.value.inactive,
-      alltypes:this.allChecked,
-      selectedTypes:this.selectedTypes,
-      allBranches:this.allBranches,
-      selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
-      allProgarms:this.allProgarms,
-      selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
-      allCordinatore:this.allCordinatore,
-      selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
-      allcat:this.allcat,
-      selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
-      activeprogramsonly:this.filters.value.activeprogramsonly,
-      surname:this.quicksearch.value.surname,
-      firstname:this.quicksearch.value.firstname,
-      phoneno:this.quicksearch.value.phoneno,
-      suburb:this.quicksearch.value.suburb,
-      dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
-      fileno:this.quicksearch.value.fileno,
+      // availble:this.quicksearch.value.availble,
+      // option:this.quicksearch.value.option,
+      
+      status:this.quicksearch.value.status,
+      gender:this.quicksearch.value.gender,
+      staff:this.quicksearch.value.staff,
+      brokers:this.quicksearch.value.brokers,
+      volunteers:this.quicksearch.value.volunteers,
+      onleaveStaff:this.quicksearch.value.onleaveStaff,
       searchText:this.quicksearch.value.searchText,
-      criterias:this.cariteriaList // list of rules
+      // onleaveStaff:this.quicksearch.value.onleaveStaff,
+      // previousWork:this.quicksearch.value.previousWork,
+                     
+      // allBranches:this.allBranches,
+      // selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+      // allProgarms:this.allProgarms,
+      // selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
+      // allCordinatore:this.allCordinatore,
+      // selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+      // allcat:this.allcat,
+      // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+      // activeprogramsonly:this.filters.value.activeprogramsonly,
+      // surname:this.quicksearch.value.surname,
+      // firstname:this.quicksearch.value.firstname,
+      // phoneno:this.quicksearch.value.phoneno,
+      // suburb:this.quicksearch.value.suburb,
+      // dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
+      // fileno:this.quicksearch.value.fileno,
+      // searchText:this.quicksearch.value.searchText,
+      // criterias:this.cariteriaList
+       // list of rules
     }
 
-    this.timeS.poststaffquicksearch({}).subscribe(data => {
+    this.timeS.poststaffquicksearch(postdata).subscribe(data => {
       this.filteredResult = data;
       this.loading = false;
       this.cd.detectChanges();
@@ -1131,14 +1161,15 @@ ReportRender(){
   }
   openFindModal(){
     this.tabFindIndex = 0;
+    
+    this.updateAllCheckedFilters(-1);
+    
     this.findModalOpen = true;
+
   }
   
   tabFindIndex: number = 0;
   tabFindChange(index: number){
-    if(index == 1){
-      this.updateAllCheckedFilters(-1);
-    }
     this.tabFindIndex = index;
   }
   

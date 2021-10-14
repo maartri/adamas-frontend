@@ -1,0 +1,255 @@
+
+  <nz-modal
+    [(nzVisible)]="isVisible"
+    [nzTitle]="modalTitle"
+    [nzContent]="modalContent"
+    [nzFooter]="modalFooter"
+    (nzOnCancel)="handleCancel()"
+    [nzWidth]="900"
+  >
+    <ng-template #modalTitle>{{Timesheet_label}}</ng-template>
+
+    <ng-template #modalContent >
+        <div class="flexy" style="min-height:21rem" >
+            <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">
+                <nz-step nzTitle="Service Type & Date"></nz-step>
+                <nz-step nzTitle="Recipient Details"></nz-step>
+                <nz-step nzTitle="Pay Details"></nz-step>
+                <!-- <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Time"></nz-step> -->
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Pay"></nz-step>
+                <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup) && rosterGroup != 'ADMINISTRATION' "nzTitle="Bills"></nz-step>
+            </nz-steps>
+    
+            <nz-divider class="full-height" nzType="vertical"></nz-divider>
+ 
+            <div class="steps-content" >
+                <div *ngIf="current == 0" [formGroup]="rosterForm">
+                    
+                    <div nz-row>
+                        <div class="form-group">
+                            <label for="">Date</label>
+                            <nz-date-picker [nzDisabled]="!editRecord" [nzFormat]="dateFormat" formControlName="date"></nz-date-picker>
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <label for="">Service Type</label>
+                            <nz-select formControlName="serviceType" [nzDisabled]="!editRecord" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                                <nz-option *ngFor="let list of modalTimesheetValues" [nzValue]="list.name" [nzLabel]="list.name"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                   
+                    <!-- <div nz-row *ngIf="multipleRecipientShow" >
+                        <label for="">Multiple Recipients</label>
+                        <nz-switch nzSize="small" formControlName="isMultipleRecipient"></nz-switch>
+                    </div> -->
+                    <div nz-row *ngIf="isTravelTimeChargeable">
+                        <label for="">Is Travel Time Chargeable</label>
+                        <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch>
+                    </div>
+                    <div nz-row *ngIf="isSleepOver">
+                        <label for="">Select the End Time on the following day for the sleepover</label>
+                        <nz-time-picker formControlName="sleepOverTime" [nzDefaultOpenValue]="defaultOpenValue" nzFormat="HH:mm"></nz-time-picker>
+
+                        <!-- <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker> -->
+                        <!-- <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch> -->
+                    </div>
+                    <div nz-row nzGutter="8" style="margin-top:1rem" *ngIf="showTime">
+                        <div nz-col nzSpan="6">
+                            <div class="form-group">
+                                <label for="">Start Time</label>
+                                <nz-time-picker [nzDisabled]="!editRecord" [(ngModel)]="defaultStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="6">
+                            <div class="form-group" *ngIf="showEndTime">
+                                <label for="">End Time</label>
+                                <nz-time-picker [nzDisabled]="!editRecord" [(ngModel)]="defaultEndTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Duration</label>
+                                <nz-alert *ngIf="durationObject?.error" nzType="error" [nzMessage]="durationObject?.durationStr"></nz-alert>
+                                <nz-alert *ngIf="!durationObject?.error" nzType="success" [nzMessage]="durationObject?.durationStr"></nz-alert>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="current == 1" [formGroup]="rosterForm">
+                    <div class="form-group" *ngIf="showRecipient() && viewType == 'Staff' && editRecord">
+                        <label for="">Recipient</label>
+                        <app-recipient-popup formControlName="recipientCode" ></app-recipient-popup>
+                    </div>
+                    <div class="form-group" *ngIf="!editRecord && viewType == 'Staff'" >
+                        <label for="">Recipient</label>
+                        <nz-select  formControlName="recipientCode" [nzDisabled]="!editRecord" >
+                            <nz-option [nzValue]="recipientCode" [nzLabel]="recipientCode"></nz-option>                         
+                        </nz-select>                        
+                    </div>
+
+                    <div class="form-group" *ngIf="showRecipient() && editRecord" >
+                        <label for="">Debtor</label>
+                        <app-recipient-popup  formControlName="debtor"></app-recipient-popup>                        
+                    </div>
+                    <div class="form-group" *ngIf="!editRecord" >
+                        <label for="">Debtor</label>
+                        <nz-select  formControlName="debtor" [nzDisabled]="!editRecord" >
+                            <nz-option [nzValue]="debtor" [nzLabel]="debtor"></nz-option>
+                        </nz-select>                        
+                    </div>
+                    <div class="form-group">
+                        <label for="">Program</label>
+                        <nz-select [nzDisabled]="!editRecord" nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of programsList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
+                        </nz-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Service/Activity/Item</label>
+                        <nz-select [nzDisabled]="!editRecord" nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
+                        </nz-select>                        
+                        <div>
+                            <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="rosterForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
+                            <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="viewType === 'Recipient'">
+                        <label for="">Staff/Contractor</label>
+                        <app-staff-popup [nzDisabled]="!editRecord" formControlName="staffCode"></app-staff-popup>
+                    </div>
+                </div>
+                
+                <div *ngIf="current == 2" [formGroup]="rosterForm">
+                    <div class="form-group">
+                        <label for="">Pay Type</label>
+                        <nz-select [nzDisabled]="!editRecord" formControlName="payType"
+                            [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of payTypeList" [nzValue]="list.title" [nzLabel]="list.title">
+                            </nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">Category</label>
+                        <nz-select formControlName="analysisCode" [nzDisabled]="!editRecord"
+                            [nzDropdownMatchSelectWidth]="false" style="width:15rem">
+                            <nz-option *ngFor="let list of analysisCodeList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                            <nz-option [nzLabel]="defaultCategory" [nzValue]="defaultCategory" nzHide></nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+
+                <!-- <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 3" style="width: 30rem;">
+                    <ng-container>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Start Time</label>
+                                <nz-time-picker [(ngModel)]="defaultStartTime" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">End Time</label>
+                                <nz-time-picker [(ngModel)]="defaultEndTime" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group">
+                                <label for="">Duration</label>
+                                <p class="time-duration">{{ durationObject?.durationStr }}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div> -->
+
+                <div nz-row nzSpan="24" nzGutter="8" [formGroup]="rosterForm" *ngIf="current == 3" style="width: 30rem;">
+                    <ng-container formGroupName="pay">
+                        <div nz-row>
+                            <div nz-col nzSpan="10">
+                                <div class="form-group">
+                                    <label for="">Unit</label>
+                                    <nz-select formControlName="pay_Unit" [nzDisabled]="!editRecord" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list"></nz-option> 
+                                    </nz-select>
+                                </div>
+                            </div>
+                        </div>
+                       <div nz-row>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Rate</label>
+                                    <nz-input-number formControlName="pay_Rate" [nzDisabled]="!editRecord" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        [nzParser]="parserDollar"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Quantity</label>
+                                    <nz-input-number formControlName="quantity" [nzDisabled]="!editRecord" [nzMin]="0"  [nzStep]="1"></nz-input-number>
+                                </div>
+                            </div>
+                       </div>
+                    </ng-container>
+                </div>
+
+                <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 4" [formGroup]="rosterForm" style="width: 30rem;">
+                    <ng-container formGroupName="bill">
+                        <div nz-row>
+                            <div nz-col nzSpan="8">
+                                <div class="form-group">
+                                    <label for="">Unit</label>
+                                    <nz-select formControlName="pay_Unit" [nzDisabled]="!editRecord" [nzDropdownMatchSelectWidth]="false">
+                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
+                                        </nz-option>
+                                    </nz-select>
+                                </div>
+                            </div>
+                        </div>
+                       <div nz-row>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Rate</label>
+                                    <nz-input-number formControlName="bill_Rate" [nzDisabled]="!editRecord" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
+                                        [nzParser]="parserDollar"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Quantity</label>
+                                    <nz-input-number formControlName="quantity" [nzDisabled]="!editRecord" [nzMin]="0" [nzStep]="1"></nz-input-number>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="7">
+                                <div class="form-group">
+                                    <label for="">Tax %</label>
+                                    <nz-input-number formControlName="tax" [nzMin]="-1" [nzDisabled]="!editRecord" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
+                                        [nzParser]="parserPercent"></nz-input-number>
+                                </div>
+                            </div>
+                       </div>
+                    </ng-container>
+            </div>
+        </div>
+    </div>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        
+        <button nz-button nzType="default" (click)="editRecord=true">Edit</button>
+        <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+            <span>Previous</span>
+        </button>
+        <button nz-button nzType="default" (click)="next()" *ngIf="nextCondition" [disabled]="nextDisabled">
+            <span>Next</span>
+        </button>
+        <button nz-button nzType="primary" (click)="done()"  [disabled]="!isFormValid" *ngIf="showDone && editRecord">
+            <span>Done</span>
+        </button>
+        <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>
+        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button> -->
+    </ng-template>
+  </nz-modal>

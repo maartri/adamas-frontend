@@ -113,6 +113,77 @@
     <button nz-button nzType="primary" (click)="terminate()"  [nzLoading]="isConfirmLoading">Terminate</button>
   </div>
 </nz-modal>
+<!-- <nz-modal [nzZIndex]="1001" [nzWidth]="600" [(nzVisible)]="searchAvaibleModal" nzTitle="Change Day or Times" (nzOnCancel)="searchAvaibleModal = false">
+  <nz-card nzTitle="Set Search Detail For Availability">
+    <p class="text-center">Enter The Date, Start and End Time for Searching for Availble Staff</p>
+  </nz-card>
+  <form nz-form [nzLayout]="'vertical'">
+    <div nz-row [nzGutter]="16" [formGroup]="avilibilityForm">
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="Title">Date</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <nz-date-picker   formControlName="date" [nzFormat]="dateFormat"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item >
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="Title">Start</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <nz-select [nzDropdownMatchSelectWidth]="false"  formControlName="start"  nzShowSearch nzAllowClear style="width:100%;">
+              <nz-option *ngFor="let main of timeSteps" [nzLabel]="main"  [nzValue]="main"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="Title">End</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <nz-select [nzDropdownMatchSelectWidth]="false"  formControlName="end"  nzShowSearch nzAllowClear style="width:100%;">
+              <nz-option *ngFor="let main of timeSteps" [nzLabel]="main"  [nzValue]="main"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item >
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="Title">Durat'n</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <input type="text" formControlName="drtn" nz-input>
+          </nz-form-control>
+        </nz-form-item >
+      </div>
+    </div>
+  </form>
+<div *nzModalFooter>
+  <button nz-button nzType="default" (click)="searchAvaibleModal = false">Cancel</button>
+  <button nz-button nzType="primary" (click)="updateStaffCode()"  [nzLoading]="isConfirmLoading">Update Staff Code</button>
+</div>
+</nz-modal> -->
+
+<nz-modal
+ [(nzVisible)]="searchAvaibleModal"
+ [nzTitle]="modalTitle"
+ [nzContent]="modalContent"
+ [nzFooter]="modalFooter"
+ (nzOnCancel)="searchAvaibleModal = false"
+>
+ <ng-template #modalTitle>Custom Modal Title</ng-template>
+ <ng-template #modalContent>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+ </ng-template>
+ <ng-template #modalFooter>
+   <span>Modal Footer:</span>
+   <button nz-button nzType="default" (click)="searchAvaibleModal = false">Custom Callback</button>
+ </ng-template>
+</nz-modal>
+
 <nz-modal [nzWidth]="400" [(nzVisible)]="changeCodeModal" nzTitle="Agency Defined Code" (nzOnCancel)="changeCodeModal = false">
   <div nz-row [formGroup]="updateStaff">
     <form nz-form [nzLayout]="'vertical'" [formGroup]="updateStaff" >
@@ -337,7 +408,7 @@
 <app-leave-application *ngIf="user" [open]="putonLeaveModal" [user]="user"></app-leave-application>
 <app-add-staff [open]="newStaffModal" (reload)="reload($event)"></app-add-staff>
 
-<nz-modal [(nzVisible)]="findModalOpen" [nzStyle]="{ top: '20px' }" nzWidth="1340" nzTitle="" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="findModalOpen" [nzStyle]="{ top: '20px' }" nzWidth="1340" [nzZIndex]="1000" nzTitle="" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
   <div *ngIf="findModalOpen"> <!-- start of model -->
     <div nz-row [nzGutter]="8">
       <div nz-col class="gutter-row" nzSpan="6" style="background: #002060;padding: 4px;">
@@ -345,7 +416,7 @@
       </div>
       <div nz-col class="gutter-row" nzSpan="17" [formGroup]="quicksearch">
         <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
-            <input type="text" nz-input formControlName="searchText" placeholder="Type SURNAME here and press enter" />
+            <input type="text" nz-input formControlName="searchText" placeholder="" />
         </nz-input-group>
         <ng-template #suffixButton>
             <button nz-button nzType="primary" nzSize="large" nzSearch (click)="searchData()">Search</button>
@@ -356,15 +427,41 @@
       <div nz-col nzSpan="4" [formGroup]="quicksearch" style="margin-right: 5px;">
         <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
           <div nz-col [nzSpan]="12">
-            <label nz-checkbox formControlName="availble">
+            <label nz-checkbox formControlName="availble" (change)="log($event,5)">
               <span><b>Availble</b></span>
             </label>
           </div>
-          <div nz-col [nzSpan]="12">
+          <div nz-col [nzSpan]="12" *ngIf="this.quicksearch.get('availble').value">
             <label nz-checkbox formControlName="option">
               <span><b>Option</b></span>
             </label>
           </div>
+        </div>
+        <div nz-row *ngIf="this.quicksearch.get('option').value" class="mrg-btm-half">
+          <nz-card [nzBodyStyle]="{'padding':'8px'}" nzTitle="Availability Options" [nzSize]="'small'" [formGroup]="avilibilityForm">
+          <div nz-row>
+              <label nz-checkbox formControlName="conflict">
+                <span><b>Conflict Tolerance</b></span>
+              </label>
+            </div>
+            <div nz-row class="mrg-btm-half">
+              <div nz-col [nzSpan]="12">
+                <ng-select 
+                formControlName="conflictminutes"
+                [nzSize]="'small'"
+                [items]="conflictpointList" 
+                [virtualScroll]="true"
+                [dropdownPosition]="'bottom'"
+                [clearable]="false"
+                [closeOnSelect]="true">
+              </ng-select>
+              </div>
+              <div nz-col [nzSpan]="12" class="text-center">
+                <label for="minutes">Minutes</label>
+              </div>
+             </div>
+             <button nz-button nzType="primary" nzBlock>Reset Search Day/Time</button>
+          </nz-card>
         </div>
         <div nz-row>
           <div class="form-group">
@@ -402,7 +499,7 @@
         <br />
         <label nz-checkbox  formControlName="onleaveStaff">Include Staff On Leave</label>
         <br />
-        <label nz-checkbox  formControlName="previousWork">Previous Work</label>
+        <label nz-checkbox  formControlName="previousWork" *ngIf="this.quicksearch.get('availble').value">Previous Work</label>
       </div>
     </div>
     <div nz-row>      
@@ -457,12 +554,13 @@
         </nz-tabset>
         <div *ngIf="tabFindIndex == 0">
           <div nz-row>
-            <nz-table style="margin-top:0px;" #fixedTable [nzData]="filteredResult" [nzLoading]="loading" [nzScroll]="{ x: '2400px', y: '540px' }"  nzSize="small" nzBordered class="custum-header">
+            <nz-table style="margin-top:0px;" #fixedTable [nzData]="filteredResult" [nzLoading]="loading" [nzScroll]="{ x: '2600px', y: '540px' }"  nzSize="small" nzBordered class="custum-header">
               <thead>
                 <tr>
                   <th nzWidth="100px" nzLeft="0PX">ID</th>
                   <th nzWidth="50px"  nzLeft="100PX">MIN</th>
                   <th nzWidth="50px"  nzLeft="150PX">MAX</th>
+                  <th nzWidth="200px">Type</th>
                   <th nzWidth="200px">Staff Name</th>
                   <th nzWidth="200px">Suburb</th>
                   <th nzWidth="200px">Category</th>
@@ -482,6 +580,7 @@
                   <td  nzLeft="0PX">{{result.id}}</td>
                   <td  nzLeft="100PX">{{result.hfmin}}</td>
                   <td  nzLeft="150PX">{{result.hfmax}}</td>
+                  <td>{{result.type}}</td>
                   <td>{{result.name}}</td>
                   <td>{{result.suburb}}</td>
                   <td>{{result.category}}</td>

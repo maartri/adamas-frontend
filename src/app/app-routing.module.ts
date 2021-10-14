@@ -160,6 +160,9 @@ import {
 import {  
   RostersAdmin
 } from './pages/roster/index';
+import {  
+  ShiftDetail
+} from './pages/roster/index';
 
 import { ExtraComponent } from './pages/extra/extra';
 
@@ -930,6 +933,11 @@ const routes: Routes = [
         component: RostersAdmin
       },
       {
+        path: 'shiftdetail',
+        component: ShiftDetail
+      },
+      
+      {
         path: 'staff',
         component: StaffAdmin,
         children: [
@@ -1199,7 +1207,7 @@ export const PAGE_COMPONENTS = [
   ProfilePage,
   //Roster Module
   RostersAdmin,
-  
+  ShiftDetail,
   //Configuration
   CompaniesComponent,
   BranchesComponent,

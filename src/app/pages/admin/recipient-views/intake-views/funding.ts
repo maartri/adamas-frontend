@@ -13,9 +13,9 @@ const packageDefaultForm: any = {
     personID:'',
     program: null,
     packageLevel:'',
-    packageType: null,
-    programStatus: null,
-    expireUsing: null,
+    packageType:[null, Validators.required],
+    programStatus:[null, Validators.required],
+    expireUsing:[null, Validators.required],
     priority: null,
     notes:'',
     quantity:'',
@@ -56,8 +56,11 @@ const packageDefaultForm: any = {
     nz-select{
         width:100%
     }
-    nz-divider{
-        margin:8px ​0 !important;
+    .ant-divider, .ant-divider-vertical{
+        margin:4px ​0 !important;
+    }
+    nz-form-item.ant-form-item{
+        margin:0 ​0 0 0 !important;
     }
     `],
     templateUrl: './funding.html',
@@ -298,6 +301,16 @@ export class IntakeFunding implements OnInit, OnDestroy {
             }
 
             save() {
+                
+                var prog_status = this.packageDetailForm.value.programStatus;
+                var expireUsing = this.packageDetailForm.value.expireUsing;
+                var packageType = this.packageDetailForm.value.packageType;
+                var program     = this.packageDetailForm.value.program;
+                if(prog_status == null || expireUsing == null || packageType == null || program == null ){
+                        this.globalS.wToast('Error', 'All manmdatpry fields must be completed'); 
+                        return false;
+                }
+
                 this.packageDetailForm.controls['personID'].setValue(this.user.id);                
 
                 if(this.addOREdit == 1){

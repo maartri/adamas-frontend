@@ -53,8 +53,9 @@
     </div>
     <div nz-col nzSpan="18" nzOffset="1">
         <div style="display: inline-block; width: 100%;">
-            <a *ngIf="URL != '' " class="print mrg-btm" target="_blank" [href]="URL" nz-button nzType="primary" [nzSize]="'default'"><i
-                    nz-icon nzType="printer"></i>Print</a>
+            <!-- <a *ngIf="URL != '' " class="print mrg-btm" target="_blank" [href]="URL" nz-button nzType="primary" [nzSize]="'default'"><i nz-icon nzType="printer"></i>Print</a> -->
+            <a class="print mrg-btm" (click)="printPackage()" nz-button nzType="primary" [nzSize]="'default'"><i nz-icon nzType="printer"></i>Print</a>
+
         </div>
         <nz-table #basicTable [nzData]="table" nzSize="small" [nzBordered]="false">
             <thead>
@@ -103,3 +104,14 @@
     </div>
 
 </div>
+
+
+
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="'pdfTitle'" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loading">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    </div>
+</nz-drawer>

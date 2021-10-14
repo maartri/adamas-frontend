@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { ClientService, GlobalService } from '@services/index';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { ClientService, GlobalService, PrintService } from '@services/index';
 import { MonthPeriodFilter } from '@pipes/pipes';
 import { APP_BASE_HREF, Location, PlatformLocation } from '@angular/common';
 
@@ -7,7 +7,11 @@ import { Subscription, Subject, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { switchMap, distinctUntilChanged, debounceTime, mergeMap, map, tap } from 'rxjs/operators';
 
-import { GetPackage } from '@modules/modules';
+import { GetPackage, JsConfig } from '@modules/modules';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'package-client',
@@ -42,11 +46,17 @@ import { GetPackage } from '@modules/modules';
         }
     `],
     templateUrl: './package.html',
-    providers: [MonthPeriodFilter]
+    providers: [MonthPeriodFilter],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
 export class PackageClient implements OnInit, OnDestroy {
+
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+    
+    drawerVisible: boolean = false;
+    tryDoctype: any;
 
     @Input() id: any;
     @Input() MINUS_MONTH: number = 0;
@@ -83,10 +93,14 @@ export class PackageClient implements OnInit, OnDestroy {
         private clientS: ClientService,
         private globalS: GlobalService,
         private monthPeriodFilter: MonthPeriodFilter,
-        private platformLocation: PlatformLocation
+        private platformLocation: PlatformLocation,
+        private sanitizer: DomSanitizer,
+        private printS: PrintService,
+        private cd: ChangeDetectorRef,
+        private http: HttpClient,
+        private ModalS: NzModalService
     ) {
         
-
         this.dateResult$ = this.dateStream.pipe(
             debounceTime(500),
             distinctUntilChanged(),
@@ -270,5 +284,50 @@ export class PackageClient implements OnInit, OnDestroy {
             });
             return minDate.balance;
         }
+    }
+
+    printPackage(): void{
+
+        var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'OPNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
+
+        const data = {
+            "template": { "_id": "MtyAvCbVCMDMpPeL" },
+            "options": {
+                "reports": { "save": false },
+                "txtTitle": "Staff OP NOTES List",
+                "sql": fQuery,
+                "userid": ' ',
+                "head1" : "Date",
+                "head2" : "Detail",
+                "head3" : "Created By",
+                "head4" : "Remember Date",
+            }
+        }
+
+        this.printS.print(data).subscribe((blob: any) => {
+            this.drawerVisible = true;
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
+
+        return;
+        
+    }
+
+    handleCancelTop(): void {
+        this.drawerVisible = false;
     }
 }

@@ -3751,7 +3751,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       this.value.splice(index, 1);
       this.entity.splice(index, 1);
       this.condition.splice(index, 1); 
-      this.frm_delete = false;            
+//      this.frm_delete = false;  
     }
   }
   //  console.log(index) 
@@ -3853,14 +3853,25 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
 //  console.log(this.list)
   this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Field"+ this.feildname() +", ")
 
-  this.sql = this.sqlselect + this.TablesSetting(this.list) +  " where " + this.sqlcondition  ;    
-  this.Saverptsql = this.sqlselect + this.TablesSetting(this.list) +  " where " + this.Savesqlcondition ;
+  this.sql = this.sqlselect + this.TablesSetting(this.list);
+  this.Saverptsql = this.sqlselect + this.TablesSetting(this.list) ;
+  if ((this.inputForm.value.radiofiletr).toString() == 'donotmeet') {
+    this.sql =  this.sql + " where Not " +  this.sqlcondition  ;
+    this.Saverptsql = this.Saverptsql +  "  where Not  " + this.Savesqlcondition ;
+    
+  }else{
+    this.sql =  this.sql + ' where ' +  this.sqlcondition  ;
+    this.Saverptsql = this.Saverptsql +  " where " + this.Savesqlcondition ;
+  }
+     
+  
 
   //  console.log(this.sql)
     
 
   }
   ShowReport(){
+    this.QueryFormation();
     this.tryDoctype = "";
     this.ReportRender(this.sql);
       
@@ -3871,6 +3882,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     this.isVisibleprompt = true;
   }
   SaveReport(){
+     
       this.isVisibleprompt = false;
       var RptSQL  =  this.Saverptsql;
       this.RptTitle = (this.inputForm.value.RptTitle).toString();
@@ -3878,13 +3890,15 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     //var Title  = this.RptTitle;
     var Format  = this.RptFormat;
     //console.log(Format)
-    var CriteriaDisplay = "TEST CRITERIA" ;
+    var CriteriaDisplay = "Report Criteria" ;
     var DateType = " ";
     var UserID = this.tocken.nameid;
     
      
    var insertsql = " INSERT INTO ReportNames(Title, Format,SQLText,UserID, DateType, CriteriaDisplay) " +
    " VALUES( '" + this.RptTitle +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "   
+
+   //console.log(insertsql)
    
    this.ReportS.InsertReport(insertsql).subscribe(x=>{
    //  console.log(data)

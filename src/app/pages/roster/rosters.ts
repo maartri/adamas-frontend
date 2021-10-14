@@ -14,7 +14,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzRadioModule  } from 'ng-zorro-antd/radio';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import * as _ from 'lodash';
-
+import {ShiftDetail} from './shiftdetail'
 
 
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
@@ -45,6 +45,7 @@ import { Router } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
 
 
+
  
 interface AddTimesheetModalInterface {
     index: number,
@@ -55,7 +56,7 @@ interface UserView{
     staff: number
 }
 
-const license = "http://portal-traccs.integratedliving.org.au,E493369696471956#B0EVbkl5QHhHbMZFOyFjQhlkS7FlVyFkeYlkauJWOyQza8lFMy8kS6gXR6hlbmlWexVzNMlTb48EMTdTMVJHdE3CUqhVcr3GS6VkTOp6Us9WNnhVVxN7YDdURLR7QrIGevcHTTd4SvplcolUZtpEbBRTNDVWe88UYXhDSJx4cGdEe6glVG5mQkRlQRNTV096VxFVdIdnaMd4aLhWWnpEal9WSwoWaKZ5MLNzY6F4SRJHVoJUMNd6M0NVaHFFd4JnMVNVcxNEd49GaBZkMFFndxNjVzUnN6FXNTZWZUN5QVJHU5YjW4FFR0hTSMdGMj5ER4UXMapmRLdnM09GO5YjUxJ6MyZlI0IyUiwiIzIUMygjMGdjI0ICSiwyN7cjM4czN5ETM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiI4UDN5cDMgcjM8ATMyAjMiojI4J7QiwiIxADMxIjMwIjI0ICc8VkIsIyNwIjL7MjL7cjL5QjI0IyctRkIsIycu3Wa4VHbvNFIlRXYy3Gcy36QgMXYtFGZBJiOiEmTDJCLlVnc4pjIsZXRiwiI6UTOxcDN6kjN9YzMzkDNiojIklkIs4XXbpjInxmZiwSZzxWYmpjIyNHZisnOiwmbBJye0ICRiwiI34zZIpHNwVXcCdjb6I5Yzp4TZZVVmRFTMRGRKpXTmxkbEJGeUl7ZnJWWPZjSPp4UnRlVmF7QUtkR5EkWzI7KzUDaldlNMtEaJJFdINmbLREduwUnt"
+const license = "45.77.37.207,E493369696471956#B0EVbkl5QHhHbMZFOyFjQhlkS7FlVyFkeYlkauJWOyQza8lFMy8kS6gXR6hlbmlWexVzNMlTb48EMTdTMVJHdE3CUqhVcr3GS6VkTOp6Us9WNnhVVxN7YDdURLR7QrIGevcHTTd4SvplcolUZtpEbBRTNDVWe88UYXhDSJx4cGdEe6glVG5mQkRlQRNTV096VxFVdIdnaMd4aLhWWnpEal9WSwoWaKZ5MLNzY6F4SRJHVoJUMNd6M0NVaHFFd4JnMVNVcxNEd49GaBZkMFFndxNjVzUnN6FXNTZWZUN5QVJHU5YjW4FFR0hTSMdGMj5ER4UXMapmRLdnM09GO5YjUxJ6MyZlI0IyUiwiIzIUMygjMGdjI0ICSiwyN7cjM4czN5ETM0IicfJye&Qf35VfiUURJZlI0IyQiwiI4EjL6BCITpEIkFWZyB7UiojIOJyebpjIkJHUiwiI4UDN5cDMgcjM8ATMyAjMiojI4J7QiwiIxADMxIjMwIjI0ICc8VkIsIyNwIjL7MjL7cjL5QjI0IyctRkIsIycu3Wa4VHbvNFIlRXYy3Gcy36QgMXYtFGZBJiOiEmTDJCLlVnc4pjIsZXRiwiI6UTOxcDN6kjN9YzMzkDNiojIklkIs4XXbpjInxmZiwSZzxWYmpjIyNHZisnOiwmbBJye0ICRiwiI34zZIpHNwVXcCdjb6I5Yzp4TZZVVmRFTMRGRKpXTmxkbEJGeUl7ZnJWWPZjSPp4UnRlVmF7QUtkR5EkWzI7KzUDaldlNMtEaJJFdINmbLREduwUnt"
 
 
 
@@ -161,7 +162,7 @@ export class RostersAdmin implements AfterViewInit  {
       float: 'left'
     };  
 @Input() info = {StaffCode:'', ViewType:'',IsMaster:false}; 
-
+@ViewChild(ShiftDetail) detail:ShiftDetail;
 selectedrow: string ="class.selected"   
 timesheets: Array<any> = [];
 timesheetsGroup: Array<any> = [];   
@@ -180,6 +181,7 @@ HighlightRow6!: number;
 recurrentStartTime:string;
 recurrentEndTime:string;
 
+testComp:boolean=false;
 
 recurrentStartDate: Date | null = null;
 recurrentEndDate: Date | null = null;
@@ -197,6 +199,8 @@ data:any=[];
 ActiveCellText:any;
 startRoster:any;
 endRoster:any;
+searchAvaibleModal:boolean=false;
+
   rosters: Array<any> = [];
   current_roster:any;
   time_map = new Map();
@@ -251,7 +255,7 @@ endRoster:any;
     enable_buttons :boolean=false;
     
     private picked$: Subscription;   
-
+    isConfirmLoading = false;
     changeModalView = new Subject<number>();
     changeViewRecipientDetails = new Subject<number>();
     changeViewRosterDetails = new Subject<number>();
@@ -414,6 +418,7 @@ get_group_Shift_Setting()
 
     
 }
+
 Save_Transport(){
     
     const tdata =  this.TransportForm.value;
@@ -2891,7 +2896,12 @@ return rst;
       
     whatProcess = PROCESS.ADD;
     details(index: any){
-        
+        this.detail.isVisible=true;
+           this.detail.data=index;
+           this.detail.viewType =this.viewType
+           this.detail.editRecord=false;
+           this.detail.ngAfterViewInit();
+           return;
         this.whatProcess = PROCESS.UPDATE;
         console.log(index);
         const {
@@ -3438,9 +3448,14 @@ reload(reload: boolean){
             this.addTimesheetVisible=false;
             this.addBookingModel=false;
             this.ShowCentral_Location=false;
+            this.testComp=false;
     }
     handleOk(){
-
+        this.isConfirmLoading = true;
+        setTimeout(() => {
+          this.isVisible = false;
+          this.isConfirmLoading = false;
+        }, 1000);
     }
 
     AddMultiShiftRosters(){
@@ -5034,7 +5049,22 @@ this.bookingForm.get('program').valueChanges.pipe(
            // console.log(sql);
         return this.listS.getlist(sql);
 }      
-     
+
+
+shiftChanged(value:any){
+   if (this.viewType=='Staff' && value.show_alert){
+        this.txtAlertSubject= 'SHIFT DAY/TIME CHANGE : ';
+        this.txtAlertMessage= 'SHIFT TIME CHANGE : \n Date: ' + format(value.date,'dd/MM/yyyy') + '  \n Recipient: ' + value.clientCode + '\n'  ,
+        this.clientCodes=value.clientCode;      
+      
+        this.show_alert=true;
+    }
+    this.searchRoster(value.date)
+}
+
+
+
+
 }
 
 

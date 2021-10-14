@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { BillingService, TimeSheetService, GlobalService, ListService, MenuService } from '@services/index';
 import { timeout } from 'rxjs/operators';
 import { setDate } from 'date-fns';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-billing',
@@ -123,12 +124,6 @@ export class DebtorComponent implements OnInit {
   log(event: any,index:number) {
     if(index == 1)
     this.selectedBranches = event;
-<<<<<<< Updated upstream
-  }
-  checkAll(){
-      console.log("modal change" + this.allchecked);
-
-=======
     if(index == 2)
     this.selectedPrograms = event;
     if(index == 3)
@@ -137,21 +132,11 @@ export class DebtorComponent implements OnInit {
 
   checkAll(index:number): void {
     if(index == 1){
->>>>>>> Stashed changes
       this.branchList.forEach(x => {
         x.checked = true;
         this.allBranchesChecked = x.description;
         this.allBranchesChecked = true;
       });
-<<<<<<< Updated upstream
-  }
-  
-  uncheckAll(){
-      this.branchList.forEach(x => {
-        x.checked = false;
-      });
-      this.selectedBranches = [];
-=======
     }
     if(index == 2){
       this.programList.forEach(x => {
@@ -191,7 +176,6 @@ export class DebtorComponent implements OnInit {
         this.selectedCategories = [];
         });
     }
->>>>>>> Stashed changes
   }
 
   // uncheckAll(e){

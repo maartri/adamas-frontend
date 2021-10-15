@@ -201,6 +201,9 @@ export class AddQuoteComponent implements OnInit {
     length:number;
     fdata : any;
 
+
+    dateFilters: any;
+
   constructor(
     private timeS: TimeSheetService,
     private sharedS: ShareService,
@@ -1173,6 +1176,7 @@ export class AddQuoteComponent implements OnInit {
     // remaining_fund: any;
 
     calculate_HCP_Admin(acceptCharges: AcceptCharges = this.acceptCharges){
+        if(!acceptCharges) return;
 
         var govtContrib = parseFloat(this.quoteForm.get('govtContrib').value);
 
@@ -1202,6 +1206,7 @@ export class AddQuoteComponent implements OnInit {
 
     calculate_CM_Admin(acceptCharges: AcceptCharges = this.acceptCharges){
 
+        if(!acceptCharges) return;
         var govtContrib = parseFloat(this.quoteForm.get('govtContrib').value);
 
         if(!acceptCharges.isPercent){

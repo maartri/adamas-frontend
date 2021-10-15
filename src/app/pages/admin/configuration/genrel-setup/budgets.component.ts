@@ -78,7 +78,7 @@ export class BudgetsComponent implements OnInit {
   tryDoctype: any;
   drawerVisible: boolean =  false;  
   userRole:string="userrole";
-  whereString :string="Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) ";
   private unsubscribe: Subject<void> = new Subject();
   temp_title: any;
   constructor(
@@ -198,7 +198,7 @@ export class BudgetsComponent implements OnInit {
     }
 
     loadData(){
-      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description,Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program], [Dataset Code],Activity, [Staff Team], [Staff Category], [Staff], Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,Undated,StartDate as start, EndDate as end_date from Budgets "+this.whereString+" ORDER BY [Name]";
+      let sql="SELECT ROW_NUMBER() OVER(ORDER BY Name) AS row_num, RecordNumber, Name AS Description,Branch,SvcRegion,SvcDiscipline,[Funding Source], [Care Domain],[Budget Group],[Program],[Dataset Code],Activity,[Staff Team],[Staff Category],[Staff],Recipient, Hours, Dollars, SPID, State,CostCentre,DSOutlet, FundingRegion, Places, O_Hours, O_Dollars,O_PlcPkg,Y_Hours, Y_Dollars, Y_PlcPkg, BudgetType, StaffJobCat,Coordinator, StaffAdminCat, Environment,Unit,Undated,StartDate as start, EndDate as end_date from Budgets "+this.whereString+" ORDER BY [Name]";
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data
       });
@@ -456,7 +456,7 @@ export class BudgetsComponent implements OnInit {
         this.whereString = "";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }

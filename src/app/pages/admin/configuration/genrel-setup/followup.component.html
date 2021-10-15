@@ -53,63 +53,33 @@
             <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
                 <div *ngIf="current == 0">
                     <div nz-row nzGutter="24" class="">
-                        <label for="CDC Item" col nzSpan="6">List Type:</label>
+                        <label for="CDC Item" col nzSpan="6">Workflow Classification :</label>
                         <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="ltype" nzShowSearch nzAllowClear style="width:100%;">
                             <nz-option *ngFor="let ltype of listType" [nzValue]="ltype" [nzLabel]="ltype"></nz-option> 
                         </nz-select>
                     </div>
-                    <div nz-row nzGutter="24" *ngIf="inputForm.get('ltype').value === 'EVENT'">
-                        <label for="CDC Item" col nzSpan="6">Event:</label>
-                        <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="event" nzShowSearch nzAllowClear style="width:100%;">
-                            <nz-option *ngFor="let e of events" [nzValue]="e" [nzLabel]="e"></nz-option> 
+                    <div nz-row nzGutter="24" class="">
+                        <label for="CDC Item" col nzSpan="6">Workflow Name :</label>
+                        <input nz-input  formControlName="name" />
+                    </div>
+                    
+                    <div nz-row nzGutter="24" class="">
+                        <label for="CDC Item" col nzSpan="6">Branch :</label>
+                        <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-option *ngFor="let branch of branchesList" [nzValue]="branch.description" [nzLabel]="branch.description"></nz-option> 
                         </nz-select>
                     </div>
                     <div nz-row nzGutter="24" class="">
-                        
-                        <label for="CDC Item" col nzSpan="6" >Staff:</label>
-                        <nz-select col nzSpan="14" [nzDropdownMatchSelectWidth]="false" formControlName="staff" nzShowSearch nzAllowClear style="width:100%;" ng-init="ALL = staff[0]" 
-                        ng-model="ALL" > 
-                        <nz-option *ngFor="let staf of staff;let i = index;" [nzValue]="staf.name" [nzLabel]="staf.name" ></nz-option> 
+                        <label for="CDC Item" col nzSpan="6">Funding Source :</label>
+                        <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="funding_source" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-option *ngFor="let f_source of funding_source" [nzValue]="f_source" [nzLabel]="f_source"></nz-option> 
                         </nz-select>
                     </div>
                     <div nz-row nzGutter="24" class="">
-                        <label for="CDC Item" nzSpan="6" >Activity:</label>
-                        <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="service" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="let service of services;let i = index;" [nzValue]="service.title" [nzLabel]="service.title"></nz-option> 
+                        <label for="CDC Item" col nzSpan="6">Case Manager :</label>
+                        <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="casemanager" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-option *ngFor="let manager of casemanagers" [nzValue]="manager.description" [nzLabel]="manager.description"></nz-option> 
                         </nz-select>
-                    </div>
-    
-                    <div nz-row nzGutter="24" class="">
-                        <label for="CDC Item" nzSpan="6" >Program:</label>
-                        <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="prgm" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="let pro of program" [nzValue]="pro.name" [nzLabel]="pro.name"></nz-option> 
-                        </nz-select>
-                    </div>
-                    <div nz-row nzGutter="24" class="">
-                        <label for="CDC Item" nzSpan="6" >Location:</label>
-                        <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="location" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="let location of locations" [nzValue]="location.name" [nzLabel]="location.name"></nz-option> 
-                        </nz-select>
-                    </div>
-                    <div nz-row nzGutter="24" class="">
-                        <label for="CDC Item" nzSpan="6" >Recipient:</label>
-                        <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="recepient" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="let recipi of recipients" [nzValue]="recipi.name" [nzLabel]="recipi.name"></nz-option> 
-                        </nz-select>
-                    </div>
-                    <div nz-row nzGutter="24" class="" *ngIf="inputForm.get('ltype').value == 'INCIDENT'">
-                        <label for="CDC Item" nzSpan="6" >Severity:</label>
-                        <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="saverity" nzShowSearch nzAllowClear style="width:100%;">
-                        <nz-option *ngFor="let sever of severity" [nzValue]="sever" [nzLabel]="sever"></nz-option> 
-                        </nz-select>
-                    </div>
-                    <div nz-row nzGutter="24" class="">
-                        <label for="CDC Item" nzSpan="6" >Notification Mandatory:</label>
-                        <label nz-checkbox nzSpan="14"  formControlName="mandatory"><span class="small-font">Staff will be a mandatory notifyee for incidents linked to this list profile with no user choice</span></label>
-                    </div>
-                    <div nz-row nzGutter="24" class="" *ngIf="inputForm.get('ltype').value === 'INCIDENT'">
-                        <label for="CDC Item" nzSpan="6" >Default Assignee:</label>
-                            <label nz-checkbox nzSpan="14"  formControlName="assignee"><span class="small-font">Name will appear as default assignee for incidents linked to this list profile</span></label>
                     </div>
                     <div nz-row nzGutter="24" class="">
                         <label for="CDC Item" nzSpan="6" >Expiry Date:</label>

@@ -247,7 +247,7 @@ const inputFormDefault = {
     
         button {
             width: 220pt !important;
-            text-align: left !important;
+            text-align: left !important;           
         }
         
         .inner-content{

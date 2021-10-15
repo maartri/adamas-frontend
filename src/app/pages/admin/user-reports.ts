@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators, FormControl, FormArray, FormControl
 import { parseJSON } from "date-fns";
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ReportService,ListService,MenuService } from '@services/index';
+import { GlobalService, ReportService,ListService,MenuService,PrintService } from '@services/index';
 import { concat, flatMapDeep, indexOf, size } from "lodash";
 import eachDayOfInterval from "date-fns/esm/eachDayOfInterval/index";
 
@@ -257,7 +257,9 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     private GlobalS:GlobalService,
     private ReportS:ReportService,
     private ListS:ListService,
-    private MenuS:MenuService
+    private MenuS:MenuService,
+    private printS: PrintService,
+    
     
     
   ) {
@@ -3959,42 +3961,29 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           }
       }
       this.loading = true;
+      
 
-      const headerDict = {
+      this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = "User Defined Report.pdf";
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        //this.cd.detectChanges();
+    }, err => {
+        console.log(err);
+        this.loading = false;
+        this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+                this.drawerVisible = false;
+            },
+        });
+    });
 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-
-      }
-
-      const requestOptions = {
-          headers: new HttpHeaders(headerDict),
-          credentials: true
-      };
-
-      //this.rpthttp
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob', })
-          .subscribe((blob: any) => {
-              console.log(blob);
-
-              let _blob: Blob = blob;
-
-              let fileURL = URL.createObjectURL(_blob);
-              this.pdfTitle = "User Defined Report.pdf";
-
-              this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-              this.loading = false;
-
-          }, err => {
-              console.log(err);
-              this.ModalS.error({
-                  nzTitle: 'TRACCS',
-nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                  nzOnOk: () => {
-                           this.drawerVisible = false;
-                           },
-                });
-          }); this.drawerVisible = true;
+    return;
       }
 
       handleCancelTop(){

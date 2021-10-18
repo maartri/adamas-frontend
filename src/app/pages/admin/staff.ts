@@ -969,7 +969,7 @@ ReportRender(){
     
     this.selectedCordinators = this.casemanagers
     .filter(opt => opt.checked)
-    .map(opt => opt.uniqueID).join("','")
+    .map(opt => opt.uniqueID)
     
     this.selectedCategories = this.categoriesList
     .filter(opt => opt.checked)
@@ -977,7 +977,7 @@ ReportRender(){
     
     this.selectedbranches = this.branchesList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
 
     var postdata = {
       // availble:this.quicksearch.value.availble,
@@ -997,13 +997,16 @@ ReportRender(){
       allcat:this.allcat,
       selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
 
+      allBranches:this.allBranches,
+      selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+
+      allCordinatore:this.allCordinatore,
+      selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
 
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,
-      // allBranches:this.allBranches,
-      // selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
-      // allCordinatore:this.allCordinatore,
-      // selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+      
+      
       // allcat:this.allcat,
       // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
       // activeprogramsonly:this.filters.value.activeprogramsonly,

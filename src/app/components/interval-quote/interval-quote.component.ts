@@ -44,8 +44,17 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
 
   @Input() interval: string;
   @Input() mode: Mode = Mode.Default;
-
   @Input() size: string;
+
+  @Input() NoMon: boolean = false;
+  @Input() NoTue: boolean = false;
+  @Input() NoWed: boolean = false;
+  @Input() NoThu: boolean = false;
+  @Input() NoFri: boolean = false;
+  @Input() NoSat: boolean = false;
+  @Input() NoSun: boolean = false;
+
+  @Input() NoPub: boolean = false;
 
   billUnitArr: Array<string> = billunit;
   periodArr: Array<string> = periodQuote;

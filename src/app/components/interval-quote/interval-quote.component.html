@@ -7,70 +7,70 @@
                         <div formGroupName="monday">
                             <div *ngIf="size != 'small' || (size == 'small' && i == 0)">Mo</div>
                             <div>
-                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker>
+                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5" [nzDisabled]="NoMon"></nz-time-picker>
                             </div>
                             <div>
                                 <!-- <nz-time-picker [nzSize]="size" formControlName="endTime" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker> -->
-                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1" [nzDisabled]="NoMon"></nz-input-number>
                             </div>
                         </div>
                         <div formGroupName="tuesday">
                             <div *ngIf="size != 'small' || (size == 'small' && i == 0)">Tue</div>
                             <div>
-                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker>
+                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5" [nzDisabled]="NoTue"></nz-time-picker>
                             </div>
                             <div>
-                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1" [nzDisabled]="NoTue"></nz-input-number>
                                 <!-- <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker> -->
                             </div>
                         </div>
                         <div formGroupName="wednesday">
                             <div *ngIf="size != 'small' || (size == 'small' && i == 0)">Wed</div>
                             <div>
-                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker>
+                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5" [nzDisabled]="NoWed"></nz-time-picker>
                             </div>
                             <div>
-                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1" [nzDisabled]="NoWed"></nz-input-number>
                                 <!-- <nz-time-picker [nzSize]="size" formControlName="endTime" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker> -->
                             </div>
                         </div>
                         <div formGroupName="thursday">
                             <div *ngIf="size != 'small' || (size == 'small' && i == 0)">Thu</div>
                             <div>
-                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker>
+                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5" [nzDisabled]="NoThu"></nz-time-picker>
                             </div>
                             <div>
-                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1" [nzDisabled]="NoThu"></nz-input-number>
                                 <!-- <nz-time-picker [nzSize]="size" formControlName="endTime" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker> -->
                             </div>
                         </div>
                         <div formGroupName="friday">
                             <div *ngIf="size != 'small' || (size == 'small' && i == 0)">Fri</div>
                             <div>
-                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker>
+                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5" [nzDisabled]="NoFri"></nz-time-picker>
                             </div>
                             <div>
-                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1" [nzDisabled]="NoFri"></nz-input-number>
                                 <!-- <nz-time-picker [nzSize]="size" formControlName="endTime" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker> -->
                             </div>
                         </div>
                         <div formGroupName="saturday" class="weekend-clr">
                             <div *ngIf="size != 'small' || (size == 'small' && i == 0)">Sat</div>
                             <div>
-                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker>
+                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5" [nzDisabled]="NoSat"></nz-time-picker>
                             </div>
                             <div>
-                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1" [nzDisabled]="NoSat"></nz-input-number>
                                 <!-- <nz-time-picker [nzSize]="size" formControlName="endTime" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker> -->
                             </div>
                         </div>
                         <div formGroupName="sunday" class="weekend-clr">
                             <div *ngIf="size != 'small' || (size == 'small' && i == 0)">Sun</div>
                             <div>
-                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker>
+                                <nz-time-picker [nzSize]="size" formControlName="time" nzFormat="HH:mm" [nzMinuteStep]="5" [nzDisabled]="NoSun"></nz-time-picker>
                             </div>
                             <div>
-                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1"></nz-input-number>
+                                <nz-input-number [nzSize]="size" formControlName="quantity" [nzMin]="0" [nzMax]="10" [nzStep]="1" [nzDisabled]="NoSun"></nz-input-number>
                                 <!-- <nz-time-picker [nzSize]="size" formControlName="endTime" nzFormat="HH:mm" [nzMinuteStep]="5"></nz-time-picker> -->
                             </div>
                         </div>

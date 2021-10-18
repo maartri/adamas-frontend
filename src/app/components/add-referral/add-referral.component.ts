@@ -169,7 +169,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       }
     });
   }
-
+  
   ngOnDestroy(){
     this.destroy$.next();  // trigger the unsubscribe
     this.destroy$.complete(); // finalize & clean up the subject stream
@@ -177,6 +177,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     setTimeout(() => {
+      this.current = 0;
       if(this._lastname)
         this._lastname.nativeElement.focus();
     });
@@ -579,7 +580,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
         this.openRefer.emit(data);
         
         this.globalS.sToast('Success', 'Recipient Added')        
-        this.current = 1;
+        this.current = 0;
       });
      
      

@@ -980,9 +980,6 @@ ReportRender(){
     .map(opt => opt.description)
 
     var postdata = {
-      // availble:this.quicksearch.value.availble,
-      // option:this.quicksearch.value.option,
-      
       status:this.quicksearch.value.status,
       gender:this.quicksearch.value.gender,
       staff:this.quicksearch.value.staff,
@@ -1006,7 +1003,6 @@ ReportRender(){
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,
       
-      
       // allcat:this.allcat,
       // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
       // activeprogramsonly:this.filters.value.activeprogramsonly,
@@ -1019,7 +1015,6 @@ ReportRender(){
       // searchText:this.quicksearch.value.searchText,
       // criterias:this.cariteriaList
       // list of rules
-    
     }
 
     this.timeS.poststaffquicksearch(postdata).subscribe(data => {
@@ -1027,11 +1022,10 @@ ReportRender(){
       this.loading = false;
       this.cd.detectChanges();
     });
-
   }
-    detectChanges() {
+  detectChanges() {
         throw new Error('Method not implemented.');
-    }
+  }
   updateAllChecked(): void {
     this.indeterminate = false;
     if (this.allChecked) {

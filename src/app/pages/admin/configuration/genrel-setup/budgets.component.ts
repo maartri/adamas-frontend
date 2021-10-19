@@ -5,6 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService } from '@services/global.service';
 import { ListService } from '@services/list.service';
 import { MenuService } from '@services/menu.service';
+import { PrintService } from '@services/print.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -86,6 +87,7 @@ export class BudgetsComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private menuS:MenuService,
+    private printS:PrintService,
     private listS: ListService,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
@@ -488,15 +490,6 @@ export class BudgetsComponent implements OnInit {
       this.loading = true;
       
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Name) AS Field1,[Name] AS Field2,[Branch] as Field3,[Funding Source] as Field4, [Care Domain] as Field5,[Budget Group] as Field6,[Program] as Field7, [Dataset Code] as Field8,Activity as Field9, [Staff Team] as Field10,CONVERT(varchar, [EndDate],105) as Field11 from Budgets "+this.whereString+" ORDER BY [Name]";
-      
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-     
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
      
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
@@ -516,13 +509,13 @@ export class BudgetsComponent implements OnInit {
           "head11": "End Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+
+      this.printS.print(data).subscribe(blob => { 
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
+        }, err => {
         console.log(err);
         this.loading = false;
         this.ModalS.error({
@@ -533,10 +526,10 @@ export class BudgetsComponent implements OnInit {
           },
         });
       });
+
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";
     }
-    
   }
   

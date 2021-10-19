@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService } from '@services/index';
+import { ListService, MenuService, PrintService } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject, EMPTY } from 'rxjs';
@@ -58,6 +58,7 @@ export class DistributionlistComponent implements OnInit {
     private menuS:MenuService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
+    private printS:PrintService,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
@@ -330,15 +331,6 @@ export class DistributionlistComponent implements OnInit {
       "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
       "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
       
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-      
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {
@@ -357,14 +349,12 @@ export class DistributionlistComponent implements OnInit {
           "head9": "End Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+      this.printS.print(data).subscribe(blob => { 
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
-        console.log(err);
+        }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',
@@ -374,6 +364,7 @@ export class DistributionlistComponent implements OnInit {
           },
         });
       });
+
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

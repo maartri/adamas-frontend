@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService } from '@services/index';
+import { ListService, MenuService, PrintService } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
@@ -44,6 +44,7 @@ export class HolidaysComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private listS:ListService,
     private menuS:MenuService,
+    private printS:PrintService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -269,14 +270,12 @@ export class HolidaysComponent implements OnInit {
           "head4" : "Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+      this.printS.print(data).subscribe(blob => { 
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
-        console.log(err);
+        }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',
@@ -286,6 +285,7 @@ export class HolidaysComponent implements OnInit {
           },
         });
       });
+
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

@@ -201,6 +201,9 @@ export class AddQuoteComponent implements OnInit {
     length:number;
     fdata : any;
 
+
+    quoteDetails: any;
+
   constructor(
     private timeS: TimeSheetService,
     private sharedS: ShareService,
@@ -552,6 +555,7 @@ export class AddQuoteComponent implements OnInit {
       this.quoteForm.get('program').valueChanges
       .pipe(
           switchMap(x => {
+              this.IS_CDC = false;
               if(!x) {
                 return EMPTY
               };
@@ -561,41 +565,40 @@ export class AddQuoteComponent implements OnInit {
               return this.listS.getprogramlevel(x)
           }),
           switchMap(x => {                
-                this.IS_CDC = false;
+                this.IS_CDC = x.isCDC;
+        
                 if(x.isCDC){
-                    this.IS_CDC = true;
+
                     this._tempGovtContribution =  x.quantity ? (x.quantity * 365).toFixed(2) : 0;
 
                     this.quoteForm.patchValue({
-                        govtContrib: this._tempGovtContribution,
                         programId: x.recordNumber
                     });
 
                     this.dailyBasicCareFee = x.defaultDailyFee;
-                    this.calculateBasicCareFee();
-                    //   if(x.quantity && x.timeUnit == 'DAY'){
-                    //       this.quoteForm.patchValue({
-                    //           govtContrib: (x.quantity*365).toFixed(2),
-                    //           programId: x.recordNumber
-                    //       });
-                    //       console.log(this.quoteForm.value)
-                    //       this.remaining_fund = this.quoteForm.value.govtContrib;
-                    //   }
-                    //   this.detectChanges();
-                    //   return this.listS.getpensionandfee();
+                    this.calculateBasicCareFee();                    
                     this.detectChanges();
                 }
 
-                this.quoteForm.patchValue({
-                    govtContrib: x.quantity ? (x.quantity * 365).toFixed(2) : 0,
+                this.quoteForm.patchValue({                    
                     programId: x.recordNumber
                 });
 
-                // console.log(this.quoteForm.value)
-                // this.remaining_fund = this.quoteForm.value.govtContrib;
+                if(this.option == 'add'){
+                    this.quoteForm.patchValue({
+                        govtContrib: x.quantity ? (x.quantity * 365).toFixed(2) : 0,
+                    });
+                }
 
-              this.detectChanges();
-              this.listS.getpensionandfee();
+                if(this.option == 'update'){
+                    this.quoteForm.patchValue({
+                        govtContrib: this.quoteDetails.govtContribution,
+                    });
+                }
+            
+
+                
+              this.detectChanges();              
               return EMPTY;
           })
       ).subscribe(data => {
@@ -1173,6 +1176,7 @@ export class AddQuoteComponent implements OnInit {
     // remaining_fund: any;
 
     calculate_HCP_Admin(acceptCharges: AcceptCharges = this.acceptCharges){
+        if(!acceptCharges) return;
 
         var govtContrib = parseFloat(this.quoteForm.get('govtContrib').value);
 
@@ -1202,6 +1206,7 @@ export class AddQuoteComponent implements OnInit {
 
     calculate_CM_Admin(acceptCharges: AcceptCharges = this.acceptCharges){
 
+        if(!acceptCharges) return;
         var govtContrib = parseFloat(this.quoteForm.get('govtContrib').value);
 
         if(!acceptCharges.isPercent){
@@ -1821,11 +1826,14 @@ export class AddQuoteComponent implements OnInit {
       {
         
           this.listS.getquotedetails(this.record).subscribe(data => {
-
+            this.quoteDetails = data;
             this.cpid = data.cpid;
             this.fdata = data.quoteLines;
 
             this.tableDocumentId = data.cpid;
+
+            this.incomeTestedFee = parseFloat(data.dailyIncomeTestedFee.replace(/\$|,/g, ''));
+            this.calculateIncomeTestedFee();
 
             this.quoteForm.patchValue({
                 recordNumber: data.recordNumber,
@@ -1839,7 +1847,7 @@ export class AddQuoteComponent implements OnInit {
                 });
             } else {
                 this.quoteForm.patchValue({
-                    govtContrib: data.budget
+                    govtContrib: data.govtContribution
                 });
             }
 
@@ -2012,61 +2020,10 @@ export class AddQuoteComponent implements OnInit {
     }
   
 
-return this.admincharges;
+    return this.admincharges;
 
-  }
-  /*admincharge(){
-      
-    var id,stype;
-   
-    id  = this.cpid  ;
-   // id  = '46010'  ;
-    this.listS.GetQuotetype(id).subscribe( x => {
-        this.specindex = x.indexOf("ADMINISTRATION")
-        //console.log(stype)
-
-    })
-   
- //   if(stype == "ADMINISTRATION" ){
-
-//    let temp = this.fquotehdr 
-    let temp = this.fdata  
-        console.log(temp)
-    var temp1 : number;
-    var test :number;
-    
-//    let price,quantity,length;
-//    console.log(this.specindex)
-    if (this.option == 'update'){
-        
-        console.log(temp.length)
-            let j = this.specindex
-            this.admincharges = 0;
-          
-            //   for(let i =0;i < temp.length+1;i++){
-                    
-                
-                
-                price = temp[j].unitBillRate
-                quantity = temp[j].quantity
-                length  = temp[j].quoteQty
-                //    console.log(price)
-                    
-                       test = (price * quantity * length)
-                    //   temp1 = test
-                    this.admincharges = this.admincharges + test
-                //       console.log(temp1)
-           
-        //    } 
-        
-            console.log(test)
-       
     }
-  
 
-return this.admincharges;
-
-  } */
   
     
     dailyliving(){

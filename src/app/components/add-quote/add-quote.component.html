@@ -269,7 +269,7 @@
                 </div>
 
                 <div nz-col nzSpan="8">
-                    <div class="form-group">
+                    <div class="form-group" *ngIf="option != 'update'">
                         <nz-select formControlName="template" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Templates">
                             <nz-option *ngFor="let list of quoteTemplateList" [nzValue]="list" [nzLabel]="list"></nz-option>
                         </nz-select>
@@ -278,7 +278,7 @@
 
             </div>
 
-            <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null || quoteForm.get('template').value == null">
+            <div nz-row nzGutter="32" class="line" [formGroup]="quoteForm" [hidden]="(quoteForm.get('program').value == null || quoteForm.get('template').value == null) || option == 'update'">
                 <div nz-col nzSpan="6">
                     <input nz-input formControlName="no" placeholder="Quote No" [disabled]="true"  />
                 </div>
@@ -302,7 +302,7 @@
                 </div>
             </div>
 
-            <div nz-row class="line" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
+            <div nz-row class="line" *ngIf="(quoteForm.get('program').value && quoteForm.get('template').value) || option == 'update'">
                 <div nz-col nzSpan="12">
                     <div class="controls">
                         <div><i nz-icon nzType="plus" nzTheme="outline" (click)="quoteLineModal()"></i></div>
@@ -313,7 +313,7 @@
                 </div>
             </div>
 
-            <div nz-row *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
+            <div nz-row *ngIf="(quoteForm.get('program').value && quoteForm.get('template').value) || option == 'update'">
                 <nz-table #basicTable [nzSize]="size" [nzData]="quoteLines" >
                     <thead>
                       <tr>
@@ -357,7 +357,7 @@
                   </nz-table>
             </div>
 
-            <div nz-row class="line" nzGutter="16" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
+            <div nz-row class="line" nzGutter="16" *ngIf="(quoteForm.get('program').value && quoteForm.get('template').value) || option == 'update'">
                 <div nz-col nzSpan="17">
                     <div nz-row nzGutter="16"> 
                         <div nz-col nzSpan="10" class="inline" *ngIf="!IS_CDC" [formGroup]="quoteForm">
@@ -448,7 +448,7 @@
                 </div>
             </div>
 
-            <div nz-row class="line" *ngIf="quoteForm.get('program').value && quoteForm.get('template').value">
+            <div nz-row class="line" *ngIf="(quoteForm.get('program').value && quoteForm.get('template').value) || option == 'update'">
                 <textarea rows="4" nz-input [(ngModel)]="value" placeholder="Extra Information"></textarea>
             </div>
            </div>
@@ -612,7 +612,16 @@
             <div nz-row>
                 
                 <div nz-col nzSpan="15">
-                    <app-interval-quote [(ngModel)]="slots" (ngModelChange)="slotsChange($event)" [interval]="weekly" [mode]="'Booking'" [size]="'small'"></app-interval-quote>
+                    <app-interval-quote [(ngModel)]="slots" (ngModelChange)="slotsChange($event)" [interval]="weekly" [mode]="'Booking'" [size]="'small'" 
+                        [NoMon]="recipientProperties.noMonday"
+                        [NoTue]="recipientProperties.noTuesday"
+                        [NoWed]="recipientProperties.noWednesday"
+                        [NoThu]="recipientProperties.noThursday"
+                        [NoFri]="recipientProperties.noFriday"
+                        [NoSat]="recipientProperties.noSaturday"
+                        [NoSun]="recipientProperties.noSunday"
+                        [NoPub]="recipientProperties.noPubHol"
+                        ></app-interval-quote>
                     <!-- {{ slots | json }} -->
                 </div>
 

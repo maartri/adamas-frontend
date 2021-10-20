@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, PrintService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -99,7 +99,8 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
         private cd: ChangeDetectorRef,
         private http: HttpClient,
         private sanitizer: DomSanitizer,
-        private ModalS: NzModalService
+        private ModalS: NzModalService,
+        private printS: PrintService
     ) {
         cd.detach();
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -362,7 +363,7 @@ export class StaffOPAdmin implements OnInit, OnDestroy {
                 "head4" : "Remember Date",
             }
         }
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+        this.printS.print(data)
         .subscribe((blob: any) => {
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);

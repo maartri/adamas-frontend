@@ -70,7 +70,7 @@
             <tbody>
                 <ng-container *ngFor="let tab of table">
                     <tr>
-                        <td class="left" colspan="5">
+                        <td class="title-col" colspan="5" >
                             <p class="package-header">{{ tab?.name }}</p>
                         </td>
                     </tr>
@@ -104,3 +104,14 @@
     </div>
 
 </div>
+
+
+
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="'pdfTitle'" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loading">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    </div>
+</nz-drawer>

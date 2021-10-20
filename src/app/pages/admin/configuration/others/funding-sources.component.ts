@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService } from '@services/index';
+import { GlobalService, ListService, MenuService, PrintService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -39,6 +39,7 @@ export class FundingSourcesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
     private listS:ListService,
+    private printS:PrintService,
     private menuS:MenuService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -247,14 +248,12 @@ export class FundingSourcesComponent implements OnInit {
           "head5" : "End Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+      this.printS.print(data).subscribe(blob => {  
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
-        console.log(err);
+        }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',

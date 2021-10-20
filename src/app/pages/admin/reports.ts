@@ -12761,10 +12761,10 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        this.pdfTitle = Title + ".pdf"
+        
 
         this.printS.print(data).subscribe((blob: any) => {
-            this.pdfTitle = "Voucher Summary.pdf"
+            this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
@@ -19380,12 +19380,31 @@ CustomReportSetting(){
    
 } 
 
-FetchRuntimeReport(title){
- //   console.log("TITLE:  " +title)
-
+FetchRuntimeReport(strtitle){
+//    console.log("TITLE:  " +strtitle)
+    var strFilter = strtitle.toString().substring(0,1)
+  //  console.log(strFilter)
+    var title = strtitle.toString().substring(1,strtitle.length)
+    
+    switch (strFilter) {
+        case 1:
+            var format = 'AGENCYLIST'                        
+            break;        
+        case 2:
+            var format = 'USERLIST'        
+            break;
+        case 3:
+            var format = 'AGENCYSTFLIST'            
+            break;
+        case 4:
+            var format = 'USERSTFLIST'            
+            break;    
+        default: 
+            break;
+    }
   const temp =  forkJoin([
-    //    this.ReportS.GetReportFormat(title),
-        this.ReportS.GetReportSql(title)
+        this.ReportS.GetReportFormat(title),
+     //   this.ReportS.GetReportSql(strtitle)
     ]);    
     temp.subscribe(data => {
         //this.UserRptFormatlist = data[0];
@@ -19393,7 +19412,7 @@ FetchRuntimeReport(title){
         var re = /~/gi;    
         //console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
     
-        this.RenderRunTimeReport(this.UserRptSQLlist)
+    //    this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
 
     });
 
@@ -19403,7 +19422,7 @@ FetchRuntimeReport(title){
 
 }
 RenderRunTimeReport(strSQL){
-//    console.log(strSQL)
+    console.log(strSQL)
     const data = {
         
         "template": { "_id": "qTQEyEz8zqNhNgbU" },

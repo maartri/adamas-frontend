@@ -1,8 +1,9 @@
 import { Component } from "@angular/core";
 
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { OnInit, OnDestroy, AfterViewInit } from "@angular/core";
+import { OnInit, OnDestroy, AfterViewInit,ChangeDetectorRef } from "@angular/core";
 import { takeUntil } from 'rxjs/operators';
+import { Router,ActivatedRoute, ParamMap } from '@angular/router';
 import { forkJoin, Subject } from 'rxjs';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/core';
@@ -259,7 +260,8 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     private ListS:ListService,
     private MenuS:MenuService,
     private printS: PrintService,
-    
+    private router: Router,
+    private cd: ChangeDetectorRef,
     
     
   ) {
@@ -3776,7 +3778,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" like ('"  + this.value + "')"
         this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '"  + this.value + "'+')"
         }
-        //console.log(this.Savesqlcondition);
+        console.log(this.Savesqlcondition);
         break;
         case 'BETWEEN':
           if(this.sqlcondition == null){
@@ -3868,7 +3870,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
      
   
 
-  //  console.log(this.sql)
+    console.log(this.sql)
     
 
   }
@@ -3888,6 +3890,8 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       this.isVisibleprompt = false;
       var RptSQL  =  this.Saverptsql;
       this.RptTitle = (this.inputForm.value.RptTitle).toString();
+      
+        
       if(this.RptTitle != null && RptSQL != null){
     //var Title  = this.RptTitle;
     var Format  = this.RptFormat;
@@ -3902,12 +3906,15 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
 
    //console.log(insertsql)
    
+   
    this.ReportS.InsertReport(insertsql).subscribe(x=>{
    //  console.log(data)
     if(x != null) {
-     this. GlobalS.sToast('Success', 'Saved successful');     
+     this. GlobalS.sToast('Success', 'Saved successful'); 
+     this.router.navigate(['/admin/reports']);    
     }    
    }); 
+   
   }
 
   }
@@ -3946,7 +3953,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   //    console.log(this.tocken.user)
       const data = {
 
-          "template": {"shortid":"w1Vify0-uA"}, //{ "_id": "qTQEyEz8zqNhNgbU" },
+          "template": { "_id": "qTQEyEz8zqNhNgbU" },//{"shortid":"w1Vify0-uA"}, //
           "options": {
               "reports": { "save": false },
               //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
@@ -3970,7 +3977,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-        //this.cd.detectChanges();
+        this.cd.detectChanges();
     }, err => {
         console.log(err);
         this.loading = false;

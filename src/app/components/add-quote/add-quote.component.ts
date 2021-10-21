@@ -81,7 +81,7 @@ export class AddQuoteComponent implements OnInit {
     private onTouchedCallback: () => void = noop;
     private onChangeCallback: (_: any) => void = noop;
 
-    size: string = 'small';
+    size: string = 'default';
     title: string = 'Add New Quote';
 
     slots: any;
@@ -513,6 +513,7 @@ export class AddQuoteComponent implements OnInit {
 
       this.quoteListForm.get('code').valueChanges.pipe(
           switchMap(x => {
+                this.slots = null;
               if(!x)
                   return EMPTY;
 
@@ -606,14 +607,12 @@ export class AddQuoteComponent implements OnInit {
       });
 
       this.quoteForm.get('template').valueChanges.subscribe(data => {
-        console.log('ssd')
         if(!data)   return;
         this.showConfirm();
       });
 
       this.quoteForm.get('basePeriod').valueChanges
             .subscribe(x => {
-                console.log(x)
                 if(!x) return EMPTY;
                 if(x == 'ANNUALLY'){
                     setTimeout(() => {
@@ -644,7 +643,6 @@ export class AddQuoteComponent implements OnInit {
         this.quoteListForm.get('price').valueChanges,
       ]).subscribe(x => {
             let weekNo = this.convert_period_to_value(x[1]);
-            // console.log(weekNo * x[0]);
             this.current_quote_value = weekNo * x[0] * x[2]
       })
   }
@@ -731,9 +729,9 @@ export class AddQuoteComponent implements OnInit {
         this.cd.markForCheck();
     }
 
-  setPeriod(data: any){
-      
+  setPeriod(data: any){    
     if(data && data != 'NONE'){
+
         this.quoteListForm.get('period').enable();
 
         if(this.option == 'add'){
@@ -743,17 +741,22 @@ export class AddQuoteComponent implements OnInit {
                 weekNo: this.convert_period_to_value(data)
             });
         }
+
+        if(this.option == 'update'){
+            this.quoteListForm.patchValue({
+                period: data.toUpperCase(),
+                billUnit: 'HOUR',
+                weekNo: this.convert_period_to_value(data)
+            });
+        }
         return;
     }
 
-    // if(this.option == 'add')
-    // {
-        this.quoteListForm.patchValue({
-            period: 'WEEKLY',
-            billUnit: 'HOUR',    
-            weekNo: 52
-        })
-    // }
+    this.quoteListForm.patchValue({
+        period: 'WEEKLY',
+        billUnit: 'HOUR',    
+        weekNo: 52
+    });    
 
     this.quoteListForm.get('period').enable();
   }
@@ -1090,21 +1093,27 @@ export class AddQuoteComponent implements OnInit {
   firstLoadQuoteLine: boolean = true;
   quoteLineIndex: number;
 
+  GET_CORRECT_ROSTER(data: any): string{
+    if(this.globalS.isEmpty(data.roster)){
+        return 'NONE';
+    }
+
+    return data.frequency;
+  }
+
   showEditQuoteModal(data: any, index: number){
-    console.log(data);
 
     this.addNewQuoteLine = false;
-
     this.quoteLineIndex = index;
 
     this.listS.getquotelinedetails(data.recordNumber)
         .subscribe(x => {
             this.updateValues = x;                         
-
+            console.log(this.GET_CORRECT_ROSTER(x))
             this.quoteListForm.patchValue({
                 chargeType: this.getChargeType(x.mainGroup),
                 code: x.title,
-                roster: x.frequency,
+                roster: this.GET_CORRECT_ROSTER(x),
                 displayText: x.displayText,
                 frequency: x.frequency,
                 quantity: x.qty,
@@ -1407,11 +1416,13 @@ export class AddQuoteComponent implements OnInit {
             }
 
             if(this.option == 'update'){
+
                 var quoteForm = this.quoteForm.value;
                 var quoteLine = this.quoteListForm.getRawValue();
 
 
-                    if(this.addNewQuoteLine){           
+                    if(this.addNewQuoteLine){     
+
                         console.log('add');
                         let _quote: QuoteLineDTO = {
                             docHdrId: this.record,
@@ -1428,7 +1439,7 @@ export class AddQuoteComponent implements OnInit {
                             mainGroup: quote.mainGroup
                         }
                         // console.log(_quote);
-
+           
                         this.listS.createQuoteLine(_quote).subscribe(data => {
 
                             this.quoteLines = [...this.quoteLines, {
@@ -1645,7 +1656,6 @@ export class AddQuoteComponent implements OnInit {
     }
 
     slotsChange(data: any){
-        console.log(data);
         // This would stop process at the bottom on first load of QuoteLineModal
         if(this.firstLoadQuoteLine){
             this.firstLoadQuoteLine = false;

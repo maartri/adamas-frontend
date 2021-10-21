@@ -225,7 +225,7 @@
                 </div>
                 
                 <div nz-row>
-                    <nz-table #headerTable [nzShowPagination]="false" [nzSize]="size" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="goalsAndStratergies"  [nzScroll]="{ y: '340px' }">
+                    <nz-table #headerTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="goalsAndStratergies"  [nzScroll]="{ y: '340px' }">
                         <thead>
                             <tr>
                                 <th style="width:10%;">Ant Complete</th>
@@ -314,7 +314,7 @@
             </div>
 
             <div nz-row *ngIf="(quoteForm.get('program').value && quoteForm.get('template').value) || option == 'update'">
-                <nz-table #basicTable [nzSize]="size" [nzData]="quoteLines" >
+                <nz-table #basicTable [nzSize]="'small'" [nzData]="quoteLines" >
                     <thead>
                       <tr>
                         <th>Item Code</th>
@@ -550,7 +550,7 @@
 </nz-modal>
         
   
-
+ <!-- ADD QUOTE LINE -->
   <nz-modal [(nzVisible)]="quoteLineOpen" [nzWidth]="1120" [nzStyle]="{ top: '25px' }" nzTitle="Add New Quote Line" (nzOnCancel)="handleCancelLine()" >
     <div nz-row>
         <div nz-row [formGroup]="quoteListForm"> 
@@ -613,14 +613,14 @@
                 
                 <div nz-col nzSpan="15">
                     <app-interval-quote [(ngModel)]="slots" (ngModelChange)="slotsChange($event)" [interval]="weekly" [mode]="'Booking'" [size]="'small'" 
-                        [NoMon]="recipientProperties.noMonday"
-                        [NoTue]="recipientProperties.noTuesday"
-                        [NoWed]="recipientProperties.noWednesday"
-                        [NoThu]="recipientProperties.noThursday"
-                        [NoFri]="recipientProperties.noFriday"
-                        [NoSat]="recipientProperties.noSaturday"
-                        [NoSun]="recipientProperties.noSunday"
-                        [NoPub]="recipientProperties.noPubHol"
+                        [NoMon]="recipientProperties?.noMonday"
+                        [NoTue]="recipientProperties?.noTuesday"
+                        [NoWed]="recipientProperties?.noWednesday"
+                        [NoThu]="recipientProperties?.noThursday"
+                        [NoFri]="recipientProperties?.noFriday"
+                        [NoSat]="recipientProperties?.noSaturday"
+                        [NoSun]="recipientProperties?.noSunday"
+                        [NoPub]="recipientProperties?.noPubHol"
                         ></app-interval-quote>
                     <!-- {{ slots | json }} -->
                 </div>
@@ -646,17 +646,19 @@
                             <span><label nz-checkbox formControlName="min">GST</label></span>
                             <input class="three-five" nz-input  formControlName="gst" />
                         </div>
+
                         <div nz-row class="spacing" [formGroup]="quoteListForm">
+                          <div nz-col nzSpan="10">
                             <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteValue"></nz-input-number>
-                            <span>% of Quote Value</span>
-                        </div>
-                        <div nz-row class="spacing" [formGroup]="quoteListForm">
+                            <div>% of Quote Value</div>
+                          </div>
+
+                          <div nz-col nzSpan="10">
                             <nz-input-number [nzMin]="1" [nzStep]="1" [nzSize]="size" formControlName="quoteBudget"></nz-input-number>
-                            <span>% of Quote Budget</span>
+                            <div>% of Quote Budget</div>
+                          </div>
                         </div>
-                        <!-- <div nz-row class="spacing">                           
-                            <span>{{dailyliving()}}</span>                           
-                        </div> -->
+
                     </div>
                 </div>
 
@@ -833,7 +835,7 @@
                                 </div>
                             </div>
                             <div nz-row>
-                                <nz-table #headerTable [nzSize]="size" [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="stratergiesList"  [nzScroll]="{ y: '340px' }">
+                                <nz-table #headerTable [nzSize]="'small'" [nzShowPagination]="false" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="stratergiesList"  [nzScroll]="{ y: '340px' }">
                                     <thead>
                                         <tr>
                                             <th style="width:50%;">Strategy</th>

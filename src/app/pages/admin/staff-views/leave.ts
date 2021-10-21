@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, PrintService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -68,6 +68,7 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
         private router: Router,
         private sanitizer: DomSanitizer,
         private http: HttpClient,
+        private printS:PrintService,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
@@ -233,15 +234,6 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
                         "AND HR.[GROUP] = 'LEAVEAPP'"+
                         "ORDER BY  DATE1 DESC";
         
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-        
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-        
         const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -257,25 +249,23 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
                 "head6" : "Approved",
             }
         }
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-        .subscribe((blob: any) => {
+        this.printS.print(data).subscribe(blob => {  
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loadingPDF = false;
-            console.log("compiled after data")
+            this.loading = false;
             this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loadingPDF = false;
+            }, err => {
+            this.loading = false;
+            this.cd.detectChanges();
             this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                this.drawerVisible = false;
+              },
             });
-        });
+          });
         this.cd.detectChanges();
         this.loadingPDF = true;
         this.tryDoctype = "";

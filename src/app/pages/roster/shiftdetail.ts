@@ -713,7 +713,45 @@ ngOnInit(){
        
         return this.listS.getlist(`SELECT RosterGroup, Title FROM ItemTypes WHERE Title= '${activity}'`);
     }
-    GETSERVICEACTIVITY(program: any): Observable<any> {
+    
+GETSERVICEACTIVITY(program: any): Observable<any> {
+
+    //    const { serviceType, date, time } = this.bookingForm.value;
+        let serviceType=this.serviceType;
+        var { recipientCode }  = this.rosterForm.value;
+        if (recipientCode=='' )
+            recipientCode= this.recipientCode;
+        
+        if (!program) return EMPTY;
+        
+    
+        if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && (serviceType != 'ITEM'  && serviceType != 'SERVICE')) {
+    
+    
+           // return this.listS.getserviceactivityall({
+               return this.timeS.getActivities({            
+                recipient: recipientCode,
+                program:program,  
+                forceAll:"0",   
+                mainGroup: 'ALL',
+                subGroup: '-',           
+                viewType: this.viewType,
+                AllowedDays: "0",
+                duration: this.durationObject?.duration            
+            });
+        }
+        else {
+            let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
+                WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
+            
+            // let sql = `SELECT DISTINCT [Service Type] AS activity FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+            //     WHERE SO.ServiceProgram = '${ program}' AND EXISTS (SELECT Title FROM ItemTypes ITM WHERE Title = SO.[Service Type] AND 
+            //     ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}')) ORDER BY [Service Type]`;
+            return this.listS.getlist(sql);
+        }
+    }
+    
+    GETSERVICEACTIVITY2(program: any): Observable<any> {
 
         let serviceType=this.serviceType;
         let recipientCode   = this.recipientCode;

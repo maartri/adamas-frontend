@@ -135,11 +135,11 @@
                     <nz-label style=" font:bold 14px Segoe UI ; padding-bottom: 5px; background-color: white; width:400px; border-radius: 3px; margin-top: 3px; height: 32px; text-align: center; color: gray; padding-top: 4px; vertical-align: middle">Day View Options</nz-label>
                     <nz-radio-group style=" padding:5px;" [(ngModel)]="dval" >
                         
-                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(31)" [nzValue]="1" >Calendar Month</label>
-                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(14)" [nzValue]="2">Fortnight</label>    
-                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(7)"  [nzValue]="3">7 Days Week</label>               
-                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(5)"  [nzValue]="4">5 Days Week</label>
-                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(1)"  [nzValue]="5">1 Day Week</label>
+                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(31)" [nzValue]="31" >Calendar Month</label>
+                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(14)" [nzValue]="14">Fortnight</label>    
+                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(7)"  [nzValue]="7">7 Days Week</label>               
+                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(5)"  [nzValue]="5">5 Days Week</label>
+                        <label style=" padding:3px;" nz-radio  (click)="set_day_view(1)"  [nzValue]="1">1 Day Week</label>
                                                   
                     </nz-radio-group> 
                 </div>
@@ -148,9 +148,9 @@
                     
                     <nz-label style="font:bold 14px Segoe UI ;padding-bottom: 5px; background-color: white; width:400px; border-radius: 3px; margin-top: 3px; height: 32px; text-align: center; color: gray; padding-top: 4px; vertical-align: middle">Time Slot View Options</nz-label>
                     <nz-radio-group style=" padding:5px;" [(ngModel)]="tval">
-                        <label style=" padding:3px;" nz-radio  (click)="set_Time_Interval(288)" [nzValue]="1">5 Min Interval</label>                   
-                        <label style=" padding:3px;" nz-radio  (click)="set_Time_Interval(144)" [nzValue]="2">10 Min Interval</label>
-                        <label style=" padding:3px;" nz-radio  (click)="set_Time_Interval(96)"  [nzValue]="3" >15 Min Interval</label>     
+                        <label style=" padding:3px;" nz-radio nzChecked="time_slot==288"  (click)="set_Time_Interval(288)" [nzValue]="288">5 Min Interval</label>                   
+                        <label style=" padding:3px;" nz-radio nzChecked="time_slot==144" (click)="set_Time_Interval(144)" [nzValue]="144">10 Min Interval</label>
+                        <label style=" padding:3px;" nz-radio nzChecked="time_slot==96" (click)="set_Time_Interval(96)"  [nzValue]="96" >15 Min Interval</label>     
                         <label   nzValue="tval4" ></label>                           
                     </nz-radio-group> 
                 </div>
@@ -254,7 +254,7 @@
     
         <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ViewStaffDetail" nzTitle="View Staff Details" (nzOnCancel)="ViewStaffDetail = false" >
             <div nz-row>
-                 <div class="form-group" [formGroup]="rosterForm"> 
+                 <div class="form-group" [formGroup]="bookingForm"> 
                     <label for="">Staff/Contractor</label>
                     <app-staff-popup formControlName="staffCode"></app-staff-popup>
                  </div> 
@@ -277,242 +277,6 @@
                 <button nz-button nzType="default" (click)="ViewAdditionalModal=false">Cancel</button>
             </div>
         </nz-modal>
-    
-           
-    <!-- Add Timesheet -->
-    
-    <nz-modal [(nzVisible)]="addTimesheetVisible" [nzWidth]="900" nzTitle="Timesheet"  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
-        <div class="flexy" style="min-height:21rem">
-    
-                <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">
-                    <nz-step nzTitle="Service Type & Date"></nz-step>
-                    <nz-step nzTitle="Recipient Details"></nz-step>
-                    <nz-step nzTitle="Pay Details"></nz-step>
-                    <!-- <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Time"></nz-step> -->
-                    <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Pay"></nz-step>
-                    <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup) && rosterGroup != 'ADMINISTRATION' "nzTitle="Bills"></nz-step>
-                </nz-steps>
-        
-                <nz-divider class="full-height" nzType="vertical"></nz-divider>
-     
-                <div class="steps-content">
-                    <div *ngIf="current == 0" [formGroup]="rosterForm">
-                        
-                        <div nz-row>
-                            <div class="form-group">
-                                <label for="">Date</label>
-                                <nz-date-picker [nzFormat]="dateFormat" formControlName="date"></nz-date-picker>
-                            </div>
-                        </div>
-                        <div nz-row>
-                            <div class="form-group">
-                                <label for="">Service Type</label>
-                                <nz-select formControlName="serviceType" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                                    <nz-option *ngFor="let list of modalTimesheetValues" [nzValue]="list.name" [nzLabel]="list.name"></nz-option>
-                                </nz-select>
-                            </div>
-                        </div>
-                       
-                        <!-- <div nz-row *ngIf="multipleRecipientShow" >
-                            <label for="">Multiple Recipients</label>
-                            <nz-switch nzSize="small" formControlName="isMultipleRecipient"></nz-switch>
-                        </div> -->
-                        <div nz-row *ngIf="isTravelTimeChargeable">
-                            <label for="">Is Travel Time Chargeable</label>
-                            <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch>
-                        </div>
-                        <div nz-row *ngIf="isSleepOver">
-                            <label for="">Select the End Time on the following day for the sleepover</label>
-                            <nz-time-picker formControlName="sleepOverTime" [nzDefaultOpenValue]="defaultOpenValue" nzFormat="HH:mm"></nz-time-picker>
-    
-                            <!-- <nz-time-picker formControlName="sleepOverTime" nzFormat="HH:mm"></nz-time-picker> -->
-                            <!-- <nz-switch nzSize="small" formControlName="isTravelTimeChargeable"></nz-switch> -->
-                        </div>
-                        <div nz-row nzGutter="8" style="margin-top:1rem" *ngIf="showTime">
-                            <div nz-col nzSpan="6">
-                                <div class="form-group">
-                                    <label for="">Start Time</label>
-                                    <nz-time-picker [(ngModel)]="defaultStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
-                                </div>
-                            </div>
-                            <div nz-col nzSpan="6">
-                                <div class="form-group" *ngIf="showEndTime">
-                                    <label for="">End Time</label>
-                                    <nz-time-picker [(ngModel)]="defaultEndTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
-                                </div>
-                            </div>
-                            <div nz-col nzSpan="8">
-                                <div class="form-group">
-                                    <label for="">Duration</label>
-                                    <nz-alert *ngIf="durationObject?.error" nzType="error" [nzMessage]="durationObject?.durationStr"></nz-alert>
-                                    <nz-alert *ngIf="!durationObject?.error" nzType="success" [nzMessage]="durationObject?.durationStr"></nz-alert>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngIf="current == 1" [formGroup]="rosterForm">
-                        <div class="form-group" *ngIf="showRecipient() && selected?.option === 0">
-                            <label for="">Recipient</label>
-                            <app-recipient-popup formControlName="recipientCode"></app-recipient-popup>
-                        </div>
-                        <div class="form-group" *ngIf="showRecipient() ">
-                            <label for="">Debtor</label>
-                            <app-recipient-popup formControlName="debtor"></app-recipient-popup>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Program</label>
-                            <nz-select nzShowSearch nzAllowClear formControlName="program" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                                <nz-option *ngFor="let list of programsList" [nzValue]="list" [nzLabel]="list"></nz-option>
-                                <nz-option [nzLabel]="defaultProgram" [nzValue]="defaultProgram" nzHide></nz-option>
-                            </nz-select>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Service/Activity/Item</label>
-                            <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                                <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list"></nz-option>
-                                <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
-                            </nz-select>                        
-                            <div>
-                                <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="rosterForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
-                                <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
-                            </div>
-                        </div>
-                        <div class="form-group" *ngIf="selected?.option === 1">
-                            <label for="">Staff/Contractor</label>
-                            <app-staff-popup formControlName="staffCode"></app-staff-popup>
-                        </div>
-                    </div>
-                    
-                    <div *ngIf="current == 2" [formGroup]="rosterForm">
-                        <div class="form-group">
-                            <label for="">Pay Type</label>
-                            <nz-select formControlName="payType"
-                                [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                                <nz-option *ngFor="let list of payTypeList" [nzValue]="list.title" [nzLabel]="list.title">
-                                </nz-option>
-                            </nz-select>
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="">Category</label>
-                            <nz-select formControlName="analysisCode"
-                                [nzDropdownMatchSelectWidth]="false" style="width:15rem">
-                                <nz-option *ngFor="let list of analysisCodeList" [nzValue]="list" [nzLabel]="list"></nz-option>
-                                <nz-option [nzLabel]="defaultCategory" [nzValue]="defaultCategory" nzHide></nz-option>
-                            </nz-select>
-                        </div>
-                    </div>
-    
-                    <!-- <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 3" style="width: 30rem;">
-                        <ng-container>
-                            <div nz-col nzSpan="8">
-                                <div class="form-group">
-                                    <label for="">Start Time</label>
-                                    <nz-time-picker [(ngModel)]="defaultStartTime" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
-                                </div>
-                            </div>
-                            <div nz-col nzSpan="8">
-                                <div class="form-group">
-                                    <label for="">End Time</label>
-                                    <nz-time-picker [(ngModel)]="defaultEndTime" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
-                                </div>
-                            </div>
-                            <div nz-col nzSpan="8">
-                                <div class="form-group">
-                                    <label for="">Duration</label>
-                                    <p class="time-duration">{{ durationObject?.durationStr }}</p>
-                                </div>
-                            </div>
-                        </ng-container>
-                    </div> -->
-    
-                    <div nz-row nzSpan="24" nzGutter="8" [formGroup]="rosterForm" *ngIf="current == 3" style="width: 30rem;">
-                        <ng-container formGroupName="pay">
-                            <div nz-row>
-                                <div nz-col nzSpan="10">
-                                    <div class="form-group">
-                                        <label for="">Unit</label>
-                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
-                                            <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list"></nz-option> 
-                                        </nz-select>
-                                    </div>
-                                </div>
-                            </div>
-                           <div nz-row>
-                                <div nz-col nzSpan="7">
-                                    <div class="form-group">
-                                        <label for="">Rate</label>
-                                        <nz-input-number formControlName="pay_Rate" [nzMin]="-1" [nzStep]="1" [nzFormatter]="formatterDollar"
-                                            [nzParser]="parserDollar"></nz-input-number>
-                                    </div>
-                                </div>
-                                <div nz-col nzSpan="7">
-                                    <div class="form-group">
-                                        <label for="">Quantity</label>
-                                        <nz-input-number formControlName="quantity" [nzMin]="0"  [nzStep]="1"></nz-input-number>
-                                    </div>
-                                </div>
-                           </div>
-                        </ng-container>
-                    </div>
-    
-                    <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == 4" [formGroup]="rosterForm" style="width: 30rem;">
-                        <ng-container formGroupName="bill">
-                            <div nz-row>
-                                <div nz-col nzSpan="8">
-                                    <div class="form-group">
-                                        <label for="">Unit</label>
-                                        <nz-select formControlName="pay_Unit" [nzDropdownMatchSelectWidth]="false">
-                                            <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
-                                            </nz-option>
-                                        </nz-select>
-                                    </div>
-                                </div>
-                            </div>
-                           <div nz-row>
-                                <div nz-col nzSpan="7">
-                                    <div class="form-group">
-                                        <label for="">Rate</label>
-                                        <nz-input-number formControlName="bill_Rate" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatterDollar"
-                                            [nzParser]="parserDollar"></nz-input-number>
-                                    </div>
-                                </div>
-                                <div nz-col nzSpan="7">
-                                    <div class="form-group">
-                                        <label for="">Quantity</label>
-                                        <nz-input-number formControlName="quantity" [nzMin]="0" [nzStep]="1"></nz-input-number>
-                                    </div>
-                                </div>
-                                <div nz-col nzSpan="7">
-                                    <div class="form-group">
-                                        <label for="">Tax %</label>
-                                        <nz-input-number formControlName="tax" [nzMin]="-1" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-                                            [nzParser]="parserPercent"></nz-input-number>
-                                    </div>
-                                </div>
-                           </div>
-                        </ng-container>
-                    </div>
-    
-                </div>
-       
-        </div>
-    
-        <ng-template #modalFooter>
-            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
-                <span>Previous</span>
-            </button>
-            <button nz-button nzType="default" (click)="next()" *ngIf="nextCondition" [disabled]="nextDisabled">
-                <span>Next</span>
-            </button>
-            <button nz-button nzType="primary" (click)="done()" [disabled]="!isFormValid" *ngIf="showDone">
-                <span>Done</span>
-            </button>
-            <!-- <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>
-            <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button> -->
-        </ng-template>
-    
-    </nz-modal>
       
     <!-- Add Booking -->
     
@@ -752,14 +516,14 @@
                     <div *ngIf="current == 1" [formGroup]="bookingForm">
                       
                         <div class="form-group" >
-                            <div *ngIf="current >=10">
+                             <div *ngIf="current >=10"> 
                                 <label for="">Service/Activity/Item</label>
                                 <nz-select nzShowSearch nzAllowClear formControlName="serviceActivity" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                                     <nz-option *ngFor="let list of serviceActivityList" [nzValue]="list" [nzLabel]="list.activity"></nz-option>
                                     <nz-option [nzLabel]="defaultActivity" [nzValue]="defaultActivity" nzHide></nz-option>
                                 </nz-select>                        
                                 <div>
-                                    <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="rosterForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
+                                    <nz-alert style="margin-top:10px;width: 15rem;" *ngIf="bookingForm.get('program').value && serviceActivityList?.length == 0 && defaultActivity != null" nzType="warning" nzMessage="No Activities found"></nz-alert>
                                     <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
                                 </div>
                             </div>
@@ -1183,26 +947,26 @@
         </div>
         
     </nz-modal>
-      
+    
      <div>
-        <img id="icon-1" style="display: none; background-color: #D5D6DE;"  src="/media/r1.png"/>
-        <img id="icon-2" style="display: none; background-color: #D5D6DE;"  src="/media/r2.png"/>
-        <img id="icon-3" style="display: none; background-color: #D5D6DE;"  src="/media/r3.png"/>
-        <img id="icon-4" style="display: none; background-color: #D5D6DE;"  src="/media/r4.png"/>
-        <img id="icon-5" style="display: none; background-color: #D5D6DE;"  src="/media/r5.png"/>
-        <img id="icon-6" style="display: none; background-color: #D5D6DE;"  src="/media/r6.png"/>   
-        <img id="icon-7" style="display: none; background-color: #D5D6DE;"  src="/media/r7.png"/>
-        <img id="icon-8" style="display: none; background-color: #D5D6DE;"  src="/media/r8.png"/>
-        <img id="icon-9" style="display: none; background-color: #D5D6DE;"  src="/media/r9.png"/>
-        <img id="icon-10" style="display: none; background-color: #D5D6DE;" src="/media/r10.png"/>
-        <img id="icon-11" style="display: none; background-color: #D5D6DE;" src="/media/r11.png"/>
-        <img id="icon-12" style="display: none; background-color: #D5D6DE;" src="/media/r12.png"/>
-        <img id="icon-13" style="display: none; background-color: #D5D6DE;" src="/media/r13.png"/>
-        <img id="icon-14" style="display: none; background-color: #D5D6DE;" src="/media/r14.png"/>
-        <img id="icon-15" style="display: none; background-color: #D5D6DE;" src="/media/r15.png"/>
-        <img id="icon-20" style="display: none; background-color: #D5D6DE;" src="/media/r20.png"/>
-        <img id="icon-21" style="display: none; background-color: #D5D6DE;" src="/media/r21.jpg"/>
-        <img id="icon-22" style="display: none; background-color: #D5D6DE;" src="/media/r22.jpg"/>
+        <img id="icon-1" style="display: none; background-color: transparent;"  src="/media/r1.png"/>
+        <img id="icon-2" style="display: none; background-color: transparent;"  src="/media/r2.png"/>
+        <img id="icon-3" style="display: none; background-color: transparent;"  src="/media/r3.png"/>
+        <img id="icon-4" style="display: none; background-color: transparent;"  src="/media/r4.png"/>
+        <img id="icon-5" style="display: none; background-color: transparent;"  src="/media/r5.png"/>
+        <img id="icon-6" style="display: none; background-color: transparent;"  src="/media/r6.png"/>   
+        <img id="icon-7" style="display: none; background-color: transparent;"  src="/media/r7.png"/>
+        <img id="icon-8" style="display: none; background-color: transparent;"  src="/media/r8.png"/>
+        <img id="icon-9" style="display: none; background-color: transparent;"  src="/media/r9.png"/>
+        <img id="icon-10" style="display: none; background-color: transparent;" src="/media/r10.png"/>
+        <img id="icon-11" style="display: none; background-color: transparent;" src="/media/r11.png"/>
+        <img id="icon-12" style="display: none; background-color: transparent;" src="/media/r12.png"/>
+        <img id="icon-13" style="display: none; background-color: transparent;" src="/media/r13.png"/>
+        <img id="icon-14" style="display: none; background-color: transparent;" src="/media/r14.png"/>
+        <img id="icon-15" style="display: none; background-color: transparent;" src="/media/r15.png"/>
+        <img id="icon-20" style="display: none; background-color: transparent;" src="/media/r20.png"/>
+        <img id="icon-21" style="display: none; background-color: transparent;" src="/media/r21.jpg"/>
+        <img id="icon-22" style="display: none; background-color: transparent;" src="/media/r22.jpg"/>
     </div>     
 
   <!-- <div>

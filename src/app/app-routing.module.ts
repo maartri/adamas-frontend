@@ -157,10 +157,7 @@ import {
 
 
 import {  
-  RostersAdmin
-} from './pages/roster/index';
-import {  
-  ShiftDetail
+  RostersAdmin,ShiftDetail,AddRoster
 } from './pages/roster/index';
 
 import { ExtraComponent } from './pages/extra/extra';
@@ -921,6 +918,10 @@ const routes: Routes = [
         path: 'shiftdetail',
         component: ShiftDetail
       },
+      {
+        path: 'addroster',
+        component: AddRoster
+      },
       
       {
         path: 'staff',
@@ -1192,6 +1193,7 @@ export const PAGE_COMPONENTS = [
   //Roster Module
   RostersAdmin,
   ShiftDetail,
+  AddRoster,
   //Configuration
   CompaniesComponent,
   BranchesComponent,

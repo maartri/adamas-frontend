@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { GlobalService, ListService, MenuService } from '@services/index';
+import { GlobalService, ListService, MenuService, PrintService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -47,6 +47,7 @@ export class ActivityGroupsComponent implements OnInit {
     private listS:ListService,
     private menuS:MenuService,
     private switchS:SwitchService,
+    private printS:PrintService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private fb: FormBuilder,
@@ -269,14 +270,12 @@ export class ActivityGroupsComponent implements OnInit {
           "head5" : "End Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+      this.printS.print(data).subscribe(blob => {  
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
-        console.log(err);
+        }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',

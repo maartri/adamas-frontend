@@ -17,9 +17,6 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { LEADING_TRIVIA_CHARS } from '@angular/compiler/src/render3/view/template';
 
-
-
-
 //Sets defaults of Criteria Model     
 const inputFormDefault = {
     statesArr: [[]],

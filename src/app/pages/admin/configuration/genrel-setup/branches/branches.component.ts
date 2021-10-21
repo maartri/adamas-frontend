@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { TimeSheetService, GlobalService, ClientService, StaffService,ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, MenuService } from '@services/index';
+import { TimeSheetService, GlobalService, ClientService, StaffService,ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, MenuService, PrintService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Observable, of, from, Subject, EMPTY } from 'rxjs';
@@ -55,6 +55,7 @@ export class BranchesComponent implements OnInit {
     private formBuilder: FormBuilder,
     private menuS: MenuService,
     private http: HttpClient,
+    private printS: PrintService,
     private sanitizer: DomSanitizer,
     private fb: FormBuilder,
     private ModalS: NzModalService)
@@ -295,6 +296,7 @@ export class BranchesComponent implements OnInit {
         this.cd.detectChanges();
       });
     }
+
     fetchAll(e){
       if(e.target.checked){
         this.whereString = "WHERE";
@@ -317,6 +319,7 @@ export class BranchesComponent implements OnInit {
         }
       });
     }
+
     handleOkTop() {
       this.generatePdf();
       this.tryDoctype = ""
@@ -327,21 +330,12 @@ export class BranchesComponent implements OnInit {
       this.pdfTitle = ""
     }
     generatePdf(){
-      this.drawerVisible = true;
       
+      this.drawerVisible = true;
       this.loading = true;
       
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains "+this.whereString+" Domain='BRANCHES'";
       
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-     
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-     
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {
@@ -354,13 +348,13 @@ export class BranchesComponent implements OnInit {
           "head3" : "End Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+
+      this.printS.print(data).subscribe(blob => { 
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
+        }, err => {
         console.log(err);
         this.loading = false;
         this.ModalS.error({
@@ -371,6 +365,7 @@ export class BranchesComponent implements OnInit {
           },
         });
       });
+      
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

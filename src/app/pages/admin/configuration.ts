@@ -265,6 +265,12 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         if(index == 20){
             this.router.navigate(['/admin/distribution-list']);
         }
+        if(index == 91){
+            this.router.navigate(['/admin/notification-list']);
+        }
+        if(index == 92){
+            this.router.navigate(['/admin/followup-list']);
+        }
         if(index == 21){
             this.router.navigate(['/admin/initial-actions']);
         }

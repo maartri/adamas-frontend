@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService } from '@services/index';
+import { ListService, MenuService, PrintService } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -44,6 +44,7 @@ export class ProgramcoordinatesComponent implements OnInit {
     private listS:ListService,
     private menuS:MenuService,
     private switchS:SwitchService,
+    private printS:PrintService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private fb: FormBuilder,
@@ -232,13 +233,7 @@ export class ProgramcoordinatesComponent implements OnInit {
       this.drawerVisible = true;
       this.loading = true;
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,HACCCode as Field3,CONVERT(varchar, [enddate],105) as Field4,DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='CASE MANAGERS'";
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
+      
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {
@@ -252,14 +247,13 @@ export class ProgramcoordinatesComponent implements OnInit {
           "head4" : "End Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+
+      this.printS.print(data).subscribe(blob => { 
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
-        console.log(err);
+        }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',
@@ -269,6 +263,8 @@ export class ProgramcoordinatesComponent implements OnInit {
           },
         });
       });
+
+
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

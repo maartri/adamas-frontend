@@ -291,6 +291,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private loginS: LoginService,
         private http: HttpClient,
         private ModalS: NzModalService,
+        private PrintS: PrintService,
         private sanitizer: DomSanitizer,
         private printS: PrintService,
     ) {        
@@ -944,24 +945,21 @@ ReportRender(){
     
     this.selectedPrograms = this.diciplineList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
     
     this.selectedCordinators = this.casemanagers
     .filter(opt => opt.checked)
-    .map(opt => opt.uniqueID).join("','")
+    .map(opt => opt.uniqueID)
     
     this.selectedCategories = this.categoriesList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
     
     this.selectedbranches = this.branchesList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
 
     var postdata = {
-      // availble:this.quicksearch.value.availble,
-      // option:this.quicksearch.value.option,
-      
       status:this.quicksearch.value.status,
       gender:this.quicksearch.value.gender,
       staff:this.quicksearch.value.staff,
@@ -969,15 +967,22 @@ ReportRender(){
       volunteers:this.quicksearch.value.volunteers,
       onleaveStaff:this.quicksearch.value.onleaveStaff,
       searchText:this.quicksearch.value.searchText,
+      
+      allTeamAreas      : this.allProgarms,
+      selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
+
+      allcat:this.allcat,
+      selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+
+      allBranches:this.allBranches,
+      selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+
+      allCordinatore:this.allCordinatore,
+      selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,
-                     
-      // allBranches:this.allBranches,
-      // selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
-      // allProgarms:this.allProgarms,
-      // selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
-      // allCordinatore:this.allCordinatore,
-      // selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+      
       // allcat:this.allcat,
       // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
       // activeprogramsonly:this.filters.value.activeprogramsonly,
@@ -989,7 +994,7 @@ ReportRender(){
       // fileno:this.quicksearch.value.fileno,
       // searchText:this.quicksearch.value.searchText,
       // criterias:this.cariteriaList
-       // list of rules
+      // list of rules
     }
 
     this.timeS.poststaffquicksearch(postdata).subscribe(data => {
@@ -997,11 +1002,10 @@ ReportRender(){
       this.loading = false;
       this.cd.detectChanges();
     });
-
   }
-    detectChanges() {
+  detectChanges() {
         throw new Error('Method not implemented.');
-    }
+  }
   updateAllChecked(): void {
     this.indeterminate = false;
     if (this.allChecked) {

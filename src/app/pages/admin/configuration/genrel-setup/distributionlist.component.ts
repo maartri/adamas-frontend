@@ -49,7 +49,7 @@ export class DistributionlistComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+  whereString :string="where ListName IN ('INCIDENT','DOCUSIGN','EVENT') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
   
   constructor(
     private globalS: GlobalService,

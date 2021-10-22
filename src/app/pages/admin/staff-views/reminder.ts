@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, recurringInt, recurringStr } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, recurringInt, recurringStr, PrintService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -69,6 +69,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
+        private printS: PrintService,
         private cd: ChangeDetectorRef,
         private http: HttpClient,
         private sanitizer: DomSanitizer,
@@ -258,14 +259,6 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                     this.loading = true;
                     
                     var fQuery = "Select Name As Field1, CONVERT(varchar, [Date1],105) As Field2, CONVERT(varchar, [Date2],105) as Field3,Notes as Field4 From HumanResources  HR INNER JOIN Staff ST ON ST.[UniqueID] = HR.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HR.DeletedRecord = 0 AND [Group] = 'STAFFALERT' ORDER BY  RecordNumber DESC";
-                    const headerDict = {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    }
-                    
-                    const requestOptions = {
-                        headers: new HttpHeaders(headerDict)
-                    };
                     
                     const data = {
                         "template": { "_id": "0RYYxAkMCftBE9jc" },
@@ -280,24 +273,24 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                             "head4" : "Notes",
                         }
                     }
-                    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-                    .subscribe((blob: any) => {
+                    this.printS.print(data).subscribe(blob => {  
                         let _blob: Blob = blob;
                         let fileURL = URL.createObjectURL(_blob);
                         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
                         this.loading = false;
-                        this.cd.detectChanges();
-                    }, err => {
-                        console.log(err);
+                        this.cd.detectChanges();    
+                        }, err => {
                         this.loading = false;
+                        this.cd.detectChanges();
                         this.ModalS.error({
-                            nzTitle: 'TRACCS',
-                            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                            nzOnOk: () => {
-                                this.drawerVisible = false;
-                            },
+                          nzTitle: 'TRACCS',
+                          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                          nzOnOk: () => {
+                            this.drawerVisible = false;
+                          },
                         });
-                    });
+                      });
+                      
                     this.cd.detectChanges();
                     this.loading = true;
                     this.tryDoctype = "";

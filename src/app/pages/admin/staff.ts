@@ -244,8 +244,9 @@ export class StaffAdmin implements OnInit, OnDestroy {
           checked: false
         }
       ]
-  skillsList: unknown;
+  skillsList: { checked: boolean; label: string; value: string; }[];
   avilibilityForm: FormGroup;
+  selectedSkills: { checked: boolean; label: string; value: string; }[];
       
       handleCancel() {
         this.findModalOpen = false;
@@ -1026,6 +1027,23 @@ ReportRender(){
   }
   detectChanges() {
         throw new Error('Method not implemented.');
+  }
+  allcompetencieschecked(): void {
+      console.log("added");
+      this.skillsList = this.skillsList.map(item => 
+        (
+          {
+          ...item,
+          checked: true
+          }
+        )
+      );
+  }
+  allcompetenciesunchecked(): void {
+      this.skillsList = this.skillsList.map(item => ({
+        ...item,
+        checked: false,
+      }));
   }
   updateAllChecked(): void {
     this.indeterminate = false;

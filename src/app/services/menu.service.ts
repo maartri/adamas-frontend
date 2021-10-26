@@ -130,8 +130,18 @@ export class MenuService {
         deleteconfigurationservicescompetency(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/services/competency/${recordNo}`)
         }
-
         /***/
+        /**
+         *  Recipient Absenses
+        */
+        postconfigurationfollowups(data: any): Observable<any> {
+            return this.auth.post(`${menu}/configurationfollowups`, data);
+        }
+    
+        updateconfigurationfollowups(data: any): Observable<any> {
+            return this.auth.put(`${menu}/configurationfollowups`, data);
+        }
+
         /***************************************************************************/
         
         

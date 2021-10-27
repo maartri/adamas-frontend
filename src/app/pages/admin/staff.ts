@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService, StaffService,sbFieldsSkill, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -134,6 +134,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     diciplineList: any;
     casemanagers: any;
     categoriesList: any;
+    skillsList:any;
     selectedRecpientTypes: any[];
     types: any[];
     
@@ -145,6 +146,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     selectedPrograms: any;
     selectedCordinators: any;
     selectedCategories: any;
+    selectedSkills:any;
     
     allBranches:boolean = true;
     allBranchIntermediate:boolean = false;
@@ -152,12 +154,11 @@ export class StaffAdmin implements OnInit, OnDestroy {
     allProgarms:boolean = true;
     allprogramIntermediate:boolean = false;
     
-    allCordinatore:boolean = true;
-    allCordinatorIntermediate:boolean = false;
-    
     allcat:boolean = true;
     allCatIntermediate:boolean = false;
     
+    allCordinatore:boolean = true;
+    allCordinatorIntermediate:boolean = false;
     
     allChecked: boolean = true;
     indeterminate: boolean = false;
@@ -169,7 +170,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     genderList:any = genderList;
     conflictpointList:any = conflictpointList;
     timeSteps:Array<string>;
-    
+    sbFieldsSkill:any;
     columns: Array<any> = [
         {
           name: 'ID',
@@ -244,10 +245,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
           checked: false
         }
       ]
-  skillsList: { checked: boolean; label: string; value: string; }[];
   avilibilityForm: FormGroup;
-  selectedSkills: { checked: boolean; label: string; value: string; }[];
-      
       handleCancel() {
         this.findModalOpen = false;
       }
@@ -300,6 +298,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+        this.sbFieldsSkill = sbFieldsSkill;
         this.buildForm();
         this.buildForms();
         this.timeSteps = timeSteps;
@@ -980,6 +979,14 @@ ReportRender(){
     this.selectedbranches = this.branchesList
     .filter(opt => opt.checked)
     .map(opt => opt.description)
+
+    this.selectedSkills  = this.skillsList
+    .filter(opt => opt.checked)
+    .map(opt => this.sbFieldsSkill[opt.identifier])
+    
+    this.selectedSkills.forEach(x => {
+      console.log(this.sbFieldsSkill[x])
+    });
 
     var postdata = {
       status:this.quicksearch.value.status,

@@ -252,15 +252,6 @@ dateFormat: string ='dd/MM/yyyy';
           
           var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,DeletedRecord as is_deleted,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='PKGPURPOSE'";
           
-          const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }
-          
-          const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-          };
-          
           const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {

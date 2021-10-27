@@ -322,8 +322,6 @@ export class DestinationaddressComponent implements OnInit {
           },
         });
       });
-
-
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

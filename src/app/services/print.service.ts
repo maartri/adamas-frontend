@@ -8,9 +8,6 @@ import { JsConfig } from '@modules/modules';
 
 const url: string = "https://www.mark3nidad.com:5488/api/report"
 
-
-
-
 @Injectable()
 export class PrintService {
     constructor(

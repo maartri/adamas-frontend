@@ -290,7 +290,6 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private loginS: LoginService,
         private http: HttpClient,
         private ModalS: NzModalService,
-        private PrintS: PrintService,
         private sanitizer: DomSanitizer,
     ) {        
       

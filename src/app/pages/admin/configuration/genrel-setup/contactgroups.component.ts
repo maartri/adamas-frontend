@@ -266,6 +266,7 @@ export class ContactgroupsComponent implements OnInit {
               },
             });
           });
+          
           this.loading = true;
           this.tryDoctype = "";
           this.pdfTitle = "";

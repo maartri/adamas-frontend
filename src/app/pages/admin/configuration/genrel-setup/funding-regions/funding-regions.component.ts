@@ -261,6 +261,7 @@ export class FundingRegionsComponent implements OnInit {
               },
             });
           });
+          
           this.loading = true;
           this.tryDoctype = "";
           this.pdfTitle = "";

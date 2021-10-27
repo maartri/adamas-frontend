@@ -247,15 +247,6 @@ export class ContacttypesComponent implements OnInit {
       
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3,CONVERT(varchar, [enddate],105) as Field4 from DataDomains "+this.whereString+" Domain='CONTACTSUBGROUP'";
       
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-      
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {

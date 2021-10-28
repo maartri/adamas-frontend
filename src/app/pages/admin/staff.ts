@@ -983,9 +983,11 @@ ReportRender(){
     .filter(opt => opt.checked)
     .map(opt => this.sbFieldsSkill[opt.identifier])
     
-    this.selectedSkills.forEach(x => {
-      console.log(this.sbFieldsSkill[x])
-    });
+    console.log(this.selectedSkills.length);
+    // JSON.stringify(object)
+    // console.log(JSON.stringify(this.selectedSkills));
+    // console.log(this.sbFieldsSkill.get("fstaffContainer9-Competencies0022"))
+
 
     var postdata = {
       status:this.quicksearch.value.status,
@@ -1007,6 +1009,9 @@ ReportRender(){
 
       allCordinatore:this.allCordinatore,
       selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+
+      allSkills:(this.selectedSkills.length) ? false : true,
+      selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
 
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,

@@ -111,7 +111,6 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.skillsForm = this.formBuilder.group({
             CompetencyException:false,
             EmailCompetencyReminders:false,
-            
             SB1  : false,
             SB2  : false,
             SB3  : false,
@@ -147,8 +146,8 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             SB33 : false,
             SB34 : false,
             SB35 : false,
-        
         });
+
         this.titleskillsForm = this.formBuilder.group({
             identifer:'',
             recordNumber:'',
@@ -167,6 +166,41 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             this.skillsForm.patchValue({
                 CompetencyException:data[0].competencyException,
                 EmailCompetencyReminders:data[0].emailCompetencyReminders,
+                SB1:data[0].sB1,
+                SB2:data[0].sB2,
+                SB3:data[0].sB3,
+                SB4:data[0].sB4,
+                SB5:data[0].sB5,
+                SB6:data[0].sB6,
+                SB7:data[0].sB7,
+                SB8:data[0].sB8,
+                SB9:data[0].sB9,
+                SB10:data[0].sB10,
+                SB11:data[0].sB11,
+                SB12:data[0].sB12,
+                SB13:data[0].sB13,
+                SB14:data[0].sB14,
+                SB15:data[0].sB15,
+                SB16:data[0].sB16,
+                SB17:data[0].sB17,
+                SB18:data[0].sB18,
+                SB19:data[0].sB19,
+                SB20:data[0].sB20,
+                SB21:data[0].sB21,
+                SB22:data[0].sB22,
+                SB23:data[0].sB23,
+                SB24:data[0].sB24,
+                SB25:data[0].sB25,
+                SB26:data[0].sB26,
+                SB27:data[0].sB27,
+                SB28:data[0].sB28,
+                SB29:data[0].sB29,
+                SB30:data[0].sB30,
+                SB31:data[0].sB31,
+                SB32:data[0].sB32,
+                SB33:data[0].sB33,
+                SB34:data[0].sB34,
+                SB35:data[0].sB35,
             })
         });
     }
@@ -197,15 +231,27 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         });
     }
     changeSbField(e,skill,sb){
+        this.updateString = '';
+        let formInputName = this.getName(skill);
         if(e.target.checked){
-            console.log(skill.identifier);
-        }else{
-            console.log(skill.identifier);
+            this.updateString = " "+formInputName+" = 1 " ;
+            console.log("Ticked" + this.getName(skill));
+        }else
+        {
+            this.updateString = " '"+formInputName+"' = 0 " ;
+            console.log("Un Ticked" + this.getName(skill));
         }
+        this.timeS.updateStaffCompetenciesSkill(this.updateString,this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
+            this.globalS.sToast('Success', 'Competency saved');
+        });
+        this.updateString = '';
     }
+    
     getName(skill){
-        return sbFieldsSkill[skill.identifer];
+        console.log(this.sbFieldsSkill[skill.identifier]);
+        return this.sbFieldsSkill[skill.identifier];
     }
+
     showEditModal(index: any) {
         this.isUpdate = true;
         this.current = 0;
@@ -261,12 +307,10 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             .getcompetenciesall()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe(data => this.competencies = data)
-
             this.listS.getskills().subscribe(data => {
                 this.skills = data
                 this.cd.detectChanges();
             });
-            console.log(this.skills);
     }
 
     pre(): void {

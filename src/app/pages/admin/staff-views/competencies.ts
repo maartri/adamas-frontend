@@ -42,6 +42,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
 
     isUpdate: boolean = false;
     skills: any;
+    skillsModified:Array<any> = [];
     titleskillsForm: FormGroup;
     updateString: string;
     sbFieldsSkill:any;
@@ -111,41 +112,41 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         this.skillsForm = this.formBuilder.group({
             CompetencyException:false,
             EmailCompetencyReminders:false,
-            SB1  : false,
-            SB2  : false,
-            SB3  : false,
-            SB4  : false,
-            SB5  : false,
-            SB6  : false,
-            SB7  : false,
-            SB8  : false,
-            SB9  : false,
-            SB10 : false,
-            SB11 : false,
-            SB12 : false,
-            SB13 : false,
-            SB14 : false,
-            SB15 : false,
-            SB16 : false,
-            SB17 : false,
-            SB18 : false,
-            SB19 : false,
-            SB20 : false,
-            SB21 : false,
-            SB22 : false,
-            SB23 : false,
-            SB24 : false,
-            SB25 : false,
-            SB26 : false,
-            SB27 : false,
-            SB28 : false,
-            SB29 : false,
-            SB30 : false,
-            SB31 : false,
-            SB32 : false,
-            SB33 : false,
-            SB34 : false,
-            SB35 : false,
+            SBSB1  : false,
+            SBSB2  : false,
+            SBSB3  : false,
+            SBSB4  : false,
+            SBSB5  : false,
+            SBSB6  : false,
+            SBSB7  : false,
+            SBSB8  : false,
+            SBSB9  : false,
+            SBSB10 : false,
+            SBSB11 : false,
+            SBSB12 : false,
+            SBSB13 : false,
+            SBSB14 : false,
+            SBSB15 : false,
+            SBSB16 : false,
+            SBSB17 : false,
+            SBSB18 : false,
+            SBSB19 : false,
+            SBSB20 : false,
+            SBSB21 : false,
+            SBSB22 : false,
+            SBSB23 : false,
+            SBSB24 : false,
+            SBSB25 : false,
+            SBSB26 : false,
+            SBSB27 : false,
+            SBSB28 : false,
+            SBSB29 : false,
+            SBSB30 : false,
+            SBSB31 : false,
+            SBSB32 : false,
+            SBSB33 : false,
+            SBSB34 : false,
+            SBSB35 : false,
         });
 
         this.titleskillsForm = this.formBuilder.group({
@@ -166,41 +167,41 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             this.skillsForm.patchValue({
                 CompetencyException:data[0].competencyException,
                 EmailCompetencyReminders:data[0].emailCompetencyReminders,
-                SB1:data[0].sB1,
-                SB2:data[0].sB2,
-                SB3:data[0].sB3,
-                SB4:data[0].sB4,
-                SB5:data[0].sB5,
-                SB6:data[0].sB6,
-                SB7:data[0].sB7,
-                SB8:data[0].sB8,
-                SB9:data[0].sB9,
-                SB10:data[0].sB10,
-                SB11:data[0].sB11,
-                SB12:data[0].sB12,
-                SB13:data[0].sB13,
-                SB14:data[0].sB14,
-                SB15:data[0].sB15,
-                SB16:data[0].sB16,
-                SB17:data[0].sB17,
-                SB18:data[0].sB18,
-                SB19:data[0].sB19,
-                SB20:data[0].sB20,
-                SB21:data[0].sB21,
-                SB22:data[0].sB22,
-                SB23:data[0].sB23,
-                SB24:data[0].sB24,
-                SB25:data[0].sB25,
-                SB26:data[0].sB26,
-                SB27:data[0].sB27,
-                SB28:data[0].sB28,
-                SB29:data[0].sB29,
-                SB30:data[0].sB30,
-                SB31:data[0].sB31,
-                SB32:data[0].sB32,
-                SB33:data[0].sB33,
-                SB34:data[0].sB34,
-                SB35:data[0].sB35,
+                SBSB1:data[0].sB1,
+                SBSB2:data[0].sB2,
+                SBSB3:data[0].sB3,
+                SBSB4:data[0].sB4,
+                SBSB5:data[0].sB5,
+                SBSB6:data[0].sB6,
+                SBSB7:data[0].sB7,
+                SBSB8:data[0].sB8,
+                SBSB9:data[0].sB9,
+                SBSB10:data[0].sB10,
+                SBSB11:data[0].sB11,
+                SBSB12:data[0].sB12,
+                SBSB13:data[0].sB13,
+                SBSB14:data[0].sB14,
+                SBSB15:data[0].sB15,
+                SBSB16:data[0].sB16,
+                SBSB17:data[0].sB17,
+                SBSB18:data[0].sB18,
+                SBSB19:data[0].sB19,
+                SBSB20:data[0].sB20,
+                SBSB21:data[0].sB21,
+                SBSB22:data[0].sB22,
+                SBSB23:data[0].sB23,
+                SBSB24:data[0].sB24,
+                SBSB25:data[0].sB25,
+                SBSB26:data[0].sB26,
+                SBSB27:data[0].sB27,
+                SBSB28:data[0].sB28,
+                SBSB29:data[0].sB29,
+                SBSB30:data[0].sB30,
+                SBSB31:data[0].sB31,
+                SBSB32:data[0].sB32,
+                SBSB33:data[0].sB33,
+                SBSB34:data[0].sB34,
+                SBSB35:data[0].sB35,
             })
         });
     }
@@ -248,7 +249,7 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     }
     
     getName(skill){
-        console.log(this.sbFieldsSkill[skill.identifier]);
+
         return this.sbFieldsSkill[skill.identifier];
     }
 
@@ -308,7 +309,18 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe))
             .subscribe(data => this.competencies = data)
             this.listS.getskills().subscribe(data => {
-                this.skills = data
+                this.skills = data ; 
+
+                this.skills.forEach(x => {
+                    this.skillsModified.push({
+                        identifier  : x.identifier,
+                        text        : x.text,
+                        sqlid       : x.sqlid,
+                        title       : this.sbFieldsSkill[x.identifier]
+                    })
+                });
+                console.log(this.skillsModified);
+                
                 this.cd.detectChanges();
             });
     }

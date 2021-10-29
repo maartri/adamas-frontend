@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService,PrintService } from '@services/index';
+
+import { GlobalService, StaffService,sbFieldsSkill, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -134,6 +136,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     diciplineList: any;
     casemanagers: any;
     categoriesList: any;
+    skillsList:any;
     selectedRecpientTypes: any[];
     types: any[];
     
@@ -145,6 +148,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     selectedPrograms: any;
     selectedCordinators: any;
     selectedCategories: any;
+    selectedSkills:any;
     
     allBranches:boolean = true;
     allBranchIntermediate:boolean = false;
@@ -152,12 +156,11 @@ export class StaffAdmin implements OnInit, OnDestroy {
     allProgarms:boolean = true;
     allprogramIntermediate:boolean = false;
     
-    allCordinatore:boolean = true;
-    allCordinatorIntermediate:boolean = false;
-    
     allcat:boolean = true;
     allCatIntermediate:boolean = false;
     
+    allCordinatore:boolean = true;
+    allCordinatorIntermediate:boolean = false;
     
     allChecked: boolean = true;
     indeterminate: boolean = false;
@@ -169,7 +172,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     genderList:any = genderList;
     conflictpointList:any = conflictpointList;
     timeSteps:Array<string>;
-    
+    sbFieldsSkill:any;
     columns: Array<any> = [
         {
           name: 'ID',
@@ -244,9 +247,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
           checked: false
         }
       ]
-  skillsList: unknown;
   avilibilityForm: FormGroup;
-      
       handleCancel() {
         this.findModalOpen = false;
       }
@@ -291,7 +292,6 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private loginS: LoginService,
         private http: HttpClient,
         private ModalS: NzModalService,
-        private PrintS: PrintService,
         private sanitizer: DomSanitizer,
         private printS: PrintService,
     ) {        
@@ -300,6 +300,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+        this.sbFieldsSkill = sbFieldsSkill;
         this.buildForm();
         this.buildForms();
         this.timeSteps = timeSteps;
@@ -959,6 +960,16 @@ ReportRender(){
     .filter(opt => opt.checked)
     .map(opt => opt.description)
 
+    this.selectedSkills  = this.skillsList
+    .filter(opt => opt.checked)
+    .map(opt => this.sbFieldsSkill[opt.identifier])
+    
+    console.log(this.selectedSkills.length);
+    // JSON.stringify(object)
+    // console.log(JSON.stringify(this.selectedSkills));
+    // console.log(this.sbFieldsSkill.get("fstaffContainer9-Competencies0022"))
+
+
     var postdata = {
       status:this.quicksearch.value.status,
       gender:this.quicksearch.value.gender,
@@ -979,6 +990,9 @@ ReportRender(){
 
       allCordinatore:this.allCordinatore,
       selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+
+      allSkills:(this.selectedSkills.length) ? false : true,
+      selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
 
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,
@@ -1005,6 +1019,23 @@ ReportRender(){
   }
   detectChanges() {
         throw new Error('Method not implemented.');
+  }
+  allcompetencieschecked(): void {
+      console.log("added");
+      this.skillsList = this.skillsList.map(item => 
+        (
+          {
+          ...item,
+          checked: true
+          }
+        )
+      );
+  }
+  allcompetenciesunchecked(): void {
+      this.skillsList = this.skillsList.map(item => ({
+        ...item,
+        checked: false,
+      }));
   }
   updateAllChecked(): void {
     this.indeterminate = false;

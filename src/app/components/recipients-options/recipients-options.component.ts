@@ -2262,7 +2262,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 // Other Details Tab Populate 
                 if(this.current == 1){
                   this.populateOtherDetails();      
-                }                
+                }           
+                
+                if(this.current == 2){
+                  this.populateNotificationDetails();
+                }
                 // this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
               }
 
@@ -2308,7 +2312,62 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 }                
               }
 
+              GET_SERVICE_TYPE(): string{
+                if(this.option == RECIPIENT_OPTION.REFER_IN)
+                { 
+                  return this.referInGroup.get('referralType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.REFER_ON)
+                { 
+                  return this.referOnGroup.get('referralType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.ASSESS)
+                { 
+                  return this.assessGroup.get('serviceType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.ADMIT)
+                { 
+                  return this.admitGroup.get('admissionType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.NOT_PROCEED)
+                { 
+                  return this.notProceedGroup.get('referralType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.DISCHARGE)
+                { 
+                  return this.dischargeGroup.get('dischargeType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.ADMIN)
+                {
+                  console.log(this.adminGroup.value);
+                }
+
+                if(this.option == RECIPIENT_OPTION.WAIT_LIST)
+                {
+                  return this.waitListGroup.get('activityCode').value;
+                }
+
+                // if(this.option == RECIPIENT_OPTION.SUSPEND)
+                // { 
+                //   return this.suspendGroup.get('').value;
+                // }
+
+                // if(this.option == RECIPIENT_OPTION.REINSTATE)
+                // { 
+                //   return this.reinstateGroup.get('').value;
+                // }    
+              }
+
               populateNotificationDetails(): void{
+
+                var type = this.GET_SERVICE_TYPE();
+                console.log(type);
 
                 this.listS.getnotifications({
                   branch: this.BRANCH_NAME,
@@ -2330,7 +2389,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.listS.getfollowups({
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE,
-                  type: 'REF_DEFAULT_REMINDERS'
+                  type: type,
+                  group: 'FOLLOWUP'
                 }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifFollowUpGroup = data.map(x => {
                     return {
@@ -2348,7 +2408,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.listS.getdocumentslist({
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE,
-                  type: 'REF_DEFAULT_DOCS',
+                  type: type,
+                  group: 'DOCUMENTS'
                 }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifDocumentsGroup = data.map(x => {
                     return {
@@ -2364,7 +2425,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.listS.getdatalist({
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE,
-                  type: 'REF_DEFAULT_XTRADATA'
+                  type: type,
+                  group: 'XTRADATA'
                 }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
                   this.datalist = data.map(x =>{
                     return {
@@ -2398,7 +2460,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                           this.EMAIL_OF_COORDINATOR = data;
                         });
 
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.referralCode$ = this.listS.getwizardreferralcode();
                     
                     if(this.referInGroup.get('type').value == 1){
@@ -2438,7 +2500,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   
                   if(this.option == RECIPIENT_OPTION.REFER_ON)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.referralSource$ = this.listS.getwizardreferralsource('default');
                     
                     this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
@@ -2455,11 +2517,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
 
                   if(this.option == RECIPIENT_OPTION.ASSESS){
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                   }
 
                   if(this.option == RECIPIENT_OPTION.ADMIN){
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                   }    
 
                   if(this.option == RECIPIENT_OPTION.WAIT_LIST)
@@ -2469,25 +2531,25 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   
                   if(this.option == RECIPIENT_OPTION.DECEASE)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.reasons$ = this.listS.getreasons();
                   }
                   
                   if(this.option == RECIPIENT_OPTION.SUSPEND)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.cancellationCode$ = this.listS.getlist(`SELECT title FROM itemtypes WHERE ( enddate IS NULL OR enddate >= '${ this.CURRENT_DATE.toISOString() }' ) AND rostergroup = 'RECPTABSENCE' AND status = 'ATTRIBUTABLE' AND processclassification = 'EVENT' ORDER BY title`)
                   }
                   
                   if(this.option == RECIPIENT_OPTION.DISCHARGE)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.dischargeReason$ = this.listS.getlist(`SELECT DISTINCT Description, HACCCode, RecordNumber FROM DataDomains WHERE Domain = 'REASONCESSSERVICE'`);
                   }
                   
                   if(this.option == RECIPIENT_OPTION.ITEM)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     let _input = {
                       program: '',
                       option: this.option
@@ -2496,11 +2558,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
 
                   if(this.option == RECIPIENT_OPTION.ADMIT){
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                   }
 
                   if(this.option == RECIPIENT_OPTION.NOT_PROCEED){
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                   }
                   
                   this.checkedPrograms = this.GET_CHECKEDPROGRAMS();

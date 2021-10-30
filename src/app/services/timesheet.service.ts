@@ -1055,6 +1055,13 @@ export class TimeSheetService {
     updateStaffCompetenciesHeader(type: string,id:string):Observable<any>{
         return this.auth.get(`${timesheet}/competenciesheader/${type}/${id}`)
     }
+    
+    updateStaffCompetenciesSkill(type: string,id:string):Observable<any>{
+        return this.auth.get(`${timesheet}/competenciesheaderskill/${type}/${id}`)
+    }
+    updateLeaveStatus(leavetype:string,id:string):Observable<any>{
+        return this.auth.get(`${timesheet}/udpateleavestatus/${leavetype}/${id}`)
+    }
 
     deletecompetency(id: number): Observable<any> {
         return this.auth.delete(`${timesheet}/staff/competency/${id}`)

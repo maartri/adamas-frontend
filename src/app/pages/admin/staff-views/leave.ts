@@ -60,7 +60,7 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     operation: any;
     userUpdated: any;
     currentDate: string;
-    
+    updateString:string;
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -160,6 +160,7 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
                 defaultUnallocateLeaveActivity:this.defaultLeave.defaultLeaveActivity,
                 defaultUnallocateLeavePayType:this.defaultLeave.defaultLeavePayType,
             });
+            this.cd.detectChanges();
         });
     }
     trackByFn(index, item) {
@@ -201,9 +202,11 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
     reset() {
         
     }
-
-    
-
+    updateStaffLeave(data :any){
+        this.timeS.updateLeaveStatus(this.updateString,this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
+            this.globalS.sToast('Success', 'Competency saved');
+        });
+    }
     delete(data: any) {
         this.timeS
             .deleteleaveapplication(data.recordNumber)

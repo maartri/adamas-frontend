@@ -44,6 +44,8 @@ export class HeaderNavComponent implements OnInit {
       this.isAdmin = true;
     //}
 
+    this.loginS.getcurrentuser().subscribe(data => console.log(data))
+
     this.tempRole = this.globalS.isRole();
 
     if (this.tempRole == roles.admin) {

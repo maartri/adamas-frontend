@@ -1,6 +1,7 @@
 <div style="position:relative" [class.admin]="isAdmin">
     <app-breadcrumbs *ngIf="!HIDE_CRUMBS"></app-breadcrumbs>
     <div class="menu-button">
+        <div class="user-wrapper">mark</div>
         <div class="nz-avatar-menu" click-outside (clickOutside)="onClickOutside($event)">
             <nz-avatar (click)="isVisible = true" nzIcon="user"></nz-avatar>
             <div *ngIf="isVisible" class="dropdown">
@@ -17,6 +18,5 @@
 <nz-drawer [nzClosable]="false" [nzWidth]="400" [nzVisible]="settingsDrawerVisible" nzPlacement="right" nzTitle="Basic Settings" (nzOnClose)="close()">
    <div nz-row>
        <label nz-checkbox [(ngModel)]="clientPortalMethod" (ngModelChange)="methodChange($event)">Enable ClientPortalManagerMethod </label>
-
    </div>
 </nz-drawer>

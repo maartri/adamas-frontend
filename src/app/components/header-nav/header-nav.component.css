@@ -45,3 +45,9 @@
         float:left;
         margin:0.6rem;
     }
+    .user-wrapper{
+        color: #83fffa;
+        display: inline-block;
+        margin-right: 3rem;
+        text-transform: uppercase;
+    }

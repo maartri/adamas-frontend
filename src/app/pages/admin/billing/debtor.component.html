@@ -188,7 +188,7 @@
                                             <tbody>
                                                 <tr>
                                                 <td>
-                                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
+                                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event , null)">
                                                     <div nz-row *ngFor="let list of branchList; let i = index">
                                                         <label nz-checkbox [nzValue]="list.description" [(ngModel)]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.description }}</label>
                                                     </div>

@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
+
 import { GlobalService, StaffService,sbFieldsSkill, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -291,6 +293,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private http: HttpClient,
         private ModalS: NzModalService,
         private sanitizer: DomSanitizer,
+        private printS: PrintService,
     ) {        
       
     }
@@ -496,10 +499,10 @@ export class StaffAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
 
     }
-    handleOk(){                         
+    handleOk(){ 
+                            
         this.ReportRender();
-        this.tryDoctype = ""
-        this.pdfTitle = ""        
+                
     //    this.printSummaryModal = false;
      
     }
@@ -656,6 +659,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     }
     handleCancelTop(){
         this.SummarydrawerVisible = false;
+        this.tryDoctype = ""
+        this.pdfTitle = ""
     }
 ReportRender(){
       
@@ -665,11 +670,13 @@ ReportRender(){
     if(this.printSummaryGroup.value.fileLabels == true){
         id = "PDg8Im0vdY"
         var Title = "Address Labels"
+        rptfile = "Staff Address Labels"
     }else{
-        id = "RYeIj0QuEc"
+        id = "2OIfvSiZPw5TUnvz"
         var Title = "Summary Sheet"
+        rptfile = "Staff Summary Sheet"
     }
-        if(id == "RYeIj0QuEc"){
+        if(id == "2OIfvSiZPw5TUnvz"){
           var date = new Date();
    
             if (this.trainingFrom != null) { Trainstrdate = format(this.trainingFrom, 'yyyy/MM/dd') } 
@@ -755,33 +762,34 @@ ReportRender(){
                   break;
               }
               let cyclestrdate =  new Date(temp1)
+                let enddate =  new Date(temp1)
               switch (this.printSummaryGroup.value.fDays.toString()) {
                 case '14':
-                  temp2 = cyclestrdate.setDate(14)
+                  temp2 = enddate.setDate(14)
                   break;
                 case '21':
-                  temp2 = cyclestrdate.setDate(21)
+                  temp2 = enddate.setDate(21)
                   break;
                 case '28':
-                  temp2 = cyclestrdate.setDate(28)
+                  temp2 = enddate.setDate(28)
                   break;            
                 default:
-                  temp2 = cyclestrdate.setDate(7)
+                  temp2 = enddate.setDate(7)
                   break;
               } 
                   let cycleendate =  new Date(temp2) 
 
-
+      //console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
           const data = {
-    
-            "template": { "shortid": id },
+            //"_id": "2OIfvSiZPw5TUnvz"
+            "template": { "_id": id },
                         
             "options": {
                 "reports": { "save": false },                                  
                 "userid": this.tocken.user,
                 "txtTitle": Title,
                 "txtid":this.globalS.var1.toString(),
-                "txtacc":this.globalS.var2.toString(),
+              //  "txtacc":this.globalS.var2.toString(),
 
                 "inclNameContact": this.printSummaryGroup.value.nameandContacts,
                 "inclContactIssues": this.printSummaryGroup.value.contactIssue,
@@ -826,44 +834,31 @@ ReportRender(){
                 
             }
         }
-        this.SummarydrawerVisible = true;
+         
         this.spinloading = true;
         
-        const headerDict = {
+        
+        this.printS.print(data).subscribe((blob: any) => {
+          this.pdfTitle = rptfile;
+          this.SummarydrawerVisible = true;                   
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.spinloading = false;
+          this.cd.detectChanges();
+      }, err => {
+          console.log(err);
+          this.spinloading = false;
+          this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                  this.SummarydrawerVisible = false;
+              },
+          });
+      });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',                                                
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),
-            credentials: true
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = rptfile;
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.spinloading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                    nzOnOk: () => {
-                             this.SummarydrawerVisible = false;
-                              
-                             },
-                  });
-            }); 
+      return;
         }
         else{
 
@@ -889,44 +884,30 @@ ReportRender(){
                 
             }
         }
-        this.SummarydrawerVisible = true;
+        
         this.spinloading = true;
         
-        const headerDict = {
+        this.printS.print(data).subscribe((blob: any) => {
+          this.pdfTitle = rptfile;
+          this.SummarydrawerVisible = true;                   
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.spinloading = false;
+          this.cd.detectChanges();
+      }, err => {
+          console.log(err);
+          this.spinloading = false;
+          this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                  this.SummarydrawerVisible = false;
+              },
+          });
+      });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',                                                
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),            
-            credentials: true,                       
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob) ;
-                this.pdfTitle = rptfile;
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.ifrmtryDoctype = true;
-                this.spinloading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                    nzOnOk: () => {
-                             this.SummarydrawerVisible = false;               
-                            },
-                    });
-                });
+      return;
             }
 }
 

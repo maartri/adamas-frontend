@@ -53,7 +53,7 @@
             <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
                 <div *ngIf="current == 0">
                     <div nz-row nzGutter="24" class="">
-                        <label for="CDC Item" col nzSpan="6">Workflow Classification :</label>
+                        <label for="CDC Item" col nzSpan="6">Workflow Activity :</label>
                         <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="ltype" nzShowSearch nzAllowClear style="width:100%;">
                             <nz-option *ngFor="let ltype of listType" [nzValue]="ltype" [nzLabel]="ltype"></nz-option> 
                         </nz-select>

@@ -4,7 +4,7 @@
             <nz-tab nzTitle="General">
                 <div>
                     <div nz-row style="height: 30px;">
-                        <div nz-col nzSpan="8" class="">
+                        <div nz-col nzSpan="8">
                             <h3 style="color:#1890FF; line-height: 30px;">Transaction Date:</h3>
                         </div>
                         <div nz-col nzSpan="10" class="text-right pad-r-5">
@@ -12,7 +12,7 @@
                                 or Recipient Date:</p>
                         </div>
                         <div nz-col nzSpan="4">
-                            <nz-date-picker [nzPlaceHolder]="'Invoice Date'" name="Invoice_date"
+                            <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="Invoice_date"
                                 [nzFormat]="dateFormat">
                             </nz-date-picker>
                         </div>
@@ -27,25 +27,26 @@
                                 <p nz-checkbox style="color:black">Billing / Invoice Update & Export</p>
                             </div>
                             <div nz nz-col nzSpan="2">
-                                <label nz-checkbox name="name"> All </label>
+                                <label nz-checkbox formControlName="name"> All </label>
                             </div>
-                            <div style="border-left: solid; border-left-color: #A4A4A4; border-left-width: 2px;" nz-col
+                            <div nz-col
+                                style="border-left: solid; border-left-color: #A4A4A4; border-left-width: 2px;"
                                 nzSpan="6" class="wrap-container">
-                                <label nz-checkbox name="name"> &lt;WEEKLY&gt; </label>
+                                <label nz-checkbox formControlName="name"> &lt;WEEKLY&gt; </label>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox name="name"> &lt;FORTNIGHTLY&gt; </label>
+                                    <label nz-checkbox formControlName="name"> &lt;FORTNIGHTLY&gt; </label>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox name="name"> &lt;MONTHLY&gt; </label>
+                                    <label nz-checkbox formControlName="name"> &lt;MONTHLY&gt; </label>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox name="name"> 4 WEEKLY </label>
+                                    <label nz-checkbox formControlName="name"> 4 WEEKLY </label>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox name="name"> MONTHLY </label>
+                                    <label nz-checkbox formControlName="name"> MONTHLY </label>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox name="name"> WEEKLY </label>
+                                    <label nz-checkbox formControlName="name"> WEEKLY </label>
                                 </div>
                             </div>
                         </div>
@@ -55,13 +56,15 @@
                             <div nz-col nzSpan="2"></div>
                             <div nz-col nzSpan="12">
                                 <div nz-row nzSpan="6">
-                                    <p nz-checkbox style="color:black" name="name"> Receipt Update & Export </p>
+                                    <p nz-checkbox style="color:black" formControlName="name"> Receipt Update & Export
+                                    </p>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <p nz-checkbox style="color:black" name="name"> Debtor Masterfile Export </p>
+                                    <p nz-checkbox style="color:black" formControlName="name"> Debtor Masterfile Export
+                                    </p>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <p nz-checkbox style="color:black" name="name"> Force All Debtors </p>
+                                    <p nz-checkbox style="color:black" formControlName="name"> Force All Debtors </p>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +103,7 @@
                     <div nz-row>
                         <div nz-col nzSpan="21"></div>
                         <div nz-col nzSpan="3">
-                            <button nz-button nzType="primary"
+                            <button nz-button nzType="primary" (click)="startDebUpdate()"
                                 style="font-size: 14pt; height: 2.5pc; width: 8pc; float: right;"> Start </button>
                         </div>
                     </div>
@@ -125,7 +128,7 @@
                     <nz-divider style="margin-top: 6px; margin-bottom: 6px;" nzText="" nzOrientation="left">
                     </nz-divider>
 
-                    <div nz-row nzJustify class="mrg-btm">
+                    <div nz-row  nzJustify class="mrg-btm">
                         <div nz-col nzSpan="4">
                             <h3 style="color:#1890FF;"> Dates </h3>
                         </div>
@@ -133,23 +136,25 @@
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox style="margin-top: 5px;" ></label>
+                            <label nz-checkbox style="margin-top: 5px;"></label>
                         </div>
                         <div nz-col nzSpan="1"></div>
                         <div nz-col nzSpan="5">
-                            <!-- <nz-date-picker [nzPlaceHolder]="'Invoice Date'" name="Invoice_date"
+                            <!-- <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="Invoice_date"
                                 [nzFormat]="dateFormat">
                             </nz-date-picker> -->
-                            <nz-date-picker nzPlaceHolder = "Start Date" formControlName="dtpStartDate" [nzFormat]="dateFormat" ></nz-date-picker>
+                            <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate"
+                                [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                         <div nz-col nzSpan="2">
                             <p style="text-align: center; margin-top: 5px;"> TO </p>
                         </div>
                         <div nz-col nzSpan="5">
-                            <!-- <nz-date-picker [nzPlaceHolder]="'Invoice Date'" name="Invoice_date"
+                            <!-- <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="Invoice_date"
                                 [nzFormat]="dateFormat">
                             </nz-date-picker> -->
-                            <nz-date-picker nzPlaceHolder = "End Date" formControlName="dtpEndDate" [nzFormat]="dateFormat" ></nz-date-picker>
+                            <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate"
+                                [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                     </div>
 
@@ -163,17 +168,15 @@
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                             <div nz-col style="text-align: right;">
-                                <button nz-button nzType="primary" (click)="uncheckAll()"
+                                <button nz-button nzType="primary" (click)="uncheckAll(1)"
                                     style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
                                     Un-Select All
                                 </button>
                             </div>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox
-                                    [(ngModel)]="allchecked"
-                                    (ngModelChange)="checkAll()"
-                                    [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
+                            <label nz-checkbox [(ngModel)]="allBranchesChecked" (ngModelChange)="checkAll(1)"
+                                [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div>
                             <div nz-col nzSpan="16" class="mrg-btm">
@@ -184,19 +187,24 @@
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
                                                 <tr>
-                                                <!-- <tr *ngFor="let data of branchList;let i = index;">
-                                                    <td style="width: 4px;" class="right">
-                                                        <label nz-checkbox ></label>
-                                                    </td>
-                                                    <td class="left">{{ data.description }}</td>
-                                                </tr> -->
                                                 <td>
                                                 <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event)">
                                                     <div nz-row *ngFor="let list of branchList; let i = index">
                                                         <label nz-checkbox [nzValue]="list.description" [(ngModel)]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.description }}</label>
                                                     </div>
                                                 </nz-checkbox-wrapper>
-                                                 </td>    
+                                                <tr>
+                                                    <td>
+                                                        <nz-checkbox-wrapper style="width: 100%;"
+                                                            (nzOnChange)="log($event,1)">
+                                                            <div nz-row *ngFor="let list of branchList; let i = index">
+                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </nz-checkbox-wrapper>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </nz-table>
@@ -214,14 +222,15 @@
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                             <div nz-col style="text-align: right;">
-                                <button nz-button nzType="primary"
+                                <button nz-button nzType="primary" (click)="uncheckAll(2)"
                                     style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
                                     Un-Select All
                                 </button>
                             </div>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox style="margin-top: 5px;" ></label>
+                            <label nz-checkbox [(ngModel)]="allProgramsChecked" (ngModelChange)="checkAll(2)"
+                                [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div>
                             <div nz-col nzSpan="16" class="mrg-btm">
@@ -231,11 +240,18 @@
                                             [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
-                                                <tr *ngFor="let data of programList;let i = index;">
-                                                    <td style="width: 4px;" class="right">
-                                                        <label nz-checkbox ></label>
+                                                <tr>
+                                                    <td>
+                                                        <nz-checkbox-wrapper style="width: 100%;"
+                                                            (nzOnChange)="log($event,2)">
+                                                            <div nz-row *ngFor="let list of programList; let i = index">
+                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.title }}</label>
+                                                            </div>
+                                                        </nz-checkbox-wrapper>
                                                     </td>
-                                                    <td class="left">{{ data.name }}</td>
                                                 </tr>
                                             </tbody>
                                         </nz-table>
@@ -254,14 +270,15 @@
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                             <div nz-col style="text-align: right;">
-                                <button nz-button nzType="primary"
+                                <button nz-button nzType="primary" (click)="uncheckAll(3)"
                                     style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
                                     Un-Select All
                                 </button>
                             </div>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox style="margin-top: 5px;" ></label>
+                            <label nz-checkbox [(ngModel)]="allCategoriesChecked" (ngModelChange)="checkAll(3)"
+                                [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div>
                             <div nz-col nzSpan="16" class="mrg-btm">
@@ -271,13 +288,29 @@
                                             [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <nz-checkbox-wrapper style="width: 100%;"
+                                                            (nzOnChange)="log($event,3)">
+                                                            <div nz-row
+                                                                *ngFor="let list of categoriesList; let i = index">
+                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </nz-checkbox-wrapper>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <!-- <tbody>
                                                 <tr *ngFor="let data of categoriesList;let i = index;">
                                                     <td style="width: 4px;" class="right">
-                                                        <label nz-checkbox ></label>
+                                                        <label nz-checkbox></label>
                                                     </td>
                                                     <td class="left">{{ data.description }}</td>
                                                 </tr>
-                                            </tbody>
+                                            </tbody> -->
                                         </nz-table>
                                     </div>
                                 </div>
@@ -334,10 +367,10 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Print ZERO value Invoices</label>
+                        <label nz-checkbox>Print ZERO value Invoices</label>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Include Staff Code on Invoice</label>
+                        <label nz-checkbox>Include Staff Code on Invoice</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -345,7 +378,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Print ZERO value Invoice Line</label>
+                        <label nz-checkbox>Print ZERO value Invoice Line</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -353,10 +386,10 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Seperate Invoice Per Recipient</label>
+                        <label nz-checkbox>Seperate Invoice Per Recipient</label>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Use Recipients Preferred Name</label>
+                        <label nz-checkbox>Use Recipients Preferred Name</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -364,10 +397,10 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Seperate Pages Per Recipient</label>
+                        <label nz-checkbox>Seperate Pages Per Recipient</label>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Include Start and End Time in description</label>
+                        <label nz-checkbox>Include Start and End Time in description</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -375,10 +408,10 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Generate INTERNAL Invoice</label>
+                        <label nz-checkbox>Generate INTERNAL Invoice</label>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Include Credit Card Payment Details</label>
+                        <label nz-checkbox>Include Credit Card Payment Details</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -386,7 +419,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Update Brokered Services</label>
+                        <label nz-checkbox>Update Brokered Services</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -394,7 +427,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Bill Recipient Absences</label>
+                        <label nz-checkbox>Bill Recipient Absences</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -402,10 +435,10 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Group By Location/Group</label>
+                        <label nz-checkbox>Group By Location/Group</label>
                     </div>
                     <div nz-col nzSpan="9">
-                        <label nz-checkbox >Display Invoice Amount in Credit Card Payment
+                        <label nz-checkbox>Display Invoice Amount in Credit Card Payment
                             Box</label>
                     </div>
                 </div>
@@ -414,13 +447,13 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Exclude Recipient From Invoice Body</label>
+                        <label nz-checkbox>Exclude Recipient From Invoice Body</label>
                     </div>
                     <div nz-col nzSpan="5" class="text-right pad-r-5">
                         <label>Number of Copies to Printer : </label>
                     </div>
                     <div nz-col nzSpan="2">
-                        <label nz-checkbox ></label>
+                        <label nz-checkbox></label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -428,7 +461,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Include Following Day for Overnight</label>
+                        <label nz-checkbox>Include Following Day for Overnight</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -436,7 +469,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox >Include Following Day for Overnight</label>
+                        <label nz-checkbox>Include Following Day for Overnight</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -444,7 +477,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label style="font-size: 12pt;" >Location and Name of Logo File
+                        <label style="font-size: 12pt;">Location and Name of Logo File
                             :</label>
                     </div>
                 </div>
@@ -453,7 +486,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="18">
-                        <input nz-input placeholder=""  />
+                        <input nz-input placeholder="" />
                     </div>
                     <div nz-col nzSpan="2">
                         <p style="margin: 0px;"></p>
@@ -470,25 +503,25 @@
                         <h3 style="color:#1890FF;"> Accounting Interface Options </h3>
                     </div>
                     <div nz-col nzSpan="6" class="text-right pad-r-5">
-                        <label nz-checkbox >Create Export File</label>
+                        <label nz-checkbox>Create Export File</label>
                     </div>
                 </div>
                 <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left"></nz-divider>
                 <div nz-row nzJustify>
                     <div nz-col nzSpan="18">
-                        <label style="margin-top: 10px; margin-bottom: 1px;" nz-checkbox >Include
+                        <label style="margin-top: 10px; margin-bottom: 1px;" nz-checkbox>Include
                             Services/Shifts with 0 value</label>
                     </div>
                 </div>
                 <div nz-row nzJustify>
                     <div nz-col nzSpan="18">
-                        <label nz-checkbox >Include Services/Shifts with Activity coded as
+                        <label nz-checkbox>Include Services/Shifts with Activity coded as
                             RECIPIENT ADMINISTRATION</label>
                     </div>
                 </div>
                 <div nz-row nzJustify>
                     <div nz-col nzSpan="18">
-                        <label nz-checkbox >Include Services/Shifts with Pay Type coded as
+                        <label nz-checkbox>Include Services/Shifts with Pay Type coded as
                             ADMIN</label>
                     </div>
                 </div>
@@ -498,7 +531,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="6" class="text-right pad-r-5">
-                        <label style="margin-top: 4px;" >3rd Party Accounting Package : </label>
+                        <label style="margin-top: 4px;">3rd Party Accounting Package : </label>
                     </div>
                     <div nz-col nzSpan="6">
                         <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="AccPackage" nzPlaceHolder=""
@@ -510,14 +543,14 @@
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
                     <div nz-col nzSpan="20">
-                        <label style="margin-top: 10px; margin-bottom: 1px; font-size: 12pt;"
-                            >Location and Name of Export File
+                        <label style="margin-top: 10px; margin-bottom: 1px; font-size: 12pt;">Location and Name of
+                            Export File
                             :</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
                     <div nz-col nzSpan="20">
-                        <input nz-input placeholder=""  />
+                        <input nz-input placeholder="" />
                     </div>
                     <div nz-col nzSpan="2">
                         <p style="margin: 0px;"></p>
@@ -540,7 +573,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="12">
-                        <label style="margin-top: 10px; margin-bottom: 1px;" nz-checkbox >Exempt
+                        <label style="margin-top: 10px; margin-bottom: 1px;" nz-checkbox>Exempt
                             CDC Social Leave Days From Billing</label>
                     </div>
                 </div>
@@ -549,7 +582,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="12">
-                        <label nz-checkbox >Exempt CDC Hospital Leave Days From Billing</label>
+                        <label nz-checkbox>Exempt CDC Hospital Leave Days From Billing</label>
                     </div>
                 </div>
                 <div nz-row nzJustify>
@@ -557,7 +590,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="12">
-                        <label nz-checkbox >Exclude Income Tested Fees for Leave days</label>
+                        <label nz-checkbox>Exclude Income Tested Fees for Leave days</label>
                     </div>
                 </div>
                 <div nz-row nzJustify>
@@ -565,7 +598,7 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="12">
-                        <label nz-checkbox >Exclude Top Up Fees for Leave days</label>
+                        <label nz-checkbox>Exclude Top Up Fees for Leave days</label>
                     </div>
                 </div>
                 <div nz-row nzJustify class="mrg-btm">
@@ -584,11 +617,13 @@
                         <h3 style="color:#1890FF;"> Batch History </h3>
                     </div>
                     <div nz-col nzSpan="6" class="text-right pad-r-5">
-                        <label nz-checkbox >Preview Detail</label>
+                        <label nz-checkbox>Preview Detail</label>
                     </div>
                 </div>
                 <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left"></nz-divider>
-                <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '500px', x: 'max-content' }" nzBordered [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
+                <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '500px', x: 'max-content' }" nzBordered
+                    [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                    [nzData]="tableData">
                     <thead>
                         <tr>
                             <th style="width: 100px;" class="left">OperatorID</th>
@@ -610,14 +645,14 @@
                             <td style="width: 100px;" class="left">{{ data.batchDate }} </td>
                             <td style="width: 100px;" class="left">{{ data.batchNumber }} </td>
                             <!-- <td style="width: 400px;" nzLeft nzBreakWord>{{ data.batchDetail  }} </td> -->
-                            <td style="width: 400px;" class="left">{{ data.batchDetail  }} </td>
-                            <td style="width: 80px;" class="left">{{ data.batchType  }} </td>
-                            <td style="width: 100px;" class="left">{{ data.cdcBilled  }} </td>
+                            <td style="width: 400px;" class="left">{{ data.batchDetail }} </td>
+                            <td style="width: 80px;" class="left">{{ data.batchType }} </td>
+                            <td style="width: 100px;" class="left">{{ data.cdcBilled }} </td>
                             <td style="width: 100px;" class="left">{{ data.date1 | date: 'dd/MM/y' }}</td>
                             <td style="width: 100px;" class="left">{{ data.date2 | date: 'dd/MM/y' }}</td>
-                            <td style="width: 100px;" class="left">{{ data.billBatch  }} </td>
-                            <td style="width: 120px;" class="left">{{ data.xDeletedRecord  }} </td>
-                            <td style="width: 120px;" class="left">{{ data.xEndDate  }} </td>
+                            <td style="width: 100px;" class="left">{{ data.billBatch }} </td>
+                            <td style="width: 120px;" class="left">{{ data.xDeletedRecord }} </td>
+                            <td style="width: 120px;" class="left">{{ data.xEndDate }} </td>
                         </tr>
                     </tbody>
                 </nz-table>

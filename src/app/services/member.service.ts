@@ -16,4 +16,12 @@ export class MemberService {
     getmembers(data: any){
         return this.auth.get(`${members}/members`, data);
     }
+
+    getshowallrecipients(){
+        return this.auth.get(`${members}/show-all-recipients`);
+    }
+
+    postshowallrecipients(val: boolean){
+        return this.auth.post(`${members}/show-all-recipients/${val}`, null);
+    }
 }

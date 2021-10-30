@@ -112,5 +112,9 @@ export class UploadService {
       return this.http.post(`${fileV2}/download-document-remote`, data, { responseType: 'blob', reportProgress: true });
    }
 
+   downloadFileDocumentRemoteNetwork(data: any = null): Observable<any> {
+      return this.http.post(`${fileV2}/download-document-network`, data, { responseType: 'blob', reportProgress: true });
+   }
+
 
 }

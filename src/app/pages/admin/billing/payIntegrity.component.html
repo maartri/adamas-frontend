@@ -1,0 +1,70 @@
+<nz-modal [nzWidth]="1000" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+    <div *ngIf="inputForm" [formGroup]="inputForm" style="width: 100%">
+        <div nz-row nzJustify class="mrg-btm">
+            <div nz-col nzSpan="2" >
+                <label for="Name" style="margin-top: 5px;"> Use Master</label>
+            </div>
+            <div nz-col nzSpan="1" style="text-align: left;">
+                <label nz-checkbox style="margin-top: 5px;"></label>
+            </div>
+            <div nz-col nzSpan="4">
+                <nz-date-picker formControlName="dtpStartDate"
+                    [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+            <div nz-col nzSpan="1">
+                <p style="text-align: center; margin-top: 5px;"> TO </p>
+            </div>
+            <div nz-col nzSpan="4">
+                <nz-date-picker formControlName="dtpEndDate"
+                    [nzFormat]="dateFormat"></nz-date-picker>
+            </div>
+        </div>
+        <div nz-row class="mrg-btm">
+            <div nz-col nzSpan="8">
+                <p style="margin-top: 5px; margin-bottom: 1px;">   To Search - Click on the list and type </p>
+            </div>
+        </div>
+        <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left"></nz-divider>
+                <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '500px', x: 'max-content' }" nzBordered
+                    [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                    [nzData]="tableData">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;" class="left">OperatorID</th>
+                            <th style="width: 100px;" class="left">BatchDate</th>
+                            <th style="width: 100px;" class="left">BatchNumber</th>
+                            <th style="width: 400px;" class="left">BatchDetail</th>
+                            <th style="width: 80px;" class="left">BatchType</th>
+                            <th style="width: 100px;" class="left">CDCBilled</th>
+                            <th style="width: 100px;" class="left">Date1</th>
+                            <th style="width: 100px;" class="left">Date2</th>
+                            <th style="width: 100px;" class="left">BillBatch</th>
+                            <th style="width: 120px;" class="left">xDeletedRecord</th>
+                            <th style="width: 120px;" class="left">xEndDate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of payIntegrityList;let i = index;">
+                            <td style="width: 100px;" class="left">{{ data.operatorID }} </td>
+                            <td style="width: 100px;" class="left">{{ data.batchDate }} </td>
+                            <td style="width: 100px;" class="left">{{ data.batchNumber }} </td>
+                            <!-- <td style="width: 400px;" nzLeft nzBreakWord>{{ data.batchDetail  }} </td> -->
+                            <td style="width: 400px;" class="left">{{ data.batchDetail }} </td>
+                            <td style="width: 80px;" class="left">{{ data.batchType }} </td>
+                            <td style="width: 100px;" class="left">{{ data.cdcBilled }} </td>
+                            <td style="width: 100px;" class="left">{{ data.date1 | date: 'dd/MM/y' }}</td>
+                            <td style="width: 100px;" class="left">{{ data.date2 | date: 'dd/MM/y' }}</td>
+                            <td style="width: 100px;" class="left">{{ data.billBatch }} </td>
+                            <td style="width: 120px;" class="left">{{ data.xDeletedRecord }} </td>
+                            <td style="width: 120px;" class="left">{{ data.xEndDate }} </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+    </div>
+
+    <div *nzModalFooter>
+        <ng-container>
+        </ng-container>
+    </div>
+
+</nz-modal>

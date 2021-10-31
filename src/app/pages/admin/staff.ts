@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+
+import { GlobalService, StaffService,sbFieldsSkill, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -134,6 +136,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     diciplineList: any;
     casemanagers: any;
     categoriesList: any;
+    skillsList:any;
     selectedRecpientTypes: any[];
     types: any[];
     
@@ -145,6 +148,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     selectedPrograms: any;
     selectedCordinators: any;
     selectedCategories: any;
+    selectedSkills:any;
     
     allBranches:boolean = true;
     allBranchIntermediate:boolean = false;
@@ -152,12 +156,11 @@ export class StaffAdmin implements OnInit, OnDestroy {
     allProgarms:boolean = true;
     allprogramIntermediate:boolean = false;
     
-    allCordinatore:boolean = true;
-    allCordinatorIntermediate:boolean = false;
-    
     allcat:boolean = true;
     allCatIntermediate:boolean = false;
     
+    allCordinatore:boolean = true;
+    allCordinatorIntermediate:boolean = false;
     
     allChecked: boolean = true;
     indeterminate: boolean = false;
@@ -169,7 +172,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     genderList:any = genderList;
     conflictpointList:any = conflictpointList;
     timeSteps:Array<string>;
-    
+    sbFieldsSkill:any;
     columns: Array<any> = [
         {
           name: 'ID',
@@ -244,9 +247,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
           checked: false
         }
       ]
-  skillsList: unknown;
   avilibilityForm: FormGroup;
-      
       handleCancel() {
         this.findModalOpen = false;
       }
@@ -292,12 +293,14 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private http: HttpClient,
         private ModalS: NzModalService,
         private sanitizer: DomSanitizer,
+        private printS: PrintService,
     ) {        
       
     }
 
     ngOnInit(): void {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+        this.sbFieldsSkill = sbFieldsSkill;
         this.buildForm();
         this.buildForms();
         this.timeSteps = timeSteps;
@@ -496,10 +499,10 @@ export class StaffAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
 
     }
-    handleOk(){                         
+    handleOk(){ 
+                            
         this.ReportRender();
-        this.tryDoctype = ""
-        this.pdfTitle = ""        
+                
     //    this.printSummaryModal = false;
      
     }
@@ -656,6 +659,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     }
     handleCancelTop(){
         this.SummarydrawerVisible = false;
+        this.tryDoctype = ""
+        this.pdfTitle = ""
     }
 ReportRender(){
       
@@ -665,11 +670,13 @@ ReportRender(){
     if(this.printSummaryGroup.value.fileLabels == true){
         id = "PDg8Im0vdY"
         var Title = "Address Labels"
+        rptfile = "Staff Address Labels"
     }else{
-        id = "RYeIj0QuEc"
+        id = "2OIfvSiZPw5TUnvz"
         var Title = "Summary Sheet"
+        rptfile = "Staff Summary Sheet"
     }
-        if(id == "RYeIj0QuEc"){
+        if(id == "2OIfvSiZPw5TUnvz"){
           var date = new Date();
    
             if (this.trainingFrom != null) { Trainstrdate = format(this.trainingFrom, 'yyyy/MM/dd') } 
@@ -755,33 +762,34 @@ ReportRender(){
                   break;
               }
               let cyclestrdate =  new Date(temp1)
+                let enddate =  new Date(temp1)
               switch (this.printSummaryGroup.value.fDays.toString()) {
                 case '14':
-                  temp2 = cyclestrdate.setDate(14)
+                  temp2 = enddate.setDate(14)
                   break;
                 case '21':
-                  temp2 = cyclestrdate.setDate(21)
+                  temp2 = enddate.setDate(21)
                   break;
                 case '28':
-                  temp2 = cyclestrdate.setDate(28)
+                  temp2 = enddate.setDate(28)
                   break;            
                 default:
-                  temp2 = cyclestrdate.setDate(7)
+                  temp2 = enddate.setDate(7)
                   break;
               } 
                   let cycleendate =  new Date(temp2) 
 
-
+      //console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
           const data = {
-    
-            "template": { "shortid": id },
+            //"_id": "2OIfvSiZPw5TUnvz"
+            "template": { "_id": id },
                         
             "options": {
                 "reports": { "save": false },                                  
                 "userid": this.tocken.user,
                 "txtTitle": Title,
                 "txtid":this.globalS.var1.toString(),
-                "txtacc":this.globalS.var2.toString(),
+              //  "txtacc":this.globalS.var2.toString(),
 
                 "inclNameContact": this.printSummaryGroup.value.nameandContacts,
                 "inclContactIssues": this.printSummaryGroup.value.contactIssue,
@@ -826,44 +834,31 @@ ReportRender(){
                 
             }
         }
-        this.SummarydrawerVisible = true;
+         
         this.spinloading = true;
         
-        const headerDict = {
+        
+        this.printS.print(data).subscribe((blob: any) => {
+          this.pdfTitle = rptfile;
+          this.SummarydrawerVisible = true;                   
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.spinloading = false;
+          this.cd.detectChanges();
+      }, err => {
+          console.log(err);
+          this.spinloading = false;
+          this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                  this.SummarydrawerVisible = false;
+              },
+          });
+      });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',                                                
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),
-            credentials: true
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = rptfile;
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.spinloading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                    nzOnOk: () => {
-                             this.SummarydrawerVisible = false;
-                              
-                             },
-                  });
-            }); 
+      return;
         }
         else{
 
@@ -889,44 +884,30 @@ ReportRender(){
                 
             }
         }
-        this.SummarydrawerVisible = true;
+        
         this.spinloading = true;
         
-        const headerDict = {
+        this.printS.print(data).subscribe((blob: any) => {
+          this.pdfTitle = rptfile;
+          this.SummarydrawerVisible = true;                   
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.spinloading = false;
+          this.cd.detectChanges();
+      }, err => {
+          console.log(err);
+          this.spinloading = false;
+          this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                  this.SummarydrawerVisible = false;
+              },
+          });
+      });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',                                                
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),            
-            credentials: true,                       
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob) ;
-                this.pdfTitle = rptfile;
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.ifrmtryDoctype = true;
-                this.spinloading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                    nzOnOk: () => {
-                             this.SummarydrawerVisible = false;               
-                            },
-                    });
-                });
+      return;
             }
 }
 
@@ -965,24 +946,31 @@ ReportRender(){
     
     this.selectedPrograms = this.diciplineList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
     
     this.selectedCordinators = this.casemanagers
     .filter(opt => opt.checked)
-    .map(opt => opt.uniqueID).join("','")
+    .map(opt => opt.uniqueID)
     
     this.selectedCategories = this.categoriesList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
     
     this.selectedbranches = this.branchesList
     .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+    .map(opt => opt.description)
+
+    this.selectedSkills  = this.skillsList
+    .filter(opt => opt.checked)
+    .map(opt => this.sbFieldsSkill[opt.identifier])
+    
+    console.log(this.selectedSkills.length);
+    // JSON.stringify(object)
+    // console.log(JSON.stringify(this.selectedSkills));
+    // console.log(this.sbFieldsSkill.get("fstaffContainer9-Competencies0022"))
+
 
     var postdata = {
-      // availble:this.quicksearch.value.availble,
-      // option:this.quicksearch.value.option,
-      
       status:this.quicksearch.value.status,
       gender:this.quicksearch.value.gender,
       staff:this.quicksearch.value.staff,
@@ -990,15 +978,25 @@ ReportRender(){
       volunteers:this.quicksearch.value.volunteers,
       onleaveStaff:this.quicksearch.value.onleaveStaff,
       searchText:this.quicksearch.value.searchText,
+      
+      allTeamAreas      : this.allProgarms,
+      selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
+
+      allcat:this.allcat,
+      selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+
+      allBranches:this.allBranches,
+      selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+
+      allCordinatore:this.allCordinatore,
+      selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+
+      allSkills:(this.selectedSkills.length) ? false : true,
+      selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
+
       // onleaveStaff:this.quicksearch.value.onleaveStaff,
       // previousWork:this.quicksearch.value.previousWork,
-                     
-      // allBranches:this.allBranches,
-      // selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
-      // allProgarms:this.allProgarms,
-      // selectedPrograms:(this.allProgarms == false) ? this.selectedPrograms : '',
-      // allCordinatore:this.allCordinatore,
-      // selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+      
       // allcat:this.allcat,
       // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
       // activeprogramsonly:this.filters.value.activeprogramsonly,
@@ -1010,7 +1008,7 @@ ReportRender(){
       // fileno:this.quicksearch.value.fileno,
       // searchText:this.quicksearch.value.searchText,
       // criterias:this.cariteriaList
-       // list of rules
+      // list of rules
     }
 
     this.timeS.poststaffquicksearch(postdata).subscribe(data => {
@@ -1018,11 +1016,27 @@ ReportRender(){
       this.loading = false;
       this.cd.detectChanges();
     });
-
   }
-    detectChanges() {
+  detectChanges() {
         throw new Error('Method not implemented.');
-    }
+  }
+  allcompetencieschecked(): void {
+      console.log("added");
+      this.skillsList = this.skillsList.map(item => 
+        (
+          {
+          ...item,
+          checked: true
+          }
+        )
+      );
+  }
+  allcompetenciesunchecked(): void {
+      this.skillsList = this.skillsList.map(item => ({
+        ...item,
+        checked: false,
+      }));
+  }
   updateAllChecked(): void {
     this.indeterminate = false;
     if (this.allChecked) {

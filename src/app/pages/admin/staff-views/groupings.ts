@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, PrintService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -61,6 +61,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private http: HttpClient,
+        private printS:PrintService,
         private sanitizer: DomSanitizer,
         private ModalS: NzModalService,
         private cd: ChangeDetectorRef
@@ -345,24 +346,25 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
                 "head2" : "Notes",
             }
         }
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-        .subscribe((blob: any) => {
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
+        this.printS.print(data)
+                        .subscribe((blob: any) => {
+                            let _blob: Blob = blob;
+                            let fileURL = URL.createObjectURL(_blob);
+                            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                            this.loading = false;
+                            this.cd.detectChanges();
+                        }, err => {
+                            console.log(err);
+                            this.loading = false;
+                            this.ModalS.error({
+                                nzTitle: 'TRACCS',
+                                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                                nzOnOk: () => {
+                                    this.drawerVisible = false;
+                                },
+                            });
+                        });
             this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
         this.cd.detectChanges();
         this.loading = true;
         this.tryDoctype = "";

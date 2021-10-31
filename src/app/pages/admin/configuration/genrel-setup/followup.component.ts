@@ -1,16 +1,16 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService, PrintService } from '@services/index';
+import { ListService, MenuService , workflowClassification } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
-import { Subject, EMPTY } from 'rxjs';
+import { Subject, EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
-  selector: 'app-distributionlist',
-  templateUrl: './distributionlist.component.html',
+  selector: 'app-followup',
+  templateUrl: './followup.component.html',
   styles:[`
   .mrg-btm{
     margin-bottom:0rem !important;
@@ -20,7 +20,7 @@ import { NzModalService } from 'ng-zorro-antd';
   }
   `]
 })
-export class DistributionlistComponent implements OnInit {
+export class FollowupComponent implements OnInit {
   events: Array<any>;
 
   tableData: Array<any>;
@@ -39,7 +39,7 @@ export class DistributionlistComponent implements OnInit {
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  heading:string = "Add Distribution List";
+  heading:string = "Add Followup List";
   rpthttp = 'https://www.mark3nidad.com:5488/api/report'
   token:any;
   tocken: any;
@@ -49,7 +49,10 @@ export class DistributionlistComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="where ListName IN ('INCIDENT','DOCUSIGN','EVENT') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+  branchesList: any;
+  funding_source: any;
+  casemanagers: any;
   
   constructor(
     private globalS: GlobalService,
@@ -58,7 +61,6 @@ export class DistributionlistComponent implements OnInit {
     private menuS:MenuService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
-    private printS:PrintService,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
@@ -91,53 +93,20 @@ export class DistributionlistComponent implements OnInit {
       });
     }
     populateDropdowns(){
-      this.listType = ['INCIDENT','DOCUSIGN','EVENT'];
-      let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
-      this.listS.getlist(sql).subscribe(data => {
-        this.services = data;
-        let da ={
-          "title" :"ALL"
-        };
-        this.services.unshift(da);
+      this.listType = workflowClassification;
+      return forkJoin([
+        this.listS.getlistbranchesObj(),
+        this.listS.getfundingsource(),
+        this.listS.casemanagerslist(),
+      ]).subscribe(x => {
+        this.branchesList   = x[0];
+        this.funding_source = x[1];
+        this.casemanagers   = x[2];
       });
-      
-      let staff_query = "SELECT distinct [AccountNo] as name from Staff Where AccountNo not like '!%' Order BY [AccountNo] ";
-      this.listS.getlist(staff_query).subscribe(data => {
-        this.staff = data;
-        let da ={
-          "name" :"ALL"
-        };
-        this.staff.unshift(da);
-      });
-      let prog = "SELECT [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
-      this.listS.getlist(prog).subscribe(data => {
-        this.program = data;
-        let da ={
-          "name" :"ALL"
-        };
-        this.program.unshift(da);
-      });
-      let loca = "SELECT [NAME] FROM CSTDAOutlets WHERE [NAME] IS NOT NULL";
-      this.listS.getlist(loca).subscribe(data => {
-        this.locations = data;
-        let da ={
-          "name" :"ALL"
-        };
-        this.locations.unshift(da);
-      });
-      let recip = "SELECT ACCOUNTNO as name FROM RECIPIENTS WHERE AdmissionDate IS NOT NULL AND DischargeDate IS NULL AND ACCOUNTNO > '!Z'";
-      this.listS.getlist(recip).subscribe(data => {
-        this.recipients = data;
-        let da ={
-          "name" :"ALL"
-        };
-        this.recipients.unshift(da);
-      });
-      
-      this.severity = ['ALL','LOW','MEDIUM','HIGH','CRITICAL'];
     }
+
     showAddModal() {
-      this.heading = "Add Distribution List"
+      this.heading = "Add Followup List"
       this.resetModal();
       this.modalOpen = true;
     }
@@ -149,34 +118,18 @@ export class DistributionlistComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      this.heading  = "Edit Distribution List"
+      this.heading  = "Edit Followup List"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
       const { 
         ltype,
-        staff,
-        assignee,
-        program,
-        location,
-        recipient,
-        activity,
-        severity,
-        mandatory,
         end_date,
         recordNo,
         
       } = this.tableData[index];
       this.inputForm.patchValue({
         ltype:ltype,
-        staff:staff,
-        service:activity,
-        assignee:(assignee == "True") ? true : false,
-        prgm:program,
-        location:location,
-        recepient:recipient,
-        saverity:severity,
-        mandatory:(mandatory == "True") ? true : false,
         end_date:end_date,
         recordNo:recordNo,
       });
@@ -208,16 +161,8 @@ export class DistributionlistComponent implements OnInit {
         this.postLoading = true;   
         const group    = this.inputForm;
         let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let staff      = this.globalS.isValueNull(group.get('staff').value);
-        let service    = this.globalS.isValueNull(group.get('service').value);
-        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-        let location   = this.globalS.isValueNull(group.get('location').value);
-        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
-        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-        let mandatory  = this.trueString(group.get('mandatory').value);
-        let assignee   = this.trueString(group.get('assignee').value);
         let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let values = recepient+","+service+","+location+","+prgm+","+staff+","+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
+        let values     = ltype+","+end_date;
         let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
         
         console.log(sql);
@@ -286,6 +231,10 @@ export class DistributionlistComponent implements OnInit {
     buildForm() {
       this.inputForm = this.formBuilder.group({
         ltype:'',
+        name:'',
+        branch:'',
+        funding_source:'',
+        casemanager:'',
         staff:'',
         service:'',
         assignee:false,
@@ -331,6 +280,15 @@ export class DistributionlistComponent implements OnInit {
       "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
       "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
       
+      const headerDict = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+      
+      const requestOptions = {
+        headers: new HttpHeaders(headerDict)
+      };
+      
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {
@@ -349,12 +307,14 @@ export class DistributionlistComponent implements OnInit {
           "head9": "End Date",
         }
       }
-      this.printS.print(data).subscribe(blob => { 
+      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+      .subscribe((blob: any) => {
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-        }, err => {
+      }, err => {
+        console.log(err);
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',
@@ -364,7 +324,6 @@ export class DistributionlistComponent implements OnInit {
           },
         });
       });
-
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

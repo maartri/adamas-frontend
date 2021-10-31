@@ -158,10 +158,7 @@ import {
 
 
 import {  
-  RostersAdmin
-} from './pages/roster/index';
-import {  
-  ShiftDetail
+  RostersAdmin,ShiftDetail,AddRoster
 } from './pages/roster/index';
 
 import { ExtraComponent } from './pages/extra/extra';
@@ -189,6 +186,8 @@ import { MedicalcontactComponent } from '@admin/configuration/genrel-setup/medic
 import { DestinationaddressComponent } from '@admin/configuration/genrel-setup/destinationaddress.component';
 import { ProgramcoordinatesComponent } from '@admin/configuration/genrel-setup/programcoordinates.component';
 import { DistributionlistComponent } from '@admin/configuration/genrel-setup/distributionlist.component';
+import { NotificationlistComponent } from '@admin/configuration/genrel-setup/notificationlist.component';
+import {FollowupComponent} from '@admin/configuration/genrel-setup/followup.component';
 import { InitialactionsComponent } from '@admin/configuration/incidents/initialactions.component';
 import { OngoingactionsComponent } from '@admin/configuration/incidents/ongoingactions.component';
 import { IncidenttriggersComponent } from '@admin/configuration/incidents/incidenttriggers.component';
@@ -661,6 +660,14 @@ const routes: Routes = [
         component:DistributionlistComponent,
       },
       {
+        path:"notification-list",
+        component:NotificationlistComponent,
+      },
+      {
+        path:"followup-list",
+        component:FollowupComponent,
+      },
+      {
         path:"initial-actions",
         component:InitialactionsComponent,
       },
@@ -946,6 +953,10 @@ const routes: Routes = [
         path: 'shiftdetail',
         component: ShiftDetail
       },
+      {
+        path: 'addroster',
+        component: AddRoster
+      },
       
       {
         path: 'staff',
@@ -1218,6 +1229,7 @@ export const PAGE_COMPONENTS = [
   //Roster Module
   RostersAdmin,
   ShiftDetail,
+  AddRoster,
   //Configuration
   CompaniesComponent,
   BranchesComponent,
@@ -1246,6 +1258,8 @@ export const PAGE_COMPONENTS = [
   DestinationaddressComponent,
   ProgramcoordinatesComponent,
   DistributionlistComponent,
+  NotificationlistComponent,
+  FollowupComponent,
   InitialactionsComponent,
   OngoingactionsComponent,
   IncidenttriggersComponent,

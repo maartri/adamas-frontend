@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { URL } from '@constants/constant';
 
 const login: string = `api/login`;
+const global: string = `api/global`;
 
 @Injectable()
 export class LoginService {
@@ -13,6 +14,10 @@ export class LoginService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+
+    getcurrentuser() {
+        return this.http.get(`${global}/current-user`)
+    }
 
     testservice() {
         return this.http.get(`${login}/test-service`)

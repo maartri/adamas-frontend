@@ -9,6 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
+import { PrintService } from '@services/print.service';
 
 
 @Component({
@@ -45,6 +46,7 @@ export class FinancialclassComponent implements OnInit {
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private listS:ListService,
+    private printS:PrintService,
     private menuS:MenuService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
@@ -229,15 +231,6 @@ export class FinancialclassComponent implements OnInit {
           
           var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 , DeletedRecord as is_deleted from DataDomains "+this.whereString+" Domain='FINANCIALCLASS'";
           
-          const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }
-          
-          const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-          };
-          
           const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -250,14 +243,13 @@ export class FinancialclassComponent implements OnInit {
               "head3" : "End Date"
             }
           }
-          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-          .subscribe((blob: any) => {
+
+          this.printS.print(data).subscribe(blob => { 
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
-          }, err => {
-            console.log(err);
+            }, err => {
             this.loading = false;
             this.ModalS.error({
               nzTitle: 'TRACCS',
@@ -267,6 +259,7 @@ export class FinancialclassComponent implements OnInit {
               },
             });
           });
+
           this.loading = true;
           this.tryDoctype = "";
           this.pdfTitle = "";

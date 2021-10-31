@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService } from '@services/index';
-import { GlobalService } from '@services/global.service';
+import { ListService, MenuService, PrintService,GlobalService} from '@services/index';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -48,6 +47,7 @@ export class ContacttypesComponent implements OnInit {
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
+    private printS:PrintService,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
@@ -247,15 +247,6 @@ export class ContacttypesComponent implements OnInit {
       
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,[Description] as Field2,[HACCCode] as Field3,CONVERT(varchar, [enddate],105) as Field4 from DataDomains "+this.whereString+" Domain='CONTACTSUBGROUP'";
       
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-      
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {
@@ -269,14 +260,13 @@ export class ContacttypesComponent implements OnInit {
           "head4" : "End Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+      
+      this.printS.print(data).subscribe(blob => { 
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
-        console.log(err);
+        }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',
@@ -286,6 +276,7 @@ export class ContacttypesComponent implements OnInit {
           },
         });
       });
+
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

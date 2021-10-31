@@ -2266,11 +2266,54 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 // this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
               }
 
+              GETLISTNAME(data: any) : string{
+                if(data == RECIPIENT_OPTION.REFER_IN)
+                { 
+                  return "Referral Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.REFER_ON)
+                { 
+                  return "Refer On Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.ASSESS)
+                { 
+                  return "Assessment Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.ADMIT)
+                { 
+                  return "Admission Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.NOT_PROCEED)
+                { 
+                  return "Not Proceed Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.DISCHARGE)
+                { 
+                  return "Discharge Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.SUSPEND)
+                { 
+                  return "Suspend Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.REINSTATE)
+                { 
+                  return "Reinstate Notification"
+                }                
+              }
+
               populateNotificationDetails(): void{
 
                 this.listS.getnotifications({
                   branch: this.BRANCH_NAME,
-                  coordinator: this.COORDINATOR
+                  coordinator: this.COORDINATOR,
+                  listname: this.GETLISTNAME(this.option)
                 }).subscribe(data => {
                   this.notifCheckBoxes = data.map(x => {
                     return {

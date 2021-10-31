@@ -14,6 +14,8 @@ import { Subject } from 'rxjs'
 export class MembersComponent implements OnInit {
 
   @Output() MEMBER_LENGTH = new EventEmitter<number>();
+
+  switchValue: boolean = false;
   members: Array<any>;
   membersTemp: Array<any>;
   loading:boolean = false;
@@ -47,6 +49,14 @@ export class MembersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getmembers(this.isActive);
+
+    this.memberS.getshowallrecipients().subscribe(data => this.switchValue = data)
+  }
+
+  switchChange(val: any){
+    this.memberS.postshowallrecipients(val).subscribe(data => {
+      this.getmembers(val);
+    })
   }
 
   getmembers(isActive: boolean){
@@ -62,6 +72,8 @@ export class MembersComponent implements OnInit {
 
       this.MEMBER_LENGTH.emit(data.length);
       this.loading = false;
+
+      this.globalS.sToast('Success',`${ this.members.length } recipients records found`)
     });
   }
 

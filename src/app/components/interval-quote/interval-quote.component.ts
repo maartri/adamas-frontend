@@ -5,11 +5,20 @@ import { FormBuilder, FormGroup, FormControl, Validators, FormArray, NG_VALUE_AC
 import differenceInHours from 'date-fns/differenceInHours';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import format from 'date-fns/format';
+import parse from 'date-fns/parse'
+
 
 import { billunit, periodQuote } from '@services/global.service';
 
 const noop = () => {
 };
+
+interface TimeFilterDto{
+  hours: number,
+  minutes: number,
+  quantity: number,
+  date: Date
+}
 
 enum Mode {
   Booking = "Booking",
@@ -44,8 +53,17 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
 
   @Input() interval: string;
   @Input() mode: Mode = Mode.Default;
-
   @Input() size: string;
+
+  @Input() NoMon: boolean = false;
+  @Input() NoTue: boolean = false;
+  @Input() NoWed: boolean = false;
+  @Input() NoThu: boolean = false;
+  @Input() NoFri: boolean = false;
+  @Input() NoSat: boolean = false;
+  @Input() NoSun: boolean = false;
+
+  @Input() NoPub: boolean = false;
 
   billUnitArr: Array<string> = billunit;
   periodArr: Array<string> = periodQuote;
@@ -63,15 +81,15 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     private formBuilder: FormBuilder,
     private cd:ChangeDetectorRef
   ) {
-     this.cd.detach();    
+
   }
 
   ngOnInit(): void {
-    this.buildForm();    
+    this.buildForm();
   }
 
   ngAfterContentChecked() {
-    this.cd.detectChanges();
+    // this.cd.detectChanges();
   }
 
   ngAfterViewInit() {
@@ -82,10 +100,16 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     // });
   }
 
+
+  detectChanges(){
+    this.cd.markForCheck();
+    this.cd.detectChanges();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
       if (property == 'interval' && !changes[property].firstChange && changes[property].currentValue != null) {
-          this.buildForm();
+          this.resetForm();
           this.createMultipleWeekFormats(changes[property].currentValue)
       }
     }
@@ -107,8 +131,12 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     });
   }
 
+  resetForm(){
+    (this.quoteDetailsGroup.controls['timeSlots'] as FormArray).clear();
+  }
+
   buildFormNotEmpty(data: Array<any>){
-    this.loopRoster(data.length, data);
+    this.loopRoster2(this.noOfLoops(this.interval), data);
   }
 
   noOfLoops(data): number {
@@ -124,24 +152,36 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   createMultipleWeekFormats(format: string) {
-    // console.log(format)
-    
     this.period = format;
     this.loopRoster(this.noOfLoops(format));
 
-    this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {
-      this.innerValue = this.calculateRosterString(data);
-      this.onChangeCallback(this.innerValue);      
-      this.cd.markForCheck();
-    });
+    // this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {
+    //   console.log('asd')
+    //   this.innerValue = this.calculateRosterString(data);
+    //   this.onChangeCallback(this.innerValue);      
+    //   this.cd.markForCheck();
+    // });
 
     var sss = this.quoteDetailsGroup.getRawValue();
     this.quoteDetailsGroup.patchValue(sss)
     
   }
 
+
+  loopRoster2(noOfLoop: number, data: any = null) {
+    let index = 0;
+    let countIndex = 0;
+
+    while (countIndex < noOfLoop) {
+      this.addTimeSlot(index, data.slice(index, index + 7 ));
+      index+=7;
+      countIndex++;
+    }      
+  }
+
   loopRoster(noOfLoop: number, data: any = null) {
-    let index = 0; 
+    let index = 0;
+
     if(!data) {
       while (index < noOfLoop) {
         this.addTimeSlot(index);
@@ -180,68 +220,141 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
       dayCounter = 22;
     }
 
-    
-    return this.formBuilder.group({
-      monday: new FormGroup({
-        time: new FormControl(data ? data['monday'].time: new Date(1900, 0, dayCounter, 9, 0, 0)),
-        endTime: new FormControl(data ? data['monday'].endTime: new Date(1900, 0, dayCounter, 9, 0, 0)),
-        quantity: new FormControl(data ? data['monday'].quantity : 0),
-        week: new FormControl(counter + 1)
-      }),
-      tuesday: new FormGroup({
-        time: new FormControl(data ? data['tuesday'].time : new Date(1900, 0, dayCounter + 1, 9, 0, 0)),
-        endTime: new FormControl(data ? data['tuesday'].endTime : new Date(1900, 0, dayCounter + 1, 9, 0, 0)),
-        quantity: new FormControl(data ? data['tuesday'].quantity : 0),
-        week: new FormControl(counter + 1)
-      }),
-      wednesday: new FormGroup({
-        time: new FormControl(data ? data['wednesday'].time: new Date(1900, 0, dayCounter + 2, 9, 0, 0)),
-        endTime: new FormControl(data ? data['wednesday'].endTime: new Date(1900, 0, dayCounter + 2, 9, 0, 0)),
-        quantity: new FormControl(data ? data['wednesday'].quantity : 0),
-        week: new FormControl(counter + 1)
-      }),
-      thursday: new FormGroup({
-        time: new FormControl(data ? data['thursday'].time : new Date(1900, 0, dayCounter + 3, 9, 0, 0)),
-        endTime: new FormControl(data ? data['thursday'].endTime : new Date(1900, 0, dayCounter + 3, 9, 0, 0)),
-        quantity: new FormControl(data ? data['thursday'].quantity : 0),
-        week: new FormControl(counter + 1)
-      }),
-      friday: new FormGroup({
-        time: new FormControl(data ? data['friday'].time : new Date(1900, 0, dayCounter + 4, 9, 0, 0)),
-        endTime: new FormControl(data ? data['friday'].endTime : new Date(1900, 0, dayCounter + 4, 9, 0, 0)),
-        quantity: new FormControl(data ? data['friday'].quantity : 0),
-        week: new FormControl(counter + 1)
-      }),
-      saturday: new FormGroup({
-        time: new FormControl(data ? data['saturday'].time : new Date(1900, 0, dayCounter + 5, 9, 0, 0)),
-        endTime: new FormControl(data ? data['saturday'].endTime : new Date(1900, 0, dayCounter + 5, 9, 0, 0)),
-        quantity: new FormControl(data ? data['saturday'].quantity : 0),
-        week: new FormControl(counter + 1)
-      }),
-      sunday: new FormGroup({
-        time: new FormControl(data ? data['sunday'].time : new Date(1900, 0, dayCounter + 6, 9, 0, 0)),
-        endTime: new FormControl(data ? data['sunday'].endTime : new Date(1900, 0, dayCounter + 6, 9, 0, 0)),
-        quantity: new FormControl(data ? data['sunday'].quantity  : 0),
-        week: new FormControl(counter + 1)
-      })
-    });
+    if(data == null) {
+      this.detectChanges()
+      return this.formBuilder.group({
+        monday: new FormGroup({
+          time: new FormControl(data ? data['monday'].time: new Date(1900, 0, dayCounter, 9, 0, 0)),
+          endTime: new FormControl(data ? data['monday'].endTime: new Date(1900, 0, dayCounter, 9, 0, 0)),
+          quantity: new FormControl(data ? data['monday'].quantity : 0),
+          week: new FormControl(counter + 1)
+        }),
+        tuesday: new FormGroup({
+          time: new FormControl(data ? data['tuesday'].time : new Date(1900, 0, dayCounter + 1, 9, 0, 0)),
+          endTime: new FormControl(data ? data['tuesday'].endTime : new Date(1900, 0, dayCounter + 1, 9, 0, 0)),
+          quantity: new FormControl(data ? data['tuesday'].quantity : 0),
+          week: new FormControl(counter + 1)
+        }),
+        wednesday: new FormGroup({
+          time: new FormControl(data ? data['wednesday'].time: new Date(1900, 0, dayCounter + 2, 9, 0, 0)),
+          endTime: new FormControl(data ? data['wednesday'].endTime: new Date(1900, 0, dayCounter + 2, 9, 0, 0)),
+          quantity: new FormControl(data ? data['wednesday'].quantity : 0),
+          week: new FormControl(counter + 1)
+        }),
+        thursday: new FormGroup({
+          time: new FormControl(data ? data['thursday'].time : new Date(1900, 0, dayCounter + 3, 9, 0, 0)),
+          endTime: new FormControl(data ? data['thursday'].endTime : new Date(1900, 0, dayCounter + 3, 9, 0, 0)),
+          quantity: new FormControl(data ? data['thursday'].quantity : 0),
+          week: new FormControl(counter + 1)
+        }),
+        friday: new FormGroup({
+          time: new FormControl(data ? data['friday'].time : new Date(1900, 0, dayCounter + 4, 9, 0, 0)),
+          endTime: new FormControl(data ? data['friday'].endTime : new Date(1900, 0, dayCounter + 4, 9, 0, 0)),
+          quantity: new FormControl(data ? data['friday'].quantity : 0),
+          week: new FormControl(counter + 1)
+        }),
+        saturday: new FormGroup({
+          time: new FormControl(data ? data['saturday'].time : new Date(1900, 0, dayCounter + 5, 9, 0, 0)),
+          endTime: new FormControl(data ? data['saturday'].endTime : new Date(1900, 0, dayCounter + 5, 9, 0, 0)),
+          quantity: new FormControl(data ? data['saturday'].quantity : 0),
+          week: new FormControl(counter + 1)
+        }),
+        sunday: new FormGroup({
+          time: new FormControl(data ? data['sunday'].time : new Date(1900, 0, dayCounter + 6, 9, 0, 0)),
+          endTime: new FormControl(data ? data['sunday'].endTime : new Date(1900, 0, dayCounter + 6, 9, 0, 0)),
+          quantity: new FormControl(data ? data['sunday'].quantity  : 0),
+          week: new FormControl(counter + 1)
+        })
+      });  
+    } else {
+      this.detectChanges()
+      return this.formBuilder.group({
+        monday: new FormGroup({
+          time: new FormControl(this.splitTimeFormatsByPosition(data[0]).date),
+          endTime: new FormControl(null),
+          quantity: new FormControl(this.splitTimeFormatsByPosition(data[0]).quantity),
+          week: new FormControl(counter + 1)
+        }),
+        tuesday: new FormGroup({
+          time: new FormControl(this.splitTimeFormatsByPosition(data[1]).date),
+          endTime: new FormControl(null),
+          quantity: new FormControl(this.splitTimeFormatsByPosition(data[1]).quantity),
+          week: new FormControl(counter + 1)
+        }),
+        wednesday: new FormGroup({
+          time: new FormControl(this.splitTimeFormatsByPosition(data[2]).date),
+          endTime: new FormControl(null),
+          quantity: new FormControl(this.splitTimeFormatsByPosition(data[2]).quantity),
+          week: new FormControl(counter + 1)
+        }),
+        thursday: new FormGroup({
+          time: new FormControl(this.splitTimeFormatsByPosition(data[3]).date),
+          endTime: new FormControl(null),
+          quantity: new FormControl(this.splitTimeFormatsByPosition(data[3]).quantity),
+          week: new FormControl(counter + 1)
+        }),
+        friday: new FormGroup({
+          time: new FormControl(this.splitTimeFormatsByPosition(data[4]).date),
+          endTime: new FormControl(null),
+          quantity: new FormControl(this.splitTimeFormatsByPosition(data[4]).quantity),
+          week: new FormControl(counter + 1)
+        }),
+        saturday: new FormGroup({
+          time: new FormControl(this.splitTimeFormatsByPosition(data[5]).date),
+          endTime: new FormControl(null),
+          quantity: new FormControl(this.splitTimeFormatsByPosition(data[5]).quantity),
+          week: new FormControl(counter + 1)
+        }),
+        sunday: new FormGroup({
+          time: new FormControl(this.splitTimeFormatsByPosition(data[6]).date),
+          endTime: new FormControl(null),
+          quantity: new FormControl(this.splitTimeFormatsByPosition(data[6]).quantity),
+          week: new FormControl(counter + 1)
+        })
+      });      
+    }    
+  }
+
+  splitTimeFormatsByPosition(data: any): TimeFilterDto{
+    var splitTimeAndQuantity = data.split('|');
+
+    var hours = parseInt(format(parse(splitTimeAndQuantity[0],'HH:mm', new Date()),'HH'));
+    var minutes = parseInt(format(parse(splitTimeAndQuantity[0],'HH:mm', new Date()),'mm'));
+    var _quantity = parseInt(splitTimeAndQuantity[1]);
+
+    let result: TimeFilterDto = {
+      hours: hours,
+      minutes: minutes,
+      quantity: _quantity,
+      date: new Date(1900, 0, 1, hours, minutes, 0)
+    }
+
+    return result;
   }
 
   //From ControlValueAccessor interface
-  writeValue(value: any) {
-
+  writeValue(value: string) {
     if(value != null){
-      
+      this.resetForm();
+
       if(value.length > 0) {
-        this.buildFormNotEmpty(value);
+        var splitTime = (value).split('||').filter(x => x);
+        this.buildFormNotEmpty(splitTime);
       }
 
       this.innerValue = value;
+      this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => { 
+        // console.log(data)    
 
-      this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {     
-        this.innerValue = data;
+        this.innerValue = this.calculateRosterString(data);
+        console.log(this.innerValue)
         this.onChangeCallback(this.innerValue);      
         this.cd.markForCheck();
+
+        
+        // this.innerValue = data;
+        // this.onChangeCallback(this.innerValue);      
+        // this.cd.markForCheck();
       });
     }    
   }
@@ -264,11 +377,9 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     var parseString  = '';
     var quantity: number = 0;
     
-    clonedObjArray.forEach((x, index) => {
-      
+    clonedObjArray.forEach((x, index) => {      
       
       var monQuant = ('0'+ (x['monday']['quantity'])).slice(-2).concat('.00');
-      // parseString = parseString.concat('||', format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);
 
       if(index > 0){
         parseString = parseString.concat('||',format(new Date(x['monday']['time']),'HH:mm'), '|', monQuant);

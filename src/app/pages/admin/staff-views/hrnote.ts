@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, PrintService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil, delay } from 'rxjs/operators';
@@ -92,6 +92,7 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
+        private printS:PrintService,
         private cd: ChangeDetectorRef,
         private http: HttpClient,
         private sanitizer: DomSanitizer,
@@ -301,15 +302,6 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
                         
                         var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND "+this.whereString+" AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'HRNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
                         
-                        const headerDict = {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        }
-                        
-                        const requestOptions = {
-                            headers: new HttpHeaders(headerDict)
-                        };
-                        
                         const data = {
                             "template": { "_id": "0RYYxAkMCftBE9jc" },
                             "options": {
@@ -323,17 +315,16 @@ export class StaffHRAdmin implements OnInit, OnDestroy {
                                 "head4" : "Remember Date",
                             }
                         }
-                        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+                        this.printS.print(data)
                         .subscribe((blob: any) => {
                             let _blob: Blob = blob;
                             let fileURL = URL.createObjectURL(_blob);
                             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                            this.loadingPDF = false;
-                            console.log("compiled after data")
+                            this.loading = false;
                             this.cd.detectChanges();
                         }, err => {
                             console.log(err);
-                            this.loadingPDF = false;
+                            this.loading = false;
                             this.ModalS.error({
                                 nzTitle: 'TRACCS',
                                 nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',

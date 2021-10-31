@@ -652,7 +652,10 @@ export class ListService {
     getpension(personID: string): Observable<any>{
         return this.auth.get(`${list}/pension/${personID}`)
     }   
-
+    
+    getfundingsource(): Observable<any>{
+        return this.auth.get(`${list}/funding-source`)
+    }
     getlistrecipientreminders(): Observable<any>{
         return this.auth.get(`${list}/recipient/reminders`)
     }   

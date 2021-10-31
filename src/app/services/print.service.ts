@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { GlobalService } from '@services/global.service';
 import { JsConfig } from '@modules/modules';
 
 const url: string = "https://www.mark3nidad.com:5488/api/report"
 
-
-
-
 @Injectable()
 export class PrintService {
     constructor(
         public http: HttpClient,
+        private sanitizer: DomSanitizer,
         public auth: AuthService,
         public globalS: GlobalService
     ){ }

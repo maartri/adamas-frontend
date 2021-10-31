@@ -139,7 +139,31 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
 
     console.log(this.loadedFiles[index]);
 
+    this.uploadS.downloadFileDocumentRemoteNetwork({
+      PersonID: this.token.id,
+      Extension: type,
+      FileName: filename,
+      SourceDocPath: originalLocation,
+      DestinationDocPath: "\\\\sjcc-sydgw01\\portal$\\document"
+    }).subscribe(blob => {
+      // console.log(blob);
+      let data = window.URL.createObjectURL(blob);
+      let link = document.createElement('a');
+      link.href = data;
+      link.download = "64887.PDF";
+      link.click();
 
+      setTimeout(() => {
+        window.URL.revokeObjectURL(data);
+      }, 100);
+      
+      this.globalS.sToast('Success','Download Successful')
+
+    }, (err: HttpErrorResponse) => {
+      this.globalS.eToast('Error','Failed to download')
+    });
+
+    return;
 
     this.uploadS.downloadFileDocumentRemoteServer({
       PersonID: this.token.id,

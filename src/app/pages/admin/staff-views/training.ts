@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, PrintService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -39,6 +39,7 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
+        private printS:PrintService,
         private http: HttpClient,
         private sanitizer: DomSanitizer,
         private ModalS: NzModalService,
@@ -129,15 +130,7 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
         var fQuery = "SELECT CONVERT(varchar, [Date],105) as Field1, CONVERT(varchar, [Service Type],105) AS Field2, CONVERT(varchar, [Anal],105) AS Field3, Notes as Field4 FROM Roster INNER JOIN ItemTypes ON Roster.[Service Type] = ItemTypes.[Title] WHERE [Carer Code] = '"+this.user.code+"' AND MinorGroup = 'TRAINING' ORDER BY DATE Desc";
         // var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [EndDate],105) as Field3 from DataDomains where Domain='BRANCHES'"
         // console.log(fQuery);
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-        
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-        
+      
         const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -152,25 +145,24 @@ export class StaffTrainingAdmin implements OnInit, OnDestroy {
             }
         }
         console.log("compiled after data")
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-        .subscribe((blob: any) => {
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false; 
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-            this.detectChanges();
-        });
+        this.printS.print(data)
+                        .subscribe((blob: any) => {
+                            let _blob: Blob = blob;
+                            let fileURL = URL.createObjectURL(_blob);
+                            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                            this.loading = false;
+                            this.cd.detectChanges();
+                        }, err => {
+                            console.log(err);
+                            this.loading = false;
+                            this.ModalS.error({
+                                nzTitle: 'TRACCS',
+                                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                                nzOnOk: () => {
+                                    this.drawerVisible = false;
+                                },
+                            });
+                        });
     //    this.loading = true;
      //  this.tryDoctype = "";
      //   this.pdfTitle = "";

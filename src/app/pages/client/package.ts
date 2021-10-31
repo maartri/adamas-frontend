@@ -44,6 +44,12 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         a.print{
             float:right;
         }
+        .title-col{
+            background: #1790ff;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+        }
     `],
     templateUrl: './package.html',
     providers: [MonthPeriodFilter],
@@ -287,7 +293,8 @@ export class PackageClient implements OnInit, OnDestroy {
     }
 
     printPackage(): void{
-
+        console.log(this.table);
+        // return;
         var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'OPNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
 
         const data = {
@@ -296,11 +303,7 @@ export class PackageClient implements OnInit, OnDestroy {
                 "reports": { "save": false },
                 "txtTitle": "Staff OP NOTES List",
                 "sql": fQuery,
-                "userid": ' ',
-                "head1" : "Date",
-                "head2" : "Detail",
-                "head3" : "Created By",
-                "head4" : "Remember Date",
+                "body": this.table
             }
         }
 

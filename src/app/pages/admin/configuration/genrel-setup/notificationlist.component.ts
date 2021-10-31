@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ListService, MenuService, PrintService } from '@services/index';
-import { GlobalService } from '@services/global.service';
+import { GlobalService,notificationTypes } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject, EMPTY } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -9,8 +9,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
-  selector: 'app-distributionlist',
-  templateUrl: './distributionlist.component.html',
+  selector: 'app-notificationlist',
+  templateUrl: './notificationlist.component.html',
   styles:[`
   .mrg-btm{
     margin-bottom:0rem !important;
@@ -20,7 +20,7 @@ import { NzModalService } from 'ng-zorro-antd';
   }
   `]
 })
-export class DistributionlistComponent implements OnInit {
+export class NotificationlistComponent implements OnInit {
   events: Array<any>;
 
   tableData: Array<any>;
@@ -39,7 +39,7 @@ export class DistributionlistComponent implements OnInit {
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  heading:string = "Add Distribution List";
+  heading:string = "Add Notification List";
   rpthttp = 'https://www.mark3nidad.com:5488/api/report'
   token:any;
   tocken: any;
@@ -49,7 +49,7 @@ export class DistributionlistComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="where ListName IN ('INCIDENT','DOCUSIGN','EVENT') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+  whereString :string="WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
   
   constructor(
     private globalS: GlobalService,
@@ -75,15 +75,15 @@ export class DistributionlistComponent implements OnInit {
     }
     fetchAll(e){
       if(e.target.checked){
-        this.whereString = "";
+        this.whereString = " WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') ";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+        this.whereString = " WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
         this.loadData();
       }
     }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+" order by Recipient";
+      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+"order by Recipient";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -91,7 +91,7 @@ export class DistributionlistComponent implements OnInit {
       });
     }
     populateDropdowns(){
-      this.listType = ['INCIDENT','DOCUSIGN','EVENT'];
+      this.listType = notificationTypes;
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
       this.listS.getlist(sql).subscribe(data => {
         this.services = data;
@@ -137,7 +137,7 @@ export class DistributionlistComponent implements OnInit {
       this.severity = ['ALL','LOW','MEDIUM','HIGH','CRITICAL'];
     }
     showAddModal() {
-      this.heading = "Add Distribution List"
+      this.heading = "Add Notification List"
       this.resetModal();
       this.modalOpen = true;
     }
@@ -149,7 +149,7 @@ export class DistributionlistComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      this.heading  = "Edit Distribution List"
+      this.heading  = "Edit Notification List"
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
@@ -335,7 +335,7 @@ export class DistributionlistComponent implements OnInit {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
         "options": {
           "reports": { "save": false },
-          "txtTitle": "Distribution List",
+          "txtTitle": "Notification List",
           "sql": fQuery,
           "userid":this.tocken.user,
           "head1" : "Sr#",
@@ -364,6 +364,7 @@ export class DistributionlistComponent implements OnInit {
           },
         });
       });
+
 
       this.loading = true;
       this.tryDoctype = "";

@@ -1244,6 +1244,7 @@ ClearMultishift(){
             
               let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
              
+            
               if(args.sheetArea==1 || args.sheetArea==2){
                 sheet.options.isProtected = false;
                 return;
@@ -2457,19 +2458,22 @@ ClearMultishift(){
                 this.defaultProgram=sel;
                 this.bookingForm.patchValue({
                     program:sel
-                })
+                });
             }else if (type=="service"){
                 this.HighlightRow2=i;
                 this.defaultActivity=sel;//this.serviceActivityList[i];
+                // this.bookingForm.controls["serviceActivity"].valueChanges.subscribe(() => {
+                //     console.log("modified");}, () => { console.log("error") }, () => { console.log("completed") });
+        
                 this.bookingForm.patchValue({
                     serviceActivity:sel
-                })
+                });
             }else if (type=="location"){
                 this.HighlightRow3=i;
                 this.serviceSetting=sel;
                 this.bookingForm.patchValue({
                     serviceSetting:sel
-                })
+                });
               
             }else if (type=="Category"){
                 this.HighlightRow4=i;
@@ -3716,8 +3720,8 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
            return this.timeS.getActivities({            
             recipient: recipientCode,
             program:program,  
-            forceAll: recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
-            mainGroup: 'ALL',
+            forceAll: "0", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
+            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
             subGroup: '-',           
             viewType: this.viewType,
             AllowedDays: "0",
@@ -3949,8 +3953,10 @@ GETSERVICEACTIVITY2(program: any): Observable<any> {
         else if (this.IsGroupShift){
             if (this.GroupShiftCategory=="TRANSPORT" )
                 return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'VEHICLES' AND Description Is NOT Null  AND (EndDate Is Null OR EndDate >= (select top 1 PayPeriodEndDate from systable)) ORDER BY DESCRIPTION`);
-            else if (this.GroupShiftCategory=="GROUPBASED" )            
+            else if (this.GroupShiftCategory=="GROUPBASED" || this.GroupShiftCategory=='GROUPACTIVITY')            
                 return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'ACTIVITYGROUPS' AND Description Is NOT Null  AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY DESCRIPTION`);
+            else
+                return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'ACTIVITYGROUPS' AND Description Is NOT Null AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY DESCRIPTION`);
         }else
             return this.listS.getlist(`SELECT DISTINCT Description FROM DataDomains WHERE Domain = 'ACTIVITYGROUPS' AND Description Is NOT Null AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY DESCRIPTION`);
     }
@@ -4193,7 +4199,7 @@ this.bookingForm.get('program').valueChanges.pipe(
      
 
     this.bookingForm.get('serviceActivity').valueChanges.pipe(
-        distinctUntilChanged(),      
+        distinctUntilChanged(),     
 
         switchMap(x => {
             if (!x) {
@@ -4206,9 +4212,8 @@ this.bookingForm.get('program').valueChanges.pipe(
                 this.GETROSTERGROUP(x.activity), 
                 this.GETPAYTYPE(x.activity),
                 this.GETANALYSISCODE(),
-                this.GETSERVICEGROUP()                                   
-                                    
-            )
+                this.GETSERVICEGROUP()                                  
+                )
             
         })
     ).subscribe(d => {
@@ -4220,6 +4225,10 @@ this.bookingForm.get('program').valueChanges.pipe(
         this.GET_ACTIVITY_VALUE((this.rosterGroup).trim());
         this.payTypeList = d[1];
         this.analysisCodeList = d[2];
+        this.analysisCodeList = d[2];
+        if (this.activity_value==12 || this.booking_case==8 || this.IsGroupShift){
+            this.ServiceGroups_list = d[3].map(x => x.description);;
+        }  
         this.date_Timesheet=this.selectedActivity.date_Timesheet;
 
         this.bookingForm.patchValue({
@@ -4239,9 +4248,7 @@ this.bookingForm.get('program').valueChanges.pipe(
             analysisCode: this.selectedActivity.anal,
             
         })
-        if (this.activity_value==12 || this.booking_case==8 || this.IsGroupShift){
-            this.ServiceGroups_list = d[3].map(x => x.description);;
-        }
+      
        if (this.booking_case==8){
            this.IsClientCancellation=true;
        }

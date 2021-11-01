@@ -33,7 +33,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core'
         -ms-transition: background-color 300ms linear;
         transition: background-color 300ms linear;
       }
-      figure i{
+      figure i,span{
         font-size: 2.7rem;
       }
       figcaption{

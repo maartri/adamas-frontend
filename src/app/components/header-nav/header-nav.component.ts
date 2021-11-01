@@ -24,6 +24,8 @@ export class HeaderNavComponent implements OnInit {
 
   logoPath: any;
 
+  user: any;
+
   constructor(
     private globalS: GlobalService,
     private loginS: LoginService,
@@ -44,7 +46,7 @@ export class HeaderNavComponent implements OnInit {
       this.isAdmin = true;
     //}
 
-    this.loginS.getcurrentuser().subscribe(data => console.log(data))
+    this.loginS.getcurrentuser().subscribe(data => this.user = data)
 
     this.tempRole = this.globalS.isRole();
 

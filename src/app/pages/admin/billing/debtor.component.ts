@@ -61,9 +61,9 @@ export class DebtorComponent implements OnInit {
   check: boolean = false;
   temp_title: any;
   settingForm: FormGroup;
-  userRole:string="userrole";
+  userRole: string = "userrole";
   whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
-  dtpEndDate: number;
+  dtpEndDate: any;
   id: string;
   btnid: any;
   btnid1: any;
@@ -87,7 +87,7 @@ export class DebtorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+    this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();
     this.userRole = this.tocken.role;
     this.buildForm();
     this.loadBranches();
@@ -114,38 +114,38 @@ export class DebtorComponent implements OnInit {
   }
   buildForm() {
     this.inputForm = this.formBuilder.group({
-      dtpStartDate: '01-01-2021',
-      dtpEndDate: '01-01-2021',
+      // dtpStartDate: '',
+      // dtpEndDate: this.dtpEndDate,
       billingMode: 'CONSOLIDATED BILLING',
       AccPackage: 'TEST 1',
     });
   }
 
-  log(event: any,index:number) {
-    if(index == 1)
-    this.selectedBranches = event;
-    if(index == 2)
-    this.selectedPrograms = event;
-    if(index == 3)
-    this.selectedCategories = event;
- }
+  log(event: any, index: number) {
+    if (index == 1)
+      this.selectedBranches = event;
+    if (index == 2)
+      this.selectedPrograms = event;
+    if (index == 3)
+      this.selectedCategories = event;
+  }
 
-  checkAll(index:number): void {
-    if(index == 1){
+  checkAll(index: number): void {
+    if (index == 1) {
       this.branchList.forEach(x => {
         x.checked = true;
         this.allBranchesChecked = x.description;
         this.allBranchesChecked = true;
       });
     }
-    if(index == 2){
+    if (index == 2) {
       this.programList.forEach(x => {
         x.checked = true;
         this.allProgramsChecked = x.description;
         this.allProgramsChecked = true;
       });
     }
-    if(index == 3){
+    if (index == 3) {
       this.categoriesList.forEach(x => {
         x.checked = true;
         this.allCategoriesChecked = x.description;
@@ -154,27 +154,27 @@ export class DebtorComponent implements OnInit {
     }
   }
 
-  uncheckAll(index:number): void {
-    if(index == 1){
-        this.branchList.forEach(x => {
-          x.checked = false;
+  uncheckAll(index: number): void {
+    if (index == 1) {
+      this.branchList.forEach(x => {
+        x.checked = false;
         this.allBranchesChecked = false;
         this.selectedBranches = [];
-        });
+      });
     }
-    if(index == 2){
-        this.programList.forEach(x => {
-          x.checked = false;
+    if (index == 2) {
+      this.programList.forEach(x => {
+        x.checked = false;
         this.allProgramsChecked = false;
         this.selectedPrograms = [];
-        });
+      });
     }
-    if(index == 3){
-        this.categoriesList.forEach(x => {
-          x.checked = false;
+    if (index == 3) {
+      this.categoriesList.forEach(x => {
+        x.checked = false;
         this.allCategoriesChecked = false;
         this.selectedCategories = [];
-        });
+      });
     }
   }
 
@@ -182,7 +182,7 @@ export class DebtorComponent implements OnInit {
   //   e = e || window.event;
   //   e = e.target || e.srcElement;
   //   this.btnid = e.id
-  
+
   //   switch (this.btnid) {
   //       case "btn-uchk-program-list":
   //         console.log("[==========]")
@@ -192,7 +192,7 @@ export class DebtorComponent implements OnInit {
   //           this.allProgramschecked = false;
   //           this.selectedPrograms = [];
   //           break;
-        
+
   //           default:
   //               break;
   //       }
@@ -203,8 +203,8 @@ export class DebtorComponent implements OnInit {
     this.AccountPackage = ['TEST 1', 'TEST 2'];
     this.invType = ['CDC Homecare Package Invoices', 'NDIA Claim Update Invoices', 'General', 'Re-Export Existing Batch', 'ALL'];
   }
-  
-  loadBranches(){
+
+  loadBranches() {
     this.loading = true;
     this.menuS.getlistbranches(this.check).subscribe(data => {
       this.branchList = data;
@@ -215,7 +215,7 @@ export class DebtorComponent implements OnInit {
     });
   }
 
-  loadPrograms(){
+  loadPrograms() {
     this.loading = true;
     this.menuS.getlistProgramPackages(this.check).subscribe(data => {
       this.programList = data;
@@ -247,17 +247,17 @@ export class DebtorComponent implements OnInit {
     });
   }
 
-  startDebUpdate() : void{
-    this.loading = true;      
+  startDebUpdate(): void {
+    this.loading = true;
 
     this.selectedBranches = this.branchList
-    .filter(opt => opt.checked)
-    .map(opt => opt.description).join("','")
+      .filter(opt => opt.checked)
+      .map(opt => opt.description).join("','")
 
 
     var postdata = {
-      allProgarms:this.allBranchesChecked,
-      selectedBranches:(this.allBranchesChecked == false) ? this.selectedBranches : '',
+      allProgarms: this.allBranchesChecked,
+      selectedBranches: (this.allBranchesChecked == false) ? this.selectedBranches : '',
     }
 
     this.billingS.postdebtorbilling({}).subscribe(data => {
@@ -280,42 +280,30 @@ export class DebtorComponent implements OnInit {
     // console.log("Result 1 is: " , this.PayPeriodLength);
   }
   GetPayPeriodEndDate() {
-    let sql = "SELECT PayPeriodEndDate as PayPeriodEndDate FROM SysTable";
+    let sql = "SELECT convert(varchar, PayPeriodEndDate, 103) AS PayPeriodEndDate FROM SysTable";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
-      if (data[0].PayPeriodEndDate != "") {
+      if (data[0].payPeriodEndDate != "") {
+        this.dtpEndDate = data[0].payPeriodEndDate;
         this.inputForm.patchValue({
-              dtpEndDate: this.globalS.convertDbDate(data[0].payPeriodEndDate),
-          });
+          dtpEndDate: data[0].payPeriodEndDate,
+        });
       }
-      else { 
+    else {
         this.inputForm.patchValue({
-          dtpEndDate: new Date(),});
+          dtpEndDate: new Date()
+        });
       }
-    })
-    // this.inputForm.patchValue({
-    //   dtpStartDate: this.dtpEndDate - ((this.PayPeriodLength * 24*30*60*1000)- 1),
-    // })
-
+    });
     let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
     this.listS.getlist(fsql).subscribe(fdata => {
-      console.log("Result 1 is: ", fdata[0].defaultPayPeriod)
       if (fdata[0].defaultPayPeriod != "") {
         this.PayPeriodLength = fdata;
       }
       else { this.PayPeriodLength = 14; }
-    })
-    
-
-    var EndDate
-    EndDate = new Date(this.dtpEndDate);
-    let d = EndDate.getDate()-1;
-    EndDate.setDate(EndDate.getDate()-d) 
-    console.log("Result test is: ", (EndDate));
-
-    console.log("Result 2 is: ", (this.PayPeriodLength));
-    // console.log("Result 3 is: ", (this.dtpEndDate.setDate(this.dtpEndDate.getDate()-10)));
-    // console.log("Result 3 is: ", (this.dtpEndDate - (this.PayPeriodLength)));
+    });
+    var FirstDate = this.dtpEndDate;
+    // FirstDate.setDate(FirstDate.getDate() - this.PayPeriodLength - 1);
   }
 }
 

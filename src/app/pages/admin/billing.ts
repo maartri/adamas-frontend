@@ -82,7 +82,10 @@ export class BillingAdmin implements OnInit, OnDestroy, AfterViewInit{
         view(index: number) {
             console.log(index);
             if(index == 1){
-                // this.router.navigate(['/admin/companies']);
+                this.router.navigate(['/admin/pay-export-integrity']);
+            }
+            if(index == 3){
+                this.router.navigate(['/admin/close-roster-period']);
             }
             if(index == 4){
                 this.router.navigate(['/admin/debtor-updates-exports']);

@@ -30,6 +30,8 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
   loadingGenerateAccount: boolean = false;
 
+  loadPostReferral: boolean = false;
+
   contactGroups: Array<string> = contactGroups;
 
   @Input() open: boolean = false;
@@ -570,17 +572,20 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     // });
 
     // return;
-    console.log(this.referralGroup.value)
+
+    this.loadPostReferral = true;
 
 
     this.clientS.postprofile(this.referralGroup.value)
-      .subscribe(data => {
-        
+      .subscribe(data => {        
         this.handleCancel();
         this.openRefer.emit(data);
         
         this.globalS.sToast('Success', 'Recipient Added')        
         this.current = 0;
+        this.loadPostReferral = false;
+      }, (err: any) => {
+        this.loadPostReferral = false;
       });
      
      

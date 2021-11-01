@@ -261,6 +261,8 @@ import { DocumentTemplateComponent } from '@admin/configuration/documents/docume
 import { DebtorComponent } from '@admin/billing/debtor.component'; //AHSAN 
 import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN 
 import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
+import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
+import { CloseRosterComponent } from '@admin/billing/closeRoster.component';
 
 const routes: Routes = [
   {
@@ -560,6 +562,14 @@ const routes: Routes = [
       {
         path: 'pay-update', //AHSAN
         component: PayComponent
+      },
+      {
+        path: 'pay-export-integrity', //AHSAN
+        component: PayIntegrityComponent
+      },
+      {
+        path: 'close-roster-period', //AHSAN
+        component: CloseRosterComponent
       },
       {
         path: 'hcp',
@@ -1231,6 +1241,8 @@ export const PAGE_COMPONENTS = [
   DebtorComponent, //AHSAN 
   TravelComponent, //AHSAN
   PayComponent, //AHSAN 
+  PayIntegrityComponent, //AHSAN 
+  CloseRosterComponent, //AHSAN 
   BudgetgroupsComponent,
   BudgetsComponent,
   ContactgroupsComponent,

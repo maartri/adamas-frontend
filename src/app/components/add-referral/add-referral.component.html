@@ -510,7 +510,7 @@
             <button nz-button nzType="default" (click)="next()" *ngIf="current < 5" [disabled]="!canGoNext">
                 <span>Next</span>
             </button>
-            <button nz-button nzType="primary" (click)="add()" *ngIf="current === 5" [disabled]="!canBeDone">
+            <button nz-button nzType="primary" (click)="add()" *ngIf="current === 5" [disabled]="!canBeDone" [nzLoading]="loadPostReferral">
                 <span>Done</span>
             </button>
         </ng-container>
